@@ -1,0 +1,16 @@
+config BR2_TARGET_ARM_NSLU2
+	bool "NSLU2"
+	depends on BR2_armeb
+	default n
+	select BR2_PACKAGE_LINUX
+	help
+	  The Linksys NSLU2
+
+config BR2_PACKAGE_LINUX
+	bool "linux"
+	default n
+	depends on BR2_TARGET_ARM_NSLU2
+	help
+	    The Linux kernel.
+
+	    http://www.kernel.org/

@@ -1,0 +1,7 @@
+config BR2_PACKAGE_SPCTOOLS
+	bool "spcatools"
+	default n
+	help
+		Build the spca tools
+
+

@@ -1,0 +1,198 @@
+#! /bin/bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+# Read in library functions
+if [ "$(type -t patch_file_name)" != function ]
+then
+	if ! [ -r $CMDPATH/scripts/patchfns ]
+	then
+		echo "Cannot read library $CMDPATH/scripts/patchfns" >&2
+		exit 1
+	fi
+	. $CMDPATH/scripts/patchfns
+	if [ -n "$SUBDIR" ]
+	then
+		cd $SUBDIR
+		unset SUBDIR
+	fi
+fi
+
+usage()
+{
+	printf $"Usage: quilt setup [-d path-prefix] [-v] {specfile|seriesfile}\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Initializes a source tree from an rpm spec file or a quilt series file.
+
+-d	optional path prefix (sub-directory).
+
+-v	verbose debug output.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o d:vh -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+prefix=
+
+while true
+do
+	case "$1" in
+	-d)
+		prefix=${2%/}/
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	-v)
+		verbose=-v
+		shift ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -ne 1 ]
+then
+	usage
+fi
+
+up() {
+	if [ "${1:0:1}" = / ]
+	then
+		echo $1
+	else
+		local up=
+		while ! [ "$1$up" -ef . -o "$1$up" -ef / ]
+		do
+			up=$up/..
+		done
+		echo ${up:1}
+	fi
+}
+
+check_for_existing_files() {
+	local dir status=0
+	for dir in $(awk ' $1 = "patch" { print $2 }' $tmpfile | uniq)
+	do
+		if [ -e "$prefix$dir/$QUILT_PATCHES" ]
+		then
+			printf $"Directory %s exists\n" \
+			       "$prefix$dir/$QUILT_PATCHES" >&2
+			status=1
+		fi
+		if [ -e "$prefix$dir/series" ]
+		then
+			printf $"File %s exists\n" "$prefix$dir/series" >&2
+			status=1
+		fi
+	done
+	return $status
+}
+
+tmpfile=$(gen_tempfile)
+trap "rm -f $tmpfile" EXIT
+
+case "$1" in
+*.spec)
+	spec_file="$1"
+
+	if ! $CMDPATH/scripts/inspect $verbose "$spec_file" 2>&1 > $tmpfile
+	then
+		printf $"The %%prep section of %s failed; results may be incomplete\n" "$spec_file"
+		if [ -z "$verbose" ]
+		then
+			printf $"The -v option will show rpm's output\n"
+		fi
+	fi
+	;;
+*)
+	# parse series file
+	while read line; do
+		set -- $line
+		case "$@" in
+		"# Sourcedir: "*)
+			shift 2
+			tar_dir="$@" ;;
+		"# Source: "*)
+			shift 2
+			echo "tar ${tar_dir:-.} $@" ;;
+		"# Patchdir: "*)
+			shift 2
+			patch_dir="$@" ;;
+		''|'#'*)
+			;;
+		*)
+			echo "patch ${patch_dir:-.} $@" ;;
+		esac
+	done < "$1" > $tmpfile
+	;;
+esac
+
+check_for_existing_files || exit 1
+
+while read tag dir arg1 arg2
+do
+	mkdir -p "$prefix$dir"
+	case "$tag" in
+	tar)
+		printf $"Unpacking archive %s\n" "$arg1"
+		cat_file "$arg1" \
+		| tar xf - -C "$prefix$dir"
+		;;
+	esac
+done < $tmpfile
+
+check_for_existing_files || exit 1
+
+while read tag dir arg1 arg2
+do
+	case "$tag" in
+	tar)
+		tar_dir="$dir"
+		[ "$tar_dir" = . ] && tar_dir=
+		tar_file="$arg1"
+		;;
+	patch)
+		[ -e "$prefix$dir/$QUILT_PATCHES" ] \
+		|| ln -s "$(up $prefix$dir)" $prefix$dir/$QUILT_PATCHES
+
+		if ! [ -e "$prefix$dir/series" ]
+		then
+			# (There is no reliable way to associate archives with
+			#  patches; we assume that all pathes applied after
+			#  archive extraction belong to that archive.)
+			(	echo "# Patch series file for quilt," \
+				     "created by ${0##*/}"
+				[ -n "$tar_dir" ] \
+					&& echo "# Sourcedir: $tar_dir"
+				[ -n "$tar_file" ] \
+					&& echo "# Source: $tar_file"
+				echo "# Patchdir: $dir"
+				echo "#"
+			) > "$prefix$dir/series"
+		fi
+		echo "$arg1" $arg2 >> "$prefix$dir/series"
+		;;
+	esac
+done < $tmpfile
+### Local Variables:
+### mode: shell-script
+### End:
+# vim:filetype=sh

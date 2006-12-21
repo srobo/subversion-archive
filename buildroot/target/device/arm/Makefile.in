@@ -1,0 +1,14 @@
+ifeq ($(strip $(BR2_TARGET_ARM_NSLU2)),y)
+
+UCLIBC_CONFIG_FILE:=target/device/arm/nslu2/uClibc.config
+BR2_PACKAGE_BUSYBOX_CONFIG:=target/device/arm/nslu2/busybox.config
+
+include target/device/arm/nslu2/Makefile.in
+
+ifeq ($(strip $(BR2_PACKAGE_LINUX)),y)
+TARGETS+=linux
+include target/device/arm/nslu2/linux.mk
+endif
+
+endif
+

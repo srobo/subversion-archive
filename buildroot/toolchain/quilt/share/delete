@@ -1,0 +1,120 @@
+#! /bin/bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+# Read in library functions
+if [ "$(type -t patch_file_name)" != function ]
+then
+	if ! [ -r $CMDPATH/scripts/patchfns ]
+	then
+		echo "Cannot read library $CMDPATH/scripts/patchfns" >&2
+		exit 1
+	fi
+	. $CMDPATH/scripts/patchfns
+fi
+
+usage()
+{
+	printf $"Usage: quilt delete [patch | -n]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Remove the specified or topmost patch from the series file.  If the
+patch is applied, quilt will attempt to remove it first. (Only the
+topmost patch can be removed right now.)
+
+-n	Delete the next patch after topmost, rather than the specified
+	or topmost patch.
+"
+
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o nh -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-n)
+		opt_next=1
+		shift ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 -o \( -n "$opt_next" -a $# -gt 0 \) ]
+then
+	usage
+fi
+
+patch="$1"
+if [ -z "$patch" ]
+then
+	patch="$(top_patch)"
+	if [ -z "$opt_next" ]
+	then
+		if [ -z "$patch" ]
+		then
+			printf $"No patches applied\n" >&2
+			exit 1
+		fi
+	else
+		if [ -z "$patch" ]
+		then
+			patch="$(cat_series | head -n 1)"
+		else
+			patch="$(patches_after "$patch" | head -n 1)"
+		fi
+		if [ -z "$patch" ]
+		then
+			printf $"No next patch\n" >&2
+			exit 1
+		fi
+	fi
+else
+	save_patch=$patch
+	if ! patch=$(find_patch $patch)
+	then
+		patch=$save_patch
+		printf $"Patch %s is not in series\n" "$patch" >&2
+		exit 1
+	fi
+fi
+if is_applied $patch
+then
+	if [ "$patch" != "$(top_patch)" ] || \
+	   ! $CMDPATH/pop -fq "$patch"
+	then
+		printf $"Patch %s is currently applied\n" \
+		       "$(print_patch $patch)" >&2
+		exit 1
+	fi
+fi
+if remove_from_series "$patch"
+then
+	printf $"Removed patch %s\n" "$(print_patch "$patch")"
+else
+	printf $"Failed to remove patch %s\n" "$(print_patch "$patch")" >&2
+fi
+### Local Variables:
+### mode: shell-script
+### End:
+# vim:filetype=sh
