@@ -21,7 +21,6 @@ $(SPCAVIEW_DIR)/.source: $(DL_DIR)/$(SPCAVIEW_SOURCE)
 	touch $(SPCAVIEW_DIR)/.source
 
 $(SPCAVIEW_DIR)/.patched: $(SPCAVIEW_DIR)/.source
-	echo QUILT=$(QUILT)
 	(cd $(SPCAVIEW_DIR); QUILT_PATCHES=$(SPCAVIEW_PATCH_DIR) $(QUILT) push -a)
 	touch $(SPCAVIEW_DIR)/.patched
 

@@ -10,5 +10,10 @@ TARGETS+=linux
 include target/device/arm/nslu2/linux.mk
 endif
 
+ifeq ($(strip $(BR2_PACKAGE_IXP425_ETH)),y)
+TARGETS+=ixp425_eth
+include target/device/arm/ixp425-ethernet/ixp425-eth.mk
+endif
+
 endif
 
