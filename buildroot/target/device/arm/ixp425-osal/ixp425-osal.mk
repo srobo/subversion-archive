@@ -10,6 +10,8 @@ IXP425_OSAL_KMOD := $(IXP425_OSAL_DIR)/ixp400_xscale_sw/lib/linuxbe/ixp400.ko
 IXP425_OSAL_KMOD_LOC := $(TARGET_DIR)/lib/modules/$(DOWNLOAD_LINUX_VERSION)/extra/ixp400.ko
 IXP425_OSAL_COMPONENTS := "qmgr npeMh npeDl ethAcc ethDB ethMii featureCtrl osServices oslinux"
 
+IXP425_OSAL_HEADER_DIR := $(STAGING_DIR)/include/linux/ixp4xx-csr
+
 
 $(IXP425_OSAL_DIR)/.source:
 	#unzip the files
@@ -31,6 +33,11 @@ $(IXP425_OSAL_KMOD_LOC): $(IXP425_OSAL_KMOD)
 	$(MAKE) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) INSTALL_MOD_PATH=$(TARGET_DIR) M=$(IXP425_OSAL_DIR)/ixp400_xscale_sw/lib/linuxbe modules_install
 	$(DEPMOD) -b $(TARGET_DIR)/lib/modules/$(DOWNLOAD_LINUX_VERSION) -F $(LINUX_DIR)/System.map
 
-ixp425_osal: linux $(IXP425_OSAL_KMOD_LOC)
+$(IXP425_OSAL_HEADER_DIR)/.installed: $(IXP425_OSAL_KMOD)
+	mkdir -p $(IXP425_OSAL_HEADER_DIR)
+	cp $(IXP425_OSAL_DIR)/ixp400_xscale_sw/src/include/*.h $(IXP425_OSAL_HEADER_DIR)
+	touch $(IXP425_OSAL_HEADER_DIR)/.installed
+
+ixp425_osal: linux $(IXP425_OSAL_KMOD_LOC) $(IXP425_OSAL_HEADER_DIR)/.installed
 
 
