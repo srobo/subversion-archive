@@ -19,8 +19,16 @@ config BR2_PACKAGE_IXP425_OSAL
 	bool "IXP425 Access Library"
 	default n
 	depends on BR2_TARGET_ARM_NSLU2
+	depends on BR2_PACKAGE_LINUX
 	help
 		In order to build this you have to download some files 
 		yourself.  See target/device/arm/ixp425-ethernet/README 
 		for instructions.
 
+config BR2_PACKAGE_IXP425_ETH
+	bool "IXP425 Ethernet Driver"
+	default n
+	depends on BR2_PACKAGE_IXP425_OSAL
+	help
+		Build the IXP425 ethernet driver as a kernel module.
+ 

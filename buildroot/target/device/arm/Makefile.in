@@ -15,5 +15,11 @@ TARGETS+=ixp425_osal
 include target/device/arm/ixp425-osal/ixp425-osal.mk
 endif
 
+ifeq ($(strip $(BR2_PACKAGE_IXP425_ETH)),y)
+TARGETS+=ixp425_eth
+include target/device/arm/ixp425-eth/ixp425-eth.mk
+endif
+
+
 endif
 
