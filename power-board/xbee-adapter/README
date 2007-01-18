@@ -1,0 +1,11 @@
+This is an adapter so that the Maxstream xBee radio module can be
+plugged into a breadboard.  The xBee module has a 2mm pin pitch, and
+so cannot be plugged into a breadboard (which is 2.5mm or 100 thou
+pitch).
+
+This adapter is fast and cheap.  It's single sided, so that there's
+little effort required to make it.
+
+Obviously this adapter is only required for prototyping purposes.
+
+The brd, sch and lib files are EAGLE files. 
