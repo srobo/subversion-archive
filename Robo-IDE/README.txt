@@ -1,9 +1,3 @@
-Robo-IDE
-
-
-*
-
-
 This is a TurboGears (http://www.turbogears.org) project.
 
 
