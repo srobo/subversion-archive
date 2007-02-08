@@ -13,22 +13,35 @@ MochiKit.DOM.addLoadEvent(function(){
         var d = MochiKit.Async.loadJSONDoc("/savefile?file=" + cur_path +
             "&amp;rev=" + cur_rev + "&amp;message=" +
             MochiKit.DOM.getElement("message").value + 
-            "&amp;code=" + CodePress.getCode());
+            "&amp;code=" + escape(CodePress.getCode()));
         d.addCallback(filesaved);
         });
 });
 function filesaved(result) {
-    if(result["success"]){
-        alert("Now at revision: " + result["new_revision"]);
-        //Need to reload or we have a non-up-to-date revision - guaranteed merge
-        //pain
-        CodePress.edit(cur_path);
-    } else {
-        //Oh dear, need to handle a merge
-        cur_rev = result["new_revision"];
-        MochiKit.DOM.getElement("tmpcode").innerHTML = result["code"];
-        CodePress.edit(cur_path, "tmpcode");
-        alert("Merge conflict. Please check the merged files then save again.");
+    switch(result["success"]){
+        case "True": {
+            alert("Now at revision: " + result["new_revision"]);
+            //Need to reload or we have a non-up-to-date revision - guaranteed merge
+            //pain
+            CodePress.edit(cur_path);
+            break;
+        }
+        case "Invalid revision": {
+            alert("Invalid revision number submitted.");
+            break;
+        }
+        case "Invalid filename": {
+            alert("Invalid filename submitted");
+            break;
+        }
+        case "Merge": {
+            //Oh dear, need to handle a merge
+            cur_rev = result["new_revision"];
+            MochiKit.DOM.getElement("tmpcode").innerHTML = result["code"];
+            CodePress.edit(cur_path, "tmpcode");
+            alert("Merge conflict. Please check the merged files then save again.");
+            break;
+        }
     }
 }
 </script>
@@ -62,7 +75,7 @@ function filesaved(result) {
     </div>
 
     <div id="getting_started">
-        <code id="codepress" title="moo" class="cp" style="width: 500px"></code>
+        <code id="codepress" title="" class="cp" style="width: 500px"></code>
         <script src="/static/codepress/codepress.js" type="text/javascript" id="cp-script"
         lang="en-us"></script>
         Commit message: <input id="message" value="Default Save Message"/>

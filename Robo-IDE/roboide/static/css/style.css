@@ -42,7 +42,9 @@ a.link, a, a.active {
   padding: 1em;
   float: right;
   width: 200px;
+  height: 600px;
   font-size: 88%;
+  overflow: scroll;
 }
 
 #sidebar h2 {

@@ -24,34 +24,27 @@ class Root(controllers.RootController):
         
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
 
-        if file != None and client.is_url(REPO + file):
+        if file != None and file != "" and client.is_url(REPO + file):
             #Load file from SVN
             #Ugforge doesn't support locking, so do this the hard way...
             while True:
-                print REPO + file
-                ver = client.log(REPO + file)[0]["revision"]
-                code = client.cat(REPO + file)
-                ver = client.log(REPO + file)[0]["revision"]
-                if ver2.number == ver.number:
-                    break
-                else:
-                    print "Collision catting %s. Should be v rare!" % \
-                        REPO + file
-
-            revision = ver.number
+                try:
+                    ver = client.log(REPO + file, limit=1)[0]["revision"]
+                    code = client.cat(REPO + file)
+                    ver2 = client.log(REPO + file, limit=1)[0]["revision"]
+                    if ver2.number == ver.number:
+                        revision = ver.number
+                        break
+                    else:
+                        print "Collision catting %s. Should be v rare!" % \
+                            REPO + file
+                except pysvn.ClientError:
+                    code = "No file loaded."
+                    revision = 0
         else:
             code = "No File Loaded"
             revision = 0
 
-        #Need to tidy up the file for its journey through html
-        #code = re.sub("/&/","&amp;",code)
-        #code = re.sub("/</","&lt;",code)
-        #code = re.sub("/>/","&gt;",code)
-        #The following lines are in the PHP, commented out. Won't implement
-        #for now
-        #$code = preg_replace("/\r\n/","<br>",$code); // opera and khtml
-        #engines
-        print code
         return dict(curtime=curtime, code=code, language=language, \
                     engine=engine, revision=revision, path=file)
 
@@ -67,23 +60,28 @@ class Root(controllers.RootController):
         3. Commit that directory with the new data and the message
         4. Wipe the directory
 
-        TODO: Usernames. Check rev is a number.
+        TODO: Usernames.
         """
-        print "********************************"
+        try:
+            rev = int(rev)
+        except:
+            return dict(new_revision=str(0), code="",
+                    success="Invalid revision")
+   
+            
         client = pysvn.Client()
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness
         path = file[:file.rfind("/")]
         basename = file[file.rfind("/")+1:] 
         tmpdir = tempfile.mkdtemp()
-        print path, basename, tmpdir
         #This returns a revision number. Always 0. Great.
         try:
             client.checkout(REPO + path, tmpdir, recurse=False, \
                 revision=pysvn.Revision(pysvn.opt_revision_kind.number, int(rev)))
         except pysvn.ClientError:
             #Some fool (me) passed in a filename that doesn't exist.
-            return dict(new_revision="0", code="", success=False)
+            return dict(new_revision="0", code="", success="Invalid filename")
 
         #2. Dump in the new file data
         target = open(join(tmpdir, basename), "wt")
@@ -93,7 +91,7 @@ class Root(controllers.RootController):
         #3. Commit the new directory
         try:
             newrev = client.checkin([tmpdir], message)
-            success = True
+            success = "True"
             code = ""
         except pysvn.ClientError:
             #Can't commit - merge issues
@@ -102,9 +100,7 @@ class Root(controllers.RootController):
             #Throw the new contents of the file back to the client for
             #tidying, then they can resubmit
             newrev = client.update(tmpdir)[0] #This comes back as a list.
-            print "###################"
-            print newrev
-            success = False
+            success = "Merge"
             #Grab the merged text.
             mergedfile = open(join(tmpdir, basename), "rt")
             code = mergedfile.read()
