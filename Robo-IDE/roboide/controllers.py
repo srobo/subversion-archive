@@ -26,21 +26,34 @@ class Root(controllers.RootController):
 
         if file != None and file != "" and client.is_url(REPO + file):
             #Load file from SVN
-            #Ugforge doesn't support locking, so do this the hard way...
-            while True:
-                try:
-                    ver = client.log(REPO + file, limit=1)[0]["revision"]
-                    code = client.cat(REPO + file)
-                    ver2 = client.log(REPO + file, limit=1)[0]["revision"]
-                    if ver2.number == ver.number:
-                        revision = ver.number
-                        break
-                    else:
-                        print "Collision catting %s. Should be v rare!" % \
-                            REPO + file
-                except pysvn.ClientError:
-                    code = "No file loaded."
-                    revision = 0
+            mime = ""
+            try:
+                mime = client.propget("svn:mime-type", REPO+file).values()[0]
+            except pysvn.ClientError:
+                code = "Error getting mime type"
+                revision = 0
+            except IndexError:
+                pass
+
+            if mime == "application/octet-stream":
+                code = "Binary File"
+                revision = 0
+            else:
+                #Ugforge doesn't support locking, so do this the hard way...
+                while True:
+                    try:
+                        ver = client.log(REPO + file, limit=1)[0]["revision"]
+                        code = client.cat(REPO + file)
+                        ver2 = client.log(REPO + file, limit=1)[0]["revision"]
+                        if ver2.number == ver.number:
+                            revision = ver.number
+                            break
+                        else:
+                            print "Collision catting %s. Should be v rare!" % \
+                                REPO + file
+                    except pysvn.ClientError:
+                        code = "No file loaded."
+                        revision = 0
         else:
             code = "No File Loaded"
             revision = 0
@@ -50,7 +63,20 @@ class Root(controllers.RootController):
 
     #TODO: Create an action that uses client.log to return a JSON list of
     #previous file revisions for a mochikit drop down
+    @expose("json")
+    def gethistory(self, file):
+        c = pysvn.Client()
+        try:
+            log = c.log(REPO+file)
+        except:
+            print "LOG FAILED"
+            return dict([])
 
+        return dict(history=[{"author":x["author"], \
+                      "date":time.strftime("%H:%M:%S %d/%m/%Y", \
+                      time.localtime(x["date"])), \
+                      "message":x["message"], "rev":x["revision"].number} \
+                      for x in log])
 
     @expose("json")
     def savefile(self, file, rev, message, code):
@@ -64,6 +90,8 @@ class Root(controllers.RootController):
         """
         try:
             rev = int(rev)
+            if rev == 0:
+                raise
         except:
             return dict(new_revision=str(0), code="",
                     success="Invalid revision")
@@ -90,7 +118,7 @@ class Root(controllers.RootController):
 
         #3. Commit the new directory
         try:
-            newrev = client.checkin([tmpdir], message)
+            newrev = client.checkin([tmpdir], message).number
             success = "True"
             code = ""
         except pysvn.ClientError:
@@ -100,18 +128,23 @@ class Root(controllers.RootController):
             #Throw the new contents of the file back to the client for
             #tidying, then they can resubmit
             newrev = client.update(tmpdir)[0] #This comes back as a list.
-            success = "Merge"
-            #Grab the merged text.
-            mergedfile = open(join(tmpdir, basename), "rt")
-            code = mergedfile.read()
-            mergedfile.close()
-            #This has to be returned
+            if newrev == None:
+                #No update to be made.
+                success = "True"
+                code = ""
+                newrev = 0
+            else:
+                success = "Merge"
+                #Grab the merged text.
+                mergedfile = open(join(tmpdir, basename), "rt")
+                code = mergedfile.read()
+                mergedfile.close()
+                newrev = newrev.number
 
         #4. Wipe the directory
         shutil.rmtree(tmpdir)
 
-        #Need merge management here
-        return dict(new_revision=str(newrev.number), code=code,
+        return dict(new_revision=str(newrev), code=code,
                     success=success)
 
     @expose(template="roboide.templates.files")

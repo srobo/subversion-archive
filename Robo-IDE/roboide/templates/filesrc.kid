@@ -13,6 +13,6 @@
             parent.cur_path = "${path}";
         </script>
 </head>
-<body py:if="engine == 'gecko'" id='code'>${code}</body>
-<body py:if="engine == 'msie'"><pre id='code'>${code}</pre></body>
+<body py:if="engine == 'gecko'" id='code' py:replace="code"></body>
+<body py:if="engine == 'msie'"><pre id='code' py:replace="code"></pre></body>
 </html>

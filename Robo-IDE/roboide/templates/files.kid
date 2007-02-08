@@ -8,8 +8,12 @@
 <script type="text/javascript">
 MochiKit.DOM.addLoadEvent(function(){
     connect('savefile','onclick', function (e) {
+        if(cur_rev == 0){
+            alert("Invalid revision.");
+            return;
+        }
+        document.body.style.cursor = "wait";
         e.preventDefault(); //Stop normal link action
-        //Need to escape all of this!!!
         var d = MochiKit.Async.loadJSONDoc("/savefile?file=" + cur_path +
             "&amp;rev=" + cur_rev + "&amp;message=" +
             MochiKit.DOM.getElement("message").value + 
@@ -17,7 +21,32 @@ MochiKit.DOM.addLoadEvent(function(){
         d.addCallback(filesaved);
         });
 });
+
+function loadFile(file) {
+    CodePress.edit(file);
+    getLog(file);
+}
+
+function getLog(file) {
+    var d = MochiKit.Async.loadJSONDoc("/gethistory?file="+file);
+    d.addCallback(gotLog);
+}
+
+function gotLog(result) {
+    //file_log
+    historyselect = MochiKit.DOM.createDOM("SELECT", null,
+        MochiKit.Base.map(returnSelect, result["history"]))
+    MochiKit.DOM.replaceChildNodes("file_log", historyselect);
+}
+
+function returnSelect(data) {
+    return MochiKit.DOM.createDOM("OPTION", {"value" : data["rev"]}, "Rev: "
+    + data["rev"] + ", Author: " + data["author"] + ", Date: " +
+    data["date"]);
+}
+
 function filesaved(result) {
+    document.body.style.cursor = "default";
     switch(result["success"]){
         case "True": {
             alert("Now at revision: " + result["new_revision"]);
@@ -58,7 +87,8 @@ function filesaved(result) {
         http://permalink.gmane.org/gmane.comp.python.kid.general/825 -->
         <ul class="links" py:def="display_tree(tree_node)">
             <li>
-            <a py:if="tree_node.kind == node_kind.file" href="javascript:CodePress.edit('${tree_node.path}')">${tree_node.name}</a>
+            <a py:if="tree_node.kind == node_kind.file"
+            href="javascript:loadFile('${tree_node.path}')">${tree_node.name}</a>
             <span py:if="tree_node.kind != node_kind.file">${tree_node.name}</span>
             <div py:for="node in tree_node.children.values()" py:replace="display_tree(node)" />
             </li>
@@ -75,6 +105,7 @@ function filesaved(result) {
     </div>
 
     <div id="getting_started">
+        <div id="file_log"></div>
         <code id="codepress" title="" class="cp" style="width: 500px"></code>
         <script src="/static/codepress/codepress.js" type="text/javascript" id="cp-script"
         lang="en-us"></script>
