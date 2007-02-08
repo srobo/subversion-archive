@@ -7,7 +7,7 @@ import tempfile, shutil
 from os.path import join
 log = logging.getLogger("roboide.controllers")
 
-REPO = "file:///home/stephen/ecssr/web/repo/"
+REPO = "svn+ssh://se204@svn.ugforge.ecs.soton.ac.uk/projects/ecssr/"
 
 class Root(controllers.RootController):
     @expose(template="roboide.templates.filesrc", format="html-straight")
@@ -20,19 +20,24 @@ class Root(controllers.RootController):
         TODO: Cope with revision other than head.
         """
         curtime = time.time()
-        if file != None:
+        client = pysvn.Client()
+        
+        #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
+
+        if file != None and client.is_url(REPO + file):
             #Load file from SVN
-            #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
-            client = pysvn.Client()
-            #TODO: Could replace this with a lock?
+            #Ugforge doesn't support locking, so do this the hard way...
             while True:
-                ver = client.info2(REPO + file)[0][1]["rev"]
+                print REPO + file
+                ver = client.log(REPO + file)[0]["revision"]
                 code = client.cat(REPO + file)
-                ver2 = client.info2(REPO + file)[0][1]["rev"]
-                if ver.number == ver2.number:
+                ver = client.log(REPO + file)[0]["revision"]
+                if ver2.number == ver.number:
                     break
-                print "Revision change whilst catting. This can " + \
-                    "happen but should be very unusual. Will cat again."
+                else:
+                    print "Collision catting %s. Should be v rare!" % \
+                        REPO + file
+
             revision = ver.number
         else:
             code = "No File Loaded"
@@ -118,7 +123,7 @@ class Root(controllers.RootController):
         #Really need to seperate this out in a min
         client = pysvn.Client()
         
-        files = client.info2(REPO, recurse=True)
+        files = client.ls(REPO, recurse=True)
 
         class Node (object):
             def __init__(self, name, path, kind):
@@ -129,14 +134,14 @@ class Root(controllers.RootController):
                 
         head = Node("HEAD", "", "")
 
-        for (filename,details) in files:
+        for details in files:
+            filename = details["name"][len(REPO):] #Strip off the repo URL
             basename = filename.split("/")[-1:][0]
-            if basename != "repo":
-                top = head 
-                for path in filename.split("/"):
-                    try: 
-                        top = top.children[path]
-                    except KeyError:
-                        top.children[path] = Node(basename, filename, details["kind"])
+            top = head 
+            for path in filename.split("/"):
+                try: 
+                    top = top.children[path]
+                except KeyError:
+                    top.children[path] = Node(basename, filename, details["kind"])
 
         return dict(tree=head)
