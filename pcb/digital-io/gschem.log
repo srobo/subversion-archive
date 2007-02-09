@@ -1,0 +1,15 @@
+gEDA/gschem version 20060906
+gEDA/gschem comes with ABSOLUTELY NO WARRANTY; see COPYING for more details.
+This is free software, and you are welcome to redistribute it under certain
+conditions; please see the COPYING file for more details.
+
+Read system-gafrc file [/etc/gEDA/system-gafrc]
+Did not find optional ~/.gEDA/gafrc file [/home/justyn/.gEDA/gafrc]
+Read local gafrc file [/home/justyn/project/pcb/ioboard/gafrc]
+Read system-gschemrc file [/etc/gEDA/system-gschemrc]
+Read ~/.gEDA/gschemrc file [/home/justyn/.gEDA/gschemrc]
+Did not find optional local gschemrc file [/home/justyn/project/pcb/ioboard/gschemrc]
+Read init scm file [/usr/share/gEDA/scheme/gschem.scm]
+RC file [/home/justyn/project/pcb/ioboard/gafrc] already read in.
+Opened file [/home/justyn/project/pcb/ioboard/inport.sch]
+Saved [/home/justyn/project/pcb/ioboard/inport.sch]
