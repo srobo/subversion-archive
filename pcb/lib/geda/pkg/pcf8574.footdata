@@ -1,0 +1,20 @@
+# Convert to newlib by using footgen.py
+
+elementdir = "./newlib"		# where to put generated files
+
+# Based on PCF8574 datasheet
+# SOIC parts
+	type "so"
+	pitch = 50 mils
+	padheight = 20 mils
+	silkoffset = 0.3mm
+	silkwidth = 10 mils
+	silkstyle = "inside"
+# change width to begin wide parts
+	pins = 16
+	width = 7.43mm
+	padwidth = 99 mils
+	silkboxheight = 0.413 in
+part "SOIC-16W-longpads"
+
+# Based on data entered by Darrell Harmon
