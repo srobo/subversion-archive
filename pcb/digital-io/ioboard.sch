@@ -1,89 +1,88 @@
 v 20060906 1
 C 67800 47400 1 0 0 title-A4.sym
-C 76400 51400 1 0 0 inport.sym
+C 72500 49100 1 0 0 pcf8574.sym
 {
-T 76460 52100 5 10 1 1 0 0 1
-source=inport.sch
-}
-C 76400 50600 1 0 0 inport.sym
-{
-T 76460 51300 5 10 1 1 0 0 1
-source=inport.sch
-}
-C 76400 49900 1 0 0 inport.sym
-{
-T 76460 50600 5 10 1 1 0 0 1
-source=inport.sch
-}
-C 76400 49200 1 0 0 inport.sym
-{
-T 76460 49900 5 10 1 1 0 0 1
-source=inport.sch
-}
-C 72600 49500 1 0 0 pcf8574.sym
-{
-T 74400 55000 5 10 1 1 0 6 1
+T 74300 54600 5 10 1 1 0 6 1
 refdes=U?
-T 73000 55300 5 10 0 0 0 0 1
+T 72900 54900 5 10 0 0 0 0 1
 device=PCF8574
-T 73000 55500 5 10 0 0 0 0 1
+T 72900 55100 5 10 0 0 0 0 1
 footprint=SOIC-16W-longpads
 }
-C 68900 53200 1 0 0 rj11-custom.sym
+C 70000 49300 1 0 1 rj11-custom.sym
 {
-T 68900 56100 5 10 0 0 0 0 1
+T 70000 52200 5 10 0 0 0 6 1
 device=RJ45
-T 68900 55900 5 10 0 0 0 0 1
+T 70000 52000 5 10 0 0 0 6 1
 footprint=RJ45
-T 70000 54900 5 10 1 1 0 6 1
+T 68900 51000 5 10 1 1 0 0 1
 refdes=CONN?
-T 71100 55500 5 10 0 1 0 0 1
+T 67800 51600 5 10 0 1 0 6 1
 footprint=rj11-6p4c
 }
-C 68300 49900 1 0 0 header3x1.sym
+C 75400 53300 1 0 0 sub-inport.sym
 {
-T 68700 52400 5 10 0 1 0 0 1
-device=HEADER3x1
-T 68700 52000 5 10 1 1 0 0 1
-refdes=J?
-T 68300 50700 5 10 0 1 0 0 1
-footprint=header-0.1-3x1
+T 76460 53500 5 10 1 1 0 0 1
+source=sub-inport.sch
 }
-C 69100 49800 1 0 0 header3x1.sym
+C 75400 52800 1 0 0 sub-inport.sym
 {
-T 69500 52300 5 10 0 1 0 0 1
-device=HEADER3x1
-T 69500 51900 5 10 1 1 0 0 1
-refdes=J?
-T 69100 50600 5 10 0 1 0 0 1
-footprint=header-0.1-3x1
+T 76460 53000 5 10 1 1 0 0 1
+source=sub-inport.sch
 }
-C 69900 49800 1 0 0 header3x1.sym
+C 75400 52300 1 0 0 sub-inport.sym
 {
-T 70300 52300 5 10 0 1 0 0 1
-device=HEADER3x1
-T 70300 51900 5 10 1 1 0 0 1
-refdes=J?
-T 69900 50600 5 10 0 1 0 0 1
-footprint=header-0.1-3x1
+T 76460 52500 5 10 1 1 0 0 1
+source=sub-inport.sch
 }
-C 76000 54700 1 0 0 outport.sym
+C 75400 51800 1 0 0 sub-inport.sym
 {
-T 76060 55400 5 10 1 1 0 0 1
-source=outport.sch
+T 76460 52000 5 10 1 1 0 0 1
+source=sub-inport.sch
 }
-C 76000 54100 1 0 0 outport.sym
+C 75400 51300 1 0 0 sub-outport.sym
 {
-T 76060 54800 5 10 1 1 0 0 1
-source=outport.sch
+T 76460 51400 5 10 1 1 0 0 1
+source=sub-outport.sch
 }
-C 75900 53500 1 0 0 outport.sym
+C 75400 50800 1 0 0 sub-outport.sym
 {
-T 75960 54200 5 10 1 1 0 0 1
-source=outport.sch
+T 76460 50900 5 10 1 1 0 0 1
+source=sub-outport.sch
 }
-C 76000 52900 1 0 0 outport.sym
+C 75400 50300 1 0 0 sub-outport.sym
 {
-T 76060 53600 5 10 1 1 0 0 1
-source=outport.sch
+T 76460 50400 5 10 1 1 0 0 1
+source=sub-outport.sch
 }
+C 75400 49800 1 0 0 sub-outport.sym
+{
+T 76460 49900 5 10 1 1 0 0 1
+source=sub-outport.sch
+}
+C 70600 52600 1 0 0 sub-jumpers.sym
+{
+T 70600 54400 5 10 1 1 0 0 1
+source=sub-jumpers.sch
+}
+N 69900 50700 70200 50700 4
+N 70200 50700 70200 55000 4
+N 70200 55000 73900 55000 4
+N 73900 55000 73900 54800 4
+N 69900 50100 70200 50100 4
+N 70200 50100 70200 49000 4
+N 70200 49000 73900 49000 4
+N 73900 49000 73900 49200 4
+N 69900 50500 72600 50500 4
+N 69900 50300 72600 50300 4
+N 72200 54000 72600 54000 4
+N 72200 53500 72600 53500 4
+N 72200 53000 72600 53000 4
+N 74600 53500 75500 53500 4
+N 74600 53000 75500 53000 4
+N 74600 52500 75500 52500 4
+N 74600 52000 75500 52000 4
+N 74600 51500 75500 51500 4
+N 74600 51000 75500 51000 4
+N 74600 50500 75500 50500 4
+N 74600 50000 75500 50000 4

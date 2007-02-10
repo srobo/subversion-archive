@@ -11,7 +11,10 @@ Read ~/.gEDA/gschemrc file [/home/justyn/.gEDA/gschemrc]
 Did not find optional local gschemrc file [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/gschemrc]
 Read init scm file [/usr/share/gEDA/scheme/gschem.scm]
 Did not find specified /home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/gafrc file [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/gafrc]
-Opened file [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/nmos.sym]
+o_read: Could not open [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/sub-jumpers.sym]
+Saved [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/sub-jumpers.sym]
+Saved [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/sub-jumpers.sym]
+Saved [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/sub-jumpers.sym]
+Saved [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/sub-jumpers.sym]
 Hidden text is now visible
 Hidden text is now invisible
-Saved [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/nmos.sym]
