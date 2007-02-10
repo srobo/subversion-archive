@@ -20,26 +20,6 @@ C 76400 49200 1 0 0 inport.sym
 T 76460 49900 5 10 1 1 0 0 1
 source=inport.sch
 }
-C 76400 54700 1 0 0 outport.sym~
-{
-T 76460 55400 5 10 1 1 0 0 1
-source=inport.sch
-}
-C 76400 53900 1 0 0 outport.sym~
-{
-T 76460 54600 5 10 1 1 0 0 1
-source=inport.sch
-}
-C 76400 53200 1 0 0 outport.sym~
-{
-T 76460 53900 5 10 1 1 0 0 1
-source=inport.sch
-}
-C 76400 52600 1 0 0 outport.sym~
-{
-T 76460 53300 5 10 1 1 0 0 1
-source=inport.sch
-}
 C 72600 49500 1 0 0 pcf8574.sym
 {
 T 74400 55000 5 10 1 1 0 6 1
@@ -86,4 +66,24 @@ T 70300 51900 5 10 1 1 0 0 1
 refdes=J?
 T 69900 50600 5 10 0 1 0 0 1
 footprint=header-0.1-3x1
+}
+C 76000 54700 1 0 0 outport.sym
+{
+T 76060 55400 5 10 1 1 0 0 1
+source=outport.sch
+}
+C 76000 54100 1 0 0 outport.sym
+{
+T 76060 54800 5 10 1 1 0 0 1
+source=outport.sch
+}
+C 75900 53500 1 0 0 outport.sym
+{
+T 75960 54200 5 10 1 1 0 0 1
+source=outport.sch
+}
+C 76000 52900 1 0 0 outport.sym
+{
+T 76060 53600 5 10 1 1 0 0 1
+source=outport.sch
 }
