@@ -1,12 +1,800 @@
-# release: pcb 1.6.3
-PCB("" 6000 5000)
-Grid(10 0 0)
-Cursor(10 270 3)
-Flags(0x000000d0)
-Groups("1,2,3,s:4,5,6,c:7:8:")
-Styles("Signal,10,40,20:Power,25,60,35:Fat,40,60,35:Skinny,8,36,20")
+# release: pcb-bin 20060822
+# date:    Tue Feb 13 00:49:30 2007
+# user:    justyn (Justyn Butler,,,)
+# host:    theobromine
 
-Element["" "header-0.1-3x1" "S109/J402" "unknown" 50000 50000 0 0 0 100 ""]
+PCB["" 600000 500000]
+
+Grid[1000.000000 0 0 0]
+Cursor[1000 27000 6.000000]
+Thermal[0.500000]
+DRC[1000 1000 1000 1000 1500 1000]
+Flags(0x00000000000000d0)
+Groups("1,2,3,s:4,5,6,c:s:c")
+Styles["Signal,1000,4000,2000,1000:Power,2500,6000,3500,1000:Fat,4000,6000,3500,1000:Skinny,800,3600,2000,1000"]
+
+Symbol(' ' 18)
+(
+)
+Symbol('!' 12)
+(
+	SymbolLine(0 45 0 50 8)
+	SymbolLine(0 10 0 35 8)
+)
+Symbol('"' 12)
+(
+	SymbolLine(0 10 0 20 8)
+	SymbolLine(10 10 10 20 8)
+)
+Symbol('#' 12)
+(
+	SymbolLine(0 35 20 35 8)
+	SymbolLine(0 25 20 25 8)
+	SymbolLine(15 20 15 40 8)
+	SymbolLine(5 20 5 40 8)
+)
+Symbol('$' 12)
+(
+	SymbolLine(15 15 20 20 8)
+	SymbolLine(5 15 15 15 8)
+	SymbolLine(0 20 5 15 8)
+	SymbolLine(0 20 0 25 8)
+	SymbolLine(0 25 5 30 8)
+	SymbolLine(5 30 15 30 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(20 35 20 40 8)
+	SymbolLine(15 45 20 40 8)
+	SymbolLine(5 45 15 45 8)
+	SymbolLine(0 40 5 45 8)
+	SymbolLine(10 10 10 50 8)
+)
+Symbol('%' 12)
+(
+	SymbolLine(0 15 0 20 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 10 10 8)
+	SymbolLine(10 10 15 15 8)
+	SymbolLine(15 15 15 20 8)
+	SymbolLine(10 25 15 20 8)
+	SymbolLine(5 25 10 25 8)
+	SymbolLine(0 20 5 25 8)
+	SymbolLine(0 50 40 10 8)
+	SymbolLine(35 50 40 45 8)
+	SymbolLine(40 40 40 45 8)
+	SymbolLine(35 35 40 40 8)
+	SymbolLine(30 35 35 35 8)
+	SymbolLine(25 40 30 35 8)
+	SymbolLine(25 40 25 45 8)
+	SymbolLine(25 45 30 50 8)
+	SymbolLine(30 50 35 50 8)
+)
+Symbol('&' 12)
+(
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(0 15 0 25 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(0 35 15 20 8)
+	SymbolLine(5 50 10 50 8)
+	SymbolLine(10 50 20 40 8)
+	SymbolLine(0 25 25 50 8)
+	SymbolLine(5 10 10 10 8)
+	SymbolLine(10 10 15 15 8)
+	SymbolLine(15 15 15 20 8)
+	SymbolLine(0 35 0 45 8)
+)
+Symbol(''' 12)
+(
+	SymbolLine(0 20 10 10 8)
+)
+Symbol('(' 12)
+(
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(0 15 0 45 8)
+)
+Symbol(')' 12)
+(
+	SymbolLine(0 10 5 15 8)
+	SymbolLine(5 15 5 45 8)
+	SymbolLine(0 50 5 45 8)
+)
+Symbol('*' 12)
+(
+	SymbolLine(0 20 20 40 8)
+	SymbolLine(0 40 20 20 8)
+	SymbolLine(0 30 20 30 8)
+	SymbolLine(10 20 10 40 8)
+)
+Symbol('+' 12)
+(
+	SymbolLine(0 30 20 30 8)
+	SymbolLine(10 20 10 40 8)
+)
+Symbol(',' 12)
+(
+	SymbolLine(0 60 10 50 8)
+)
+Symbol('-' 12)
+(
+	SymbolLine(0 30 20 30 8)
+)
+Symbol('.' 12)
+(
+	SymbolLine(0 50 5 50 8)
+)
+Symbol('/' 12)
+(
+	SymbolLine(0 45 30 15 8)
+)
+Symbol('0' 12)
+(
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(0 15 0 45 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 15 10 8)
+	SymbolLine(15 10 20 15 8)
+	SymbolLine(20 15 20 45 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(0 40 20 20 8)
+)
+Symbol('1' 12)
+(
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(10 10 10 50 8)
+	SymbolLine(0 20 10 10 8)
+)
+Symbol('2' 12)
+(
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 20 10 8)
+	SymbolLine(20 10 25 15 8)
+	SymbolLine(25 15 25 25 8)
+	SymbolLine(0 50 25 25 8)
+	SymbolLine(0 50 25 50 8)
+)
+Symbol('3' 12)
+(
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 15 10 8)
+	SymbolLine(15 10 20 15 8)
+	SymbolLine(20 15 20 45 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(5 30 20 30 8)
+)
+Symbol('4' 12)
+(
+	SymbolLine(0 30 20 10 8)
+	SymbolLine(0 30 25 30 8)
+	SymbolLine(20 10 20 50 8)
+)
+Symbol('5' 12)
+(
+	SymbolLine(0 10 20 10 8)
+	SymbolLine(0 10 0 30 8)
+	SymbolLine(0 30 5 25 8)
+	SymbolLine(5 25 15 25 8)
+	SymbolLine(15 25 20 30 8)
+	SymbolLine(20 30 20 45 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(0 45 5 50 8)
+)
+Symbol('6' 12)
+(
+	SymbolLine(15 10 20 15 8)
+	SymbolLine(5 10 15 10 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(0 15 0 45 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(0 30 15 30 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(20 35 20 45 8)
+)
+Symbol('7' 12)
+(
+	SymbolLine(0 50 25 25 8)
+	SymbolLine(25 10 25 25 8)
+	SymbolLine(0 10 25 10 8)
+)
+Symbol('8' 12)
+(
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(0 35 0 45 8)
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(5 30 15 30 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(20 35 20 45 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(0 25 5 30 8)
+	SymbolLine(0 15 0 25 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 15 10 8)
+	SymbolLine(15 10 20 15 8)
+	SymbolLine(20 15 20 25 8)
+	SymbolLine(15 30 20 25 8)
+)
+Symbol('9' 12)
+(
+	SymbolLine(0 50 20 30 8)
+	SymbolLine(20 15 20 30 8)
+	SymbolLine(15 10 20 15 8)
+	SymbolLine(5 10 15 10 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(0 15 0 25 8)
+	SymbolLine(0 25 5 30 8)
+	SymbolLine(5 30 20 30 8)
+)
+Symbol(':' 12)
+(
+	SymbolLine(0 25 5 25 8)
+	SymbolLine(0 35 5 35 8)
+)
+Symbol(';' 12)
+(
+	SymbolLine(0 50 10 40 8)
+	SymbolLine(10 25 10 30 8)
+)
+Symbol('<' 12)
+(
+	SymbolLine(0 30 10 20 8)
+	SymbolLine(0 30 10 40 8)
+)
+Symbol('=' 12)
+(
+	SymbolLine(0 25 20 25 8)
+	SymbolLine(0 35 20 35 8)
+)
+Symbol('>' 12)
+(
+	SymbolLine(0 20 10 30 8)
+	SymbolLine(0 40 10 30 8)
+)
+Symbol('?' 12)
+(
+	SymbolLine(10 30 10 35 8)
+	SymbolLine(10 45 10 50 8)
+	SymbolLine(0 15 0 20 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 15 10 8)
+	SymbolLine(15 10 20 15 8)
+	SymbolLine(20 15 20 20 8)
+	SymbolLine(10 30 20 20 8)
+)
+Symbol('@' 12)
+(
+	SymbolLine(0 10 0 40 8)
+	SymbolLine(0 40 10 50 8)
+	SymbolLine(10 50 40 50 8)
+	SymbolLine(50 35 50 10 8)
+	SymbolLine(50 10 40 0 8)
+	SymbolLine(40 0 10 0 8)
+	SymbolLine(10 0 0 10 8)
+	SymbolLine(15 20 15 30 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(20 35 30 35 8)
+	SymbolLine(30 35 35 30 8)
+	SymbolLine(35 30 40 35 8)
+	SymbolLine(35 30 35 15 8)
+	SymbolLine(35 20 30 15 8)
+	SymbolLine(20 15 30 15 8)
+	SymbolLine(20 15 15 20 8)
+	SymbolLine(40 35 50 35 8)
+)
+Symbol('A' 12)
+(
+	SymbolLine(0 15 0 50 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 20 10 8)
+	SymbolLine(20 10 25 15 8)
+	SymbolLine(25 15 25 50 8)
+	SymbolLine(0 30 25 30 8)
+)
+Symbol('B' 12)
+(
+	SymbolLine(0 50 20 50 8)
+	SymbolLine(20 50 25 45 8)
+	SymbolLine(25 35 25 45 8)
+	SymbolLine(20 30 25 35 8)
+	SymbolLine(5 30 20 30 8)
+	SymbolLine(5 10 5 50 8)
+	SymbolLine(0 10 20 10 8)
+	SymbolLine(20 10 25 15 8)
+	SymbolLine(25 15 25 25 8)
+	SymbolLine(20 30 25 25 8)
+)
+Symbol('C' 12)
+(
+	SymbolLine(5 50 20 50 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(0 15 0 45 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 20 10 8)
+)
+Symbol('D' 12)
+(
+	SymbolLine(5 10 5 50 8)
+	SymbolLine(20 10 25 15 8)
+	SymbolLine(25 15 25 45 8)
+	SymbolLine(20 50 25 45 8)
+	SymbolLine(0 50 20 50 8)
+	SymbolLine(0 10 20 10 8)
+)
+Symbol('E' 12)
+(
+	SymbolLine(0 30 15 30 8)
+	SymbolLine(0 50 20 50 8)
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 10 20 10 8)
+)
+Symbol('F' 12)
+(
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 10 20 10 8)
+	SymbolLine(0 30 15 30 8)
+)
+Symbol('G' 12)
+(
+	SymbolLine(20 10 25 15 8)
+	SymbolLine(5 10 20 10 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(0 15 0 45 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(5 50 20 50 8)
+	SymbolLine(20 50 25 45 8)
+	SymbolLine(25 35 25 45 8)
+	SymbolLine(20 30 25 35 8)
+	SymbolLine(10 30 20 30 8)
+)
+Symbol('H' 12)
+(
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(25 10 25 50 8)
+	SymbolLine(0 30 25 30 8)
+)
+Symbol('I' 12)
+(
+	SymbolLine(0 10 10 10 8)
+	SymbolLine(5 10 5 50 8)
+	SymbolLine(0 50 10 50 8)
+)
+Symbol('J' 12)
+(
+	SymbolLine(0 10 15 10 8)
+	SymbolLine(15 10 15 45 8)
+	SymbolLine(10 50 15 45 8)
+	SymbolLine(5 50 10 50 8)
+	SymbolLine(0 45 5 50 8)
+)
+Symbol('K' 12)
+(
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 30 20 10 8)
+	SymbolLine(0 30 20 50 8)
+)
+Symbol('L' 12)
+(
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 50 20 50 8)
+)
+Symbol('M' 12)
+(
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 10 15 25 8)
+	SymbolLine(15 25 30 10 8)
+	SymbolLine(30 10 30 50 8)
+)
+Symbol('N' 12)
+(
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 10 0 15 8)
+	SymbolLine(0 15 25 40 8)
+	SymbolLine(25 10 25 50 8)
+)
+Symbol('O' 12)
+(
+	SymbolLine(0 15 0 45 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 15 10 8)
+	SymbolLine(15 10 20 15 8)
+	SymbolLine(20 15 20 45 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(0 45 5 50 8)
+)
+Symbol('P' 12)
+(
+	SymbolLine(5 10 5 50 8)
+	SymbolLine(0 10 20 10 8)
+	SymbolLine(20 10 25 15 8)
+	SymbolLine(25 15 25 25 8)
+	SymbolLine(20 30 25 25 8)
+	SymbolLine(5 30 20 30 8)
+)
+Symbol('Q' 12)
+(
+	SymbolLine(0 15 0 45 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 15 10 8)
+	SymbolLine(15 10 20 15 8)
+	SymbolLine(20 15 20 45 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(10 40 20 50 8)
+)
+Symbol('R' 12)
+(
+	SymbolLine(0 10 20 10 8)
+	SymbolLine(20 10 25 15 8)
+	SymbolLine(25 15 25 25 8)
+	SymbolLine(20 30 25 25 8)
+	SymbolLine(5 30 20 30 8)
+	SymbolLine(5 10 5 50 8)
+	SymbolLine(5 30 25 50 8)
+)
+Symbol('S' 12)
+(
+	SymbolLine(20 10 25 15 8)
+	SymbolLine(5 10 20 10 8)
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(0 15 0 25 8)
+	SymbolLine(0 25 5 30 8)
+	SymbolLine(5 30 20 30 8)
+	SymbolLine(20 30 25 35 8)
+	SymbolLine(25 35 25 45 8)
+	SymbolLine(20 50 25 45 8)
+	SymbolLine(5 50 20 50 8)
+	SymbolLine(0 45 5 50 8)
+)
+Symbol('T' 12)
+(
+	SymbolLine(0 10 20 10 8)
+	SymbolLine(10 10 10 50 8)
+)
+Symbol('U' 12)
+(
+	SymbolLine(0 10 0 45 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(20 10 20 45 8)
+)
+Symbol('V' 12)
+(
+	SymbolLine(0 10 0 40 8)
+	SymbolLine(0 40 10 50 8)
+	SymbolLine(10 50 20 40 8)
+	SymbolLine(20 10 20 40 8)
+)
+Symbol('W' 12)
+(
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 50 15 35 8)
+	SymbolLine(15 35 30 50 8)
+	SymbolLine(30 10 30 50 8)
+)
+Symbol('X' 12)
+(
+	SymbolLine(0 10 0 15 8)
+	SymbolLine(0 15 25 40 8)
+	SymbolLine(25 40 25 50 8)
+	SymbolLine(0 40 0 50 8)
+	SymbolLine(0 40 25 15 8)
+	SymbolLine(25 10 25 15 8)
+)
+Symbol('Y' 12)
+(
+	SymbolLine(0 10 0 15 8)
+	SymbolLine(0 15 10 25 8)
+	SymbolLine(10 25 20 15 8)
+	SymbolLine(20 10 20 15 8)
+	SymbolLine(10 25 10 50 8)
+)
+Symbol('Z' 12)
+(
+	SymbolLine(0 10 25 10 8)
+	SymbolLine(25 10 25 15 8)
+	SymbolLine(0 40 25 15 8)
+	SymbolLine(0 40 0 50 8)
+	SymbolLine(0 50 25 50 8)
+)
+Symbol('[' 12)
+(
+	SymbolLine(0 10 5 10 8)
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 50 5 50 8)
+)
+Symbol('\' 12)
+(
+	SymbolLine(0 15 30 45 8)
+)
+Symbol(']' 12)
+(
+	SymbolLine(0 10 5 10 8)
+	SymbolLine(5 10 5 50 8)
+	SymbolLine(0 50 5 50 8)
+)
+Symbol('^' 12)
+(
+	SymbolLine(0 15 5 10 8)
+	SymbolLine(5 10 10 15 8)
+)
+Symbol('_' 12)
+(
+	SymbolLine(0 50 20 50 8)
+)
+Symbol('a' 12)
+(
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(5 30 15 30 8)
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(0 35 0 45 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(20 30 20 45 8)
+	SymbolLine(20 45 25 50 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(15 50 20 45 8)
+)
+Symbol('b' 12)
+(
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(20 35 20 45 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(5 30 15 30 8)
+	SymbolLine(0 35 5 30 8)
+)
+Symbol('c' 12)
+(
+	SymbolLine(5 30 20 30 8)
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(0 35 0 45 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(5 50 20 50 8)
+)
+Symbol('d' 12)
+(
+	SymbolLine(20 10 20 50 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(0 35 0 45 8)
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(5 30 15 30 8)
+	SymbolLine(15 30 20 35 8)
+)
+Symbol('e' 12)
+(
+	SymbolLine(5 50 20 50 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(0 35 0 45 8)
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(5 30 15 30 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(0 40 20 40 8)
+	SymbolLine(20 40 20 35 8)
+)
+Symbol('f' 10)
+(
+	SymbolLine(5 15 5 50 8)
+	SymbolLine(5 15 10 10 8)
+	SymbolLine(10 10 15 10 8)
+	SymbolLine(0 30 10 30 8)
+)
+Symbol('g' 12)
+(
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(5 30 15 30 8)
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(0 35 0 45 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(0 60 5 65 8)
+	SymbolLine(5 65 15 65 8)
+	SymbolLine(15 65 20 60 8)
+	SymbolLine(20 30 20 60 8)
+)
+Symbol('h' 12)
+(
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(5 30 15 30 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(20 35 20 50 8)
+)
+Symbol('i' 10)
+(
+	SymbolLine(0 20 0 25 8)
+	SymbolLine(0 35 0 50 8)
+)
+Symbol('j' 10)
+(
+	SymbolLine(5 20 5 25 8)
+	SymbolLine(5 35 5 60 8)
+	SymbolLine(0 65 5 60 8)
+)
+Symbol('k' 12)
+(
+	SymbolLine(0 10 0 50 8)
+	SymbolLine(0 35 15 50 8)
+	SymbolLine(0 35 10 25 8)
+)
+Symbol('l' 10)
+(
+	SymbolLine(0 10 0 45 8)
+	SymbolLine(0 45 5 50 8)
+)
+Symbol('m' 12)
+(
+	SymbolLine(5 35 5 50 8)
+	SymbolLine(5 35 10 30 8)
+	SymbolLine(10 30 15 30 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(20 35 20 50 8)
+	SymbolLine(20 35 25 30 8)
+	SymbolLine(25 30 30 30 8)
+	SymbolLine(30 30 35 35 8)
+	SymbolLine(35 35 35 50 8)
+	SymbolLine(0 30 5 35 8)
+)
+Symbol('n' 12)
+(
+	SymbolLine(5 35 5 50 8)
+	SymbolLine(5 35 10 30 8)
+	SymbolLine(10 30 15 30 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(20 35 20 50 8)
+	SymbolLine(0 30 5 35 8)
+)
+Symbol('o' 12)
+(
+	SymbolLine(0 35 0 45 8)
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(5 30 15 30 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(20 35 20 45 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(0 45 5 50 8)
+)
+Symbol('p' 12)
+(
+	SymbolLine(5 35 5 65 8)
+	SymbolLine(0 30 5 35 8)
+	SymbolLine(5 35 10 30 8)
+	SymbolLine(10 30 20 30 8)
+	SymbolLine(20 30 25 35 8)
+	SymbolLine(25 35 25 45 8)
+	SymbolLine(20 50 25 45 8)
+	SymbolLine(10 50 20 50 8)
+	SymbolLine(5 45 10 50 8)
+)
+Symbol('q' 12)
+(
+	SymbolLine(20 35 20 65 8)
+	SymbolLine(15 30 20 35 8)
+	SymbolLine(5 30 15 30 8)
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(0 35 0 45 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(15 50 20 45 8)
+)
+Symbol('r' 12)
+(
+	SymbolLine(5 35 5 50 8)
+	SymbolLine(5 35 10 30 8)
+	SymbolLine(10 30 20 30 8)
+	SymbolLine(0 30 5 35 8)
+)
+Symbol('s' 12)
+(
+	SymbolLine(5 50 20 50 8)
+	SymbolLine(20 50 25 45 8)
+	SymbolLine(20 40 25 45 8)
+	SymbolLine(5 40 20 40 8)
+	SymbolLine(0 35 5 40 8)
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(5 30 20 30 8)
+	SymbolLine(20 30 25 35 8)
+	SymbolLine(0 45 5 50 8)
+)
+Symbol('t' 10)
+(
+	SymbolLine(5 10 5 45 8)
+	SymbolLine(5 45 10 50 8)
+	SymbolLine(0 25 10 25 8)
+)
+Symbol('u' 12)
+(
+	SymbolLine(0 30 0 45 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(15 50 20 45 8)
+	SymbolLine(20 30 20 45 8)
+)
+Symbol('v' 12)
+(
+	SymbolLine(0 30 0 40 8)
+	SymbolLine(0 40 10 50 8)
+	SymbolLine(10 50 20 40 8)
+	SymbolLine(20 30 20 40 8)
+)
+Symbol('w' 12)
+(
+	SymbolLine(0 30 0 45 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(5 50 10 50 8)
+	SymbolLine(10 50 15 45 8)
+	SymbolLine(15 30 15 45 8)
+	SymbolLine(15 45 20 50 8)
+	SymbolLine(20 50 25 50 8)
+	SymbolLine(25 50 30 45 8)
+	SymbolLine(30 30 30 45 8)
+)
+Symbol('x' 12)
+(
+	SymbolLine(0 30 20 50 8)
+	SymbolLine(0 50 20 30 8)
+)
+Symbol('y' 12)
+(
+	SymbolLine(0 30 0 45 8)
+	SymbolLine(0 45 5 50 8)
+	SymbolLine(20 30 20 60 8)
+	SymbolLine(15 65 20 60 8)
+	SymbolLine(5 65 15 65 8)
+	SymbolLine(0 60 5 65 8)
+	SymbolLine(5 50 15 50 8)
+	SymbolLine(15 50 20 45 8)
+)
+Symbol('z' 12)
+(
+	SymbolLine(0 30 20 30 8)
+	SymbolLine(0 50 20 30 8)
+	SymbolLine(0 50 20 50 8)
+)
+Symbol('{' 12)
+(
+	SymbolLine(5 15 10 10 8)
+	SymbolLine(5 15 5 25 8)
+	SymbolLine(0 30 5 25 8)
+	SymbolLine(0 30 5 35 8)
+	SymbolLine(5 35 5 45 8)
+	SymbolLine(5 45 10 50 8)
+)
+Symbol('|' 12)
+(
+	SymbolLine(0 10 0 50 8)
+)
+Symbol('}' 12)
+(
+	SymbolLine(0 10 5 15 8)
+	SymbolLine(5 15 5 25 8)
+	SymbolLine(5 25 10 30 8)
+	SymbolLine(5 35 10 30 8)
+	SymbolLine(5 35 5 45 8)
+	SymbolLine(0 50 5 45 8)
+)
+Symbol('~' 12)
+(
+	SymbolLine(0 35 5 30 8)
+	SymbolLine(5 30 10 30 8)
+	SymbolLine(10 30 15 35 8)
+	SymbolLine(15 35 20 35 8)
+	SymbolLine(20 35 25 30 8)
+)
+
+Element["" "header-0.1-3x1" "S109/J402" "unknown" 257000 109000 0 0 0 100 ""]
 (
 	Pin[-10000 0 7000 3000 7000 3800 "" "1" "edge2"]
 	Pin[0 0 7000 3000 7000 3800 "" "2" "edge2"]
@@ -18,7 +806,7 @@ Element["" "header-0.1-3x1" "S109/J402" "unknown" 50000 50000 0 0 0 100 ""]
 
 	)
 
-Element["" "cageclamp" "S104/CONN201" "unknown" 50000 50000 0 0 0 100 ""]
+Element["" "cageclamp" "S104/CONN201" "unknown" 224000 122000 0 0 0 100 ""]
 (
 	Pin[0 20000 7874 2000 8474 4331 "" "2" ""]
 	Pin[0 0 7874 2000 8474 4331 "" "1" ""]
@@ -32,18 +820,19 @@ Element["" "cageclamp" "S104/CONN201" "unknown" 50000 50000 0 0 0 100 ""]
 
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S103/Z201" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "SOT-23_Transistor" "S103/Z201" "unknown" 202000 113000 -5100 3500 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
 	)
 
-Element["" "header-0.1-3x1" "S109/J401" "unknown" 50000 50000 0 0 0 100 ""]
+Element["" "header-0.1-3x1" "S109/J401" "unknown" 169000 109000 0 0 0 100 ""]
 (
 	Pin[-10000 0 7000 3000 7000 3800 "" "1" "edge2"]
 	Pin[0 0 7000 3000 7000 3800 "" "2" "edge2"]
@@ -55,28 +844,30 @@ Element["" "header-0.1-3x1" "S109/J401" "unknown" 50000 50000 0 0 0 100 ""]
 
 	)
 
-Element(0x00000000 "1206_reflow_solder" "S104/R201" "10k" 500 500 -32 -78 0 100 0x00000000)
+Element["" "1206_reflow_solder" "S104/R201" "10k" 139000 106000 -3200 -7800 0 100 ""]
 (
-	Pad(-11 120 9 120 40 30 70 "" "2" 0x00000100)
-	Pad(-11 1 9 1 40 30 70 "" "1" 0x00000100)
-	ElementLine (36 -25 -38 -25 10)
-	ElementLine (36 -25 36 145 10)
-	ElementLine (-38 146 -38 -24 10)
-	ElementLine (36 146 -38 146 10)
+	Pad[-1100 12000 900 12000 4000 3000 7000 "" "2" "square"]
+	Pad[-1100 100 900 100 4000 3000 7000 "" "1" "square"]
+	ElementLine [3600 -2500 -3800 -2500 1000]
+	ElementLine [3600 -2500 3600 14500 1000]
+	ElementLine [-3800 14600 -3800 -2400 1000]
+	ElementLine [3600 14600 -3800 14600 1000]
+
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S102/Z201" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "SOT-23_Transistor" "S102/Z201" "unknown" 118000 113000 -5100 3500 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
 	)
 
-Element["" "cageclamp" "S101/CONN201" "unknown" 50000 50000 0 0 0 100 ""]
+Element["" "cageclamp" "S101/CONN201" "unknown" 94000 122000 0 0 0 100 ""]
 (
 	Pin[0 20000 7874 2000 8474 4331 "" "2" ""]
 	Pin[0 0 7874 2000 8474 4331 "" "1" ""]
@@ -89,67 +880,45 @@ Element["" "cageclamp" "S101/CONN201" "unknown" 50000 50000 0 0 0 100 ""]
 	ElementLine [-4500 31000 6500 31000 394]
 
 	)
-Element[0x00000000 "soic-16w-lpads" "U101" "unknown" 0 0 0 0 0 100 0x00000000]
+
+Element["" "soic-16w-lpads" "U101" "unknown" 54000 124000 0 0 0 100 ""]
 (
-	Pad[-23526 -17500 -15626 -17500 2000 0 2000 "1" "1" 0x00000100]
-	Pad[-23526 -12500 -15626 -12500 2000 0 2000 "2" "2" 0x00000100]
-	Pad[-23526 -7500 -15626 -7500 2000 0 2000 "3" "3" 0x00000100]
-	Pad[-23526 -2500 -15626 -2500 2000 0 2000 "4" "4" 0x00000100]
-	Pad[-23526 2500 -15626 2500 2000 0 2000 "5" "5" 0x00000100]
-	Pad[-23526 7500 -15626 7500 2000 0 2000 "6" "6" 0x00000100]
-	Pad[-23526 12500 -15626 12500 2000 0 2000 "7" "7" 0x00000100]
-	Pad[-23526 17500 -15626 17500 2000 0 2000 "8" "8" 0x00000100]
-	Pad[15626 17500 23526 17500 2000 0 2000 "9" "9" 0x00000100]
-	Pad[15626 12500 23526 12500 2000 0 2000 "10" "10" 0x00000100]
-	Pad[15626 7500 23526 7500 2000 0 2000 "11" "11" 0x00000100]
-	Pad[15626 2500 23526 2500 2000 0 2000 "12" "12" 0x00000100]
-	Pad[15626 -2500 23526 -2500 2000 0 2000 "13" "13" 0x00000100]
-	Pad[15626 -7500 23526 -7500 2000 0 2000 "14" "14" 0x00000100]
-	Pad[15626 -12500 23526 -12500 2000 0 2000 "15" "15" 0x00000100]
-	Pad[15626 -17500 23526 -17500 2000 0 2000 "16" "16" 0x00000100]
+	Pad[-23526 -17500 -15626 -17500 2000 0 2000 "1" "1" "square"]
+	Pad[-23526 -12500 -15626 -12500 2000 0 2000 "2" "2" "square"]
+	Pad[-23526 -7500 -15626 -7500 2000 0 2000 "3" "3" "square"]
+	Pad[-23526 -2500 -15626 -2500 2000 0 2000 "4" "4" "square"]
+	Pad[-23526 2500 -15626 2500 2000 0 2000 "5" "5" "square"]
+	Pad[-23526 7500 -15626 7500 2000 0 2000 "6" "6" "square"]
+	Pad[-23526 12500 -15626 12500 2000 0 2000 "7" "7" "square"]
+	Pad[-23526 17500 -15626 17500 2000 0 2000 "8" "8" "square"]
+	Pad[15626 17500 23526 17500 2000 0 2000 "9" "9" "square,edge2"]
+	Pad[15626 12500 23526 12500 2000 0 2000 "10" "10" "square,edge2"]
+	Pad[15626 7500 23526 7500 2000 0 2000 "11" "11" "square,edge2"]
+	Pad[15626 2500 23526 2500 2000 0 2000 "12" "12" "square,edge2"]
+	Pad[15626 -2500 23526 -2500 2000 0 2000 "13" "13" "square,edge2"]
+	Pad[15626 -7500 23526 -7500 2000 0 2000 "14" "14" "square,edge2"]
+	Pad[15626 -12500 23526 -12500 2000 0 2000 "15" "15" "square,edge2"]
+	Pad[15626 -17500 23526 -17500 2000 0 2000 "16" "16" "square,edge2"]
 	ElementLine [13445 20650 -13445 20650 1000]
 	ElementLine [-13445 20650 -13445 -19650 1000]
 	ElementLine [-13445 -19650 -12445 -20650 1000]
 	ElementLine [-12445 -20650 13445 -20650 1000]
 	ElementLine [13445 -20650 13445 20650 1000]
-)
-
-Element(0x00000000 "1206_reflow_solder" "S103/R201" "10k" 500 500 -32 -78 0 100 0x00000000)
-(
-	Pad(-11 120 9 120 40 30 70 "" "2" 0x00000100)
-	Pad(-11 1 9 1 40 30 70 "" "1" 0x00000100)
-	ElementLine (36 -25 -38 -25 10)
-	ElementLine (36 -25 36 145 10)
-	ElementLine (-38 146 -38 -24 10)
-	ElementLine (36 146 -38 146 10)
-	)
-
-Element["" "cageclamp" "S102/CONN201" "unknown" 50000 50000 0 0 0 100 ""]
-(
-	Pin[0 20000 7874 2000 8474 4331 "" "2" ""]
-	Pin[0 0 7874 2000 8474 4331 "" "1" ""]
-	ElementLine [-4500 -18500 -4500 31000 394]
-	ElementLine [6500 -18500 6500 31000 394]
-	ElementLine [-4500 -18500 -2500 -16500 394]
-	ElementLine [-4500 -18500 6500 -18500 394]
-	ElementLine [6500 -18500 4500 -16500 394]
-	ElementLine [4500 -16500 -2500 -16500 394]
-	ElementLine [-4500 31000 6500 31000 394]
 
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S101/Z201" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "1206_reflow_solder" "S103/R201" "10k" 15000 106000 -3200 -7800 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pad[-1100 12000 900 12000 4000 3000 7000 "" "2" "square"]
+	Pad[-1100 100 900 100 4000 3000 7000 "" "1" "square"]
+	ElementLine [3600 -2500 -3800 -2500 1000]
+	ElementLine [3600 -2500 3600 14500 1000]
+	ElementLine [-3800 14600 -3800 -2400 1000]
+	ElementLine [3600 14600 -3800 14600 1000]
+
 	)
 
-Element["" "cageclamp" "S108/CONN301" "unknown" 50000 50000 0 0 0 100 ""]
+Element["" "cageclamp" "S102/CONN201" "unknown" 565000 29000 0 0 0 100 ""]
 (
 	Pin[0 20000 7874 2000 8474 4331 "" "2" ""]
 	Pin[0 0 7874 2000 8474 4331 "" "1" ""]
@@ -163,41 +932,19 @@ Element["" "cageclamp" "S108/CONN301" "unknown" 50000 50000 0 0 0 100 ""]
 
 	)
 
-Element(0x00000000 "1206_reflow_solder" "S102/R201" "10k" 500 500 -32 -78 0 100 0x00000000)
+Element["" "SOT-23_Transistor" "S101/Z201" "unknown" 543000 21000 -5100 3500 0 100 ""]
 (
-	Pad(-11 120 9 120 40 30 70 "" "2" 0x00000100)
-	Pad(-11 1 9 1 40 30 70 "" "1" 0x00000100)
-	ElementLine (36 -25 -38 -25 10)
-	ElementLine (36 -25 36 145 10)
-	ElementLine (-38 146 -38 -24 10)
-	ElementLine (36 146 -38 146 10)
-	)
-
-Element["" "cageclamp" "S105/CONN301" "unknown" 50000 50000 0 0 0 100 ""]
-(
-	Pin[0 20000 7874 2000 8474 4331 "" "2" ""]
-	Pin[0 0 7874 2000 8474 4331 "" "1" ""]
-	ElementLine [-4500 -18500 -4500 31000 394]
-	ElementLine [6500 -18500 6500 31000 394]
-	ElementLine [-4500 -18500 -2500 -16500 394]
-	ElementLine [-4500 -18500 6500 -18500 394]
-	ElementLine [6500 -18500 4500 -16500 394]
-	ElementLine [4500 -16500 -2500 -16500 394]
-	ElementLine [-4500 31000 6500 31000 394]
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
 
 	)
 
-Element(0x00000000 "1206_reflow_solder" "S101/R201" "10k" 500 500 -32 -78 0 100 0x00000000)
-(
-	Pad(-11 120 9 120 40 30 70 "" "2" 0x00000100)
-	Pad(-11 1 9 1 40 30 70 "" "1" 0x00000100)
-	ElementLine (36 -25 -38 -25 10)
-	ElementLine (36 -25 36 145 10)
-	ElementLine (-38 146 -38 -24 10)
-	ElementLine (36 146 -38 146 10)
-	)
-
-Element["" "cageclamp" "S106/CONN301" "unknown" 50000 50000 0 0 0 100 ""]
+Element["" "cageclamp" "S108/CONN301" "unknown" 519000 29000 0 0 0 100 ""]
 (
 	Pin[0 20000 7874 2000 8474 4331 "" "2" ""]
 	Pin[0 0 7874 2000 8474 4331 "" "1" ""]
@@ -211,18 +958,18 @@ Element["" "cageclamp" "S106/CONN301" "unknown" 50000 50000 0 0 0 100 ""]
 
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S108/Q302" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "1206_reflow_solder" "S102/R201" "10k" 499000 14000 -3200 -7800 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pad[-1100 12000 900 12000 4000 3000 7000 "" "2" "square"]
+	Pad[-1100 100 900 100 4000 3000 7000 "" "1" "square"]
+	ElementLine [3600 -2500 -3800 -2500 1000]
+	ElementLine [3600 -2500 3600 14500 1000]
+	ElementLine [-3800 14600 -3800 -2400 1000]
+	ElementLine [3600 14600 -3800 14600 1000]
+
 	)
 
-Element["" "cageclamp" "S107/CONN301" "unknown" 50000 50000 0 0 0 100 ""]
+Element["" "cageclamp" "S105/CONN301" "unknown" 478000 29000 0 0 0 100 ""]
 (
 	Pin[0 20000 7874 2000 8474 4331 "" "2" ""]
 	Pin[0 0 7874 2000 8474 4331 "" "1" ""]
@@ -236,61 +983,117 @@ Element["" "cageclamp" "S107/CONN301" "unknown" 50000 50000 0 0 0 100 ""]
 
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S108/Q301" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "1206_reflow_solder" "S101/R201" "10k" 458000 14000 -3200 -7800 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pad[-1100 12000 900 12000 4000 3000 7000 "" "2" "square"]
+	Pad[-1100 100 900 100 4000 3000 7000 "" "1" "square"]
+	ElementLine [3600 -2500 -3800 -2500 1000]
+	ElementLine [3600 -2500 3600 14500 1000]
+	ElementLine [-3800 14600 -3800 -2400 1000]
+	ElementLine [3600 14600 -3800 14600 1000]
+
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S107/Q302" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "cageclamp" "S106/CONN301" "unknown" 436000 29000 0 0 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pin[0 20000 7874 2000 8474 4331 "" "2" ""]
+	Pin[0 0 7874 2000 8474 4331 "" "1" ""]
+	ElementLine [-4500 -18500 -4500 31000 394]
+	ElementLine [6500 -18500 6500 31000 394]
+	ElementLine [-4500 -18500 -2500 -16500 394]
+	ElementLine [-4500 -18500 6500 -18500 394]
+	ElementLine [6500 -18500 4500 -16500 394]
+	ElementLine [4500 -16500 -2500 -16500 394]
+	ElementLine [-4500 31000 6500 31000 394]
+
 	)
 
-Element(0x00000000 "1206_reflow_solder" "S109/R403" "100k" 500 500 -32 -78 0 100 0x00000000)
+Element["" "SOT-23_Transistor" "S108/Q302" "unknown" 414000 21000 -5100 3500 0 100 ""]
 (
-	Pad(-11 120 9 120 40 30 70 "" "2" 0x00000100)
-	Pad(-11 1 9 1 40 30 70 "" "1" 0x00000100)
-	ElementLine (36 -25 -38 -25 10)
-	ElementLine (36 -25 36 145 10)
-	ElementLine (-38 146 -38 -24 10)
-	ElementLine (36 146 -38 146 10)
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S107/Q301" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "cageclamp" "S107/CONN301" "unknown" 390000 29000 0 0 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pin[0 20000 7874 2000 8474 4331 "" "2" ""]
+	Pin[0 0 7874 2000 8474 4331 "" "1" ""]
+	ElementLine [-4500 -18500 -4500 31000 394]
+	ElementLine [6500 -18500 6500 31000 394]
+	ElementLine [-4500 -18500 -2500 -16500 394]
+	ElementLine [-4500 -18500 6500 -18500 394]
+	ElementLine [6500 -18500 4500 -16500 394]
+	ElementLine [4500 -16500 -2500 -16500 394]
+	ElementLine [-4500 31000 6500 31000 394]
+
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S106/Q302" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "SOT-23_Transistor" "S108/Q301" "unknown" 368000 21000 -5100 3500 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
 	)
 
-Element["" "rj11-6p4c" "CONN101" "unknown" 50000 50000 0 0 0 100 ""]
+Element["" "SOT-23_Transistor" "S107/Q302" "unknown" 344000 21000 -5100 3500 0 100 ""]
+(
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
+	)
+
+Element["" "1206_reflow_solder" "S109/R403" "100k" 323000 14000 -3200 -7800 0 100 ""]
+(
+	Pad[-1100 12000 900 12000 4000 3000 7000 "" "2" "square"]
+	Pad[-1100 100 900 100 4000 3000 7000 "" "1" "square"]
+	ElementLine [3600 -2500 -3800 -2500 1000]
+	ElementLine [3600 -2500 3600 14500 1000]
+	ElementLine [-3800 14600 -3800 -2400 1000]
+	ElementLine [3600 14600 -3800 14600 1000]
+
+	)
+
+Element["" "SOT-23_Transistor" "S107/Q301" "unknown" 302000 21000 -5100 3500 0 100 ""]
+(
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
+	)
+
+Element["" "SOT-23_Transistor" "S106/Q302" "unknown" 278000 21000 -5100 3500 0 100 ""]
+(
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
+	)
+
+Element["" "rj11-6p4c" "CONN101" "unknown" 234000 49000 0 0 0 100 ""]
 (
 	Pin[7500 -30000 6299 2000 6899 3504 "" "1" ""]
 	Pin[-7500 -20000 6299 2000 6899 3504 "" "4" ""]
@@ -330,49 +1133,53 @@ Element["" "rj11-6p4c" "CONN101" "unknown" 50000 50000 0 0 0 100 ""]
 
 	)
 
-Element(0x00000000 "1206_reflow_solder" "S109/R402" "100k" 500 500 -32 -78 0 100 0x00000000)
+Element["" "1206_reflow_solder" "S109/R402" "100k" 192000 14000 -3200 -7800 0 100 ""]
 (
-	Pad(-11 120 9 120 40 30 70 "" "2" 0x00000100)
-	Pad(-11 1 9 1 40 30 70 "" "1" 0x00000100)
-	ElementLine (36 -25 -38 -25 10)
-	ElementLine (36 -25 36 145 10)
-	ElementLine (-38 146 -38 -24 10)
-	ElementLine (36 146 -38 146 10)
+	Pad[-1100 12000 900 12000 4000 3000 7000 "" "2" "square"]
+	Pad[-1100 100 900 100 4000 3000 7000 "" "1" "square"]
+	ElementLine [3600 -2500 -3800 -2500 1000]
+	ElementLine [3600 -2500 3600 14500 1000]
+	ElementLine [-3800 14600 -3800 -2400 1000]
+	ElementLine [3600 14600 -3800 14600 1000]
+
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S106/Q301" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "SOT-23_Transistor" "S106/Q301" "unknown" 171000 21000 -5100 3500 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S105/Q302" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "SOT-23_Transistor" "S105/Q302" "unknown" 147000 21000 -5100 3500 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
 	)
 
-Element(0x00000000 "1206_reflow_solder" "S109/R401" "100k" 500 500 -32 -78 0 100 0x00000000)
+Element["" "1206_reflow_solder" "S109/R401" "100k" 126000 14000 -3200 -7800 0 100 ""]
 (
-	Pad(-11 120 9 120 40 30 70 "" "2" 0x00000100)
-	Pad(-11 1 9 1 40 30 70 "" "1" 0x00000100)
-	ElementLine (36 -25 -38 -25 10)
-	ElementLine (36 -25 36 145 10)
-	ElementLine (-38 146 -38 -24 10)
-	ElementLine (36 146 -38 146 10)
+	Pad[-1100 12000 900 12000 4000 3000 7000 "" "2" "square"]
+	Pad[-1100 100 900 100 4000 3000 7000 "" "1" "square"]
+	ElementLine [3600 -2500 -3800 -2500 1000]
+	ElementLine [3600 -2500 3600 14500 1000]
+	ElementLine [-3800 14600 -3800 -2400 1000]
+	ElementLine [3600 14600 -3800 14600 1000]
+
 	)
 
-Element["" "header-0.1-3x1" "S109/J403" "unknown" 50000 50000 0 0 0 100 ""]
+Element["" "header-0.1-3x1" "S109/J403" "unknown" 96000 16000 0 0 0 100 ""]
 (
 	Pin[-10000 0 7000 3000 7000 3800 "" "1" "edge2"]
 	Pin[0 0 7000 3000 7000 3800 "" "2" "edge2"]
@@ -384,29 +1191,31 @@ Element["" "header-0.1-3x1" "S109/J403" "unknown" 50000 50000 0 0 0 100 ""]
 
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S105/Q301" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "SOT-23_Transistor" "S105/Q301" "unknown" 63000 21000 -5100 3500 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
 	)
 
-Element(0x00000000 "SOT-23_Transistor" "S104/Z201" "unknown" 500 500 -51 35 0 100 0x00000000)
+Element["" "SOT-23_Transistor" "S104/Z201" "unknown" 40000 21000 -5100 3500 0 100 ""]
 (
-	Pad(38 -67 38 -75 28 30 58 "B" "1" 0x00000100)
-	Pad(-37 -68 -37 -75 28 30 58 "E" "2" 0x00000100)
-	Pad(0 4 0 -4 28 30 58 "C" "3" 0x00000100)
-	ElementLine (-2 -36 -2 -27 10)
-	ElementLine (-40 -37 -40 -45 10)
-	ElementLine (37 -36 37 -44 10)
-	ElementLine (-63 -36 61 -36 10)
+	Pad[3800 -7500 3800 -6700 2800 3000 5800 "B" "1" "square"]
+	Pad[-3700 -7500 -3700 -6800 2800 3000 5800 "E" "2" "square"]
+	Pad[0 -400 0 400 2800 3000 5800 "C" "3" "square,edge2"]
+	ElementLine [-200 -3600 -200 -2700 1000]
+	ElementLine [-4000 -3700 -4000 -4500 1000]
+	ElementLine [3700 -3600 3700 -4400 1000]
+	ElementLine [-6300 -3600 6100 -3600 1000]
+
 	)
 
-Element["" "cageclamp" "S103/CONN201" "unknown" 50000 50000 0 0 0 100 ""]
+Element["" "cageclamp" "S103/CONN201" "unknown" 16000 29000 0 0 0 100 ""]
 (
 	Pin[0 20000 7874 2000 8474 4331 "" "2" ""]
 	Pin[0 0 7874 2000 8474 4331 "" "1" ""]
@@ -419,6 +1228,74 @@ Element["" "cageclamp" "S103/CONN201" "unknown" 50000 50000 0 0 0 100 ""]
 	ElementLine [-4500 31000 6500 31000 394]
 
 	)
+Rat[94000 122000 0 94000 142000 0  ""]
+Rat[94000 122000 0 456900 26000 1  ""]
+Rat[565000 29000 0 565000 49000 0  ""]
+Rat[565000 29000 0 497900 26000 1  ""]
+Rat[16000 29000 0 16000 49000 0  ""]
+Rat[16000 49000 0 13900 118000 1  ""]
+Rat[224000 122000 0 224000 142000 0  ""]
+Rat[224000 122000 0 137900 118000 1  ""]
+Rat[478000 29000 0 478000 49000 0  ""]
+Rat[478000 29000 0 147000 21400 1  ""]
+Rat[147000 21400 1 63000 21400 1  ""]
+Rat[436000 29000 0 436000 49000 0  ""]
+Rat[436000 29000 0 278000 21400 1  ""]
+Rat[278000 21400 1 171000 21400 1  ""]
+Rat[390000 29000 0 390000 49000 0  ""]
+Rat[390000 29000 0 344000 21400 1  ""]
+Rat[344000 21400 1 302000 21400 1  ""]
+Rat[519000 29000 0 519000 49000 0  ""]
+Rat[519000 29000 0 414000 21400 1  ""]
+Rat[414000 21400 1 368000 21400 1  ""]
+Rat[236500 29000 0 77526 111500 1  ""]
+Rat[231500 19000 0 77526 116500 1  ""]
+Rat[456900 14100 1 543000 21400 1  ""]
+Rat[456900 14100 1 30474 121500 1  ""]
+Rat[497900 14100 1 118000 113400 1  ""]
+Rat[118000 113400 1 30474 126500 1  ""]
+Rat[13900 106100 1 30474 131500 1  ""]
+Rat[30474 131500 1 202000 113400 1  ""]
+Rat[137900 106100 1 30474 136500 1  ""]
+Rat[30474 136500 1 40000 21400 1  ""]
+Rat[66800 13500 1 150800 13500 1  ""]
+Rat[66800 13500 1 77526 141500 1  ""]
+Rat[174800 13500 1 281800 13500 1  ""]
+Rat[174800 13500 1 77526 136500 1  ""]
+Rat[305800 13500 1 347800 13500 1  ""]
+Rat[305800 13500 1 77526 131500 1  ""]
+Rat[371800 13500 1 417800 13500 1  ""]
+Rat[371800 13500 1 77526 126500 1  ""]
+Rat[169000 109000 0 30474 106500 1  ""]
+Rat[169000 109000 0 321900 14100 1  ""]
+Rat[257000 109000 0 190900 14100 1  ""]
+Rat[190900 14100 1 30474 111500 1  ""]
+Rat[96000 16000 0 124900 14100 1  ""]
+Rat[96000 16000 0 30474 116500 1  ""]
+Rat[241500 19000 0 274300 13500 1  ""]
+Rat[274300 13500 1 321900 26000 1  ""]
+Rat[321900 26000 1 340300 13500 1  ""]
+Rat[241500 19000 0 190900 26000 1  ""]
+Rat[190900 26000 1 143300 13500 1  ""]
+Rat[143300 13500 1 124900 26000 1  ""]
+Rat[340300 13500 1 410300 13500 1  ""]
+Rat[190900 26000 1 198300 105500 1  ""]
+Rat[124900 26000 1 114300 105500 1  ""]
+Rat[114300 105500 1 77526 106500 1  ""]
+Rat[124900 26000 1 36300 13500 1  ""]
+Rat[410300 13500 1 539300 13500 1  ""]
+Rat[226500 29000 0 167300 13500 1  ""]
+Rat[167300 13500 1 106000 16000 0  ""]
+Rat[106000 16000 0 59300 13500 1  ""]
+Rat[59300 13500 1 43800 13500 1  ""]
+Rat[226500 29000 0 298300 13500 1  ""]
+Rat[298300 13500 1 364300 13500 1  ""]
+Rat[226500 29000 0 205800 105500 1  ""]
+Rat[205800 105500 1 179000 109000 0  ""]
+Rat[179000 109000 0 121800 105500 1  ""]
+Rat[205800 105500 1 267000 109000 0  ""]
+Rat[121800 105500 1 30474 141500 1  ""]
+Rat[364300 13500 1 546800 13500 1  ""]
 Layer(1 "solder")
 (
 )
@@ -442,4 +1319,167 @@ Layer(7 "unused")
 )
 Layer(8 "unused")
 (
+)
+NetList()
+(
+	Net("S101/unnamed_net4" "(unknown)")
+	(
+		Connect("S101/CONN201-1")
+		Connect("S101/CONN201-2")
+		Connect("S101/R201-2")
+	)
+	Net("S102/unnamed_net7" "(unknown)")
+	(
+		Connect("S102/CONN201-1")
+		Connect("S102/CONN201-2")
+		Connect("S102/R201-2")
+	)
+	Net("S103/unnamed_net10" "(unknown)")
+	(
+		Connect("S103/CONN201-1")
+		Connect("S103/CONN201-2")
+		Connect("S103/R201-2")
+	)
+	Net("S104/unnamed_net13" "(unknown)")
+	(
+		Connect("S104/CONN201-1")
+		Connect("S104/CONN201-2")
+		Connect("S104/R201-2")
+	)
+	Net("S105/unnamed_net16" "(unknown)")
+	(
+		Connect("S105/CONN301-1")
+		Connect("S105/CONN301-2")
+		Connect("S105/Q301-3")
+		Connect("S105/Q302-3")
+	)
+	Net("S106/unnamed_net19" "(unknown)")
+	(
+		Connect("S106/CONN301-1")
+		Connect("S106/CONN301-2")
+		Connect("S106/Q301-3")
+		Connect("S106/Q302-3")
+	)
+	Net("S107/unnamed_net22" "(unknown)")
+	(
+		Connect("S107/CONN301-1")
+		Connect("S107/CONN301-2")
+		Connect("S107/Q301-3")
+		Connect("S107/Q302-3")
+	)
+	Net("S108/unnamed_net25" "(unknown)")
+	(
+		Connect("S108/CONN301-1")
+		Connect("S108/CONN301-2")
+		Connect("S108/Q301-3")
+		Connect("S108/Q302-3")
+	)
+	Net("unnamed_net1" "(unknown)")
+	(
+		Connect("CONN101-2")
+		Connect("U101-15")
+	)
+	Net("unnamed_net2" "(unknown)")
+	(
+		Connect("CONN101-3")
+		Connect("U101-14")
+	)
+	Net("unnamed_net3" "(unknown)")
+	(
+		Connect("S101/R201-1")
+		Connect("S101/Z201-3")
+		Connect("U101-4")
+	)
+	Net("unnamed_net6" "(unknown)")
+	(
+		Connect("S102/R201-1")
+		Connect("S102/Z201-3")
+		Connect("U101-5")
+	)
+	Net("unnamed_net9" "(unknown)")
+	(
+		Connect("S103/R201-1")
+		Connect("S103/Z201-3")
+		Connect("U101-6")
+	)
+	Net("unnamed_net12" "(unknown)")
+	(
+		Connect("S104/R201-1")
+		Connect("S104/Z201-3")
+		Connect("U101-7")
+	)
+	Net("unnamed_net15" "(unknown)")
+	(
+		Connect("S105/Q301-1")
+		Connect("S105/Q302-1")
+		Connect("U101-9")
+	)
+	Net("unnamed_net18" "(unknown)")
+	(
+		Connect("S106/Q301-1")
+		Connect("S106/Q302-1")
+		Connect("U101-10")
+	)
+	Net("unnamed_net21" "(unknown)")
+	(
+		Connect("S107/Q301-1")
+		Connect("S107/Q302-1")
+		Connect("U101-11")
+	)
+	Net("unnamed_net24" "(unknown)")
+	(
+		Connect("S108/Q301-1")
+		Connect("S108/Q302-1")
+		Connect("U101-12")
+	)
+	Net("unnamed_net27" "(unknown)")
+	(
+		Connect("S109/J401-2")
+		Connect("S109/R403-1")
+		Connect("U101-1")
+	)
+	Net("unnamed_net28" "(unknown)")
+	(
+		Connect("S109/J402-2")
+		Connect("S109/R402-1")
+		Connect("U101-2")
+	)
+	Net("unnamed_net29" "(unknown)")
+	(
+		Connect("S109/J403-2")
+		Connect("S109/R401-1")
+		Connect("U101-3")
+	)
+	Net("Vdd" "(unknown)")
+	(
+		Connect("CONN101-1")
+		Connect("S101/Z201-2")
+		Connect("S102/Z201-2")
+		Connect("S103/Z201-2")
+		Connect("S104/Z201-2")
+		Connect("S105/Q302-2")
+		Connect("S106/Q302-2")
+		Connect("S107/Q302-2")
+		Connect("S108/Q302-2")
+		Connect("S109/R401-2")
+		Connect("S109/R402-2")
+		Connect("S109/R403-2")
+		Connect("U101-16")
+	)
+	Net("Vss" "(unknown)")
+	(
+		Connect("CONN101-4")
+		Connect("S101/Z201-1")
+		Connect("S102/Z201-1")
+		Connect("S103/Z201-1")
+		Connect("S104/Z201-1")
+		Connect("S105/Q301-2")
+		Connect("S106/Q301-2")
+		Connect("S107/Q301-2")
+		Connect("S108/Q301-2")
+		Connect("S109/J401-3")
+		Connect("S109/J402-3")
+		Connect("S109/J403-3")
+		Connect("U101-8")
+	)
 )
