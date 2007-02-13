@@ -25,7 +25,7 @@ source=sub-inport.sch
 T 75500 53300 5 10 0 0 0 0 1
 device=none
 T 76300 53600 5 10 1 1 0 0 1
-refdes=S?
+refdes=S101
 }
 C 75400 52800 1 0 0 sub-inport.sym
 {
@@ -34,7 +34,7 @@ source=sub-inport.sch
 T 75500 52800 5 10 0 0 0 0 1
 device=none
 T 76300 53100 5 10 1 1 0 0 1
-refdes=S?
+refdes=S102
 }
 C 75400 52300 1 0 0 sub-inport.sym
 {
@@ -43,7 +43,7 @@ source=sub-inport.sch
 T 75500 52300 5 10 0 0 0 0 1
 device=none
 T 76300 52600 5 10 1 1 0 0 1
-refdes=S?
+refdes=S103
 }
 C 75400 51800 1 0 0 sub-inport.sym
 {
@@ -52,7 +52,7 @@ source=sub-inport.sch
 T 75500 51800 5 10 0 0 0 0 1
 device=none
 T 76300 52100 5 10 1 1 0 0 1
-refdes=S?
+refdes=S104
 }
 C 75400 51300 1 0 0 sub-outport.sym
 {
@@ -61,7 +61,7 @@ source=sub-outport.sch
 T 75500 51300 5 10 0 0 0 0 1
 device=none
 T 76300 51600 5 10 1 1 0 0 1
-refdes=S?
+refdes=S105
 }
 C 75400 50800 1 0 0 sub-outport.sym
 {
@@ -70,7 +70,7 @@ source=sub-outport.sch
 T 75500 50800 5 10 0 0 0 0 1
 device=none
 T 76300 51100 5 10 1 1 0 0 1
-refdes=S?
+refdes=S106
 }
 C 75400 50300 1 0 0 sub-outport.sym
 {
@@ -79,7 +79,7 @@ source=sub-outport.sch
 T 75500 50300 5 10 0 0 0 0 1
 device=none
 T 76300 50600 5 10 1 1 0 0 1
-refdes=S?
+refdes=S107
 }
 C 75400 49800 1 0 0 sub-outport.sym
 {
@@ -88,14 +88,14 @@ source=sub-outport.sch
 T 75500 49800 5 10 0 0 0 0 1
 device=none
 T 76300 50100 5 10 1 1 0 0 1
-refdes=S?
+refdes=S108
 }
-C 70600 52600 1 0 0 sub-jumpers.sym
+C 70600 52500 1 0 0 sub-jumpers.sym
 {
-T 70600 52600 5 10 1 1 0 0 1
+T 70600 52500 5 10 1 1 0 0 1
 source=sub-jumpers.sch
-T 70600 54500 5 10 1 1 0 0 1
-refdes=S?
+T 70600 54400 5 10 1 1 0 0 1
+refdes=S109
 }
 N 69900 50700 70200 50700 4
 N 70200 50700 70200 55000 4

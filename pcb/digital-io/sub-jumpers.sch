@@ -66,21 +66,21 @@ C 63200 54100 1 180 0 out-1.sym
 T 63200 53800 5 10 0 0 180 0 1
 device=OUTPUT
 T 63200 53800 5 10 1 1 180 0 1
-refdes=select401
+refdes=select1
 }
 C 65600 54100 1 180 0 out-1.sym
 {
 T 65600 53800 5 10 0 0 180 0 1
 device=OUTPUT
 T 65600 53800 5 10 1 1 180 0 1
-refdes=select402
+refdes=select2
 }
 C 68000 54100 1 180 0 out-1.sym
 {
 T 68000 53800 5 10 0 0 180 0 1
 device=OUTPUT
 T 68000 53800 5 10 1 1 180 0 1
-refdes=select403
+refdes=select3
 }
 N 63400 56000 63400 56200 4
 N 63400 56200 68200 56200 4
