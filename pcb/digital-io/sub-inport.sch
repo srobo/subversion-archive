@@ -42,7 +42,7 @@ C 72400 51200 1 180 0 bat754s.sym
 T 72000 50800 5 10 0 0 180 0 1
 device=BAT754S
 T 71500 50500 5 10 1 1 180 0 1
-refdes=Z?
+refdes=Z201
 T 72000 51100 5 10 0 1 180 0 1
 footprint=SOT-23_Transistor
 }

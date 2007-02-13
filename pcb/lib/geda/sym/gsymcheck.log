@@ -1,0 +1,29 @@
+gEDA/gsymcheck version 20060906
+gEDA/symcheck comes with ABSOLUTELY NO WARRANTY; see COPYING for more details.
+This is free software, and you are welcome to redistribute it under certain
+conditions; please see the COPYING file for more details.
+
+Read system-gafrc file [/etc/gEDA/system-gafrc]
+Did not find optional ~/.gEDA/gafrc file [/home/justyn/.gEDA/gafrc]
+Did not find optional local gafrc file [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/gafrc]
+Read system-gsymcheckrc file [/etc/gEDA/system-gsymcheckrc]
+Did not find optional ~/.gEDA/gsymcheckrc file [/home/justyn/.gEDA/gsymcheckrc]
+Did not find optional local gsymcheckrc file [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/gsymcheckrc]
+Loading file [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/sub-outport.sym]
+Did not find specified /home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/gafrc file [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/gafrc]
+Opened file [/home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/sub-outport.sym]
+
+Checking: /home/justyn/project/pcb/robotics/git-svn/lib/geda/sym/sub-outport.sym
+Info: Found device=none
+Info: Found pinlabel=output attribute
+Info: Found refdes=S? attribute
+Info: Found pinseq=1 attribute
+Info: Found pinnumber=1 attribute
+Info: Found 1 pins inside symbol
+Info: If this symbol does not need slotting, set numslots to zero (numslots=0)
+Warning: Missing pintype= attribute
+Warning: Missing footprint= attribute
+Warning: Did not find numslots= attribute, not checking slotting
+3 warnings found 
+No errors found
+
