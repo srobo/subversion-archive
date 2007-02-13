@@ -4,6 +4,10 @@ P 100 200 300 200 1 0 0
 {
 T 350 200 5 10 1 1 0 0 1
 pinlabel=output
+T 100 200 5 10 0 0 0 0 1
+pinnumber=1
+T 100 200 5 10 0 0 0 0 1
+pinseq=1
 }
 T 960 100 8 10 1 1 0 0 1
 source=sub-outport.sch
