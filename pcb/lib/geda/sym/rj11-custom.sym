@@ -56,13 +56,11 @@ T 0 2900 5 10 0 0 0 0 1
 device=RJ45
 T 550 2050 9 10 1 1 180 6 1
 RJ11
-T 0 2700 5 10 0 0 0 0 1
-footprint=RJ45
 T 0 2500 5 10 0 0 0 0 1
 description=Custom RJ11 Connector
 T 1100 1700 8 10 1 1 0 6 1
 refdes=CONN?
 T 0 3100 5 10 0 0 0 0 1
 numslots=0
-T 2200 2300 8 10 0 1 0 0 1
+T 2200 2300 8 10 0 0 0 0 1
 footprint=rj11-6p4c
