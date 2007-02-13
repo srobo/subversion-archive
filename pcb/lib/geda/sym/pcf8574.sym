@@ -183,7 +183,7 @@ PCF8574
 T 400 5800 5 10 0 0 0 0 1
 device=PCF8574
 T 400 6000 5 10 0 0 0 0 1
-footprint=SOIC-16W-longpads
+footprint=soic-16w-lpads
 T 400 6200 5 10 0 0 0 0 1
 author=Justyn Butler
 T 400 6400 5 10 0 0 0 0 1

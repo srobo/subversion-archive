@@ -121,6 +121,6 @@ refdes=U101
 T 72900 54900 5 10 0 0 0 0 1
 device=PCF8574
 T 72900 55100 5 10 0 0 0 0 1
-footprint=SOIC-16W-longpads
+footprint=soic-16w-lpads
 }
 N 74600 50000 75500 50000 4
