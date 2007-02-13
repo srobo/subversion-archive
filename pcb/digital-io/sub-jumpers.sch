@@ -4,7 +4,7 @@ C 63600 52600 1 0 0 header3x1.sym
 T 64000 55100 5 10 0 1 0 0 1
 device=HEADER3x1
 T 64000 54700 5 10 1 1 0 0 1
-refdes=J?
+refdes=J401
 T 63600 53400 5 10 0 1 0 0 1
 footprint=header-0.1-3x1
 }
@@ -13,7 +13,7 @@ C 66000 52600 1 0 0 header3x1.sym
 T 66400 55100 5 10 0 1 0 0 1
 device=HEADER3x1
 T 66400 54700 5 10 1 1 0 0 1
-refdes=J?
+refdes=J402
 T 66000 53400 5 10 0 1 0 0 1
 footprint=header-0.1-3x1
 }
@@ -22,7 +22,7 @@ C 68400 52600 1 0 0 header3x1.sym
 T 68800 55100 5 10 0 1 0 0 1
 device=HEADER3x1
 T 68800 54700 5 10 1 1 0 0 1
-refdes=J?
+refdes=J403
 T 68400 53400 5 10 0 1 0 0 1
 footprint=header-0.1-3x1
 }
@@ -31,7 +31,7 @@ C 68300 55100 1 90 0 resistor-2.sym
 T 67950 55500 5 10 0 0 90 0 1
 device=RESISTOR
 T 68000 55300 5 10 1 1 90 0 1
-refdes=R?
+refdes=R401
 T 68800 55600 5 10 1 1 180 0 1
 value=100k
 T 68300 55100 5 10 0 0 90 0 1
@@ -42,7 +42,7 @@ C 65000 56400 1 0 0 vdd-1.sym
 C 65900 55100 1 90 0 resistor-2.sym
 {
 T 65600 55300 5 10 1 1 90 0 1
-refdes=R?
+refdes=R402
 T 65550 55500 5 10 0 0 90 0 1
 device=RESISTOR
 T 66400 55600 5 10 1 1 180 0 1
@@ -53,7 +53,7 @@ footprint=1026_reflow_solder
 C 63500 55100 1 90 0 resistor-2.sym
 {
 T 63200 55300 5 10 1 1 90 0 1
-refdes=R?
+refdes=R403
 T 63150 55500 5 10 0 0 90 0 1
 device=RESISTOR
 T 64000 55600 5 10 1 1 180 0 1
@@ -66,21 +66,21 @@ C 63200 54100 1 180 0 out-1.sym
 T 63200 53800 5 10 0 0 180 0 1
 device=OUTPUT
 T 63200 53800 5 10 1 1 180 0 1
-refdes=select0
+refdes=select401
 }
 C 65600 54100 1 180 0 out-1.sym
 {
 T 65600 53800 5 10 0 0 180 0 1
 device=OUTPUT
 T 65600 53800 5 10 1 1 180 0 1
-refdes=select1
+refdes=select402
 }
 C 68000 54100 1 180 0 out-1.sym
 {
 T 68000 53800 5 10 0 0 180 0 1
 device=OUTPUT
 T 68000 53800 5 10 1 1 180 0 1
-refdes=select2
+refdes=select403
 }
 N 63400 56000 63400 56200 4
 N 63400 56200 68200 56200 4

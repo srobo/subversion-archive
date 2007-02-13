@@ -3,7 +3,7 @@ C 67800 47400 1 0 0 title-A4.sym
 C 72500 49100 1 0 0 pcf8574.sym
 {
 T 74300 54600 5 10 1 1 0 6 1
-refdes=U?
+refdes=U101
 T 72900 54900 5 10 0 0 0 0 1
 device=PCF8574
 T 72900 55100 5 10 0 0 0 0 1
@@ -13,10 +13,8 @@ C 70000 49300 1 0 1 rj11-custom.sym
 {
 T 70000 52200 5 10 0 0 0 6 1
 device=RJ45
-T 70000 52000 5 10 0 0 0 6 1
-footprint=RJ45
 T 68900 51000 5 10 1 1 0 0 1
-refdes=CONN?
+refdes=CONN101
 T 67800 51600 5 10 0 1 0 6 1
 footprint=rj11-6p4c
 }
@@ -24,41 +22,57 @@ C 75400 53300 1 0 0 sub-inport.sym
 {
 T 76460 53500 5 10 1 1 0 0 1
 source=sub-inport.sch
+T 75500 53300 5 10 0 0 0 0 1
+device=none
 }
 C 75400 52800 1 0 0 sub-inport.sym
 {
 T 76460 53000 5 10 1 1 0 0 1
 source=sub-inport.sch
+T 75500 52800 5 10 0 0 0 0 1
+device=none
 }
 C 75400 52300 1 0 0 sub-inport.sym
 {
 T 76460 52500 5 10 1 1 0 0 1
 source=sub-inport.sch
+T 75500 52300 5 10 0 0 0 0 1
+device=none
 }
 C 75400 51800 1 0 0 sub-inport.sym
 {
 T 76460 52000 5 10 1 1 0 0 1
 source=sub-inport.sch
+T 75500 51800 5 10 0 0 0 0 1
+device=none
 }
 C 75400 51300 1 0 0 sub-outport.sym
 {
 T 76460 51400 5 10 1 1 0 0 1
 source=sub-outport.sch
+T 75500 51300 5 10 0 0 0 0 1
+device=none
 }
 C 75400 50800 1 0 0 sub-outport.sym
 {
 T 76460 50900 5 10 1 1 0 0 1
 source=sub-outport.sch
+T 75500 50800 5 10 0 0 0 0 1
+device=none
 }
 C 75400 50300 1 0 0 sub-outport.sym
 {
 T 76460 50400 5 10 1 1 0 0 1
 source=sub-outport.sch
+T 75500 50300 5 10 0 0 0 0 1
+device=none
 }
 C 75400 49800 1 0 0 sub-outport.sym
 {
 T 76460 49900 5 10 1 1 0 0 1
 source=sub-outport.sch
+T 75500 49800 5 10 0 0 0 0 1
+device=none
 }
 C 70600 52600 1 0 0 sub-jumpers.sym
 {

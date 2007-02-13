@@ -6,7 +6,7 @@ C 68300 51200 1 0 1 connector2-1.sym
 T 68100 52200 5 10 0 0 0 6 1
 device=CAGECLAMP
 T 68300 52000 5 10 1 1 0 6 1
-refdes=CONN?
+refdes=CONN301
 T 68300 51200 5 10 0 0 0 0 1
 footprint=cageclamp
 }
@@ -15,7 +15,7 @@ C 63300 51600 1 0 0 in-1.sym
 T 63300 51900 5 10 0 0 0 0 1
 device=INPUT
 T 63300 51900 5 10 1 1 0 0 1
-refdes=output
+refdes=output301
 }
 N 65400 51700 66600 51700 4
 N 64900 52600 64600 52600 4
@@ -32,7 +32,7 @@ C 64900 50600 1 0 0 nmos.sym
 T 65400 52100 5 10 0 0 0 0 1
 device=BSS670S2L
 T 65600 51200 5 10 1 1 0 0 1
-refdes=Q?
+refdes=Q301
 T 64900 50600 5 10 0 1 0 0 1
 footprint=SOT-23_Transistor
 }
@@ -41,7 +41,7 @@ C 64900 52800 1 180 1 pmos.sym
 T 65600 51700 5 10 0 0 180 6 1
 device=ZXM61P02F
 T 65600 52200 5 10 1 1 180 6 1
-refdes=Q?
+refdes=Q302
 T 66500 52800 5 10 0 1 180 6 1
 footprint=SOT-23_Transistor
 }

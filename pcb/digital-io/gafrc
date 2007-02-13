@@ -1,3 +1,4 @@
 (source-library "./")
 
 (component-library "../lib/geda/sym")
+#(elements-dir "../lib/geda/pkg/newlib")
