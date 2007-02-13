@@ -35,7 +35,7 @@ refdes=R401
 T 68800 55600 5 10 1 1 180 0 1
 value=100k
 T 68300 55100 5 10 0 0 90 0 1
-footprint=1026_reflow_solder
+footprint=1206_reflow_solder
 }
 C 65300 52600 1 180 0 vss-1.sym
 C 65000 56400 1 0 0 vdd-1.sym
@@ -48,7 +48,7 @@ device=RESISTOR
 T 66400 55600 5 10 1 1 180 0 1
 value=100k
 T 65900 55100 5 10 0 0 90 0 1
-footprint=1026_reflow_solder
+footprint=1206_reflow_solder
 }
 C 63500 55100 1 90 0 resistor-2.sym
 {
@@ -59,7 +59,7 @@ device=RESISTOR
 T 64000 55600 5 10 1 1 180 0 1
 value=100k
 T 63500 55100 5 10 0 0 90 0 1
-footprint=1026_reflow_solder
+footprint=1206_reflow_solder
 }
 C 63200 54100 1 180 0 out-1.sym
 {

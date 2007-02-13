@@ -1,3 +1,3 @@
-schematics ioboard.sch sub-inport.sch sub-outport.sch sub-jumpers.sch
+schematics ioboard.sch
 output-name ioboard.pcb
 elements-dir ../lib/geda/pkg/newlib

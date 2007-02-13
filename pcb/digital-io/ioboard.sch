@@ -2,7 +2,7 @@ v 20060906 1
 C 67800 47400 1 0 0 title-A4.sym
 C 72500 49100 1 0 0 pcf8574.sym
 {
-T 74300 54600 5 10 1 1 0 6 1
+T 74700 54600 5 10 1 1 0 6 1
 refdes=U101
 T 72900 54900 5 10 0 0 0 0 1
 device=PCF8574
@@ -20,31 +20,39 @@ footprint=rj11-6p4c
 }
 C 75400 53300 1 0 0 sub-inport.sym
 {
-T 76460 53500 5 10 1 1 0 0 1
+T 76460 53400 5 10 1 1 0 0 1
 source=sub-inport.sch
 T 75500 53300 5 10 0 0 0 0 1
 device=none
+T 76300 53600 5 10 1 1 0 0 1
+refdes=S?
 }
 C 75400 52800 1 0 0 sub-inport.sym
 {
-T 76460 53000 5 10 1 1 0 0 1
+T 76460 52900 5 10 1 1 0 0 1
 source=sub-inport.sch
 T 75500 52800 5 10 0 0 0 0 1
 device=none
+T 76300 53100 5 10 1 1 0 0 1
+refdes=S?
 }
 C 75400 52300 1 0 0 sub-inport.sym
 {
-T 76460 52500 5 10 1 1 0 0 1
+T 76460 52400 5 10 1 1 0 0 1
 source=sub-inport.sch
 T 75500 52300 5 10 0 0 0 0 1
 device=none
+T 76300 52600 5 10 1 1 0 0 1
+refdes=S?
 }
 C 75400 51800 1 0 0 sub-inport.sym
 {
-T 76460 52000 5 10 1 1 0 0 1
+T 76460 51900 5 10 1 1 0 0 1
 source=sub-inport.sch
 T 75500 51800 5 10 0 0 0 0 1
 device=none
+T 76300 52100 5 10 1 1 0 0 1
+refdes=S?
 }
 C 75400 51300 1 0 0 sub-outport.sym
 {
@@ -52,6 +60,8 @@ T 76460 51400 5 10 1 1 0 0 1
 source=sub-outport.sch
 T 75500 51300 5 10 0 0 0 0 1
 device=none
+T 76300 51600 5 10 1 1 0 0 1
+refdes=S?
 }
 C 75400 50800 1 0 0 sub-outport.sym
 {
@@ -59,6 +69,8 @@ T 76460 50900 5 10 1 1 0 0 1
 source=sub-outport.sch
 T 75500 50800 5 10 0 0 0 0 1
 device=none
+T 76300 51100 5 10 1 1 0 0 1
+refdes=S?
 }
 C 75400 50300 1 0 0 sub-outport.sym
 {
@@ -66,6 +78,8 @@ T 76460 50400 5 10 1 1 0 0 1
 source=sub-outport.sch
 T 75500 50300 5 10 0 0 0 0 1
 device=none
+T 76300 50600 5 10 1 1 0 0 1
+refdes=S?
 }
 C 75400 49800 1 0 0 sub-outport.sym
 {
@@ -73,11 +87,15 @@ T 76460 49900 5 10 1 1 0 0 1
 source=sub-outport.sch
 T 75500 49800 5 10 0 0 0 0 1
 device=none
+T 76300 50100 5 10 1 1 0 0 1
+refdes=S?
 }
 C 70600 52600 1 0 0 sub-jumpers.sym
 {
-T 70600 54400 5 10 1 1 0 0 1
+T 70600 52600 5 10 1 1 0 0 1
 source=sub-jumpers.sch
+T 70600 54500 5 10 1 1 0 0 1
+refdes=S?
 }
 N 69900 50700 70200 50700 4
 N 70200 50700 70200 55000 4
