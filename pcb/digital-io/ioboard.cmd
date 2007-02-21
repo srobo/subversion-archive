@@ -38,10 +38,6 @@ ChangePinName(S109/R401, 2, 2)
 ChangePinName(S106/CONN301, 1, 1)
 ChangePinName(S106/CONN301, 2, 2)
 
-# Start of element C?
-ChangePinName(C?, 2, -)
-ChangePinName(C?, 1, +)
-
 # Start of element S108/CONN301
 ChangePinName(S108/CONN301, 1, 1)
 ChangePinName(S108/CONN301, 2, 2)
@@ -83,6 +79,10 @@ ChangePinName(S109/J401, 2, 2)
 ChangePinName(S101/Z201, 3, 3)
 ChangePinName(S101/Z201, 2, 2)
 ChangePinName(S101/Z201, 1, 1)
+
+# Start of element C1
+ChangePinName(C1, 2, -)
+ChangePinName(C1, 1, +)
 
 # Start of element S105/CONN301
 ChangePinName(S105/CONN301, 1, 1)
