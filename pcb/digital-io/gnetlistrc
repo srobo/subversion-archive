@@ -1,2 +1,1 @@
-# highly important, this setting means that power symbols, which secretly have a "net" attribute attached, are not mangled with their subsheet name in order to make them independant. This doesn't affect the "netname" attribute, which will still be unique per subsheet.
 (hierarchy-netattrib-mangle "disabled")
