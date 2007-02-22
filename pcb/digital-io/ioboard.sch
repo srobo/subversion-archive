@@ -124,6 +124,7 @@ T 72900 55100 5 10 0 0 0 0 1
 footprint=soic-16w-lpads
 }
 N 74600 50000 75500 50000 4
+<<<<<<< .merge_file_52N1bk
 C 68700 54600 1 0 0 vdd-1.sym
 C 69100 53700 1 180 0 vss-1.sym
 C 68700 54600 1 270 0 capacitor-4.sym
@@ -137,3 +138,18 @@ symversion=0.1
 T 68700 54600 5 10 0 0 0 0 1
 footprint=quickcapfoot-2.5mm
 }
+=======
+C 68700 54600 1 0 0 vdd-1.sym
+C 69100 53700 1 180 0 vss-1.sym
+C 68700 54600 1 270 0 capacitor-4.sym
+{
+T 69800 54400 5 10 0 0 270 0 1
+device=POLARIZED_CAPACITOR
+T 69200 54400 5 10 1 1 270 0 1
+refdes=C?
+T 69400 54400 5 10 0 0 270 0 1
+symversion=0.1
+T 68700 54600 5 10 0 0 0 0 1
+footprint=quickcapfoot-2.5mm
+}
+>>>>>>> .merge_file_nZJCIh
