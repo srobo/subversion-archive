@@ -1,5 +1,5 @@
 # release: pcb 20070208
-# date:    Mon Feb 26 16:37:51 2007
+# date:    Mon Feb 26 16:41:37 2007
 # user:    justyn (Justyn Butler,,,)
 # host:    theobromine
 
@@ -997,7 +997,7 @@ Element["" "header-0.1-3x1" "S109/J401" "unknown" 25749 108267 -14818 -12297 0 1
 
 	)
 
-Element["" "cageclamp" "S106/CONN301" "unknown" 143701 55432 -20036 25839 0 100 ""]
+Element["" "cageclamp" "S106/CONN301" "unknown" 143701 55432 -18068 12060 0 100 ""]
 (
 	Pin[-20000 0 7874 2000 8474 4331 "" "2" "edge2"]
 	Pin[0 0 7874 2000 8474 4331 "" "1" "edge2"]
@@ -1133,7 +1133,7 @@ Element["" "soic-16w-lpads" "U101" "unknown" 100394 129921 3150 -26770 0 100 ""]
 
 	)
 
-Element["" "SOT-23_Transistor" "S107/Q301" "unknown" 143700 84246 -16931 -8870 0 100 ""]
+Element["" "SOT-23_Transistor" "S104/Z201" "unknown" 21654 142132 -21257 11431 0 100 ""]
 (
 	Pad[-3800 6700 -3800 7500 2800 3000 5800 "B" "1" "square,edge2"]
 	Pad[3700 6800 3700 7500 2800 3000 5800 "E" "2" "square,edge2"]
@@ -1187,7 +1187,7 @@ Element["" "1206_reflow_solder" "S103/R201" "10k" 19785 79840 -12205 -11415 0 10
 
 	)
 
-Element["" "SOT-23_Transistor" "S107/Q302" "unknown" 118110 84246 -15667 -9003 0 100 ""]
+Element["" "SOT-23_Transistor" "S103/Z201" "unknown" 51181 142132 -14564 11818 0 100 ""]
 (
 	Pad[-3800 6700 -3800 7500 2800 3000 5800 "B" "1" "square,edge2"]
 	Pad[3700 6800 3700 7500 2800 3000 5800 "E" "2" "square,edge2"]
@@ -1260,7 +1260,7 @@ Element["" "SOT-23_Transistor" "S105/Q301" "unknown" 137008 135032 -17914 8063 0
 
 	)
 
-Element["" "SOT-23_Transistor" "S104/Z201" "unknown" 21654 142132 -21257 11431 0 100 ""]
+Element["" "SOT-23_Transistor" "S107/Q301" "unknown" 135825 90151 -14962 -6901 0 100 ""]
 (
 	Pad[-3800 6700 -3800 7500 2800 3000 5800 "B" "1" "square,edge2"]
 	Pad[3700 6800 3700 7500 2800 3000 5800 "E" "2" "square,edge2"]
@@ -1272,7 +1272,7 @@ Element["" "SOT-23_Transistor" "S104/Z201" "unknown" 21654 142132 -21257 11431 0
 
 	)
 
-Element["" "SOT-23_Transistor" "S103/Z201" "unknown" 51181 142132 -14564 11818 0 100 ""]
+Element["" "SOT-23_Transistor" "S107/Q302" "unknown" 114173 90152 -15667 -9003 0 100 ""]
 (
 	Pad[-3800 6700 -3800 7500 2800 3000 5800 "B" "1" "square,edge2"]
 	Pad[3700 6800 3700 7500 2800 3000 5800 "E" "2" "square,edge2"]
@@ -1294,6 +1294,8 @@ Layer(3 "Vcc-sldr")
 )
 Layer(4 "component")
 (
+	Text[25590 19685 0 100 "Inputs" ""]
+	Text[122048 74803 0 100 "Outputs" ""]
 )
 Layer(5 "GND-comp")
 (
