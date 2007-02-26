@@ -75,6 +75,10 @@ ChangePinName(S109/J401, 1, 1)
 ChangePinName(S109/J401, 3, 3)
 ChangePinName(S109/J401, 2, 2)
 
+# Start of element C2
+ChangePinName(C2, 2, -)
+ChangePinName(C2, 1, +)
+
 # Start of element S101/Z201
 ChangePinName(S101/Z201, 3, 3)
 ChangePinName(S101/Z201, 2, 2)
