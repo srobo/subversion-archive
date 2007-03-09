@@ -6,6 +6,7 @@
 #include <termios.h>
 #include <string.h>
 #include "xbee_at.h"
+#include "xbee_ipc.h"
 
 #define BUFLEN 256
 
@@ -35,8 +36,6 @@ static gboolean xbee_outgoing_queued( xbee_t* xb );
 /* Adds a frame to the queue */
 
 /* Remove a frame from the list */
-
-void xbee_hack( xbee_t* xb );
 
 void xbee_init( xbee_t* xb, int fd )
 {
@@ -108,15 +107,7 @@ gboolean xbee_main( xbee_t* xb )
 			if( FD_ISSET( xb->fd, &f_w ) != 0 )
 				xbee_proc_outgoing( xb );
 		}
-
-		/* Current hack */
-		xbee_hack( xb );
 	}
-}
-
-void xbee_hack( xbee_t* xb )
-{
-	
 }
 
 static gboolean xbee_proc_incoming( xbee_t* xb )
