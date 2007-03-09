@@ -65,6 +65,8 @@ gboolean xbee_main( xbee_t* xb )
 {
 	assert( xb != NULL );
 	fd_set f_r, f_w;
+	GIOChannel *gio;
+	GMainLoop* ml;
 
 	if( !xbee_set_api_mode( xb ) )
 	{
@@ -283,8 +285,12 @@ static int xbee_read_frame( xbee_t* xb )
 				xb->in_len = 0;
 			}
 
-			xb->inbuf[ xb->in_len ] = d;
-			xb->in_len ++;
+			if( !xb->escape )
+			{
+				xb->inbuf[ xb->in_len ] = d;
+				xb->in_len ++;
+			}
+
 		}
 
 		if( xb->in_len >= 3 )

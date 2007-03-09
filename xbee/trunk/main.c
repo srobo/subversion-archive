@@ -8,7 +8,7 @@ int main( int argc, char** argv )
 	xbee_t xb;
 	int sp = -1;
 
-	sp = open( "/dev/ttyS0", O_RDWR | O_NONBLOCK );
+	sp = open( "/dev/ttyUSB0", O_RDWR | O_NONBLOCK );
 	if( sp < 0 )
 	{
 		fprintf( stderr, "Error: Failed to open serial port\n" );
