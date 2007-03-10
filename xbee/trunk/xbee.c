@@ -10,6 +10,7 @@
 
 #define BUFLEN 256
 
+/* Displays the contents of a frame */
 void debug_show_frame( uint8_t* buf, uint16_t len );
 
 /* Process incoming data */
@@ -23,7 +24,6 @@ static int xbee_read_frame( xbee_t* xb  );
 
 /* Calculate the checksum of a block of data */
 static uint8_t xbee_checksum( uint8_t* buf, uint16_t len );
-
 static uint8_t xbee_sum_block( uint8_t* buf, uint16_t len, uint8_t cur );
 
 /* Process outgoing data */
@@ -32,10 +32,24 @@ static gboolean xbee_proc_outgoing( xbee_t* xb );
 /* Whether data's ready to transmit */
 static gboolean xbee_outgoing_queued( xbee_t* xb );
 
-/*** Transmission frame queue functions ***/
-/* Adds a frame to the queue */
+/* Returns the next byte to transmit */
+static uint8_t xbee_outgoing_next( xbee_t* xb );
 
-/* Remove a frame from the list */
+/* Adds a frame to the transmit queue */
+static gboolean xbee_out_queue_add( xbee_t* xb, uint8_t *data, uint8_t len );
+static void xbee_out_queue_add_frame( xbee_t* xb, xb_frame_t* frame );
+
+/* Removes the last frame from the transmit queue */
+static void xbee_out_queue_del( xbee_t* xb );
+
+/*** "Internal" Client API Functions ***/
+int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len );
+
+/* Copy 64 bytes into a buffer -> MSB to 0, LSB to end of buffer */
+static void copy_64b_ml( uint64_t data, uint8_t* buf );
+
+void hack( xbee_t* xb );
+void grab_address( xbee_t* xb );
 
 void xbee_init( xbee_t* xb, int fd )
 {
@@ -65,14 +79,23 @@ gboolean xbee_main( xbee_t* xb )
 {
 	assert( xb != NULL );
 	fd_set f_r, f_w;
-	GIOChannel *gio;
-	GMainLoop* ml;
+/* 	GIOChannel *gio; */
+/* 	GMainLoop* ml; */
 
 	if( !xbee_set_api_mode( xb ) )
 	{
 		fprintf( stderr, "Failed to enter API mode - quitting.\n" );
 		return FALSE;
 	}
+
+/* 	ml = g_main_loop_new( NULL, FALSE ); */
+
+/* 	gio = g_io_channel_unix_new( xb->fd ); */
+
+/* 	g_main_loop_run( ml ); */
+
+/* 	grab_address( xb ); */
+	hack(xb);
 
 	while( 1 )
 	{
@@ -109,6 +132,8 @@ gboolean xbee_main( xbee_t* xb )
 			if( FD_ISSET( xb->fd, &f_w ) != 0 )
 				xbee_proc_outgoing( xb );
 		}
+
+//		hack(xb);
 	}
 }
 
@@ -132,43 +157,55 @@ static gboolean xbee_proc_incoming( xbee_t* xb )
 	return TRUE;
 }
 
+static uint8_t xbee_outgoing_next( xbee_t* xb )
+{
+	const uint8_t FRAME_START = 0x7E;
+	xb_frame_t* frame;
+
+	assert( xb != NULL );
+
+	frame = (xb_frame_t*)g_queue_peek_tail( xb->out_frames );
+
+	if( xb->tx_pos == 0 )
+		return FRAME_START;
+	else if( xb->tx_pos == 1 )
+		return (frame->len >> 8) & 0xFF;
+	else if( xb->tx_pos == 2 )
+		return frame->len & 0xFF;
+	else if( xb->tx_pos < frame->len + 3 )
+	{
+		/* next byte to be transmitted in the frame buffer */
+		uint16_t dpos = xb->tx_pos - 3; 
+
+		return frame->data[ dpos ];
+	}
+	else
+	{
+		if( !xb->checked )
+		{
+			/* Calculate checksum */
+			xb->o_chk = xbee_sum_block( frame->data, frame->len, 0 );
+			xb->o_chk = 0xFF - xb->o_chk;
+		}
+
+		return xb->o_chk;
+	}
+}
+
 /* This function needs a bit of cleanup */
 static gboolean xbee_proc_outgoing( xbee_t* xb )
 {
 	uint8_t d;
 	ssize_t w;
 	xb_frame_t* frame;
-	const uint8_t FRAME_START = 0x7E;
+
 	assert( xb != NULL );
 	/* If there's an item in the list, transmit part of it */
 
 	while( g_queue_get_length( xb->out_frames ) )
 	{
 		frame = (xb_frame_t*)g_queue_peek_tail( xb->out_frames );
-		if( xb->tx_pos == 0 )
-			d = FRAME_START;
-		else if( xb->tx_pos == 1 )
-			d = (frame->len >> 8) & 0xFF;
-		else if( xb->tx_pos == 2 )
-			d = frame->len & 0xFF;
-		else if( xb->tx_pos < frame->len + 3 )
-		{
-			/* next byte to be transmitted in the frame buffer */
-			uint16_t dpos = xb->tx_pos - 3; 
-
-			d = frame->data[ dpos ];
-		}
-		else
-		{
-			if( !xb->checked )
-			{
-				/* Calculate checksum */
-				xb->o_chk = xbee_sum_block( frame->data, frame->len, 0 );
-				xb->o_chk = 0xFF - xb->o_chk;
-			}
-
-			d = xb->o_chk;
-		}
+		d = xbee_outgoing_next( xb );
 
 		/* Requires escaping? */
 		if( xb->tx_pos != 0 && ( d == 0x7E || d == 0x7D || d == 0x11 || d == 0x13 ) )
@@ -193,7 +230,7 @@ static gboolean xbee_proc_outgoing( xbee_t* xb )
 		}
 		if( w == 0 ) continue;
 
-/* 		printf( "Wrote: %2.2X\n", (unsigned int)d ); */
+/*  		printf( "Wrote: %2.2X\n", (unsigned int)d );  */
 
 		if( xb->tx_pos > 0 && d == 0x7D )
 			xb->tx_escaped = TRUE;
@@ -205,7 +242,7 @@ static gboolean xbee_proc_outgoing( xbee_t* xb )
 		/* check for end of frame */
 		if( frame->len + 4 == xb->tx_pos )
 		{
-			g_queue_pop_tail( xb->out_frames );
+			xbee_out_queue_del( xb );
 			xb->frames_tx ++;
 			xb->tx_pos = 0;
 			xb->o_chk = 0;
@@ -253,6 +290,8 @@ static int xbee_read_frame( xbee_t* xb )
 
 		if( r == 0 ) continue;
 
+
+/*  		printf( "Read: %2.2X\n", (unsigned int)d ); */
 		xb->bytes_rx ++;
 
 		/* If we come across the beginning of a frame */
@@ -312,6 +351,7 @@ static int xbee_read_frame( xbee_t* xb )
 				{
 					/* Checksum invalid */
 					memmove( xb->inbuf, &xb->inbuf[flen + 4], xb->in_len - (flen + 4 ) );
+					printf( "Checksum invalid\n" );
 					xb->frames_discarded ++;
 				}
 			}
@@ -360,4 +400,141 @@ void debug_show_frame( uint8_t* buf, uint16_t len )
 			printf( "\n" );
 	}
 	printf("\n");
+}
+
+static gboolean xbee_out_queue_add( xbee_t* xb, uint8_t *data, uint8_t len )
+{
+	xb_frame_t *frame;
+	assert( xb != NULL && data != NULL );
+	
+	frame = g_malloc( sizeof( xb_frame_t ) );
+
+	/* Copy data into frame */
+	frame->data = g_memdup( data, len );
+	frame->len = len;
+
+	g_queue_push_head( xb->out_frames, frame );
+
+	return TRUE;
+}
+
+static void xbee_out_queue_add_frame( xbee_t* xb, xb_frame_t* frame )
+{
+	assert( xb != NULL && frame != NULL );
+
+	g_queue_push_head( xb->out_frames, frame );
+}
+
+
+static void xbee_out_queue_del( xbee_t* xb )
+{
+	xb_frame_t *frame;
+	assert( xb != NULL );
+
+	frame = (xb_frame_t*)g_queue_peek_tail( xb->out_frames );
+
+	/* Free the data */
+	g_free( frame->data );
+	frame->data = NULL;
+
+	/* Free the element */
+	g_free( frame );
+
+	g_queue_pop_tail( xb->out_frames );
+}
+
+int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len )
+{
+	xb_frame_t *frame;
+	uint8_t* pos;
+	assert( xb != NULL && addr != NULL && buf != NULL );
+
+	/* 64-bit address frame structure:
+	 * 0: API Identifier: 0x00
+	 * 1: Frame ID
+	 * 2-9: Target address - MSB first
+	 * 10: Option flags
+	 * 11...10+len: Data */
+
+	/* 16-bit address frame structure:
+	 * 0: API Identifier: 0x01
+	 * 1: Frame ID
+	 * 2-3: Target address - MSB first
+	 * 4: Option flags
+	 * 5...4+len: Data */
+
+	frame = g_malloc( sizeof(xb_frame_t) );
+
+	/* Calculate frame length */
+	if( addr->type == XB_ADDR_16 )
+		frame->len = len + 5;
+	else
+		frame->len = len + 11;
+
+	frame->data = g_malloc( frame->len );
+
+	if( addr->type == XB_ADDR_64 )
+	{
+		frame->data[0] = 0x00; /* API Identifier */
+		/* Copy address */
+		g_memmove( &frame->data[2], addr->addr, 8 );
+/* 		copy_64b_ml( XB_ADDR_GET_64(addr), &frame->data[2] ); */
+		pos = &frame->data[10]; 
+	}
+	else
+	{
+		frame->data[0] = 0x01; /* API Identifier */
+		/* Copy address */
+		g_memmove( &frame->data[2], addr->addr, 2 );
+		pos = &frame->data[4];
+	}
+	/* pos now pointing at option byte */
+	*pos = 0;		/* TODO: Option byte */
+	pos ++;
+
+	/* Frame ID: */
+	frame->data[1] = 1;	/* TODO: Frame ID */
+
+	/* Copy data */
+	g_memmove( pos, buf, len );
+
+	xbee_out_queue_add_frame( xb, frame );
+
+	return 0;
+}
+
+static void copy_64b_ml( uint64_t data, uint8_t* buf )
+{
+	uint8_t i;
+	assert( buf != NULL );
+
+	for( i=8; i > 0; i-- )
+	{
+		buf[i-1] = data & 0xFF;
+		data >>= 8;
+	}
+}
+
+void hack( xbee_t* xb )
+{
+	uint8_t data[] = {0,1,2,3,4,5};
+	xb_addr_t addr =
+		{
+			.type = XB_ADDR_64,
+			.addr = {0x00, 0x13, 0xA2, 0x00, 0x40, 0x09, 0x00, 0xA9}
+		};
+	assert( xb != NULL );
+
+	if( g_queue_get_length( xb->out_frames ) == 0 )
+		xbee_transmit( xb, &addr, data, sizeof( data ) );
+
+}
+
+void grab_address( xbee_t* xb )
+{
+	uint8_t sh[] = { 0x08, 2, 'S', 'H' };
+	uint8_t sl[] = { 0x08, 3, 'S', 'L' };
+
+	xbee_out_queue_add( xb, sh, 4 );
+	xbee_out_queue_add( xb, sl, 4 );
 }

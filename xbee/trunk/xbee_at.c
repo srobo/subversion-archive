@@ -363,6 +363,7 @@ gboolean xbee_set_api_mode( xbee_t* xb )
 	if( !xbee_check_ok( xb ) )
 		return FALSE;
 
+	xb->at_mode = FALSE;
 	xb->api_mode = TRUE;
 	g_debug("xbee in API mode\n");
 

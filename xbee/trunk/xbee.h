@@ -29,7 +29,7 @@ typedef struct
 	struct timeval at_time;
 
 	/*** Transmission ***/
-	/* Queue of outgoing frames */
+	/* Queue of outgoing frames - all of xb_frame_t */
 	/* Note: the data in these frames has already been escaped */
 	GQueue* out_frames; 
 
@@ -65,20 +65,20 @@ typedef enum
 typedef struct
 {
 	xb_addr_len_t type;
-	uint64_t addr;
+	uint8_t addr[8];
 } xb_addr_t;
 
-static inline uint16_t XB_ADDR_GET_16(xb_addr_t* addr)
-{
-	assert(addr != NULL && addr->type == XB_ADDR_16 );
-	return (uint16_t)(addr->addr & 0xFFFF);
-}
+/* static inline uint16_t XB_ADDR_GET_16(xb_addr_t* addr) */
+/* { */
+/* 	assert(addr != NULL && addr->type == XB_ADDR_16 ); */
+/* 	return (uint16_t)(addr->addr & 0xFFFF); */
+/* } */
 
-static inline uint64_t XB_ADDR_GET_64(xb_addr_t* addr)
-{
-	assert(addr != NULL && addr->type == XB_ADDR_64 );
-	return addr->addr;
-}
+/* static inline uint64_t XB_ADDR_GET_64(xb_addr_t* addr) */
+/* { */
+/* 	assert(addr != NULL && addr->type == XB_ADDR_64 ); */
+/* 	return addr->addr; */
+/* } */
 
 /* Initialise the module.
  * This puts the node into API mode.

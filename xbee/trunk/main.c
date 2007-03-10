@@ -8,7 +8,13 @@ int main( int argc, char** argv )
 	xbee_t xb;
 	int sp = -1;
 
-	sp = open( "/dev/ttyUSB0", O_RDWR | O_NONBLOCK );
+	if( argc < 2 )
+	{
+		fprintf( stderr, "Not enough arguments\n" );
+		return 1;
+	}
+
+	sp = open( argv[1], O_RDWR | O_NONBLOCK );
 	if( sp < 0 )
 	{
 		fprintf( stderr, "Error: Failed to open serial port\n" );
