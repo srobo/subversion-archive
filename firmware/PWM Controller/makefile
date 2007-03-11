@@ -1,7 +1,7 @@
 # makfile configuration
 NAME            = leds
 OBJECTS         = main.o
-CPU = msp430x2111
+CPU             = msp430x2111
 
 CFLAGS          = -mmcu=${CPU} -O2 -Wall -g
 
@@ -9,6 +9,10 @@ CFLAGS          = -mmcu=${CPU} -O2 -Wall -g
 CC              = msp430-gcc
 
 .PHONY: all FORCE clean download download-jtag download-bsl dist
+
+leds: main.c hardware.h
+	${CC} -mmcu=${CPU} -o $@ main.c ${CFLAGS} ${LDFLAGS}
+
 
 #all should be the first target. it's built when make is run without args
 all: ${NAME}.elf ${NAME}.a43 ${NAME}.lst

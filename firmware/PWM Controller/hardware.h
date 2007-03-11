@@ -28,6 +28,11 @@
 #define P1IES_INIT      0                       // Interrupt Edge Select (0=pos 1=neg)
 #define P2IES_INIT      0                       // Interrupt Edge Select (0=pos 1=neg)
 
+ //system clock in div by 2
 #define WDTCTL_INIT     WDTPW|WDTHOLD
+
+#define PERIOD 56500
+#define TICKS_PER_MS PERIOD/20
+#define SERVO_NUMBER 6
 
 #endif //HARDWARE_H
