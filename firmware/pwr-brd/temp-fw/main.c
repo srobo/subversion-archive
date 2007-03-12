@@ -24,6 +24,7 @@ void main (void)
 	PORTCbits.RC0=0;
 	PORTD=0b00100000;
 	delay(20);
+	PORTCbits.RC0=1;
 	while ( 1 )
 	{
 		PORTD^= 0xFF;
