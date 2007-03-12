@@ -89,7 +89,7 @@ int main(void) {
 
 interrupt (TIMERA0_VECTOR) isr_TACR0(void){ //isr for period interrupt, resets TIMERA also resets current_servo, and put servo0 pin high
 	current_servo = 0;
-	P1OUT = (0x01);
+	P1OUT = (0xFE);
 }
 
 interrupt (TIMERA1_VECTOR) isr_TAIV(void){ //both for period interrupt and 
@@ -98,9 +98,9 @@ interrupt (TIMERA1_VECTOR) isr_TAIV(void){ //both for period interrupt and
 			current_servo++;
 			if(current_servo<SERVO_NUMBER){ //deal with next servo and check there is a next servo!
 				TACCR1 += getServoPWM(current_servo); //get servo# pulse width, increment cc1 by its width
-				P1OUT = (0x01<<current_servo); //set servo# output high
+				P1OUT = (0xFE<<current_servo); //set servo# output high
 			}else{
-				P1OUT = (0x00);
+				P1OUT = (0xFF);
 				TACCR1 = getServoPWM(0); //reset CC1 to pulse Servo0
 			}
 			break;                          
