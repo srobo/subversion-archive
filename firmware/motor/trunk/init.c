@@ -16,10 +16,8 @@ void init( void )
 void init_gpio( void )
 {
 	/* Set all to outputs */
-	P0DIR = P1DIR = P2DIR = P3DIR = P4DIR = 0xFF;
+	P1DIR = P2DIR = P3DIR = P4DIR = 0xFF;
 
 	/* Configure all as IO initially */
-	P0SEL = P1SEL = P2SEL = P3SEL = P4SEL = 0;
-
-
+	P1SEL = P2SEL = P3SEL = P4SEL = 0;
 }

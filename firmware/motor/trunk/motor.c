@@ -27,12 +27,12 @@ void motor_set( uint8_t channel, speed_t speed,  motor_state_t state )
 
 		switch( state )
 		{
-		case PWM_STOP:
-			v = 0; break;
-		case PWM_FORWARD:
-			v = 0; break;
-		case PWM_BACKWARD:
-			v = 0; break;
+		case M_OFF:
+			v = 1; break;
+		case M_FORWARD:
+			v = 2; break;
+		case M_BACKWARD:
+			v = 3; break;
 		default:
 			//case PWM_BRAKE:
 			v = 0; break;
@@ -42,9 +42,9 @@ void motor_set( uint8_t channel, speed_t speed,  motor_state_t state )
 		if( channel == 0 )
 			p = 3;
 		else
-			p = 4;
-		
-		P3OUT &= ~( 5 << p );
+			p = 5;
+
+		P3OUT &= ~( 3 << p );
 		P3OUT |= v << p;
 
 		motors[channel].state = state;
@@ -70,5 +70,9 @@ void motor_init( void )
 	uint8_t i;
 
 	for( i=0; i<2; i++ )
-		motor_set( i, 0, M_STOP );
+	{
+		motors[i].state = M_BRAKE;
+		motors[i].speed = 1;
+		motor_set( i, 0, M_OFF );
+	}
 }

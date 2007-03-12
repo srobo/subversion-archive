@@ -11,7 +11,7 @@ typedef pwm_ratio_t speed_t;
 /* States a motor can be in */
 typedef enum
 {
-	M_STOP = 0,
+	M_OFF = 0,
 	M_FORWARD,
 	M_BACKWARD,
 	M_BRAKE
