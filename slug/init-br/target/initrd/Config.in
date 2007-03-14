@@ -1,0 +1,5 @@
+config BR2_TARGET_INITRD
+       bool "Create an initrd"
+       default n
+       help
+	Build an initrd.  Will be a cramfs.

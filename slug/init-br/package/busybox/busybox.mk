@@ -74,6 +74,20 @@ endif
 	# Just in case
 	-chmod a+x $(TARGET_DIR)/usr/share/udhcpc/default.script
 
+$(INITRD_DIR)/bin/busybox: $(BUSYBOX_DIR)/busybox $(INITRD_DIR)
+ifeq ($(BR2_PACKAGE_BUSYBOX_INSTALL_SYMLINKS),y)
+	$(MAKE) CC=$(TARGET_CC) CROSS_COMPILE="$(TARGET_CROSS)" \
+		CROSS="$(TARGET_CROSS)" PREFIX="$(INITRD_DIR)" \
+		ARCH=$(KERNEL_ARCH) \
+		EXTRA_CFLAGS="$(TARGET_CFLAGS)" -C $(BUSYBOX_DIR) install
+else
+	install -D -m 0755 $(BUSYBOX_DIR)/busybox $(INITRD_DIR)/bin/busybox
+endif
+	# Just in case
+	-chmod a+x $(INITRD_DIR)/usr/share/udhcpc/default.script
+
+busybox-initrd: $(INITRD_DIR)/bin/busybox
+
 busybox: uclibc $(TARGET_DIR)/bin/busybox
 
 busybox-menuconfig: busybox-source $(BUSYBOX_DIR)/.configured

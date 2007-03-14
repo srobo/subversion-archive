@@ -11,6 +11,8 @@ source "target/tar/Config.in"
 source "target/cpio/Config.in"
 source "target/iso9660/Config.in"
 
+source "target/initrd/Config.in"
+
 comment "bootloader for target device"
 
 source "target/x86/grub/Config.in"

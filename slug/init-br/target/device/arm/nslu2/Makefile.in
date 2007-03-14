@@ -2,5 +2,6 @@ ARM_NSLU2_PATH=target/device/arm/nslu2
 
 TARGET_DEVICE_TABLE = $(ARM_NSLU2_PATH)/device_table.txt
 TARGET_SKELETON = $(ARM_NSLU2_PATH)/target_skeleton
+INITRD_SKELETON = $(ARM_NSLU2_PATH)/initrd_skeleton
 
 
