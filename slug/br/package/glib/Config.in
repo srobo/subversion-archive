@@ -1,0 +1,8 @@
+config BR2_PACKAGE_GLIB
+       bool "glib"
+       default n
+       select BR2_PACKAGE_PKGCONFIG
+       select BR2_PACKAGE_LIBICONV
+       select BR2_PACKAGE_LIBINTL
+       help
+		Build glib

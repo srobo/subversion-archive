@@ -1,0 +1,66 @@
+diff -ru spcaview-20061208.plain/audioin_devdsp.c spcaview-20061208/audioin_devdsp.c
+--- spcaview-20061208.plain/audioin_devdsp.c	2006-12-19 18:22:14.000000000 +0000
++++ spcaview-20061208/audioin_devdsp.c	2006-12-19 18:23:29.000000000 +0000
+@@ -13,8 +13,8 @@
+ #include <fcntl.h>
+ #include <errno.h>
+ 
+-#include <SDL/SDL.h>
+-#include <SDL/SDL_thread.h>
++#include <SDL.h>
++#include <SDL_thread.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdlib.h>
+diff -ru spcaview-20061208.plain/SDL_audioin.h spcaview-20061208/SDL_audioin.h
+--- spcaview-20061208.plain/SDL_audioin.h	2006-12-19 18:22:14.000000000 +0000
++++ spcaview-20061208/SDL_audioin.h	2006-12-19 18:23:06.000000000 +0000
+@@ -38,8 +38,8 @@
+ #ifndef __SDL_AUDIOIN_H__
+ #define __SDL_AUDIOIN_H__
+ 
+-#include <SDL/SDL_audio.h>
+-#include <SDL/begin_code.h>
++#include <SDL_audio.h>
++#include <begin_code.h>
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -80,6 +80,6 @@
+ }
+ #endif/*__cplusplus*/
+ 
+-#include <SDL/close_code.h>
++#include <close_code.h>
+ 
+ #endif/*__SDL_AUDIOIN_H__*/
+diff -ru spcaview-20061208.plain/SDL_audioin_internal.h spcaview-20061208/SDL_audioin_internal.h
+--- spcaview-20061208.plain/SDL_audioin_internal.h	2006-12-19 18:22:14.000000000 +0000
++++ spcaview-20061208/SDL_audioin_internal.h	2006-12-19 18:23:45.000000000 +0000
+@@ -8,7 +8,7 @@
+ #ifndef __SDL_AUDIOIN_INTERNAL_H__
+ #define __SDL_AUDIOIN_INTERNAL_H__
+ 
+-#include <SDL/SDL_audio.h>
++#include <SDL_audio.h>
+ 
+ typedef struct __SDOUND_INPUTFUNCTIONS__
+ {
+diff -ru spcaview-20061208.plain/spcaview.c spcaview-20061208/spcaview.c
+--- spcaview-20061208.plain/spcaview.c	2006-12-19 18:22:14.000000000 +0000
++++ spcaview-20061208/spcaview.c	2006-12-19 18:22:42.000000000 +0000
+@@ -30,10 +30,10 @@
+ #include <sys/file.h>
+ #include <string.h>
+ #include <pthread.h>
+-#include <SDL/SDL.h>
+-#include <SDL/SDL_thread.h>
+-#include <SDL/SDL_audio.h>
+-#include <SDL/SDL_timer.h>
++#include <SDL.h>
++#include <SDL_thread.h>
++#include <SDL_audio.h>
++#include <SDL_timer.h>
+ #include <linux/videodev.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>

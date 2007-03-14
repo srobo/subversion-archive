@@ -1,0 +1,6 @@
+ixp400linuxethernetdriver-1_2-kernel26_hr_20050929.patch 
+makefile.patch 
+2.6.13.patch 
+2.6.14.patch 
+platform_device_include.patch
+fix-include.patch

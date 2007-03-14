@@ -1,0 +1,12 @@
+Student Robotics buildroot for NSLU2 based robot controller.
+
+A small FAQ:
+
+* What is this?
+  buildroot is a set of scripts designed to automate the process of
+  cross-compiling software for embedded systems.  It's also quite easy
+  to maintain.
+
+* How do I build it?
+  Read the BUILD file.
+
