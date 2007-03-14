@@ -23,6 +23,10 @@ null::sysinit:/sbin/route add -net 127.0.0.0 netmask 255.0.0.0 lo
 # now run any rc scripts
 ::sysinit:/etc/init.d/rcS
 
+# added blindly by Tom...
+#to pivot root after boot
+::sysinit:/etc/init.d/piv.sh
+
 # Set up a couple of getty's
 #tty1::respawn:/sbin/getty 38400 tty1
 #tty2::respawn:/sbin/getty 38400 tty2
