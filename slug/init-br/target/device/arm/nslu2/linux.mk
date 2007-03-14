@@ -107,7 +107,7 @@ $(LINUX_DIR)/include/linux/autoconf.h $(BUILD_DIR)/linux/include/linux/autoconf.
 $(LINUX_DIR)/$(LINUX_BINLOC): $(LINUX_DIR)/include/linux/autoconf.h
 	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH)
 
-$(LINUX_KERNEL): $(LINUX_DIR)/$(LINUX_BINLOC) $(BUSYBOX_DIR)/.configured
+$(LINUX_KERNEL): $(LINUX_DIR)/.config $(LINUX_DIR)/$(LINUX_BINLOC) $(BUSYBOX_DIR)/.configured
 	-echo DEPMOD3=$(DEPMOD)
 	-echo DEPMOD_TMP=$(DEPMOD_TMP)
 	mkdir -p $(TARGET_DIR)/boot
