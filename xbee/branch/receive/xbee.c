@@ -7,6 +7,7 @@
 #include <string.h>
 #include "xbee_at.h"
 /* #include "xbee_ipc.h" */
+#include <linux/joystick.h>
 
 #define BUFLEN 256
 
@@ -15,6 +16,10 @@ void debug_show_frame( uint8_t* buf, uint16_t len );
 
 /* Process incoming data */
 static gboolean xbee_proc_incoming( xbee_t* xb );
+
+/* Process receive frames */
+static void xbee_proc_received64( xbee_t *xb, uint8_t *buf, uint8_t len );
+static void xbee_proc_received16( xbee_t *xb, uint8_t *buf, uint8_t len );
 
 /* Reads in available bytes from the input.
  * When a full frame is achieved, it returns 0.
@@ -150,11 +155,28 @@ static gboolean xbee_proc_incoming( xbee_t* xb )
 	while( xbee_read_frame( xb ) == 0 )
 	{
 		uint16_t flen;
+		uint8_t *data;
 		flen = (xb->inbuf[1] << 8) | xb->inbuf[2];
 
+		data = &xb->inbuf[3];
+
 		/* Frame received */
+		if( flen > 1 )
+		{
+			switch( data[0] )
+			{
+			case 0x80:
+				xbee_proc_received64( xb, data + 1, flen - 1 );
+				break;
+
+			case 0x81:
+				xbee_proc_received16( xb, data + 1, flen - 1 );
+				break;
+			}
+		}
+
 		/* TODO: Process frame! */
-		debug_show_frame( xb->inbuf, flen + 4 );
+/* 		debug_show_frame( xb->inbuf, flen + 4 ); */
 
 		/* Discard frame after processing? */
 		xb->in_len = 0;
@@ -572,4 +594,23 @@ void xbee_free( xbee_t* xb )
 
 	g_queue_free( xb->out_frames );
 	xb->out_frames = NULL;
+}
+
+static void xbee_proc_received64( xbee_t *xb, uint8_t *buf, uint8_t len )
+{
+	printf( "Frame received\n" );
+}
+
+static void xbee_proc_received16( xbee_t *xb, uint8_t *buf, uint8_t len )
+{
+	struct js_event *ev;
+	if( len < 4 ) return;
+
+	ev = (struct js_event*)&buf[4];
+	if( ev->type == JS_EVENT_AXIS && ev->number == 1 )
+	{
+		printf( "\rAxis %hhu Position %6i ", ev->number, ev->value );
+		fflush( stdout );
+	}
+
 }
