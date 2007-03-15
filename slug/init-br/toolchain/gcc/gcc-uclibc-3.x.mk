@@ -252,6 +252,9 @@ endif
 	#
 	touch $(GCC_BUILD_DIR2)/.installed
 
+gcc-target-libs-initrd: $(GCC_BUILD_DIR2)/.installed $(INITRD_DIR)/lib/libgcc_s.so.1
+	-cp -a $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(INITRD_DIR)/lib/
+
 gcc-target-libs: $(GCC_BUILD_DIR2)/.installed
 ifeq ($(BR2_GCC_SHARED_LIBGCC),y)
 	# These are in /lib, so...

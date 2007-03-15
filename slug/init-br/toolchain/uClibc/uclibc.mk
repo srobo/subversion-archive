@@ -185,13 +185,38 @@ ifeq ($(strip $(BR2_CROSS_TOOLCHAIN_TARGET_UTILS)),y)
 endif
 	touch -c $(TARGET_DIR)/usr/bin/ldd
 
-UCLIBC_TARGETS=$(TARGET_DIR)/lib/libc.so.0
+UCLIBC_TARGETS:=$(TARGET_DIR)/lib/libc.so.0
+
+ifeq ($(strip $(BR2_TARGET_INITRD)),y)
+uclibc-initrd: $(INITRD_DIR)/lib/libc.so.0 $(INITRD_DIR)/usr/bin/ldd
+
+$(INITRD_DIR)/lib/libc.so.0: $(STAGING_DIR)/lib/libc.a
+	$(MAKE1) -C $(UCLIBC_DIR) \
+		PREFIX=$(INITRD_DIR) \
+		DEVEL_PREFIX=/usr/ \
+		RUNTIME_PREFIX=/ \
+		install_runtime
+	touch -c $(INITRD_DIR)/lib/libc.so.0
+
+$(INITRD_DIR)/usr/bin/ldd:
+	$(MAKE1) -C $(UCLIBC_DIR) $(TARGET_CONFIGURE_OPTS) \
+		PREFIX=$(INITRD_DIR) utils install_utils
+ifeq ($(strip $(BR2_CROSS_TOOLCHAIN_TARGET_UTILS)),y)
+	mkdir -p $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils
+	install -c $(INITRD_DIR)/usr/bin/ldd \
+		$(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils/ldd
+endif
+	touch -c $(INITRD_DIR)/usr/bin/ldd
+
+endif
+
+UCLIBC_TARGETS+= $(INITRD_DIR)/lib/libc.so.0
 endif
 
 uclibc-configured: $(UCLIBC_DIR)/.configured
 
 uclibc: $(STAGING_DIR)/bin/$(REAL_GNU_TARGET_NAME)-gcc $(STAGING_DIR)/lib/libc.a \
-	$(UCLIBC_TARGETS)
+	$(UCLIBC_TARGETS) 
 
 uclibc-source: $(DL_DIR)/$(UCLIBC_SOURCE)
 

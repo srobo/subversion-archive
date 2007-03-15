@@ -5,10 +5,18 @@
 INITRD_DIR:=$(BUILD_DIR)/initrd
 INITRD_TARGET:=initrd.cramfs
 
-$(INITRD_DIR): 
-	cp -r $(INITRD_SKELETON) $(INITRD_DIR)
+INITRD_SKELETON := target/device/arm/nslu2/initrd_skeleton
 
-$(INITRD_TARGET): $(INITRD_DIR) busybox-initrd
+$(INITRD_DIR): 
+	mkdir -p $(INITRD_DIR)
+
+$(INITRD_DIR)/.full: $(INITRD_DIR)
+	cp -r $(INITRD_SKELETON)/* $(INITRD_DIR)
+	touch $(INITRD_DIR)/.full
+
+initrd-stuff: $(INITRD_DIR)/.full gcc-target-libs-initrd busybox-initrd uclibc-initrd
+
+$(INITRD_TARGET): initrd-stuff
 	-@find $(INITRD_DIR) -type f -perm +111 | xargs $(STRIP) 2>/dev/null || true;
 	@rm -rf $(INITRD_DIR)/usr/man
 	@rm -rf $(INITRD_DIR)/usr/info
