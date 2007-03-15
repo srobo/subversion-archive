@@ -25,6 +25,8 @@ int main( int argc, char** argv )
 
 	xbee_main( &xb );
 
+	xbee_free( &xb );
+
 	if( close( sp ) < 0 )
 	{
 		fprintf( stderr, "Error: Failed to close serial port\n" ); 

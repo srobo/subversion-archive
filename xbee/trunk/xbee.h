@@ -68,23 +68,14 @@ typedef struct
 	uint8_t addr[8];
 } xb_addr_t;
 
-/* static inline uint16_t XB_ADDR_GET_16(xb_addr_t* addr) */
-/* { */
-/* 	assert(addr != NULL && addr->type == XB_ADDR_16 ); */
-/* 	return (uint16_t)(addr->addr & 0xFFFF); */
-/* } */
-
-/* static inline uint64_t XB_ADDR_GET_64(xb_addr_t* addr) */
-/* { */
-/* 	assert(addr != NULL && addr->type == XB_ADDR_64 ); */
-/* 	return addr->addr; */
-/* } */
-
 /* Initialise the module.
  * This puts the node into API mode.
  * xb: The xbee structure.
  * fd: serial port file descriptor. */
 void xbee_init( xbee_t* xb, int fd );
+
+/* Free information related to a module. */
+void xbee_free( xbee_t* xb );
 
 gboolean xbee_write( xbee_t* xb, void* buf, uint16_t len );
 

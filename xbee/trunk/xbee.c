@@ -42,6 +42,8 @@ static void xbee_out_queue_add_frame( xbee_t* xb, xb_frame_t* frame );
 /* Removes the last frame from the transmit queue */
 static void xbee_out_queue_del( xbee_t* xb );
 
+static void xbee_print_stats( xbee_t* xb );
+
 /*** "Internal" Client API Functions ***/
 int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len );
 
@@ -59,6 +61,7 @@ void xbee_init( xbee_t* xb, int fd )
 	xb->api_mode = FALSE;
 	xb->at_time.tv_sec = 0;
 	xb->at_time.tv_usec = 0;
+	xb->at_mode = FALSE;
 
 	xb->out_frames = g_queue_new();
 
@@ -133,7 +136,10 @@ gboolean xbee_main( xbee_t* xb )
 				xbee_proc_outgoing( xb );
 		}
 
-//		hack(xb);
+		if( xb->frames_tx > 1000 )
+			return TRUE;
+
+		hack(xb);
 	}
 }
 
@@ -247,7 +253,8 @@ static gboolean xbee_proc_outgoing( xbee_t* xb )
 			xb->tx_pos = 0;
 			xb->o_chk = 0;
 			xb->checked = FALSE;
-			printf( "Frame transmitted\n" );
+/* 			printf( "Frame transmitted\n" ); */
+			xbee_print_stats( xb );
 		}
 	}
 
@@ -390,6 +397,7 @@ static uint8_t xbee_sum_block( uint8_t* buf, uint16_t len, uint8_t cur )
 void debug_show_frame( uint8_t* buf, uint16_t len )
 {
 	uint16_t i;
+	return;
 
 	printf("IN: ");
 	for( i=0 ; i < len; i++ )
@@ -537,4 +545,32 @@ void grab_address( xbee_t* xb )
 
 	xbee_out_queue_add( xb, sh, 4 );
 	xbee_out_queue_add( xb, sl, 4 );
+}
+
+static void xbee_print_stats( xbee_t* xb )
+{
+	assert( xb != NULL );
+
+	printf( "\rFrames: %6lu IN, %6lu OUT. Bytes: %9lu IN, %9lu OUT",
+		(long unsigned int)xb->frames_rx, 
+		(long unsigned int)xb->frames_tx, 
+		(long unsigned int)xb->bytes_rx, 
+		(long unsigned int)xb->bytes_tx );
+}
+
+
+void xbee_free( xbee_t* xb )
+{
+	assert( xb != NULL );
+
+	while( g_queue_get_length( xb->out_frames ) > 0 )
+	{
+		xb_frame_t *f = (xb_frame_t*)g_queue_peek_tail(xb->out_frames);
+		g_free( f->data );
+		g_free( f );
+		g_queue_pop_tail( xb->out_frames );
+	}
+
+	g_queue_free( xb->out_frames );
+	xb->out_frames = NULL;
 }
