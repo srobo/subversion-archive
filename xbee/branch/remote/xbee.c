@@ -172,7 +172,7 @@ gboolean xbee_main( xbee_t* xb )
 				xbee_proc_outgoing( xb );
 		}
 
-		if( g_queue_get_length( xb->out_frames ) < 5 )
+		if( g_queue_get_length( xb->out_frames ) < 20 )
 			joy_gen_events( &joy, xb );
 
 	}
@@ -665,11 +665,11 @@ gboolean joy_proc( joy_t *joy, xbee_t *xb )
 			if( ev->type & JS_EVENT_AXIS )
 			{
 				joy_proc_init( ev, joy->axes, &joy->a_size );
-				printf( "\rJoystick init event: Axis %hhu\n", ev->number );
+/* 				printf( "\rJoystick init event: Axis %hhu\n", ev->number ); */
 			}
 			else if( ev->type & JS_EVENT_BUTTON )
 			{
-				printf( "\rJoystick init event: Button %hhu\n", ev->number );
+/* 				printf( "\rJoystick init event: Button %hhu\n", ev->number ); */
 			}
 		}
 		else
