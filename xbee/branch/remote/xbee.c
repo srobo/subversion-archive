@@ -6,7 +6,7 @@
 #include <termios.h>
 #include <string.h>
 #include "xbee_at.h"
-#include "xbee_ipc.h"
+/* #include "xbee_ipc.h" */
 
 #define BUFLEN 256
 
