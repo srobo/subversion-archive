@@ -53,10 +53,39 @@ int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len );
 /* Copy 64 bytes into a buffer -> MSB to 0, LSB to end of buffer */
 static void copy_64b_ml( uint64_t data, uint8_t* buf );
 
-int joy_open(void);
-int joy_proc(int joy_fd, xbee_t* xb);
+typedef struct 
+{
+	struct js_event info;
+	gboolean transmitted;
+} joy_state_t;
 
+typedef struct
+{
+	int fd;
 
+	uint8_t buffer[ sizeof( struct js_event ) ];
+	int count;
+
+	GArray *axes;
+	/* sizes of the arrays */
+	uint8_t a_size;
+}  joy_t;
+
+gboolean joy_open( joy_t *joy );
+gboolean joy_proc( joy_t *joy, xbee_t *xb );
+
+/* Process an initialisation event from the joystick */
+void joy_proc_init( struct js_event* ev, GArray* array, uint8_t* size );
+
+/* Process an event from the joystick */
+void joy_proc_event( struct js_event* ev, GArray* array, uint8_t size );
+
+/* Transmit pending joystick events */
+void joy_gen_events( joy_t *joy, xbee_t *xb );
+void joy_gen_events_array( xbee_t *xb, GArray *array, uint8_t size );
+
+/* Transmit a joystick event */
+void joy_transmit( xbee_t *xb, struct js_event* ev );
 
 void hack( xbee_t* xb );
 void grab_address( xbee_t* xb );
@@ -90,9 +119,7 @@ gboolean xbee_main( xbee_t* xb )
 {
 	assert( xb != NULL );
 	fd_set f_r, f_w;
-	int joy_fd;
-/* 	GIOChannel *gio; */
-/* 	GMainLoop* ml; */
+	joy_t joy;
 
 	if( !xbee_set_api_mode( xb ) )
 	{
@@ -101,9 +128,8 @@ gboolean xbee_main( xbee_t* xb )
 	}
 
 	
-	joy_fd = joy_open();
-	if (joy_fd < 0 ) return FALSE; // couldnt open joystick file
-
+	if( !joy_open(&joy) )
+		return FALSE;
 
 	while( 1 )
 	{
@@ -114,7 +140,8 @@ gboolean xbee_main( xbee_t* xb )
 
 		/* We always want to monitor for incoming data */
 		FD_SET( xb->fd, &f_r );
-		FD_SET( joy_fd, &f_r );
+		FD_SET( joy.fd, &f_r );
+	
 		/* We only have  to do this if we've got something that needs 
 		   writing */
 		if( xbee_outgoing_queued(xb) )
@@ -137,13 +164,16 @@ gboolean xbee_main( xbee_t* xb )
 			if( FD_ISSET( xb->fd, &f_r ) != 0 )
 				xbee_proc_incoming( xb );
 			
-			if( FD_ISSET( joy_fd, &f_r ) != 0 )
-				if (joy_proc(joy_fd,xb)!=0) return FALSE;
-							
+			if( FD_ISSET( joy.fd, &f_r ) != 0 )
+				if ( joy_proc( &joy , xb ) != 0 )
+					return FALSE;
 			
 			if( FD_ISSET( xb->fd, &f_w ) != 0 )
 				xbee_proc_outgoing( xb );
 		}
+
+		if( g_queue_get_length( xb->out_frames ) < 5 )
+			joy_gen_events( &joy, xb );
 
 	}
 }
@@ -583,46 +613,141 @@ void xbee_free( xbee_t* xb )
 }
 
 
-int joy_open(void)
+gboolean joy_open( joy_t *joy )
 {
-	int fd = open ("/dev/js0", O_RDONLY);	        
-	if ( fd<0 )
+	assert( joy != NULL );
+
+	joy->fd = open ("/dev/js0", O_RDONLY);	        
+
+	if ( joy->fd < 0 )
 	{
-	printf("\nError with joystick\n");
-	printf("%m\n");
-	return(-1);
+		printf("\nError with joystick\n");
+		printf("%m\n");
+		return FALSE;
 	}
-	return fd;                                                                                
+
+	/* Initialise the structure */
+	joy->count = 0;
+	joy->axes = g_array_new(FALSE, TRUE, sizeof(joy_state_t));
+	joy->a_size = 0;
+
+	return TRUE;
 }
 
 
-int joy_proc(int joy_fd, xbee_t* xb)
+gboolean joy_proc( joy_t *joy, xbee_t *xb )
 {
-        static unsigned char buffer[sizeof(struct js_event)];
-	static int count=0;
+	assert( joy != NULL && xb != NULL );
 	int number_read;
-	xb_addr_t broadcast = {
-				.type=XB_ADDR_64,
-				.addr={0,0,0,0,0,0,0xff,0xff}};
-//				.addr={0,0x13,0xA2,0,0x40,0x09,0,0xA8}};
-	
-                        number_read  = read (joy_fd, buffer+count, sizeof(struct js_event)-count); //read 8-count
 
-                        if (number_read <0)//error check
-                        {
-                                fprintf(stderr,"bad read from stick");
-                                return(-1);
-                        }
+	number_read = read (joy->fd, 
+			    joy->buffer + joy->count, 
+			    sizeof(struct js_event) - joy->count); //read 8-count
 
-                        count = count +number_read;
-                
-	if (count==8)//if end do stuff and 
+	if ( number_read < 0 ) 
 	{
-		count=0;//set count = 0
-		xbee_transmit( xb , &broadcast, buffer , sizeof(struct js_event));
-			
+		fprintf(stderr,"Bad read from stick\n");
+		return(-1);
 	}
-	
+
+	joy->count += number_read;
+                
+	/* Have we got a full event struct? */
+	if ( joy->count == sizeof( struct js_event ) )
+	{
+		struct js_event *ev = (struct js_event*)joy->buffer;
+
+		joy->count = 0;
+
+		/* Determine if the packet's a dummy */
+		if( ev->type & JS_EVENT_INIT )
+		{
+			if( ev->type & JS_EVENT_AXIS )
+			{
+				joy_proc_init( ev, joy->axes, &joy->a_size );
+				printf( "\rJoystick init event: Axis %hhu\n", ev->number );
+			}
+			else if( ev->type & JS_EVENT_BUTTON )
+			{
+				printf( "\rJoystick init event: Button %hhu\n", ev->number );
+			}
+		}
+		else
+		{
+			if( ev->type & JS_EVENT_BUTTON )
+			{
+				/* Transmit button events */
+				joy_transmit( xb, ev );
+			}
+			else if( ev->type & JS_EVENT_AXIS )
+			{
+				/* Buffer axis events */
+				joy_proc_event( ev, joy->axes, joy->a_size );
+			}
+		}
+	}
 
 	return 0;
+}
+
+void joy_proc_init( struct js_event* ev, GArray* array, uint8_t* size )
+{
+	joy_state_t *s;
+
+	if( ev->number + 1 > *size )
+	{
+		*size = ev->number + 1;
+		g_array_set_size( array, *size );
+	}
+
+	s = &g_array_index( array, joy_state_t, ev->number );
+
+	s->info = *ev;
+	s->info.type &= ~JS_EVENT_INIT;
+	s->transmitted = FALSE;
+}
+
+void joy_proc_event( struct js_event* ev, GArray* array, uint8_t size )
+{
+	assert( ev != NULL && array != NULL );
+	assert( ev->number < size );
+	joy_state_t *s;
+
+	s = &g_array_index( array, joy_state_t, ev->number );
+
+	s->transmitted = FALSE;
+	s->info = *ev;
+}
+
+void joy_gen_events( joy_t *joy, xbee_t *xb )
+{
+	assert( joy != NULL && xb != NULL );
+
+	joy_gen_events_array( xb, joy->axes, joy->a_size );
+}
+
+void joy_gen_events_array( xbee_t *xb, GArray *array, uint8_t size )
+{
+	uint8_t i;
+	
+	for( i = 0; i < size; i ++ )
+	{
+		joy_state_t *s = &g_array_index( array, joy_state_t, i );
+
+		if( !s->transmitted )
+		{
+			joy_transmit( xb, &s->info );
+			s->transmitted = TRUE;
+		}
+	}
+}
+
+void joy_transmit( xbee_t *xb, struct js_event* ev )
+{
+	xb_addr_t broadcast = {
+		.type=XB_ADDR_64,
+		.addr={0,0,0,0,0,0,0xff,0xff}}; /* Broadcast */
+//				.addr={0,0x13,0xA2,0,0x40,0x09,0,0xA8}};
+
+	xbee_transmit( xb , &broadcast, ev , sizeof(struct js_event));
 }
