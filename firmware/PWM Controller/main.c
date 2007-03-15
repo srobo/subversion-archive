@@ -11,15 +11,17 @@ CC0 is the upper bound of timerA and is at 65200
 #include "i2c.h"
 
 char new_period;
-unsigned int servo_pulse[SERVO_NUMBER];
+uint16_t servo_pulse[SERVO_NUMBER];
 unsigned char current_servo;
 
 
 /**
-Delay function.
+Delay function, will run a while loop corresponding to 1ms when FOSC is 12Mhz
+@param uint32 number of ms the delay must last
+TODO possibly investigate a bug that increments the duration of the delay  inexplicably when a value greater than 30000 is given to i.
 */
 void delay_MS(uint32_t d) {
-	unsigned int i;
+	uint16_t i;
 	while(d){
 		d--;
 		i = 15000;
@@ -29,26 +31,40 @@ void delay_MS(uint32_t d) {
 	}   
 } 
 
-void initialiseServoArray(unsigned int pulse_width){
+/**
+Function will initialise the array containing the pulsewidth of the servos to the value given in the parameter
+@param uint16 default value to initialise the servo with
+**/
+void initialiseServoArray(uint16_t pulse_width){
 	unsigned char i;
 	for(i=0; i<SERVO_NUMBER; i++){
 		setServoPWM(i, pulse_width);
 	}
 }
-
-unsigned int getServoPWM(unsigned char servo){
+/**
+This function will return the current pulsewidth of the servo passed as an parameter.
+@param uint8 servo number 
+@return uint16 pulsewidth of the servo given in the parameter
+**/
+uint16_t getServoPWM(unsigned char servo){
 	return servo_pulse[servo];
 }
 
-void setServoPWM(unsigned char servo, unsigned int pulse_width){
+/**
+Function will set the pulsewdith of the servo given in the parameter.
+@param uint8 servo number
+@param uint16 pulsewidth of the servo , when FOSC 12Mhz then range is between 2260 (0.8ms) to 6215(2.2ms)
+**/
+void setServoPWM(unsigned char servo, uint16_t pulse_width){
 	servo_pulse[servo] = pulse_width;
 } 
  
-int main(void) {
-	int static unused_initialized_variable_to_make_gdb_happy = 1;
-	WDTCTL = WDTCTL_INIT;               //Init watchdog timer
-	
-	DCOCTL = CALDCO_12MHZ_;
+/**
+Function will initialise the MSP430 for the PWM board. This involves initialising ports for IO and I2C.
+**/ 
+void initialise_PwmBoard(void){
+	WDTCTL = WDTCTL_INIT;               //Initializing watchdog timer
+	DCOCTL = CALDCO_12MHZ_;				//Initializing FOSC
 	BCSCTL1 = CALBC1_12MHZ_; 
 	
 	P1OUT = 0xC0;                        // P1.6 & P1.7 Pullups
@@ -66,7 +82,7 @@ int main(void) {
     P2IES  = P2IES_INIT;
     P1IE   = P1IE_INIT;
     P2IE   = P2IE_INIT;
-	
+		
 	initialiseServoArray(MIDDLE_PULSE); //1.5ms pulse
 	
 	TACCR0 = PERIOD; //period for pulses
@@ -81,6 +97,14 @@ int main(void) {
 	enable_i2c();
 	eint(); 
 	
+}
+
+ /**
+ Main function
+ **/
+int main(void) {
+	int static unused_initialized_variable_to_make_gdb_happy = 1;
+	initialise_PwmBoard();
     while (1) {   
 	//	delay_MS(1000);
 	//	setServoPWM(0, 2.2*TICKS_PER_MS);

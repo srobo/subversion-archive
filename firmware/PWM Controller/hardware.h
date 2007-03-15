@@ -6,14 +6,17 @@
 #include <iomacros.h>
 
 
-
-//Port Output Register 'P1OUT, P2OUT':
+/**
+Port Output Register 'P1OUT, P2OUT':
+**/
 #define P1OUT_INIT      0                      // Init Output data of port1
 #define P2OUT_INIT      0                       // Init Output data of port2
-
-//Port Direction Register 'P1DIR, P2DIR':
-#define P1DIR_INIT      0x3f                    // Init of Port1 Data-Direction Reg (Out=1 / Inp=0) setting P1.6-1.7 to in
-#define P2DIR_INIT      0xff                    // Init of Port2 Data-Direction Reg (Out=1 / Inp=0)
+/**
+Port Direction Register 'P1DIR, P2DIR'; 
+this sets the port directions. Port1.6 and 1.7 are set to input because they will be used with the i2c. Its unclear from the manual if it must be done
+**/
+#define P1DIR_INIT      0x3f                    // Init of Port1 Data-Direction Reg (Out=1 / Inp=0) current setting 00111111
+#define P2DIR_INIT      0xff                    // Init of Port2 Data-Direction Reg (Out=1 / Inp=0) all P2 are outputs
 
 //Selection of Port or Module -Function on the Pins 'P1SEL, P2SEL'
 #define P1SEL_INIT      0xC0                        // P1-Modules p1.6-1.7 is i2c
@@ -28,6 +31,9 @@
  //system clock in div by 2
 #define WDTCTL_INIT     WDTPW|WDTHOLD
 
+/**
+Defining constants for the PWM board.
+**/
 #define PERIOD 56500
 #define TICKS_PER_MS (int)(PERIOD/20)
 #define MIN_PULSE (int)(0.8*TICKS_PER_MS)
