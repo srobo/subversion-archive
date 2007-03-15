@@ -6,7 +6,7 @@
 #include <termios.h>
 #include <string.h>
 #include "xbee_at.h"
-#include "xbee_ipc.h"
+/* #include "xbee_ipc.h" */
 
 #define BUFLEN 256
 
@@ -98,7 +98,7 @@ gboolean xbee_main( xbee_t* xb )
 /* 	g_main_loop_run( ml ); */
 
 /* 	grab_address( xb ); */
-	hack(xb);
+/* 	hack(xb); */
 
 	while( 1 )
 	{
@@ -136,10 +136,10 @@ gboolean xbee_main( xbee_t* xb )
 				xbee_proc_outgoing( xb );
 		}
 
-		if( xb->frames_tx > 1000 )
-			return TRUE;
+/* 		if( xb->frames_tx > 1000 ) */
+/* 			return TRUE; */
 
-		hack(xb);
+/* 		hack(xb); */
 	}
 }
 
@@ -397,7 +397,6 @@ static uint8_t xbee_sum_block( uint8_t* buf, uint16_t len, uint8_t cur )
 void debug_show_frame( uint8_t* buf, uint16_t len )
 {
 	uint16_t i;
-	return;
 
 	printf("IN: ");
 	for( i=0 ; i < len; i++ )
