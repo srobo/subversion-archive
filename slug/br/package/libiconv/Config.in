@@ -1,5 +1,0 @@
-config BR2_PACKAGE_LIBICONV
-       bool "libiconv"
-       default n
-       help
-		Builds libiconv

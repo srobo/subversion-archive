@@ -1,6 +1,0 @@
-config BR2_PACKAGE_SPCA5XX
-	bool "spca5xx"
-	default n
-	help
-		Build the spca5xx webcam driver module.
-
