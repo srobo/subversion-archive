@@ -6,10 +6,7 @@
 #include <termios.h>
 #include <string.h>
 #include "xbee_at.h"
-/* #include "xbee_ipc.h" */
-#include <linux/joystick.h>
-#include <fcntl.h>
-
+#include "xbee_ipc.h"
 
 #define BUFLEN 256
 
@@ -53,11 +50,6 @@ int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len );
 /* Copy 64 bytes into a buffer -> MSB to 0, LSB to end of buffer */
 static void copy_64b_ml( uint64_t data, uint8_t* buf );
 
-int joy_open(void);
-int joy_proc(int joy_fd, xbee_t* xb);
-
-
-
 void hack( xbee_t* xb );
 void grab_address( xbee_t* xb );
 
@@ -90,7 +82,6 @@ gboolean xbee_main( xbee_t* xb )
 {
 	assert( xb != NULL );
 	fd_set f_r, f_w;
-	int joy_fd;
 /* 	GIOChannel *gio; */
 /* 	GMainLoop* ml; */
 
@@ -100,10 +91,14 @@ gboolean xbee_main( xbee_t* xb )
 		return FALSE;
 	}
 
-	
-	joy_fd = joy_open();
-	if (joy_fd < 0 ) return FALSE; // couldnt open joystick file
+/* 	ml = g_main_loop_new( NULL, FALSE ); */
 
+/* 	gio = g_io_channel_unix_new( xb->fd ); */
+
+/* 	g_main_loop_run( ml ); */
+
+/* 	grab_address( xb ); */
+	hack(xb);
 
 	while( 1 )
 	{
@@ -114,7 +109,7 @@ gboolean xbee_main( xbee_t* xb )
 
 		/* We always want to monitor for incoming data */
 		FD_SET( xb->fd, &f_r );
-		FD_SET( joy_fd, &f_r );
+
 		/* We only have  to do this if we've got something that needs 
 		   writing */
 		if( xbee_outgoing_queued(xb) )
@@ -137,14 +132,14 @@ gboolean xbee_main( xbee_t* xb )
 			if( FD_ISSET( xb->fd, &f_r ) != 0 )
 				xbee_proc_incoming( xb );
 			
-			if( FD_ISSET( joy_fd, &f_r ) != 0 )
-				if (joy_proc(joy_fd,xb)!=0) return FALSE;
-							
-			
 			if( FD_ISSET( xb->fd, &f_w ) != 0 )
 				xbee_proc_outgoing( xb );
 		}
 
+		if( xb->frames_tx > 1000 )
+			return TRUE;
+
+		hack(xb);
 	}
 }
 
@@ -506,7 +501,7 @@ int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len )
 	pos ++;
 
 	/* Frame ID: */
-	frame->data[1] = 0;	/* TODO: Frame ID */
+	frame->data[1] = 1;	/* TODO: Frame ID */
 
 	/* Copy data */
 	g_memmove( pos, buf, len );
@@ -556,13 +551,11 @@ static void xbee_print_stats( xbee_t* xb )
 {
 	assert( xb != NULL );
 
-	printf( "\rFrames: %6lu IN, %6lu OUT. Bytes: %9lu IN, %9lu OUT Queued: %5u",
+	printf( "\rFrames: %6lu IN, %6lu OUT. Bytes: %9lu IN, %9lu OUT",
 		(long unsigned int)xb->frames_rx, 
 		(long unsigned int)xb->frames_tx, 
 		(long unsigned int)xb->bytes_rx, 
-		(long unsigned int)xb->bytes_tx, 
-		g_queue_get_length( xb->out_frames )
-		);
+		(long unsigned int)xb->bytes_tx );
 }
 
 
@@ -580,49 +573,4 @@ void xbee_free( xbee_t* xb )
 
 	g_queue_free( xb->out_frames );
 	xb->out_frames = NULL;
-}
-
-
-int joy_open(void)
-{
-	int fd = open ("/dev/js0", O_RDONLY);	        
-	if ( fd<0 )
-	{
-	printf("\nError with joystick\n");
-	printf("%m\n");
-	return(-1);
-	}
-	return fd;                                                                                
-}
-
-
-int joy_proc(int joy_fd, xbee_t* xb)
-{
-        static unsigned char buffer[sizeof(struct js_event)];
-	static int count=0;
-	int number_read;
-	xb_addr_t broadcast = {
-				.type=XB_ADDR_64,
-				.addr={0,0,0,0,0,0,0xff,0xff}};
-//				.addr={0,0x13,0xA2,0,0x40,0x09,0,0xA8}};
-	
-                        number_read  = read (joy_fd, buffer+count, sizeof(struct js_event)-count); //read 8-count
-
-                        if (number_read <0)//error check
-                        {
-                                fprintf(stderr,"bad read from stick");
-                                return(-1);
-                        }
-
-                        count = count +number_read;
-                
-	if (count==8)//if end do stuff and 
-	{
-		count=0;//set count = 0
-		xbee_transmit( xb , &broadcast, buffer , sizeof(struct js_event));
-			
-	}
-	
-
-	return 0;
 }
