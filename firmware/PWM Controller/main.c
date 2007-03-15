@@ -67,7 +67,7 @@ int main(void) {
     P1IE   = P1IE_INIT;
     P2IE   = P2IE_INIT;
 	
-	initialiseServoArray(1.5*TICKS_PER_MS); //1.5ms pulse
+	initialiseServoArray(MIDDLE_PULSE); //1.5ms pulse
 	
 	TACCR0 = PERIOD; //period for pulses
 	TACCR1 = getServoPWM(0); //pulsewidth for servo0

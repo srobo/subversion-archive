@@ -29,8 +29,9 @@
 #define WDTCTL_INIT     WDTPW|WDTHOLD
 
 #define PERIOD 56500
-#define TICKS_PER_MS PERIOD/20
-#define MIN_PULSE TICKS_PER_MS
+#define TICKS_PER_MS (int)(PERIOD/20)
+#define MIN_PULSE (int)(0.8*TICKS_PER_MS)
+#define MIDDLE_PULSE (int)(1.5*TICKS_PER_MS)
 #define SERVO_NUMBER 6
 
 void initialiseServoArray(unsigned int pulse_width);
