@@ -87,6 +87,8 @@ void joy_gen_events_array( xbee_t *xb, GArray *array, uint8_t size );
 /* Transmit a joystick event */
 void joy_transmit( xbee_t *xb, struct js_event* ev );
 
+int16_t joy_diff( int16_t a, int16_t b );
+
 void hack( xbee_t* xb );
 void grab_address( xbee_t* xb );
 
@@ -172,7 +174,7 @@ gboolean xbee_main( xbee_t* xb )
 				xbee_proc_outgoing( xb );
 		}
 
-		if( g_queue_get_length( xb->out_frames ) < 20 )
+		if( g_queue_get_length( xb->out_frames ) < 5 )
 			joy_gen_events( &joy, xb );
 
 	}
@@ -715,8 +717,11 @@ void joy_proc_event( struct js_event* ev, GArray* array, uint8_t size )
 
 	s = &g_array_index( array, joy_state_t, ev->number );
 
-	s->transmitted = FALSE;
-	s->info = *ev;
+	if( joy_diff( ev->value, s->info.value )  > 90 )
+	{
+		s->transmitted = FALSE;
+		s->info = *ev;
+	}
 }
 
 void joy_gen_events( joy_t *joy, xbee_t *xb )
@@ -750,4 +755,11 @@ void joy_transmit( xbee_t *xb, struct js_event* ev )
 //				.addr={0,0x13,0xA2,0,0x40,0x09,0,0xA8}};
 
 	xbee_transmit( xb , &broadcast, ev , sizeof(struct js_event));
+}
+
+int16_t joy_diff( int16_t a, int16_t b )
+{
+	if( a > b )
+		return a - b;
+	return b - a;
 }
