@@ -1,7 +1,6 @@
 #include "pwm.h"
 #include "common.h"
 
-#define PWM_MAX 328
 
 inline void taccr_conf( uint8_t* reg )
 {
@@ -44,8 +43,8 @@ void pwm_init( void )
 	TACCTL2 = CCIS_3 | OUTMOD_SET_RESET;
 
 	TACCR0 = PWM_MAX;
-	TACCR1 = PWM_MAX/2;
-	TACCR2 = PWM_MAX - (PWM_MAX/3);
+	TACCR1 = 0;
+	TACCR2 = 0;
 
 	/* Up/down mode - enables the timer*/
 	TACTL &= ~MC_3;
@@ -54,11 +53,17 @@ void pwm_init( void )
 
 void pwm_set( uint8_t channel, pwm_ratio_t r )
 {
-
+	if( channel == 0 )
+		TACCR2 = r;
+	else
+		TACCR1 = r;
 }
 
 pwm_ratio_t pwm_get( uint8_t channel )
 {
-
+	if( channel == 0 )
+		return TACCR2;
+	else
+		return TACCR1;
 }
  

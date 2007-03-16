@@ -1,4 +1,4 @@
-CFLAGS := -g -mmcu=msp430x2234
+CFLAGS := -g -mmcu=msp430x2234 -O3
 LDFLAGS :=
 
 H_FILES = common.h i2c.h init.h motor.h pwm.h

@@ -2,8 +2,11 @@
 #define __PWM_H
 #include <stdint.h>
 
+#define PWM_MAX 328
+
+
 /* The type for holding a PWM ratio */
-typedef uint8_t pwm_ratio_t;
+typedef uint16_t pwm_ratio_t;
 
 /* Initialise the pwm system */
 void pwm_init();
