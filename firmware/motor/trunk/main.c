@@ -10,18 +10,8 @@ int main( void )
 
 	init();
 
-	while(1)
-	{
-		motor_set( 0, 0, M_OFF );
-		motor_set( 0, 0, M_FORWARD );
-		motor_set( 0, 0, M_BACKWARD );
-		motor_set( 0, 0, M_BRAKE );
-
-		motor_set( 1, 0, M_OFF );
-		motor_set( 1, 0, M_FORWARD );
-		motor_set( 1, 0, M_BACKWARD );
-		motor_set( 1, 0, M_BRAKE );
-	}
+	motor_set( 0, 0, M_FORWARD );
+	motor_set( 1, 0, M_FORWARD );
 
 	while(1);
 }
