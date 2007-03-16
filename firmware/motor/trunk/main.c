@@ -1,6 +1,7 @@
 #include "common.h"
 #include "motor.h"
 #include "pwm.h"
+#include "i2c.h"
 
 static int i = 0;
 
