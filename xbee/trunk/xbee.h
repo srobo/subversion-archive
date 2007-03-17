@@ -28,6 +28,13 @@ typedef struct
 	/* The time at which we entered AT command mode */
 	struct timeval at_time;
 
+	/*** Serial configuration ***/
+	uint32_t baud;
+	enum { PARITY_NONE, PARITY_ODD, PARITY_EVEN } parity;
+	uint8_t stop_bits;
+	enum { FLOW_NONE, FLOW_RTSCTS, FLOW_SOFTWARE } flow_control;
+
+
 	/*** Transmission ***/
 	/* Queue of outgoing frames - all of xb_frame_t */
 	/* Note: the data in these frames has already been escaped */
@@ -72,7 +79,7 @@ typedef struct
  * This puts the node into API mode.
  * xb: The xbee structure.
  * fd: serial port file descriptor. */
-void xbee_init( xbee_t* xb, int fd );
+gboolean xbee_init( xbee_t* xb, int fd );
 
 /* Free information related to a module. */
 void xbee_free( xbee_t* xb );

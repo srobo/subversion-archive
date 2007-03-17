@@ -1,5 +1,5 @@
 CFLAGS := -g -Wall
-LDFLAGS :=
+LDFLAGS := 
 
 # glib
 CFLAGS += `pkg-config --cflags gtk+-2.0`

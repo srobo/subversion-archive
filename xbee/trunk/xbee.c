@@ -1,12 +1,14 @@
-#include "xbee.h"
+#define _GNU_SOURCE 		/* For serial port config */
 #include <unistd.h>
 #include <sys/select.h>
 #include <stdint.h>
 #include <errno.h>
 #include <termios.h>
 #include <string.h>
+#include <termios.h>
+
+#include "xbee.h"
 #include "xbee_at.h"
-#include "xbee_ipc.h"
 
 #define BUFLEN 256
 
@@ -47,13 +49,13 @@ static void xbee_print_stats( xbee_t* xb );
 /*** "Internal" Client API Functions ***/
 int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len );
 
-/* Copy 64 bytes into a buffer -> MSB to 0, LSB to end of buffer */
-static void copy_64b_ml( uint64_t data, uint8_t* buf );
-
 void hack( xbee_t* xb );
 void grab_address( xbee_t* xb );
 
-void xbee_init( xbee_t* xb, int fd )
+/* Configure the serial port */
+gboolean xbee_serial_init( xbee_t* xb );
+
+gboolean xbee_init( xbee_t* xb, int fd )
 {
 	assert( xb != NULL && fd >= 0 );
 
@@ -62,6 +64,12 @@ void xbee_init( xbee_t* xb, int fd )
 	xb->at_time.tv_sec = 0;
 	xb->at_time.tv_usec = 0;
 	xb->at_mode = FALSE;
+
+	/* The default serial mode is 9600bps 8n1  */
+	xb->baud = 9600;
+	xb->parity = PARITY_NONE;
+	xb->stop_bits = 1;
+	xb->flow_control = FLOW_NONE;
 
 	xb->out_frames = g_queue_new();
 
@@ -76,6 +84,8 @@ void xbee_init( xbee_t* xb, int fd )
 	xb->o_chk = xb->tx_pos = 0;
 	xb->checked = FALSE;
 	xb->tx_escaped = FALSE;
+
+	return xbee_serial_init( xb );
 }
 
 gboolean xbee_main( xbee_t* xb )
@@ -486,7 +496,6 @@ int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len )
 		frame->data[0] = 0x00; /* API Identifier */
 		/* Copy address */
 		g_memmove( &frame->data[2], addr->addr, 8 );
-/* 		copy_64b_ml( XB_ADDR_GET_64(addr), &frame->data[2] ); */
 		pos = &frame->data[10]; 
 	}
 	else
@@ -509,18 +518,6 @@ int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len )
 	xbee_out_queue_add_frame( xb, frame );
 
 	return 0;
-}
-
-static void copy_64b_ml( uint64_t data, uint8_t* buf )
-{
-	uint8_t i;
-	assert( buf != NULL );
-
-	for( i=8; i > 0; i-- )
-	{
-		buf[i-1] = data & 0xFF;
-		data >>= 8;
-	}
 }
 
 void hack( xbee_t* xb )
@@ -573,4 +570,118 @@ void xbee_free( xbee_t* xb )
 
 	g_queue_free( xb->out_frames );
 	xb->out_frames = NULL;
+}
+
+gboolean xbee_serial_init( xbee_t* xb )
+{
+	struct termios t;
+	assert( xb != NULL );
+
+	if( !isatty( xb->fd ) )
+	{
+		fprintf( stderr, "File isn't a serial device\n" );
+		return FALSE;
+	}
+
+	if( tcgetattr( xb->fd, &t ) < 0 )
+	{
+		fprintf( stderr, "Failed to get terminal device information: %m\n" );
+		return 0;
+	}
+	
+	
+	switch( xb->parity )
+	{
+	case PARITY_NONE:
+		t.c_iflag &= ~INPCK;
+		t.c_cflag &= ~PARENB;
+		break;
+
+	case PARITY_ODD:
+		t.c_cflag |= PARODD;
+
+	case PARITY_EVEN:
+		t.c_cflag &= ~PARODD;
+		
+		t.c_iflag |= INPCK;
+		t.c_cflag |= PARENB;
+	}
+	
+	/* Ignore bytes with parity errors */
+	t.c_iflag |= IGNPAR;
+
+	/* 8 bits */
+	/* Ignore break conditions */
+	/* Keep carriage returns & prevent carriage return translation */
+	t.c_iflag &= ~(ISTRIP | IGNBRK | IGNCR | ICRNL);
+
+	switch( xb->flow_control )
+	{
+	case FLOW_NONE:
+		t.c_iflag &= ~( IXOFF | IXON );
+ 		t.c_cflag &= ~CRTSCTS;
+		break;
+
+	case FLOW_RTSCTS:
+		t.c_cflag |= CRTSCTS;
+		break;
+
+	case FLOW_SOFTWARE:
+ 		t.c_cflag |= CRTSCTS;
+		t.c_iflag |= IXOFF | IXON;
+	}
+
+/* 	t.c_cflag &= ~MDMBUF; */
+
+	/* Disable character mangling */
+	t.c_oflag &= ~OPOST;
+	
+	/* No modem disconnect excitement */
+	t.c_cflag &= ~(HUPCL | CSIZE);
+
+	/* Use input from the terminal */
+	/* Don't use the carrier detect lines  */
+	t.c_cflag |= CREAD | CS8 | CLOCAL;
+
+	switch( xb->stop_bits )
+	{
+	case 0:
+		/*  */
+		t.c_cflag &= ~CSTOPB;
+		break;
+
+	case 1:
+		/*  */
+		t.c_cflag &= ~CSTOPB;
+		break;
+
+	case 2:
+		/*  */
+		t.c_cflag |= CSTOPB;
+		break;
+	}
+
+	/*** c_lflag stuff ***/
+	/* non-canonical (i.e. non-line-based) */
+	/* no input character looping */
+	/* no erase printing or usage */
+	/* no special character processing */
+	t.c_lflag &= ~(ICANON | ECHO | ECHO | ECHOPRT | ECHOK
+			| ECHOKE | ISIG | IEXTEN | TOSTOP /* | NOKERNINFO */ );
+	t.c_lflag |= ECHONL;
+
+
+	/* Line speed config */
+	if( cfsetspeed( &t, xb->baud ) < 0 ) 
+	{
+		fprintf( stderr, "Failed to set serial baud rate to %u: %m\n", xb->baud );
+		return FALSE; 
+	}
+
+	if( tcsetattr( xb->fd, TCSANOW, &t ) < 0 )
+	{
+		fprintf( stderr, "Failed to configure terminal settings: %m\n" );
+		return FALSE;
+	}
+	return TRUE;
 }
