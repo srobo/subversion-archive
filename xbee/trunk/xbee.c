@@ -1,4 +1,5 @@
-#define _GNU_SOURCE 		/* For serial port config */
+
+#define _GNU_SOURCE
 #include <unistd.h>
 #include <sys/select.h>
 #include <stdint.h>
@@ -10,10 +11,7 @@
 #include "xbee.h"
 #include "xbee_at.h"
 
-#define BUFLEN 256
-
-/* Displays the contents of a frame */
-void debug_show_frame( uint8_t* buf, uint16_t len );
+/*** Incoming Data Functions ***/
 
 /* Process incoming data */
 static gboolean xbee_proc_incoming( xbee_t* xb );
@@ -24,9 +22,8 @@ static gboolean xbee_proc_incoming( xbee_t* xb );
  * When an error occurs, it returns -1 */
 static int xbee_read_frame( xbee_t* xb  );
 
-/* Calculate the checksum of a block of data */
-static uint8_t xbee_checksum( uint8_t* buf, uint16_t len );
-static uint8_t xbee_sum_block( uint8_t* buf, uint16_t len, uint8_t cur );
+
+/*** Outgoing Queue Functions ***/
 
 /* Process outgoing data */
 static gboolean xbee_proc_outgoing( xbee_t* xb );
@@ -37,20 +34,35 @@ static gboolean xbee_outgoing_queued( xbee_t* xb );
 /* Returns the next byte to transmit */
 static uint8_t xbee_outgoing_next( xbee_t* xb );
 
-/* Adds a frame to the transmit queue */
+/* Allocates a new frame and copies it in */
 static gboolean xbee_out_queue_add( xbee_t* xb, uint8_t *data, uint8_t len );
+
+/* Adds the frame directly to the queue (memory allocation must have
+ * already been done) */
 static void xbee_out_queue_add_frame( xbee_t* xb, xb_frame_t* frame );
 
 /* Removes the last frame from the transmit queue */
 static void xbee_out_queue_del( xbee_t* xb );
 
+/*** Misc ***/
+
+/* Calculate the checksum of a block of data */
+static uint8_t xbee_checksum( uint8_t* buf, uint16_t len );
+static uint8_t xbee_sum_block( uint8_t* buf, uint16_t len, uint8_t cur );
+
+/* Displays connection statistics */
 static void xbee_print_stats( xbee_t* xb );
+
+/* Displays the contents of a frame */
+static void debug_show_frame( uint8_t* buf, uint16_t len );
+
 
 /*** "Internal" Client API Functions ***/
 int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len );
 
 void hack( xbee_t* xb );
-void grab_address( xbee_t* xb );
+
+
 
 /* Configure the serial port */
 gboolean xbee_serial_init( xbee_t* xb );
@@ -107,7 +119,6 @@ gboolean xbee_main( xbee_t* xb )
 
 /* 	g_main_loop_run( ml ); */
 
-/* 	grab_address( xb ); */
 	hack(xb);
 
 	while( 1 )
@@ -533,15 +544,6 @@ void hack( xbee_t* xb )
 	if( g_queue_get_length( xb->out_frames ) == 0 )
 		xbee_transmit( xb, &addr, data, sizeof( data ) );
 
-}
-
-void grab_address( xbee_t* xb )
-{
-	uint8_t sh[] = { 0x08, 2, 'S', 'H' };
-	uint8_t sl[] = { 0x08, 3, 'S', 'L' };
-
-	xbee_out_queue_add( xb, sh, 4 );
-	xbee_out_queue_add( xb, sl, 4 );
 }
 
 static void xbee_print_stats( xbee_t* xb )
