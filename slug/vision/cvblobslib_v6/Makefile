@@ -2,30 +2,20 @@
 # Makefile for blobs library for OpenCV Version 4 and its examples
 #
 
-CFLAGS= `pkg-config --cflags opencv ` -I. 
-LDFLAGS= `pkg-config --libs opencv ` -L. -lblob 
-CXX=g++
+CFLAGS += `pkg-config --cflags opencv ` -I. 
+LDFLAGS += `pkg-config --libs opencv ` -L. -lblob 
 
-CPPFILES= \
-	Blob.cpp\
+CPPFILES= Blob.cpp\
 	BlobResult.cpp \
 	BlobExtraction.cpp
 
 .SUFFIXES: .cpp.o
-.cpp.o:	; echo 'Compiling $*.cpp' ; $(CXX) $(CFLAGS) -c $*.cpp
-
-.SILENT:
+.cpp.o:
+	$(CXX) $(CFLAGS) -c $*.cpp
 
 libblob.a: $(CPPFILES:.cpp=.o)
-	ar ru libblob.a $(CPPFILES:.cpp=.o) 2> /dev/null
+	ar ru libblob.a $(CPPFILES:.cpp=.o) 
 	ranlib libblob.a
-#
-#	@echo Build tests, examples and tools...
-#	$(CXX) -g blobdemo.cpp $(LDFLAGS) $(CFLAGS) -o blobdemo
-#	$(CXX) -g blobdemo2.cpp $(LDFLAGS) $(CFLAGS) -o blobdemo2
-#
-	@echo Copy include files...
-#
 	@echo Cleaning objects...
 	rm -f $(CPPFILES:.cpp=.o)
 
