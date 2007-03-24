@@ -21,9 +21,8 @@ int main( int argc, char** argv )
 		return 1; 
 	}
 	
-	xbee_init( &xb, sp );
-
-	xbee_main( &xb );
+	if ( xbee_init( &xb, sp ) )
+		xbee_main( &xb );
 
 	xbee_free( &xb );
 

@@ -55,7 +55,19 @@ gboolean xbee_source_dispatch( GSource *source,
 
 void xbee_source_finalize( GSource *source );
 
+static GSourceFuncs xbee_sourcefuncs = 
+{
+	.prepare = xbee_source_prepare,
+	.check = xbee_source_check,
+	.dispatch = xbee_source_dispatch,
+	.finalize = xbee_source_finalize,
 
+	.closure_callback = NULL,
+	.closure_marshal = NULL
+};
+
+/* Source callback */
+gboolean xbee_source_callback( xbee_t *xb );
 
 /*** "Internal" Client API Functions ***/
 int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len );
@@ -96,15 +108,8 @@ gboolean xbee_init( xbee_t* xb, int fd )
 	xb->checked = FALSE;
 	xb->tx_escaped = FALSE;
 
-	return xbee_serial_init( xb );
-}
-
-gboolean xbee_main( xbee_t* xb )
-{
-	assert( xb != NULL );
-	fd_set f_r, f_w;
-	GIOChannel *gio;
-	GMainLoop* ml;
+	if( !xbee_serial_init( xb ) )
+		return FALSE;
 
 	if( !xbee_set_api_mode( xb ) )
 	{
@@ -112,55 +117,22 @@ gboolean xbee_main( xbee_t* xb )
 		return FALSE;
 	}
 
+	return TRUE;
+}
+
+gboolean xbee_main( xbee_t* xb )
+{
+	assert( xb != NULL );
+	GMainLoop* ml;
+
 	ml = g_main_loop_new( NULL, FALSE );
 
-	gio = g_io_channel_unix_new( xb->fd );
+	/* Add the xbee source */
+	xbee_add_source( xb, g_main_loop_get_context( ml ) );
 
 	g_main_loop_run( ml );
 
-	hack(xb);
-
-	while( 1 )
-	{
-		int sel;
-
-		FD_ZERO( &f_r );
-		FD_ZERO( &f_w );
-
-		/* We always want to monitor for incoming data */
-		FD_SET( xb->fd, &f_r );
-
-		/* We only have  to do this if we've got something that needs 
-		   writing */
-		if( xbee_outgoing_queued(xb) )
-			FD_SET( xb->fd, &f_w );
-
-		/* Wait on serial port events */
-		/* we'll also wait on IPC here later */
-		sel = TEMP_FAILURE_RETRY(select( FD_SETSIZE, &f_r, &f_w, NULL, NULL ));
-		
-		/* Act on select return */
-		if( sel == -1 )
-		{
-			fprintf( stderr, "Select call failed, ending xbee mainloop: %m\n" );
-			return FALSE;
-		}
-		/* sel shouldn't ever be zero, but just in case */
-		else if( sel != 0 ) 
-		{
-			/* Act on events */
-			if( FD_ISSET( xb->fd, &f_r ) != 0 )
-				xbee_proc_incoming( xb );
-			
-			if( FD_ISSET( xb->fd, &f_w ) != 0 )
-				xbee_proc_outgoing( xb );
-		}
-
-		if( xb->frames_tx > 1000 )
-			return TRUE;
-
-		hack(xb);
-	}
+	return FALSE;
 }
 
 
@@ -539,19 +511,28 @@ gboolean xbee_serial_init( xbee_t* xb )
 	return TRUE;
 }
 
+
+
 void xbee_add_source( xbee_t *xb, GMainContext *context )
 {
-	GSourceFuncs s = 
-	{
-		.prepare = xbee_source_prepare,
-		.check = xbee_source_check,
-		.dispatch = xbee_source_dispatch,
-		.finalize = xbee_source_finalize
-	};
+	assert( xb != NULL );
+	GPollFD *pfd;
 
-//	g_source_new ( ... )
+	xb->source = (xbee_source_t*) g_source_new( &xbee_sourcefuncs, sizeof( xbee_source_t ) );
 
-//	g_source_attach( ... )
+	pfd = &xb->source->pollfd;
+	pfd->fd = xb->fd;
+	pfd->events = G_IO_IN | G_IO_OUT | G_IO_ERR | G_IO_HUP | G_IO_NVAL;
+	g_source_add_poll( (GSource*) xb->source, pfd );
+
+	xb->source->xb = xb;
+
+	xb->source_id = g_source_attach( (GSource*)xb->source, context );
+
+	g_source_set_callback( (GSource*)xb->source,
+			       (GSourceFunc)xbee_source_callback,
+			       (gpointer)xb,
+			       NULL );
 }
 
 gboolean xbee_source_prepare( GSource *source, gint *timeout_ )
@@ -566,17 +547,63 @@ gboolean xbee_source_prepare( GSource *source, gint *timeout_ )
 
 gboolean xbee_source_check( GSource *source )
 {
-	
+	assert( source != NULL );
+	xbee_source_t *xb_source = (xbee_source_t*)source; 
+	gushort r = xb_source->pollfd.revents;
+
+	if( r & (G_IO_ERR | G_IO_HUP | G_IO_IN | G_IO_OUT | G_IO_NVAL) )
+	{
+		printf( "xbee_source_check: xbee ready to dispatch\n" );
+		/* ready to dispatch */
+		return TRUE;
+	}
+
+	return FALSE; 
 }
 
 gboolean xbee_source_dispatch( GSource *source,
 			       GSourceFunc callback, 
 			       gpointer user_data )
 {
+	assert( source != NULL );
+	xbee_source_t *xb_source = (xbee_source_t*)source; 
+	gboolean rval = FALSE;
 
+	/* Call the callback */
+	if( callback != NULL )
+		rval = callback( xb_source->xb );
+
+	/* Modulate the write requirement if necessary */
+	if( xbee_outgoing_queued( xb_source->xb ) )
+		xb_source->pollfd.events |= G_IO_OUT;
+	else
+		xb_source->pollfd.events &= ~G_IO_OUT;
+
+	return rval;
 }
 
 void xbee_source_finalize( GSource *source )
 {
+	/* Don't need to do anything here. */
+	/* glib should free the source structure */
+}
 
+gboolean xbee_source_callback( xbee_t *xb )
+{
+	assert( xb != NULL );
+	printf( "Callback\n" );
+
+	if( xb->source->pollfd.revents & (G_IO_ERR | G_IO_HUP) )
+	{
+		fprintf( stderr, "IO Error\n" );
+		return FALSE;
+	}
+	
+	if( xb->source->pollfd.revents & G_IO_IN )
+		xbee_proc_incoming( xb );
+
+	if( xb->source->pollfd.revents & G_IO_OUT )
+		xbee_proc_outgoing( xb );
+
+	return TRUE;
 }

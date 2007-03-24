@@ -16,9 +16,24 @@ typedef struct
 	uint8_t *data;
 } xb_frame_t;
 
+/*** Source type ***/
+
+struct xbee_ts;
+typedef struct xbee_ts xbee_t;
+
 typedef struct
 {
+	GSource source;
+	GPollFD pollfd;
+	xbee_t *xb; 		/* Parent pointer */
+} xbee_source_t;
+
+struct xbee_ts
+{
 	int fd;
+
+	xbee_source_t *source; 	/* probably need this to change pollfd */
+	guint source_id;
 
 	/* Whether we're in API mode */
 	gboolean api_mode;
@@ -61,7 +76,9 @@ typedef struct
 	uint32_t bytes_rx, bytes_tx;   
 	uint32_t frames_rx, frames_tx;  /* Valid checksum frames received */
 
-} xbee_t;
+	
+
+};
 
 typedef enum
 {
