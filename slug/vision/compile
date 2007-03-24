@@ -1,2 +1,0 @@
-dispcam:
-    g++ -ggdb `pkg-config --cflags opencv` -o dispcam dispcam.cpp `pkg-config --libs opencv` -I cvblobslib_v6 cvblobslib_v6/libblob.a
