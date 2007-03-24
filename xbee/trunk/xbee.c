@@ -83,6 +83,9 @@ gboolean xbee_init( xbee_t* xb, int fd )
 
 	xb->fd = fd;
 
+	/* No server yet. */
+	xb->server = NULL;
+
 	xb->api_mode = FALSE;
 	xb->at_time.tv_sec = 0;
 	xb->at_time.tv_usec = 0;
@@ -129,6 +132,9 @@ gboolean xbee_main( xbee_t* xb )
 
 	/* Add the xbee source */
 	xbee_add_source( xb, g_main_loop_get_context( ml ) );
+
+	/* Create the server */
+	
 
 	g_main_loop_run( ml );
 
@@ -553,7 +559,6 @@ gboolean xbee_source_check( GSource *source )
 
 	if( r & (G_IO_ERR | G_IO_HUP | G_IO_IN | G_IO_OUT | G_IO_NVAL) )
 	{
-		printf( "xbee_source_check: xbee ready to dispatch\n" );
 		/* ready to dispatch */
 		return TRUE;
 	}
@@ -591,7 +596,6 @@ void xbee_source_finalize( GSource *source )
 gboolean xbee_source_callback( xbee_t *xb )
 {
 	assert( xb != NULL );
-	printf( "Callback\n" );
 
 	if( xb->source->pollfd.revents & (G_IO_ERR | G_IO_HUP) )
 	{
@@ -604,6 +608,8 @@ gboolean xbee_source_callback( xbee_t *xb )
 
 	if( xb->source->pollfd.revents & G_IO_OUT )
 		xbee_proc_outgoing( xb );
+
+	hack( xb );
 
 	return TRUE;
 }

@@ -21,6 +21,8 @@ typedef struct
 struct xbee_ts;
 typedef struct xbee_ts xbee_t;
 
+#include "xbee-server.h"
+
 typedef struct
 {
 	GSource source;
@@ -35,6 +37,10 @@ struct xbee_ts
 	xbee_source_t *source; 	/* probably need this to change pollfd */
 	guint source_id;
 
+	/* Need to know what server we're associated with,
+	   so that we can send incoming frames to it */
+	xbee_server_t *server;
+
 	/* Whether we're in API mode */
 	gboolean api_mode;
 	
@@ -48,7 +54,6 @@ struct xbee_ts
 	enum { PARITY_NONE, PARITY_ODD, PARITY_EVEN } parity;
 	uint8_t stop_bits;
 	enum { FLOW_NONE, FLOW_RTSCTS, FLOW_SOFTWARE } flow_control;
-
 
 	/*** Transmission ***/
 	/* Queue of outgoing frames - all of xb_frame_t */
@@ -75,8 +80,6 @@ struct xbee_ts
 	uint32_t bytes_discarded, frames_discarded; /* Frames with invalid checksums */
 	uint32_t bytes_rx, bytes_tx;   
 	uint32_t frames_rx, frames_tx;  /* Valid checksum frames received */
-
-	
 
 };
 
