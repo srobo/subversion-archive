@@ -41,6 +41,22 @@ static uint8_t xbee_sum_block( uint8_t* buf, uint16_t len, uint8_t cur );
 /* Displays connection statistics */
 static void xbee_print_stats( xbee_t* xb );
 
+/* Add an xbee to a mainloop */
+void xbee_add_source( xbee_t *xb, GMainContext *context );
+
+/* xbee source functions  */
+gboolean xbee_source_prepare( GSource *source, gint *timeout_ );
+
+gboolean xbee_source_check( GSource *source );
+
+gboolean xbee_source_dispatch( GSource *source,
+			       GSourceFunc callback, 
+			       gpointer user_data );
+
+void xbee_source_finalize( GSource *source );
+
+
+
 /*** "Internal" Client API Functions ***/
 int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len );
 
@@ -54,6 +70,7 @@ gboolean xbee_init( xbee_t* xb, int fd )
 	assert( xb != NULL && fd >= 0 );
 
 	xb->fd = fd;
+
 	xb->api_mode = FALSE;
 	xb->at_time.tv_sec = 0;
 	xb->at_time.tv_usec = 0;
@@ -86,8 +103,8 @@ gboolean xbee_main( xbee_t* xb )
 {
 	assert( xb != NULL );
 	fd_set f_r, f_w;
-/* 	GIOChannel *gio; */
-/* 	GMainLoop* ml; */
+	GIOChannel *gio;
+	GMainLoop* ml;
 
 	if( !xbee_set_api_mode( xb ) )
 	{
@@ -95,11 +112,11 @@ gboolean xbee_main( xbee_t* xb )
 		return FALSE;
 	}
 
-/* 	ml = g_main_loop_new( NULL, FALSE ); */
+	ml = g_main_loop_new( NULL, FALSE );
 
-/* 	gio = g_io_channel_unix_new( xb->fd ); */
+	gio = g_io_channel_unix_new( xb->fd );
 
-/* 	g_main_loop_run( ml ); */
+	g_main_loop_run( ml );
 
 	hack(xb);
 
@@ -520,4 +537,46 @@ gboolean xbee_serial_init( xbee_t* xb )
 		return FALSE;
 	}
 	return TRUE;
+}
+
+void xbee_add_source( xbee_t *xb, GMainContext *context )
+{
+	GSourceFuncs s = 
+	{
+		.prepare = xbee_source_prepare,
+		.check = xbee_source_check,
+		.dispatch = xbee_source_dispatch,
+		.finalize = xbee_source_finalize
+	};
+
+//	g_source_new ( ... )
+
+//	g_source_attach( ... )
+}
+
+gboolean xbee_source_prepare( GSource *source, gint *timeout_ )
+{
+	assert( timeout_ != NULL && source != NULL );
+
+	*timeout_ = -1;
+
+	/* For the moment, we're not ready */
+	return FALSE;
+}
+
+gboolean xbee_source_check( GSource *source )
+{
+	
+}
+
+gboolean xbee_source_dispatch( GSource *source,
+			       GSourceFunc callback, 
+			       gpointer user_data )
+{
+
+}
+
+void xbee_source_finalize( GSource *source )
+{
+
 }
