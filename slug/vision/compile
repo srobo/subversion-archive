@@ -1,0 +1,1 @@
+g++ -ggdb `pkg-config --cflags opencv` -g -o dispcam dispcam.cpp `pkg-config --libs opencv` libblob.a
