@@ -8,20 +8,6 @@
 #include "BlobExtraction.h"
 #include <ctype.h>
 
-//These are between 0 and 255
-#define MIN_SAT 65 
-#define MIN_VAL 50
-
-//Must be less than 30!!!
-#define HUE_STD 5
-
-//The 360 value / 2
-#define COL_RED 0
-#define COL_BLUE 120
-#define COL_GREEN 60
-
-#define MIN_SIZE 200
-
 IplImage *hue = 0, *hsv_temp = 0;
 IplImage *frame = 0;
 
@@ -130,14 +116,26 @@ static PyTypeObject robovis_BlobType = {
 };
 
 PyObject *robovis_capture(PyObject *self, PyObject *args);
+PyObject * robovis_set_min_val(PyObject *self, PyObject *args);
+PyObject * robovis_set_min_sat(PyObject *self, PyObject *args);
+PyObject * robovis_set_hue_thresh(PyObject *self, PyObject *args);
+PyObject * robovis_set_min_size(PyObject *self, PyObject *args);
+
 PyObject *colours, *self;
+char min_sat = 65, min_val = 50, hue_thresh = 5;
+int min_size = 200;
 
 static PyMethodDef robovisMethods[] = {
     {"capture", robovis_capture, METH_VARARGS, "Grab a frame and find a list of blobs"},
+    {"setminsat", robovis_set_min_sat, METH_VARARGS, "Set the minimum saturation"},
+    {"setminval", robovis_set_min_val, METH_VARARGS, "Set the minimum pixel value"},
+    {"sethuethresh", robovis_set_hue_thresh, METH_VARARGS, "Set the hue threshold"},
+    {"setminsize", robovis_set_min_size, METH_VARARGS, "Set the minimum blob size"},
     {NULL, NULL, 0, NULL}
 };
 
 PyMODINIT_FUNC initrobovis(void){
+    printf("Initializing.\n");
     self = Py_InitModule3("robovis", robovisMethods, "StudentRobotics vision routines");
 
     colours = Py_BuildValue("[]");
@@ -155,12 +153,69 @@ PyMODINIT_FUNC initrobovis(void){
     hue = cvCreateImage(framesize, 8, 1);
 }
 
+PyObject * robovis_set_min_val(PyObject *self, PyObject *args){
+    int ok, tmp;
+    ok = PyArg_ParseTuple(args, "i", &tmp);
+    if (!ok)
+        return NULL;
+    if (tmp > 0 && tmp < 255){
+        min_val = (char) tmp;
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+
+    PyErr_SetString(PyExc_TypeError, "Minimum value out of range. Acceptable range 0<min_sat<255.");
+    return NULL;
+}
+PyObject * robovis_set_min_size(PyObject *self, PyObject *args){
+    int ok, tmp;
+    ok = PyArg_ParseTuple(args, "i", &tmp);
+    if (!ok)
+        return NULL;
+    if (tmp > 0 && tmp < (framesize.width*framesize.height)){
+        min_sat = tmp;
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+
+    PyErr_SetString(PyExc_TypeError, "Minimum size out of range. Must be greater than 0 and less than total pixels in the frame.");
+    return NULL;
+}
+PyObject * robovis_set_hue_thresh(PyObject *self, PyObject *args){
+    int ok, tmp;
+    ok = PyArg_ParseTuple(args, "i", &tmp);
+    if (!ok)
+        return NULL;
+    if (tmp > 0 && tmp < 30){
+        hue_thresh = (char)tmp;
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+
+    PyErr_SetString(PyExc_TypeError, "Hue threshold out of range. Acceptable range 0<min_sat<30.");
+    return NULL;
+}
+PyObject * robovis_set_min_sat(PyObject *self, PyObject *args){
+    int ok, tmp;
+    ok = PyArg_ParseTuple(args, "i", &tmp);
+    if (!ok)
+        return NULL;
+    if (tmp > 0 && tmp < 255){
+        min_sat = tmp;
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+
+    PyErr_SetString(PyExc_TypeError, "Minimum saturation out of range. Acceptable range 0<min_sat<255.");
+    return NULL;
+}
+
 PyObject * robovis_capture(PyObject *self, PyObject *args){
     int c, i, curhue;
     PyObject *tmp;
     CBlobResult *blobs;
     CBlob *blob;
-    
+
     PyObject *result = Py_BuildValue("[]");
 
     frame = cvQueryFrame(capture);
@@ -172,13 +227,16 @@ PyObject * robovis_capture(PyObject *self, PyObject *args){
     //For each colour in colours, highlight
     for(c=0;c<PyList_Size(colours);c++){
         curhue = (char) PyInt_AsLong(PyList_GetItem(colours, c));
-        cvInRangeS(frame, cvScalar(curhue+30-HUE_STD, MIN_SAT, MIN_VAL),
-                        cvScalar(curhue+30+HUE_STD, 255, 255), hue); 
+        if(curhue < 0 || curhue > 180)
+            continue;
+        
+        cvInRangeS(frame, cvScalar(curhue+30-hue_thresh, min_sat, min_val),
+                        cvScalar(curhue+30+hue_thresh, 255, 255), hue); 
         
         //the number here is the threshhold. all values are 255 already...
         blobs = new CBlobResult( hue, NULL, 200, true);
 
-        blobs->Filter(*blobs, B_INCLUDE, CBlobGetArea(), B_GREATER, MIN_SIZE);
+        blobs->Filter(*blobs, B_INCLUDE, CBlobGetArea(), B_GREATER, min_size);
 
         for(i=0;i<blobs->GetNumBlobs();i++){
             blob = blobs->GetBlob(i);
@@ -190,6 +248,7 @@ PyObject * robovis_capture(PyObject *self, PyObject *args){
                 //Add this to a list
                 PyObject *pyblob = robovis_BlobObject_new(&robovis_BlobType, NULL, NULL);
 
+                //Put in the values
                 tmp = ((robovis_BlobObject *)pyblob)->hue;
                 ((robovis_BlobObject *)pyblob)->hue = PyInt_FromLong((int) curhue);
                 Py_XDECREF(tmp);
@@ -221,7 +280,6 @@ PyObject * robovis_capture(PyObject *self, PyObject *args){
                 tmp = ((robovis_BlobObject *)pyblob)->MaxY;
                 ((robovis_BlobObject *)pyblob)->MaxY = PyInt_FromLong((int) getmaxy(*blob));
                 Py_XDECREF(tmp);
-
 
                 PyList_Append(result, pyblob);
                 Py_DECREF(pyblob);
