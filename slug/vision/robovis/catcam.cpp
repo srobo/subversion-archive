@@ -53,12 +53,15 @@ int main(int argc, char **argv){
 
         if (!hue)
         {
+            printf("Allocating memory\n");
             framesize = cvGetSize(frame);
             hsv_temp = cvCreateImage(framesize, 8, 3);
             hue = cvCreateImage(framesize, 8, 1);
         }
+        printf("Changing colour space\n");
         cvCvtColor(frame, hsv_temp, CV_BGR2HSV);
         
+        printf("Incrementing colour values\n");
         cvAddS(hsv_temp, cvScalar(30, 0, 0), frame);
 
         //For each colour in colours, highlight
@@ -68,8 +71,10 @@ int main(int argc, char **argv){
                             cvScalar(colours[c].colour+30+HUE_STD, 255, 255), hue); 
             
             //the number here is the threshhold. all values are 255 already...
+            printf("Blob finding\n");
             blobs = new CBlobResult( hue, NULL, 200, true);
 
+            printf("Applying size filter\n");
             blobs->Filter(*blobs, B_INCLUDE, CBlobGetArea(), B_GREATER, 200);
 
             printf("Got %d blobs.\n", blobs->GetNumBlobs());
