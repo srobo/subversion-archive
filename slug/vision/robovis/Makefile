@@ -1,16 +1,17 @@
-dispcam: dispcam.cpp
-	g++ -ggdb `pkg-config --cflags opencv` -o dispcam dispcam.cpp `pkg-config --libs opencv` -I ./cvblobslib_v6 cvblobslib_v6/libblob.a
-
-robovis.o: robovis.cpp
-	g++ -ggdb `pkg-config --cflags opencv` \
-	-o robovis.o \
-	-fPIC \
-	-c robovis.cpp \
-	-I ../cvblobslib_v6 \
-	-I /usr/include/python2.4
+CFLAGS = `pkg-config --cflags blobslib`
+LDFLAGS = `pkg-config --libs blobslib`
+PY_CFLAGS ?= /usr/include/python2.4
 
 robovis.so: robovis.o
-	g++ -shared robovis.o ../cvblobslib_v6/libblob.a `pkg-config --libs opencv` -o robovis.so
+	$(CXX) -shared $< $(LDFLAGS) -o $@
+
+robovis.o: robovis.cpp
+	$(CXX) -ggdb $(CFLAGS) -o $@ -fPIC -c $< $(PY_CFLAGS)
+
+dispcam: dispcam.cpp
+	$(CXX) -ggdb  -o dispcam $(CFLAGS) dispcam.cpp $(LDFLAGS)
+
+.PHONY: clean
 
 clean:
-	rm robovis.o robovis.so
+	-rm -f robovis.o robovis.so
