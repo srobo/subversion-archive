@@ -30,8 +30,8 @@ const colour colours[] = {
     {COL_RED,0,0,255},
     {COL_GREEN,255,0,0}};
 
-IplImage *image = 0, *hsv = 0, *hue = 0, *hsv_temp = 0;
-IplImage *frame = 0, *withblob = 0;
+IplImage *image = 0, *hue = 0, *hsv_temp = 0;
+IplImage *frame = 0;
 CvHistogram *hist = 0;
 
 CvCapture *capture = 0;
@@ -55,20 +55,16 @@ int main(int argc, char **argv){
         {
             framesize = cvGetSize(frame);
             hsv_temp = cvCreateImage(framesize, 8, 3);
-            hsv = cvCreateImage(framesize, 8, 3);
             hue = cvCreateImage(framesize, 8, 1);
-            withblob = cvCreateImage(framesize, 8, 3);
         }
         cvCvtColor(frame, hsv_temp, CV_BGR2HSV);
         
-        cvCopy(frame, withblob);
-
-        cvAddS(hsv_temp, cvScalar(30, 0, 0), hsv);
+        cvAddS(hsv_temp, cvScalar(30, 0, 0), frame);
 
         //For each colour in colours, highlight
         for(c=0;c<NO_COLOURS;c++){
             printf("Checking colour %d\n", colours[c].colour);
-            cvInRangeS(hsv, cvScalar(colours[c].colour+30-HUE_STD, MIN_SAT, MIN_VAL),
+            cvInRangeS(frame, cvScalar(colours[c].colour+30-HUE_STD, MIN_SAT, MIN_VAL),
                             cvScalar(colours[c].colour+30+HUE_STD, 255, 255), hue); 
             
             //the number here is the threshhold. all values are 255 already...
