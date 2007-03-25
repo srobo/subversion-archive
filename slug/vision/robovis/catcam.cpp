@@ -48,6 +48,7 @@ int main(int argc, char **argv){
     capture = cvCaptureFromCAM(-1);
 
     while(1){
+        printf("Grabbing frame!\n");
         frame = cvQueryFrame(capture);
 
         if (!hsv)
@@ -66,6 +67,7 @@ int main(int argc, char **argv){
 
         //For each colour in colours, highlight
         for(c=0;c<NO_COLOURS;c++){
+            printf("Checking colour %d\n", colours[c].colour);
             cvInRangeS(hsv, cvScalar(colours[c].colour+30-HUE_STD, MIN_SAT, MIN_VAL),
                             cvScalar(colours[c].colour+30+HUE_STD, 255, 255), hue); 
             
@@ -73,6 +75,8 @@ int main(int argc, char **argv){
             blobs = new CBlobResult( hue, NULL, 200, true);
 
             blobs->Filter(*blobs, B_INCLUDE, CBlobGetArea(), B_GREATER, 200);
+
+            printf("Got %d blobs.\n", blobs->GetNumBlobs());
 
             for(i=0;i<blobs->GetNumBlobs();i++){
                 blob = blobs->GetBlob(i);
