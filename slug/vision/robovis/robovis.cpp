@@ -29,18 +29,28 @@ CvCapture *capture = 0;
 CvSize framesize;
 CBlobGetXCenter getxc;
 CBlobGetYCenter getyc;
-CBlobGetMajorAxisLength  getl;
-
+CBlobGetArea  geta;
+CBlobGetMinX getminx;
+CBlobGetMinY getminy;
+CBlobGetMaxX getmaxx;
+CBlobGetMaxY getmaxy;
 
 typedef struct {
     PyObject_HEAD
-    PyObject *hue, *cx, *cy;
+    PyObject *hue, *cx, *cy, *area;
+    PyObject *MinX, *MinY, *MaxX, *MaxY;
 } robovis_BlobObject;
 
 static void robovis_BlobObject_dealloc(robovis_BlobObject *self){
     Py_XDECREF(self->hue);
     Py_XDECREF(self->cx);
     Py_XDECREF(self->cy);
+    Py_XDECREF(self->area);
+    Py_XDECREF(self->MinX);
+    Py_XDECREF(self->MinY);
+    Py_XDECREF(self->MaxX);
+    Py_XDECREF(self->MaxY);
+
     self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -51,6 +61,11 @@ static PyObject *robovis_BlobObject_new(PyTypeObject *type, PyObject *args, PyOb
         self->hue = PyInt_FromLong((long) 0);
         self->cx = PyInt_FromLong((long) 0);
         self->cy = PyInt_FromLong((long) 0);
+        self->area = PyInt_FromLong((long) 0);
+        self->MinX = PyInt_FromLong((long) 0);
+        self->MinY = PyInt_FromLong((long) 0);
+        self->MaxX = PyInt_FromLong((long) 0);
+        self->MaxY = PyInt_FromLong((long) 0);
     }
 
     return (PyObject *)self;
@@ -60,6 +75,11 @@ static PyMemberDef robovis_BlobObject_members[] = {
     {"hue", T_OBJECT_EX, offsetof(robovis_BlobObject, hue), 0, "Colour HUE (0 < hue < 180"},
     {"cx", T_OBJECT_EX, offsetof(robovis_BlobObject, cx), 0, "Blob center x"},
     {"cy", T_OBJECT_EX, offsetof(robovis_BlobObject, cy), 0, "Blob center y"},
+    {"area", T_OBJECT_EX, offsetof(robovis_BlobObject, area), 0, "Blob area"},
+    {"MinX", T_OBJECT_EX, offsetof(robovis_BlobObject, MinX), 0, "Blob top position"},
+    {"MinY", T_OBJECT_EX, offsetof(robovis_BlobObject, MinY), 0, "Blob left position"},
+    {"MaxX", T_OBJECT_EX, offsetof(robovis_BlobObject, MaxX), 0, "Blob bottom position"},
+    {"MaxY", T_OBJECT_EX, offsetof(robovis_BlobObject, MaxY), 0, "Blob right position"},
     {NULL}
 };
 
@@ -169,6 +189,7 @@ PyObject * robovis_capture(PyObject *self, PyObject *args){
                 
                 //Add this to a list
                 PyObject *pyblob = robovis_BlobObject_new(&robovis_BlobType, NULL, NULL);
+
                 tmp = ((robovis_BlobObject *)pyblob)->hue;
                 ((robovis_BlobObject *)pyblob)->hue = PyInt_FromLong((int) curhue);
                 Py_XDECREF(tmp);
@@ -180,6 +201,27 @@ PyObject * robovis_capture(PyObject *self, PyObject *args){
                 tmp = ((robovis_BlobObject *)pyblob)->cy;
                 ((robovis_BlobObject *)pyblob)->cy = PyInt_FromLong((int) getyc(*blob));
                 Py_XDECREF(tmp);
+
+                tmp = ((robovis_BlobObject *)pyblob)->area;
+                ((robovis_BlobObject *)pyblob)->area = PyInt_FromLong((int) geta(*blob));
+                Py_XDECREF(tmp);
+
+                tmp = ((robovis_BlobObject *)pyblob)->MinX;
+                ((robovis_BlobObject *)pyblob)->MinX = PyInt_FromLong((int) getminx(*blob));
+                Py_XDECREF(tmp);
+
+                tmp = ((robovis_BlobObject *)pyblob)->MinY;
+                ((robovis_BlobObject *)pyblob)->MinY = PyInt_FromLong((int) getminy(*blob));
+                Py_XDECREF(tmp);
+
+                tmp = ((robovis_BlobObject *)pyblob)->MaxX;
+                ((robovis_BlobObject *)pyblob)->MaxX = PyInt_FromLong((int) getmaxx(*blob));
+                Py_XDECREF(tmp);
+
+                tmp = ((robovis_BlobObject *)pyblob)->MaxY;
+                ((robovis_BlobObject *)pyblob)->MaxY = PyInt_FromLong((int) getmaxy(*blob));
+                Py_XDECREF(tmp);
+
 
                 PyList_Append(result, pyblob);
                 Py_DECREF(pyblob);
