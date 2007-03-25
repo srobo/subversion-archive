@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=/lib
+includedir=/usr/include
+
+Name: blobslib
+Description: C++ Library to detect blobs in an image using opencv.
+Version: 0.01
+Requires: opencv
+Libs: -L${libdir} -lblob
+Cflags: -I${includedir}
