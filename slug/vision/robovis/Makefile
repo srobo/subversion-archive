@@ -8,6 +8,9 @@ robovis.so: robovis.o
 robovis.o: robovis.cpp
 	$(CXX) -ggdb $(CFLAGS) -o $@ -fPIC -c $< $(PY_CFLAGS)
 
+catcam: catcam.cpp
+	$(CXX) -ggdb $(CFLAGS) -o $@ $< $(LDFLAGS)
+
 dispcam: dispcam.cpp
 	$(CXX) -ggdb  -o dispcam $(CFLAGS) dispcam.cpp $(LDFLAGS)
 
