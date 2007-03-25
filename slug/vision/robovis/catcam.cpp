@@ -51,7 +51,7 @@ int main(int argc, char **argv){
         printf("Grabbing frame!\n");
         frame = cvQueryFrame(capture);
 
-        if (!hsv)
+        if (!hue)
         {
             framesize = cvGetSize(frame);
             hsv_temp = cvCreateImage(framesize, 8, 3);
