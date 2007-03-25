@@ -22,9 +22,8 @@
 
 #define MIN_SIZE 200
 
-IplImage *image = 0, *hsv = 0, *hue = 0, *hsv_temp = 0;
-IplImage *frame = 0, *withblob = 0;
-CvHistogram *hist = 0;
+IplImage *hue = 0, *hsv_temp = 0;
+IplImage *frame = 0;
 
 CvCapture *capture = 0;
 CvSize framesize;
@@ -48,9 +47,7 @@ static void robovis_BlobObject_dealloc(robovis_BlobObject *self){
 static PyObject *robovis_BlobObject_new(PyTypeObject *type, PyObject *args, PyObject *kwds){
     robovis_BlobObject *self;
     self = (robovis_BlobObject *)type->tp_alloc(type, 0);
-    printf("Moo\n!");
     if (self != NULL) {
-        printf("Creating ints.\n");
         self->hue = PyInt_FromLong((long) 0);
         self->cx = PyInt_FromLong((long) 0);
         self->cy = PyInt_FromLong((long) 0);
@@ -126,7 +123,6 @@ PyMODINIT_FUNC initrobovis(void){
     colours = Py_BuildValue("[]");
     PyModule_AddObject(self, "colours", colours);
 
-    robovis_BlobType.tp_new = PyType_GenericNew;
     PyType_Ready(&robovis_BlobType);
     Py_INCREF(&robovis_BlobType); 
     PyModule_AddObject(self, "Blob", (PyObject *)&robovis_BlobType);
@@ -136,13 +132,12 @@ PyMODINIT_FUNC initrobovis(void){
     
     framesize = cvGetSize(frame);
     hsv_temp = cvCreateImage(framesize, 8, 3);
-    hsv = cvCreateImage(framesize, 8, 3);
     hue = cvCreateImage(framesize, 8, 1);
-    withblob = cvCreateImage(framesize, 8, 3);
 }
 
 PyObject * robovis_capture(PyObject *self, PyObject *args){
     int c, i, curhue;
+    PyObject *tmp;
     CBlobResult *blobs;
     CBlob *blob;
     
@@ -152,14 +147,12 @@ PyObject * robovis_capture(PyObject *self, PyObject *args){
 
     cvCvtColor(frame, hsv_temp, CV_BGR2HSV);
     
-    cvCopy(frame, withblob);
-
-    cvAddS(hsv_temp, cvScalar(30, 0, 0), hsv);
+    cvAddS(hsv_temp, cvScalar(30, 0, 0), frame);
 
     //For each colour in colours, highlight
     for(c=0;c<PyList_Size(colours);c++){
         curhue = (char) PyInt_AsLong(PyList_GetItem(colours, c));
-        cvInRangeS(hsv, cvScalar(curhue+30-HUE_STD, MIN_SAT, MIN_VAL),
+        cvInRangeS(frame, cvScalar(curhue+30-HUE_STD, MIN_SAT, MIN_VAL),
                         cvScalar(curhue+30+HUE_STD, 255, 255), hue); 
         
         //the number here is the threshhold. all values are 255 already...
@@ -175,11 +168,19 @@ PyObject * robovis_capture(PyObject *self, PyObject *args){
                         blob->MaxY() == framesize.height)){
                 
                 //Add this to a list
-                PyObject *pyblob = Py_BuildValue("(iiii)",
-                                                 (int) curhue,
-                                                 (int) getxc(*blob),
-                                                 (int) getyc(*blob),
-                                                 (int) getl(*blob));
+                PyObject *pyblob = robovis_BlobObject_new(&robovis_BlobType, NULL, NULL);
+                tmp = ((robovis_BlobObject *)pyblob)->hue;
+                ((robovis_BlobObject *)pyblob)->hue = PyInt_FromLong((int) curhue);
+                Py_XDECREF(tmp);
+
+                tmp = ((robovis_BlobObject *)pyblob)->cx;
+                ((robovis_BlobObject *)pyblob)->cx = PyInt_FromLong((int) getxc(*blob));
+                Py_XDECREF(tmp);
+                
+                tmp = ((robovis_BlobObject *)pyblob)->cy;
+                ((robovis_BlobObject *)pyblob)->cy = PyInt_FromLong((int) getyc(*blob));
+                Py_XDECREF(tmp);
+
                 PyList_Append(result, pyblob);
                 Py_DECREF(pyblob);
             }

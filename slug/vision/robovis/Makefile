@@ -6,11 +6,11 @@ robovis.o: robovis.cpp
 	-o robovis.o \
 	-fPIC \
 	-c robovis.cpp \
-	-I ./cvblobslib_v6 \
+	-I ../cvblobslib_v6 \
 	-I /usr/include/python2.4
 
 robovis.so: robovis.o
-	g++ -shared robovis.o 	cvblobslib_v6/libblob.a `pkg-config --libs opencv` -o robovis.so
+	g++ -shared robovis.o ../cvblobslib_v6/libblob.a `pkg-config --libs opencv` -o robovis.so
 
 clean:
 	rm robovis.o robovis.so
