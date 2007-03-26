@@ -74,8 +74,8 @@ gettext-dirclean:
 # gettext on the target
 #
 #############################################################
-   
-gettext-target: $(GETTEXT_DIR)/$(GETTEXT_BINARY)
+
+$(TARGET_DIR)/usr/lib/libintl.so.8.0.1: $(GETTEXT_DIR)/$(GETTEXT_BINARY)
 	$(MAKE) DESTDIR=$(TARGET_DIR) CC=$(TARGET_CC) -C $(GETTEXT_DIR) install
 	chmod +x $(TARGET_DIR)/usr/lib/libintl.so.2.2.0 # identify as needing to be stipped
 	rm -rf  $(TARGET_DIR)/usr/info \
@@ -83,13 +83,15 @@ gettext-target: $(GETTEXT_DIR)/$(GETTEXT_BINARY)
 		$(TARGET_DIR)/usr/doc $(TARGET_DIR)/usr/share/aclocal \
 		$(TARGET_DIR)/usr/include/libintl.h
 	-rmdir $(TARGET_DIR)/usr/include
-   
+
+gettext-target: $(TARGET_DIR)/usr/lib/libintl.so.8.0.1
+
 libintl: $(TARGET_DIR)/usr/lib/libintl.so
 
 $(TARGET_DIR)/usr/lib/libintl.so: $(STAGING_DIR)/$(GETTEXT_TARGET_BINARY)
 	cp -a $(STAGING_DIR)/usr/lib/libintl.so* $(TARGET_DIR)/usr/lib
 	touch $@
-    
+
 #############################################################
 #
 # Toplevel Makefile options
