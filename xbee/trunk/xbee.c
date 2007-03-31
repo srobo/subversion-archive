@@ -1,4 +1,3 @@
-
 #define _GNU_SOURCE
 #include <unistd.h>
 #include <sys/select.h>
@@ -7,6 +6,8 @@
 #include <termios.h>
 #include <string.h>
 #include <termios.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "xbee.h"
 #include "xbee_at.h"
@@ -74,8 +75,18 @@ int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len );
 
 void hack( xbee_t* xb );
 
+
 /* Configure the serial port */
 gboolean xbee_serial_init( xbee_t* xb );
+
+/* Initialise the module.
+ * This puts the node into API mode.
+ * xb: The xbee structure.
+ * fd: serial port file descriptor. */
+gboolean xbee_init( xbee_t* xb, int fd );
+
+/* Free information related to a module. */
+void xbee_free( xbee_t* xb );
 
 gboolean xbee_init( xbee_t* xb, int fd )
 {
@@ -612,4 +623,36 @@ gboolean xbee_source_callback( xbee_t *xb )
 	hack( xb );
 
 	return TRUE;
+}
+
+xbee_t* xbee_open( char* fname )
+{
+	int sp;
+	xbee_t *xb = NULL;
+	assert( xb != NULL && fname != NULL );
+
+	xb = g_malloc( sizeof(xbee_t) );
+
+	sp = open( fname, O_RDWR | O_NONBLOCK );
+	if( sp < 0 )
+	{
+		fprintf( stderr, "Error: Failed to open serial port\n" );
+		return NULL; 
+	}
+	
+	if( !xbee_init( xb, sp ) )
+		return FALSE;
+
+	return xb;
+}
+
+void xbee_close( xbee_t* xb )
+{
+	assert( xb != NULL );
+
+	close( xb->fd );
+
+	xbee_free( xb );
+
+	g_free( xb );
 }

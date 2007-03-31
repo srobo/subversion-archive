@@ -95,14 +95,14 @@ typedef struct
 	uint8_t addr[8];
 } xb_addr_t;
 
-/* Initialise the module.
- * This puts the node into API mode.
- * xb: The xbee structure.
- * fd: serial port file descriptor. */
-gboolean xbee_init( xbee_t* xb, int fd );
 
-/* Free information related to a module. */
-void xbee_free( xbee_t* xb );
+/* Create a connection to an xbee.
+ * Opens the serial port given in fname, and fills the 
+ * structure *xb with stuff. */
+xbee_t* xbee_open( char* fname );
+
+/* Close an xbee connection */
+void xbee_close( xbee_t* xb );
 
 gboolean xbee_write( xbee_t* xb, void* buf, uint16_t len );
 
