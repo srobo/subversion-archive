@@ -45,8 +45,8 @@ struct
 
 /* Create a server. Arguments:
  *  - xb: The xbee that we'll be serving
- *  - serv: Will point to the new server structure */
-gboolean xbee_server_new( xbee_t* xb, xbee_server_t* serv );
+ *  Returns the new server structure */
+xbee_server_t* xbee_server_new( xbee_t* xb );
 
 void xbee_server_free( xbee_server_t* serv );
 

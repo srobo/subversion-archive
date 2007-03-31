@@ -7,9 +7,10 @@
 
 gboolean xbee_server_listen( xbee_server_t* serv );
 
-gboolean xbee_server_new( xbee_t* xb, xbee_server_t* serv )
+xbee_server_t* xbee_server_new( xbee_t* xb );
 {
-	assert( xb != NULL && serv != NULL );
+	xbee_server_t *serv;
+	assert( xb != NULL );
 
 	serv = g_malloc( sizeof( xbee_server_t ) );
 
@@ -17,12 +18,9 @@ gboolean xbee_server_new( xbee_t* xb, xbee_server_t* serv )
 	serv->clients = NULL;
 
 	if( !xbee_server_listen( serv ) )
-		return FALSE;
+		return NULL;
 
-	/* Add the socket to the mainloop */
-	
-
-	return TRUE;
+	return serv;
 }
 
 gboolean xbee_server_listen( xbee_server_t* serv )
