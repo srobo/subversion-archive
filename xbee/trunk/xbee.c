@@ -1,4 +1,3 @@
-/* xbee class */
 #define _GNU_SOURCE
 #include <unistd.h>
 #include <sys/select.h>
@@ -42,6 +41,9 @@ static uint8_t xbee_sum_block( uint8_t* buf, uint16_t len, uint8_t cur );
 
 /* Displays connection statistics */
 static void xbee_print_stats( xbee_t* xb );
+
+/* Add an xbee to a mainloop */
+void xbee_add_source( xbee_t *xb, GMainContext *context );
 
 /* xbee source functions  */
 gboolean xbee_source_prepare( GSource *source, gint *timeout_ );
@@ -131,6 +133,25 @@ gboolean xbee_init( xbee_t* xb, int fd )
 
 	return TRUE;
 }
+
+gboolean xbee_main( xbee_t* xb )
+{
+	assert( xb != NULL );
+	GMainLoop* ml;
+
+	ml = g_main_loop_new( NULL, FALSE );
+
+	/* Add the xbee source */
+	xbee_add_source( xb, g_main_loop_get_context( ml ) );
+
+	/* Create the server */
+	
+
+	g_main_loop_run( ml );
+
+	return FALSE;
+}
+
 
 static uint8_t xbee_outgoing_next( xbee_t* xb )
 {

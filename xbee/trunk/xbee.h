@@ -95,6 +95,7 @@ typedef struct
 	uint8_t addr[8];
 } xb_addr_t;
 
+
 /* Create a connection to an xbee.
  * Opens the serial port given in fname, and fills the 
  * structure *xb with stuff. */
@@ -103,7 +104,8 @@ xbee_t* xbee_open( char* fname );
 /* Close an xbee connection */
 void xbee_close( xbee_t* xb );
 
-/* Add an xbee to a mainloop */
-void xbee_add_source( xbee_t *xb, GMainContext *context );
+gboolean xbee_write( xbee_t* xb, void* buf, uint16_t len );
+
+gboolean xbee_main( xbee_t* xb );
 
 #endif	/* __XBEE_H */
