@@ -11,7 +11,6 @@
 
 #include "xbee.h"
 #include "xbee_at.h"
-#include "xbee-incoming.h"
 
 /*** Incoming Data Functions ***/
 

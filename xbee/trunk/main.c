@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <glib.h>
-#include "xbee.h"
+#include "xbee-server.h"
 
 int main( int argc, char** argv )
 {
