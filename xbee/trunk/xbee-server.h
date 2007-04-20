@@ -1,8 +1,8 @@
 #ifndef __XBEE_SERVER_H
 #define __XBEE_SERVER_H
 #include <glib.h>
+#include <glib-object.h>
 #include <stdint.h>
-
 
 #define XB_SERVER_INBUF_LEN 512
 
@@ -17,6 +17,8 @@ typedef struct xbee_con_ts xbee_con_t;
 /* Server related properties */
 typedef struct
 {
+	GObject parent;
+
 	/* Listening socket */
 	int l_fd;
 
@@ -24,7 +26,13 @@ typedef struct
 	/* List of clients (xbee_con_t*) */
 	GSList *clients;
 
-} xbee_server_t;
+} XbeeServer;
+
+typedef struct
+{
+	GObjectClass parent;
+
+} XbeeServerClass;
 
 /* Connection related properties */
 struct
@@ -41,18 +49,27 @@ struct
 
 } xbee_con_ts;
 
+GType xbee_server_get_type( void );
+
+#define XBEE_SERVER_TYPE (xbee_server_get_type())
+#define XBEE_SERVER(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), XBEE_SERVER_TYPE, XbeeServer))
+#define XBEE_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), XBEE_SERVER, XbeeModuleClass))
+#define XBEE_IS_SERVER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), XBEE_SERVER_TYPE))
+#define XBEE_IS_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), XBEE_SERVER_TYPE))
+#define XBEE_SERVER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), XBEE_SERVER_TYPE, XbeeServerClass))
+
 #include "xbee.h"
 
 /* Create a server. Arguments:
  *  - xb: The xbee that we'll be serving
  *  Returns the new server structure */
-xbee_server_t* xbee_server_new( XbeeModule* xb );
+XbeeServer* xbee_server_new( XbeeModule* xb );
 
-void xbee_server_free( xbee_server_t* serv );
+void xbee_server_free( XbeeServer* serv );
 
 /* Process a frame from the xbee.
  * xbee structure contains the frame. */
-void xbee_server_proc_frame( xbee_server_t* serv, XbeeModule* xb );
+void xbee_server_proc_frame( XbeeServer* serv, XbeeModule* xb );
 
 
 #endif	/* __XBEE_SERVER_H */

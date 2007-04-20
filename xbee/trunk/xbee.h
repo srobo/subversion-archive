@@ -60,7 +60,7 @@ struct xbee_ts
 
 	/* Need to know what server we're associated with,
 	   so that we can send incoming frames to it */
-	xbee_server_t *server;
+	XbeeServer *server;
 
 	/* Whether we're in API mode */
 	gboolean api_mode;

@@ -5,17 +5,47 @@
 
 #define LISTEN_QUEUE_LEN 5
 
-gboolean xbee_server_listen( xbee_server_t* serv );
+gboolean xbee_server_listen( XbeeServer* serv );
 
-xbee_server_t* xbee_server_new( XbeeModule* xb )
+void xbee_server_instance_init( GTypeInstance *gti, gpointer g_class );
+
+GType xbee_server_get_type( void )
 {
-	xbee_server_t *serv;
+	static GType type = 0;
+	if (type == 0) {
+		static const GTypeInfo info = {
+			sizeof (XbeeServerClass),
+			NULL,   /* base_init */
+			NULL,   /* base_finalize */
+			NULL,   /* class_init */
+			NULL,   /* class_finalize */
+			NULL,   /* class_data */
+			sizeof (XbeeServer),
+			0,      /* n_preallocs */
+			xbee_server_instance_init    /* instance_init */
+		};
+		type = g_type_register_static (G_TYPE_OBJECT,
+					       "XbeeServerType",
+					       &info, 0);
+	}
+	return type;
+}
+
+void xbee_server_instance_init( GTypeInstance *gti, gpointer g_class )
+{
+	XbeeServer *s = (XbeeServer*)gti;
+	/* Initialise the members of the XbeeServer */
+	
+	s->clients = NULL;
+
+}
+
+XbeeServer* xbee_server_new( XbeeModule* xb )
+{
+	XbeeServer *serv;
 	assert( xb != NULL );
 
-	serv = g_malloc( sizeof( xbee_server_t ) );
-
-	/* No clients yet */
-	serv->clients = NULL;
+	serv = g_object_new( XBEE_SERVER_TYPE, NULL );
 
 	if( !xbee_server_listen( serv ) )
 		return NULL;
@@ -23,7 +53,7 @@ xbee_server_t* xbee_server_new( XbeeModule* xb )
 	return serv;
 }
 
-gboolean xbee_server_listen( xbee_server_t* serv )
+gboolean xbee_server_listen( XbeeServer* serv )
 {
 	struct sockaddr_un addr = 
 	{
@@ -58,17 +88,17 @@ gboolean xbee_server_listen( xbee_server_t* serv )
 	return TRUE;
 }
 
-void xbee_server_free( xbee_server_t* serv )
+void xbee_server_free( XbeeServer* serv )
 {
 	assert( serv != NULL );
-
-
+	
+	
 }
 
-void xbee_server_proc_frame( xbee_server_t* serv, XbeeModule* xb )
+void xbee_server_proc_frame( XbeeServer* serv, XbeeModule* xb )
 {
 	assert( serv != NULL && xb != NULL );
-
-
+	
+	
 }
 
