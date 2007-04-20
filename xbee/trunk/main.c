@@ -8,6 +8,8 @@ int main( int argc, char** argv )
 	xbee_server_t *server;
 	GMainLoop* ml;
 
+	g_type_init();
+
 	if( argc < 2 )
 	{
 		fprintf( stderr, "Not enough arguments\n" );
