@@ -17,10 +17,10 @@ int timeval_subtract (struct timeval *result,
 gboolean real_sleep( const struct timeval *t );
 
 /* Waits for an "OK" - discarding other input */
-static gboolean xbee_wait_ok( Xbee* xb );
+static gboolean xbee_module_wait_ok( XbeeModule* xb );
 
 /* Waits for an "OK" - error on "ERROR" */
-static gboolean xbee_check_ok( Xbee* xb );
+static gboolean xbee_module_check_ok( XbeeModule* xb );
 
 /* Finds expired time */
 static gboolean time_expired( struct timeval* start,
@@ -28,14 +28,14 @@ static gboolean time_expired( struct timeval* start,
 
 /* WARNING: If data arrives at the xbee whilst the device is waiting to 
    enter AT mode, this function will _probably_ return FALSE.  */
-gboolean xbee_at_mode( Xbee* xb )
+gboolean xbee_module_at_mode( XbeeModule* xb )
 {
 	const struct timeval guard_time = { .tv_sec = 1, .tv_usec = 100000 },
 		gt_low = { .tv_sec = 1, .tv_usec = 0 };
 	assert( xb != NULL );
 
 	/* Check that we're not already in AT mode */
-	if( xbee_get_at_mode( xb ) )
+	if( xbee_module_get_at_mode( xb ) )
 		return TRUE;
 
 	/* Wait one guard time */
@@ -46,7 +46,7 @@ gboolean xbee_at_mode( Xbee* xb )
 	}
 
 	/* Send the sequence */
-	if( ! xbee_puts( xb, "+++" ) ) 
+	if( ! xbee_module_puts( xb, "+++" ) ) 
 	{
 		fprintf( stderr, "Error: Failed to write AT mode switching command: %m\n" );
 		return FALSE;
@@ -67,7 +67,7 @@ gboolean xbee_at_mode( Xbee* xb )
 /* 	} */
 
 	/*** Read the 'OK' ***/
-	if( !xbee_wait_ok( xb ) )
+	if( !xbee_module_wait_ok( xb ) )
 	{
 		fprintf( stderr, "Error: Failed to receive OK after moving into AT mode\n" ); 
 		return FALSE;
@@ -87,7 +87,7 @@ gboolean xbee_at_mode( Xbee* xb )
 	return TRUE;
 }
 
-gboolean xbee_get_at_mode( Xbee* xb )
+gboolean xbee_module_get_at_mode( XbeeModule* xb )
 {
 	struct timeval now, res;
 	/* AT mode expires after 10 seconds - 9.5 for safety */
@@ -181,7 +181,7 @@ gboolean real_sleep( const struct timeval *t )
 	return TRUE;
 }
 
-static gboolean xbee_wait_ok( Xbee* xb )
+static gboolean xbee_module_wait_ok( XbeeModule* xb )
 {
 	uint8_t t, buf[2] = {0,0};
 	fd_set s;
@@ -267,7 +267,7 @@ static gboolean time_expired( struct timeval* start,
 	return TRUE;
 }
 
-static gboolean xbee_check_ok( Xbee* xb )
+static gboolean xbee_module_check_ok( XbeeModule* xb )
 {
 	uint8_t d, buf[6] = {'\0','\0','\0','\0','\0','\0'};
 	ssize_t i, r;
@@ -339,28 +339,28 @@ static gboolean xbee_check_ok( Xbee* xb )
 	return FALSE;
 }
 
-gboolean xbee_set_api_mode( Xbee* xb )
+gboolean xbee_module_set_api_mode( XbeeModule* xb )
 {
 	assert( xb != NULL );
 
 	if( xb->api_mode )
 		return TRUE;
 
-	if( !xbee_at_mode( xb ) )
+	if( !xbee_module_at_mode( xb ) )
 		return FALSE;
 
-	if( !xbee_puts( xb, "ATAP2\r" ) )
+	if( !xbee_module_puts( xb, "ATAP2\r" ) )
 		return FALSE;
 
 	/* Check that we're now in the right mode */
-	if( !xbee_check_ok( xb ) )
+	if( !xbee_module_check_ok( xb ) )
 		return FALSE;
 
 	/* Exit AT command mode */
-	if( !xbee_puts( xb, "ATCN\r" ) )
+	if( !xbee_module_puts( xb, "ATCN\r" ) )
 		return FALSE;
 
-	if( !xbee_check_ok( xb ) )
+	if( !xbee_module_check_ok( xb ) )
 		return FALSE;
 
 	xb->at_mode = FALSE;
@@ -370,7 +370,7 @@ gboolean xbee_set_api_mode( Xbee* xb )
 	return TRUE;
 }
 
-gboolean xbee_puts( Xbee* xb, char* buf )
+gboolean xbee_module_puts( XbeeModule* xb, char* buf )
 {
 	ssize_t n;
 	assert( xb != NULL && xb->fd >= 0 && buf != NULL );

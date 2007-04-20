@@ -4,16 +4,16 @@
 #include <errno.h>
 #include <string.h>
 
-static uint8_t xbee_checksum( uint8_t* buf, uint16_t len );
+static uint8_t xbee_module_checksum( uint8_t* buf, uint16_t len );
 
 /* Displays the contents of a frame */
 static void debug_show_frame( uint8_t* buf, uint16_t len );
 
-gboolean xbee_proc_incoming( Xbee* xb )
+gboolean xbee_module_proc_incoming( XbeeModule* xb )
 {
 	assert( xb != NULL );
 
-	while( xbee_read_frame( xb ) == 0 )
+	while( xbee_module_read_frame( xb ) == 0 )
 	{
 		uint16_t flen;
 		flen = (xb->inbuf[1] << 8) | xb->inbuf[2];
@@ -33,7 +33,7 @@ gboolean xbee_proc_incoming( Xbee* xb )
  * When a full frame is achieved, it returns 0.
  * When a full frame has not been acheived, it returns 1.
  * When an error occurs, it returns -1 */
-int xbee_read_frame( Xbee* xb )
+int xbee_module_read_frame( XbeeModule* xb )
 {
 	int r;
 	uint8_t d;
@@ -108,7 +108,7 @@ int xbee_read_frame( Xbee* xb )
 				uint8_t chk;
 
 				/* Check the checksum */
-				chk = xbee_checksum( &xb->inbuf[3], flen );
+				chk = xbee_module_checksum( &xb->inbuf[3], flen );
 
 				if( chk == xb->inbuf[ flen + 3 ] )				    
 					whole_frame = TRUE;
@@ -131,7 +131,7 @@ int xbee_read_frame( Xbee* xb )
 	return 0;	/* Whole frame */
 }
 
-static uint8_t xbee_checksum( uint8_t* buf, uint16_t len )
+static uint8_t xbee_module_checksum( uint8_t* buf, uint16_t len )
 {
 	uint8_t c = 0;
 	assert( buf != NULL );

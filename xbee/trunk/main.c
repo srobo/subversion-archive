@@ -4,7 +4,7 @@
 
 int main( int argc, char** argv )
 {
-	Xbee *xb;
+	XbeeModule *xb;
 	xbee_server_t *server;
 	GMainLoop* ml;
 
@@ -14,24 +14,24 @@ int main( int argc, char** argv )
 		return 1;
 	}
 
-	xb = xbee_open( argv[1] );
+	xb = xbee_module_open( argv[1] );
 	g_return_val_if_fail( xb != NULL, 2 );
 
 	ml = g_main_loop_new( NULL, FALSE );
 
 	/* Add the xbee source */
-	xbee_add_source( xb, g_main_loop_get_context( ml ) );
+	xbee_module_add_source( xb, g_main_loop_get_context( ml ) );
 
 	/* Create the server */
 	server = xbee_server_new( xb );
 	g_return_val_if_fail( server != NULL, 3 );
 
-	/*  */
+
 
 	g_main_loop_run( ml );
 
 	xbee_server_free( server );
-	xbee_close( xb );
+	xbee_module_close( xb );
 
 	return 0;
 }

@@ -7,7 +7,7 @@
 
 gboolean xbee_server_listen( xbee_server_t* serv );
 
-xbee_server_t* xbee_server_new( Xbee* xb )
+xbee_server_t* xbee_server_new( XbeeModule* xb )
 {
 	xbee_server_t *serv;
 	assert( xb != NULL );
@@ -65,7 +65,7 @@ void xbee_server_free( xbee_server_t* serv )
 
 }
 
-void xbee_server_proc_frame( xbee_server_t* serv, Xbee* xb )
+void xbee_server_proc_frame( xbee_server_t* serv, XbeeModule* xb )
 {
 	assert( serv != NULL && xb != NULL );
 

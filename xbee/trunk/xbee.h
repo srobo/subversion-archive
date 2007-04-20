@@ -20,23 +20,23 @@ typedef struct
 struct xbee_ts;
 
 /* Note: redefined to capital for gobject change */
-typedef struct xbee_ts Xbee;	
+typedef struct xbee_ts XbeeModule;	
 
 typedef struct
 {
 	GObjectClass parent;
 
 	/* Nothing here */
-} XbeeClass;
+} XbeeModuleClass;
 
-#define XBEE_TYPE (xbee_get_type())
-#define XBEE(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), XBEE_TYPE, Xbee))
-#define XBEE_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), XBEE_BAR, XbeeClass))
-#define XBEE_IS_XBEE(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), XBEE_TYPE))
-#define XBEE_IS_XBEE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), XBEE_TYPE))
-#define XBEE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), XBEE_TYPE, XbeeClass))
+GType xbee_module_get_type( void );
 
-GType xbee_get_type( void );
+#define XBEE_MODULE_TYPE (xbee_module_get_type())
+#define XBEE_MODULE(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), XBEE_MODULE_TYPE, XbeeModule))
+#define XBEE_MODULE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), XBEE_MODULE, XbeeModuleClass))
+#define XBEE_IS_MODULE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), XBEE_MODULE_TYPE))
+#define XBEE_IS_MODULE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), XBEE_MODULE_TYPE))
+#define XBEE_MODULE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), XBEE_MODULE_TYPE, XbeeModuleClass))
 
 #include "xbee-server.h"
 
@@ -45,7 +45,7 @@ typedef struct
 {
 	GSource source;
 	GPollFD pollfd;
-	Xbee *xb; 		/* Parent pointer */
+	XbeeModule *xb; /* Parent pointer */
 } xbee_source_t;
 
 struct xbee_ts
@@ -55,7 +55,7 @@ struct xbee_ts
 	/* private */
 	int fd;
 
-	xbee_source_t *source; 	/* probably need this to change pollfd */
+	xbee_source_t *source;
 	guint source_id;
 
 	/* Need to know what server we're associated with,
@@ -120,12 +120,12 @@ typedef struct
 /* Create a connection to an xbee.
  * Opens the serial port given in fname, and fills the 
  * structure *xb with stuff. */
-Xbee* xbee_open( char* fname );
+XbeeModule* xbee_module_open( char *fname );
 
 /* Close an xbee connection */
-void xbee_close( Xbee* xb );
+void xbee_module_close( XbeeModule *xb );
 
 /* Add an xbee to a mainloop */
-void xbee_add_source( Xbee *xb, GMainContext *context );
+void xbee_module_add_source( XbeeModule *xb, GMainContext *context );
 
 #endif	/* __XBEE_H */
