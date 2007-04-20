@@ -17,23 +17,23 @@
 /*** Outgoing Queue Functions ***/
 
 /* Process outgoing data */
-static gboolean xbee_proc_outgoing( xbee_t* xb );
+static gboolean xbee_proc_outgoing( Xbee* xb );
 
 /* Whether data's ready to transmit */
-static gboolean xbee_outgoing_queued( xbee_t* xb );
+static gboolean xbee_outgoing_queued( Xbee* xb );
 
 /* Returns the next byte to transmit */
-static uint8_t xbee_outgoing_next( xbee_t* xb );
+static uint8_t xbee_outgoing_next( Xbee* xb );
 
 /* Allocates a new frame and copies it in */
-static gboolean xbee_out_queue_add( xbee_t* xb, uint8_t *data, uint8_t len );
+static gboolean xbee_out_queue_add( Xbee* xb, uint8_t *data, uint8_t len );
 
 /* Adds the frame directly to the queue (memory allocation must have
  * already been done) */
-static void xbee_out_queue_add_frame( xbee_t* xb, xb_frame_t* frame );
+static void xbee_out_queue_add_frame( Xbee* xb, xb_frame_t* frame );
 
 /* Removes the last frame from the transmit queue */
-static void xbee_out_queue_del( xbee_t* xb );
+static void xbee_out_queue_del( Xbee* xb );
 
 /*** Misc ***/
 
@@ -41,7 +41,7 @@ static void xbee_out_queue_del( xbee_t* xb );
 static uint8_t xbee_sum_block( uint8_t* buf, uint16_t len, uint8_t cur );
 
 /* Displays connection statistics */
-static void xbee_print_stats( xbee_t* xb );
+static void xbee_print_stats( Xbee* xb );
 
 /* xbee source functions  */
 gboolean xbee_source_prepare( GSource *source, gint *timeout_ );
@@ -66,59 +66,27 @@ static GSourceFuncs xbee_sourcefuncs =
 };
 
 /* Source callback */
-gboolean xbee_source_callback( xbee_t *xb );
+gboolean xbee_source_callback( Xbee *xb );
 
 /*** "Internal" Client API Functions ***/
-int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len );
+int xbee_transmit( Xbee* xb, xb_addr_t* addr, void* buf, uint8_t len );
 
-void hack( xbee_t* xb );
-
+void hack( Xbee* xb );
 
 /* Configure the serial port */
-gboolean xbee_serial_init( xbee_t* xb );
+gboolean xbee_serial_init( Xbee* xb );
 
-/* Initialise the module.
- * This puts the node into API mode.
- * xb: The xbee structure.
- * fd: serial port file descriptor. */
-gboolean xbee_init( xbee_t* xb, int fd );
+/* Initialise the module. */
+gboolean xbee_init( Xbee* xb );
+
+void xbee_instance_init( GTypeInstance *xb, gpointer g_class );
 
 /* Free information related to a module. */
-void xbee_free( xbee_t* xb );
+void xbee_free( Xbee* xb );
 
-gboolean xbee_init( xbee_t* xb, int fd )
+gboolean xbee_init( Xbee* xb )
 {
-	assert( xb != NULL && fd >= 0 );
-
-	xb->fd = fd;
-
-	/* No server yet. */
-	xb->server = NULL;
-
-	xb->api_mode = FALSE;
-	xb->at_time.tv_sec = 0;
-	xb->at_time.tv_usec = 0;
-	xb->at_mode = FALSE;
-
-	/* The default serial mode is 9600bps 8n1  */
-	xb->baud = 9600;
-	xb->parity = PARITY_NONE;
-	xb->stop_bits = 1;
-	xb->flow_control = FLOW_NONE;
-
-	xb->out_frames = g_queue_new();
-
-	xb->in_len = 0;
-	xb->escape = FALSE;
-
-	xb->bytes_discarded = 0;
-	xb->frames_discarded = 0;
-	xb->bytes_rx = xb->bytes_tx = 0;
-	xb->frames_rx = xb->frames_tx = 0;
-
-	xb->o_chk = xb->tx_pos = 0;
-	xb->checked = FALSE;
-	xb->tx_escaped = FALSE;
+	assert( xb != NULL );
 
 	if( !xbee_serial_init( xb ) )
 		return FALSE;
@@ -132,7 +100,7 @@ gboolean xbee_init( xbee_t* xb, int fd )
 	return TRUE;
 }
 
-static uint8_t xbee_outgoing_next( xbee_t* xb )
+static uint8_t xbee_outgoing_next( Xbee* xb )
 {
 	const uint8_t FRAME_START = 0x7E;
 	xb_frame_t* frame;
@@ -168,7 +136,7 @@ static uint8_t xbee_outgoing_next( xbee_t* xb )
 }
 
 /* This function needs a bit of cleanup */
-static gboolean xbee_proc_outgoing( xbee_t* xb )
+static gboolean xbee_proc_outgoing( Xbee* xb )
 {
 	uint8_t d;
 	ssize_t w;
@@ -230,7 +198,7 @@ static gboolean xbee_proc_outgoing( xbee_t* xb )
 	return TRUE;
 }
 
-static gboolean xbee_outgoing_queued( xbee_t* xb )
+static gboolean xbee_outgoing_queued( Xbee* xb )
 {
 	assert( xb != NULL );
 
@@ -250,7 +218,7 @@ static uint8_t xbee_sum_block( uint8_t* buf, uint16_t len, uint8_t cur )
 	return cur;
 }
 
-static gboolean xbee_out_queue_add( xbee_t* xb, uint8_t *data, uint8_t len )
+static gboolean xbee_out_queue_add( Xbee* xb, uint8_t *data, uint8_t len )
 {
 	xb_frame_t *frame;
 	assert( xb != NULL && data != NULL );
@@ -266,7 +234,7 @@ static gboolean xbee_out_queue_add( xbee_t* xb, uint8_t *data, uint8_t len )
 	return TRUE;
 }
 
-static void xbee_out_queue_add_frame( xbee_t* xb, xb_frame_t* frame )
+static void xbee_out_queue_add_frame( Xbee* xb, xb_frame_t* frame )
 {
 	assert( xb != NULL && frame != NULL );
 
@@ -274,7 +242,7 @@ static void xbee_out_queue_add_frame( xbee_t* xb, xb_frame_t* frame )
 }
 
 
-static void xbee_out_queue_del( xbee_t* xb )
+static void xbee_out_queue_del( Xbee* xb )
 {
 	xb_frame_t *frame;
 	assert( xb != NULL );
@@ -291,7 +259,7 @@ static void xbee_out_queue_del( xbee_t* xb )
 	g_queue_pop_tail( xb->out_frames );
 }
 
-int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len )
+int xbee_transmit( Xbee* xb, xb_addr_t* addr, void* buf, uint8_t len )
 {
 	xb_frame_t *frame;
 	uint8_t* pos;
@@ -350,7 +318,7 @@ int xbee_transmit( xbee_t* xb, xb_addr_t* addr, void* buf, uint8_t len )
 	return 0;
 }
 
-void hack( xbee_t* xb )
+void hack( Xbee* xb )
 {
 	uint8_t data[] = {0,1,2,3,4,5};
 	xb_addr_t addr =
@@ -365,7 +333,7 @@ void hack( xbee_t* xb )
 
 }
 
-static void xbee_print_stats( xbee_t* xb )
+static void xbee_print_stats( Xbee* xb )
 {
 	assert( xb != NULL );
 
@@ -377,7 +345,7 @@ static void xbee_print_stats( xbee_t* xb )
 }
 
 
-void xbee_free( xbee_t* xb )
+void xbee_free( Xbee* xb )
 {
 	assert( xb != NULL );
 
@@ -393,7 +361,7 @@ void xbee_free( xbee_t* xb )
 	xb->out_frames = NULL;
 }
 
-gboolean xbee_serial_init( xbee_t* xb )
+gboolean xbee_serial_init( Xbee* xb )
 {
 	struct termios t;
 	assert( xb != NULL );
@@ -509,7 +477,7 @@ gboolean xbee_serial_init( xbee_t* xb )
 
 
 
-void xbee_add_source( xbee_t *xb, GMainContext *context )
+void xbee_add_source( Xbee *xb, GMainContext *context )
 {
 	assert( xb != NULL );
 	GPollFD *pfd;
@@ -583,7 +551,7 @@ void xbee_source_finalize( GSource *source )
 	/* glib should free the source structure */
 }
 
-gboolean xbee_source_callback( xbee_t *xb )
+gboolean xbee_source_callback( Xbee *xb )
 {
 	assert( xb != NULL );
 
@@ -604,28 +572,27 @@ gboolean xbee_source_callback( xbee_t *xb )
 	return TRUE;
 }
 
-xbee_t* xbee_open( char* fname )
+Xbee* xbee_open( char* fname )
 {
-	int sp;
-	xbee_t *xb = NULL;
-	assert( xb != NULL && fname != NULL );
+	Xbee *xb = NULL;
+	assert( fname != NULL );
 
-	xb = g_malloc( sizeof(xbee_t) );
+	xb = g_object_new( XBEE_TYPE, NULL  );
 
-	sp = open( fname, O_RDWR | O_NONBLOCK );
-	if( sp < 0 )
+	xb->fd = open( fname, O_RDWR | O_NONBLOCK );
+	if( xb->fd < 0 )
 	{
 		fprintf( stderr, "Error: Failed to open serial port\n" );
 		return NULL; 
 	}
 	
-	if( !xbee_init( xb, sp ) )
+	if( !xbee_init( xb ) )
 		return FALSE;
 
 	return xb;
 }
 
-void xbee_close( xbee_t* xb )
+void xbee_close( Xbee* xb )
 {
 	assert( xb != NULL );
 
@@ -633,5 +600,60 @@ void xbee_close( xbee_t* xb )
 
 	xbee_free( xb );
 
-	g_free( xb );
+	g_object_unref( xb );
+}
+
+GType xbee_get_type( void )
+{
+	static GType type = 0;
+	if (type == 0) {
+		static const GTypeInfo info = {
+			sizeof (XbeeClass),
+			NULL,   /* base_init */
+			NULL,   /* base_finalize */
+			NULL,   /* class_init */
+			NULL,   /* class_finalize */
+			NULL,   /* class_data */
+			sizeof (Xbee),
+			0,      /* n_preallocs */
+			xbee_instance_init    /* instance_init */
+		};
+		type = g_type_register_static (G_TYPE_OBJECT,
+					       "XbeeType",
+					       &info, 0);
+	}
+	return type;
+}
+
+void xbee_instance_init( GTypeInstance *gti, gpointer g_class )
+{
+	Xbee *xb = (Xbee*)gti;
+
+	/* No server yet. */
+	xb->server = NULL;
+
+	xb->api_mode = FALSE;
+	xb->at_time.tv_sec = 0;
+	xb->at_time.tv_usec = 0;
+	xb->at_mode = FALSE;
+
+	/* The default serial mode is 9600bps 8n1  */
+	xb->baud = 9600;
+	xb->parity = PARITY_NONE;
+	xb->stop_bits = 1;
+	xb->flow_control = FLOW_NONE;
+
+	xb->out_frames = g_queue_new();
+
+	xb->in_len = 0;
+	xb->escape = FALSE;
+
+	xb->bytes_discarded = 0;
+	xb->frames_discarded = 0;
+	xb->bytes_rx = xb->bytes_tx = 0;
+	xb->frames_rx = xb->frames_tx = 0;
+
+	xb->o_chk = xb->tx_pos = 0;
+	xb->checked = FALSE;
+	xb->tx_escaped = FALSE;
 }

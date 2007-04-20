@@ -4,7 +4,7 @@
 
 int main( int argc, char** argv )
 {
-	xbee_t *xb;
+	Xbee *xb;
 	xbee_server_t *server;
 	GMainLoop* ml;
 

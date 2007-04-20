@@ -17,10 +17,10 @@ int timeval_subtract (struct timeval *result,
 gboolean real_sleep( const struct timeval *t );
 
 /* Waits for an "OK" - discarding other input */
-static gboolean xbee_wait_ok( xbee_t* xb );
+static gboolean xbee_wait_ok( Xbee* xb );
 
 /* Waits for an "OK" - error on "ERROR" */
-static gboolean xbee_check_ok( xbee_t* xb );
+static gboolean xbee_check_ok( Xbee* xb );
 
 /* Finds expired time */
 static gboolean time_expired( struct timeval* start,
@@ -28,7 +28,7 @@ static gboolean time_expired( struct timeval* start,
 
 /* WARNING: If data arrives at the xbee whilst the device is waiting to 
    enter AT mode, this function will _probably_ return FALSE.  */
-gboolean xbee_at_mode( xbee_t* xb )
+gboolean xbee_at_mode( Xbee* xb )
 {
 	const struct timeval guard_time = { .tv_sec = 1, .tv_usec = 100000 },
 		gt_low = { .tv_sec = 1, .tv_usec = 0 };
@@ -87,7 +87,7 @@ gboolean xbee_at_mode( xbee_t* xb )
 	return TRUE;
 }
 
-gboolean xbee_get_at_mode( xbee_t* xb )
+gboolean xbee_get_at_mode( Xbee* xb )
 {
 	struct timeval now, res;
 	/* AT mode expires after 10 seconds - 9.5 for safety */
@@ -181,7 +181,7 @@ gboolean real_sleep( const struct timeval *t )
 	return TRUE;
 }
 
-static gboolean xbee_wait_ok( xbee_t* xb )
+static gboolean xbee_wait_ok( Xbee* xb )
 {
 	uint8_t t, buf[2] = {0,0};
 	fd_set s;
@@ -267,7 +267,7 @@ static gboolean time_expired( struct timeval* start,
 	return TRUE;
 }
 
-static gboolean xbee_check_ok( xbee_t* xb )
+static gboolean xbee_check_ok( Xbee* xb )
 {
 	uint8_t d, buf[6] = {'\0','\0','\0','\0','\0','\0'};
 	ssize_t i, r;
@@ -339,7 +339,7 @@ static gboolean xbee_check_ok( xbee_t* xb )
 	return FALSE;
 }
 
-gboolean xbee_set_api_mode( xbee_t* xb )
+gboolean xbee_set_api_mode( Xbee* xb )
 {
 	assert( xb != NULL );
 
@@ -370,7 +370,7 @@ gboolean xbee_set_api_mode( xbee_t* xb )
 	return TRUE;
 }
 
-gboolean xbee_puts( xbee_t* xb, char* buf )
+gboolean xbee_puts( Xbee* xb, char* buf )
 {
 	ssize_t n;
 	assert( xb != NULL && xb->fd >= 0 && buf != NULL );

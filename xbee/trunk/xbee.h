@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <glib.h>
+#include <glib-object.h>
 
 #define XB_INBUF_LEN 512
 #define XB_OUTBUF_LEN 512
@@ -16,22 +17,42 @@ typedef struct
 	uint8_t *data;
 } xb_frame_t;
 
-/*** Source type ***/
-
 struct xbee_ts;
-typedef struct xbee_ts xbee_t;
+
+/* Note: redefined to capital for gobject change */
+typedef struct xbee_ts Xbee;	
+
+typedef struct
+{
+	GObjectClass parent;
+
+	/* Nothing here */
+} XbeeClass;
+
+#define XBEE_TYPE (xbee_get_type())
+#define XBEE(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), XBEE_TYPE, Xbee))
+#define XBEE_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), XBEE_BAR, XbeeClass))
+#define XBEE_IS_XBEE(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), XBEE_TYPE))
+#define XBEE_IS_XBEE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), XBEE_TYPE))
+#define XBEE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), XBEE_TYPE, XbeeClass))
+
+GType xbee_get_type( void );
 
 #include "xbee-server.h"
 
+/*** Source type ***/
 typedef struct
 {
 	GSource source;
 	GPollFD pollfd;
-	xbee_t *xb; 		/* Parent pointer */
+	Xbee *xb; 		/* Parent pointer */
 } xbee_source_t;
 
 struct xbee_ts
 {
+	GObject parent;
+
+	/* private */
 	int fd;
 
 	xbee_source_t *source; 	/* probably need this to change pollfd */
@@ -83,6 +104,7 @@ struct xbee_ts
 
 };
 
+
 typedef enum
 {
 	XB_ADDR_16,
@@ -98,12 +120,12 @@ typedef struct
 /* Create a connection to an xbee.
  * Opens the serial port given in fname, and fills the 
  * structure *xb with stuff. */
-xbee_t* xbee_open( char* fname );
+Xbee* xbee_open( char* fname );
 
 /* Close an xbee connection */
-void xbee_close( xbee_t* xb );
+void xbee_close( Xbee* xb );
 
 /* Add an xbee to a mainloop */
-void xbee_add_source( xbee_t *xb, GMainContext *context );
+void xbee_add_source( Xbee *xb, GMainContext *context );
 
 #endif	/* __XBEE_H */

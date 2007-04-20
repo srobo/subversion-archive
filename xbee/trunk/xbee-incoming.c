@@ -9,7 +9,7 @@ static uint8_t xbee_checksum( uint8_t* buf, uint16_t len );
 /* Displays the contents of a frame */
 static void debug_show_frame( uint8_t* buf, uint16_t len );
 
-gboolean xbee_proc_incoming( xbee_t* xb )
+gboolean xbee_proc_incoming( Xbee* xb )
 {
 	assert( xb != NULL );
 
@@ -33,7 +33,7 @@ gboolean xbee_proc_incoming( xbee_t* xb )
  * When a full frame is achieved, it returns 0.
  * When a full frame has not been acheived, it returns 1.
  * When an error occurs, it returns -1 */
-int xbee_read_frame( xbee_t* xb )
+int xbee_read_frame( Xbee* xb )
 {
 	int r;
 	uint8_t d;

@@ -46,13 +46,13 @@ struct
 /* Create a server. Arguments:
  *  - xb: The xbee that we'll be serving
  *  Returns the new server structure */
-xbee_server_t* xbee_server_new( xbee_t* xb );
+xbee_server_t* xbee_server_new( Xbee* xb );
 
 void xbee_server_free( xbee_server_t* serv );
 
 /* Process a frame from the xbee.
  * xbee structure contains the frame. */
-void xbee_server_proc_frame( xbee_server_t* serv, xbee_t* xb );
+void xbee_server_proc_frame( xbee_server_t* serv, Xbee* xb );
 
 
 #endif	/* __XBEE_SERVER_H */
