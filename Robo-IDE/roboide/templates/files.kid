@@ -81,6 +81,7 @@ function filesaved(result) {
             break;
         }
     }
+    getLog(cur_path);
 }
 </script>
 <head>
