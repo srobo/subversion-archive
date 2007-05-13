@@ -31,6 +31,7 @@ function loadFile(file) {
 
 function gotFile(result) {
     cur_rev = result["revision"];
+    cur_path = result["path"];
     MochiKit.DOM.getElement("tmpcode").innerHTML = result["code"];
     cpscript.edit('tmpcode','generic');
 }
