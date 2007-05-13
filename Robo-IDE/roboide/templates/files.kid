@@ -36,7 +36,7 @@ function gotFile(result) {
 }
 
 function getLog(file) {
-    var d = MochiKit.Async.loadJSONDoc("/gethistory?file="+file);
+    var d = MochiKit.Async.loadJSONDoc("./gethistory?file="+file);
     d.addCallback(gotLog);
 }
 
