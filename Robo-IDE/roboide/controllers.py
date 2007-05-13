@@ -11,6 +11,15 @@ log = logging.getLogger("roboide.controllers")
 
 REPO = "http://studentrobotics.org/svn/"
 
+def ProtectedClient():
+    def get_login(realm, username, may_save):
+        print "Logging"
+        return True, "test", "testpass", False
+
+    a = pysvn.Client()
+    a.callback_get_login = get_login
+    return a
+
 class Root(controllers.RootController):
     @expose("json")
     def filesrc(self, file=None, revision="HEAD"):
@@ -21,15 +30,21 @@ class Root(controllers.RootController):
         TODO: Cope with revision other than head.
         """
         curtime = time.time()
-        client = pysvn.Client()
+        client = ProtectedClient()
         
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
+
+
+        try:
+            rev = pysvn.Revision(pysvn.opt_revision_kind.number, int(revision))
+        except ValueError:
+            rev = pysvn.Revision(pysvn.opt_revision_kind.head)
 
         if file != None and file != "" and client.is_url(REPO + file):
             #Load file from SVN
             mime = ""
             try:
-                mime = client.propget("svn:mime-type", REPO+file).values()[0]
+                mime = client.propget("svn:mime-type", REPO+file, revision=rev).values()[0]
             except pysvn.ClientError:
                 code = "Error getting mime type"
                 revision = 0
@@ -43,9 +58,10 @@ class Root(controllers.RootController):
                 #Ugforge doesn't support locking, so do this the hard way...
                 while True:
                     try:
-                        ver = client.log(REPO + file, limit=1)[0]["revision"]
-                        code = client.cat(REPO + file)
-                        ver2 = client.log(REPO + file, limit=1)[0]["revision"]
+                        ver = client.log(REPO + file, limit=1, revision_start=rev)[0]["revision"]
+                        code = client.cat(REPO + file, revision=rev)
+                        ver2 = client.log(REPO + file, limit=1,
+                                revision_start=rev)[0]["revision"]
                         if ver2.number == ver.number:
                             revision = ver.number
                             break
@@ -65,7 +81,7 @@ class Root(controllers.RootController):
     #previous file revisions for a mochikit drop down
     @expose("json")
     def gethistory(self, file):
-        c = pysvn.Client()
+        c = ProtectedClient()
         try:
             log = c.log(REPO+file)
         except:
@@ -97,7 +113,7 @@ class Root(controllers.RootController):
                     success="Invalid revision")
    
             
-        client = pysvn.Client()
+        client = ProtectedClient()
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness
         path = os.path.dirname(file)
@@ -119,6 +135,8 @@ class Root(controllers.RootController):
         #3. Commit the new directory
         try:
             newrev = client.checkin([tmpdir], message)
+            if newrev == None:
+                raise pysvn.ClientError
             newrev = newrev.number
             success = "True"
             code = ""
@@ -151,7 +169,7 @@ class Root(controllers.RootController):
     @expose(template="roboide.templates.files")
     def index(self):
         #Really need to seperate this out in a min
-        client = pysvn.Client()
+        client = ProtectedClient()
         
         files = client.ls(REPO, recurse=True)
 
