@@ -61,7 +61,7 @@ function filesaved(result) {
             alert("Now at revision: " + result["new_revision"]);
             //Need to reload or we have a non-up-to-date revision - guaranteed merge
             //pain
-            cpscript.edit(cur_path);
+            loadFile(cur_path);
             break;
         }
         case "Invalid revision": {
@@ -77,11 +77,11 @@ function filesaved(result) {
             cur_rev = result["new_revision"];
             MochiKit.DOM.getElement("tmpcode").innerHTML = result["code"];
             cpscript.edit("tmpcode", "generic");
+            getLog(cur_path);
             alert("Merge conflict. Please check the merged files then save again.");
             break;
         }
     }
-    getLog(cur_path);
 }
 </script>
 <head>
