@@ -76,7 +76,7 @@ function filesaved(result) {
             //Oh dear, need to handle a merge
             cur_rev = result["new_revision"];
             MochiKit.DOM.getElement("tmpcode").innerHTML = result["code"];
-            cpscript.edit(cur_path, "tmpcode");
+            cpscript.edit("tmpcode", "generic");
             alert("Merge conflict. Please check the merged files then save again.");
             break;
         }
