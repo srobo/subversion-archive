@@ -38,10 +38,8 @@
 
 	<!-- End of main_content -->
 	</div>
-<div id="footer"> <img src="./static/images/under_the_hood_blue.png" alt="TurboGears under the hood" />
-  <p>TurboGears is a open source front-to-back web development
-    framework written in Python</p>
-  <p>Copyright &copy; 2006 Kevin Dangoor</p>
+<div id="footer">
+  <p>Copyright &copy; 2007 Student Robotics</p>
 </div>
 </body>
 
