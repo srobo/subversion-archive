@@ -15,7 +15,7 @@ MochiKit.DOM.addLoadEvent(function(){
         }
         document.body.style.cursor = "wait";
         e.preventDefault(); //Stop normal link action
-        var d = MochiKit.Async.loadJSONDoc("/savefile?file=" + cur_path +
+        var d = MochiKit.Async.loadJSONDoc("./savefile?file=" + cur_path +
             "&amp;rev=" + cur_rev + "&amp;message=" +
             MochiKit.DOM.getElement("message").value + 
             "&amp;code=" + escape(cpscript.getCode()));
