@@ -26,6 +26,7 @@ MochiKit.DOM.addLoadEvent(function(){
 function loadFile(file) {
     var d = MochiKit.Async.loadJSONDoc("/filesrc", {file : file});
     d.addCallback(gotFile);
+    getLog(file);
 }
 
 function gotFile(result) {
