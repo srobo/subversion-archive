@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://purl.org/kid/ns#"
     py:extends="'master.kid'">
 <script type="text/javascript">MochiKit = {__export__: false};</script>
-<script src="/tg_widgets/turbogears/js/MochiKit.js" type="text/javascript"></script>
-<script src="/static/codepress/codepress.js" type="text/javascript"></script>
+<script src="./tg_widgets/turbogears/js/MochiKit.js" type="text/javascript"></script>
+<script src="./static/codepress/codepress.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 MochiKit.DOM.addLoadEvent(function(){
@@ -24,7 +24,7 @@ MochiKit.DOM.addLoadEvent(function(){
 });
 
 function loadFile(file) {
-    var d = MochiKit.Async.loadJSONDoc("/filesrc", {file : file});
+    var d = MochiKit.Async.loadJSONDoc("./filesrc", {file : file});
     d.addCallback(gotFile);
     getLog(file);
 }
