@@ -1,18 +1,19 @@
 from turbogears import controllers, expose
+import cherrypy
 import logging
 import pysvn
 import time
 import re
 import tempfile, shutil
+import os
 from os.path import join
 log = logging.getLogger("roboide.controllers")
 
 REPO = "http://studentrobotics.org/svn/"
 
 class Root(controllers.RootController):
-    @expose(template="roboide.templates.filesrc", format="html-straight")
-    def filesrc(self, file=None, action=None, language="generic",
-        engine="msie", revision="HEAD"):
+    @expose("json")
+    def filesrc(self, file=None, revision="HEAD"):
         """
         Returns the contents of the file.
         Turns out the action parameter can be edit. Not sure how this is
@@ -58,8 +59,7 @@ class Root(controllers.RootController):
             code = "No File Loaded"
             revision = 0
 
-        return dict(curtime=curtime, code=code, language=language, \
-                    engine=engine, revision=revision, path=file)
+        return dict(curtime=curtime, code=code, revision=revision, path=file)
 
     #TODO: Create an action that uses client.log to return a JSON list of
     #previous file revisions for a mochikit drop down

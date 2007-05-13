@@ -4,6 +4,7 @@
     py:extends="'master.kid'">
 <script type="text/javascript">MochiKit = {__export__: false};</script>
 <script src="/tg_widgets/turbogears/js/MochiKit.js" type="text/javascript"></script>
+<script src="/static/codepress/codepress.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 MochiKit.DOM.addLoadEvent(function(){
@@ -17,14 +18,20 @@ MochiKit.DOM.addLoadEvent(function(){
         var d = MochiKit.Async.loadJSONDoc("/savefile?file=" + cur_path +
             "&amp;rev=" + cur_rev + "&amp;message=" +
             MochiKit.DOM.getElement("message").value + 
-            "&amp;code=" + escape(CodePress.getCode()));
+            "&amp;code=" + escape(cpscript.getCode()));
         d.addCallback(filesaved);
         });
 });
 
 function loadFile(file) {
-    CodePress.edit(file);
-    getLog(file);
+    var d = MochiKit.Async.loadJSONDoc("/filesrc", {file : file});
+    d.addCallback(gotFile);
+}
+
+function gotFile(result) {
+    cur_rev = result["revision"];
+    MochiKit.DOM.getElement("tmpcode").innerHTML = result["code"];
+    cpscript.edit('tmpcode','generic');
 }
 
 function getLog(file) {
@@ -52,7 +59,7 @@ function filesaved(result) {
             alert("Now at revision: " + result["new_revision"]);
             //Need to reload or we have a non-up-to-date revision - guaranteed merge
             //pain
-            CodePress.edit(cur_path);
+            cpscript.edit(cur_path);
             break;
         }
         case "Invalid revision": {
@@ -67,7 +74,7 @@ function filesaved(result) {
             //Oh dear, need to handle a merge
             cur_rev = result["new_revision"];
             MochiKit.DOM.getElement("tmpcode").innerHTML = result["code"];
-            CodePress.edit(cur_path, "tmpcode");
+            cpscript.edit(cur_path, "tmpcode");
             alert("Merge conflict. Please check the merged files then save again.");
             break;
         }
@@ -106,13 +113,12 @@ function filesaved(result) {
 
     <div id="getting_started">
         <div id="file_log"></div>
-        <code id="codepress" title="" class="cp" style="width: 500px"></code>
-        <script src="/static/codepress/codepress.js" type="text/javascript" id="cp-script"
-        lang="en-us"></script>
-        Commit message: <input id="message" value="Default Save Message"/>
-        <a id="savefile" href="#">Save File!</a> 
+        <textarea id="cpscript" class="codepress javascript"
+            style="width:500px;height:425px;"></textarea>
+        <p>Commit message: <input id="message" value="Default Save Message"/>
+        <a id="savefile" href="#">Save File!</a></p>
     </div>
 
-    <div id="tmpcode" style="visibility: hidden;"></div>        
+    <textarea id="tmpcode" style="visibility: hidden;"></textarea>
 </body>
 </html>
