@@ -100,8 +100,8 @@ class Root(controllers.RootController):
         client = pysvn.Client()
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness
-        path = file[:file.rfind("/")]
-        basename = file[file.rfind("/")+1:] 
+        path = os.path.dirname(file)
+        basename = os.path.basename(file)
         tmpdir = tempfile.mkdtemp()
         #This returns a revision number. Always 0. Great.
         try:
@@ -118,7 +118,8 @@ class Root(controllers.RootController):
 
         #3. Commit the new directory
         try:
-            newrev = client.checkin([tmpdir], message).number
+            newrev = client.checkin([tmpdir], message)
+            newrev = newrev.number
             success = "True"
             code = ""
         except pysvn.ClientError:
