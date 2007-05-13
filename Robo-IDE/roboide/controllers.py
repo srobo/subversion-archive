@@ -7,7 +7,7 @@ import tempfile, shutil
 from os.path import join
 log = logging.getLogger("roboide.controllers")
 
-REPO = "svn+ssh://se204@svn.ugforge.ecs.soton.ac.uk/projects/ecssr/"
+REPO = "http://studentrobotics.org/svn/"
 
 class Root(controllers.RootController):
     @expose(template="roboide.templates.filesrc", format="html-straight")
