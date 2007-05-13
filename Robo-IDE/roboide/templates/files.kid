@@ -14,6 +14,8 @@ MochiKit.DOM.addLoadEvent(function(){
             return;
         }
         document.body.style.cursor = "wait";
+	MochiKit.DOM.getElement("savefile").disabled = true;
+
         var d = MochiKit.Async.loadJSONDoc("./savefile?file=" + cur_path +
             "&amp;rev=" + cur_rev + "&amp;message=" +
             MochiKit.DOM.getElement("message").value + 
@@ -61,6 +63,7 @@ function filesaved(result) {
             //Need to reload or we have a non-up-to-date revision - guaranteed merge
             //pain
             loadFile(cur_path);
+	    MochiKit.DOM.getElement("savefile").disabled = false;
             break;
         }
         case "Invalid revision": {
@@ -78,6 +81,7 @@ function filesaved(result) {
             cpscript.edit("tmpcode", "generic");
             getLog(cur_path);
             alert("Merge conflict. Please check the merged files then save again.");
+	    MochiKit.DOM.getElement("savefile").disabled = false;
             break;
         }
     }
