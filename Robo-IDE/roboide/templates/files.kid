@@ -24,8 +24,10 @@ MochiKit.DOM.addLoadEvent(function(){
         });
 });
 
-function loadFile(file) {
-    var d = MochiKit.Async.loadJSONDoc("./filesrc", {file : file});
+function loadFile(file, revision) {
+    var revision = (revision == null) ? "HEAD" : revision;
+    var d = MochiKit.Async.loadJSONDoc("./filesrc", {file : file,
+                                                     revision : revision});
     d.addCallback(gotFile);
     getLog(file);
 }
@@ -44,9 +46,14 @@ function getLog(file) {
 
 function gotLog(result) {
     //file_log
-    historyselect = MochiKit.DOM.createDOM("SELECT", null,
-        MochiKit.Base.map(returnSelect, result["history"]))
+    historyselect = MochiKit.DOM.createDOM("SELECT", {'id':'logselect'},
+        MochiKit.Base.map(returnSelect, result["history"]));
     MochiKit.DOM.replaceChildNodes("file_log", historyselect);
+}
+
+function loadHistory() {
+    box = MochiKit.DOM.getElement("logselect");
+    loadFile(cur_path, box.options[box.selectedIndex].value);
 }
 
 function returnSelect(data) {
@@ -118,7 +125,8 @@ function filesaved(result) {
     </div>
 
     <div id="getting_started">
-        <div id="file_log"></div>
+        <div id="file_log"><select></select></div><button
+            onclick="loadHistory()">Load Revision</button>
         <textarea id="cpscript" class="codepress javascript"
             style="width:500px;height:425px;"></textarea>
         <p>Commit message: <input id="message" value="Default Save Message"/>
