@@ -29,7 +29,6 @@ function loadFile(file, revision) {
     var d = MochiKit.Async.loadJSONDoc("./filesrc", {file : file,
                                                      revision : revision});
     d.addCallback(gotFile);
-    getLog(file);
 }
 
 function gotFile(result) {
@@ -37,6 +36,9 @@ function gotFile(result) {
     cur_path = result["path"];
     MochiKit.DOM.getElement("tmpcode").innerHTML = result["code"];
     cpscript.edit('tmpcode','generic');
+    getLog(cur_path);
+    MochiKit.DOM.getElement("status_block").innerHTML =
+        "File: " + cur_path + " Revision: " + cur_rev
 }
 
 function getLog(file) {
@@ -57,8 +59,9 @@ function loadHistory() {
 }
 
 function returnSelect(data) {
-    return MochiKit.DOM.createDOM("OPTION", {"value" : data["rev"]}, "Rev: "
-    + data["rev"] + ", Author: " + data["author"] + ", Date: " +
+    return MochiKit.DOM.createDOM("OPTION",
+            (data["rev"] == cur_rev) ? {"value" : data["rev"],"selected" : "selected"} : {"value" : data["rev"]},
+            "Rev: " + data["rev"] + ", Author: " + data["author"] + ", Date: " +
     data["date"]);
 }
 

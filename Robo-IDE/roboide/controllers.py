@@ -13,7 +13,6 @@ REPO = "http://studentrobotics.org/svn/"
 
 def ProtectedClient():
     def get_login(realm, username, may_save):
-        print "Logging"
         return True, "test", "testpass", False
 
     a = pysvn.Client()
@@ -21,6 +20,14 @@ def ProtectedClient():
     return a
 
 class Root(controllers.RootController):
+
+    def get_revision(self, revision):
+        try:
+            rev = pysvn.Revision(pysvn.opt_revision_kind.number, int(revision))
+        except ValueError:
+            rev = pysvn.Revision(pysvn.opt_revision_kind.head)
+        return rev
+
     @expose("json")
     def filesrc(self, file=None, revision="HEAD"):
         """
@@ -34,11 +41,7 @@ class Root(controllers.RootController):
         
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
 
-
-        try:
-            rev = pysvn.Revision(pysvn.opt_revision_kind.number, int(revision))
-        except ValueError:
-            rev = pysvn.Revision(pysvn.opt_revision_kind.head)
+        rev = self.get_revision(revision)
 
         if file != None and file != "" and client.is_url(REPO + file):
             #Load file from SVN
@@ -82,6 +85,7 @@ class Root(controllers.RootController):
     @expose("json")
     def gethistory(self, file):
         c = ProtectedClient()
+
         try:
             log = c.log(REPO+file)
         except:
