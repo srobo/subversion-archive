@@ -14,7 +14,6 @@ MochiKit.DOM.addLoadEvent(function(){
             return;
         }
         document.body.style.cursor = "wait";
-        e.preventDefault(); //Stop normal link action
         var d = MochiKit.Async.loadJSONDoc("./savefile?file=" + cur_path +
             "&amp;rev=" + cur_rev + "&amp;message=" +
             MochiKit.DOM.getElement("message").value + 
@@ -119,7 +118,7 @@ function filesaved(result) {
         <textarea id="cpscript" class="codepress javascript"
             style="width:500px;height:425px;"></textarea>
         <p>Commit message: <input id="message" value="Default Save Message"/>
-        <a id="savefile" href="#">Save File!</a></p>
+	<button id="savefile">Save File!</button></p>
     </div>
 
     <textarea id="tmpcode" style="visibility: hidden;"></textarea>
