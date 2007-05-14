@@ -38,9 +38,6 @@
 
 	<!-- End of main_content -->
 	</div>
-<div id="footer">
-  <p>Copyright &copy; 2007 Student Robotics</p>
-</div>
 </body>
 
 </html>

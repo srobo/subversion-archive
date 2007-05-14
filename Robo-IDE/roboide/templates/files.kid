@@ -102,8 +102,6 @@ function filesaved(result) {
 <title>Robotics IDE</title>
 </head>
 <body>
-    <div id="status_block">SVN Crazy Belgium STYLE!!!</div>
-
     <div id="sidebar">
         <h2>Files</h2>
         <!-- With kid nesting magic from:
@@ -127,13 +125,20 @@ function filesaved(result) {
         </div>
     </div>
 
-    <div id="getting_started">
-        <div id="file_log"><select></select></div><button
-            onclick="loadHistory()">Load Revision</button>
+    <div id="code_block">
+        <div id="history"><p>
+        <span id="file_log"><select></select></span> <button
+            onclick="loadHistory()">Load Revision</button></p>
+        </div>
+        <div id="status_block">SVN Crazy Belgium STYLE!!!</div>
+
+        <div id="box">
         <textarea id="cpscript" class="codepress javascript"
-            style="width:500px;height:425px;"></textarea>
+            style="width:100%;height:425px;"></textarea>
+        </div>
+        <div id="savebox">
         <p>Commit message: <input id="message" value="Default Save Message"/>
-	<button id="savefile">Save File!</button></p>
+        <button id="savefile">Save File!</button></p></div>
     </div>
 
     <textarea id="tmpcode" style="visibility: hidden;"></textarea>
