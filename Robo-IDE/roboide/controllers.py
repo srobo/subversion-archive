@@ -99,6 +99,22 @@ class Root(controllers.RootController):
                       for x in log])
 
     @expose("json")
+    def latestrev(self,file):
+        """Get the latest revision number of a file.
+
+        Used for alerting the user when someone else has committed"""
+
+        client = ProtectedClient()
+        rev = 0
+
+        if file != None and client.is_url( REPO + file ):
+            info = client.info2( REPO + file )[0][1]
+
+            rev = info["last_changed_rev"].number
+
+        return dict( rev = rev )            
+
+    @expose("json")
     def savefile(self, file, rev, message, code):
         """Write a commit of one file.
         1. SVN checkout the file's directory

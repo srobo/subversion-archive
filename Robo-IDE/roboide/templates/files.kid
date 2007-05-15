@@ -7,6 +7,8 @@
 <script src="./static/codepress/codepress.js" type="text/javascript"></script>
 
 <script type="text/javascript">
+var POLL_TIME = 5000
+
 MochiKit.DOM.addLoadEvent(function(){
     connect('savefile','onclick', function (e) {
         if(cur_rev == 0){
@@ -22,7 +24,27 @@ MochiKit.DOM.addLoadEvent(function(){
             "&amp;code=" + escape(cpscript.getCode()));
         d.addCallback(filesaved);
         });
+
 });
+
+function setStatus(str)
+{
+    MochiKit.DOM.getElement("status_block").innerHTML = str
+}
+
+function checkState()
+{
+	d = MochiKit.Async.loadJSONDoc( "./latestrev", {file : cur_path} );
+	d.addCallback(checkback);
+}
+
+function checkback(result)
+{
+    if( cur_rev != result["rev"] )
+	setStatus( "This file has been edited" )
+    else
+	setTimeout( "checkState()", POLL_TIME );
+}
 
 function loadFile(file, revision) {
     var revision = (revision == null) ? "HEAD" : revision;
@@ -37,8 +59,9 @@ function gotFile(result) {
     MochiKit.DOM.getElement("tmpcode").innerHTML = result["code"];
     cpscript.edit('tmpcode','generic');
     getLog(cur_path);
-    MochiKit.DOM.getElement("status_block").innerHTML =
-        "File: " + cur_path + " Revision: " + cur_rev
+    setStatus( "File: " + cur_path + " Revision: " + cur_rev )
+
+    var monitor = setTimeout( "checkState()", POLL_TIME );
 }
 
 function getLog(file) {
