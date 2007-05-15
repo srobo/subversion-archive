@@ -31,6 +31,26 @@ a.link, a, a.active {
   right: 0px;
 }
 
+li.list_row {
+    padding-bottom: 10px;
+}
+
+div.list_row {
+}
+
+span.list_label {
+    text-align: left;
+}
+
+span.list_box {
+    text-align: right;
+    float: right;
+}
+
+#fileselect {
+    float: right;
+}
+
 #sidebar {
   border: 1px solid #aaa;
   background-color: #eee;

@@ -96,6 +96,14 @@ function filesaved(result) {
         }
     }
 }
+
+function delete_selected() {
+    checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
+            "file_check");
+    var todelete = "";
+    MochiKit.Iter.forEach(MochiKit.Iter.iter(checkboxes), function (a) {
+            alert(MochiKit.DOM.getNodeAttribute(a, "value"));});
+}
 </script>
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" py:replace="''"/>
@@ -104,13 +112,30 @@ function filesaved(result) {
 <body>
     <div id="sidebar">
         <h2>Files</h2>
+        <form name="files">
+        <button onclick="delete_selected();">Delete Selected</button>
+
         <!-- With kid nesting magic from:
         http://permalink.gmane.org/gmane.comp.python.kid.general/825 -->
         <ul class="links" py:def="display_tree(tree_node)">
-            <li>
+            <li class="list_row">
+<!--            <div id="fileselect" py:if="tree_node.kind == node_kind.file">
+                <input type="checkbox" name="${tree_node.path}"
+                    value="${tree_node.path}"></input>
+            </div>
             <a py:if="tree_node.kind == node_kind.file"
             href="javascript:loadFile('${tree_node.path}')">${tree_node.name}</a>
+        -->
+        <div class="list_row" py:if="tree_node.kind == node_kind.file">
+<span class="list_box"><input class="file_check" type="checkbox" name="${tree_node.path}"
+                    value="${tree_node.path}"></input>
+            </span>
+
+            <span class="list_label"><a
+                    href="javascript:loadFile('${tree_node.path}')">${tree_node.name}</a></span>
+                    </div>
             <span py:if="tree_node.kind != node_kind.file">${tree_node.name}</span>
+
             <div py:for="node in tree_node.children.values()" py:replace="display_tree(node)" />
             </li>
         </ul>
@@ -123,6 +148,7 @@ function filesaved(result) {
                 </ul>
             </ul>
         </div>
+    </form>
     </div>
 
     <div id="code_block">
