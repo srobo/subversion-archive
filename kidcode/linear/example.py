@@ -1,3 +1,4 @@
+#!/bin/env python
 from robot import motor, digitalio
 from vision import blobfinder
 from time import time, sleep
