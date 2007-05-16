@@ -248,6 +248,59 @@ class Root(controllers.RootController):
         return dict(new_revision=str(newrev), code=code,
                     success=success)
 
+    @expose("json")
+    def filelist(self):
+        #Really need to seperate this out in a min
+        client = ProtectedClient()
+        
+        files = client.ls(REPO, recurse=True)
+
+        class Node (object):
+            def __init__(self, name, path, kind):
+                self.name = name
+                self.path = path
+                if kind == pysvn.node_kind.file:
+                    self.kind = "FILE"
+                else:
+                    self.kind = "FOLDER"
+                self.children = {}
+                
+        head = dict(name="HEAD",path="",kind="FOLDER",children={})
+
+        for details in files:
+            filename = details["name"][len(REPO):] #Strip off the repo URL
+            basename = os.path.basename(filename)
+            top = head 
+            for path in filename.split("/"):
+                try: 
+                    top = top["children"][path]
+                except KeyError:
+                    if details["kind"] == pysvn.node_kind.file:
+                        kind = "FILE"
+                    else:
+                        kind = "FOLDER"
+
+                    top["children"][path] = dict(name=basename,
+                                              path=filename,
+                                              kind=kind,
+                                              children={})
+                                                
+
+        def dicttolist(tree):
+            try:
+                tree["children"] = tree["children"].values()
+            except AttributeError:
+                return tree
+            
+            for i in range(0, len(tree["children"])):
+                try:
+                    tree["children"][i] = dicttolist(tree["children"][i])
+                except AttributeError:
+                    pass
+            return tree
+
+        return dict(children=[dicttolist(head)]) 
+
     @expose(template="roboide.templates.files")
     def index(self):
         #Really need to seperate this out in a min

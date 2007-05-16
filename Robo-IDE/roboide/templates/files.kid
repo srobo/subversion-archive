@@ -34,6 +34,15 @@ function saveFile(e)
         d.addCallback(filesaved);
 }
 
+    fill_options_select();
+    d = MochiKit.Async.loadJSONDoc("./filelist");
+	d.addCallback(gotFileList);
+
+});
+
+function gotFileList(nodes){
+    MochiKit.DOM.replaceChildNodes("filelist", buildFileList(nodes["children"]));
+}
 
 function polled()
 {
@@ -162,7 +171,7 @@ function fill_options_select(){
 
 function returnOption(data) {
     return MochiKit.DOM.createDOM("OPTION",
-            {"value" : data["id"]}, data["name"])
+            {"value" : data["id"]}, data["name"]);
 }
 
 function file_cmd() {
@@ -173,14 +182,38 @@ function file_cmd() {
 
         if(confirm(action["question"] + "\n" + files.join("\n"))){
             var d = MochiKit.Async.loadJSONDoc("./file_action", {"method" : action["id"], "files" : files});
-            d.addCallback(filesDeleted);
+            d.addCallback(filesActioned);
         }
     }
 }
 
-function filesDeleted(result){
+function filesActioned(result){
     alert(result["status"]);
 }
+
+function buildFileList(nodes){
+    return MochiKit.DOM.UL({"class" : "links"},
+            MochiKit.Base.map(buildFileListEntry, nodes));
+}
+
+function buildFileListEntry(node){
+    if (node.kind == "FILE"){
+        var contents = MochiKit.DOM.DIV({"class" : "list_row"},
+                MochiKit.DOM.SPAN({"class" : "list_box"},
+                    MochiKit.DOM.INPUT({"class" : "file_check",
+                                        "type" : "checkbox",
+                                        "name" : node.path})),
+                MochiKit.DOM.SPAN({"class" : "list_label"},
+                    MochiKit.DOM.A({"href" : "javascript:loadFile('" + node.path
+                        + "')"}, node.name)));
+    }else{
+        var contents = new Array(MochiKit.DOM.SPAN(null, node.name),
+                                 buildFileList(node.children));
+
+    }
+    return MochiKit.DOM.LI({"class" : "list_row"}, contents);
+}
+
 </script>
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" py:replace="''"/>
@@ -190,32 +223,7 @@ function filesDeleted(result){
     <div id="sidebar">
         <h2>Files</h2>
         <div id="file_options"><select></select></div>
-        <!-- With kid nesting magic from:
-        http://permalink.gmane.org/gmane.comp.python.kid.general/825 -->
-        <ul class="links" py:def="display_tree(tree_node)">
-            <li class="list_row">
-        <div class="list_row" py:if="tree_node.kind == node_kind.file">
-<span class="list_box"><input class="file_check" type="checkbox" name="${tree_node.path}"
-                    value="${tree_node.path}"></input>
-            </span>
-
-            <span class="list_label"><a
-                    href="javascript:loadFile('${tree_node.path}')">${tree_node.name}</a></span>
-                    </div>
-            <span py:if="tree_node.kind != node_kind.file">${tree_node.name}</span>
-
-            <div py:for="node in tree_node.children.values()" py:replace="display_tree(node)" />
-            </li>
-        </ul>
-
-        <div py:replace="display_tree(tree)">
-            <ul>
-                <li>SVN file list here</li>
-                <ul>
-                    <li>With Nesting!</li>
-                </ul>
-            </ul>
-        </div>
+        <div id="filelist"></div>
     </div>
 
     <div id="code_block">
