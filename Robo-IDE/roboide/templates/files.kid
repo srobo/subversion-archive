@@ -7,7 +7,9 @@
 <script src="./static/codepress/codepress.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-var POLL_TIME = 5000
+var POLL_TIME = 5000;
+var poll_data = {};
+var remote_modified = false
 
 MochiKit.DOM.addLoadEvent(function(){
     connect('savefile','onclick', function (e) {
@@ -25,25 +27,31 @@ MochiKit.DOM.addLoadEvent(function(){
         d.addCallback(filesaved);
         });
 
+//    setTimeout( "polled()", POLL_TIME );
 });
+
+function polled()
+{
+    var j = MochiKit.Async.loadJSONDoc("./polldata", poll_data );
+    j.addCallback(pollAction);
+}
+
+function pollAction(result)
+{
+    if( result["rev"] &amp;&amp; 
+	remote_modified == false &amp;&amp; 
+	cur_rev != result["rev"] )
+    {
+	remote_modified = true
+	setStatus( "This file has been edited" )
+    }
+
+    setTimeout( "polled()", POLL_TIME );
+}
 
 function setStatus(str)
 {
     MochiKit.DOM.getElement("status_block").innerHTML = str
-}
-
-function checkState()
-{
-	d = MochiKit.Async.loadJSONDoc( "./latestrev", {file : cur_path} );
-	d.addCallback(checkback);
-}
-
-function checkback(result)
-{
-    if( cur_rev != result["rev"] )
-	setStatus( "This file has been edited" )
-    else
-	setTimeout( "checkState()", POLL_TIME );
 }
 
 function loadFile(file, revision) {
@@ -61,7 +69,7 @@ function gotFile(result) {
     getLog(cur_path);
     setStatus( "File: " + cur_path + " Revision: " + cur_rev )
 
-    var monitor = setTimeout( "checkState()", POLL_TIME );
+    poll_data.cur_path = cur_path
 }
 
 function getLog(file) {
