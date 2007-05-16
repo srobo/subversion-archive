@@ -13,10 +13,16 @@ poll_data = {};
 remote_modified = false;
 
 MochiKit.DOM.addLoadEvent( function() {
-  connect('savefile','onclick', saveFile);
-  setTimeout( "polled()", POLL_TIME );
+    connect('savefile','onclick', saveFile);
+    setTimeout( "polled()", POLL_TIME );
+    fill_options_select();
+    updatefilelist();
+});
 
-} );
+function updatefilelist() {
+    d = MochiKit.Async.loadJSONDoc("./filelist");
+    d.addCallback(gotFileList);
+}
 
 function saveFile(e)
 {
@@ -34,12 +40,7 @@ function saveFile(e)
         d.addCallback(filesaved);
 }
 
-    fill_options_select();
-    d = MochiKit.Async.loadJSONDoc("./filelist");
-	d.addCallback(gotFileList);
-
-});
-
+    
 function gotFileList(nodes){
     MochiKit.DOM.replaceChildNodes("filelist", buildFileList(nodes["children"]));
 }
