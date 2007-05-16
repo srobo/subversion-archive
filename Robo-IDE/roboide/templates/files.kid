@@ -120,35 +120,67 @@ function filesaved(result) {
     }
 }
 
-function delete_selected() {
+function get_selected() {
     checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
             "file_check");
-    var todelete = "";
+    var selected = new Array();
     MochiKit.Iter.forEach(MochiKit.Iter.iter(checkboxes), function (a) {
-            alert(MochiKit.DOM.getNodeAttribute(a, "value"));});
+            if (a.checked){selected.push(a.value)}});
+    return selected;
+}
+
+file_options = new Array({"id" : "delete",
+                 "name" : "Delete Files",
+                 "question" : "Are you sure you want to delete:"},
+                {"id" : "move",
+                 "name" : "Move Files",
+                 "question" : "Are you sure you want to move:"});
+
+//Add options to the listbox
+function fill_options_select(){
+    var file_options_select = MochiKit.DOM.createDOM("SELECT",
+            {'id':'file_options_select'},
+        MochiKit.Base.map(returnOption, file_options));
+    var file_options_span = MochiKit.DOM.SPAN({"id" : "file_options_span"}, file_options_select,
+        MochiKit.DOM.BUTTON({"onclick" : "file_cmd()"}, "Go"));
+
+    MochiKit.DOM.replaceChildNodes("file_options", file_options_span);
+}
+
+function returnOption(data) {
+    return MochiKit.DOM.createDOM("OPTION",
+            {"value" : data["id"]}, data["name"])
+}
+
+function file_cmd() {
+    var files = get_selected();
+    if (files.length > 0){
+        var box = MochiKit.DOM.getElement("file_options_select");
+        var action = file_options[box.selectedIndex];
+
+        if(confirm(action["question"] + "\n" + files.join("\n"))){
+            var d = MochiKit.Async.loadJSONDoc("./file_action", {"method" : action["id"], "files" : files});
+            d.addCallback(filesDeleted);
+        }
+    }
+}
+
+function filesDeleted(result){
+    alert(result["status"]);
 }
 </script>
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" py:replace="''"/>
 <title>Robotics IDE</title>
 </head>
-<body>
+<body onload="fill_options_select()">
     <div id="sidebar">
         <h2>Files</h2>
-        <form name="files">
-        <button onclick="delete_selected();">Delete Selected</button>
-
+        <div id="file_options"><select></select></div>
         <!-- With kid nesting magic from:
         http://permalink.gmane.org/gmane.comp.python.kid.general/825 -->
         <ul class="links" py:def="display_tree(tree_node)">
             <li class="list_row">
-<!--            <div id="fileselect" py:if="tree_node.kind == node_kind.file">
-                <input type="checkbox" name="${tree_node.path}"
-                    value="${tree_node.path}"></input>
-            </div>
-            <a py:if="tree_node.kind == node_kind.file"
-            href="javascript:loadFile('${tree_node.path}')">${tree_node.name}</a>
-        -->
         <div class="list_row" py:if="tree_node.kind == node_kind.file">
 <span class="list_box"><input class="file_check" type="checkbox" name="${tree_node.path}"
                     value="${tree_node.path}"></input>
@@ -171,7 +203,6 @@ function delete_selected() {
                 </ul>
             </ul>
         </div>
-    </form>
     </div>
 
     <div id="code_block">

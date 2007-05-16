@@ -24,9 +24,76 @@ class Root(controllers.RootController):
     def get_revision(self, revision):
         try:
             rev = pysvn.Revision(pysvn.opt_revision_kind.number, int(revision))
-        except ValueError:
+        except (pysvn.ClientError, ValueError):
             rev = pysvn.Revision(pysvn.opt_revision_kind.head)
         return rev
+
+    @expose("json")
+    def file_action(self, method, files):
+        client = ProtectedClient()
+        files = files.split(",")
+        files.sort()
+        #Need to check out the folders that contain the files
+        #Only check out each folder once
+        cur_dir = None
+        cur_files = []
+        while(1):
+            if cur_dir is None:
+                try:
+                    file = files.pop()
+                except IndexError:
+                    break
+                cur_dir = os.path.dirname(file)
+                cur_files.append(str(os.path.basename(file)))
+            else:
+                if len(files) > 0 and os.path.dirname(files[len(files)-1]) == cur_dir:
+                    try:
+                        file = files.pop()
+                    except IndexError:
+                        break
+                    cur_files.append(str(os.path.basename(file)))
+                    print "Appending"
+                else:
+                    #Should have a list of file(s) in cur_files
+                    #Which all have the same base
+                    #1. Check out cur_dir
+                    print "XXX"
+                    try:
+                        tmpdir = self.checkoutintotmpdir(client, "HEAD", cur_dir)
+                        print tmpdir
+                    except pysvn.ClientError:
+                        return dict(status = "FAIL")
+
+                    #2. Do the action
+                    if method == "delete":
+                        try:
+                            urls = [os.path.join(tmpdir,f) for f in cur_files]
+                            print urls
+                            client.remove(urls)
+                            print "Removed"
+                        except pysvn.ClientError:
+                            return dict(status = "FAIL")
+                    else:
+                        return dict(status = "FAIL")
+
+                    #3. Commit the new directory
+                    try:
+                        newrev = client.checkin([tmpdir], "Message")
+                        print "checked in"
+                        if newrev == None:
+                            raise pysvn.ClientError
+
+                        #4. Wipe the directory
+                        shutil.rmtree(tmpdir)
+
+                        #Set cur_dir to "" ready for next directory of stuff
+                        cur_dir = None
+                        cur_files = []
+                    except pysvn.ClientError:
+                        return dict(status = "FAIL")
+
+        return dict(status = "Successfully performed action")
+
 
     @expose("json")
     def filesrc(self, file=None, revision="HEAD"):
@@ -98,6 +165,13 @@ class Root(controllers.RootController):
                       "message":x["message"], "rev":x["revision"].number} \
                       for x in log])
 
+    def checkoutintotmpdir(self, client, revision, base):
+        tmpdir = tempfile.mkdtemp()
+        #This returns a revision number. Always 0. Great.
+        rev = self.get_revision(revision)
+        client.checkout(REPO + base, tmpdir, recurse=False, revision=rev)
+        return tmpdir
+
     @expose("json")
     def latestrev(self,file):
         """Get the latest revision number of a file.
@@ -124,27 +198,14 @@ class Root(controllers.RootController):
 
         TODO: Usernames.
         """
-        try:
-            rev = int(rev)
-            if rev == 0:
-                raise
-        except:
-            return dict(new_revision=str(0), code="",
-                    success="Invalid revision")
-   
-            
         client = ProtectedClient()
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness
         path = os.path.dirname(file)
         basename = os.path.basename(file)
-        tmpdir = tempfile.mkdtemp()
-        #This returns a revision number. Always 0. Great.
         try:
-            client.checkout(REPO + path, tmpdir, recurse=False, \
-                revision=pysvn.Revision(pysvn.opt_revision_kind.number, int(rev)))
+            tmpdir = self.checkoutintotmpdir(client, rev, path)
         except pysvn.ClientError:
-            #Some fool (me) passed in a filename that doesn't exist.
             return dict(new_revision="0", code="", success="Invalid filename")
 
         #2. Dump in the new file data
