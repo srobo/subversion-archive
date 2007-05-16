@@ -6,13 +6,20 @@
 <script src="./tg_widgets/turbogears/js/MochiKit.js" type="text/javascript"></script>
 <script src="./static/codepress/codepress.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-var POLL_TIME = 5000;
-var poll_data = {};
-var remote_modified = false
 
-MochiKit.DOM.addLoadEvent(function(){
-    connect('savefile','onclick', function (e) {
+<script type="text/javascript">
+POLL_TIME = 2000;
+poll_data = {};
+remote_modified = false;
+
+MochiKit.DOM.addLoadEvent( function() {
+  connect('savefile','onclick', saveFile);
+  setTimeout( "polled()", POLL_TIME );
+
+} );
+
+function saveFile(e)
+{
         if(cur_rev == 0){
             alert("Invalid revision.");
             return;
@@ -25,10 +32,8 @@ MochiKit.DOM.addLoadEvent(function(){
             MochiKit.DOM.getElement("message").value + 
             "&amp;code=" + escape(cpscript.getCode()));
         d.addCallback(filesaved);
-        });
+}
 
-//    setTimeout( "polled()", POLL_TIME );
-});
 
 function polled()
 {
@@ -181,7 +186,7 @@ function filesDeleted(result){
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" py:replace="''"/>
 <title>Robotics IDE</title>
 </head>
-<body onload="fill_options_select()">
+<body>
     <div id="sidebar">
         <h2>Files</h2>
         <div id="file_options"><select></select></div>

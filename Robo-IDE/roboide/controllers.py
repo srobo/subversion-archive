@@ -173,20 +173,21 @@ class Root(controllers.RootController):
         return tmpdir
 
     @expose("json")
-    def latestrev(self,file):
-        """Get the latest revision number of a file.
+    def polldata(self,cur_path = None):
+        """Returns data that needs polling by the client"""
 
-        Used for alerting the user when someone else has committed"""
-
+        #Default data
+        r = {"a":"b"}
         client = ProtectedClient()
-        rev = 0
 
-        if file != None and client.is_url( REPO + file ):
-            info = client.info2( REPO + file )[0][1]
+        if cur_path != None:
+            rev = 0
+            if cur_path != None and client.is_url( REPO + cur_path ):
+                info = client.info2( REPO + cur_path )[0][1]
 
-            rev = info["last_changed_rev"].number
+                r["rev"] = info["last_changed_rev"].number
 
-        return dict( rev = rev )            
+        return r
 
     @expose("json")
     def savefile(self, file, rev, message, code):
