@@ -145,7 +145,8 @@ class Root(controllers.RootController):
             code = "No File Loaded"
             revision = 0
 
-        return dict(curtime=curtime, code=code, revision=revision, path=file)
+        return dict(curtime=curtime, code=code, revision=revision, path=file,
+                name=os.path.basename(file))
 
     #TODO: Create an action that uses client.log to return a JSON list of
     #previous file revisions for a mochikit drop down
@@ -173,19 +174,25 @@ class Root(controllers.RootController):
         return tmpdir
 
     @expose("json")
-    def polldata(self,cur_path = None):
+    def polldata(self,files = ""):
         """Returns data that needs polling by the client"""
-
         #Default data
-        r = {"a":"b"}
-        client = ProtectedClient()
+        r = {}
 
-        if cur_path != None:
-            rev = 0
-            if cur_path != None and client.is_url( REPO + cur_path ):
-                info = client.info2( REPO + cur_path )[0][1]
+        if files != "":
+                files = files.split(",")
+                client = ProtectedClient()
 
-                r["rev"] = info["last_changed_rev"].number
+                rev = 0
+                for file in files:
+                    r[file] = {}
+                    print "*" + file + "*"
+                    try:
+                        if file != None and client.is_url( REPO + file ):
+                            info = client.info2( REPO + file )[0][1]
+                            r[file]["rev"] = info["last_changed_rev"].number
+                    except pysvn.ClientError:
+                        print "Could not get information for %s" % file
 
         return r
 
@@ -205,11 +212,10 @@ class Root(controllers.RootController):
         path = os.path.dirname(file)
         basename = os.path.basename(file)
 
-	if not client.is_url(REPO + path): #new dir needed...
-	  if not self.create_svn_dir(client, path):
-	    return dict(new_revision="0", code = "",\
-			success="Error creating new directory")
-
+        if not client.is_url(REPO + path): #new dir needed...
+            if not self.create_svn_dir(client, path):
+	            return dict(new_revision="0", code = "",\
+			        success="Error creating new directory")
         try:
             tmpdir = self.checkoutintotmpdir(client, rev, path)
         except pysvn.ClientError:
@@ -220,15 +226,15 @@ class Root(controllers.RootController):
         target.write(code)
         target.close()
 
-	#2 1/2: use client.add if we're adding a new file, ready for checkin
-	if not client.is_url(file):
-	  print "client.add: " + file
-	  try:
-	    client.add(join(tmpdir, file))
-	  except pysvn.ClientError, inst:
-	    print "Error!: " + repr(inst.args)
-	    return dict(new_revision=0, code="",\
-			success="Unexpected abnormal error adding file")
+        #2 1/2: use client.add if we're adding a new file, ready for checkin
+        if not client.is_url(REPO + file):
+            print "client.add: " + file
+            try:
+                client.add(join(tmpdir, REPO + file))
+            except pysvn.ClientError, inst:
+                print "Error!: " + repr(inst.args)
+                return dict(new_revision=0, code="",\
+                    success="Unexpected abnormal error adding file")
 
         #3. Commit the new directory
         try:
@@ -262,7 +268,7 @@ class Root(controllers.RootController):
         shutil.rmtree(tmpdir)
 
         return dict(new_revision=str(newrev), code=code,
-                    success=success)
+                    success=success, file=file)
 
     def create_svn_dir(self, client, path):
 	#Creates an svn directory if one doesn't exist yet
