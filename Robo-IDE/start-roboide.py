@@ -2,10 +2,11 @@
 import pkg_resources
 pkg_resources.require("TurboGears")
 
-from turbogears import update_config, start_server
+from turbogears import update_config, start_server, config
 import cherrypy
 cherrypy.lowercase_api = True
 from os.path import *
+from os import getpid
 import sys
 
 # first look on the command line for a desired config file,
@@ -21,5 +22,12 @@ else:
     update_config(configfile="prod.cfg",modulename="roboide.config")
 
 from roboide.controllers import Root
+
+# Write PID to file
+pidfile = config.get( "server.pidfile" )
+if pidfile != None:
+    f = open( pidfile, "w" )
+    f.write( str( getpid() ) + "\n" )
+    f.close()
 
 start_server(Root())
