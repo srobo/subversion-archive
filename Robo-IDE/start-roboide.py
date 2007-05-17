@@ -1,13 +1,12 @@
 #!/usr/bin/python
 import pkg_resources
 pkg_resources.require("TurboGears")
-
 from turbogears import update_config, start_server, config
+
 import cherrypy
 cherrypy.lowercase_api = True
 from os.path import *
-from os import getpid
-import sys
+import os, sys, logging
 
 # first look on the command line for a desired config file,
 # if it's not on the command line, then
@@ -23,11 +22,22 @@ else:
 
 from roboide.controllers import Root
 
-# Write PID to file
-pidfile = config.get( "server.pidfile" )
-if pidfile != None:
-    f = open( pidfile, "w" )
-    f.write( str( getpid() ) + "\n" )
-    f.close()
+#Determine if we have ll_core
+try:
+    pkg_resources.require("ll_core")
+
+    if config.get( "server.daemon", False ):
+        from ll import daemon
+        me = daemon.Daemon(
+            stdout = config.get( "server.logfile", "/dev/null" ),
+            stderr = config.get( "server.logfile", "/dev/null" ),
+            pidfile = config.get( "server.pidfile", None ) )
+
+        logging.raiseExceptions = False
+        me.openstreams()
+        me.start()
+
+except pkg_resources.DistributionNotFound:
+    pass
 
 start_server(Root())
