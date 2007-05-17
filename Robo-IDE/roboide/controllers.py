@@ -204,6 +204,12 @@ class Root(controllers.RootController):
         #TODO: Check for path naugtiness
         path = os.path.dirname(file)
         basename = os.path.basename(file)
+
+	if not client.is_url(REPO + path): #new dir needed...
+	  if not self.create_svn_dir(client, path):
+	    return dict(new_revision="0", code = "",\
+			success="Error creating new directory")
+
         try:
             tmpdir = self.checkoutintotmpdir(client, rev, path)
         except pysvn.ClientError:
@@ -213,6 +219,16 @@ class Root(controllers.RootController):
         target = open(join(tmpdir, basename), "wt")
         target.write(code)
         target.close()
+
+	#2 1/2: use client.add if we're adding a new file, ready for checkin
+	if not client.is_url(file):
+	  print "client.add: " + file
+	  try:
+	    client.add(join(tmpdir, file))
+	  except pysvn.ClientError, inst:
+	    print "Error!: " + repr(inst.args)
+	    return dict(new_revision=0, code="",\
+			success="Unexpected abnormal error adding file")
 
         #3. Commit the new directory
         try:
@@ -247,6 +263,21 @@ class Root(controllers.RootController):
 
         return dict(new_revision=str(newrev), code=code,
                     success=success)
+
+    def create_svn_dir(self, client, path):
+	#Creates an svn directory if one doesn't exist yet
+	#returns false on client error, which should never happen
+	upperpath = os.path.dirname(path)
+
+	if not client.is_url(REPO + upperpath):
+	  if not self.create_svn_dir(client, upperpath): #recursion, yeah!
+	    return false #forward error
+
+	try:
+	  client.mkdir(REPO + path, "new dir " + upperpath)
+	except pysvn.ClientError:
+	  return false
+	else: return true
 
     @expose("json")
     def filelist(self):

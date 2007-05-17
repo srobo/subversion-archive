@@ -19,6 +19,9 @@ MochiKit.DOM.addLoadEvent( function() {
     updatefilelist();
 });
 
+MochiKit.DOM.addLoadEvent( function() {
+	cur_rev = 1; } );
+
 function updatefilelist() {
     d = MochiKit.Async.loadJSONDoc("./filelist");
     d.addCallback(gotFileList);
@@ -32,6 +35,8 @@ function saveFile(e)
         }
         document.body.style.cursor = "wait";
 	MochiKit.DOM.getElement("savefile").disabled = true;
+
+	cur_path = MochiKit.DOM.getElement("filename").value;
 
         var d = MochiKit.Async.loadJSONDoc("./savefile?file=" + cur_path +
             "&amp;rev=" + cur_rev + "&amp;message=" +
@@ -74,6 +79,8 @@ function loadFile(file, revision) {
     var d = MochiKit.Async.loadJSONDoc("./filesrc", {file : file,
                                                      revision : revision});
     d.addCallback(gotFile);
+    namefield = MochiKit.DOM.getElement("filename");
+    MochiKit.DOM.setNodeAttribute(namefield, "value", file);
 }
 
 function gotFile(result) {
@@ -240,6 +247,7 @@ function buildFileListEntry(node){
         </div>
         <div id="savebox">
         <p>Commit message: <input id="message" value="Default Save Message"/>
+	File name: <input id="filename" value=""/>
         <button id="savefile">Save File!</button></p></div>
     </div>
 
