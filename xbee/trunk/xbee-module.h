@@ -120,7 +120,7 @@ typedef struct
 /* Create a connection to an xbee.
  * Opens the serial port given in fname, and fills the 
  * structure *xb with stuff. */
-XbeeModule* xbee_module_open( char *fname );
+XbeeModule* xbee_module_open( char *fname, GMainContext *context );
 
 /* Close an xbee connection */
 void xbee_module_close( XbeeModule *xb );

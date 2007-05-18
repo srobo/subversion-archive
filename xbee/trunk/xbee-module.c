@@ -587,7 +587,7 @@ gboolean xbee_source_callback( XbeeModule *xb )
 	return TRUE;
 }
 
-XbeeModule* xbee_module_open( char* fname )
+XbeeModule* xbee_module_open( char* fname, GMainContext *context )
 {
 	XbeeModule *xb = NULL;
 	assert( fname != NULL );
@@ -603,6 +603,8 @@ XbeeModule* xbee_module_open( char* fname )
 	
 	if( !xbee_init( xb ) )
 		return FALSE;
+
+	xbee_module_add_source( xb, context );
 
 	return xb;
 }
