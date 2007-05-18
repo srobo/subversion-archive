@@ -69,3 +69,54 @@ span.list_box {
   margin-left: 1.5em;
   padding-left: 0;
 }
+
+#tablist {
+    padding: 3px;
+    margin-left: 0px;
+    border-bottom: 1px solid #778;
+}
+
+#tablist li {
+    list-style: none;
+    margin: 0;
+    display: inline;
+}
+
+#tablist li a {
+    margin-left: 7px;
+}
+
+#tablist li a.top {
+    padding: 3px 0.5em;
+    margin-left: 3px;
+    border: 1px solid #778;
+    border-bottom: none;
+    background: #DDE;
+    text-decoration: none;
+}
+
+#tablist li a:link { color: #448; }
+#tablist li a:visited { color: #667; }
+
+#tablist li a:hover
+{
+    color: #000;
+    background: #AAE;
+    border-color: #227;
+}
+
+#tablist li.selected a
+{
+    background: white;
+    border-bottom: 1px solid white;
+}
+
+#tablist li.dirty a
+{
+    font-style: italic;
+}
+
+#tablist li.changed a
+{
+    color: #F00;
+}

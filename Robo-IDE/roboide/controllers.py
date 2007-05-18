@@ -207,19 +207,23 @@ class Root(controllers.RootController):
         TODO: Usernames.
         """
         client = ProtectedClient()
+        reload = "false"
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness
         path = os.path.dirname(file)
         basename = os.path.basename(file)
 
         if not client.is_url(REPO + path): #new dir needed...
+            reload = "true"
             if not self.create_svn_dir(client, path):
 	            return dict(new_revision="0", code = "",\
-			        success="Error creating new directory")
+			                success="Error creating new directory",
+                            reloadfiles="false")
         try:
             tmpdir = self.checkoutintotmpdir(client, rev, path)
         except pysvn.ClientError:
-            return dict(new_revision="0", code="", success="Invalid filename")
+            return dict(new_revision="0", code="", success="Invalid filename",
+                        reloadfiles="false")
 
         #2. Dump in the new file data
         target = open(join(tmpdir, basename), "wt")
@@ -227,14 +231,12 @@ class Root(controllers.RootController):
         target.close()
 
         #2 1/2: use client.add if we're adding a new file, ready for checkin
-        if not client.is_url(REPO + file):
-            print "client.add: " + file
-            try:
-                client.add(join(tmpdir, REPO + file))
-            except pysvn.ClientError, inst:
-                print "Error!: " + repr(inst.args)
-                return dict(new_revision=0, code="",\
-                    success="Unexpected abnormal error adding file")
+        try:
+            client.add([join(tmpdir, basename)],
+                       recurse=False)
+            reload = "true"
+        except pysvn.ClientError:
+            pass
 
         #3. Commit the new directory
         try:
@@ -243,7 +245,6 @@ class Root(controllers.RootController):
                 raise pysvn.ClientError
             newrev = newrev.number
             success = "True"
-            code = ""
         except pysvn.ClientError:
             #Can't commit - merge issues
             #Need to bring local copy up to speed
@@ -254,7 +255,6 @@ class Root(controllers.RootController):
             if newrev == None:
                 #No update to be made.
                 success = "True"
-                code = ""
                 newrev = 0
             else:
                 success = "Merge"
@@ -268,22 +268,22 @@ class Root(controllers.RootController):
         shutil.rmtree(tmpdir)
 
         return dict(new_revision=str(newrev), code=code,
-                    success=success, file=file)
+                    success=success, file=file, reloadfiles=reload)
 
     def create_svn_dir(self, client, path):
-	#Creates an svn directory if one doesn't exist yet
-	#returns false on client error, which should never happen
-	upperpath = os.path.dirname(path)
+        #Creates an svn directory if one doesn't exist yet
+        #returns false on client error, which should never happen
+        upperpath = os.path.dirname(path)
 
-	if not client.is_url(REPO + upperpath):
-	  if not self.create_svn_dir(client, upperpath): #recursion, yeah!
-	    return false #forward error
-
-	try:
-	  client.mkdir(REPO + path, "new dir " + upperpath)
-	except pysvn.ClientError:
-	  return false
-	else: return true
+        if not client.is_url(REPO + upperpath):
+            if not self.create_svn_dir(client, upperpath): #recursion, yeah!
+                return false #forward error
+            try:
+                client.mkdir(REPO + path, "new dir " + upperpath)
+            except pysvn.ClientError:
+                return false
+        else:
+            return true
 
     @expose("json")
     def filelist(self):

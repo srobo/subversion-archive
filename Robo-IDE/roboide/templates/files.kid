@@ -114,7 +114,7 @@ function get_selected() {
             "file_check");
     var selected = new Array();
     MochiKit.Iter.forEach(MochiKit.Iter.iter(checkboxes), function (a) {
-            if (a.checked){selected.push(a.value)}});
+            if (a.checked){selected.push(a.name)}});
     return selected;
 }
 
@@ -132,6 +132,7 @@ function file_cmd() {
 }
 
 function filesActioned(result){
+    updatefilelist();
     alert(result["status"]);
 }
 
@@ -150,10 +151,12 @@ function savecurrenttab(){
     }
 }
 
-function showtab(tabpath) {
-    if(tabpath != cur_path){
+function showtab(tabpath, force) {
+    var force = (force == null) ? false : true;
+    if((tabpath != cur_path) || force){
         //If the selected tab isn't the current one
-        savecurrenttab();
+        if(!force)
+            savecurrenttab();
         //Load in the data for the other tab
         cpscript.edit("td"+tabpath, LANGUAGE);
         //Note details of the now current tab
@@ -232,7 +235,8 @@ function saveFile(e)
     //TODO: Check cur_path is valid
     //TODO: Modify this for multi tab perhaps?
     savecurrenttab();
-    if(open_files[cur_path].dirty){
+    if(open_files[cur_path].dirty || 
+            (open_files[cur_path].editedfilename != cur_path)){
         MochiKit.DOM.getElement("savefile").disabled = true;
 
         //TODO:Cope with saving as a new file name!
@@ -240,7 +244,8 @@ function saveFile(e)
         //cur_path = MochiKit.DOM.getElement("filename").value;
         //But need to rename open_files data etc
 
-        var d = MochiKit.Async.loadJSONDoc("./savefile?file=" + cur_path +
+        var d = MochiKit.Async.loadJSONDoc("./savefile?file=" + 
+            open_files[cur_path].editedfilename +
             "&amp;rev=" + cur_rev + "&amp;message=" +
             MochiKit.DOM.getElement("message").value + 
             "&amp;code=" + escape(cpscript.getCode()));
@@ -250,10 +255,19 @@ function saveFile(e)
 
 function filesaved(result) {
     document.body.style.cursor = "default";
+    var file = result["file"];
+
+    if(result["reloadfiles"] == "true")
+        updatefilelist();
+
     switch(result["success"]){
         case "True": {
             alert("Now at revision: " + result["new_revision"]);
-            loadFile(result["file"]);
+            open_files[file].dirty = false;
+            open_files[file].revision = result["new_revision"];
+            open_files[cur_path].tabdata.innerHTML = 
+                result["code"];
+            showtab(file, true);
             MochiKit.DOM.getElement("savefile").disabled = false;
             break;
         }
@@ -267,9 +281,9 @@ function filesaved(result) {
         }
         case "Merge": {
             //Oh dear, need to handle a merge
-            open_files[result["file"]].revision = result["new_revision"];
-            MochiKit.DOM.getElement("td" + result["file"]).innerHTML = result["code"];
-            showtab(result["file"]);
+            open_files[file].revision = result["new_revision"];
+            open_files[cur_path].tabdata.innerHTML = result["code"];
+            showtab(file, true);
             alert("Merge conflict. Please check the merged files then save again.");
             MochiKit.DOM.getElement("savefile").disabled = false;
             break;
@@ -292,7 +306,6 @@ function loadFile(file, revision) {
 function gotFile(result) {
     //Check to see if the file already open
     //If so, switch to it
-    alert(result["path"]);
     if(open_files[result["path"]]){
         //Close the current tab
         closetab(result["path"]);
