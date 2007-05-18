@@ -67,14 +67,14 @@ static gboolean xbee_module_source_dispatch( GSource *source,
 					     GSourceFunc callback, 
 					     gpointer user_data );
 
-void xbee_source_finalize( GSource *source );
+void xbee_module_source_finalize( GSource *source );
 
 static GSourceFuncs xbee_sourcefuncs = 
 {
 	.prepare = xbee_module_source_prepare,
 	.check = xbee_module_source_check,
 	.dispatch = xbee_module_source_dispatch,
-	.finalize = xbee_source_finalize,
+	.finalize = xbee_module_source_finalize,
 
 	.closure_callback = NULL,
 	.closure_marshal = NULL
@@ -560,7 +560,7 @@ static gboolean xbee_module_source_dispatch( GSource *source,
 	return rval;
 }
 
-void xbee_source_finalize( GSource *source )
+void xbee_module_source_finalize( GSource *source )
 {
 	/* Don't need to do anything here. */
 	/* glib should free the source structure */
