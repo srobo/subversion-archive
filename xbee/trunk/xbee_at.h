@@ -1,6 +1,6 @@
 #ifndef __XBEE_AT_H
 #define __XBEE_AT_H
-#include "xbee.h"
+#include "xbee-module.h"
 
 /* Puts the device into at_command_mode */
 gboolean xbee_module_at_mode( XbeeModule* xb );

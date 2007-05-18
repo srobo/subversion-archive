@@ -22,7 +22,6 @@ typedef struct
 	/* Listening socket */
 	int l_fd;
 
-	
 	/* List of clients (xbee_con_t*) */
 	GSList *clients;
 
@@ -58,7 +57,7 @@ GType xbee_server_get_type( void );
 #define XBEE_IS_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), XBEE_SERVER_TYPE))
 #define XBEE_SERVER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), XBEE_SERVER_TYPE, XbeeServerClass))
 
-#include "xbee.h"
+#include "xbee-module.h"
 
 /* Create a server. Arguments:
  *  - xb: The xbee that we'll be serving
@@ -71,5 +70,7 @@ void xbee_server_free( XbeeServer* serv );
  * xbee structure contains the frame. */
 void xbee_server_proc_frame( XbeeServer* serv, XbeeModule* xb );
 
+/* Attach an xbee module to the server */
+void xbee_server_attach( XbeeServer* serv, XbeeModule* xb );
 
 #endif	/* __XBEE_SERVER_H */

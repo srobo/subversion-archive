@@ -1,3 +1,4 @@
+/* XbeeModule  */
 #define _GNU_SOURCE
 #include <unistd.h>
 #include <sys/select.h>
@@ -9,7 +10,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "xbee.h"
+#include "xbee-module.h"
 #include "xbee_at.h"
 
 /*** Incoming Data Functions ***/

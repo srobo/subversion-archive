@@ -102,3 +102,7 @@ void xbee_server_proc_frame( XbeeServer* serv, XbeeModule* xb )
 	
 }
 
+void xbee_server_attach( XbeeServer* serv, XbeeModule* xb )
+{
+	
+}
