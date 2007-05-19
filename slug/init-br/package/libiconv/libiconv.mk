@@ -28,12 +28,15 @@ $(ICONV_DIR)/.configured: $(ICONV_DIR)/.source
 $(ICONV_DIR)/src/iconv_no_i18n: $(ICONV_DIR)/.configured
 	$(MAKE) CC=$(TARGET_CC) -C $(ICONV_DIR)
 
-$(ICONV_DIR)/.installed: $(ICONV_DIR)/src/iconv_no_i18n
-	$(MAKE) CC=$(TARGET_CC) DESTDIR=$(TARGET_DIR) -C $(ICONV_DIR) install
-	rm -rf $(TARGET_DIR)/usr/local/share/doc/iconv* $(TARGET_DIR)/usr/local/share/man/man3/iconv*
-	touch $@
+$(STAGING_DIR)/usr/local/include/iconv.h: $(ICONV_DIR)/src/iconv_no_i18n
+	$(MAKE) CC=$(TARGET_CC) DESTDIR=$(STAGING_DIR) -C $(ICONV_DIR) install
 
-libiconv: $(ICONV_DIR)/.installed
+$(TARGET_DIR)/usr/local/bin/iconv: $(STAGING_DIR)/usr/local/include/iconv.h
+	mkdir -p $(TARGET_DIR)/usr/local/lib $(TARGET_DIR)/usr/local/bin
+	cp $(STAGING_DIR)/usr/local/lib/libiconv* $(STAGING_DIR)/usr/local/lib/preloadable_libiconv* $(TARGET_DIR)/usr/local/lib
+	cp $(STAGING_DIR)/usr/local/bin/iconv $(TARGET_DIR)/usr/local/bin
+
+libiconv: $(TARGET_DIR)/usr/local/bin/iconv
 
 ifeq ($(strip $(BR2_PACKAGE_LIBICONV)),y)
 TARGETS+=libiconv

@@ -1,0 +1,8 @@
+config BR2_PACKAGE_ROBOVIS
+       bool "robovis"
+       default n
+       select BR2_PACKAGE_BLOBSLIB
+       help
+	Build robovis.
+	This is the Student Robotics python wrapper for blobslib.
+  

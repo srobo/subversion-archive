@@ -1,0 +1,29 @@
+#!/bin/env python
+
+import subprocess, sys, os, re
+
+
+f = open( "/tmp/pkg-munch", 'a' )
+f.write ( "Called.\n" )
+
+prefix = os.environ.get( "PKG_CONFIG_PREFIX", failobj = "" )
+
+f.write( "PKG_CONFIG_PREFIX=" + prefix + "\n" )
+
+s = subprocess.Popen( "/usr/bin/pkg-config-orig "  + " ".join(sys.argv[1:]) , 
+                      stdout=subprocess.PIPE, 
+                      shell = True )
+
+op = s.communicate()[0]
+
+f.write( "pkg-config returned: " + op + "\n")
+
+op = re.sub( r"(?P<a>[^\\] |^)-I", "\g<a>-I" + prefix, op )
+op = re.sub( r"(?P<a>[^\\] |^)-L", "\g<a>-L" + prefix, op )
+
+f.write( "munched to: " + op + "\n######\n" )
+
+print op,
+
+sys.exit( s.wait() )
+

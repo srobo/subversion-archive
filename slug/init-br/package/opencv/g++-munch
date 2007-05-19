@@ -1,0 +1,31 @@
+#!/bin/env python
+
+import subprocess, sys, os, re
+
+
+f = open( "/tmp/ld-munch", 'a' )
+f.write ( "Called.\n" )
+
+args = " ".join(sys.argv[1:])
+
+args = re.sub( r"/usr/lib/libpng12.so", "", args ) 
+
+s = subprocess.Popen( "/home/rob/ecssr/proj-svn/slug/init-br/build_armeb/staging_dir/bin/armeb-linux-uclibc-g++-orig " + args , 
+                      stdout=subprocess.PIPE, 
+                      shell = True )
+
+op = s.communicate()[0]
+#e = s.communicate()[1]
+
+r = s.wait()
+
+f.write("returned: " + op + "\n")
+#f.write("stderr: " + e + "\n");
+
+# op = re.sub( r"(?P<a>[^\\] |^)-I", "\g<a>-I" + prefix, op )
+# op = re.sub( r"(?P<a>[^\\] |^)-L", "\g<a>-L" + prefix, op )
+
+print op,
+
+sys.exit( r )
+

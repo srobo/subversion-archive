@@ -5,3 +5,11 @@ config BR2_PACKAGE_PYTHON
 	  The python language interpreter.
 
 	  http://www.python.org/
+
+config BR2_PACKAGE_PYTHON_SHARED_LIB
+	bool "include shared library"
+	default n
+	depends on BR2_PACKAGE_PYTHON
+	help
+	  Build and install the python shared library.
+ 

@@ -32,7 +32,7 @@ null::sysinit:/sbin/route add -net 127.0.0.0 netmask 255.0.0.0 lo
 #tty2::respawn:/sbin/getty 38400 tty2
 
 # Put a getty on the serial port
-ttyS0::respawn:/sbin/getty -L ttyS0 115200 vt100
+# ttyS0::respawn:/sbin/getty -L ttyS0 115200 vt100
 
 # Logging junk
 null::sysinit:/bin/touch /var/log/messages

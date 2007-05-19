@@ -37,6 +37,12 @@ $(PYTHON_DIR)/.hostpython: $(PYTHON_DIR)/.patched
 	);
 	touch $(PYTHON_DIR)/.hostpython
 
+ifeq ($(strip $(BR2_PACKAGE_PYTHON_SHARED_LIB)),y)
+PYTHON_CONF_EXTRA := --enable-shared
+else
+PYTHON_CONF_EXTRA := 
+endif
+
 $(PYTHON_DIR)/.configured: $(PYTHON_DIR)/.hostpython
 	(cd $(PYTHON_DIR); rm -rf config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -48,6 +54,7 @@ $(PYTHON_DIR)/.configured: $(PYTHON_DIR)/.hostpython
 		--prefix=/usr \
 		--sysconfdir=/etc \
 		--with-cxx=no \
+		$(PYTHON_CONF_EXTRA)	\
 		$(DISABLE_NLS) \
 	);
 	touch $(PYTHON_DIR)/.configured
@@ -73,7 +80,17 @@ $(TARGET_DIR)/$(PYTHON_TARGET_BINARY): $(PYTHON_DIR)/$(PYTHON_BINARY)
 		$(TARGET_DIR)/usr/man $(TARGET_DIR)/usr/share/doc \
 		$(TARGET_DIR)/usr/lib/python*/test
 
-python: uclibc $(TARGET_DIR)/$(PYTHON_TARGET_BINARY)
+#Install the python header files
+$(STAGING_DIR)/usr/include/python-2.4/Python.h: $(TARGET_DIR)/$(PYTHON_TARGET_BINARY)
+	mkdir -p $(STAGING_DIR)/usr/include/python-2.4
+	cp $(TARGET_DIR)/usr/include/python2.4/*.h $(STAGING_DIR)/usr/include/python-2.4
+
+#Install the python library
+$(STAGING_DIR)/usr/lib/libpython2.4.so: $(PYTHON_DIR)/$(PYTHON_BINARY)
+	mkdir -p $(STAGING_IR)/usr/lib
+	cp $(PYTHON_DIR)/libpython2.4* $(STAGING_DIR)/usr/lib
+
+python: uclibc $(TARGET_DIR)/$(PYTHON_TARGET_BINARY) $(STAGING_DIR)/usr/include/python-2.4/Python.h $(STAGING_DIR)/usr/lib/libpython2.4.so
 
 python-clean:
 	-$(MAKE) -C $(PYTHON_DIR) distclean

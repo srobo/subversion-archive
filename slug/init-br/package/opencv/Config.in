@@ -1,0 +1,7 @@
+config BR2_PACKAGE_OPENCV
+       bool "opencv"
+       default n
+       select BR2_PACKAGE_LIBPNG
+       help
+	Build opencv.
+		http://opencvlibrary.sourceforge.net/

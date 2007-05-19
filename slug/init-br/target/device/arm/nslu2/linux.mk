@@ -131,7 +131,7 @@ $(LINUX_DIR)/include/linux/version.h: $(LINUX_DIR)/include/linux/autoconf.h
 
 kernel-headers: $(STAGING_DIR)/include/linux/version.h
 
-linux: kernel-headers $(LINUX_KERNEL)
+linux: kernel-headers $(LINUX_KERNEL) 
 
 linux-source: $(DL_DIR)/$(LINUX_SOURCE)
 
