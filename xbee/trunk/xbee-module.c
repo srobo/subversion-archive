@@ -195,8 +195,7 @@ static gboolean xbee_module_proc_outgoing( XbeeModule* xb )
 		{
 			xbee_module_out_queue_del( xb );
 			xb->frames_tx ++;
-			xb->tx_pos = 0;
-			xb->o_chk = 0;
+			xb->tx_pos = xb->o_chk = 0;
 			xb->checked = FALSE;
 /* 			printf( "Frame transmitted\n" ); */
 			xbee_module_print_stats( xb );
