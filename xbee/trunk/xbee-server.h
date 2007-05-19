@@ -16,10 +16,22 @@
 struct xbee_con_ts;
 typedef struct xbee_con_ts xbee_con_t;
 
-/* Server related properties */
+struct xbee_server_ts;
+typedef struct xbee_server_ts XbeeServer;
+
 typedef struct
 {
+	GSource source;
+	GPollFD pollfd;
+} xbee_server_source_t;
+
+/* Server related properties */
+struct xbee_server_ts
+{
 	GObject parent;
+
+	xbee_server_source_t *source;
+	guint source_id;
 
 	/* Listening socket */
 	int l_fd;
@@ -27,7 +39,7 @@ typedef struct
 	/* List of clients (xbee_con_t*) */
 	GSList *clients;
 
-} XbeeServer;
+};
 
 typedef struct
 {
@@ -64,13 +76,9 @@ GType xbee_server_get_type( void );
 /* Create a server. Arguments:
  *  - xb: The xbee that we'll be serving
  *  Returns the new server structure */
-XbeeServer* xbee_server_new( XbeeModule* xb );
+XbeeServer* xbee_server_new( XbeeModule* xb, GMainContext *context );
 
 void xbee_server_free( XbeeServer* serv );
-
-/* Process a frame from the xbee.
- * xbee structure contains the frame. */
-void xbee_server_proc_frame( XbeeServer* serv, XbeeModule* xb );
 
 /* Attach an xbee module to the server */
 void xbee_server_attach( XbeeServer* serv, XbeeModule* xb );
