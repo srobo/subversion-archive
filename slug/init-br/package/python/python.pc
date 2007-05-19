@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=/lib
+includedir=/usr/include
+
+Name: blobslib
+Description: Python C libraries
+Version: 2.4
+Libs: -L${libdir} -lblob
+Cflags: -I${includedir}
