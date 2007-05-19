@@ -4,6 +4,8 @@
 #include <glib-object.h>
 #include <stdint.h>
 
+#include "xbee-module.h"
+
 #define XB_SERVER_INBUF_LEN 512
 
 /* Server stuff */
@@ -57,7 +59,7 @@ GType xbee_server_get_type( void );
 #define XBEE_IS_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), XBEE_SERVER_TYPE))
 #define XBEE_SERVER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), XBEE_SERVER_TYPE, XbeeServerClass))
 
-#include "xbee-module.h"
+
 
 /* Create a server. Arguments:
  *  - xb: The xbee that we'll be serving

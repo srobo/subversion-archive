@@ -640,9 +640,6 @@ void xbee_instance_init( GTypeInstance *gti, gpointer g_class )
 {
 	XbeeModule *xb = (XbeeModule*)gti;
 
-	/* No server yet. */
-	xb->server = NULL;
-
 	xb->api_mode = FALSE;
 	xb->at_time.tv_sec = 0;
 	xb->at_time.tv_usec = 0;
@@ -658,6 +655,7 @@ void xbee_instance_init( GTypeInstance *gti, gpointer g_class )
 
 	xb->in_len = 0;
 	xb->escape = FALSE;
+	xb->in_callback = NULL;
 
 	xb->bytes_discarded = 0;
 	xb->frames_discarded = 0;
@@ -679,6 +677,9 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 		flen = (xb->inbuf[1] << 8) | xb->inbuf[2];
 
 		/* Frame received */
+		if( xb->in_callback != NULL )
+			xb->in_callback( xb, xb->inbuf, xb->in_len );
+
 		/* TODO: Process frame! */
 		debug_show_frame( xb->inbuf, flen + 4 );
 
@@ -834,4 +835,12 @@ static uint8_t xbee_module_outgoing_escape_byte( XbeeModule* xb, uint8_t d )
 	}
 
 	return d;
+}
+
+void xbee_module_set_incoming_callback( XbeeModule *xb, 
+					xbee_callback_t f )
+{
+	assert( xb != NULL );
+		
+	xb->in_callback = f;
 }

@@ -19,8 +19,11 @@ typedef struct
 
 struct xbee_ts;
 
-/* Note: redefined to capital for gobject change */
 typedef struct xbee_ts XbeeModule;	
+
+typedef void (*xbee_callback_t) ( XbeeModule *xb,
+				  uint8_t *data,
+				  uint16_t len );
 
 typedef struct
 {
@@ -37,8 +40,6 @@ GType xbee_module_get_type( void );
 #define XBEE_IS_MODULE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), XBEE_MODULE_TYPE))
 #define XBEE_IS_MODULE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), XBEE_MODULE_TYPE))
 #define XBEE_MODULE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), XBEE_MODULE_TYPE, XbeeModuleClass))
-
-#include "xbee-server.h"
 
 /*** Source type ***/
 typedef struct
@@ -58,10 +59,6 @@ struct xbee_ts
 	xbee_source_t *source;
 	guint source_id;
 
-	/* Need to know what server we're associated with,
-	   so that we can send incoming frames to it */
-	XbeeServer *server;
-
 	/* Whether we're in API mode */
 	gboolean api_mode;
 	
@@ -70,7 +67,7 @@ struct xbee_ts
 	/* The time at which we entered AT command mode */
 	struct timeval at_time;
 
-	/*** Serial configuration ***/
+	/*** serial configuration ***/
 	uint32_t baud;
 	enum { PARITY_NONE, PARITY_ODD, PARITY_EVEN } parity;
 	uint8_t stop_bits;
@@ -96,6 +93,10 @@ struct xbee_ts
 	uint16_t in_len;
 	/* Whether the next byte received should be escaped */
 	gboolean escape;
+
+	/* Callback for receiving a frame.
+	 * The data pointed to contains the beginning part of the frame */
+	xbee_callback_t in_callback;
 
 	/*** Stats ***/
 	uint32_t bytes_discarded, frames_discarded; /* Frames with invalid checksums */
@@ -127,5 +128,10 @@ void xbee_module_close( XbeeModule *xb );
 
 /* Add an xbee to a mainloop */
 void xbee_module_add_source( XbeeModule *xb, GMainContext *context );
+
+/* Set the callback for when a frame is received.
+ * Frame is freed after callback function completes. */
+void xbee_module_set_incoming_callback( XbeeModule *xb, 
+					xbee_callback_t f );
 
 #endif	/* __XBEE_H */
