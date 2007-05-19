@@ -34,6 +34,8 @@ static void debug_show_frame( uint8_t* buf, uint16_t len );
 /* Process outgoing data */
 static gboolean xbee_module_proc_outgoing( XbeeModule* xb );
 
+static uint8_t xbee_module_outgoing_escape_byte( XbeeModule* xb, uint8_t d );
+
 /* Whether data's ready to transmit */
 static gboolean xbee_module_outgoing_queued( XbeeModule* xb );
 
@@ -165,17 +167,8 @@ static gboolean xbee_module_proc_outgoing( XbeeModule* xb )
 		frame = (xb_frame_t*)g_queue_peek_tail( xb->out_frames );
 		d = xbee_module_outgoing_next( xb );
 
-		/* Requires escaping? */
-		if( xb->tx_pos != 0 && ( d == 0x7E || d == 0x7D || d == 0x11 || d == 0x13 ) )
-		{
-			if( !xb->tx_escaped )
-				d = 0x7D;
-			else
-			{
-				d ^= 0x20;
-				xb->tx_escaped = FALSE;
-			}
-		}
+		/* Get the byte to read */
+		d = xbee_module_outgoing_escape_byte( xb, d );
 
 		/* write data */
 		w = TEMP_FAILURE_RETRY(write( xb->fd, &d, 1 ));
@@ -490,15 +483,14 @@ gboolean xbee_serial_init( XbeeModule* xb )
 	return TRUE;
 }
 
-
-
 void xbee_module_add_source( XbeeModule *xb, GMainContext *context )
 {
-	assert( xb != NULL );
+	assert( xb != NULL && context != NULL );
 	GPollFD *pfd;
 
 	xb->source = (xbee_source_t*) g_source_new( &xbee_sourcefuncs, sizeof( xbee_source_t ) );
 
+	/* Set up polling of the serial port file descriptor */
 	pfd = &xb->source->pollfd;
 	pfd->fd = xb->fd;
 	pfd->events = G_IO_IN | G_IO_OUT | G_IO_ERR | G_IO_HUP | G_IO_NVAL;
@@ -514,6 +506,7 @@ void xbee_module_add_source( XbeeModule *xb, GMainContext *context )
 			       NULL );
 }
 
+/* Configure the timeout, and we can't determine if we're ready here */
 static gboolean xbee_module_source_prepare( GSource *source, gint *timeout_ )
 {
 	assert( timeout_ != NULL && source != NULL );
@@ -524,6 +517,7 @@ static gboolean xbee_module_source_prepare( GSource *source, gint *timeout_ )
 	return FALSE;
 }
 
+/* Return TRUE if ready to be dispatched */
 static gboolean xbee_module_source_check( GSource *source )
 {
 	assert( source != NULL );
@@ -539,6 +533,7 @@ static gboolean xbee_module_source_check( GSource *source )
 	return FALSE; 
 }
 
+/* Process incoming/outgoing data */
 static gboolean xbee_module_source_dispatch( GSource *source,
 				      GSourceFunc callback, 
 				      gpointer user_data )
@@ -822,4 +817,22 @@ void debug_show_frame( uint8_t* buf, uint16_t len )
 			printf( "\n" );
 	}
 	printf("\n");
+}
+
+static uint8_t xbee_module_outgoing_escape_byte( XbeeModule* xb, uint8_t d )
+{
+	assert( xb != NULL );
+
+	if( xb->tx_pos != 0 && ( d == 0x7E || d == 0x7D || d == 0x11 || d == 0x13 ) )
+	{
+		if( !xb->tx_escaped )
+			d = 0x7D;
+		else
+		{
+			d ^= 0x20;
+			xb->tx_escaped = FALSE;
+		}
+	}
+
+	return d;
 }
