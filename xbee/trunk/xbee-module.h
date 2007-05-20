@@ -1,5 +1,5 @@
-#ifndef __XBEE_H
-#define __XBEE_H
+#ifndef __XBEE_MODULE_H
+#define __XBEE_MODULE_H
 #define _GNU_SOURCE		/* For TEMP_FAILURE_RETRY */
 #include <stdio.h>
 #include <sys/time.h>
@@ -134,4 +134,4 @@ void xbee_module_add_source( XbeeModule *xb, GMainContext *context );
 void xbee_module_set_incoming_callback( XbeeModule *xb, 
 					xbee_callback_t f );
 
-#endif	/* __XBEE_H */
+#endif	/* __XBEE_MODULE_H */
