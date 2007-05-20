@@ -6,8 +6,6 @@
 
 #include "xbee-module.h"
 
-#define XB_SERVER_INBUF_LEN 512
-
 /* Server stuff */
 /* The mainloop needs to monitor the sockets for incoming data.
  * The xbee_proc_incoming function needs to feed data back through  
@@ -38,7 +36,6 @@ struct xbee_server_ts
 
 	/* List of clients (xbee_con_t*) */
 	GSList *clients;
-
 };
 
 typedef struct
@@ -46,21 +43,6 @@ typedef struct
 	GObjectClass parent;
 
 } XbeeServerClass;
-
-/* Connection related properties */
-struct
-{
-	/* Socket file descriptor */
-	int fd;
-
-	/* Incoming frames */
-	GQueue *in_frames;
-
-	/* Socket frame reception stuff */
-	uint8_t inbuf[ XB_SERVER_INBUF_LEN ];
-	uint16_t inpos;
-
-} xbee_con_ts;
 
 GType xbee_server_get_type( void );
 
@@ -70,8 +52,6 @@ GType xbee_server_get_type( void );
 #define XBEE_IS_SERVER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), XBEE_SERVER_TYPE))
 #define XBEE_IS_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), XBEE_SERVER_TYPE))
 #define XBEE_SERVER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), XBEE_SERVER_TYPE, XbeeServerClass))
-
-
 
 /* Create a server. Arguments:
  *  - xb: The xbee that we'll be serving

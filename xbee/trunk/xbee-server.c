@@ -1,4 +1,5 @@
 #include "xbee-server.h"
+#include "xbee-client.h"
 #include <sys/socket.h>
 #include <string.h>
 #include <sys/un.h>
@@ -214,6 +215,7 @@ static gboolean xbee_server_req_con( XbeeServer *serv )
 	assert( serv != NULL );
 	struct sockaddr_un addr;
 	socklen_t len;
+	XbeeClient *client;
 	int s;
 
 	addr.sun_family = AF_LOCAL;
@@ -228,7 +230,9 @@ static gboolean xbee_server_req_con( XbeeServer *serv )
 		return FALSE;
 	}
 
-	g_print("Face\n\n");
+	client = xbee_client_new( NULL, s );
+	assert( client != NULL );
+	serv->clients = g_slist_append( serv->clients, client );
 
 	return TRUE;
 }
