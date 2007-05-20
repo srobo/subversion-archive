@@ -31,6 +31,9 @@ struct xbee_server_ts
 	xbee_server_source_t *source;
 	guint source_id;
 
+	/* The context */
+	GMainContext *context;
+
 	/* Listening socket */
 	int l_fd;
 

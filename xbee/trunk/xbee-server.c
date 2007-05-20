@@ -65,8 +65,8 @@ void xbee_server_instance_init( GTypeInstance *gti, gpointer g_class )
 	XbeeServer *s = (XbeeServer*)gti;
 	/* Initialise the members of the XbeeServer */
 	
+	s->context = NULL;
 	s->clients = NULL;
-
 }
 
 XbeeServer* xbee_server_new( XbeeModule* xb, GMainContext *context )
@@ -79,6 +79,7 @@ XbeeServer* xbee_server_new( XbeeModule* xb, GMainContext *context )
 	if( !xbee_server_listen( serv ) )
 		return NULL;
 
+	serv->context = context;
 	xbee_server_add_source( serv, context );
 
 	return serv;
@@ -173,7 +174,7 @@ static gboolean xbee_server_source_dispatch( GSource *source,
 					     gpointer user_data )
 {
 	assert( source != NULL );
-	xbee_server_source_t *serv_source = (xbee_server_source_t*)source;
+/* 	xbee_server_source_t *serv_source = (xbee_server_source_t*)source; */
 	gboolean rval = FALSE;
 
 	/* Call the callback */
@@ -213,12 +214,8 @@ static void xbee_server_add_source( XbeeServer *serv, GMainContext *context )
 static gboolean xbee_server_req_con( XbeeServer *serv )
 {
 	assert( serv != NULL );
-	struct sockaddr_un addr;
-	socklen_t len;
 	XbeeClient *client;
 	int s;
-
-	addr.sun_family = AF_LOCAL;
 
 	/* Accept the connection */
 	printf( "%i\n", serv->l_fd );
@@ -230,7 +227,7 @@ static gboolean xbee_server_req_con( XbeeServer *serv )
 		return FALSE;
 	}
 
-	client = xbee_client_new( NULL, s );
+	client = xbee_client_new( serv->context, s );
 	assert( client != NULL );
 	serv->clients = g_slist_append( serv->clients, client );
 
