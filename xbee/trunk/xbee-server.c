@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <sys/un.h>
+#include <errno.h>
 
 #define LISTEN_QUEUE_LEN 5
 
@@ -114,6 +115,8 @@ gboolean xbee_server_listen( XbeeServer* serv )
 		return FALSE;
 	}
 
+	printf( "%i\n", serv->l_fd );
+
 	return TRUE;
 }
 
@@ -168,9 +171,15 @@ static gboolean xbee_server_source_dispatch( GSource *source,
 					     GSourceFunc callback, 
 					     gpointer user_data )
 {
-	g_print( "Face\n" );
+	assert( source != NULL );
+	xbee_server_source_t *serv_source = (xbee_server_source_t*)source;
+	gboolean rval = FALSE;
 
-	return FALSE;
+	/* Call the callback */
+	if( callback != NULL )
+		rval = callback( user_data );
+
+	return rval;
 }
 
 static void xbee_server_source_finalize( GSource *source )
@@ -202,6 +211,24 @@ static void xbee_server_add_source( XbeeServer *serv, GMainContext *context )
 
 static gboolean xbee_server_req_con( XbeeServer *serv )
 {
-	g_print("Connection pending\n");
+	assert( serv != NULL );
+	struct sockaddr_un addr;
+	socklen_t len;
+	int s;
+
+	addr.sun_family = AF_LOCAL;
+
+	/* Accept the connection */
+	printf( "%i\n", serv->l_fd );
+	s = accept( serv->l_fd, NULL, NULL );
+
+	if( s == -1 )
+	{
+		fprintf(stderr, "Error accepting connection: %m\n");
+		return FALSE;
+	}
+
+	g_print("Face\n\n");
+
 	return TRUE;
 }
