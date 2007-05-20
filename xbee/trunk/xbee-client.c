@@ -29,6 +29,9 @@ static gboolean xbee_client_event( XbeeClient *client );
 static void xbee_client_sock_incoming( XbeeClient *client );
 static void xbee_client_sock_outgoing( XbeeClient *client );
 
+/* Returns TRUE if data is ready to be transmitted */
+static gboolean xbee_client_data_ready( XbeeClient *client );
+
 GType xbee_client_get_type( void )
 {
 	static GType type = 0;
@@ -106,19 +109,21 @@ static gboolean xbee_client_source_dispatch( GSource *source,
 					     gpointer user_data )
 {
 	assert( source != NULL );
-/* 	xbee_client_source_t *client_source = (xbee_client_source_t*)source;  */
+	xbee_client_source_t *client_source = (xbee_client_source_t*)source;
+	XbeeClient *client = (XbeeClient*)user_data;
 	gboolean rval = FALSE;
 
 	/* Call the callback */
 	if( callback != NULL )
 		rval = callback( user_data );
 
-	/* TODO */
-/* 	/\* Modulate the write requirement if necessary *\/ */
-/* 	if( xbee_module_outgoing_queued( xb_source->xb ) ) */
-/* 		xb_source->pollfd.events |= G_IO_OUT; */
-/* 	else */
-/* 		xb_source->pollfd.events &= ~G_IO_OUT; */
+	/* TODO: may need to do something special when we aren't waiting
+	   for writability, but get some data to write */
+	/* Modulate the write requirement if necessary */
+	if( xbee_client_data_ready( client ) )
+		client_source->pollfd.events |= G_IO_OUT;
+	else
+		client_source->pollfd.events &= ~G_IO_OUT;
 
 	return rval;
 }
@@ -172,6 +177,7 @@ static void xbee_client_sock_incoming( XbeeClient *client )
 {
 	assert( client != NULL );
 
+
 }
 
 static void xbee_client_sock_outgoing( XbeeClient *client )
@@ -180,3 +186,7 @@ static void xbee_client_sock_outgoing( XbeeClient *client )
 
 }
 
+static gboolean xbee_client_data_ready( XbeeClient *client )
+{
+	return FALSE;
+}
