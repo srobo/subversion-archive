@@ -14,29 +14,10 @@ void xbee_server_instance_init( GTypeInstance *gti, gpointer g_class );
 /* Process a frame received from the xbee. */
 void xbee_server_proc_frame( XbeeModule* xb, uint8_t *data, uint16_t len );
 
-static gboolean xbee_server_source_prepare( GSource *source, gint *timeout_ );
-static gboolean xbee_server_source_check( GSource *source );
-static gboolean xbee_server_source_dispatch( GSource *source,
-					     GSourceFunc callback, 
-					     gpointer user_data );
-static void xbee_server_source_finalize( GSource *source );
-
-static void xbee_server_add_source( XbeeServer *serv, GMainContext *context );
+static gboolean xbee_server_source_error( XbeeServer* serv );
 
 /* Callback for when connection is pending */
 static gboolean xbee_server_req_con( XbeeServer *serv );
-
-/* The source for the  */
-static GSourceFuncs xbee_server_sourcefuncs = 
-{
-	.prepare = xbee_server_source_prepare,
-	.check = xbee_server_source_check,
-	.dispatch = xbee_server_source_dispatch,
-	.finalize = xbee_server_source_finalize,
-
-	.closure_callback = NULL,
-	.closure_marshal = NULL
-};
 
 GType xbee_server_get_type( void )
 {
@@ -80,7 +61,15 @@ XbeeServer* xbee_server_new( XbeeModule* xb, GMainContext *context )
 		return NULL;
 
 	serv->context = context;
-	xbee_server_add_source( serv, context );
+
+	serv->source = xbee_fd_source_new( serv->l_fd,
+					   context,
+					   (gpointer)serv,
+					   (xbee_fd_callback)xbee_server_req_con,
+					   NULL,
+					   (xbee_fd_callback)xbee_server_source_error,
+					   NULL );
+
 
 	return serv;
 }
@@ -144,73 +133,6 @@ void xbee_server_attach( XbeeServer* serv, XbeeModule* xb )
 	
 }
 
-static gboolean xbee_server_source_prepare( GSource *source, gint *timeout_ )
-{
-	assert( timeout_ != NULL && source != NULL );
-
-	*timeout_ = -1;
-
-	/* For the moment, we're not ready */
-	return FALSE;
-}
-
-static gboolean xbee_server_source_check( GSource *source )
-{
-	xbee_server_source_t *serv_source = (xbee_server_source_t*) source;
-	gushort r;
-	assert( source != NULL );
-
-	r = serv_source->pollfd.revents;
-
-	if( r & (G_IO_ERR | G_IO_IN) )
-		/* Ready to dispatch */
-		return TRUE;
-
-	return FALSE;
-}
-
-static gboolean xbee_server_source_dispatch( GSource *source,
-					     GSourceFunc callback, 
-					     gpointer user_data )
-{
-	assert( source != NULL );
-/* 	xbee_server_source_t *serv_source = (xbee_server_source_t*)source; */
-	gboolean rval = FALSE;
-
-	/* Call the callback */
-	if( callback != NULL )
-		rval = callback( user_data );
-
-	return rval;
-}
-
-static void xbee_server_source_finalize( GSource *source )
-{
-	/* ... */
-}
-
-static void xbee_server_add_source( XbeeServer *serv, GMainContext *context )
-{
-	assert( serv != NULL && context != NULL );
-	GPollFD *pfd;
-
-	serv->source = (xbee_server_source_t*)g_source_new( &xbee_server_sourcefuncs,
-							    sizeof( xbee_server_source_t ) );
-
-	pfd = &serv->source->pollfd;
-	pfd->fd = serv->l_fd;
-	pfd->events = G_IO_IN | G_IO_ERR;
-	g_source_add_poll( (GSource*) serv->source, pfd );
-
-	serv->source_id = g_source_attach( (GSource*)serv->source, context );
-
-	g_source_set_callback( (GSource*)serv->source,
-			       (GSourceFunc)xbee_server_req_con,
-			       (gpointer)serv,
-			       NULL );
-	
-}
-
 static gboolean xbee_server_req_con( XbeeServer *serv )
 {
 	assert( serv != NULL );
@@ -232,4 +154,10 @@ static gboolean xbee_server_req_con( XbeeServer *serv )
 	serv->clients = g_slist_append( serv->clients, client );
 
 	return TRUE;
+}
+
+static gboolean xbee_server_source_error( XbeeServer* serv )
+{
+	fprintf( stderr, "Whoops, listening socket related error - don't know what to do\n" );
+	return FALSE;
 }

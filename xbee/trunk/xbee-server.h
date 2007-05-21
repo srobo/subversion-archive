@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #include "xbee-module.h"
+#include "xb-fd-source.h"
 
 /* Server stuff */
 /* The mainloop needs to monitor the sockets for incoming data.
@@ -17,18 +18,12 @@ typedef struct xbee_con_ts xbee_con_t;
 struct xbee_server_ts;
 typedef struct xbee_server_ts XbeeServer;
 
-typedef struct
-{
-	GSource source;
-	GPollFD pollfd;
-} xbee_server_source_t;
-
 /* Server related properties */
 struct xbee_server_ts
 {
 	GObject parent;
 
-	xbee_server_source_t *source;
+	xbee_fd_source_t *source;
 	guint source_id;
 
 	/* The context */
