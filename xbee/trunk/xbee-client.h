@@ -3,6 +3,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <stdint.h>
+#include "xb-fd-source.h"
 
 #define XB_SERVER_INBUF_LEN 512
 
@@ -25,12 +26,6 @@ GType xbee_client_get_type( void );
 #define XBEE_IS_CLIENT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), XBEE_CLIENT_TYPE))
 #define XBEE_CLIENT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), XBEE_CLIENT_TYPE, XbeeClientClass))
 
-typedef struct
-{
-	GSource source;
-	GPollFD pollfd;
-} xbee_client_source_t;
-
 struct xbee_client_ts
 {
 	GObject parent;
@@ -38,7 +33,7 @@ struct xbee_client_ts
 	/* Socket file descriptor */
 	int fd;
 
-	xbee_client_source_t *source;
+	xbee_fd_source_t *source;
 	guint source_id;
 
 	/* Incoming frames */

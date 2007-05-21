@@ -3,31 +3,9 @@
 #include <assert.h>
 
 static void xbee_client_instance_init( GTypeInstance *gti, gpointer g_class );
-
-static gboolean xbee_client_source_prepare( GSource *source, gint *timeout_ );
-static gboolean xbee_client_source_check( GSource *source );
-static gboolean xbee_client_source_dispatch( GSource *source,
-					     GSourceFunc callback, 
-					     gpointer user_data );
-static void xbee_client_source_finalize( GSource *source );
-
-static void xbee_client_add_source( XbeeClient *client, GMainContext *context );
-
-static GSourceFuncs xbee_client_sourcefuncs = 
-{
-	.prepare = xbee_client_source_prepare,
-	.check = xbee_client_source_check,
-	.dispatch = xbee_client_source_dispatch,
-	.finalize = xbee_client_source_finalize,
-
-	.closure_callback = NULL,
-	.closure_marshal = NULL
-};
-
-static gboolean xbee_client_event( XbeeClient *client );
-
-static void xbee_client_sock_incoming( XbeeClient *client );
-static void xbee_client_sock_outgoing( XbeeClient *client );
+static gboolean xbee_client_sock_incoming( XbeeClient *client );
+static gboolean xbee_client_sock_outgoing( XbeeClient *client );
+static gboolean xbee_client_sock_error( XbeeClient *client );
 
 /* Returns TRUE if data is ready to be transmitted */
 static gboolean xbee_client_data_ready( XbeeClient *client );
@@ -73,120 +51,39 @@ XbeeClient* xbee_client_new( GMainContext *context, int sock )
 
 	client->fd = sock;
 	
-	xbee_client_add_source( client, context );
 	
+	client->source = xbee_fd_source_new( client->fd,
+					     context,
+					     (gpointer)client,
+					     (xbee_fd_callback)xbee_client_sock_incoming,
+					     (xbee_fd_callback)xbee_client_sock_outgoing,
+					     (xbee_fd_callback)xbee_client_sock_error,
+					     (xbee_fd_callback)xbee_client_data_ready );
+
 	return client;
 }
 
-static gboolean xbee_client_source_prepare( GSource *source, gint *timeout_ )
-{
-	assert( timeout_ != NULL && source != NULL );
-
-	*timeout_ = -1;
-
-	/* We're not ready */
-	return FALSE;
-}
-
-/* Return TRUE if ready to be dispatched */
-static gboolean xbee_client_source_check( GSource *source )
-{
-	assert( source != NULL );
-	xbee_client_source_t *client_source = (xbee_client_source_t*)source; 
-	gushort r = client_source->pollfd.revents;
-
-	if( r & (G_IO_ERR | G_IO_HUP | G_IO_IN | G_IO_OUT | G_IO_NVAL) )
-	{
-		/* ready to dispatch */
-		return TRUE;
-	}
-
-	return FALSE; 
-}
-
-static gboolean xbee_client_source_dispatch( GSource *source,
-					     GSourceFunc callback, 
-					     gpointer user_data )
-{
-	assert( source != NULL );
-	xbee_client_source_t *client_source = (xbee_client_source_t*)source;
-	XbeeClient *client = (XbeeClient*)user_data;
-	gboolean rval = FALSE;
-
-	/* Call the callback */
-	if( callback != NULL )
-		rval = callback( user_data );
-
-	/* TODO: may need to do something special when we aren't waiting
-	   for writability, but get some data to write */
-	/* Modulate the write requirement if necessary */
-	if( xbee_client_data_ready( client ) )
-		client_source->pollfd.events |= G_IO_OUT;
-	else
-		client_source->pollfd.events &= ~G_IO_OUT;
-
-	return rval;
-}
-
-static void xbee_client_source_finalize( GSource *source )
-{
-
-}
-
-static void xbee_client_add_source( XbeeClient *client, GMainContext *context )
-{
-	assert( client != NULL && context != NULL );
-	GPollFD *pfd;
-
-	client->source = (xbee_client_source_t*)g_source_new( &xbee_client_sourcefuncs,
-							      sizeof( xbee_client_source_t ) );
-
-	pfd = &client->source->pollfd;
-	pfd->fd = client->fd;
-	pfd->events = G_IO_IN | G_IO_OUT | G_IO_ERR | G_IO_HUP | G_IO_NVAL;
-	g_source_add_poll( (GSource*) client->source, pfd );
-
-	client->source_id = g_source_attach( (GSource*)client->source, context );
-
-	g_source_set_callback( (GSource*)client->source,
-			       (GSourceFunc)xbee_client_event,
-			       (gpointer)client,
-			       NULL );
-}
-
-static gboolean xbee_client_event( XbeeClient *client )
+static gboolean xbee_client_sock_incoming( XbeeClient *client )
 {
 	assert( client != NULL );
-
-	if( client->source->pollfd.revents & (G_IO_ERR | G_IO_HUP) )
-	{
-		fprintf( stderr, "IO Error\n" );
-		return FALSE;
-	}
-	
-	if( client->source->pollfd.revents & G_IO_IN )
-		xbee_client_sock_incoming( client );
-
-	if( client->source->pollfd.revents & G_IO_OUT )
-		xbee_client_sock_outgoing( client );
 
 	return TRUE;
 }
 
-static void xbee_client_sock_incoming( XbeeClient *client )
+static gboolean xbee_client_sock_outgoing( XbeeClient *client )
 {
 	assert( client != NULL );
 
-	
-}
-
-static void xbee_client_sock_outgoing( XbeeClient *client )
-{
-	assert( client != NULL );
-
+	return TRUE;
 }
 
 static gboolean xbee_client_data_ready( XbeeClient *client )
 {
+	return FALSE;
+}
+
+static gboolean xbee_client_sock_error( XbeeClient *client )
+{
+	fprintf( stderr, "Error with client socket.  Handle this...\n" );
 	return FALSE;
 }
