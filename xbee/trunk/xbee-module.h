@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <glib.h>
 #include <glib-object.h>
+#include "xb-fd-source.h"
 
 #define XB_INBUF_LEN 512
 #define XB_OUTBUF_LEN 512
@@ -56,7 +57,7 @@ struct xbee_ts
 	/* private */
 	int fd;
 
-	xbee_source_t *source;
+	xbee_fd_source_t *source;
 	guint source_id;
 
 	/* Whether we're in API mode */

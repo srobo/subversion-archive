@@ -13,6 +13,8 @@
 #include "xbee-module.h"
 #include "xbee_at.h"
 
+gboolean xbee_module_io_error( XbeeModule* xb );
+
 /*** Incoming Data Functions ***/
 
 /* Process incoming data */
@@ -59,31 +61,6 @@ static uint8_t xbee_module_sum_block( uint8_t* buf, uint16_t len, uint8_t cur );
 
 /* Displays connection statistics */
 static void xbee_module_print_stats( XbeeModule* xb );
-
-/* xbee source functions  */
-static gboolean xbee_module_source_prepare( GSource *source, gint *timeout_ );
-
-static gboolean xbee_module_source_check( GSource *source );
-
-static gboolean xbee_module_source_dispatch( GSource *source,
-					     GSourceFunc callback, 
-					     gpointer user_data );
-
-void xbee_module_source_finalize( GSource *source );
-
-static GSourceFuncs xbee_sourcefuncs = 
-{
-	.prepare = xbee_module_source_prepare,
-	.check = xbee_module_source_check,
-	.dispatch = xbee_module_source_dispatch,
-	.finalize = xbee_module_source_finalize,
-
-	.closure_callback = NULL,
-	.closure_marshal = NULL
-};
-
-/* Source callback */
-gboolean xbee_source_callback( XbeeModule *xb );
 
 /*** "Internal" Client API Functions ***/
 int xbee_transmit( XbeeModule* xb, xb_addr_t* addr, void* buf, uint8_t len );
@@ -201,6 +178,8 @@ static gboolean xbee_module_proc_outgoing( XbeeModule* xb )
 			xbee_module_print_stats( xb );
 		}
 	}
+
+	hack( xb );
 
 	return TRUE;
 }
@@ -482,105 +461,6 @@ gboolean xbee_serial_init( XbeeModule* xb )
 	return TRUE;
 }
 
-void xbee_module_add_source( XbeeModule *xb, GMainContext *context )
-{
-	assert( xb != NULL && context != NULL );
-	GPollFD *pfd;
-
-	xb->source = (xbee_source_t*) g_source_new( &xbee_sourcefuncs, sizeof( xbee_source_t ) );
-
-	/* Set up polling of the serial port file descriptor */
-	pfd = &xb->source->pollfd;
-	pfd->fd = xb->fd;
-	pfd->events = G_IO_IN | G_IO_OUT | G_IO_ERR | G_IO_HUP | G_IO_NVAL;
-	g_source_add_poll( (GSource*) xb->source, pfd );
-
-	xb->source->xb = xb;
-
-	xb->source_id = g_source_attach( (GSource*)xb->source, context );
-
-	g_source_set_callback( (GSource*)xb->source,
-			       (GSourceFunc)xbee_source_callback,
-			       (gpointer)xb,
-			       NULL );
-}
-
-/* Configure the timeout, and we can't determine if we're ready here */
-static gboolean xbee_module_source_prepare( GSource *source, gint *timeout_ )
-{
-	assert( timeout_ != NULL && source != NULL );
-
-	*timeout_ = -1;
-
-	/* For the moment, we're not ready */
-	return FALSE;
-}
-
-/* Return TRUE if ready to be dispatched */
-static gboolean xbee_module_source_check( GSource *source )
-{
-	assert( source != NULL );
-	xbee_source_t *xb_source = (xbee_source_t*)source; 
-	gushort r = xb_source->pollfd.revents;
-
-	if( r & (G_IO_ERR | G_IO_HUP | G_IO_IN | G_IO_OUT | G_IO_NVAL) )
-	{
-		/* ready to dispatch */
-		return TRUE;
-	}
-
-	return FALSE; 
-}
-
-/* Process incoming/outgoing data */
-static gboolean xbee_module_source_dispatch( GSource *source,
-				      GSourceFunc callback, 
-				      gpointer user_data )
-{
-	assert( source != NULL );
-	xbee_source_t *xb_source = (xbee_source_t*)source; 
-	gboolean rval = FALSE;
-
-	/* Call the callback */
-	if( callback != NULL )
-		rval = callback( xb_source->xb );
-
-	/* Modulate the write requirement if necessary */
-	if( xbee_module_outgoing_queued( xb_source->xb ) )
-		xb_source->pollfd.events |= G_IO_OUT;
-	else
-		xb_source->pollfd.events &= ~G_IO_OUT;
-
-	return rval;
-}
-
-void xbee_module_source_finalize( GSource *source )
-{
-	/* Don't need to do anything here. */
-	/* glib should free the source structure */
-}
-
-gboolean xbee_source_callback( XbeeModule *xb )
-{
-	assert( xb != NULL );
-
-	if( xb->source->pollfd.revents & (G_IO_ERR | G_IO_HUP) )
-	{
-		fprintf( stderr, "IO Error\n" );
-		return FALSE;
-	}
-	
-	if( xb->source->pollfd.revents & G_IO_IN )
-		xbee_module_proc_incoming( xb );
-
-	if( xb->source->pollfd.revents & G_IO_OUT )
-		xbee_module_proc_outgoing( xb );
-
-	hack( xb );
-
-	return TRUE;
-}
-
 XbeeModule* xbee_module_open( char* fname, GMainContext *context )
 {
 	XbeeModule *xb = NULL;
@@ -598,7 +478,13 @@ XbeeModule* xbee_module_open( char* fname, GMainContext *context )
 	if( !xbee_init( xb ) )
 		return FALSE;
 
-	xbee_module_add_source( xb, context );
+	xb->source = xbee_fd_source_new( xb->fd, context, (gpointer)xb,
+					 (xbee_fd_callback)xbee_module_proc_incoming,
+					 (xbee_fd_callback)xbee_module_proc_outgoing,
+					 (xbee_fd_callback)xbee_module_io_error,
+					 (xbee_fd_callback)xbee_module_outgoing_queued );
+					 
+//	xbee_module_add_source( xb, context );
 
 	return xb;
 }
@@ -843,4 +729,10 @@ void xbee_module_set_incoming_callback( XbeeModule *xb,
 	assert( xb != NULL );
 		
 	xb->in_callback = f;
+}
+
+gboolean xbee_module_io_error( XbeeModule* xb )
+{
+	fprintf( stderr, "Erk, error.  I should do something\n" );
+	return FALSE;
 }

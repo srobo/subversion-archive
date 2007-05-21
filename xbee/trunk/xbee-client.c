@@ -177,7 +177,7 @@ static void xbee_client_sock_incoming( XbeeClient *client )
 {
 	assert( client != NULL );
 
-
+	
 }
 
 static void xbee_client_sock_outgoing( XbeeClient *client )
