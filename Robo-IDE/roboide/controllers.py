@@ -11,12 +11,19 @@ log = logging.getLogger("roboide.controllers")
 
 REPO = "http://studentrobotics.org/svn/"
 
+static_client = None
 def ProtectedClient():
+    global static_client
     def get_login(realm, username, may_save):
         return True, "test", "testpass", False
 
+    if static_client != None:
+        return static_client
+    
     a = pysvn.Client()
     a.callback_get_login = get_login
+
+    static_client = a
     return a
 
 class Root(controllers.RootController):
@@ -340,28 +347,4 @@ class Root(controllers.RootController):
 
     @expose(template="roboide.templates.files")
     def index(self):
-        #Really need to seperate this out in a min
-        client = ProtectedClient()
-        
-        files = client.ls(REPO, recurse=True)
-
-        class Node (object):
-            def __init__(self, name, path, kind):
-                self.name = name
-                self.path = path
-                self.kind = kind
-                self.children = {}
-                
-        head = Node("HEAD", "", "")
-
-        for details in files:
-            filename = details["name"][len(REPO):] #Strip off the repo URL
-            basename = filename.split("/")[-1:][0]
-            top = head 
-            for path in filename.split("/"):
-                try: 
-                    top = top.children[path]
-                except KeyError:
-                    top.children[path] = Node(basename, filename, details["kind"])
-
-        return dict(tree=head)
+        return dict()
