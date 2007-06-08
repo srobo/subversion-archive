@@ -66,6 +66,10 @@ function buildFileList(nodes){
             MochiKit.Base.map(buildFileListEntry, nodes));
 }
 
+function click_dir(){
+    alert("Moo");
+}
+
 function buildFileListEntry(node){
     if (node.kind == "FILE"){
         var contents = MochiKit.DOM.DIV({"class" : "list_row"},
@@ -77,8 +81,13 @@ function buildFileListEntry(node){
                     MochiKit.DOM.A({"href" : "javascript:loadFile('" + node.path
                         + "')"}, node.name)));
     }else{
-        var contents = new Array(MochiKit.DOM.SPAN(null, node.name),
-                                 buildFileList(node.children));
+        var contents = new Array(MochiKit.DOM.DIV({"class" : "list_row"},
+                MochiKit.DOM.SPAN({"class" : "list_box"},
+                    MochiKit.DOM.INPUT({"class" : "dir_check",
+                                        "type" : "checkbox",
+                                        "name" : node.path,
+                                        "onClick" : "click_dir()"})),
+                MochiKit.DOM.SPAN({"class" : "list_label"}, node.name)), buildFileList(node.children));
 
     }
     return MochiKit.DOM.LI({"class" : "list_row"}, contents);
@@ -91,7 +100,10 @@ file_options = new Array({"id" : "delete",
                  "question" : "Are you sure you want to delete:"},
                 {"id" : "move",
                  "name" : "Move Files",
-                 "question" : "Are you sure you want to move:"});
+                 "question" : "Are you sure you want to move:"},
+                {"id" : "checkout",
+                 "name" : "Checkout",
+                 "question" : "Are you sure you want to checkout these files?"});
 
 //Add options to the listbox
 function fill_options_select(){
@@ -118,22 +130,13 @@ function get_selected() {
     return selected;
 }
 
-function file_cmd() {
+function checkout() {
     var files = get_selected();
-    if (files.length > 0){
-        var box = MochiKit.DOM.getElement("file_options_select");
-        var action = file_options[box.selectedIndex];
-
-        if(confirm(action["question"] + "\n" + files.join("\n"))){
-            var d = MochiKit.Async.loadJSONDoc("./file_action", {"method" : action["id"], "files" : files});
-            d.addCallback(filesActioned);
-        }
+    if(files.length > 0){
+        document.location = "./checkout?files=" + files.join(",");
+    } else {
+        alert("No files selected.");
     }
-}
-
-function filesActioned(result){
-    updatefilelist();
-    alert(result["status"]);
 }
 
 //TABS
@@ -370,6 +373,7 @@ function setStatus(str)
     <div id="sidebar">
         <h2>Files</h2>
         <div id="file_options"><select></select></div>
+        <button id="checkout" onclick="checkout()">Checkout Selected</button>
         <div id="filelist"></div>
     </div>
     <div id="code_block">

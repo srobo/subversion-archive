@@ -31,11 +31,12 @@ a.link, a, a.active {
   right: 0px;
 }
 
-li.list_row {
-    padding-bottom: 10px;
+ul.links {
+    padding-top: 10px;
 }
 
-div.list_row {
+ul.links li {
+    padding-bottom: 10px;
 }
 
 span.list_label {

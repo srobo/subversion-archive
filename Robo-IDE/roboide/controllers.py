@@ -6,10 +6,20 @@ import time
 import re
 import tempfile, shutil
 import os
+import zipfile
+import random
 from os.path import join
 log = logging.getLogger("roboide.controllers")
 
 REPO = "http://studentrobotics.org/svn/"
+ZIPNAME = "robot.zip"
+
+#This dictionary contains information on what zip files are
+#ready to ship. This should be in a db or similiar so multiple
+#processes can access it. It currently will fail with multiple
+#CherryPy processes
+
+zips = {}
 
 static_client = None
 def ProtectedClient():
@@ -29,78 +39,99 @@ def ProtectedClient():
 class Root(controllers.RootController):
 
     def get_revision(self, revision):
+        """
+        Get a revision object.
+        inputs:
+            revision - revision number (convertable with int()). If can not be
+            converted, returns HEAD revision
+        returns:
+            revision object for revision number"""
+
         try:
             rev = pysvn.Revision(pysvn.opt_revision_kind.number, int(revision))
         except (pysvn.ClientError, ValueError):
             rev = pysvn.Revision(pysvn.opt_revision_kind.head)
         return rev
 
-    @expose("json")
-    def file_action(self, method, files):
+    @expose()
+    def checkout(self, files):
+        """
+        This function grabs a set of files and makes a zip available.
+        inputs:
+            ROT13 etc...)
+            files - a comma seperated list of files to do the method on
+        returns (JSON):
+            status - A string to display to the user on completion."""
+        if files == "":
+            return ""
+
         client = ProtectedClient()
         files = files.split(",")
-        files.sort()
+        rev = self.get_revision("HEAD")
+
         #Need to check out the folders that contain the files
-        #Only check out each folder once
-        cur_dir = None
-        cur_files = []
-        while(1):
-            if cur_dir is None:
-                try:
-                    file = files.pop()
-                except IndexError:
-                    break
-                cur_dir = os.path.dirname(file)
-                cur_files.append(str(os.path.basename(file)))
-            else:
-                if len(files) > 0 and os.path.dirname(files[len(files)-1]) == cur_dir:
-                    try:
-                        file = files.pop()
-                    except IndexError:
-                        break
-                    cur_files.append(str(os.path.basename(file)))
-                    print "Appending"
+        #Create a folder to dump everything in
+        root = tempfile.mkdtemp()
+
+        dirs = [""] #List of directories already created
+
+        for file in files:
+            path = os.path.dirname(file)
+            if not path in dirs:
+                #If the directory path isn't in the dirs list
+                #Need to create a directory for it
+                #Makedirs creates parent directories as necessary
+                os.makedirs(os.path.join(root, path))
+                #TODO: Is there a os.path to do this safely?
+                pathparts = path.split("/")
+                
+                #Need to put all created directories in dirs
+                for i in range(0, len(pathparts)):
+                    #e.g. if path was moo/poo/loo
+                    #subdir is:
+                    #moo
+                    #moo/poo
+                    #moo/poo/loo
+                    subdir = "/".join(pathparts[0:i+1])
+                    if not subdir in dirs:
+                        dirs.append(subdir)
+
+            #Directory exists, copy file into it
+            f = open(os.path.join(root, file), "wb")
+            f.write(client.cat(REPO + file, rev))
+            f.close()
+
+        #Now should have a tree in root.
+        #Create a zip file in a temporary directory
+        zfile = tempfile.mktemp()
+        zip = zipfile.ZipFile(zfile, "w")
+        #Walk through the tree of files checked out and add them
+        #to the zipfile
+        for node, dirs, files in os.walk(root):
+            for name in files:
+                #If the file is in the root directory
+                if node == root:
+                    #Add it named just its name
+                    zip.write(os.path.join(node, name), name)
                 else:
-                    #Should have a list of file(s) in cur_files
-                    #Which all have the same base
-                    #1. Check out cur_dir
-                    print "XXX"
-                    try:
-                        tmpdir = self.checkoutintotmpdir(client, "HEAD", cur_dir)
-                        print tmpdir
-                    except pysvn.ClientError:
-                        return dict(status = "FAIL")
-
-                    #2. Do the action
-                    if method == "delete":
-                        try:
-                            urls = [os.path.join(tmpdir,f) for f in cur_files]
-                            print urls
-                            client.remove(urls)
-                            print "Removed"
-                        except pysvn.ClientError:
-                            return dict(status = "FAIL")
-                    else:
-                        return dict(status = "FAIL")
-
-                    #3. Commit the new directory
-                    try:
-                        newrev = client.checkin([tmpdir], "Message")
-                        print "checked in"
-                        if newrev == None:
-                            raise pysvn.ClientError
-
-                        #4. Wipe the directory
-                        shutil.rmtree(tmpdir)
-
-                        #Set cur_dir to "" ready for next directory of stuff
-                        cur_dir = None
-                        cur_files = []
-                    except pysvn.ClientError:
-                        return dict(status = "FAIL")
-
-        return dict(status = "Successfully performed action")
-
+                    #Add it with a suitable path
+                    zip.write(os.path.join(node, name),
+                          node[len(root)+1:]+"/"+name)
+        zip.close()
+        #Zipfile now ready to be shipped.
+        #Clean up root dir
+        shutil.rmtree(root)
+        #Set up headers for correctly serving a zipfile
+        cherrypy.response.headers['Content-Type'] = \
+                "application/x-download"
+        cherrypy.response.headers['Content-Disposition'] = \
+                'attachment; filename="' + ZIPNAME + '"'
+        #Read the data in from the temporary zipfile
+        zipdata = open(zfile, "rb").read()
+        #Get rid of the temporary zipfile
+        os.unlink(zfile)
+        #Return the data
+        return zipdata
 
     @expose("json")
     def filesrc(self, file=None, revision="HEAD"):
@@ -193,7 +224,6 @@ class Root(controllers.RootController):
                 rev = 0
                 for file in files:
                     r[file] = {}
-                    print "*" + file + "*"
                     try:
                         if file != None and client.is_url( REPO + file ):
                             info = client.info2( REPO + file )[0][1]
@@ -294,7 +324,6 @@ class Root(controllers.RootController):
 
     @expose("json")
     def filelist(self):
-        #Really need to seperate this out in a min
         client = ProtectedClient()
         
         files = client.ls(REPO, recurse=True)
