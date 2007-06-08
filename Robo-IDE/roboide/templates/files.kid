@@ -180,44 +180,29 @@ function buildFileListEntry(node){
     return MochiKit.DOM.LI({"class" : "list_row"}, contents);
 }
 
-//FILE ACTIONS
-
-file_options = new Array({"id" : "delete",
-                 "name" : "Delete Files",
-                 "question" : "Are you sure you want to delete:"},
-                {"id" : "move",
-                 "name" : "Move Files",
-                 "question" : "Are you sure you want to move:"},
-                {"id" : "checkout",
-                 "name" : "Checkout",
-                 "question" : "Are you sure you want to checkout these files?"});
-
-//Add options to the listbox
-function fill_options_select(){
-    var file_options_select = MochiKit.DOM.createDOM("SELECT",
-            {'id':'file_options_select'},
-        MochiKit.Base.map(returnOption, file_options));
-    var file_options_span = MochiKit.DOM.SPAN({"id" : "file_options_span"}, file_options_select,
-        MochiKit.DOM.BUTTON({"onclick" : "file_cmd()"}, "Go"));
-
-    MochiKit.DOM.replaceChildNodes("file_options", file_options_span);
-}
-
-function returnOption(data) {
-    return MochiKit.DOM.createDOM("OPTION",
-            {"value" : data["id"]}, data["name"]);
-}
-
 function get_selected() {
+    /*Find out which files are selected.
+        inputs: none
+        returns: an Array of paths of files*/
+
     var checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
             "file_check");
     var selected = new Array();
+
+    //Iterate through the list of checkboxes, adding the paths of files
+    //to the selected array if their checkbox is checked
     MochiKit.Iter.forEach(MochiKit.Iter.iter(checkboxes), function (a) {
             if (a.checked){selected.push(a.name)}});
     return selected;
 }
 
 function checkout() {
+    /*Checkout a list of files.
+        TODO: Security munging. Path character escaping.
+        inputs: none
+        returns: none, but causes a file download by changing
+            document.location to a source that provides an attachment*/
+    //files is an array of paths of selected files
     var files = get_selected();
     if(files.length > 0){
         document.location = "./checkout?files=" + files.join(",");
