@@ -376,4 +376,6 @@ class Root(controllers.RootController):
 
     @expose(template="roboide.templates.files")
     def index(self):
-        return dict()
+        client = ProtectedClient()
+        info = client.info(os.getcwd())
+        return dict(rev="RoboIDE revision: " + str(info["revision"].number))

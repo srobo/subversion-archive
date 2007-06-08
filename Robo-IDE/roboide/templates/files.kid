@@ -55,26 +55,43 @@ function pollAction(result)
     setTimeout( "polled()", POLL_TIME );
 }
 
-//DOCUMENT LOAD EVENTS
 MochiKit.DOM.addLoadEvent( function() {
-    connect('savefile','onclick', saveFile);
+    //On page load - this replaces a onload action of the body tag
+    //Hook up the save file button
+    MochiKit.Signal.connect('savefile','onclick', saveFile);
+    //Start polling
     setTimeout( "polled()", POLL_TIME );
-    fill_options_select();
+    //Grab a file list
     updatefilelist();
 });
 
-//FILE LIST
 function updatefilelist() {
-    d = MochiKit.Async.loadJSONDoc("./filelist");
+    /*Called to update the file list
+        inputs: None
+        returns: None, but adds a callback to gotFileList
+*/
+    var d = MochiKit.Async.loadJSONDoc("./filelist");
     d.addCallback(gotFileList);
 }
 
 function gotFileList(nodes){
+    /*List of files to display returned. Build up a DOM model of
+      the file list for the file tree, then connect signals to the
+      directory checkboxes
+        inputs: A dictionary with keys as dirnames and values as
+        lists of files (or directories) in that dir. Subdirs are in
+        turn dictionaries.
+        returns: Nothing*/
+
     MochiKit.DOM.replaceChildNodes("filelist", buildFileList(nodes["children"]));
 
+    //Get all the checkboxes next to directory names
     var checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
             "dir_check");
-
+    
+    //Go through each of the checkboxes, hooking up a signal.
+    //click_dir gets passed an object containing all sorts of info
+    //about the click
     MochiKit.Iter.forEach(MochiKit.Iter.iter(checkboxes),
             function (a) {
                 MochiKit.Signal.connect(a, "onclick", click_dir);
@@ -82,11 +99,19 @@ function gotFileList(nodes){
 }
 
 function buildFileList(nodes){
+    /*Builds up a DOM of a tree of files.
+        inputs: A tree of directories and files
+        returns: A DOM tree*/
+    //Create an unlinked list and fill it with entries
     return MochiKit.DOM.UL({"class" : "links"},
             MochiKit.Base.map(buildFileListEntry, nodes));
 }
 
 function Left(str, n){
+    /*Get the left n characters of a string
+        inputs: str - String of data
+                n - characters to return
+        returns: string n characters long*/
     if (n &lt;= 0)
         return "";
     else if (n &gt; String(str).length)
@@ -97,7 +122,9 @@ function Left(str, n){
 
 function click_dir(data){
     /*Run when a directory checkbox in the file list is clicked on
-      Makes selected status of children same as parent*/
+      Makes selected status of children same as parent
+      inputs: data, a lump on info about the event, see MochiKit docs
+      Returns: none*/
     var par = data["src"](); //Get the clicked on checkbox
     //Get all checkboxes on the page
     var checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
@@ -125,6 +152,10 @@ function click_dir(data){
 }
 
 function buildFileListEntry(node){
+    /*Create an entry in an unordered list to display a file.
+        inputs: a dictionary describing a file or directory
+        returns: a DOM object to show that file or directory*/
+   
     if (node.kind == "FILE"){
         var contents = MochiKit.DOM.DIV({"class" : "list_row"},
                 MochiKit.DOM.SPAN({"class" : "list_box"},
@@ -135,6 +166,9 @@ function buildFileListEntry(node){
                     MochiKit.DOM.A({"href" : "javascript:loadFile('" + node.path
                         + "')"}, node.name)));
     }else{
+        //As for a file, but without the anchor and with a sub list!
+        //The sublist is a UL element created by buildFileList
+        //mmm... recursion...
         var contents = new Array(MochiKit.DOM.DIV({"class" : "list_row"},
                 MochiKit.DOM.SPAN({"class" : "list_box"},
                     MochiKit.DOM.INPUT({"class" : "dir_check",
@@ -420,12 +454,11 @@ function setStatus(str)
 </script>
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" py:replace="''"/>
-<title>Robotics IDE</title>
+<title py:content="rev">Robotics IDE</title>
 </head>
 <body>
     <div id="sidebar">
         <h2>Files</h2>
-        <div id="file_options"><select></select></div>
         <button id="checkout" onclick="checkout()">Checkout Selected</button>
         <div id="filelist"></div>
     </div>
