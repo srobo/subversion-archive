@@ -8,38 +8,50 @@
 
 
 <script type="text/javascript">
-LANGUAGE = "generic";
-remote_modified = false;
-cur_path = "";
+LANGUAGE = "generic"; // The default language for the code editor
+cur_path = ""; //TODO: Replace these with cur_tab
 cur_rev = 1;
 
-open_files = {};
+open_files = {}; //A dictionary (hash table) of the currently open
+//files - one for each tab
 
 //POLLING
-POLL_TIME = 2000;
-poll_data = {"files" : ""};
-
+POLL_TIME = 2000; //In ms.
+poll_data = {"files" : ""}; /*The data to be shipped with the poll.
+files : comma seperated list of open files*/
+                            
 function polled()
 {
+    /*Polling makes sure we're up to date with others changes.
+      This function run roughly every POLL_TIME ms by setTimeout
+      call in pollAction
+      inputs: None
+      returns: Nothing, but callback created*/
+
     var j = MochiKit.Async.loadJSONDoc("./polldata", poll_data );
     j.addCallback(pollAction);
 }
 
 function pollAction(result)
 {
-    /*Not sure what remote_modified is
-    if( result["rev"] &amp;&amp; 
-	remote_modified == false &amp;&amp; 
-	cur_rev != result["rev"] ) {
-        remote_modified = true
-        setStatus( "This file has been edited" )
-        }*/
+    /*Data received from polling call. Process it, then set up a
+      timeout to call polled in POLL_TIME ms.
+      input: A dictionary of filenames -> revision numbers
+                result[filename]["rev"] = N
+      returns: Nothing, but sets up timeout*/
+
+    //For each file for which there is info available, if that file
+    //is open and if the local working revision is less than that
+    //saved on the server, then mark that file as changed
     for (var file in result)
         if(open_files[file])
             if(open_files[file].revision &lt; result[file]["rev"])
                 open_files[file].changed = true;
 
+    //Generate the tab list, in case formatting etc needs changing
+    //to mark that a file has conflicts
     generatetablist();
+    //Setup the next poll in POLL_TIME ms
     setTimeout( "polled()", POLL_TIME );
 }
 
