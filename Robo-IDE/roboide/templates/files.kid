@@ -59,6 +59,14 @@ function updatefilelist() {
 
 function gotFileList(nodes){
     MochiKit.DOM.replaceChildNodes("filelist", buildFileList(nodes["children"]));
+
+    var checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
+            "dir_check");
+
+    MochiKit.Iter.forEach(MochiKit.Iter.iter(checkboxes),
+            function (a) {
+                MochiKit.Signal.connect(a, "onclick", click_dir);
+            });
 }
 
 function buildFileList(nodes){
@@ -66,8 +74,42 @@ function buildFileList(nodes){
             MochiKit.Base.map(buildFileListEntry, nodes));
 }
 
-function click_dir(){
-    alert("Moo");
+function Left(str, n){
+    if (n &lt;= 0)
+        return "";
+    else if (n &gt; String(str).length)
+        return str;
+    else
+        return String(str).substring(0,n);
+}
+
+function click_dir(data){
+    /*Run when a directory checkbox in the file list is clicked on
+      Makes selected status of children same as parent*/
+    var par = data["src"](); //Get the clicked on checkbox
+    //Get all checkboxes on the page
+    var checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
+            null);
+    
+    //For each checkbox on the page, check to see if it is a child of
+    //the parent checkbox. If so, set its selected status the same as
+    //the parent
+    MochiKit.Iter.forEach(MochiKit.Iter.iter(checkboxes),
+            function (a) {
+                //If it's the root checkbox
+                //Set all dir_check and file_check class checkboxes
+                //to same as root checkbox
+
+                //If it's a different checkbox, only do children
+                if (par.name == ""){
+                    if(MochiKit.DOM.hasElementClass(a, "file_check") ||
+                        MochiKit.DOM.hasElementClass(a, "dir_check"))
+                            a.checked = par.checked;
+                } else {
+                    if(Left(a.name, par.name.length+1) == par.name + "/")
+                    a.checked = par.checked;
+                }
+            });
 }
 
 function buildFileListEntry(node){
@@ -85,8 +127,7 @@ function buildFileListEntry(node){
                 MochiKit.DOM.SPAN({"class" : "list_box"},
                     MochiKit.DOM.INPUT({"class" : "dir_check",
                                         "type" : "checkbox",
-                                        "name" : node.path,
-                                        "onClick" : "click_dir()"})),
+                                        "name" : node.path})),
                 MochiKit.DOM.SPAN({"class" : "list_label"}, node.name)), buildFileList(node.children));
 
     }
@@ -122,7 +163,7 @@ function returnOption(data) {
 }
 
 function get_selected() {
-    checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
+    var checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
             "file_check");
     var selected = new Array();
     MochiKit.Iter.forEach(MochiKit.Iter.iter(checkboxes), function (a) {
