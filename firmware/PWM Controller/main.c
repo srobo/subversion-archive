@@ -4,7 +4,7 @@ Its assumed atm that the clock is running at abpout 6.52Mhz
 CC1 interrupts every 163 ticks of the timerA
 CC0 is the upper bound of timerA and is at 65200
 */
-#define __MSP430_2003__
+#define __MSP430_2003__ 
 
 #include "hardware.h"
 #include <stdint.h>
@@ -21,9 +21,8 @@ Delay function, will run a while loop corresponding to 1ms when FOSC is 12Mhz
 TODO possibly investigate a bug that increments the duration of the delay  inexplicably when a value greater than 30000 is given to i.
 */
 void delay_MS(uint32_t d) {
-	uint16_t i;
-	while(d){
-		d--;
+	volatile uint16_t i;
+	while(d--){
 		i = 15000;
 		while(i>0){	i--;}
 		i = 20000;
@@ -66,11 +65,11 @@ void initialise_PwmBoard(void){
 	WDTCTL = WDTCTL_INIT;               //Initializing watchdog timer
 	DCOCTL = CALDCO_12MHZ_;				//Initializing FOSC
 	BCSCTL1 = CALBC1_12MHZ_; 
-	
+	 
 	P1OUT = 0xC0;                        // P1.6 & P1.7 Pullups
     P2OUT  = P2OUT_INIT;                //Init output data of port2
 	
-	P1REN |= 0xC0;                       // P1.6 & P1.7 Pullups
+	P1REN |= 0x00;                       // 1.6 and 1.7 pullups
 	
     P1SEL  = 0xC0;                //Select port or module -function on port1
     P2SEL  = P2SEL_INIT;                //Select port or module -function on port2d 
@@ -90,13 +89,28 @@ void initialise_PwmBoard(void){
 	
 	TACCTL0 = CCIE; //turn on interrupts for ccp module
 	TACCTL1 = CCIE; //turn on interrupts for ccp module
-	TACTL = TASSEL_SMCLK|MC_UPTO_CCR0|ID_DIV2|TAIE; //settign timer A to count up to Taccr0, and also turn on interrupts
+	//TACTL = TASSEL_SMCLK|MC_UPTO_CCR0|ID_DIV2|TAIE; //settign timer A to count up to Taccr0, and also turn on interrupts
 	
 	current_servo = 0;
 	initialise_i2c();
 	enable_i2c();
 	eint(); 
-	
+}
+
+uint8_t channel = 0;
+void sweepServo(void){
+		channel =0;
+		delay_MS(50);
+		while(channel<SERVO_NUMBER){
+			setServoPWM(channel, (uint16_t)(2.3*TICKS_PER_MS));
+			channel++;
+		}
+		channel = 0;
+		delay_MS(50);
+		while(channel<SERVO_NUMBER){
+			setServoPWM(channel, (uint16_t)(0.7*TICKS_PER_MS));
+			channel++;
+		}
 }
 
  /**
@@ -105,11 +119,9 @@ void initialise_PwmBoard(void){
 int main(void) {
 	int static unused_initialized_variable_to_make_gdb_happy = 1;
 	initialise_PwmBoard();
-    while (1) {   
-	//	delay_MS(1000);
-	//	setServoPWM(0, 2.2*TICKS_PER_MS);
-	//	delay_MS(1000);
-	//	setServoPWM(0, 0.8*TICKS_PER_MS );
+    while (1){
+
+	//	sweepServo();
 	}
 }
 
@@ -124,7 +136,7 @@ interrupt (TIMERA1_VECTOR) isr_TAIV(void){ //both for period interrupt and
 			current_servo++;
 			if(current_servo<SERVO_NUMBER){ //deal with next servo and check there is a next servo!
 				TACCR1 += getServoPWM(current_servo); //get servo# pulse width, increment cc1 by its width
-				P1OUT = (0xFE<<current_servo); //set servo# output high
+				P1OUT = ~(0x1<<current_servo); //set servo# output high
 			}else{
 				P1OUT = (0xFF);
 				TACCR1 = getServoPWM(0); //reset CC1 to pulse Servo0
@@ -136,15 +148,15 @@ interrupt (TIMERA1_VECTOR) isr_TAIV(void){ //both for period interrupt and
  }
 }
 
-interrupt (USI_VECTOR) isr_USI(void){ //isr for period interrupt, resets TIMERA also resets current_servo, and put servo0 pin high
+interrupt (USI_VECTOR) isr_USI(void){ //interrupt for i2c
 	char number_of_data;
 	char * data;
 	isr_usi ();
-	if(available_i2c_data()){
-		number_of_data = available_i2c_data();
-		data = get_i2cData();
-		setServoPWM(data[number_of_data-2], (MIN_PULSE + 25*data[number_of_data-1])); //takes values from 0-135
-	}
+	//if(available_i2c_data()){
+		//number_of_data = available_i2c_data();
+		//data = get_i2cData();
+		//setServoPWM(data[number_of_data-2], (MIN_PULSE + 25*data[number_of_data-1])); //takes values from 0-135
+	//}
 }
  
 

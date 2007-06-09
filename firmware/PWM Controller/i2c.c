@@ -4,12 +4,13 @@ SMBUS protols supported:
 Write word protocol
 Read word protocol
 Block read protocol
+
 **/
 
 #include "hardware.h"
 #include "i2c.h"
 
-enum
+typedef enum
 {
   state_idle = 0, //wait for a start condition
   state_rx_address,
@@ -19,11 +20,11 @@ enum
   state_rx_data,
   state_check_data,
   state_prep_for_start
-};
+}state_t;
 
 char i2c_data[32];		// i2c data, array can contain a maximum of 32 values to be sent or read as per SMBUS specification
 char SLV_Addr = ADDRESS;		// Address is 0x48, LSB  for R/W
-int I2C_State = state_idle;		//i2c transmition states
+state_t I2C_State = state_idle;		//i2c transmition states
 char i2c_session_complete = 0;		//set when transmission is complete, guess could be replaced by reading one of the states
 char new_i2c_data = 0;		// number of data already recieved
 char i2c_data_number = 0;	//number of data bytes to be recieved
@@ -48,7 +49,8 @@ char * get_i2cData(void){
 }
 
 void initialise_i2c(void){
-  USICTL0 = USIPE6|USIPE7|USISWRST;    // Port & USI mode setup
+	USICTL0 = USICTL0|USISWRST;
+  USICTL0 = USIPE6|USIPE7;    // Port & USI mode setup
   USICTL1 = USII2C|USIIE|USISTTIE;     // Enable I2C mode & USI interrupts
   USICKCTL = USICKPL;                  // Setup clock polarity
   USICNT |= USIIFGCC;                  // Disable automatic clear control
@@ -73,7 +75,7 @@ inline void isr_usi (void){
         break;
 
 	case state_rx_address: // RX Address
-		USICNT = (USICNT & 0xE0) + 0x08; // (Keep previous setting, make sure counter is 0, then add 8)Bit counter = 8, RX address
+		USICNT = (USICNT & 0xE0) + 0x08; //  (Keep previous setting, make sure counter is 0, then add 8)Bit counter = 8, RX address
 		USICTL1 &= ~USISTTIFG;   // Clear start flag
 		I2C_State = state_check_address;           // Go to next state: check address
 		break;
@@ -90,10 +92,10 @@ inline void isr_usi (void){
 			USISRL = 0xFF;         // Send NAck
 			I2C_State = state_prep_for_start;         // Go to next state: prep for next Start
 		}
-		USICNT |= 0x01;          // Bit counter = 1, send (N)Ack bit
+		USICNT |= 0x01;          //  Bit counter = 1, send (N)Ack bit
 		break;
 
-	case state_rx_command: // Receive data byte 1
+	case state_rx_command: // Rstepeceive data byte 1
 		USICTL0 &= ~USIOE;       // SDA = input
 		USICNT |=  0x08;         // Bit counter = 8, RX data
 		I2C_State = state_check_command;          // Go to next state: Test data and (N)Ack

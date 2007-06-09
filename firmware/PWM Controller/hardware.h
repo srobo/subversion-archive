@@ -34,7 +34,7 @@ this sets the port directions. Port1.6 and 1.7 are set to input because they wil
 /**
 Defining constants for the PWM board.
 **/
-#define PERIOD 56500
+#define PERIOD 60000
 #define TICKS_PER_MS (int)(PERIOD/20)
 #define MIN_PULSE (int)(0.8*TICKS_PER_MS)
 #define MIDDLE_PULSE (int)(1.5*TICKS_PER_MS)
