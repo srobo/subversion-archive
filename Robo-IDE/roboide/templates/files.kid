@@ -10,7 +10,6 @@
 <script type="text/javascript">
 LANGUAGE = "generic"; // The default language for the code editor
 cur_path = ""; //TODO: Replace these with cur_tab
-cur_rev = 1;
 
 open_files = {}; //A dictionary (hash table) of the currently open
 //files - one for each tab
@@ -60,9 +59,23 @@ MochiKit.DOM.addLoadEvent( function() {
     //Hook up the save file button
     MochiKit.Signal.connect('savefile','onclick', saveFile);
     //Start polling
-    setTimeout( "polled()", POLL_TIME );
+    //setTimeout( "polled()", POLL_TIME );
     //Grab a file list
     updatefilelist();
+
+    //Create an empty tab
+    var newta = MochiKit.DOM.TEXTAREA({"id" : "td"},
+        "Type here to create a new file.");
+
+    open_files[""] = {"revision" : "0",
+                      "name" : "New",
+                      "tabdata" : newta,
+                      "dirty" : false,
+                      "editedfilename" : "",
+                      "changed" : false};
+    cur_path = "";
+    //Show the New tab
+    showtab("", true);
 });
 
 function updatefilelist() {
@@ -204,7 +217,7 @@ function checkout() {
             document.location to a source that provides an attachment*/
     //files is an array of paths of selected files
     var files = get_selected();
-    if(files.length > 0){
+    if(files.length &gt; 0){
         document.location = "./checkout?files=" + files.join(",");
     } else {
         alert("No files selected.");
@@ -214,16 +227,14 @@ function checkout() {
 //TABS
 function savecurrenttab(){
     //Save the data in the current tab to its hidden textarea
-    if(cur_path) if (open_files[cur_path]){
-        //Will only fail above in odd cases (including just opened the page)
-        var code = cpscript.getCode();
-        if(code != open_files[cur_path].tabdata.innerHTML){
-            open_files[cur_path].dirty = true;
-            open_files[cur_path].tabdata.innerHTML = code;
-        }
-        namefield = MochiKit.DOM.getElement("filename");
-        open_files[cur_path].editedfilename = namefield.value;
+    var code = cpscript.getCode();
+    alert(code);
+    if(code != open_files[cur_path].tabdata.innerHTML){
+        open_files[cur_path].dirty = true;
+        open_files[cur_path].tabdata.innerHTML = code;
     }
+    namefield = MochiKit.DOM.getElement("filename");
+    open_files[cur_path].editedfilename = namefield.value;
 }
 
 function showtab(tabpath, force) {
@@ -232,11 +243,14 @@ function showtab(tabpath, force) {
         //If the selected tab isn't the current one
         if(!force)
             savecurrenttab();
-        //Load in the data for the other tab
-        cpscript.edit("td"+tabpath, LANGUAGE);
+
         //Note details of the now current tab
         cur_path = tabpath;
-        cur_rev = open_files[tabpath].revision;
+
+        //Load in the data for the other tab
+        MochiKit.DOM.replaceChildNodes("tabdatacontainer", open_files[tabpath].tabdata);
+        cpscript.edit("td"+tabpath, LANGUAGE);
+        
         //Set the filename edit correctly
         namefield = MochiKit.DOM.getElement("filename");
         MochiKit.DOM.setNodeAttribute(namefield, "value",
@@ -244,7 +258,7 @@ function showtab(tabpath, force) {
         
         
         getLog(tabpath);
-        setStatus( "File: " + cur_path + " Revision: " + cur_rev );
+        setStatus( "File: " + cur_path + " Revision: " + open_files[tabpath].revision);
         generatetablist();
     }
 }
@@ -253,6 +267,7 @@ function closetab(tabpath) {
     if(tabpath == cur_path){
         savecurrenttab();
     }
+
     if(open_files[tabpath].dirty){
         if(!confirm("Changes have been made to this file. Still close?")){
             return;
@@ -260,17 +275,9 @@ function closetab(tabpath) {
     }
 
     //OK to close the tab!
-    //Remove the hidden data storage textarea
-    MochiKit.DOM.removeElement("td" + tabpath);
     //Remove it from the list of open files
     delete open_files[tabpath];
-    //Select a new tab
-    for (var tab in open_files){
-        showtab(tab);
-        return;
-    }
-    //Nothing to show. Help!
-    alert("Need code here when nothing to show!");
+    showtab("", true);
 }
 
 function generatetablist() {
@@ -281,6 +288,8 @@ function generatetablist() {
         filenames.push(tab);
         var attrs = {"id" : "tab"+tab};
         var classes = new Array();
+        if(tab == "")
+            classes.push("newtab");
         if(tab == cur_path) 
             classes.push("selected");
         if(open_files[tab].dirty)
@@ -293,7 +302,7 @@ function generatetablist() {
         MochiKit.DOM.appendChildNodes(list,
                 MochiKit.DOM.LI(attrs,
                     MochiKit.DOM.A({"href" : "#", "onclick" : "javascript:showtab('" + tab + "');", "class" : "top"}, open_files[tab].name,
-                        MochiKit.DOM.A({"href" : "#", "onclick" : "javascript:closetab('" + tab + "');"}, "X"))));
+                        MochiKit.DOM.A({"href" : "#", "onclick" : "javascript:closetab('" + tab + "');","class" : "tabx"}, "X"))));
     }
     poll_data.files = filenames.join(",");
     MochiKit.DOM.replaceChildNodes("tablistdiv", list);
@@ -302,7 +311,7 @@ function generatetablist() {
 //OPEN AND SAVE FILES
 function saveFile(e)
 {
-    if(cur_rev == 0){
+    if(open_files[tabpath].revision){
         alert("Invalid revision.");
         return;
     }
@@ -321,7 +330,7 @@ function saveFile(e)
 
         var d = MochiKit.Async.loadJSONDoc("./savefile?file=" + 
             open_files[cur_path].editedfilename +
-            "&amp;rev=" + cur_rev + "&amp;message=" +
+            "&amp;rev=" + open_files[tabpath].revision + "&amp;message=" +
             MochiKit.DOM.getElement("message").value + 
             "&amp;code=" + escape(cpscript.getCode()));
         d.addCallback(filesaved);
@@ -388,8 +397,6 @@ function gotFile(result) {
         //If not, create a textarea to store the code in
         var newta = MochiKit.DOM.TEXTAREA({"id" : "td"+result["path"]},
                 result["code"]);
-        //Save it in a hidden block
-        MochiKit.DOM.appendChildNodes("tabdata", newta);
 
         //Add this info to the list of open files
         open_files[result["path"]] = {"revision" : result["revision"],
@@ -465,6 +472,6 @@ function setStatus(str)
     </div>
 
     <textarea id="tmpcode" style="visibility: hidden;"></textarea>
-    <div id="tabdata" style="visibility: hidden;"></div>
+    <div id="tabdatacontainer" style="visibility: hidden;"></div>
 </body>
 </html>

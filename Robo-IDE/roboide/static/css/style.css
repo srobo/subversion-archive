@@ -106,6 +106,15 @@ span.list_box {
     border-color: #227;
 }
 
+#tablist li.newtab a
+{
+    color: black;
+}
+
+#tablist li.newtab a.tabx{
+    visibility: hidden;
+}
+
 #tablist li.selected a
 {
     background: white;
