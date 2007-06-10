@@ -83,12 +83,14 @@ class Root(controllers.RootController):
     @expose()
     def checkout(self, files):
         """
-        This function grabs a set of files and makes a zip available.
+        This function grabs a set of files and makes a zip available. Should be
+        linked to directly.
         inputs:
-            ROT13 etc...)
             files - a comma seperated list of files to do the method on
-        returns (JSON):
-            status - A string to display to the user on completion."""
+        returns:
+            A zip file as a downloadable file with appropriate HTTP headers
+            sent.
+        """
         if files == "":
             return ""
 
