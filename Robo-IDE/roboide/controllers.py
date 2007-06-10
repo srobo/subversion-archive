@@ -8,33 +8,60 @@ import tempfile, shutil
 import os
 import zipfile
 import random
+from Queue import Queue
 from os.path import join
 log = logging.getLogger("roboide.controllers")
 
 REPO = "http://studentrobotics.org/svn/"
 ZIPNAME = "robot.zip"
+CLIENTS = 5  #How many pysvn clients to put into the pool for use by threads
 
-#This dictionary contains information on what zip files are
-#ready to ship. This should be in a db or similiar so multiple
-#processes can access it. It currently will fail with multiple
-#CherryPy processes
+static_clients = Queue() #This queue will contain unused pysvn clients
+#Pop one off the queue to use it, add it to the queue when finished!
 
-zips = {}
 
-static_client = None
-def ProtectedClient():
-    global static_client
+def GetClient():
+    """
+    Get a pysvn client.
+    inputs: none
+    returns: A pysvn client object setup for logging into the server
+    """
     def get_login(realm, username, may_save):
         return True, "test", "testpass", False
-
-    if static_client != None:
-        return static_client
-    
     a = pysvn.Client()
     a.callback_get_login = get_login
-
-    static_client = a
     return a
+
+#This runs at initialisation of the app
+#Add CLIENTS worth of pysvn clients to the static clients queue
+for i in range(0, CLIENTS):
+    static_clients.put(GetClient())
+
+class Client:
+    """
+    A wrapper around a pysvn client. This takes a client from the pool and
+    wraps calls to its functions. It returns the client to the pool when it's
+    done with it.
+    """
+    def __init__(self):
+        """
+        On initialisation try to get a client from the pool. Block this thread
+        until a client is available.
+        """
+        self.client = static_clients.get(block = True, timeout = None)
+    def __del__(self):
+        """
+        When the object falls out of scope (at the end of the request) this is
+        fired. Put the client back in the pool for other threads to use.
+        """
+        static_clients.put(self.client)
+    def __getattr__(self, name):
+        """
+        This special method is called when something isn't found in the class
+        normally. It returns the named attribute of the pysvn client this class
+        is wrapping.
+        """
+        return getattr(self.client, name)
 
 class Root(controllers.RootController):
 
@@ -65,7 +92,7 @@ class Root(controllers.RootController):
         if files == "":
             return ""
 
-        client = ProtectedClient()
+        client = Client()
         files = files.split(",")
         rev = self.get_revision("HEAD")
 
@@ -142,7 +169,7 @@ class Root(controllers.RootController):
         TODO: Cope with revision other than head.
         """
         curtime = time.time()
-        client = ProtectedClient()
+        client = Client()
         
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
 
@@ -190,7 +217,7 @@ class Root(controllers.RootController):
     #previous file revisions for a mochikit drop down
     @expose("json")
     def gethistory(self, file):
-        c = ProtectedClient()
+        c = Client()
 
         try:
             log = c.log(REPO+file)
@@ -219,7 +246,7 @@ class Root(controllers.RootController):
 
         if files != "":
                 files = files.split(",")
-                client = ProtectedClient()
+                client = Client()
 
                 rev = 0
                 for file in files:
@@ -243,7 +270,7 @@ class Root(controllers.RootController):
 
         TODO: Usernames.
         """
-        client = ProtectedClient()
+        client = Client()
         reload = "false"
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness
@@ -324,7 +351,7 @@ class Root(controllers.RootController):
 
     @expose("json")
     def filelist(self):
-        client = ProtectedClient()
+        client = Client()
         
         files = client.ls(REPO, recurse=True)
 
@@ -376,6 +403,6 @@ class Root(controllers.RootController):
 
     @expose(template="roboide.templates.files")
     def index(self):
-        client = ProtectedClient()
+        client = Client()
         info = client.info(os.getcwd())
         return dict(rev="RoboIDE revision: " + str(info["revision"].number))
