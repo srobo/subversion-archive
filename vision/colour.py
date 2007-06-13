@@ -1,7 +1,5 @@
-import colorsys
+import Image, ImageDraw
 import sys
-from PIL import Image
-from pylab import *
 
 def rgb_to_hsv(r, g, b):
     r = float(r)/255
@@ -35,36 +33,32 @@ def rgb_to_hsv(r, g, b):
             h = h - 1
 
     return (h*360, s*100, v*100)
-    
 
 im = Image.open(sys.argv[1])
-rgb = list(im.getdata())
-hsv = [rgb_to_hsv(x[0], x[1], x[2]) for x in rgb]
-hue = [x[0] for x in hsv]
-sat = [x[1] for x in hsv]
-val = [x[2] for x in hsv]
-huecount = {}
-satcount = {}
-valcount = {}
-for x in range(0, 361):
-    huecount[x] = 0
-for x in range(0, 101):
-    satcount[x] = 0
-    valcount[x] = 0
+hl = int(sys.argv[2])
+hh = int(sys.argv[3])
+sl = int(sys.argv[4])
+sh = int(sys.argv[5])
+vl = int(sys.argv[6])
+vh = int(sys.argv[7])
 
-for x in hue:
-    huecount[int(x)] = huecount[int(x)] + 1
-for x in sat:
-    satcount[int(x)] = satcount[int(x)] + 1
-for x in val:
-    valcount[int(x)] = valcount[int(x)] + 1
 
-hues = [huecount[x] for x in range(0, 360)]
-sats = [satcount[x] for x in range(0, 100)]
-vals = [valcount[x] for x in range(0, 100)]
+out = Image.new("RGB", (320, 240))
 
-plot(hues)
-plot(sats)
-plot(vals)
-axis([-5, 370, 0, max(max(hues), max(sats), max(vals))])
-show()
+datain = im.load()
+dataout = out.load()
+
+for x in range(0, 320):
+    for y in range(0, 240):
+        rgb = datain[x, y]
+        hsv = rgb_to_hsv(rgb[0], rgb[1], rgb[2])
+        if (hsv[0] >= hl and hsv[0] <= hh) or \
+           (hsv[1] >= sl and hsv[1] <= sh) or \
+           (hsv[2] >= vl and hsv[2] <= vh):
+
+            dataout[x, y] = (0, 0, 0)
+        else:
+            dataout[x, y] = rgb
+
+
+out.save("coloured.png", "PNG")
