@@ -36,13 +36,6 @@ def rgb_to_hsv(r, g, b):
 
     return (h*360, s*100, v*100)
     
-
-im = Image.open(sys.argv[1])
-rgb = list(im.getdata())
-hsv = [rgb_to_hsv(x[0], x[1], x[2]) for x in rgb]
-hue = [x[0] for x in hsv]
-sat = [x[1] for x in hsv]
-val = [x[2] for x in hsv]
 huecount = {}
 satcount = {}
 valcount = {}
@@ -52,12 +45,21 @@ for x in range(0, 101):
     satcount[x] = 0
     valcount[x] = 0
 
-for x in hue:
-    huecount[int(x)] = huecount[int(x)] + 1
-for x in sat:
-    satcount[int(x)] = satcount[int(x)] + 1
-for x in val:
-    valcount[int(x)] = valcount[int(x)] + 1
+for n in range(1, 30):
+    im = Image.open("onedegree%02d" % n)
+    rgb = list(im.getdata())
+    hs = [rgb_to_hsv(x[0], x[1], x[2]) for x in rgb]
+    hsv = [x for x in hs if x[1] > 25]
+    hue = [x[0] for x in hsv]
+    sat = [x[1] for x in hsv]
+    val = [x[2] for x in hsv]
+
+    for x in hue:
+        huecount[int(x)] = huecount[int(x)] + 1
+    for x in sat:
+        satcount[int(x)] = satcount[int(x)] + 1
+    for x in val:
+        valcount[int(x)] = valcount[int(x)] + 1
 
 hues = [huecount[x] for x in range(0, 360)]
 sats = [satcount[x] for x in range(0, 100)]
@@ -66,6 +68,5 @@ vals = [valcount[x] for x in range(0, 100)]
 plot(hues)
 plot(sats)
 plot(vals)
-axis([-5, 370, 0, max(hues)]) #, max(sats), max(vals))])
-#show()
-savefig(sys.argv[1] + ".out.png")
+axis([-5, 370, 0, max(max(hues), max(sats), max(vals))])
+show()
