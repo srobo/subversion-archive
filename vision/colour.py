@@ -56,7 +56,7 @@ for x in range(0, 320):
            (hsv[1] >= sl and hsv[1] <= sh) or \
            (hsv[2] >= vl and hsv[2] <= vh):
 
-            dataout[x, y] = (0, 0, 0)
+            dataout[x, y] = (34, 255, 0)
         else:
             dataout[x, y] = rgb
 
