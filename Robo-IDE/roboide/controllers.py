@@ -55,6 +55,15 @@ class Client:
         fired. Put the client back in the pool for other threads to use.
         """
         static_clients.put(self.client)
+    def is_url(self, url):
+        """Override the default is_url which just tells you if the url looks
+        sane. This tries to get info on the file...
+        """
+        try:
+            self.client.info2(url)
+            return True
+        except pysvn.ClientError:
+            return False
     def __getattr__(self, name):
         """
         This special method is called when something isn't found in the class
@@ -285,12 +294,14 @@ class Root(controllers.RootController):
 
         if not client.is_url(REPO + path): #new dir needed...
             reload = "true"
-            if not self.create_svn_dir(client, path):
-	            return dict(new_revision="0", code = "",\
+            try:
+                self.create_svn_dir(client, path)
+            except pysvn.ClientError:
+                return dict(new_revision="0", code = "",\
 			                success="Error creating new directory",
                             reloadfiles="false")
         try:
-            tmpdir = self.checkoutintotmpdir(client, rev, path + "/")
+            tmpdir = self.checkoutintotmpdir(client, rev, path)
         except pysvn.ClientError:
             return dict(new_revision="0", code="", success="Invalid filename",
                         reloadfiles="false")
@@ -342,29 +353,18 @@ class Root(controllers.RootController):
 
     def create_svn_dir(self, client, path):
         """Creates an svn directory if one doesn't exist yet
-        returns false on client error, which should never happen.
         inputs:
             client - a pysvn client
             path - path to the directory to be created
-        returns:
-            true if the path is created
-        TODO: This looks like it's a c function. Would be more pythonic to let
-        errors happen and cascade up, presuming success.
+        returns: None, may through a pysvn.ClientError
         """
-        upperpath = os.path.dirname(path)
-        print "X"
-        print upperpath
-        print "X"
 
-        if not client.is_url(REPO + upperpath):
-            if not self.create_svn_dir(client, upperpath): #recursion, yeah!
-                return false #forward error
-            try:
-                client.mkdir(REPO + path, "new dir " + upperpath)
-            except pysvn.ClientError:
-                return false
-        else:
-            return true
+        if not client.is_url(REPO + path):
+            upperpath = os.path.dirname(path)
+            #Recurse to ensure folder parents exist
+            self.create_svn_dir(client, upperpath)
+
+            client.mkdir(REPO + path, "New Directory: " + path)
 
     @expose("json")
     def filelist(self):
