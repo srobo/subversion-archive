@@ -48,8 +48,6 @@ MochiKit.DOM.addLoadEvent( function() {
     //On page load - this replaces a onload action of the body tag
     //Hook up the save file button
     MochiKit.Signal.connect('savefile','onclick', saveFile);
-    //Start polling
-    //setTimeout( "polled()", POLL_TIME );
     //Grab a file list
     updatefilelist();
 
@@ -68,6 +66,8 @@ MochiKit.DOM.addLoadEvent( function() {
     cpscript.edit("", LANGUAGE);
     //Show the blank tab
     showtab("", true);
+    //Start polling
+    setTimeout( "polled()", POLL_TIME );
 });
 
 function updatefilelist() {
@@ -318,7 +318,8 @@ function generatetablist() {
     var filenames = new Array();
 
     for (var tab in open_files) {
-        filenames.push(tab);
+        if(tab != "")
+            filenames.push(tab);
         var attrs = {"id" : "tab"+tab};
         //Each tab might have several classes associated with it. These are
         //then styled appropriately.

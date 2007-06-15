@@ -246,10 +246,7 @@ class Root(controllers.RootController):
 
     def checkoutintotmpdir(self, client, revision, base):
         tmpdir = tempfile.mkdtemp()
-        rev = self.get_revision(revision)
-        print REPO + base
-        print rev
-        client.checkout(REPO + base, tmpdir, recurse=False, revision=rev)
+        client.checkout(REPO + base, tmpdir, recurse=False, revision=revision)
         return tmpdir
 
     @expose("json")
@@ -259,18 +256,17 @@ class Root(controllers.RootController):
         r = {}
 
         if files != "":
-                files = files.split(",")
-                client = Client()
+            files = files.split(",")
+            client = Client()
 
-                rev = 0
-                for file in files:
-                    r[file] = {}
-                    try:
-                        if file != None and client.is_url( REPO + file ):
-                            info = client.info2( REPO + file )[0][1]
-                            r[file]["rev"] = info["last_changed_rev"].number
-                    except pysvn.ClientError:
-                        print "Could not get information for %s" % file
+            rev = 0
+            for file in files:
+                r[file] = {}
+                try:
+                    info = client.info2( REPO + file )[0][1]
+                    r[file]["rev"] = info["last_changed_rev"].number
+                except pysvn.ClientError:
+                    print "Could not get information for %s" % file
 
         return r
 
@@ -290,7 +286,9 @@ class Root(controllers.RootController):
         #TODO: Check for path naugtiness
         path = os.path.dirname(file)
         basename = os.path.basename(file)
+        print rev
         rev = self.get_revision(rev)
+        print rev
 
         if not client.is_url(REPO + path): #new dir needed...
             reload = "true"
@@ -303,6 +301,10 @@ class Root(controllers.RootController):
         try:
             tmpdir = self.checkoutintotmpdir(client, rev, path)
         except pysvn.ClientError:
+            try:
+                shutil.rmtree(tmpdir)
+            except:
+                pass
             return dict(new_revision="0", code="", success="Invalid filename",
                         reloadfiles="false")
 
