@@ -65,7 +65,7 @@ MochiKit.DOM.addLoadEvent( function() {
                       "changed" : false};
     cur_path = "";
     //Show the New tab
-    showtab("", true);
+    //showtab("", true);
 });
 
 function updatefilelist() {
@@ -108,6 +108,35 @@ function buildFileList(nodes){
     //Create an unlinked list and fill it with entries
     return MochiKit.DOM.UL({"class" : "links"},
             MochiKit.Base.map(buildFileListEntry, nodes));
+}
+
+function buildFileListEntry(node){
+    /*Create an entry in an unordered list to display a file.
+        inputs: a dictionary describing a file or directory
+        returns: a DOM object to show that file or directory*/
+   
+    if (node.kind == "FILE"){
+        var contents = MochiKit.DOM.DIV({"class" : "list_row"},
+                MochiKit.DOM.SPAN({"class" : "list_box"},
+                    MochiKit.DOM.INPUT({"class" : "file_check",
+                                        "type" : "checkbox",
+                                        "name" : node.path})),
+                MochiKit.DOM.SPAN({"class" : "list_label"},
+                    MochiKit.DOM.A({"href" : "javascript:loadFile('" + node.path
+                        + "')"}, node.name)));
+    }else{
+        //As for a file, but without the anchor and with a sub list!
+        //The sublist is a UL element created by buildFileList
+        //mmm... recursion...
+        var contents = new Array(MochiKit.DOM.DIV({"class" : "list_row"},
+                MochiKit.DOM.SPAN({"class" : "list_box"},
+                    MochiKit.DOM.INPUT({"class" : "dir_check",
+                                        "type" : "checkbox",
+                                        "name" : node.path})),
+                MochiKit.DOM.SPAN({"class" : "list_label"}, node.name)), buildFileList(node.children));
+
+    }
+    return MochiKit.DOM.LI({"class" : "list_row"}, contents);
 }
 
 function Left(str, n){
@@ -154,35 +183,6 @@ function click_dir(data){
             });
 }
 
-function buildFileListEntry(node){
-    /*Create an entry in an unordered list to display a file.
-        inputs: a dictionary describing a file or directory
-        returns: a DOM object to show that file or directory*/
-   
-    if (node.kind == "FILE"){
-        var contents = MochiKit.DOM.DIV({"class" : "list_row"},
-                MochiKit.DOM.SPAN({"class" : "list_box"},
-                    MochiKit.DOM.INPUT({"class" : "file_check",
-                                        "type" : "checkbox",
-                                        "name" : node.path})),
-                MochiKit.DOM.SPAN({"class" : "list_label"},
-                    MochiKit.DOM.A({"href" : "javascript:loadFile('" + node.path
-                        + "')"}, node.name)));
-    }else{
-        //As for a file, but without the anchor and with a sub list!
-        //The sublist is a UL element created by buildFileList
-        //mmm... recursion...
-        var contents = new Array(MochiKit.DOM.DIV({"class" : "list_row"},
-                MochiKit.DOM.SPAN({"class" : "list_box"},
-                    MochiKit.DOM.INPUT({"class" : "dir_check",
-                                        "type" : "checkbox",
-                                        "name" : node.path})),
-                MochiKit.DOM.SPAN({"class" : "list_label"}, node.name)), buildFileList(node.children));
-
-    }
-    return MochiKit.DOM.LI({"class" : "list_row"}, contents);
-}
-
 function get_selected() {
     /*Find out which files are selected.
         inputs: none
@@ -216,48 +216,76 @@ function checkout() {
 
 //TABS
 function savecurrenttab(){
-    //Save the data in the current tab to its hidden textarea
+    /*Save the data in the current tab to its hidden textarea.
+    inputs: none
+    returns: none */
     var code = cpscript.getCode();
-    alert(code);
+
+    //See if the code has changed compared to that in the textarea
     if(code != open_files[cur_path].tabdata.innerHTML){
+        //Marking the tab as dirty makes it prompt to save
         open_files[cur_path].dirty = true;
+        //Save the new code
         open_files[cur_path].tabdata.innerHTML = code;
     }
+    //Remember the filename that may have been changed
+    //TODO: Also store the commit message
     namefield = MochiKit.DOM.getElement("filename");
     open_files[cur_path].editedfilename = namefield.value;
 }
 
 function showtab(tabpath, force) {
+    /*Show a tab of a particular path.
+    inputs: tabpath - the path of the tab to show
+            force - If true, then do this even if the tab appears to be the one
+            that's currently showing, and don't save the contents of the
+            current tab. DEFAULTS TO FALSE
+    returns: none*/
+    
+    //Trick to allow default argument values
     var force = (force == null) ? false : true;
+
+
     if((tabpath != cur_path) || force){
         //If the selected tab isn't the current one
         if(!force)
             savecurrenttab();
 
-        //Note details of the now current tab
+        //Set the new tab to be the current one
         cur_path = tabpath;
 
-        //Load in the data for the other tab
+        //Load in the data for the new tab
+        //Slot the saved textarea into the document so codepress can find it
         MochiKit.DOM.replaceChildNodes("tabdatacontainer", open_files[tabpath].tabdata);
+        //Get codepress to load the data from that textarea
         cpscript.edit("td"+tabpath, LANGUAGE);
         
         //Set the filename edit correctly
         namefield = MochiKit.DOM.getElement("filename");
         MochiKit.DOM.setNodeAttribute(namefield, "value",
                 open_files[tabpath].editedfilename);
+        //TODO: Also load commit message
         
-        
+        //Update the history log
         getLog(tabpath);
         setStatus( "File: " + cur_path + " Revision: " + open_files[tabpath].revision);
+
         generatetablist();
     }
 }
 
 function closetab(tabpath) {
+    /*Close a tab, prompting to save data if necessary.
+    inputs: tabpath - path of the tab to close
+    returns: none */
+
+    //If closing the current tab, save its data to its textbox first
     if(tabpath == cur_path){
         savecurrenttab();
     }
 
+    //If the file has been changed, prompt the user that they might want to
+    //save
     if(open_files[tabpath].dirty){
         if(!confirm("Changes have been made to this file. Still close?")){
             return;
@@ -267,16 +295,28 @@ function closetab(tabpath) {
     //OK to close the tab!
     //Remove it from the list of open files
     delete open_files[tabpath];
+    //Show the New tab
     showtab("", true);
 }
 
 function generatetablist() {
+    /*Generate a list of tabs to choose between.
+    inputs: none
+    returns: none*/
+
+    //Implemented as a list (heavily styled)
+    //Create a new list each time
     var list = MochiKit.DOM.OL({"id" : "tablist"});
+    
+    //Generate a list of which filenames are open to pass to the polling
+    //functions, so they get status updates for all the currently open files
     var filenames = new Array();
+
     for (var tab in open_files) {
-        //TODO: Check cur_path always valid here
         filenames.push(tab);
         var attrs = {"id" : "tab"+tab};
+        //Each tab might have several classes associated with it. These are
+        //then styled appropriately.
         var classes = new Array();
         if(tab == "")
             classes.push("newtab");
@@ -289,18 +329,22 @@ function generatetablist() {
 
         attrs["class"] = classes.join(" ");
 
+        //Create a new list item and add it to the list
+        //Links for showing a tab and closing it
         MochiKit.DOM.appendChildNodes(list,
                 MochiKit.DOM.LI(attrs,
                     MochiKit.DOM.A({"href" : "#", "onclick" : "javascript:showtab('" + tab + "');", "class" : "top"}, open_files[tab].name,
                         MochiKit.DOM.A({"href" : "#", "onclick" : "javascript:closetab('" + tab + "');","class" : "tabx"}, "X"))));
     }
+    //Add the list of currently open paths to the blob of data that is sent as
+    //part of a poll request
     poll_data.files = filenames.join(",");
+    //Show the list on the page
     MochiKit.DOM.replaceChildNodes("tablistdiv", list);
 }
 
 //OPEN AND SAVE FILES
-function saveFile(e)
-{
+function saveFile(e) {
     if(open_files[tabpath].revision){
         alert("Invalid revision.");
         return;
@@ -432,5 +476,3 @@ function setStatus(str)
 {
     MochiKit.DOM.getElement("status_block").innerHTML = str
 }
-
-
