@@ -337,8 +337,16 @@ class Root(controllers.RootController):
                     success=success, file=file, reloadfiles=reload)
 
     def create_svn_dir(self, client, path):
-        #Creates an svn directory if one doesn't exist yet
-        #returns false on client error, which should never happen
+        """Creates an svn directory if one doesn't exist yet
+        returns false on client error, which should never happen.
+        inputs:
+            client - a pysvn client
+            path - path to the directory to be created
+        returns:
+            true if the path is created
+        TODO: This looks like it's a c function. Would be more pythonic to let
+        errors happen and cascade up, presuming success.
+        """
         upperpath = os.path.dirname(path)
 
         if not client.is_url(REPO + upperpath):
@@ -353,30 +361,38 @@ class Root(controllers.RootController):
 
     @expose("json")
     def filelist(self):
+        """
+        Returns a directory tree of the current repository.
+        inputs: None
+        returns: A tree as a list of files/directory objects:
+            {children : [{path : filepath
+                          kind : FOLDER or FILE
+                          children : [list as above]
+                          name : name of file}, ...]}
+        """    
+
         client = Client()
         
+        #This returns a flat list of files
+        #This is sorted, so a directory is defined before the files in it
         files = client.ls(REPO, recurse=True)
-
-        class Node (object):
-            def __init__(self, name, path, kind):
-                self.name = name
-                self.path = path
-                if kind == pysvn.node_kind.file:
-                    self.kind = "FILE"
-                else:
-                    self.kind = "FOLDER"
-                self.children = {}
-                
+        
+        #Start off with a directory to represent the root of the path
         head = dict(name="HEAD",path="",kind="FOLDER",children={})
 
+        #Go through each file, creating appropriate directories and files
+        #In a tree structure based around dictionaries
         for details in files:
             filename = details["name"][len(REPO):] #Strip off the repo URL
-            basename = os.path.basename(filename)
-            top = head 
+            basename = os.path.basename(filename)  #/etc/bla - returns bla
+            top = head  #for each file recurse from the head. TODO: slow?
             for path in filename.split("/"):
-                try: 
+                #Go through each section of the path, trying to go down into
+                #directories. If they don't exist, create them
+                try:
                     top = top["children"][path]
                 except KeyError:
+                    #This happens if the node doesn't exist. If so, create it
                     if details["kind"] == pysvn.node_kind.file:
                         kind = "FILE"
                     else:
@@ -389,22 +405,35 @@ class Root(controllers.RootController):
                                                 
 
         def dicttolist(tree):
+            """Recursively change a dict containing values into a list of those
+            values, and the same again for the dict contained in the children
+            value.
+            inputs: A dictionary of dictionaries. Each sub-dictionary to have a
+            children dictionary (or at least a children : None)
+            returns: That data changed into lists
+            """
             try:
+                #TODO: Need to sort here?
+                #try and pull out child nodes into a list
                 tree["children"] = tree["children"].values()
             except AttributeError:
                 return tree
             
+            #For each child node, try to apply this function to them
             for i in range(0, len(tree["children"])):
                 try:
                     tree["children"][i] = dicttolist(tree["children"][i])
                 except AttributeError:
                     pass
             return tree
-
-        return dict(children=[dicttolist(head)]) 
+        
+        return dict(children=[dicttolist(head)])
 
     @expose(template="roboide.templates.files")
     def index(self):
+        """
+        TODO: Remove this, make index served statically.
+        """
         client = Client()
         info = client.info(os.getcwd())
         return dict(rev="RoboIDE revision: " + str(info["revision"].number))
