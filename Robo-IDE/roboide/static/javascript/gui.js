@@ -53,19 +53,17 @@ MochiKit.DOM.addLoadEvent( function() {
     //Grab a file list
     updatefilelist();
 
-    //Create an empty tab
-    var newta = MochiKit.DOM.TEXTAREA({"id" : "td"},
-        "Type here to create a new file.");
-
+    //Create an emptyish tab
     open_files[""] = {"revision" : "0",
                       "name" : "New",
-                      "tabdata" : newta,
+                      "tabdata" : "Type here to create a new file.",
                       "dirty" : false,
                       "editedfilename" : "",
                       "changed" : false};
+
     cur_path = "";
     //Show the New tab
-    //showtab("", true);
+    showtab("", true);
 });
 
 function updatefilelist() {
@@ -222,11 +220,11 @@ function savecurrenttab(){
     var code = cpscript.getCode();
 
     //See if the code has changed compared to that in the textarea
-    if(code != open_files[cur_path].tabdata.innerHTML){
+    if(code != open_files[cur_path].tabdata){
         //Marking the tab as dirty makes it prompt to save
         open_files[cur_path].dirty = true;
         //Save the new code
-        open_files[cur_path].tabdata.innerHTML = code;
+        open_files[cur_path].tabdata = code;
     }
     //Remember the filename that may have been changed
     //TODO: Also store the commit message
@@ -255,10 +253,8 @@ function showtab(tabpath, force) {
         cur_path = tabpath;
 
         //Load in the data for the new tab
-        //Slot the saved textarea into the document so codepress can find it
-        MochiKit.DOM.replaceChildNodes("tabdatacontainer", open_files[tabpath].tabdata);
         //Get codepress to load the data from that textarea
-        cpscript.edit("td"+tabpath, LANGUAGE);
+        cpscript.setCode(open_files[tabpath].tabdata);
         
         //Set the filename edit correctly
         namefield = MochiKit.DOM.getElement("filename");
@@ -383,8 +379,7 @@ function filesaved(result) {
             alert("Now at revision: " + result["new_revision"]);
             open_files[file].dirty = false;
             open_files[file].revision = result["new_revision"];
-            open_files[cur_path].tabdata.innerHTML = 
-                result["code"];
+            open_files[cur_path].tabdata = result["code"];
             showtab(file, true);
             MochiKit.DOM.getElement("savefile").disabled = false;
             break;
@@ -400,7 +395,7 @@ function filesaved(result) {
         case "Merge": {
             //Oh dear, need to handle a merge
             open_files[file].revision = result["new_revision"];
-            open_files[cur_path].tabdata.innerHTML = result["code"];
+            open_files[cur_path].tabdata = result["code"];
             showtab(file, true);
             alert("Merge conflict. Please check the merged files then save again.");
             MochiKit.DOM.getElement("savefile").disabled = false;
@@ -428,14 +423,10 @@ function gotFile(result) {
         //Close the current tab
         closetab(result["path"]);
     } else {
-        //If not, create a textarea to store the code in
-        var newta = MochiKit.DOM.TEXTAREA({"id" : "td"+result["path"]},
-                result["code"]);
-
         //Add this info to the list of open files
         open_files[result["path"]] = {"revision" : result["revision"],
                                       "name" : result["name"],
-                                      "tabdata" : newta,
+                                      "tabdata" : result["code"],
                                       "dirty" : false,
                                       "editedfilename" : result["path"],
                                       "changed" : false};

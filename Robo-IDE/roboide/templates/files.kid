@@ -33,8 +33,5 @@
          File name: <input id="filename" value=""/>
         <button id="savefile">Save File!</button></p></div>
     </div>
-
-    <textarea id="tmpcode" style="visibility: hidden;"></textarea>
-    <div id="tabdatacontainer" style="visibility: hidden;"></div>
 </body>
 </html>
