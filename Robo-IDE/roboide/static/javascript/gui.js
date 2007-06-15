@@ -56,13 +56,17 @@ MochiKit.DOM.addLoadEvent( function() {
     //Create an emptyish tab
     open_files[""] = {"revision" : "0",
                       "name" : "New",
-                      "tabdata" : "Type here to create a new file.",
+                      "tabdata" : "",
                       "dirty" : false,
                       "editedfilename" : "",
                       "changed" : false};
 
     cur_path = "";
-    //Show the New tab
+    //Initialise the codepress component. This doesn't happen magically as
+    //MochiKit overrides the onload handler for this function
+    CodePress.run()
+    cpscript.edit("", LANGUAGE);
+    //Show the blank tab
     showtab("", true);
 });
 
@@ -253,7 +257,6 @@ function showtab(tabpath, force) {
         cur_path = tabpath;
 
         //Load in the data for the new tab
-        //Get codepress to load the data from that textarea
         cpscript.setCode(open_files[tabpath].tabdata);
         
         //Set the filename edit correctly
