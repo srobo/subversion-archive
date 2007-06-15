@@ -75,8 +75,10 @@ class Root(controllers.RootController):
             revision object for revision number"""
 
         try:
+            if revision == 0:
+                revision = "HEAD"
             rev = pysvn.Revision(pysvn.opt_revision_kind.number, int(revision))
-        except (pysvn.ClientError, ValueError):
+        except (pysvn.ClientError, ValueError, TypeError):
             rev = pysvn.Revision(pysvn.opt_revision_kind.head)
         return rev
 
@@ -235,8 +237,9 @@ class Root(controllers.RootController):
 
     def checkoutintotmpdir(self, client, revision, base):
         tmpdir = tempfile.mkdtemp()
-        #This returns a revision number. Always 0. Great.
         rev = self.get_revision(revision)
+        print REPO + base
+        print rev
         client.checkout(REPO + base, tmpdir, recurse=False, revision=rev)
         return tmpdir
 
@@ -278,6 +281,7 @@ class Root(controllers.RootController):
         #TODO: Check for path naugtiness
         path = os.path.dirname(file)
         basename = os.path.basename(file)
+        rev = self.get_revision(rev)
 
         if not client.is_url(REPO + path): #new dir needed...
             reload = "true"
@@ -286,7 +290,7 @@ class Root(controllers.RootController):
 			                success="Error creating new directory",
                             reloadfiles="false")
         try:
-            tmpdir = self.checkoutintotmpdir(client, rev, path)
+            tmpdir = self.checkoutintotmpdir(client, rev, path + "/")
         except pysvn.ClientError:
             return dict(new_revision="0", code="", success="Invalid filename",
                         reloadfiles="false")
@@ -348,6 +352,9 @@ class Root(controllers.RootController):
         errors happen and cascade up, presuming success.
         """
         upperpath = os.path.dirname(path)
+        print "X"
+        print upperpath
+        print "X"
 
         if not client.is_url(REPO + upperpath):
             if not self.create_svn_dir(client, upperpath): #recursion, yeah!

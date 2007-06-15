@@ -394,6 +394,8 @@ function saveFile(e) {
 
 function filesaved(result) {
     document.body.style.cursor = "default";
+    //Enable the button
+    MochiKit.DOM.getElement("savefile").disabled = false;
     var file = result["file"];
 
     if(result["reloadfiles"] == "true")
