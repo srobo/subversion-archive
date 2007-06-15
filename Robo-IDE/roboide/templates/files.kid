@@ -15,6 +15,7 @@
     <div id="sidebar">
         <h2>Files</h2>
         <button id="checkout" onclick="checkout()">Checkout Selected</button>
+        <button id="delete" onclick="deleteclick()">Delete Selected</button>
         <div id="filelist"></div>
     </div>
     <div id="code_block">

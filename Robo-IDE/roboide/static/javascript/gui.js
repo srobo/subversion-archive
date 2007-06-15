@@ -201,6 +201,37 @@ function get_selected() {
     return selected;
 }
 
+function deleteclick() {
+    /*Delete a list of files. Empty folders pruned.
+        inputs: None
+        returns: None, but does fire a MochiKit deferred for deleteDone()
+    */
+    var files = get_selected();
+    if(files.length > 0){
+        //Check that none of the selected files are currently open in tabs
+        for (var af in files)
+            for (var of in open_files)
+                if (files[af] == of){
+                    alert("Can not delete open files.");
+                    return;
+                }
+
+        var d = MochiKit.Async.loadJSONDoc("./delete",
+                                            {files : files.join(",")})
+        d.addCallback(deleteDone);
+    } else {
+        alert("No files selected.");
+    }
+}
+
+function deleteDone(result){
+    /*Data returned from file deletion routine
+    inputs (json): Message - Message to show the user.
+    returns: None*/
+    alert(result["Message"]);
+    updatefilelist();
+}
+
 function checkout() {
     /*Checkout a list of files.
         TODO: Security munging. Path character escaping.

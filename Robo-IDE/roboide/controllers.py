@@ -43,12 +43,14 @@ class Client:
     wraps calls to its functions. It returns the client to the pool when it's
     done with it.
     """
+    client = None
     def __init__(self):
         """
         On initialisation try to get a client from the pool. Block this thread
         until a client is available.
         """
-        self.client = static_clients.get(block = True, timeout = None)
+        self.__dict__["client"] = \
+                static_clients.get(block = True, timeout = None)
     def __del__(self):
         """
         When the object falls out of scope (at the end of the request) this is
@@ -64,6 +66,15 @@ class Client:
             return True
         except pysvn.ClientError:
             return False
+    def __setattr__(self, name, val):
+        """
+        This special method is called when setting a value that isn't found
+        elsewhere. It sets the same named value of the pysvn client
+        """
+        #BE CAREFUL - assigning class-scope variables anywhere in this class
+        #causes instant setattr recursion death
+        setattr(self.client, name, val)
+
     def __getattr__(self, name):
         """
         This special method is called when something isn't found in the class
@@ -251,7 +262,13 @@ class Root(controllers.RootController):
 
     @expose("json")
     def polldata(self,files = ""):
-        """Returns data that needs polling by the client"""
+        """Returns poll data:
+            inputs: files - comma seperated list of files the client needs info
+            on
+            returns (json): A dictionary with an entry for each file (path is
+            the key). Each value is a dictionary with information. The only key
+            is revision, with a value of an integer of the current revision
+            number in the repo"""
         #Default data
         r = {}
 
@@ -269,6 +286,37 @@ class Root(controllers.RootController):
                     print "Could not get information for %s" % file
 
         return r
+    
+    @expose("json")
+    def delete(self, files):
+        """
+        Delete files from the repository, and prune empty directories.
+        inputs: files - comma seperated list of paths
+        returns (json): Message - a message to show the user
+        """
+        if files != "":
+            files = files.split(",")
+            client = Client()
+
+            #This is called to get a log message for the deletion
+            def cb():
+                return True, "Files deleted"
+            client.callback_get_log_message = cb
+
+            urls = [REPO + str(x) for x in files]
+            
+            message = "Files deleted successfully: \n" + "\n".join(files)
+
+            try:
+                client.remove(urls)
+                #TODO: Need to prune empty directories. Get data from filelist
+                #and then build a list of empty directories.
+                    
+            except pysvn.ClientError:
+                message = "Error deleting files."
+
+            return dict(Message = message)
+
 
     @expose("json")
     def savefile(self, file, rev, message, code):
@@ -369,7 +417,7 @@ class Root(controllers.RootController):
             client.mkdir(REPO + path, "New Directory: " + path)
 
     @expose("json")
-    def filelist(self):
+    def filelist(self, client = None):
         """
         Returns a directory tree of the current repository.
         inputs: None
@@ -380,7 +428,8 @@ class Root(controllers.RootController):
                           name : name of file}, ...]}
         """    
 
-        client = Client()
+        if not client:
+            client = Client()
         
         #This returns a flat list of files
         #This is sorted, so a directory is defined before the files in it
