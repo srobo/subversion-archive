@@ -278,6 +278,12 @@ function closetab(tabpath) {
     inputs: tabpath - path of the tab to close
     returns: none */
 
+    //Refuse to close the New tab
+    //There isn't a button to do this anyway
+    if(tabpath == ""){
+        return;
+    }
+
     //If closing the current tab, save its data to its textbox first
     if(tabpath == cur_path){
         savecurrenttab();
@@ -344,16 +350,29 @@ function generatetablist() {
 
 //OPEN AND SAVE FILES
 function saveFile(e) {
-    if(open_files[tabpath].revision){
+    /*Save the current tab back to the subversion server.
+        inputs: e - A load of data from MochiKit. Not used
+        returns: none. Creates a deferred which in turn calls filesaved
+    */
+
+    /* TODO: Figure out why this was here.
+    if(open_files[cur_path].revision){
         alert("Invalid revision.");
         return;
-    }
+    }*/
+
     document.body.style.cursor = "wait";
+
     //TODO: Check cur_path is valid
-    //TODO: Modify this for multi tab perhaps?
+
+    //Put data from the current tab into its open_files entry
     savecurrenttab();
+    
+    //See if the file has been altered.
     if(open_files[cur_path].dirty || 
             (open_files[cur_path].editedfilename != cur_path)){
+
+        //Disable the button
         MochiKit.DOM.getElement("savefile").disabled = true;
 
         //TODO:Cope with saving as a new file name!
@@ -361,12 +380,15 @@ function saveFile(e) {
         //cur_path = MochiKit.DOM.getElement("filename").value;
         //But need to rename open_files data etc
 
+        //TODO: When commit message in open_files, read it from there
         var d = MochiKit.Async.loadJSONDoc("./savefile?file=" + 
             open_files[cur_path].editedfilename +
-            "&amp;rev=" + open_files[tabpath].revision + "&amp;message=" +
+            "&rev=" + open_files[cur_path].revision + "&message=" +
             MochiKit.DOM.getElement("message").value + 
-            "&amp;code=" + escape(cpscript.getCode()));
+            "&code=" + escape(cpscript.getCode()));
         d.addCallback(filesaved);
+    } else {
+        alert("File not changed, not saving.");
     }
 }
 
