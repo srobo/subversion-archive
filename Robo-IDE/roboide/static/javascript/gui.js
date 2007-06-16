@@ -453,9 +453,9 @@ function filesaved(result) {
         case "True": {
             open_files[file].dirty = false;
             open_files[file].revision = result["new_revision"];
+            MochiKit.Visual.Highlight("status_block");
             open_files[cur_path].tabdata = result["code"];
             showtab(file, true);
-            alert("Now at revision: " + result["new_revision"]);
             break;
         }
         case "Invalid revision": {
@@ -469,6 +469,7 @@ function filesaved(result) {
         case "Merge": {
             //Oh dear, need to handle a merge
             open_files[file].revision = result["new_revision"];
+            MochiKit.Visual.Highlight("status_block");
             open_files[cur_path].tabdata = result["code"];
             showtab(file, true);
             alert("Merge conflict. Please check the merged files then save again.");
@@ -542,5 +543,6 @@ function returnSelect(data) {
 
 function setStatus(str)
 {
-    MochiKit.DOM.getElement("status_block").innerHTML = str
+    MochiKit.DOM.getElement("status_block").innerHTML = str;
+
 }
