@@ -328,6 +328,7 @@ class Root(controllers.RootController):
 
         TODO: Usernames.
         """
+        print code
         client = Client()
         reload = "false"
         #1. SVN checkout of file's directory
@@ -397,6 +398,8 @@ class Root(controllers.RootController):
 
         #4. Wipe the directory
         shutil.rmtree(tmpdir)
+
+        print str(newrev)
 
         return dict(new_revision=str(newrev), code=code,
                     success=success, file=file, reloadfiles=reload)

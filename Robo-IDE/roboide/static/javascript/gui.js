@@ -413,11 +413,21 @@ function saveFile(e) {
         //But need to rename open_files data etc
 
         //TODO: When commit message in open_files, read it from there
-        var d = MochiKit.Async.loadJSONDoc("./savefile?file=" + 
-            open_files[cur_path].editedfilename +
-            "&rev=" + open_files[cur_path].revision + "&message=" +
-            MochiKit.DOM.getElement("message").value + 
-            "&code=" + escape(cpscript.getCode()));
+
+        var keys = ["file", "rev", "message", "code"];
+        var values = [open_files[cur_path].editedfilename, //File
+                      open_files[cur_path].revision, //rev
+                      MochiKit.DOM.getElement("message").value, //message
+                      cpscript.getCode()]; //Code
+        var content = MochiKit.Base.queryString(keys, values);
+
+        //Using doXHR (New in MochiKit 1.4) to do a post request
+        var d = MochiKit.Async.doXHR("./savefile",
+                           {"method" : "POST",
+                            "mimeType" : "application/x-www-form-urlencoded",
+                            "sendContent" : content,
+                            "headers" : {'Content-Type' : 
+                            'application/x-www-form-urlencoded'}});
         d.addCallback(filesaved);
     } else {
         alert("File not changed, not saving.");
@@ -425,6 +435,8 @@ function saveFile(e) {
 }
 
 function filesaved(result) {
+    //As called using doXHR, need to extract JSON data manually
+    result = MochiKit.Base.evalJSON(result.responseText);
     document.body.style.cursor = "default";
     //Enable the button
     MochiKit.DOM.getElement("savefile").disabled = false;
@@ -461,6 +473,8 @@ function filesaved(result) {
             break;
         }
     }
+
+    generatetablist();
 }
 
 function loadFile(file, revision) {
