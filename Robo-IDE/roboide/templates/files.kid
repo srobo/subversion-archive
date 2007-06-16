@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://purl.org/kid/ns#"
     py:extends="'master.kid'">
 <script type="text/javascript">MochiKit = {__export__: false};</script>
-<script src="./tg_widgets/turbogears/js/MochiKit.js" type="text/javascript"></script>
+<script src="./static/javascript/MochiKit.js" type="text/javascript"></script>
 <script src="./static/codepress/codepress.js" type="text/javascript"></script>
 <script src="./static/javascript/gui.js" type="text/javascript"></script>
 
