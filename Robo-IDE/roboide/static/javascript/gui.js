@@ -34,8 +34,11 @@ function pollAction(result)
     //saved on the server, then mark that file as changed
     for (var file in result)
         if(open_files[file])
-            if(open_files[file].revision < result[file]["rev"])
+            if(open_files[file].revision < result[file]["rev"]){
                 open_files[file].changed = true;
+                var lr = "lr" + file;
+                MochiKit.Visual.Highlight(lr, {'startcolor' : '#ffff99'});
+            }
 
     //Generate the tab list, in case formatting etc needs changing
     //to mark that a file has conflicts
@@ -118,7 +121,8 @@ function buildFileListEntry(node){
         returns: a DOM object to show that file or directory*/
    
     if (node.kind == "FILE"){
-        var contents = MochiKit.DOM.DIV({"class" : "list_row"},
+        var contents = MochiKit.DOM.DIV({"class" : "list_row",
+                                         "id" : "lr" + node.path},
                 MochiKit.DOM.SPAN({"class" : "list_box"},
                     MochiKit.DOM.INPUT({"class" : "file_check",
                                         "type" : "checkbox",
@@ -447,12 +451,11 @@ function filesaved(result) {
 
     switch(result["success"]){
         case "True": {
-            alert("Now at revision: " + result["new_revision"]);
             open_files[file].dirty = false;
             open_files[file].revision = result["new_revision"];
             open_files[cur_path].tabdata = result["code"];
             showtab(file, true);
-            MochiKit.DOM.getElement("savefile").disabled = false;
+            alert("Now at revision: " + result["new_revision"]);
             break;
         }
         case "Invalid revision": {
@@ -469,7 +472,6 @@ function filesaved(result) {
             open_files[cur_path].tabdata = result["code"];
             showtab(file, true);
             alert("Merge conflict. Please check the merged files then save again.");
-            MochiKit.DOM.getElement("savefile").disabled = false;
             break;
         }
     }
@@ -511,6 +513,8 @@ function gotFile(result) {
 
 //FILE HISTORY DISPLAY AND PICKING
 function getLog(file) {
+    if(file == "")
+        return;
     var d = MochiKit.Async.loadJSONDoc("./gethistory?file="+file);
     d.addCallback(gotLog);
 }

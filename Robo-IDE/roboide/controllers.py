@@ -328,16 +328,13 @@ class Root(controllers.RootController):
 
         TODO: Usernames.
         """
-        print code
         client = Client()
         reload = "false"
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness
         path = os.path.dirname(file)
         basename = os.path.basename(file)
-        print rev
         rev = self.get_revision(rev)
-        print rev
 
         if not client.is_url(REPO + path): #new dir needed...
             reload = "true"
@@ -398,8 +395,6 @@ class Root(controllers.RootController):
 
         #4. Wipe the directory
         shutil.rmtree(tmpdir)
-
-        print str(newrev)
 
         return dict(new_revision=str(newrev), code=code,
                     success=success, file=file, reloadfiles=reload)
