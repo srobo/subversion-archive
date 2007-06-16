@@ -51,6 +51,10 @@ a.link, a, a.active {
     width: 100%;
 }
 
+#fltablehead {
+    font-size: x-large;
+}
+
 ul.links {
     padding-top: 10px;
 }
@@ -125,12 +129,12 @@ span.list_box {
     border-color: #227;
 }
 
-#tablist li.newtab a
+#tablist li.systemtab a
 {
     color: black;
 }
 
-#tablist li.newtab a.tabx{
+#tablist li.systemtab a.tabx{
     visibility: hidden;
 }
 

@@ -208,8 +208,7 @@ function get_selected() {
 
     var checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
             "file_check");
-    var selected = new Array();
-
+    var selected = new Array()
     //Iterate through the list of checkboxes, adding the paths of files
     //to the selected array if their checkbox is checked
     MochiKit.Iter.forEach(MochiKit.Iter.iter(checkboxes), function (a) {
@@ -224,7 +223,7 @@ function show_fullog(result){
         returns: None*/
 
     var tab = MochiKit.DOM.TABLE({"id" : "fltable"},
-        MochiKit.DOM.THEAD(null,
+        MochiKit.DOM.THEAD({"id" : "fltablehead"},
             getRow(["Author", "Date", "Message",
                     "Revision", "Files Changed"])),
         MochiKit.DOM.TBODY(null,
@@ -368,6 +367,11 @@ function showtab(tabpath, force) {
         }
     }
 
+    if(open_files[tabpath].system)
+        MochiKit.Style.hideElement("history");
+    else
+        MochiKit.Style.showElement("history");
+
     generatetablist();
 }
 
@@ -422,8 +426,8 @@ function generatetablist() {
         //Each tab might have several classes associated with it. These are
         //then styled appropriately.
         var classes = new Array();
-        if(tab == "")
-            classes.push("newtab");
+        if(open_files[tab].system == true)
+            classes.push("systemtab");
         if(tab == cur_path) 
             classes.push("selected");
         if(open_files[tab].dirty)
@@ -568,7 +572,8 @@ function gotFile(result) {
                                       "tabdata" : result["code"],
                                       "dirty" : false,
                                       "editedfilename" : result["path"],
-                                      "changed" : false};
+                                      "changed" : false,
+                                      "system" : false};
 
         //Load the current script up
         showtab(result["path"]);
