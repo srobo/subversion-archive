@@ -25,14 +25,17 @@
             onclick="loadHistory()">Load Revision</button></p>
         </div>
         <div id="status_block">SVN Crazy Belgium STYLE!!!</div>
-        <div id="box">
-        <textarea id="cpscript" class="codepress javascript"
-            style="width:100%;height:425px;"></textarea>
-        </div>
+        <div id="content">
+            <div id="box">
+            <textarea id="cpscript" class="codepress javascript"
+                style="width:100%;height:425px;"></textarea>
+            </div>
+            <div id="fulllog"></div>
         <div id="savebox">
         <p>Commit message: <input id="message" value="Default Save Message"/>
          File name: <input id="filename" value=""/>
         <button id="savefile">Save File!</button></p></div>
+</div>
     </div>
 </body>
 </html>

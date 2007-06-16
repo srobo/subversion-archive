@@ -60,7 +60,17 @@ MochiKit.DOM.addLoadEvent( function() {
                       "tabdata" : "",
                       "dirty" : false,
                       "editedfilename" : "",
-                      "changed" : false};
+                      "changed" : false,
+                      "system" : true};
+
+    //Create a tab for the Log
+    open_files["Log"] = {"revision" : "0",
+                         "name" : "Log",
+                         "tabdata" : "",
+                         "dirty" : false,
+                         "editedfilename" : "",
+                         "changed" : false,
+                         "system" : true};
 
     cur_path = "";
     //Initialise the codepress component. This doesn't happen magically as
@@ -69,6 +79,8 @@ MochiKit.DOM.addLoadEvent( function() {
     cpscript.edit("", LANGUAGE);
     //Show the blank tab
     showtab("", true);
+    var d = MochiKit.Async.loadJSONDoc("./fulllog");
+    d.addCallback(show_fullog);
     //Start polling
     setTimeout( "polled()", POLL_TIME );
 });
@@ -205,6 +217,46 @@ function get_selected() {
     return selected;
 }
 
+function show_fullog(result){
+    /*Show a full log for the repository.
+        inputs: log : [{author, date, message, rev,
+                        changed_paths : [[action, path], ]}, ]
+        returns: None*/
+
+    var tab = MochiKit.DOM.TABLE({"id" : "fltable"},
+        MochiKit.DOM.THEAD(null,
+            getRow(["Author", "Date", "Message",
+                    "Revision", "Files Changed"])),
+        MochiKit.DOM.TBODY(null,
+            MochiKit.Base.map(buildLogTableEntry, result["log"])));
+
+    MochiKit.DOM.replaceChildNodes("fulllog", tab);
+    var newPos = MochiKit.Style.Coordinates(-1000, 0);
+    MochiKit.Style.setElementPosition("box", newPos);
+    //MochiKit.Style.showElement("fullog");
+}
+
+function getRow(row){
+    return MochiKit.DOM.TR(null,
+        MochiKit.Base.map(MochiKit.Base.partial(MochiKit.DOM.TD, null), row));
+}
+
+function buildLogTableEntry(log){
+    /*Create an entry with log information
+        inputs: a dictionary
+        returns: a DOM object*/
+
+    var files = MochiKit.DOM.TABLE(null,
+        MochiKit.Base.map(function (fileinfo) {
+            return MochiKit.DOM.TR(null,
+                MochiKit.DOM.TD(null, fileinfo[1]),
+                MochiKit.DOM.TD(null, fileinfo[0]));
+        }, log["changed_paths"]));
+
+    return getRow([log["author"], log["date"], log["message"], log["rev"],
+                    files]);
+}
+
 function deleteclick() {
     /*Delete a list of files. Empty folders pruned.
         inputs: None
@@ -220,6 +272,8 @@ function deleteclick() {
                     return;
                 }
 
+        if(!confirm("Are you sure you want to delete:\n" + files.join("\n")))
+            return;
         var d = MochiKit.Async.loadJSONDoc("./delete",
                                             {files : files.join(",")})
         d.addCallback(deleteDone);
@@ -258,6 +312,9 @@ function savecurrenttab(){
     returns: none */
     var code = cpscript.getCode();
 
+    if(cur_path == "Log")
+        return;
+
     //See if the code has changed compared to that in the textarea
     if(code != open_files[cur_path].tabdata){
         //Marking the tab as dirty makes it prompt to save
@@ -282,30 +339,36 @@ function showtab(tabpath, force) {
     //Trick to allow default argument values
     var force = (force == null) ? false : true;
 
-
-    if((tabpath != cur_path) || force){
-        //If the selected tab isn't the current one
-        if(!force)
-            savecurrenttab();
-
-        //Set the new tab to be the current one
+    if(tabpath == "Log"){
+        MochiKit.Style.showElement("fulllog");
         cur_path = tabpath;
+    } else {
+        MochiKit.Style.hideElement("fulllog");
 
-        //Load in the data for the new tab
-        cpscript.setCode(open_files[tabpath].tabdata);
-        
-        //Set the filename edit correctly
-        namefield = MochiKit.DOM.getElement("filename");
-        MochiKit.DOM.setNodeAttribute(namefield, "value",
-                open_files[tabpath].editedfilename);
-        //TODO: Also load commit message
-        
-        //Update the history log
-        getLog(tabpath);
-        setStatus( "File: " + cur_path + " Revision: " + open_files[tabpath].revision);
+        if((tabpath != cur_path) || force){
+            //If the selected tab isn't the current one
+            if(!force)
+                savecurrenttab();
 
-        generatetablist();
+            //Set the new tab to be the current one
+            cur_path = tabpath;
+
+            //Load in the data for the new tab
+            cpscript.setCode(open_files[tabpath].tabdata);
+            
+            //Set the filename edit correctly
+            namefield = MochiKit.DOM.getElement("filename");
+            MochiKit.DOM.setNodeAttribute(namefield, "value",
+                    open_files[tabpath].editedfilename);
+            //TODO: Also load commit message
+            
+            //Update the history log
+            getLog(tabpath);
+            setStatus( "File: " + cur_path + " Revision: " + open_files[tabpath].revision);
+        }
     }
+
+    generatetablist();
 }
 
 function closetab(tabpath) {

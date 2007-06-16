@@ -316,7 +316,25 @@ class Root(controllers.RootController):
                 message = "Error deleting files."
 
             return dict(Message = message)
-
+    
+    @expose("json")
+    def fulllog(self):
+        """Get a full log of file changes
+            inputs: None
+            returns (JSON): log - a list of dictionaries of:
+                date, message, author, changed_paths, revision
+                    changed_paths is a list of dicts:
+                        action, path
+        """
+        client = Client()
+        log = client.log(REPO,
+                         discover_changed_paths=True)
+        return dict(log=[{"author":x["author"], \
+                      "date":time.strftime("%H:%M:%S %d/%m/%Y", \
+                      time.localtime(x["date"])), \
+                      "message":x["message"], "rev":x["revision"].number,
+                      "changed_paths":[(c.action, c.path) for c in \
+                          x.changed_paths]} for x in log])
 
     @expose("json")
     def savefile(self, file, rev, message, code):
