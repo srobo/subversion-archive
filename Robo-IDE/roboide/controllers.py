@@ -86,14 +86,12 @@ class Client:
 
 class Feed(FeedController):
     def get_feed_data(self):
-        entries = []
-        client = Client()
         entries = [dict(author    = {"name" : x["author"]},
                         published = datetime.datetime.fromtimestamp(x["date"]),
                         title     = "Revision %d" % x["revision"].number,
                         summary   = x["message"],
                         link      = "http://ide.studentrobotics.org/")
-                        for x in client.log(REPO)[0:10]]
+                        for x in Client().log(REPO, limit=10)[0:10]]
         return dict(
             title = "RoboIde Data",
             link = "http://ide.studentrobotics.org/",
