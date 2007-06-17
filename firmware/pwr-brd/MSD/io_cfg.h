@@ -74,10 +74,10 @@
 /** L E D ***********************************************************/
 #define mInitAllLEDs()      LATD &= 0xF0; TRISD &= 0xF0;
 
-#define mLED_1              LATDbits.LATD0
-#define mLED_2              LATDbits.LATD1
-#define mLED_3              LATDbits.LATD2
-#define mLED_4              LATDbits.LATD3
+#define mLED_1              LATDbits.LATD4
+#define mLED_2              LATDbits.LATD5
+#define mLED_3              LATDbits.LATD6
+#define mLED_4              LATDbits.LATD7
 
 #define mLED_1_On()         mLED_1 = 1;
 #define mLED_2_On()         mLED_2 = 1;
