@@ -1,8 +1,9 @@
 from turbogears import controllers, expose
+from turbogears.feed import FeedController
 import cherrypy
 import logging
 import pysvn
-import time
+import time, datetime
 import re
 import tempfile, shutil
 import os
@@ -83,7 +84,28 @@ class Client:
         """
         return getattr(self.client, name)
 
+class Feed(FeedController):
+    def get_feed_data(self):
+        entries = []
+        client = Client()
+        entries = [dict(author    = {"name" : x["author"]},
+                        published = datetime.datetime.fromtimestamp(x["date"]),
+                        title     = "Revision %d" % x["revision"].number,
+                        summary   = x["message"],
+                        link      = "http://ide.studentrobotics.org/")
+                        for x in client.log(REPO)[0:10]]
+        return dict(
+            title = "RoboIde Data",
+            link = "http://ide.studentrobotics.org/",
+            author = {"name": "Student Robotics", "email": "info@studentrobotics.org"},
+            id = "http://ide.studentrobotics.org",
+            subtitle = "Recent commits to the repository",
+            entries = entries
+        )
+
 class Root(controllers.RootController):
+
+    feed = Feed()
 
     def get_revision(self, revision):
         """
