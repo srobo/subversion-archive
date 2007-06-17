@@ -75,9 +75,9 @@ const rom InquiryResponse inq_resp = {
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
 
-void MSDCommandHandler(void);
-void MSDInquiryHandler(void);
-void MSDReadCapacityHandler(void);
+void MSDCommandHandler(void);	/* Spawns correct command handler */
+void MSDInquiryHandler(void);	/* Handles INQUIRY command */
+void MSDReadCapacityHandler(void); 
 void MSDReadHandler(void);
 void MSDWriteHandler(void);
 void MSDModeSenseHandler(void);
@@ -86,6 +86,7 @@ void MSDRequestSenseHandler(void);
 void MSDTestUnitReadyHandler(void);
 void MSDVerifyHandler(void);
 void MSDStopStartHandler(void);
+
 byte IsMeaningfulCBW(void);
 byte IsValidCBW(void);
 void PrepareCSWData(void);
@@ -128,24 +129,24 @@ extern byte IsWriteProtected(void);
 void USBCheckMSDRequest(void)
 {
 	switch(SetupPkt.bRequest)
-    {
-	    case MSD_RESET:
+	{
+	case MSD_RESET:
 	    	ctrl_trf_session_owner = MUID_MSD;
 	    	mDisableEP1to15();                          // See usbdrv.h
 	    	if (UEP1bits.EPSTALL==1) {
-	 			UEP1bits.EPSTALL = 0;
+			UEP1bits.EPSTALL = 0;
 	    		MSDInitEP();
 	    	}
-			UIRbits.STALLIF = 0;
+		UIRbits.STALLIF = 0;
 	   	break;
-	    case GET_MAX_LUN:
+	case GET_MAX_LUN:
 	    	ctrl_trf_session_owner = MUID_MSD;
 	    	CtrlTrfData._byte[0] = MAX_LUN;
 	    	wCount._word = 1;
 	    	pSrc.bRam = (unsigned char*)&CtrlTrfData;
 	    	usb_stat.ctrl_trf_mem = _RAM;
 	    	break;
-    }	//end switch(SetupPkt.bRequest)
+	}	//end switch(SetupPkt.bRequest)
 }
 /******************************************************************************
  * Function:        void ProcessIO(void)
@@ -188,8 +189,8 @@ void ProcessIO(void)
 			SendCSW(); 
 			if ((msd_csw.bCSWStatus==0x00)&&(gblCBW.CBWCB[0]==INQUIRY)) {
 				/* Turn on the MSD LED when we have successfully*/
-                /*responded to the INQUIRY Command             */
-        		STMSDLED=1;
+				/*responded to the INQUIRY Command             */
+				STMSDLED=1;
 			}
 		}	
 		else 
@@ -208,14 +209,14 @@ void ProcessIO(void)
 			SendCSW();	// sends the csw and sets the state to wait
 		}
 		/*
-		* Note that MSD_DATA_OUT State is reached only for the WRITE_10 COMMAND
-		* Also note that this code is reached in MSD_DATA_OUT State only after
-		*  we have read the required amount of data from the host
-		* This procsssing is done in WriteCommandHandler because we have
-		* limited buffer space. We read from host in 64Bytes chunks
-		* (size of MSD_BD_OUT), fill the msd_buffer(512B) and write the
-        *  data into the SDCard
-		*/ 
+		 * Note that MSD_DATA_OUT State is reached only for the WRITE_10 COMMAND
+		 * Also note that this code is reached in MSD_DATA_OUT State only after
+		 *  we have read the required amount of data from the host
+		 * This procsssing is done in WriteCommandHandler because we have
+		 * limited buffer space. We read from host in 64Bytes chunks
+		 * (size of MSD_BD_OUT), fill the msd_buffer(512B) and write the
+		 *  data into the SDCard
+		 */ 
 		return;
 	}
 	if((MSD_BD_OUT.Stat.UOWN==_UCPU) && (MSD_State==MSD_WAIT)) {
@@ -224,12 +225,12 @@ void ProcessIO(void)
 		gblCBW.dCBWSignature=msd_cbw.dCBWSignature;					
 		gblCBW.dCBWTag=msd_cbw.dCBWTag;
 		gblCBW.dCBWDataTransferLength=msd_cbw.dCBWDataTransferLength;
-    	gblCBW.bCBWFlags=msd_cbw.bCBWFlags;
-    	gblCBW.bCBWLUN=msd_cbw.bCBWLUN;
-	    gblCBW.bCBWCBLength=msd_cbw.bCBWCBLength;		// 3 MSB are zero
-    	for (i=0;i<msd_cbw.bCBWCBLength;i++)
-    		gblCBW.CBWCB[i]=msd_cbw.CBWCB[i];
-	    gblCBWLength=MSD_BD_OUT.Cnt;				   // Length of CBW
+		gblCBW.bCBWFlags=msd_cbw.bCBWFlags;
+		gblCBW.bCBWLUN=msd_cbw.bCBWLUN;
+		gblCBW.bCBWCBLength=msd_cbw.bCBWCBLength;		// 3 MSB are zero
+		for (i=0;i<msd_cbw.bCBWCBLength;i++)
+			gblCBW.CBWCB[i]=msd_cbw.CBWCB[i];
+		gblCBWLength=MSD_BD_OUT.Cnt;				   // Length of CBW
 	    	
 		if (IsValidCBW()) {
 			if (IsMeaningfulCBW()) {
@@ -241,22 +242,22 @@ void ProcessIO(void)
 					/* If direction is host to device*/
 					/* prepare to read data in msd_buffer */
 					MSD_BD_OUT.Cnt=MSD_OUT_EP_SIZE;
-    				MSD_BD_OUT.ADR=(byte*)&msd_buffer[0];
-    				MSD_State=MSD_DATA_OUT;
+					MSD_BD_OUT.ADR=(byte*)&msd_buffer[0];
+					MSD_State=MSD_DATA_OUT;
 				}
 				/* Decode and process the valid and meaningful CBW received */
 				MSDCommandHandler();									
 			}
 			/* NOTE:
 			 * In case when the received CBW is not valid or meaningful,
-             * one can take action  such as Stall the EP1 and go through reset
+			 * one can take action  such as Stall the EP1 and go through reset
 			 * recovery or turn on error LED etc.
 			 */ 
 		}
-	   /* 
-		* NOTE: Call after every read or write on nonEP0 EP 
-	 	* Basically, toggles DTS and gives ownership to SIE
-		*/
+		/* 
+		 * NOTE: Call after every read or write on nonEP0 EP 
+		 * Basically, toggles DTS and gives ownership to SIE
+		 */
 		mUSBBufferReady(MSD_BD_OUT);
 		/* clears the TRNIF */
 		USBDriverService();
@@ -285,27 +286,27 @@ void ProcessIO(void)
 void MSDInitEP(void)
 {   
 	mInitAllLEDs();
-    MSD_UEP = EP_OUT_IN|HSHK_EN;                // Enable 2 data pipes
-    MSD_BD_OUT.Cnt=sizeof(msd_cbw);
-    MSD_BD_OUT.ADR=(byte*)&msd_cbw;
-    MSD_BD_OUT.Stat._byte = _USIE|_DAT0|_DTSEN;	//usbmmap.h owner SIE,
-                                                // DAT0 expected next,
-                                                //data toggle sunc enable
+	MSD_UEP = EP_OUT_IN|HSHK_EN;                // Enable 2 data pipes
+	MSD_BD_OUT.Cnt=sizeof(msd_cbw);
+	MSD_BD_OUT.ADR=(byte*)&msd_cbw;
+	MSD_BD_OUT.Stat._byte = _USIE|_DAT0|_DTSEN;	//usbmmap.h owner SIE,
+	// DAT0 expected next,
+	//data toggle sunc enable
    
-    /*
-     * Do not have to init Cnt (size) of IN pipes here.
-     * Reason:  Number of bytes to send to the host
-     *          varies from one transaction to
-     *          another. Cnt should equal the exact
-     *          number of bytes to transmit for
-     *          a given IN transaction.
-     *          This number of bytes will only
-     *          be known right before the data is
-     *          sent.
-     */
-    MSD_BD_IN.ADR = (byte*)&msd_buffer[0];      // Set buffer address    
-    MSD_BD_IN.Stat._byte = _UCPU|_DAT1;         // Set status CPU owns Data1
-                                                // expected next
+	/*
+	 * Do not have to init Cnt (size) of IN pipes here.
+	 * Reason:  Number of bytes to send to the host
+	 *          varies from one transaction to
+	 *          another. Cnt should equal the exact
+	 *          number of bytes to transmit for
+	 *          a given IN transaction.
+	 *          This number of bytes will only
+	 *          be known right before the data is
+	 *          sent.
+	 */
+	MSD_BD_IN.ADR = (byte*)&msd_buffer[0];      // Set buffer address    
+	MSD_BD_IN.Stat._byte = _UCPU|_DAT1;         // Set status CPU owns Data1
+	// expected next
     
     
 }//end MSDInitEP
@@ -334,15 +335,15 @@ void SDCardInit(void)
 {
 	SDC_Error status;
 	SocketInitialize();
-    mInitAllLEDs();
-    status=MediaInitialize(&gblFlag);
-    if (status) { 
-	    /* If there was some error, turn on all leds */
-	    mLED_1_On(); mLED_2_On(); mLED_3_On(); mLED_4_On();
-	    gblFlag.isSDMMC=0;
+	mInitAllLEDs();
+	status=MediaInitialize(&gblFlag);
+	if (status) { 
+		/* If there was some error, turn on all leds */
+		mLED_1_On(); mLED_2_On(); mLED_3_On(); mLED_4_On();
+		gblFlag.isSDMMC=0;
 	} else gblFlag.isSDMMC=1; 		
 	MSD_State=MSD_WAIT;
- }    
+}    
 
 /******************************************************************************
  * Function:        void MSDCommandHandler(void)
@@ -369,41 +370,41 @@ void MSDCommandHandler(void)		// In reality it is to read from EP1
 	switch(gblCBW.CBWCB[0]) {
     	case INQUIRY:
         	MSDInquiryHandler();
-        break;
+		break;
         case READ_CAPACITY:
-		    MSDReadCapacityHandler();            
-        break;
-		case READ_10:
+		MSDReadCapacityHandler();            
+		break;
+	case READ_10:
         	MSDReadHandler();
-	    break;
+		break;
     	case WRITE_10:
     	   	MSDWriteHandler();
 		break;
         case REQUEST_SENSE:
-		   	MSDRequestSenseHandler();
-        break;
-	    case MODE_SENSE:
+		MSDRequestSenseHandler();
+		break;
+	case MODE_SENSE:
 	    	MSDModeSenseHandler();
-    	break;
-		case PREVENT_ALLOW_MEDIUM_REMOVAL:
-		   	MSDMediumRemovalHandler();
-        break;
-		case TEST_UNIT_READY:
-		   	MSDTestUnitReadyHandler();
-        break;
-		case VERIFY:
-		   	MSDVerifyHandler();
-        break;
-		case STOP_START:
-		   	MSDStopStartHandler();
-        break;
-		default:
+		break;
+	case PREVENT_ALLOW_MEDIUM_REMOVAL:
+		MSDMediumRemovalHandler();
+		break;
+	case TEST_UNIT_READY:
+		MSDTestUnitReadyHandler();
+		break;
+	case VERIFY:
+		MSDVerifyHandler();
+		break;
+	case STOP_START:
+		MSDStopStartHandler();
+		break;
+	default:
         	ResetSenseData();
-			gblSenseData.SenseKey=S_ILLEGAL_REQUEST;
-			gblSenseData.ASC=ASC_INVALID_COMMAND_OPCODE;
-			gblSenseData.ASCQ=ASCQ_INVALID_COMMAND_OPCODE;
-			msd_csw.bCSWStatus=0x01;
-			msd_csw.dCSWDataResidue=0x00;
+		gblSenseData.SenseKey=S_ILLEGAL_REQUEST;
+		gblSenseData.ASC=ASC_INVALID_COMMAND_OPCODE;
+		gblSenseData.ASCQ=ASCQ_INVALID_COMMAND_OPCODE;
+		msd_csw.bCSWStatus=0x01;
+		msd_csw.dCSWDataResidue=0x00;
  		break;
 	} // end switch	
 	
@@ -438,8 +439,8 @@ void SendCSW(void)
 	mUSBBufferReady(MSD_BD_IN);
 	USBDriverService();	
 	MSD_BD_OUT.Cnt=sizeof(msd_cbw);		
-    MSD_BD_OUT.ADR=(byte*)&msd_cbw;			// in MSD_DATA_OUT state the address
-                                            // was changed to point tomsd_buffer
+	MSD_BD_OUT.ADR=(byte*)&msd_cbw;			// in MSD_DATA_OUT state the address
+	// was changed to point tomsd_buffer
    	MSD_State=MSD_WAIT;
 }
 
@@ -558,7 +559,7 @@ void MSDDataIn(void)
 byte IsValidCBW() 
 {
 	if ((gblCBWLength!=MSD_CBW_SIZE)||(gblCBW.dCBWSignature!=0x43425355))return FALSE;
-    else return TRUE;
+	else return TRUE;
 }
 
 /******************************************************************************
@@ -585,7 +586,7 @@ byte IsValidCBW()
 byte IsMeaningfulCBW()
 {
 	/*  3msb bits of CBWCBLength are reserved and must be 0,
-     *  4msb bits of CBWLUN	are reserved and must be 0
+	 *  4msb bits of CBWLUN	are reserved and must be 0
 	 *  valid CBWCBLength is between 1 and 16B
 	 *  In bCBWFlags only msb indicates data direction rest must be 0
 	 */  
@@ -615,7 +616,7 @@ byte IsMeaningfulCBW()
 void PrepareCSWData()
 { 
 	/* Residue and Status fields are set after
-       decoding and executing the command  */
+	   decoding and executing the command  */
 	msd_csw.dCSWTag=gblCBW.dCBWTag;
 	msd_csw.dCSWSignature=0x53425355;
 }
@@ -668,7 +669,7 @@ void MSDInquiryHandler(void)
  * Note:            None
  *****************************************************************************/
 void ResetSenseData(void) 
-	{
+{
 	gblSenseData.ResponseCode=S_CURRENT;
 	gblSenseData.VALID=0;			// no data in the information field
 	gblSenseData.Obsolete=0x0;
@@ -720,7 +721,7 @@ void MSDReadCapacityHandler()
 	C_size_U=gblCSDReg._byte[6]&0x03;		// 2 LSB bits
 	C_size_H=gblCSDReg._byte[7];		
 	C_size_L=(gblCSDReg._byte[8]&0xC0)>>6;	// 2 MSB, right shift by 6places
-                                            // to get in LSB
+	// to get in LSB
 	C_size=(C_size_U<<10)|(C_size_H<<2)|(C_size_L);
 	C_mult_H=gblCSDReg._byte[9]&0x03;
 	C_mult_L=(gblCSDReg._byte[10]&0x80)>>7;
@@ -803,14 +804,14 @@ void MSDReadHandler()
 			if (status==sdcValid) {
 				msd_csw.bCSWStatus=0x00;			// success
 				msd_csw.dCSWDataResidue=BLOCKLEN_512;//in order to send the
-                                                     //512 bytes of data read
+				//512 bytes of data read
 				ptrNextData=(byte *)&msd_buffer[0];
 				while (msd_csw.dCSWDataResidue>0)
 					MSDDataIn();					// send the data
 				msd_csw.dCSWDataResidue=0x0;		// for next time
 			} else {
 				msd_csw.bCSWStatus=0x01;			// Error 0x01 Refer page#18
-                                                    // of BOT specifications
+				// of BOT specifications
 				/* Don't read any more data*/
 				msd_csw.dCSWDataResidue=0x0;
 
@@ -876,7 +877,7 @@ void MSDDataOut(void)
  *
  * Note:            None
  *****************************************************************************/	
- void MSDWriteHandler()
+void MSDWriteHandler()
 {
 	word i;
 	byte* adr;
@@ -887,7 +888,7 @@ void MSDDataOut(void)
 	dword sectorNumber;
 
  	/* Read the LBA, TransferLength fields from Command Block
-       NOTE: CB is Big-Endian */
+	   NOTE: CB is Big-Endian */
 
 	LBA.v[3]=gblCBW.CBWCB[2];
 	LBA.v[2]=gblCBW.CBWCB[3];
@@ -918,15 +919,15 @@ void MSDDataOut(void)
 		TransferLength._word--;
 
 		/* Point MSD_BD_OUT to msd_cbw after
-           done reading the WRITE data from host*/
+		   done reading the WRITE data from host*/
 
 		if (TransferLength._word>0){
 			MSD_BD_OUT.Cnt=MSD_OUT_EP_SIZE;
 			MSD_BD_OUT.ADR=(byte*)&msd_buffer[0];
 		} else {
 			MSD_BD_OUT.Cnt=sizeof(msd_cbw);
-    		MSD_BD_OUT.ADR=(byte*)&msd_cbw;
-    	}
+			MSD_BD_OUT.ADR=(byte*)&msd_cbw;
+		}
 	}	// end of while
 	return;
 }
@@ -1049,13 +1050,13 @@ void MSDTestUnitReadyHandler()
 	msd_csw.bCSWStatus=0x0;
 	ResetSenseData();
 	/*
-	if(!gblFlag.isSDMMC) {
-		gblSenseData.SenseKey=S_NOT_READY;
-		gblSenseData.ASC=ASC_LOGICAL_UNIT_NOT_SUPPORTED;
-		gblSenseData.ASCQ=ASC_LOGICAL_UNIT_NOT_SUPPORTED;
-		msd_csw.bCSWStatus=0x01;
-		mLED_2_On();
-	}
+	  if(!gblFlag.isSDMMC) {
+	  gblSenseData.SenseKey=S_NOT_READY;
+	  gblSenseData.ASC=ASC_LOGICAL_UNIT_NOT_SUPPORTED;
+	  gblSenseData.ASCQ=ASC_LOGICAL_UNIT_NOT_SUPPORTED;
+	  msd_csw.bCSWStatus=0x01;
+	  mLED_2_On();
+	  }
 	*/
 	if(!DetectSDCard()) {
 		gblSenseData.SenseKey=S_UNIT_ATTENTION;
