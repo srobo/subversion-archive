@@ -536,6 +536,4 @@ class Root(controllers.RootController):
         """
         TODO: Remove this, make index served statically.
         """
-        client = Client()
-        info = client.info(os.getcwd())
-        return dict(rev="RoboIDE revision: " + str(info["revision"].number))
+        return dict(rev="Cool Title Here")
