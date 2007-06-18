@@ -34,6 +34,8 @@ def GetClient():
 
     a = pysvn.Client()
     a.callback_get_login = get_login
+    a.set_store_passwords(False)
+    a.set_auth_cache(False)
     return a
 
 #This runs at initialisation of the app
@@ -312,7 +314,7 @@ class Root(controllers.RootController):
                     info = client.info2( REPO + file )[0][1]
                     r[file]["rev"] = info["last_changed_rev"].number
                 except pysvn.ClientError:
-                    print "Could not get information for %s" % file
+                    pass
 
         return r
     
