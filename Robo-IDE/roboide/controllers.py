@@ -9,17 +9,17 @@ import tempfile, shutil
 import os
 import zipfile
 import random
+import threading
 from Queue import Queue
 from os.path import join
 log = logging.getLogger("roboide.controllers")
 
 REPO = "http://studentrobotics.org/svn/"
 ZIPNAME = "robot.zip"
-CLIENTS = 5  #How many pysvn clients to put into the pool for use by threads
+CLIENTS = 20  #How many pysvn clients to put into the pool for use by threads
 
 static_clients = Queue() #This queue will contain unused pysvn clients
 #Pop one off the queue to use it, add it to the queue when finished!
-
 
 def GetClient():
     """
@@ -28,7 +28,9 @@ def GetClient():
     returns: A pysvn client object setup for logging into the server
     """
     def get_login(realm, username, may_save):
-        return True, "test", "testpass", False
+        user = cherrypy.request.headers["X-Forwarded-User"]
+        return True, user, "", False
+
     a = pysvn.Client()
     a.callback_get_login = get_login
     return a
@@ -50,8 +52,14 @@ class Client:
         On initialisation try to get a client from the pool. Block this thread
         until a client is available.
         """
-        self.__dict__["client"] = \
-                static_clients.get(block = True, timeout = None)
+        c = static_clients.get(block = True, timeout = None)
+
+        #Using self.__dict__[] to avoid calling setattr in recursive death
+        self.__dict__["client"] = c
+
+    def get_login(realm, username, may_save):
+        return True, self.__dict__["username"], "", False
+
     def __del__(self):
         """
         When the object falls out of scope (at the end of the request) this is
