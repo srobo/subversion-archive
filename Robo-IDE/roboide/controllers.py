@@ -29,6 +29,7 @@ def GetClient():
     """
     def get_login(realm, username, may_save):
         user = cherrypy.request.headers["X-Forwarded-User"]
+        log.debug("setting get_login with username %s" % user)
         return True, user, "", False
 
     a = pysvn.Client()
