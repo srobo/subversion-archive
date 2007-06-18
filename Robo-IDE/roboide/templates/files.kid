@@ -14,6 +14,10 @@
 <body>
     <div id="sidebar">
         <h2>Files</h2>
+        <a href="./feed/atom1.0">
+            <img style="border: none;" src="./static/images/feed.png" alt="Atom"/>Atom 1.0</a>
+        <a href="./feed/rss2.0">
+            <img style="border: none;" src="./static/images/feed.png" alt="RSS 2.0"/>RSS 2.0</a>
         <button id="checkout" onclick="checkout()">Checkout Selected</button>
         <button id="delete" onclick="deleteclick()">Delete Selected</button>
         <div id="filelist"></div>
