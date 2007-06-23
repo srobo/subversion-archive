@@ -14,7 +14,7 @@ from Queue import Queue
 from os.path import join
 log = logging.getLogger("roboide.controllers")
 
-REPO = "http://studentrobotics.org/svn/"
+REPO = "http://studentrobotics.org/isvn/"
 ZIPNAME = "robot.zip"
 
 class Client:
