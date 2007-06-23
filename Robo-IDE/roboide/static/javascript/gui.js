@@ -420,7 +420,7 @@ function generatetablist() {
     var filenames = new Array();
 
     for (var tab in open_files) {
-        if(tab != "")
+        if(tab != "" && tab != "Log")
             filenames.push(tab);
         var attrs = {"id" : "tab"+tab};
         //Each tab might have several classes associated with it. These are

@@ -19,15 +19,13 @@ ZIPNAME = "robot.zip"
 
 class Client:
     """
-    A wrapper around a pysvn client. This takes a client from the pool and
-    wraps calls to its functions. It returns the client to the pool when it's
-    done with it.
+    A wrapper around a pysvn client. This creates a client and wraps calls to
+    its functions.
     """
     client = None
     def __init__(self):
         """
-        On initialisation try to get a client from the pool. Block this thread
-        until a client is available.
+        Create a pysvn client and use it
         """
         def get_login(realm, username, may_save):
             user = cherrypy.request.headers["X-Forwarded-User"]
