@@ -6,7 +6,7 @@ open_files = {}; //A dictionary (hash table) of the currently open
 
 //POLLING
 POLL_TIME = 2000; //In ms.
-poll_data = {"files" : ""}; /*The data to be shipped with the poll.
+poll_data = {}; /*The data to be shipped with the poll.
 files : comma seperated list of open files*/
                             
 function polled()
@@ -229,10 +229,11 @@ function show_fullog(result){
         MochiKit.DOM.TBODY(null,
             MochiKit.Base.map(buildLogTableEntry, result["log"])));
 
+    poll_data["logrev"] = result["log"][0]["rev"];
+
     MochiKit.DOM.replaceChildNodes("fulllog", tab);
     var newPos = MochiKit.Style.Coordinates(-1000, 0);
     MochiKit.Style.setElementPosition("box", newPos);
-    //MochiKit.Style.showElement("fullog");
 }
 
 function getRow(row){

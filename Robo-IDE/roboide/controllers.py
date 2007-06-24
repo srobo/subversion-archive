@@ -263,7 +263,7 @@ class Root(controllers.RootController):
         return tmpdir
 
     @expose("json")
-    def polldata(self,files = ""):
+    def polldata(self,files = "",logrev=None):
         """Returns poll data:
             inputs: files - comma seperated list of files the client needs info
             on
@@ -286,6 +286,9 @@ class Root(controllers.RootController):
                     r[file]["rev"] = info["last_changed_rev"].number
                 except pysvn.ClientError:
                     pass
+
+        if logrev != None:
+            log.debug("Polling with %s" % logrev)
 
         return r
     
