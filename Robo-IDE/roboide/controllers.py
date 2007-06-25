@@ -522,10 +522,3 @@ class Root(controllers.RootController):
             return tree
         
         return dict(children=[dicttolist(head)])
-
-    @expose(template="roboide.templates.files")
-    def index(self):
-        """
-        TODO: Remove this, make index served statically.
-        """
-        return dict(rev="Cool Title Here")
