@@ -32,13 +32,23 @@ function pollAction(result)
     //For each file for which there is info available, if that file
     //is open and if the local working revision is less than that
     //saved on the server, then mark that file as changed
-    for (var file in result)
+
+    for (var file in result["files"]){
         if(open_files[file])
-            if(open_files[file].revision < result[file]["rev"]){
+            if(open_files[file].revision < result["files"][file]["rev"]){
                 open_files[file].changed = true;
                 var lr = "lr" + file;
                 MochiKit.Visual.Highlight(lr, {'startcolor' : '#ffff99'});
             }
+            }
+
+    if(result["log"].length != undefined){
+        if(result["log"][0]["rev"] > poll_data["logrev"]){
+            rows = MochiKit.Base.map(buildLogTableEntry, result["log"]);
+            MochiKit.DOM.insertSiblingNodesAfter("fltablehead", rows);
+            poll_data["logrev"] = result["log"][0]["rev"];
+        }
+    }
 
     //Generate the tab list, in case formatting etc needs changing
     //to mark that a file has conflicts
@@ -232,8 +242,6 @@ function show_fullog(result){
     poll_data["logrev"] = result["log"][0]["rev"];
 
     MochiKit.DOM.replaceChildNodes("fulllog", tab);
-    var newPos = MochiKit.Style.Coordinates(-1000, 0);
-    MochiKit.Style.setElementPosition("box", newPos);
 }
 
 function getRow(row){
@@ -421,7 +429,7 @@ function generatetablist() {
     var filenames = new Array();
 
     for (var tab in open_files) {
-        if(open_files[tab].system)
+        if(!open_files[tab].system)
             filenames.push(tab);
         var attrs = {"id" : "tab"+tab};
         //Each tab might have several classes associated with it. These are

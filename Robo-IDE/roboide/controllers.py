@@ -273,11 +273,12 @@ class Root(controllers.RootController):
             number in the repo"""
         #Default data
         r = {}
+        l = {}
+        client = Client()
+        log.debug("Polled")
 
         if files != "":
             files = files.split(",")
-            client = Client()
-
             rev = 0
             for file in files:
                 r[file] = {}
@@ -288,9 +289,23 @@ class Root(controllers.RootController):
                     pass
 
         if logrev != None:
-            log.debug("Polling with %s" % logrev)
+            try:
+                newlogs = client.log(REPO, discover_changed_paths=True,
+                    revision_end=pysvn.Revision(pysvn.opt_revision_kind.number,
+                        int(logrev)+1))
 
-        return r
+                l =[{"author":x["author"], \
+                        "date":time.strftime("%H:%M:%S %d/%m/%Y", \
+                        time.localtime(x["date"])), \
+                        "message":x["message"], "rev":x["revision"].number,
+                        "changed_paths":[(c.action, c.path) for c in \
+                            x.changed_paths]} for x in newlogs]
+            except pysvn.ClientError:
+                #No commits recently, no data to return
+                pass
+
+        log.debug(l)
+        return dict(files=r, log=l)
     
     @expose("json")
     def delete(self, files):
