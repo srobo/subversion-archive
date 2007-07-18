@@ -11,8 +11,10 @@ struct xbee_conn_t;
 
 typedef struct xbee_conn_t XbeeConn;
 
+
+
 /* Open a connection to the server */
-XbeeConn* xbee_conn_new( char* addr );
+XbeeConn* xbee_conn_new( char* addr , GMainContext *context );
 
 /* Close the connection */
 void xbee_conn_close( XbeeConn* xbc );
