@@ -4,6 +4,18 @@
 #include <glib-object.h>
 #include <stdint.h>
 
+typedef enum
+{
+	XB_ADDR_16,
+	XB_ADDR_64
+} xb_addr_len_t;
+
+typedef struct
+{
+	xb_addr_len_t type;
+	uint8_t addr[8];
+} xb_addr_t;
+
 typedef uint8_t chan_num_t;
 
 
@@ -25,9 +37,9 @@ chan_num_t xbee_conn_get_channel( XbeeConn* xbc,
 				  gboolean (*receive) ( XbeeConn*, uint8_t* data, uint16_t len ) );
 
 /* Release a channel */
-void xbee_conn_release_channel( XbeeConn* xbc, channel_num_t channel );
+void xbee_conn_release_channel( XbeeConn* xbc, chan_num_t channel );
 
 /* Transmit some data */
-gboolean xbee_conn_transmit( XbeeConn* xbc, uint8_t* data, uint16_t len );
+gboolean xbee_conn_transmit( XbeeConn* xbc, xb_addr_t addr, uint8_t* data, uint16_t len );
 
 #endif
