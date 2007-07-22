@@ -4,6 +4,8 @@
 #include <glib-object.h>
 #include <stdint.h>
 
+#include "xb-fd-source.h"
+
 typedef enum
 {
 	XB_ADDR_16,
@@ -37,14 +39,15 @@ GType xbee_conn_get_type ( void );
 
 struct xbee_conn_t
 {
-  GObject parent;
+	GObject parent;
+	
+	/* Socket file descriptor */
+	int fd;
+	
+	xbee_fd_source_t *source;
+	guint source_id;
 
-  /* Socket file descriptor */
-  int fd;
-
-	//xbee_fd_source_t *source;
-//  guint soutce_id;
-
+	GMainContext *context;	
 };
   
 
