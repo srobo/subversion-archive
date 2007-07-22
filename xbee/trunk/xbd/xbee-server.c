@@ -50,10 +50,9 @@ void xbee_server_instance_init( GTypeInstance *gti, gpointer g_class )
 	s->clients = NULL;
 }
 
-XbeeServer* xbee_server_new( XbeeModule* xb, GMainContext *context )
+XbeeServer* xbee_server_new( GMainContext *context )
 {
 	XbeeServer *serv;
-	assert( xb != NULL );
 
 	serv = g_object_new( XBEE_SERVER_TYPE, NULL );
 

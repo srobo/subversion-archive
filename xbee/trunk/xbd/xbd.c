@@ -23,7 +23,7 @@ int main( int argc, char** argv )
 	xb = xbee_module_open( argv[1], context );
 	g_return_val_if_fail( xb != NULL, 1 );
 
-	server = xbee_server_new( xb, context );
+	server = xbee_server_new( context );
 	g_return_val_if_fail( server != NULL, 3 );
 
 	xbee_server_attach( server, xb );
