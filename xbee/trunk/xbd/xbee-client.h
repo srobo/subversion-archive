@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "xb-fd-source.h"
 
-#define XB_SERVER_INBUF_LEN 512
+#define XB_CLIENT_INBUF_LEN 512
 
 struct xbee_client_ts;
 typedef struct xbee_client_ts XbeeClient;
@@ -26,6 +26,10 @@ GType xbee_client_get_type( void );
 #define XBEE_IS_CLIENT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), XBEE_CLIENT_TYPE))
 #define XBEE_CLIENT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), XBEE_CLIENT_TYPE, XbeeClientClass))
 
+typedef void (*xbee_client_callback_t) (XbeeClient *client,
+					uint8_t *data,
+					uint16_t len);
+
 struct xbee_client_ts
 {
 	GObject parent;
@@ -40,10 +44,15 @@ struct xbee_client_ts
 	GQueue *in_frames;
 
 	/* Socket frame reception stuff */
-	uint8_t inbuf[ XB_SERVER_INBUF_LEN ];
-	uint16_t inpos;
+	uint8_t inbuf[ XB_CLIENT_INBUF_LEN ];
+	uint16_t inpos, flen;
 };
 
 XbeeClient* xbee_client_new( GMainContext *context, int sock ); 
+
+typedef enum
+{
+	XBEE_COMMAND_TEST = 0
+} xbee_client_command_t;
 
 #endif	/* __XBEE_CLIENT_H */
