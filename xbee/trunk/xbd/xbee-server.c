@@ -19,6 +19,11 @@ static gboolean xbee_server_source_error( XbeeServer* serv );
 /* Callback for when connection is pending */
 static gboolean xbee_server_req_con( XbeeServer *serv );
 
+/* Callback for an incoming frame from an XbeeModule  */
+static void xbee_server_incoming_frame( XbeeModule xb, 
+					uint8_t *data,
+					uint16_t len );
+
 GType xbee_server_get_type( void )
 {
 	static GType type = 0;
@@ -130,6 +135,8 @@ void xbee_server_attach( XbeeServer* serv, XbeeModule* xb )
 	assert( serv != NULL && xb != NULL );
 	
 	serv->modules = g_slist_append( serv->modules, xb );
+
+	xbee_module_set_incoming_callback( xb, xbee_server_incoming_frame );
 }
 
 static gboolean xbee_server_req_con( XbeeServer *serv )
@@ -159,4 +166,11 @@ static gboolean xbee_server_source_error( XbeeServer* serv )
 {
 	fprintf( stderr, "Whoops, listening socket related error - don't know what to do\n" );
 	return FALSE;
+}
+
+static void xbee_server_incoming_frame( XbeeModule xb, 
+					uint8_t *data,
+					uint16_t len )
+{
+	/* TODO: look at frame channel number and send to correct client */
 }

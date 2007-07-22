@@ -131,7 +131,10 @@ void xbee_module_close( XbeeModule *xb );
 void xbee_module_add_source( XbeeModule *xb, GMainContext *context );
 
 /* Set the callback for when a frame is received.
- * Frame is freed after callback function completes. */
+ * Frame is freed after callback function completes.
+ * Data pointed to by data and len pointers is unavailable after
+ * the callback has returned.
+ */
 void xbee_module_set_incoming_callback( XbeeModule *xb, 
 					xbee_callback_t f );
 
