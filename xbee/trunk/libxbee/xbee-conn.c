@@ -81,7 +81,7 @@ gboolean xbee_conn_create_socket ( XbeeConn *conn, char * addr )
 	assert( conn != NULL && addr != NULL );
 
 	if (strlen (addr) < 108)
-		strncpy ( &sock_addr.sun_path, addr, strlen (addr));
+		strncpy ( (char*)(&sock_addr.sun_path), addr, strlen (addr));
 	else
 	{
 		fprintf (stderr, "Socket address too long: %m\n");
