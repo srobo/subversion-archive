@@ -7,8 +7,6 @@
 
 #include "xbee-conn.h"
 
-
-
 static void xbee_conn_instance_init (GTypeInstance *gti, gpointer g_class );
 static gboolean xbee_conn_sock_incoming ( XbeeConn *conn );
 static gboolean xbee_conn_sock_outgoing ( XbeeConn *conn );
@@ -19,7 +17,6 @@ gboolean xbee_conn_create_socket ( XbeeConn *conn, char *addr );
 
 GType xbee_conn_get_type (void)
 {
-  
 	static GType type = 0;
 	if (type == 0) {
 		static const GTypeInfo info = {
@@ -50,7 +47,6 @@ gboolean xbee_conn_transmit( XbeeConn* xbc, xb_addr_t addr, uint8_t* data, uint1
 
 XbeeConn *xbee_conn_new ( char * addr, GMainContext *context )
 {
-
 	XbeeConn *conn;
 	
 	conn = g_object_new ( XBEE_CONN_TYPE, NULL );
@@ -69,7 +65,6 @@ XbeeConn *xbee_conn_new ( char * addr, GMainContext *context )
 					   (xbee_fd_callback)xbee_conn_sock_data_ready);
 
 	return conn;
-
 }
 
 static void xbee_conn_instance_init (GTypeInstance *gti, gpointer g_class )
@@ -79,29 +74,19 @@ static void xbee_conn_instance_init (GTypeInstance *gti, gpointer g_class )
 
 gboolean xbee_conn_create_socket ( XbeeConn *conn, char * addr )
 {
-	
-	char *sun_path;
-	
-	
 	struct sockaddr_un sock_addr =
-	{
-		.sun_family = AF_LOCAL,
-		//	.sun_path = addr
-	};
-
-	sun_path = &sock_addr.sun_path;
+		{
+			.sun_family = AF_LOCAL,
+		};
+	assert( conn != NULL && addr != NULL );
 
 	if (strlen (addr) < 108)
-	{
-		strncpy (sun_path, addr, strlen (addr));
-	}
+		strncpy ( &sock_addr.sun_path, addr, strlen (addr));
 	else
 	{
-		fprintf (stderr, "Invalid Socket Address: %m\n");
+		fprintf (stderr, "Socket address too long: %m\n");
 		return FALSE;
 	}
-
-	assert (conn != NULL);
 
 	/* Attempt to create socket to server */
 	conn->fd = socket ( PF_LOCAL, SOCK_STREAM, 0 );
