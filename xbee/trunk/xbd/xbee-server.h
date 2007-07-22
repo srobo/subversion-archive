@@ -64,4 +64,13 @@ void xbee_server_free( XbeeServer* serv );
 /* Attach an xbee module to the server */
 void xbee_server_attach( XbeeServer* serv, XbeeModule* xb );
 
+/**** Functions for the client to use ****/
+
+/* Transmit a frame */
+void xbee_server_transmit( XbeeServer* serv, 
+			   xb_addr_t* addr,
+			   void *buf, 
+			   uint8_t len );
+
+
 #endif	/* __XBEE_SERVER_H */

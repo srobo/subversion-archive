@@ -138,4 +138,7 @@ void xbee_module_add_source( XbeeModule *xb, GMainContext *context );
 void xbee_module_set_incoming_callback( XbeeModule *xb, 
 					xbee_callback_t f );
 
+/* Transmit a frame */
+int xbee_transmit( XbeeModule* xb, xb_addr_t* addr, void* buf, uint8_t len );
+
 #endif	/* __XBEE_MODULE_H */

@@ -20,7 +20,7 @@ static gboolean xbee_server_source_error( XbeeServer* serv );
 static gboolean xbee_server_req_con( XbeeServer *serv );
 
 /* Callback for an incoming frame from an XbeeModule  */
-static void xbee_server_incoming_frame( XbeeModule xb, 
+static void xbee_server_incoming_frame( XbeeModule *xb, 
 					uint8_t *data,
 					uint16_t len );
 
@@ -168,9 +168,23 @@ static gboolean xbee_server_source_error( XbeeServer* serv )
 	return FALSE;
 }
 
-static void xbee_server_incoming_frame( XbeeModule xb, 
+static void xbee_server_incoming_frame( XbeeModule *xb, 
 					uint8_t *data,
 					uint16_t len )
 {
 	/* TODO: look at frame channel number and send to correct client */
+}
+
+void xbee_server_transmit( XbeeServer* serv, 
+			   xb_addr_t* addr,
+			   void *buf, 
+			   uint8_t len )
+{
+	XbeeModule *xb;
+	assert( serv != NULL && addr != NULL && buf != NULL );
+
+	xb = (XbeeModule*)g_slist_nth_data( serv->modules, 0 );
+	assert( xb != NULL );
+
+	xbee_transmit( xb, addr, buf, len );
 }

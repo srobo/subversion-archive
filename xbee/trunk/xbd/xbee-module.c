@@ -63,7 +63,6 @@ static uint8_t xbee_module_sum_block( uint8_t* buf, uint16_t len, uint8_t cur );
 static void xbee_module_print_stats( XbeeModule* xb );
 
 /*** "Internal" Client API Functions ***/
-int xbee_transmit( XbeeModule* xb, xb_addr_t* addr, void* buf, uint8_t len );
 
 void hack( XbeeModule* xb );
 
