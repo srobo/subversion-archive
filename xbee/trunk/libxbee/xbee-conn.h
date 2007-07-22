@@ -49,7 +49,6 @@ struct xbee_conn_t
 
 	GMainContext *context;	
 };
-  
 
 /* Open a connection to the server */
 XbeeConn* xbee_conn_new( char* addr , GMainContext *context );
@@ -67,8 +66,5 @@ void xbee_conn_release_channel( XbeeConn* xbc, chan_num_t channel );
 
 /* Transmit some data */
 gboolean xbee_conn_transmit( XbeeConn* xbc, xb_addr_t addr, uint8_t* data, uint16_t len );
-
-
-
 
 #endif	/* __XBEE_CONN_H */
