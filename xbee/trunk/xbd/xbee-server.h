@@ -34,6 +34,9 @@ struct xbee_server_ts
 
 	/* List of clients (xbee_con_t*) */
 	GSList *clients;
+
+	/* List of modules */
+	GSList *modules;
 };
 
 typedef struct

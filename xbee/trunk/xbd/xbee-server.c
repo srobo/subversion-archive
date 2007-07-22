@@ -48,6 +48,7 @@ void xbee_server_instance_init( GTypeInstance *gti, gpointer g_class )
 	
 	s->context = NULL;
 	s->clients = NULL;
+	s->modules = NULL;
 }
 
 XbeeServer* xbee_server_new( GMainContext *context )
@@ -128,8 +129,7 @@ void xbee_server_attach( XbeeServer* serv, XbeeModule* xb )
 {
 	assert( serv != NULL && xb != NULL );
 	
-	serv->clients = g_slist_append( serv->clients, xb );
-	
+	serv->modules = g_slist_append( serv->modules, xb );
 }
 
 static gboolean xbee_server_req_con( XbeeServer *serv )
