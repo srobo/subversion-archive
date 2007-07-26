@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <sys/un.h>
 #include <assert.h>
+#include <unistd.h>
 
 #include "xbee-conn.h"
 
@@ -12,6 +13,7 @@ static gboolean xbee_conn_sock_incoming ( XbeeConn *conn );
 static gboolean xbee_conn_sock_outgoing ( XbeeConn *conn );
 static gboolean xbee_conn_sock_error( XbeeConn *conn );
 static gboolean xbee_conn_sock_data_ready( XbeeConn *conn );
+static gboolean xbee_conn_write_whole_frame ( XbeeConn *conn );
 
 gboolean xbee_conn_create_socket ( XbeeConn *conn, char *addr );
 
@@ -70,6 +72,13 @@ XbeeConn *xbee_conn_new ( char * addr, GMainContext *context )
 static void xbee_conn_instance_init (GTypeInstance *gti, gpointer g_class )
 {
 
+	assert (gti != NULL);
+
+	XbeeConn *conn = (XbeeConn*)gti;
+
+	conn->out_frames = NULL;
+	conn->outpos = 0;
+	
 }
 
 gboolean xbee_conn_create_socket ( XbeeConn *conn, char * addr )
@@ -124,19 +133,87 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 
 static gboolean xbee_conn_sock_outgoing( XbeeConn *conn )
 {
+
 	assert ( conn != NULL );
 
+	while ( xbee_conn_sock_data_ready(conn) )
+	{
+		if ( !xbee_conn_write_whole_frame( conn) )
+			return FALSE;
+	}	
 	return TRUE;
+
 }
 
 static gboolean xbee_conn_sock_data_ready( XbeeConn *conn )
 {
 
-	return FALSE;
+	if ( g_queue_peek_tail ( conn->out_frames ) == NULL )
+		return FALSE;
+	else
+		return TRUE;
 }
 
 static gboolean xbee_conn_sock_error( XbeeConn *conn )
 {
 	fprintf ( stderr, "Error with connection socket.\n");
 	return FALSE;
+}
+
+static gboolean xbee_conn_write_whole_frame ( XbeeConn *conn )
+{
+
+	//gboolean whole_frame = FALSE;
+	xb_frame_t *frame;
+
+	assert ( conn != NULL );
+	
+	frame = (xb_frame_t*)g_queue_peek_tail ( conn->out_frames );
+	assert ( frame != NULL );
+
+	int b = 0;
+	while ( conn->outpos < (frame->len + 2) )
+	{
+		
+		if (conn->outpos < 2)
+		{
+			uint8_t flen[2];
+			
+			/* MSByte for frame length 1st */
+			flen[0] = (frame->len >> 8) | 0xFF;
+			flen[1] = frame->len | 0xFF;
+			
+			/* Write Frame Length */
+			b = write ( conn->fd, &flen [ conn->outpos ], 2 - conn->outpos );
+		}
+		else
+		{
+			/* Write frame data */
+			b = write ( conn->fd, &frame->data[ conn->outpos -2 ], frame->len + 2 - conn->outpos );
+		}
+		
+		/* If error occurs */
+		if ( b == -1 )
+			{
+				if ( errno == EAGAIN )
+					return TRUE;
+				
+				fprintf ( stderr, "Error: Failed to write to server: %m\n" );
+				return FALSE;
+			}
+		
+		/* Do not do anything further in this iteration if no bytes written */
+		if ( b == 0 )
+			continue;
+		
+		conn->outpos += b;
+		assert ( conn->outpos <= (frame->len + 2) ); 
+		
+	}
+
+	g_queue_pop_tail ( conn->out_frames );
+	conn->outpos = 0;
+	return TRUE;
+
+       
 }
