@@ -15,7 +15,8 @@ static gboolean xbee_conn_sock_error( XbeeConn *conn );
 static gboolean xbee_conn_sock_data_ready( XbeeConn *conn );
 static gboolean xbee_conn_write_whole_frame ( XbeeConn *conn );
 
-gboolean xbee_conn_create_socket ( XbeeConn *conn, char *addr );
+/* Connects to the server at the given address */
+static gboolean xbee_conn_create_socket ( XbeeConn *conn, char *addr );
 
 GType xbee_conn_get_type (void)
 {
