@@ -163,19 +163,16 @@ static gboolean xbee_conn_sock_error( XbeeConn *conn )
 
 static gboolean xbee_conn_write_whole_frame ( XbeeConn *conn )
 {
-
-	//gboolean whole_frame = FALSE;
 	xb_frame_t *frame;
-
 	assert ( conn != NULL );
 	
 	frame = (xb_frame_t*)g_queue_peek_tail ( conn->out_frames );
 	assert ( frame != NULL );
 
-	int b = 0;
 	while ( conn->outpos < (frame->len + 2) )
 	{
-		
+		int b = 0;
+
 		if (conn->outpos < 2)
 		{
 			uint8_t flen[2];
@@ -188,20 +185,18 @@ static gboolean xbee_conn_write_whole_frame ( XbeeConn *conn )
 			b = write ( conn->fd, &flen [ conn->outpos ], 2 - conn->outpos );
 		}
 		else
-		{
 			/* Write frame data */
 			b = write ( conn->fd, &frame->data[ conn->outpos -2 ], frame->len + 2 - conn->outpos );
-		}
 		
 		/* If error occurs */
 		if ( b == -1 )
-			{
-				if ( errno == EAGAIN )
-					return TRUE;
+		{
+			if ( errno == EAGAIN )
+				return TRUE;
 				
-				fprintf ( stderr, "Error: Failed to write to server: %m\n" );
-				return FALSE;
-			}
+			fprintf ( stderr, "Error: Failed to write to server: %m\n" );
+			return FALSE;
+		}
 		
 		/* Do not do anything further in this iteration if no bytes written */
 		if ( b == 0 )
@@ -209,12 +204,9 @@ static gboolean xbee_conn_write_whole_frame ( XbeeConn *conn )
 		
 		conn->outpos += b;
 		assert ( conn->outpos <= (frame->len + 2) ); 
-		
 	}
 
 	g_queue_pop_tail ( conn->out_frames );
 	conn->outpos = 0;
 	return TRUE;
-
-       
 }
