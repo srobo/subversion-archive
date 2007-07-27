@@ -1,7 +1,7 @@
 # makfile configuration
 NAME            = leds
 OBJECTS         = main.o
-CPU             = msp430x2013
+CPU             = msp430x2012
 
 CFLAGS          = -mmcu=${CPU} -Wall -g
 

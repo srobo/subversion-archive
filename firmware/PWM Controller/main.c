@@ -4,7 +4,7 @@ Its assumed atm that the clock is running at abpout 6.52Mhz
 CC1 interrupts every 163 ticks of the timerA
 CC0 is the upper bound of timerA and is at 65200
 */
-#define __MSP430_2003__ 
+#define __MSP430_2012__ 
 
 #include "hardware.h"
 #include <stdint.h>
@@ -89,7 +89,7 @@ void initialise_PwmBoard(void){
 	
 	TACCTL0 = CCIE; //turn on interrupts for ccp module
 	TACCTL1 = CCIE; //turn on interrupts for ccp module
-	//TACTL = TASSEL_SMCLK|MC_UPTO_CCR0|ID_DIV2|TAIE; //settign timer A to count up to Taccr0, and also turn on interrupts
+	TACTL = TASSEL_SMCLK|MC_UPTO_CCR0|ID_DIV2|TAIE; //settign timer A to count up to Taccr0, and also turn on interrupts
 	
 	current_servo = 0;
 	initialise_i2c();
@@ -121,7 +121,7 @@ int main(void) {
 	initialise_PwmBoard();
     while (1){
 
-	//	sweepServo();
+		sweepServo();
 	}
 }
 
