@@ -72,14 +72,12 @@ XbeeConn *xbee_conn_new ( char * addr, GMainContext *context )
 
 static void xbee_conn_instance_init (GTypeInstance *gti, gpointer g_class )
 {
-
 	assert (gti != NULL);
 
 	XbeeConn *conn = (XbeeConn*)gti;
 
 	conn->out_frames = NULL;
 	conn->outpos = 0;
-	
 }
 
 gboolean xbee_conn_create_socket ( XbeeConn *conn, char * addr )
