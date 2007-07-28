@@ -121,7 +121,7 @@ int main(void) {
 	initialise_PwmBoard();
     while (1){
 
-		sweepServo();
+		//sweepServo();
 	}
 }
 
@@ -149,14 +149,14 @@ interrupt (TIMERA1_VECTOR) isr_TAIV(void){ //both for period interrupt and
 }
 
 interrupt (USI_VECTOR) isr_USI(void){ //interrupt for i2c
-	char number_of_data;
-	char * data;
+	uint8_t number_of_data;
+	uint8_t * data;
 	isr_usi ();
-	//if(available_i2c_data()){
-		//number_of_data = available_i2c_data();
-		//data = get_i2cData();
-		//setServoPWM(data[number_of_data-2], (MIN_PULSE + 25*data[number_of_data-1])); //takes values from 0-135
-	//}
+	if(available_i2c_data()){
+		number_of_data = available_i2c_data();
+		data = get_i2cData();
+		setServoPWM(data[0], (MIN_PULSE + 25*(uint16_t)data[1])); //takes values from 0-135
+	}
 }
  
 
