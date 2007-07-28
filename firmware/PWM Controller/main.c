@@ -1,8 +1,15 @@
 /*
+UPDATE ALL COMMENTS SO THEY REFLECT WHAT IS HAPPENING
+Also change all times so they are consisted EG 135 limit is 1.9ms NOT 2.2ms BAD
+CHange them all to be defines!
+
+
 This is the PWM firmware for 6 PWM outputs!
 Its assumed atm that the clock is running at abpout 6.52Mhz
 CC1 interrupts every 163 ticks of the timerA
 CC0 is the upper bound of timerA and is at 65200
+
+
 */
 #define __MSP430_2012__ 
 
@@ -55,6 +62,9 @@ Function will set the pulsewdith of the servo given in the parameter.
 @param uint16 pulsewidth of the servo , when FOSC 12Mhz then range is between 2260 (0.8ms) to 6215(2.2ms)
 **/
 void setServoPWM(unsigned char servo, uint16_t pulse_width){
+	if(pulse_width >= 135){ //bound check, BAD its hardcoded needs changing, WHY 135 cause its 1.9ms pulse, too low
+		pulse_width = 135;
+	}
 	servo_pulse[servo] = pulse_width;
 } 
  
