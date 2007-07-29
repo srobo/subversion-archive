@@ -155,13 +155,6 @@ gboolean xbee_conn_create_socket ( XbeeConn *conn, char * addr )
 		return FALSE;
 	}
 	
-	if ( bind( conn->fd, (struct sockaddr*)&sock_addr,
-		   sizeof ( short int ) + strlen (sock_addr.sun_path) ) == -1 )
-	{
-		fprintf ( stderr, "Failed to bind to socket: %m\n" );
-		return FALSE;
-	}
-	
 	if ( connect ( conn->fd, (struct sockaddr*)&sock_addr,
 		       sizeof ( short int ) + strlen (sock_addr.sun_path) ) == -1 )
 	{
