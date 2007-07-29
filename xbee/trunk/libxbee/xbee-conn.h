@@ -81,4 +81,7 @@ void xbee_conn_release_channel( XbeeConn* xbc, chan_num_t channel );
 /* Transmit some data */
 gboolean xbee_conn_transmit( XbeeConn* conn, xb_addr_t addr, uint8_t* data, uint16_t len );
 
+/* Xbee Command Test */
+void xbee_command_test ( XbeeConn * conn, gchar *data);
+
 #endif	/* __XBEE_CONN_H */

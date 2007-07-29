@@ -3,6 +3,7 @@
 #include <assert.h>
 
 gboolean tx( XbeeConn *xbc );
+void xbtest ( XbeeConn *xbc );
 
 int main( int argc, char** argv )
 {
@@ -13,9 +14,12 @@ int main( int argc, char** argv )
 	ml = g_main_loop_new( NULL, FALSE );
 	context = g_main_loop_get_context( ml );
 
+	g_type_init ();
+
 	xbc = xbee_conn_new( "/tmp/xbee", context );
 
-	g_timeout_add( 250, (GSourceFunc)tx, (gpointer)xbc );
+	//g_timeout_add( 250, (GSourceFunc)tx, (gpointer)xbc );
+	g_timeout_add(250, (GSourceFunc)xbtest, (gpointer)xbc);
 	
 	g_main_loop_run( ml );
 
@@ -24,7 +28,7 @@ int main( int argc, char** argv )
 
 gboolean tx( XbeeConn *xbc )
 {
-	uint8_t data[] = {0,1,2,3,4,5};
+        uint8_t data[] = {0,1,2,3,4,5};
 	xb_addr_t addr =
 		{
 			.type = XB_ADDR_64,
@@ -33,6 +37,15 @@ gboolean tx( XbeeConn *xbc )
 	assert( xbc != NULL );
 
 	xbee_conn_transmit( xbc, addr, data, 6 );
-
+	
 	return TRUE;
+}
+
+void xbtest ( XbeeConn *xbc )
+{
+  
+  gchar data[] = {0,1,2,3,4,5};
+  
+  xbee_command_test (xbc, data);
+  
 }
