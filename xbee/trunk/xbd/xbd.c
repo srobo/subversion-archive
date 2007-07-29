@@ -14,6 +14,7 @@ static GOptionEntry entries[] =
 {
 	{ "config", 'c', 0, G_OPTION_ARG_FILENAME, &config, "Config file filename" },
 	{ "serial", 's', 0, G_OPTION_ARG_FILENAME, &sdev, "Serial device" },
+	{ "listen", 'l', 0, G_OPTION_ARG_STRING, &listen, "Socket path to listen on" },
 	{ NULL }
 };
 
@@ -34,7 +35,7 @@ int main( int argc, char** argv )
 	xb = xbee_module_open( sdev, context );
 	g_return_val_if_fail( xb != NULL, 1 );
 
-	server = xbee_server_new( context );
+	server = xbee_server_new( context, listen );
 	g_return_val_if_fail( server != NULL, 3 );
 
 	xbee_server_attach( server, xb );

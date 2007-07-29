@@ -7,7 +7,7 @@
 
 #define LISTEN_QUEUE_LEN 5
 
-gboolean xbee_server_listen( XbeeServer* serv );
+gboolean xbee_server_listen( XbeeServer* serv, gchar* spath );
 
 void xbee_server_instance_init( GTypeInstance *gti, gpointer g_class );
 
@@ -56,13 +56,13 @@ void xbee_server_instance_init( GTypeInstance *gti, gpointer g_class )
 	s->modules = NULL;
 }
 
-XbeeServer* xbee_server_new( GMainContext *context )
+XbeeServer* xbee_server_new( GMainContext *context, gchar* spath )
 {
 	XbeeServer *serv;
 
 	serv = g_object_new( XBEE_SERVER_TYPE, NULL );
 
-	if( !xbee_server_listen( serv ) )
+	if( !xbee_server_listen( serv, spath ) )
 		return NULL;
 
 	serv->context = context;
@@ -79,14 +79,15 @@ XbeeServer* xbee_server_new( GMainContext *context )
 	return serv;
 }
 
-gboolean xbee_server_listen( XbeeServer* serv )
+gboolean xbee_server_listen( XbeeServer* serv, gchar* spath )
 {
 	struct sockaddr_un addr = 
 	{
 		.sun_family = AF_LOCAL,
-		.sun_path = "/tmp/xbee"
 	};
-	assert( serv != NULL );
+	assert( serv != NULL && spath != NULL );
+
+	strncpy( addr.sun_path, spath, 108 );
 
 	/* Create the listening socket  */
 	serv->l_fd = socket( PF_LOCAL, SOCK_STREAM, 0 );

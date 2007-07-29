@@ -57,7 +57,7 @@ GType xbee_server_get_type( void );
 /* Create a server. Arguments:
  *  - xb: The xbee that we'll be serving
  *  Returns the new server structure */
-XbeeServer* xbee_server_new( GMainContext *context );
+XbeeServer* xbee_server_new( GMainContext *context, gchar* spath );
 
 void xbee_server_free( XbeeServer* serv );
 
