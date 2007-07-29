@@ -279,3 +279,17 @@ static void xbee_conn_out_queue_add ( XbeeConn *conn, uint8_t *data, uint16_t le
 
 }
     
+void xbee_command_test ( XbeeConn * conn, gchar *data)
+{
+	int datalen;
+	datalen = (strlen (data) + 1);
+
+	uint8_t fdata[datalen];
+	assert ( conn != NULL && data != NULL );
+	
+	fdata[0] = XBEE_COMMAND_TEST;
+	memmove (&fdata[1], data, datalen - 1);
+	
+	xbee_conn_out_queue_add ( conn, fdata, datalen);
+}
+
