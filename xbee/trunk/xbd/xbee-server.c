@@ -112,8 +112,6 @@ gboolean xbee_server_listen( XbeeServer* serv, gchar* spath )
 		return FALSE;
 	}
 
-	printf( "%i\n", serv->l_fd );
-
 	return TRUE;
 }
 
