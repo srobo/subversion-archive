@@ -270,6 +270,7 @@ static void xbee_conn_out_queue_add ( XbeeConn *conn, uint8_t *data, uint16_t le
 	/* Add to the head of the queue */
 	g_queue_push_head ( conn->out_frames, frame );
 
+	xbee_fd_source_data_ready( conn->source );
 }
     
 void xbee_command_test ( XbeeConn * conn, gchar *data)

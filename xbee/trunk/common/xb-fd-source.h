@@ -26,4 +26,6 @@ xbee_fd_source_t* xbee_fd_source_new( int fd,
 				      xbee_fd_callback error_callback,
 				      xbee_fd_callback data_ready );
 
+void xbee_fd_source_data_ready( xbee_fd_source_t* source );
+
 #endif	/* __COMMON_H */

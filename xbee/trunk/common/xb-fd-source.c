@@ -143,3 +143,10 @@ static void xbee_fd_source_finalize( GSource *source )
 {
 	/* Don't need to do anything here */
 }
+
+void xbee_fd_source_data_ready( xbee_fd_source_t* source )
+{
+	assert( source != NULL );
+
+	source->pollfd.events |= G_IO_OUT;
+}
