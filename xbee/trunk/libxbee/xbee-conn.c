@@ -5,18 +5,26 @@
 #include <sys/un.h>
 #include <assert.h>
 #include <unistd.h>
-
+#include <string.h>
 #include "xbee-conn.h"
+#include "commands.h"
+#include "libxcli.h"
+
 
 static void xbee_conn_instance_init (GTypeInstance *gti, gpointer g_class );
 static gboolean xbee_conn_sock_incoming ( XbeeConn *conn );
 static gboolean xbee_conn_sock_outgoing ( XbeeConn *conn );
 static gboolean xbee_conn_sock_error( XbeeConn *conn );
 static gboolean xbee_conn_sock_data_ready( XbeeConn *conn );
-static gboolean xbee_conn_write_whole_frame ( XbeeConn *conn );
 
+/* Attempts to write a frame to FD */
+/* Return Value: Error = -1, EAGAIN = 0, Successful Write = 1 */
+static int xbee_conn_write_whole_frame ( XbeeConn *conn );
+/* Adds Frame to Queue */
+static void xbee_conn_out_queue_add ( XbeeConn *conn, uint8_t *data, uint16_t len );
 /* Connects to the server at the given address */
 static gboolean xbee_conn_create_socket ( XbeeConn *conn, char *addr );
+
 
 GType xbee_conn_get_type (void)
 {
@@ -42,9 +50,51 @@ GType xbee_conn_get_type (void)
 	return (type);
 }
 
-gboolean xbee_conn_transmit( XbeeConn* xbc, xb_addr_t addr, uint8_t* data, uint16_t len )
+
+gboolean xbee_conn_transmit( XbeeConn* conn, xb_addr_t addr, uint8_t* data, uint16_t len )
 {
-	g_print( "Transmit!\n" );
+	/* Transmit Frame Layout 
+	   0: Command Code: XBEE_COMMAND_TRANSMIT
+	   * 1: Address type
+	   *** 16-bit address format:
+	   *     2-3: Address - MSB first.
+	   *     4->(3+len): Data for transmission.
+	   *** 64-bit address format:
+	   *     2-9: Address - MSB first
+	   *     10->(9+len): Data for transmission */
+
+	uint8_t fdata[len + 10];
+
+	assert ( conn != NULL && data !=NULL );
+		
+	/* Copy data to frame */
+	fdata[0] = XBEE_COMMAND_TRANSMIT;
+	fdata[1] = addr.type;	
+	if (addr.type == XB_ADDR_16)
+	{
+		if ((len + 6) > XBEE_MAX_FRAME) /* checks length of (data + command + address-type + 16bit address + 16 bit frame length) */
+		{
+			fprintf (stderr, "Error: Data exceeds maximum frame length %m\n");
+			return FALSE;
+		}
+		memmove (&fdata[2], addr.addr, 2);
+		memmove (&fdata[4], data, len);
+		len = len + 4;
+	}
+	else
+	{
+		if ((len + 12) > XBEE_MAX_FRAME) /* checks length of (data + command + address-type + 64bit address + 16bit frame legnth) */
+		{
+			fprintf (stderr, "Error: Data exceeds maximum frame length %m\n");
+			return FALSE;
+		}			
+		memmove (&fdata[2], addr.addr, 8);
+		memmove (&fdata[10], data, len);
+		len = len + 10;
+	}
+		 
+	xbee_conn_out_queue_add ( conn, fdata, len );
+	
 	return TRUE;
 }
 
@@ -122,7 +172,7 @@ gboolean xbee_conn_create_socket ( XbeeConn *conn, char * addr )
 	return TRUE;
 }
 	
-	
+
 static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 {
 	assert ( conn != NULL );
@@ -132,12 +182,15 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 
 static gboolean xbee_conn_sock_outgoing( XbeeConn *conn )
 {
+	
+	int ret_val = 1;
 
 	assert ( conn != NULL );
 
-	while ( xbee_conn_sock_data_ready(conn) )
+	while ( xbee_conn_sock_data_ready(conn) && (ret_val == 1) )
 	{
-		if ( !xbee_conn_write_whole_frame( conn) )
+		ret_val = xbee_conn_write_whole_frame (conn); 
+		if (ret_val == -1)	
 			return FALSE;
 	}	
 	return TRUE;
@@ -159,7 +212,7 @@ static gboolean xbee_conn_sock_error( XbeeConn *conn )
 	return FALSE;
 }
 
-static gboolean xbee_conn_write_whole_frame ( XbeeConn *conn )
+static int xbee_conn_write_whole_frame ( XbeeConn *conn )
 {
 	xb_frame_t *frame;
 	assert ( conn != NULL );
@@ -190,10 +243,10 @@ static gboolean xbee_conn_write_whole_frame ( XbeeConn *conn )
 		if ( b == -1 )
 		{
 			if ( errno == EAGAIN )
-				return TRUE;
-				
+				return 0;
+			
 			fprintf ( stderr, "Error: Failed to write to server: %m\n" );
-			return FALSE;
+			return -1;
 		}
 		
 		/* Do not do anything further in this iteration if no bytes written */
@@ -206,5 +259,23 @@ static gboolean xbee_conn_write_whole_frame ( XbeeConn *conn )
 
 	g_queue_pop_tail ( conn->out_frames );
 	conn->outpos = 0;
-	return TRUE;
+	return 1;
 }
+
+static void xbee_conn_out_queue_add ( XbeeConn *conn, uint8_t *data, uint16_t len )
+{
+	xb_frame_t *frame;
+
+	frame = (xb_frame_t*)g_malloc ( sizeof (xb_frame_t) );
+	assert ( conn != NULL && data != NULL && frame != NULL);
+
+	frame->data = g_memdup ( data, len );
+	assert ( frame->data != NULL );
+	
+	frame->len = len;
+	
+	/* Add to the head of the queue */
+	g_queue_push_head ( conn->out_frames, frame );
+
+}
+    

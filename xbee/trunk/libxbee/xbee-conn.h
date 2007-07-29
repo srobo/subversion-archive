@@ -42,8 +42,6 @@ GType xbee_conn_get_type ( void );
 
 typedef struct
 {
-	/* Set the length in this struct */
-	
 	/* frame->len represents the length of frame (exluding the 2 frame length bytes) */
 	uint16_t len;
 	uint8_t *data;
@@ -81,6 +79,6 @@ chan_num_t xbee_conn_get_channel( XbeeConn* xbc,
 void xbee_conn_release_channel( XbeeConn* xbc, chan_num_t channel );
 
 /* Transmit some data */
-gboolean xbee_conn_transmit( XbeeConn* xbc, xb_addr_t addr, uint8_t* data, uint16_t len );
+gboolean xbee_conn_transmit( XbeeConn* conn, xb_addr_t addr, uint8_t* data, uint16_t len );
 
 #endif	/* __XBEE_CONN_H */
