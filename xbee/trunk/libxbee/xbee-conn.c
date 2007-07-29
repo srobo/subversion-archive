@@ -126,7 +126,7 @@ static void xbee_conn_instance_init (GTypeInstance *gti, gpointer g_class )
 
 	XbeeConn *conn = (XbeeConn*)gti;
 
-	conn->out_frames = NULL;
+	conn->out_frames = g_queue_new();
 	conn->outpos = 0;
 }
 
