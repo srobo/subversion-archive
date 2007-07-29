@@ -132,9 +132,11 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 			{
 			case XBEE_COMMAND_TEST:
 			{
-				char* c, *s = (char*)f;
+				char* c, *s = (char*)f+1;
+				int len = client->flen - 1;
+
 				printf( "Received: " );
-				for( c=s+1; (c-s)<(client->flen-1); c++ )
+				for( c=s; c-s < len; c++ )
 					putc( (int)*c, stdout );
 				putc( (int)'\n', stdout );
 			}
