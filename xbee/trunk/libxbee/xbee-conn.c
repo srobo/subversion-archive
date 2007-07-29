@@ -273,7 +273,7 @@ static void xbee_conn_out_queue_add ( XbeeConn *conn, uint8_t *data, uint16_t le
 	xbee_fd_source_data_ready( conn->source );
 }
     
-void xbee_command_test ( XbeeConn * conn, gchar *data)
+void xbee_conn_command_test ( XbeeConn * conn, gchar *data)
 {
 	int datalen;
 	datalen = (strlen (data) + 1);

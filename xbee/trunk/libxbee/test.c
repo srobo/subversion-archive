@@ -46,6 +46,6 @@ void xbtest ( XbeeConn *xbc )
   
   gchar data[] = "Hello Dave\0";
   
-  xbee_command_test (xbc, data);
+  xbee_conn_command_test (xbc, data);
   
 }
