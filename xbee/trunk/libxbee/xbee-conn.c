@@ -222,8 +222,8 @@ static int xbee_conn_write_whole_frame ( XbeeConn *conn )
 			uint8_t flen[2];
 			
 			/* MSByte for frame length 1st */
-			flen[0] = (frame->len >> 8) | 0xFF;
-			flen[1] = frame->len | 0xFF;
+			flen[0] = (frame->len >> 8) & 0xFF;
+			flen[1] = frame->len & 0xFF;
 			
 			/* Write Frame Length */
 			b = write ( conn->fd, &flen [ conn->outpos ], 2 - conn->outpos );
