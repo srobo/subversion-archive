@@ -3,7 +3,7 @@ NAME            = leds
 OBJECTS         = main.o
 CPU             = msp430x2012
 
-CFLAGS          = -mmcu=${CPU} -Wall -g
+CFLAGS          = -mmcu=${CPU} -Wall -g -O3
 
 #switch the compiler (for the internal make rules)
 CC              =msp430-gcc

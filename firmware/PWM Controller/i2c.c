@@ -83,16 +83,20 @@ inline void isr_usi (void){
 	case state_check_address: // Process Address and send (N)Ack
 		if (USISRL & 0x01){       // If read... This is done so that the addresses can be compared directly
 			SLV_Addr++;		// Save R/W bit
-		}			
-		USICTL0 |= USIOE;        // SDA = output
+		}	
 		if (USISRL == SLV_Addr){  // Address match?
+			USICTL0 |= USIOE;        // SDA = output	
 			USISRL = 0x00;         // Send Ack
 			I2C_State = state_rx_command;         // Go to next state: RX data
+			USICNT |= 0x01;          //  Bit counter = 1, send (N)Ack bit
 		}else{
-			USISRL = 0xFF;         // Send NAck
-			I2C_State = state_prep_for_start;         // Go to next state: prep for next Start
+			//USICTL0 &= ~USIOE;       // SDA = input
+			SLV_Addr = ADDRESS;         // Reset slave address
+			I2C_State = state_idle;           // Reset state machine
+			//OLD waste an interrupt
+			//USISRL = 0xFF;         // Send NAck
+			//I2C_State = state_prep_for_start;         // Go to next state: prep for next Start
 		}
-		USICNT |= 0x01;          //  Bit counter = 1, send (N)Ack bit
 		break;
 
 	case state_rx_command: // Rstepeceive data byte 1

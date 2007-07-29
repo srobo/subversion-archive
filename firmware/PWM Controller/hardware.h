@@ -38,6 +38,7 @@ Defining constants for the PWM board.
 #define TICKS_PER_MS (uint16_t)(PERIOD/20)
 #define MIN_PULSE (uint16_t)(0.8*TICKS_PER_MS)
 #define MIDDLE_PULSE (uint16_t)(1.5*TICKS_PER_MS)
+#define MAX_PULSE (uint16_t)(2.3*TICKS_PER_MS)
 #define SERVO_NUMBER 6
 
 void initialiseServoArray(unsigned int pulse_width);

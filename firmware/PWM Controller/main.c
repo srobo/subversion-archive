@@ -11,11 +11,11 @@ CC0 is the upper bound of timerA and is at 65200
 
 
 */
-#define __MSP430_2012__ 
 
 #include "hardware.h"
 #include <stdint.h>
 #include "i2c.h"
+#include <signal.h>
 
 char new_period;
 uint16_t servo_pulse[SERVO_NUMBER];
@@ -62,8 +62,8 @@ Function will set the pulsewdith of the servo given in the parameter.
 @param uint16 pulsewidth of the servo , when FOSC 12Mhz then range is between 2260 (0.8ms) to 6215(2.2ms)
 **/
 void setServoPWM(unsigned char servo, uint16_t pulse_width){
-	if(pulse_width >= 135){ //bound check, BAD its hardcoded needs changing, WHY 135 cause its 1.9ms pulse, too low
-		pulse_width = 135;
+	if(pulse_width >= MAX_PULSE){ //bound checking
+		pulse_width = MAX_PULSE;
 	}
 	servo_pulse[servo] = pulse_width;
 } 
@@ -87,8 +87,8 @@ void initialise_PwmBoard(void){
     P1DIR  = P1DIR_INIT;                //Init port direction register of port1
     P2DIR  = P2DIR_INIT;                //Init port direction register of port2
 
-    P1IES  = P1IES_INIT;                //init port interrupts
-    P2IES  = P2IES_INIT;
+	P1IES  = P1IES_INIT;                //init port interrupts
+	P2IES  = P2IES_INIT;
     P1IE   = P1IE_INIT;
     P2IE   = P2IE_INIT;
 		
@@ -127,7 +127,7 @@ void sweepServo(void){
  Main function
  **/
 int main(void) {
-	int static unused_initialized_variable_to_make_gdb_happy = 1;
+	//int static unused_initialized_variable_to_make_gdb_happy = 1;
 	initialise_PwmBoard();
     while (1){
 
@@ -159,6 +159,7 @@ interrupt (TIMERA1_VECTOR) isr_TAIV(void){ //both for period interrupt and
 }
 
 interrupt (USI_VECTOR) isr_USI(void){ //interrupt for i2c
+	eint();
 	uint8_t number_of_data;
 	uint8_t * data;
 	isr_usi ();
@@ -168,5 +169,11 @@ interrupt (USI_VECTOR) isr_USI(void){ //interrupt for i2c
 		setServoPWM(data[0], (MIN_PULSE + 25*(uint16_t)data[1])); //takes values from 0-135
 	}
 }
+
+interrupt (NOVECTOR) IntServiceRoutine(void)
+{
+	
+}
+
  
 
