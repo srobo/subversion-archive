@@ -50,9 +50,4 @@ struct xbee_client_ts
 
 XbeeClient* xbee_client_new( GMainContext *context, int sock ); 
 
-typedef enum
-{
-	XBEE_COMMAND_TEST = 0
-} xbee_client_command_t;
-
 #endif	/* __XBEE_CLIENT_H */

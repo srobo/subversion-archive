@@ -1,4 +1,6 @@
 #include "xbee-client.h"
+#include "commands.h"
+#include "libxcli.h"
 #include <stdio.h>
 #include <assert.h>
 #include <unistd.h>
@@ -99,7 +101,7 @@ static int xbee_client_read_frame( XbeeClient *client )
 		if( client->inpos == 2 )
 		{
 			client->flen = (((uint16_t)client->inbuf[0]) << 8) | client->inbuf[1];
-			if( client->flen + 2 > XB_CLIENT_INBUF_LEN )
+			if( client->flen + 2 > XBEE_MAX_FRAME )
 			{
 				printf( "Frame too long (%u) :-S\n", client->flen );
 				return -1;
