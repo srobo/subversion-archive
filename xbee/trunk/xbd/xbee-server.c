@@ -24,6 +24,10 @@ static void xbee_server_incoming_frame( XbeeModule *xb,
 					uint8_t *data,
 					uint16_t len );
 
+/* Callback for when an XbeeClient is disconnected */
+void xbee_client_disconnect( XbeeClient *client,
+			     XbeeServer *server );
+
 GType xbee_server_get_type( void )
 {
 	static GType type = 0;
@@ -154,7 +158,8 @@ static gboolean xbee_server_req_con( XbeeServer *serv )
 		return FALSE;
 	}
 
-	client = xbee_client_new( serv->context, s );
+	client = xbee_client_new( serv->context, s, serv,
+				  xbee_client_disconnect );
 	assert( client != NULL );
 	serv->clients = g_slist_append( serv->clients, client );
 
@@ -186,4 +191,15 @@ void xbee_server_transmit( XbeeServer* serv,
 	assert( xb != NULL );
 
 	xbee_transmit( xb, addr, buf, len );
+}
+
+void xbee_client_disconnect( XbeeClient *client,
+			     XbeeServer *server )
+{
+	assert( client != NULL && server != NULL );
+	
+	server->clients = g_slist_remove( server->clients, 
+					  client );
+
+	g_object_unref( client );
 }

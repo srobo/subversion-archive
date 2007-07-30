@@ -20,6 +20,12 @@ static gboolean xbee_client_data_ready( XbeeClient *client );
  * When an error occurs, it returns -1 */
 static int xbee_client_read_frame( XbeeClient *client );
 
+static void xbee_client_dispose( GObject *obj );
+static void xbee_client_finalize( GObject *obj );
+static void xbee_client_class_init( XbeeClientClass *klass );
+
+static GObjectClass *parent_class = NULL;
+
 GType xbee_client_get_type( void )
 {
 	static GType type = 0;
@@ -28,7 +34,7 @@ GType xbee_client_get_type( void )
 			sizeof (XbeeClientClass),
 			NULL,   /* base_init */
 			NULL,   /* base_finalize */
-			NULL,   /* class_init */
+			(GClassInitFunc)xbee_client_class_init,   /* class_init */
 			NULL,   /* class_finalize */
 			NULL,   /* class_data */
 			sizeof (XbeeClient),
@@ -49,19 +55,28 @@ static void xbee_client_instance_init( GTypeInstance *gti, gpointer g_class )
 
 	client->in_frames = NULL;
 	client->inpos = 0;
-	
+	client->server = NULL;
+	client->dispose_has_run = FALSE;
+
+	parent_class = g_type_class_peek_parent (g_class);
+
 	g_print( "Wooo.  Client initialised\n" );
 }
 
-XbeeClient* xbee_client_new( GMainContext *context, int sock )
+XbeeClient* xbee_client_new( GMainContext *context, 
+			     int sock, 
+			     XbeeServer *server,
+			     xbee_client_disconnect_t dis )
 {
 	XbeeClient* client;
+	assert( server != NULL && dis != NULL );
 	
 	client = g_object_new( XBEE_CLIENT_TYPE, NULL );
 
 	client->fd = sock;
-	
-	
+	client->disconn = dis;
+	client->server = server;
+
 	client->source = xbee_fd_source_new( client->fd,
 					     context,
 					     (gpointer)client,
@@ -92,7 +107,11 @@ static int xbee_client_read_frame( XbeeClient *client )
 			return -1;
 		}
 
-		if( r == 0 ) continue;
+		if( r == 0 ) {
+			client->disconn( client, client->server );
+			return 1;
+		}
+
 
 		client->inbuf[ client->inpos ] = d;
 		client->inpos++;
@@ -169,3 +188,38 @@ static gboolean xbee_client_sock_error( XbeeClient *client )
 	return FALSE;
 }
 
+static void xbee_client_class_init( XbeeClientClass *klass )
+{
+	assert( klass != NULL );
+	GObjectClass *gobject_class = G_OBJECT_CLASS( klass );
+
+	gobject_class->dispose = xbee_client_dispose;
+	gobject_class->finalize = xbee_client_finalize;	
+}
+
+static void xbee_client_dispose( GObject *obj )
+{
+	XbeeClient *self = (XbeeClient*)obj;
+
+	if( self->dispose_has_run ) 
+		return;
+
+	self->dispose_has_run = TRUE;
+
+	/* Unreference things here. */
+
+	G_OBJECT_CLASS(parent_class)->dispose(obj);
+}
+
+static void xbee_client_finalize( GObject *obj )
+{
+	XbeeClient *self = (XbeeClient*)obj;
+
+	/* Free stuff */
+	/* Free the queues etc. */
+
+	/* Delete the xb-fd-source */
+	xbee_fd_source_free( self->source );
+	
+	G_OBJECT_CLASS (parent_class)->finalize (obj);	
+}

@@ -150,3 +150,8 @@ void xbee_fd_source_data_ready( xbee_fd_source_t* source )
 
 	source->pollfd.events |= G_IO_OUT;
 }
+
+void xbee_fd_source_free( xbee_fd_source_t* source )
+{
+	g_source_unref( (GSource*)source );
+}

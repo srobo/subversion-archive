@@ -7,6 +7,7 @@ typedef gboolean (*xbee_fd_callback) ( gpointer );
 
 typedef struct
 {
+	/* source is used internally in GSource code */
 	GSource source;
 	GPollFD pollfd;
 
@@ -27,5 +28,7 @@ xbee_fd_source_t* xbee_fd_source_new( int fd,
 				      xbee_fd_callback data_ready );
 
 void xbee_fd_source_data_ready( xbee_fd_source_t* source );
+
+void xbee_fd_source_free( xbee_fd_source_t* source );
 
 #endif	/* __COMMON_H */

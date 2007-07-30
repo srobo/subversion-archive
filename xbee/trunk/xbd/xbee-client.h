@@ -4,6 +4,7 @@
 #include <glib-object.h>
 #include <stdint.h>
 #include "xb-fd-source.h"
+#include "xbee-server.h"
 
 #define XB_CLIENT_INBUF_LEN 512
 
@@ -30,12 +31,20 @@ typedef void (*xbee_client_callback_t) (XbeeClient *client,
 					uint8_t *data,
 					uint16_t len);
 
+typedef void (*xbee_client_disconnect_t) (XbeeClient *client,
+					  XbeeServer *server);
+
 struct xbee_client_ts
 {
 	GObject parent;
 
+	XbeeServer *server;
+
 	/* Socket file descriptor */
 	int fd;
+
+	/* Client disconnect callback */
+	xbee_client_disconnect_t disconn;
 
 	xbee_fd_source_t *source;
 	guint source_id;
@@ -46,8 +55,13 @@ struct xbee_client_ts
 	/* Socket frame reception stuff */
 	uint8_t inbuf[ XB_CLIENT_INBUF_LEN ];
 	uint16_t inpos, flen;
+
+	gboolean dispose_has_run;
 };
 
-XbeeClient* xbee_client_new( GMainContext *context, int sock ); 
+XbeeClient* xbee_client_new( GMainContext *context, 
+			     int sock,
+			     XbeeServer *server,
+			     xbee_client_disconnect_t dis ); 
 
 #endif	/* __XBEE_CLIENT_H */
