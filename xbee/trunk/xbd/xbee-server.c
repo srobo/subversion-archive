@@ -1,5 +1,6 @@
 #include "xbee-server.h"
 #include "xbee-client.h"
+#include "common-fd.h"
 #include <sys/socket.h>
 #include <string.h>
 #include <sys/un.h>
@@ -102,6 +103,9 @@ gboolean xbee_server_listen( XbeeServer* serv, gchar* spath )
 		return FALSE;
 	}
 	
+	if( !fd_set_nonblocking( serv->l_fd ) )
+		return FALSE;
+
 	if( bind( serv->l_fd, 
 		  (struct sockaddr*)&addr, 
 		  sizeof( short int ) + strlen( addr.sun_path ) ) == -1 )
@@ -157,6 +161,9 @@ static gboolean xbee_server_req_con( XbeeServer *serv )
 		fprintf(stderr, "Error accepting connection: %m\n");
 		return FALSE;
 	}
+
+	if( !fd_set_nonblocking(s) )
+		return FALSE;
 
 	client = xbee_client_new( serv->context, s, serv,
 				  xbee_client_disconnect );
