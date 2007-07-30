@@ -32,13 +32,16 @@ int main( int argc, char** argv )
 	ml = g_main_loop_new( NULL, FALSE );
 	context = g_main_loop_get_context( ml );
 
-	xb = xbee_module_open( sdev, context );
-	g_return_val_if_fail( xb != NULL, 1 );
-
 	server = xbee_server_new( context, listen );
 	g_return_val_if_fail( server != NULL, 3 );
 
-	xbee_server_attach( server, xb );
+	if( sdev != NULL )
+	{
+		xb = xbee_module_open( sdev, context );
+		g_return_val_if_fail( xb != NULL, 1 );
+		
+		xbee_server_attach( server, xb );
+	}
 
 	g_main_loop_run( ml );
 
@@ -67,10 +70,7 @@ void config_create( int argc, char **argv )
 		parse_config_file();
 	
 	if( sdev == NULL )
-	{
-		g_printerr( "Error: No serial port specified\n" );
-		exit(3);
-	}
+		g_print( "Warning: No serial port specified = no xbee!\n" );
 
 	if( listen == NULL )
 		listen = "/tmp/xbee";
