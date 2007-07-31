@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/un.h>
 #include <errno.h>
+#include <unistd.h>
 
 #define LISTEN_QUEUE_LEN 5
 
@@ -29,6 +30,12 @@ static void xbee_server_incoming_frame( XbeeModule *xb,
 void xbee_client_disconnect( XbeeClient *client,
 			     XbeeServer *server );
 
+static void xbee_server_dispose( GObject *obj );
+static void xbee_server_finalize( GObject *obj );
+static void xbee_server_class_init( XbeeServerClass *klass );
+
+static GObjectClass *parent_class = NULL;
+
 GType xbee_server_get_type( void )
 {
 	static GType type = 0;
@@ -37,7 +44,7 @@ GType xbee_server_get_type( void )
 			sizeof (XbeeServerClass),
 			NULL,   /* base_init */
 			NULL,   /* base_finalize */
-			NULL,   /* class_init */
+			(GClassInitFunc)xbee_server_class_init,   /* class_init */
 			NULL,   /* class_finalize */
 			NULL,   /* class_data */
 			sizeof (XbeeServer),
@@ -59,6 +66,10 @@ void xbee_server_instance_init( GTypeInstance *gti, gpointer g_class )
 	s->context = NULL;
 	s->clients = NULL;
 	s->modules = NULL;
+	s->dispose_has_run = FALSE;
+	s->sock_fname = NULL;
+
+	parent_class = g_type_class_peek_parent (g_class);
 }
 
 XbeeServer* xbee_server_new( GMainContext *context, gchar* spath )
@@ -119,6 +130,8 @@ gboolean xbee_server_listen( XbeeServer* serv, gchar* spath )
 		fprintf( stderr, "Failed to listen on socket: %m\n" );
 		return FALSE;
 	}
+
+	serv->sock_fname = spath;
 
 	return TRUE;
 }
@@ -209,4 +222,54 @@ void xbee_client_disconnect( XbeeClient *client,
 					  client );
 
 	g_object_unref( client );
+}
+
+static void xbee_server_dispose( GObject *obj )
+{
+	XbeeServer *self = (XbeeServer*)obj;
+
+	if( self->dispose_has_run )
+		return;
+
+	self->dispose_has_run = TRUE;
+
+	/* Unreference things here. */
+
+	G_OBJECT_CLASS(parent_class)->dispose(obj);
+}
+
+static void xbee_server_finalize( GObject *obj )
+{
+	XbeeServer *serv = (XbeeServer*)obj;
+
+	/* Delete the xb-fd-source */
+	if( serv->source != NULL )
+		xbee_fd_source_free( serv->source );
+
+	/* Shutdown all connections */
+	XbeeClient *n, *c = (XbeeClient*)g_slist_nth( serv->clients, 0 );
+	while( c != NULL )
+	{
+		n = (XbeeClient*)g_slist_next( c );
+		g_object_unref( c );
+		c = n;
+	}
+
+	/* Stop listening */
+	shutdown( serv->l_fd, 2 );
+
+	/* Delete the socket file */
+	if( serv->sock_fname != NULL )
+		unlink( serv->sock_fname );
+	
+	G_OBJECT_CLASS (parent_class)->finalize (obj);	
+}
+
+static void xbee_server_class_init( XbeeServerClass *klass )
+{
+	assert( klass != NULL );
+	GObjectClass *gobject_class = G_OBJECT_CLASS( klass );
+
+	gobject_class->dispose = xbee_server_dispose;
+	gobject_class->finalize = xbee_server_finalize;	
 }

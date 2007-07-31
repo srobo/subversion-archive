@@ -31,12 +31,16 @@ struct xbee_server_ts
 
 	/* Listening socket */
 	int l_fd;
+	/* Filename */
+	gchar *sock_fname;
 
 	/* List of clients (xbee_con_t*) */
 	GSList *clients;
 
 	/* List of modules */
 	GSList *modules;
+
+	gboolean dispose_has_run;
 };
 
 typedef struct

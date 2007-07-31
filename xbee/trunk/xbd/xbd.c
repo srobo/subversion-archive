@@ -1,14 +1,19 @@
 #include <stdio.h>
 #include <glib.h>
 #include <stdlib.h>
+#include <signal.h>
 #include "xbee-server.h"
 
 void parse_config_file( void );
 void config_create( int argc, char **argv );
+static void xbd_kill( int signum );
 
 static gchar *config = NULL, 
 	*sdev = NULL,
 	*listen = NULL;
+
+static GMainLoop *ml = NULL;
+static XbeeServer *server = NULL;
 
 static GOptionEntry entries[] = 
 {
@@ -21,8 +26,6 @@ static GOptionEntry entries[] =
 int main( int argc, char** argv )
 {
 	XbeeModule *xb;
-	XbeeServer *server;
-	GMainLoop* ml;
 	GMainContext *context;
 
 	g_type_init();
@@ -42,6 +45,11 @@ int main( int argc, char** argv )
 		
 		xbee_server_attach( server, xb );
 	}
+
+	if( signal( SIGINT, xbd_kill ) == SIG_ERR )
+		g_print("ERROR\n");
+	if( signal( SIGTERM, xbd_kill ) == SIG_ERR )
+		g_print("ERROR\n");
 
 	g_main_loop_run( ml );
 
@@ -100,3 +108,16 @@ void parse_config_file( void )
 		sdev = g_key_file_get_value(f, "xbee", "sdev", NULL);
 }
 
+static void xbd_kill( int signum )
+{
+	g_print( "\n xbd shutting down.\n" );
+
+	if( ml != NULL )
+	{
+		g_main_loop_quit(ml);
+
+		/* Delete the server socket */
+		if( server != NULL )
+			g_object_unref( server );
+	}
+}
