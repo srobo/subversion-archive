@@ -264,6 +264,10 @@ int xbee_transmit( XbeeModule* xb, xb_addr_t* addr, void* buf, uint8_t len )
 	 * 4: Option flags
 	 * 5...4+len: Data */
 
+	printf("Transmitting: ");
+	debug_show_data( buf, len );
+	printf("\n");
+
 	frame = g_malloc( sizeof(xb_frame_t) );
 
 	/* Calculate frame length */
@@ -306,6 +310,7 @@ int xbee_transmit( XbeeModule* xb, xb_addr_t* addr, void* buf, uint8_t len )
 static void xbee_module_print_stats( XbeeModule* xb )
 {
 	assert( xb != NULL );
+	return;
 
 	printf( "\rFrames: %6lu IN, %6lu OUT. Bytes: %9lu IN, %9lu OUT",
 		(long unsigned int)xb->frames_rx, 
@@ -563,8 +568,12 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 			printf("Received from %2.2X %2.2X address: ",
 			       (unsigned int)data[1],
 			       (unsigned int)data[2] );
-			debug_show_data( data + 5, flen - 1 );
+			debug_show_data( data + 5, flen - 5 );
 			printf("\n");
+			break;
+
+		case XBEE_FRAME_TX_STAT:
+			printf("Transmit status received.\n");
 			break;
 
 		default:
@@ -708,8 +717,6 @@ static void debug_show_data( uint8_t* buf, uint16_t len )
 		printf( "%2.2X ", (unsigned int)buf[i] );
 	}
 }
-
-
 
 static uint8_t xbee_module_outgoing_escape_byte( XbeeModule* xb, uint8_t d )
 {
