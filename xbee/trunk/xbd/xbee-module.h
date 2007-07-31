@@ -119,6 +119,20 @@ typedef struct
 	uint8_t addr[8];
 } xb_addr_t;
 
+/* The types of frame to/from the module */
+enum
+{
+	XBEE_FRAME_MODEM_STATUS = 0x8A,
+	XBEE_FRAME_AT_COMMAND = 0x08,
+	XBEE_FRAME_AT_COMMAND_QUEUE = 0x09,	
+	XBEE_FRAME_AT_COMMAND_RESP = 0x88,
+	XBEE_FRAME_TX_64 = 0x00,
+	XBEE_FRAME_TX_16 = 0x01,
+	XBEE_FRAME_TX_STAT = 0x89,
+	XBEE_FRAME_RX_64 = 0x80,
+	XBEE_FRAME_RX_16 = 0x81
+};
+
 /* Create a connection to an xbee.
  * Opens the serial port given in fname, and fills the 
  * structure *xb with stuff. */

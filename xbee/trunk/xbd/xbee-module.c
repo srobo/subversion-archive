@@ -32,6 +32,8 @@ static uint8_t xbee_module_checksum( uint8_t* buf, uint16_t len );
 /* Displays the contents of a frame */
 static void debug_show_frame( uint8_t* buf, uint16_t len );
 
+static void debug_show_data( uint8_t* buf, uint16_t len );
+
 /*** Outgoing Queue Functions ***/
 
 /* Process outgoing data */
@@ -545,14 +547,30 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 	while( xbee_module_read_frame( xb ) == 0 )
 	{
 		uint16_t flen;
+		uint8_t *data;
 		flen = (xb->inbuf[1] << 8) | xb->inbuf[2];
+		data = &xb->inbuf[3];
 
 		/* Frame received */
 		if( xb->in_callback != NULL )
 			xb->in_callback( xb, xb->inbuf, xb->in_len );
 
 		/* TODO: Process frame! */
-		debug_show_frame( xb->inbuf, flen + 4 );
+
+		switch( data[0] )
+		{
+		case XBEE_FRAME_RX_16:
+			printf("Received from %2.2X %2.2X address: ",
+			       (unsigned int)data[1],
+			       (unsigned int)data[2] );
+			debug_show_data( data + 5, flen - 1 );
+			printf("\n");
+			break;
+
+		default:
+			printf("Unhandled frame received:\n");
+			debug_show_frame( xb->inbuf, flen + 4 );
+		}
 
 		/* Discard frame after processing? */
 		xb->in_len = 0;
@@ -676,19 +694,22 @@ static uint8_t xbee_module_checksum( uint8_t* buf, uint16_t len )
 
 void debug_show_frame( uint8_t* buf, uint16_t len )
 {
-	uint16_t i;
-	return;
-
 	printf("IN: ");
+	debug_show_data( buf, len );
+	printf("\n");
+}
+
+static void debug_show_data( uint8_t* buf, uint16_t len )
+{
+	uint16_t i;
+
 	for( i=0 ; i < len; i++ )
 	{
 		printf( "%2.2X ", (unsigned int)buf[i] );
-
-		if( (i+1)%16 == 0 )
-			printf( "\n" );
 	}
-	printf("\n");
 }
+
+
 
 static uint8_t xbee_module_outgoing_escape_byte( XbeeModule* xb, uint8_t d )
 {
