@@ -225,6 +225,7 @@ static void xbee_module_out_queue_add_frame( XbeeModule* xb, xb_frame_t* frame )
 	assert( xb != NULL && frame != NULL );
 
 	g_queue_push_head( xb->out_frames, frame );
+	xbee_fd_source_data_ready( xb->source );
 }
 
 
