@@ -65,8 +65,6 @@ static void xbee_module_print_stats( XbeeModule* xb );
 
 /*** "Internal" Client API Functions ***/
 
-void hack( XbeeModule* xb );
-
 /* Configure the serial port */
 gboolean xbee_serial_init( XbeeModule* xb );
 
@@ -178,8 +176,6 @@ static gboolean xbee_module_proc_outgoing( XbeeModule* xb )
 			xbee_module_print_stats( xb );
 		}
 	}
-
-	hack( xb );
 
 	return TRUE;
 }
@@ -303,21 +299,6 @@ int xbee_transmit( XbeeModule* xb, xb_addr_t* addr, void* buf, uint8_t len )
 	xbee_module_out_queue_add_frame( xb, frame );
 
 	return 0;
-}
-
-void hack( XbeeModule* xb )
-{
-	uint8_t data[] = {0,1,2,3,4,5};
-	xb_addr_t addr =
-		{
-			.type = XB_ADDR_64,
-			.addr = {0x00, 0x13, 0xA2, 0x00, 0x40, 0x09, 0x00, 0xA9}
-		};
-	assert( xb != NULL );
-
-	if( g_queue_get_length( xb->out_frames ) == 0 )
-		xbee_transmit( xb, &addr, data, sizeof( data ) );
-
 }
 
 static void xbee_module_print_stats( XbeeModule* xb )
