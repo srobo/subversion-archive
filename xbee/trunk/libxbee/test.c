@@ -28,7 +28,7 @@ int main( int argc, char** argv )
 
 gboolean tx( XbeeConn *xbc )
 {
-	uint8_t data[] = {1,1,2,3,4,5,6,7,8,9,1};
+	uint8_t data[] = {1,1,1,1,1,1,1,1,1,1,1};
 	xb_addr_t addr =
 		{
 			.type = XB_ADDR_64,

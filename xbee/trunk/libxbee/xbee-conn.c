@@ -53,7 +53,7 @@ GType xbee_conn_get_type (void)
 
 gboolean xbee_conn_transmit( XbeeConn* conn, xb_addr_t addr, uint8_t* data, uint16_t len )
 {
-	/* Transmit Frame Layout 
+ 	/* Transmit Frame Layout 
 	   0: Command Code: XBEE_COMMAND_TRANSMIT
 	   * 1: Address type
 	   *** 16-bit address format:

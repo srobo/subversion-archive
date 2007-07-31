@@ -181,11 +181,13 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				{
 					memmove (addr.addr, &f[2], 2);
 					len = client->flen - 4;
+					data = &f[4];
 				}
 				else
 				{
 					memmove (addr.addr, &f[2], 8);
 					len = client->flen - 10;
+					data = &f[10];
 				}
 
 				xbee_server_transmit (client->server, &addr, data, len);
