@@ -19,7 +19,7 @@ int main( int argc, char** argv )
 	xbc = xbee_conn_new( "/tmp/xbee", context );
 
 	//g_timeout_add( 250, (GSourceFunc)tx, (gpointer)xbc );
-	g_timeout_add(250, (GSourceFunc)xbtest, (gpointer)xbc);
+	g_timeout_add(3000, (GSourceFunc)tx, (gpointer)xbc);
 	
 	g_main_loop_run( ml );
 
@@ -28,7 +28,7 @@ int main( int argc, char** argv )
 
 gboolean tx( XbeeConn *xbc )
 {
-  uint8_t data[] = {0,1,2,3,4,5};
+	uint8_t data[] = {1,1,2,3,4,5,6,7,8,9,1};
 	xb_addr_t addr =
 		{
 			.type = XB_ADDR_64,
@@ -36,7 +36,7 @@ gboolean tx( XbeeConn *xbc )
 		};
 	assert( xbc != NULL );
 
-	xbee_conn_transmit( xbc, addr, data, 6 );
+	xbee_conn_transmit( xbc, addr, data, 11 );
 	
 	return TRUE;
 }

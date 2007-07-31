@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <unistd.h>
 #include <errno.h>
+#include <string.h>
 
 static void xbee_client_instance_init( GTypeInstance *gti, gpointer g_class );
 static gboolean xbee_client_sock_incoming( XbeeClient *client );
@@ -158,6 +159,37 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				for( c=s; c-s < len; c++ )
 					putc( (int)*c, stdout );
 				putc( (int)'\n', stdout );
+			}
+			case XBEE_COMMAND_TRANSMIT:
+			{
+				/* Transmit Frame Layout 
+				   0: Command Code: XBEE_COMMAND_TRANSMIT
+				   * 1: Address type
+				   *** 16-bit address format:
+				   *     2-3: Address - MSB first.
+				   *     4->(3+len): Data for transmission.
+				   *** 64-bit address format:
+				   *     2-9: Address - MSB first
+				   *     10->(9+len): Data for transmission */
+
+				int len;
+			        xb_addr_t addr;
+				uint8_t* data;
+				addr.type = f[1];
+				
+				if (addr.type == XB_ADDR_16)
+				{
+					memmove (addr.addr, &f[2], 2);
+					len = client->flen - 4;
+				}
+				else
+				{
+					memmove (addr.addr, &f[2], 8);
+					len = client->flen - 10;
+				}
+
+				xbee_server_transmit (client->server, &addr, data, len);
+					
 			}
 			break;
 			}
