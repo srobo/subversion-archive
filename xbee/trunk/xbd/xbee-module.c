@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include "common-fd.h"
 #include "xbee-module.h"
 #include "xbee_at.h"
 
@@ -474,6 +475,9 @@ XbeeModule* xbee_module_open( char* fname, GMainContext *context )
 		return NULL; 
 	}
 	
+	if( !fd_set_nonblocking( xb->fd ) )
+		return FALSE;
+
 	if( !xbee_init( xb ) )
 		return FALSE;
 
