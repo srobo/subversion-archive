@@ -9,7 +9,7 @@
 #include "xbee-conn.h"
 #include "commands.h"
 #include "libxcli.h"
-
+#include "common-fd.h"
 
 static void xbee_conn_instance_init (GTypeInstance *gti, gpointer g_class );
 static gboolean xbee_conn_sock_incoming ( XbeeConn *conn );
@@ -154,6 +154,9 @@ gboolean xbee_conn_create_socket ( XbeeConn *conn, char * addr )
 		fprintf ( stderr, "Failed to create socket: %m\n");
 		return FALSE;
 	}
+
+	if( !fd_set_nonblocking( conn->fd ) )
+		return FALSE;
 	
 	if ( connect ( conn->fd, (struct sockaddr*)&sock_addr,
 		       sizeof ( short int ) + strlen (sock_addr.sun_path) ) == -1 )
