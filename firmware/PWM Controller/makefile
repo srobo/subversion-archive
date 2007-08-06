@@ -11,3 +11,5 @@ LD				=msp430-ld
 
 leds: main.c hardware.h i2c.h i2c.c
 	${CC} -mmcu=${CPU} -o $@ main.c i2c.c ${CFLAGS}
+
+#msp430-gcc -mmcu=msp430x2012 main.c -o i2c.c -Wall -g -O3

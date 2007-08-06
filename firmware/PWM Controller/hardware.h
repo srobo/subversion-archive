@@ -6,11 +6,25 @@
 #include <iomacros.h>
 
 
+
+/**
+Main oscillator settings. Setup registers DCOCTL and BCSCTL1 so DCOCLK
+is main clock and is at 12Mhz
+**/
+#define CALDCO_INIT		CALDCO_12MHZ_
+#define CALBC1_INIT		CALBC1_12MHZ_
 /**
 Port Output Register 'P1OUT, P2OUT':
 **/
-#define P1OUT_INIT      0                      // Init Output data of port1
-#define P2OUT_INIT      0                       // Init Output data of port2
+#define P1OUT_INIT		0xC0	// P1.6 & P1.7 Pullups for i2c REALLY?
+#define P2OUT_INIT		0		// Init Output data of port2
+
+/**
+Does something to initialise P1REN
+// 1.6 and 1.7 pullups
+**/
+#define P1REN_INIT		0x00
+
 /**
 Port Direction Register 'P1DIR, P2DIR'; 
 this sets the port directions. Port1.6 and 1.7 are set to input because they will be used with the i2c. Its unclear from the manual if it must be done
@@ -28,7 +42,7 @@ this sets the port directions. Port1.6 and 1.7 are set to input because they wil
 #define P1IES_INIT      0                       // Interrupt Edge Select (0=pos 1=neg)
 #define P2IES_INIT      0                       // Interrupt Edge Select (0=pos 1=neg)
 
- //system clock in div by 2
+//Disable watchdog i think but comment says other wise ???system clock in div by 2
 #define WDTCTL_INIT     WDTPW|WDTHOLD
 
 /**
@@ -44,6 +58,7 @@ Defining constants for the PWM board.
 void initialiseServoArray(unsigned int pulse_width);
 unsigned int getServoPWM(unsigned char servo);
 void setServoPWM(unsigned char servo, unsigned int pulse_width);
+void polled_i2c(void);
 
 
 

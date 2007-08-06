@@ -50,10 +50,11 @@ char * get_i2cData(void){
 
 void initialise_i2c(void){
 	USICTL0 = USICTL0|USISWRST;
-  USICTL0 = USIPE6|USIPE7;    // Port & USI mode setup
-  USICTL1 = USII2C|USIIE|USISTTIE;     // Enable I2C mode & USI interrupts
-  USICKCTL = USICKPL;                  // Setup clock polarity
-  USICNT |= USIIFGCC;                  // Disable automatic clear control
+	USICTL0 = USIPE6|USIPE7;// Port & USI mode setup
+//  USICTL1 = USII2C|USIIE|USISTTIE;     // Enable I2C mode & USI interrupts
+	USICTL1 = USII2C;		// Enable I2C mode
+	USICKCTL = USICKPL;		// Setup clock polarity
+	USICNT |= USIIFGCC;		// Disable automatic clear control
 }
 
 void enable_i2c(void){
@@ -80,35 +81,31 @@ inline void isr_usi (void){
 		I2C_State = state_check_address;           // Go to next state: check address
 		break;
 
-	case state_check_address: // Process Address and send (N)Ack
-		if (USISRL & 0x01){       // If read... This is done so that the addresses can be compared directly
+	case state_check_address: // Process Address and send Ack
+		if (USISRL & 0x01){	// If read... This is done so that the addresses can be compared directly
 			SLV_Addr++;		// Save R/W bit
 		}	
-		if (USISRL == SLV_Addr){  // Address match?
-			USICTL0 |= USIOE;        // SDA = output	
-			USISRL = 0x00;         // Send Ack
-			I2C_State = state_rx_command;         // Go to next state: RX data
-			USICNT |= 0x01;          //  Bit counter = 1, send (N)Ack bit
-		}else{
-			//USICTL0 &= ~USIOE;       // SDA = input
+		if (USISRL == SLV_Addr){	// Address match?
+			USICTL0 |= USIOE;		// SDA = output ??? can it switch so fast
+			USISRL = 0x00;			// Send Ack
+			I2C_State = state_rx_command;	// Go to next state: RX data
+			USICNT |= 0x01;			//  Bit counter = 1, send Ack bit
+		}else{ //Not correct address, reset to idle
 			SLV_Addr = ADDRESS;         // Reset slave address
-			I2C_State = state_idle;           // Reset state machine
-			//OLD waste an interrupt
-			//USISRL = 0xFF;         // Send NAck
-			//I2C_State = state_prep_for_start;         // Go to next state: prep for next Start
-		}
+			I2C_State = state_idle;     // Reset state machine
+			}
 		break;
 
-	case state_rx_command: // Rstepeceive data byte 1
-		USICTL0 &= ~USIOE;       // SDA = input
-		USICNT |=  0x08;         // Bit counter = 8, RX data
-		I2C_State = state_check_command;          // Go to next state: Test data and (N)Ack
+	case state_rx_command: // prep to Receive data byte 1
+		USICTL0 &= ~USIOE;	// SDA = input
+		USICNT |=  0x08;	// Bit counter = 8, RX data
+		I2C_State = state_check_command;// Go to next state: Test data
 		break;
 
 	case state_check_command:// Check Data & TX (N)Ack and understand command
 		USICTL0 |= USIOE;        // SDA = output
-		if (1){  // If data valid...
-			I2C_State = smbus_parse(USISRL);  // Prep for Start condition; was state 6 before
+		if (1){  // If data valid... ALWAYS VALID
+			I2C_State = smbus_parse(USISRL);  // Prep for Start condition;
 			USISRL = 0x00;         // Send Ack
 		}else{
 			USISRL = 0xFF;         // Send NAck
