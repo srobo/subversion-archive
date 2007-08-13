@@ -1,0 +1,49 @@
+Photoplotter Info File: /home/rob/ecssr/proj-svn/pcb/motor/tags/prototype-01/gerbers/bottom.gpi
+
+ Date              :  8/13/2007 23:41:41 
+ Plotfile          : /home/rob/ecssr/proj-svn/pcb/motor/tags/prototype-01/gerbers/bottom
+ Apertures         : generated: 
+ Device            : Gerber photoplotter with RS-274-X aperture generation
+
+Parameter settings:
+
+ Emulate Apertures : no
+ Emulate Thermal   : no
+ Emulate Annulus   : no
+ Tolerance Draw  + :  0.00 %
+ Tolerance Draw  - :  0.00 %
+ Tolerance Flash + :  0.00 %
+ Tolerance Flash - :  0.00 %
+ Rotate            : no
+ Mirror            : no
+ Optimize          : yes
+ Auto fit          : yes
+ OffsetX           : 0inch
+ OffsetY           : 0inch
+
+Plotfile Info:
+
+ Coordinate Format : 2.4
+ Coordinate Units  : Inch
+ Data Mode         : Absolute
+ Zero Suppression  : None
+ End Of Block      : *
+
+Apertures used:
+
+ Code     Shape     Size                  used
+
+ D10      round     0.0630inch               4
+ D11      round     0.0787inch               8
+ D12      octagon   0.2540inch               4
+ D13      round     0.0520inch               2
+ D14      oval      0.0600inch x 0.1200inch     4
+ D15      octagon   0.0520inch              14
+ D16      octagon   0.0480inch               1
+ D17      round     0.0480inch               1
+ D18      round     0.0768inch               4
+ D19      draw      0.0079inch            4263
+ D20      round     0.0357inch             101
+ D21      round     0.0396inch               5
+ D22      draw      0.0098inch              16
+
