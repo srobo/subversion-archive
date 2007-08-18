@@ -52,6 +52,13 @@ gboolean xbee_module_at_mode( XbeeModule* xb )
 		return FALSE;
 	}
 
+	/* Wait until the +++ has been sent */
+	if( tcdrain( xb->fd ) < 0 )
+	{
+		fprintf( stderr, "Error: Failed to drain output buffer: %m\n" );
+		return FALSE;
+	}
+
 	/* Wait a shorter guard time */
 	if( ! real_sleep ( &gt_low ) )
 	{
