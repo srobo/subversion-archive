@@ -563,8 +563,9 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 		{
 			xb_rx_info_t info;
 			
-			info.src_addr->type = XB_ADDR_16;
-			memmove (info.src_addr->addr, &data[1], 2);
+
+			info.src_addr.type = XB_ADDR_16;
+			memmove (info.src_addr.addr, &data[1], 2);
 			info.rssi = data[3];
 			
 			info.address_broadcast = (data[4] & 0x02) ? TRUE : FALSE;
@@ -577,8 +578,8 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 		{
 			xb_rx_info_t info;
 
-			info.src_addr->type = XB_ADDR_64;
-			memmove (info.src_addr->addr, &data[1], 8);
+			info.src_addr.type = XB_ADDR_64;
+			memmove (info.src_addr.addr, &data[1], 8);
 			info.rssi = data[9];
 						
 			info.address_broadcast = (data[10] & 0x02) ? TRUE : FALSE;

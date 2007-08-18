@@ -63,7 +63,7 @@ typedef struct
 
 typedef struct
 {
-	xb_addr_t* src_addr;
+	xb_addr_t src_addr;
 	uint8_t rssi;
 	gboolean pan_broadcast;
 	gboolean address_broadcast;
