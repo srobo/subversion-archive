@@ -59,19 +59,19 @@ gboolean xbee_module_at_mode( XbeeModule* xb )
 		return FALSE;
 	}
 
+	/* Flush the input buffer */
+	if( tcflush( xb->fd, TCIFLUSH ) < 0 )
+	{
+		fprintf( stderr, "Error: Failed to flush input buffer: %m\n" );
+		return FALSE;
+	}
+
 	/* Wait a shorter guard time */
 	if( ! real_sleep ( &gt_low ) )
 	{
 		fprintf( stderr, "Error: Failed to sleep for guard time\n" );
 		return FALSE;
 	}
-
-/* 	/\* Flush the input buffer *\/ */
-/* 	if( tcflush( xb->fd, TCIFLUSH ) < 0 ) */
-/* 	{ */
-/* 		fprintf( stderr, "Error: Failed to flush input buffer: %m\n" ); */
-/* 		return FALSE; */
-/* 	} */
 
 	/*** Read the 'OK' ***/
 	if( !xbee_module_wait_ok( xb ) )
