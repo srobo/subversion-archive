@@ -207,7 +207,7 @@ static gboolean xbee_module_wait_ok( XbeeModule* xb )
 
 	trem = ok_wait;
 
-	while( !timeval_subtract( &trem, trem, exp ) &&
+	while( !timeval_subtract( &trem, ok_wait, exp ) &&
 	       !(buf[0] == 'O' && buf[1] == 'K') )
 	{
 		FD_ZERO(&s);
