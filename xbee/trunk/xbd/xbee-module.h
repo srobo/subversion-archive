@@ -25,7 +25,6 @@ typedef struct xbee_ts XbeeModule;
 typedef void (*xbee_callback_t) ( XbeeModule *xb,
 				  uint8_t *data,
 				  uint16_t len );
-
 typedef struct
 {
 	GObjectClass parent;
@@ -49,6 +48,30 @@ typedef struct
 	GPollFD pollfd;
 	XbeeModule *xb; /* Parent pointer */
 } xbee_source_t;
+
+typedef enum
+{
+	XB_ADDR_16,
+	XB_ADDR_64
+} xb_addr_len_t;
+
+typedef struct
+{
+	xb_addr_len_t type;
+	uint8_t addr[8];
+} xb_addr_t;
+
+typedef struct
+{
+	xb_addr_t* src_addr;
+	uint8_t sig_stren;
+	uint8_t opt;
+}rx_info_t;
+
+typedef struct 
+{
+	void (*rx_frame) (rx_info_t *info, uint8_t *data, uint8_t len, gpointer *userdata);
+}xbee_module_events_t;
 
 struct xbee_ts
 {
@@ -97,7 +120,9 @@ struct xbee_ts
 
 	/* Callback for receiving a frame.
 	 * The data pointed to contains the beginning part of the frame */
-	xbee_callback_t in_callback;
+	gpointer *userdata;
+	
+	xbee_module_events_t xb_callbacks;
 
 	/*** Stats ***/
 	uint32_t bytes_discarded, frames_discarded; /* Frames with invalid checksums */
@@ -106,18 +131,6 @@ struct xbee_ts
 
 };
 
-
-typedef enum
-{
-	XB_ADDR_16,
-	XB_ADDR_64
-} xb_addr_len_t;
-
-typedef struct
-{
-	xb_addr_len_t type;
-	uint8_t addr[8];
-} xb_addr_t;
 
 /* The types of frame to/from the module */
 enum

@@ -533,7 +533,6 @@ void xbee_instance_init( GTypeInstance *gti, gpointer g_class )
 
 	xb->in_len = 0;
 	xb->escape = FALSE;
-	xb->in_callback = NULL;
 
 	xb->bytes_discarded = 0;
 	xb->frames_discarded = 0;
@@ -555,10 +554,6 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 		uint8_t *data;
 		flen = (xb->inbuf[1] << 8) | xb->inbuf[2];
 		data = &xb->inbuf[3];
-
-		/* Frame received */
-		if( xb->in_callback != NULL )
-			xb->in_callback( xb, xb->inbuf, xb->in_len );
 
 		/* TODO: Process frame! */
 
@@ -741,11 +736,19 @@ void xbee_module_set_incoming_callback( XbeeModule *xb,
 {
 	assert( xb != NULL );
 		
-	xb->in_callback = f;
+//	xb->in_callback = f;
 }
 
 gboolean xbee_module_io_error( XbeeModule* xb )
 {
 	fprintf( stderr, "Erk, error.  I should do something\n" );
 	return FALSE;
+}
+
+static void xbee_module_register_callbacks ( XbeeModule *xb, xbee_module_events_t *callbacks, gpointer *userdata)
+{
+	assert (callbacks != NULL && xb != NULL );
+	
+	xb->xb_callbacks = *callbacks;
+
 }
