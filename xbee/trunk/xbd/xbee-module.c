@@ -476,8 +476,6 @@ XbeeModule* xbee_module_open( char* fname, GMainContext *context )
 					 (xbee_fd_callback)xbee_module_io_error,
 					 (xbee_fd_callback)xbee_module_outgoing_queued );
 					 
-//	xbee_module_add_source( xb, context );
-
 	return xb;
 }
 
