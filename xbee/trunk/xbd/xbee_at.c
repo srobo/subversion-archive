@@ -26,8 +26,6 @@ static gboolean xbee_module_check_ok( XbeeModule* xb );
 static gboolean time_expired( struct timeval* start,
 			  struct timeval* result );
 
-/* WARNING: If data arrives at the xbee whilst the device is waiting to 
-   enter AT mode, this function will _probably_ return FALSE.  */
 gboolean xbee_module_at_mode( XbeeModule* xb )
 {
 	const struct timeval guard_time = { .tv_sec = 1, .tv_usec = 100000 },
