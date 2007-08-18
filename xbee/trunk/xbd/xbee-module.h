@@ -64,13 +64,14 @@ typedef struct
 typedef struct
 {
 	xb_addr_t* src_addr;
-	uint8_t sig_stren;
-	uint8_t opt;
-}rx_info_t;
+	uint8_t rssi;
+	gboolean pan_broadcast;
+	gboolean address_broadcast;
+}xb_rx_info_t;
 
 typedef struct 
 {
-	void (*rx_frame) (rx_info_t *info, uint8_t *data, uint8_t len, gpointer *userdata);
+	void (*rx_frame) (xb_rx_info_t *info, uint8_t *data, uint8_t len, gpointer *userdata);
 }xbee_module_events_t;
 
 struct xbee_ts
@@ -167,5 +168,8 @@ void xbee_module_set_incoming_callback( XbeeModule *xb,
 
 /* Transmit a frame */
 int xbee_transmit( XbeeModule* xb, xb_addr_t* addr, void* buf, uint8_t len );
+
+/* Register Callbacks */
+void xbee_module_register_callbacks ( XbeeModule *xb, xbee_module_events_t *callbacks, gpointer *userdata);
 
 #endif	/* __XBEE_MODULE_H */

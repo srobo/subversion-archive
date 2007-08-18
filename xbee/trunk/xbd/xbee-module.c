@@ -560,12 +560,33 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 		switch( data[0] )
 		{
 		case XBEE_FRAME_RX_16:
-			printf("Received from %2.2X %2.2X address: ",
-			       (unsigned int)data[1],
-			       (unsigned int)data[2] );
-			debug_show_data( data + 5, flen - 5 );
-			printf("\n");
+		{
+			xb_rx_info_t info;
+			
+			info.src_addr->type = XB_ADDR_16;
+			memmove (info.src_addr->addr, &data[1], 2);
+			info.rssi = data[3];
+			
+			info.address_broadcast = (data[4] & 0x02) ? TRUE : FALSE;
+			info.pan_broadcast  = (data[4] & 0x04) ? TRUE : FALSE;
+
+			xb->xb_callbacks.rx_frame (&info, &data[5], flen - 5, xb->userdata);
 			break;
+		}
+		case XBEE_FRAME_RX_64:
+		{
+			xb_rx_info_t info;
+
+			info.src_addr->type = XB_ADDR_64;
+			memmove (info.src_addr->addr, &data[1], 8);
+			info.rssi = data[9];
+						
+			info.address_broadcast = (data[10] & 0x02) ? TRUE : FALSE;
+			info.pan_broadcast  = (data[10] & 0x04) ? TRUE : FALSE;
+
+			xb->xb_callbacks.rx_frame (&info, &data[11], flen - 11, xb->userdata);
+			break;
+		}
 
 		case XBEE_FRAME_TX_STAT:
 			printf("Transmit status received.\n");
@@ -745,7 +766,7 @@ gboolean xbee_module_io_error( XbeeModule* xb )
 	return FALSE;
 }
 
-static void xbee_module_register_callbacks ( XbeeModule *xb, xbee_module_events_t *callbacks, gpointer *userdata)
+void xbee_module_register_callbacks ( XbeeModule *xb, xbee_module_events_t *callbacks, gpointer *userdata)
 {
 	assert (callbacks != NULL && xb != NULL );
 	
