@@ -21,10 +21,8 @@ static gboolean xbee_server_source_error( XbeeServer* serv );
 /* Callback for when connection is pending */
 static gboolean xbee_server_req_con( XbeeServer *serv );
 
-/* Callback for an incoming frame from an XbeeModule  */
-static void xbee_server_incoming_frame( XbeeModule *xb, 
-					uint8_t *data,
-					uint16_t len );
+/* Callback for incoming data from an XbeeModule */
+static void xbee_server_incoming_data( xb_rx_info_t *indo, uint8_t *data, uint8_t len, gpointer *userdata );
 
 /* Callback for when an XbeeClient is disconnected */
 void xbee_client_disconnect( XbeeClient *client,
@@ -156,7 +154,12 @@ void xbee_server_attach( XbeeServer* serv, XbeeModule* xb )
 	
 	serv->modules = g_slist_append( serv->modules, xb );
 
-	xbee_module_set_incoming_callback( xb, xbee_server_incoming_frame );
+	xbee_module_events_t callbacks = 
+	{
+		.rx_frame = &xbee_server_incoming_data
+	};
+
+	xbee_module_register_callbacks ( xb, &callbacks, (gpointer*)serv );
 }
 
 static gboolean xbee_server_req_con( XbeeServer *serv )
@@ -192,10 +195,10 @@ static gboolean xbee_server_source_error( XbeeServer* serv )
 	return FALSE;
 }
 
-static void xbee_server_incoming_frame( XbeeModule *xb, 
-					uint8_t *data,
-					uint16_t len )
+static void xbee_server_incoming_data( xb_rx_info_t *indo, uint8_t *data, uint8_t len, gpointer *userdata)
 {
+	g_debug ("Server: Server has received a frame from XB\n");
+
 	/* TODO: look at frame channel number and send to correct client */
 }
 
