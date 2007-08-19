@@ -97,7 +97,7 @@ class Root(controllers.RootController):
             revision object for revision number"""
 
         try:
-            if revision == 0:
+            if revision == 0 or revision == "0":
                 revision = "HEAD"
             rev = pysvn.Revision(pysvn.opt_revision_kind.number, int(revision))
         except (pysvn.ClientError, ValueError, TypeError):
@@ -327,10 +327,18 @@ class Root(controllers.RootController):
             
             message = "Files deleted successfully: \n" + "\n".join(files)
 
+            paths = list(set([os.path.dirname(file) for file in files]))
+
             try:
                 client.remove(urls)
                 #TODO: Need to prune empty directories. Get data from filelist
                 #and then build a list of empty directories.
+                for dir in paths:
+                    if len(client.ls(REPO + dir)) == 0:
+                        #The directory is empty, OK to delete it
+                        log.debug("Deleting empty directory: " + REPO + dir)
+                        client.remove(REPO + dir)
+                        message += "\nRemove empty directory " + dir
                     
             except pysvn.ClientError:
                 message = "Error deleting files."
@@ -382,6 +390,7 @@ class Root(controllers.RootController):
                 return dict(new_revision="0", code = "",\
 			                success="Error creating new directory",
                             reloadfiles="false")
+
         try:
             tmpdir = self.checkoutintotmpdir(client, rev, path)
         except pysvn.ClientError:
@@ -389,6 +398,7 @@ class Root(controllers.RootController):
                 shutil.rmtree(tmpdir)
             except:
                 pass
+
             return dict(new_revision="0", code="", success="Invalid filename",
                         reloadfiles="false")
 
