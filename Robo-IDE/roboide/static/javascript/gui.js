@@ -83,10 +83,18 @@ MochiKit.DOM.addLoadEvent( function() {
                          "system" : true};
 
     cur_path = "";
-    //Initialise the codepress component. This doesn't happen magically as
-    //MochiKit overrides the onload handler for this function
-    CodePress.run()
-    cpscript.edit("", LANGUAGE);
+
+    //Initialise the editarea component.
+    editAreaLoader.init({
+        id : "codebox",
+        syntax : "python",
+        language : "en",
+        start_highlight : true,
+        allow_toggle : false,
+        allow_resize : "no",
+        replace_tab_by_spaces : true
+        });
+
     //Show the blank tab
     showtab("", true);
     var d = MochiKit.Async.loadJSONDoc("./fulllog");
@@ -318,7 +326,7 @@ function savecurrenttab(){
     /*Save the data in the current tab to its hidden textarea.
     inputs: none
     returns: none */
-    var code = cpscript.getCode();
+    var code = editAreaLoader.getValue("codebox");
 
     if(cur_path == "Log")
         return;
@@ -362,7 +370,8 @@ function showtab(tabpath, force) {
             cur_path = tabpath;
 
             //Load in the data for the new tab
-            cpscript.setCode(open_files[tabpath].tabdata);
+            editAreaLoader.setValue("codebox",
+                open_files[tabpath].tabdata);
             
             //Set the filename edit correctly
             namefield = MochiKit.DOM.getElement("filename");
@@ -498,7 +507,7 @@ function saveFile(e) {
         var values = [open_files[cur_path].editedfilename, //File
                       open_files[cur_path].revision, //rev
                       MochiKit.DOM.getElement("message").value, //message
-                      cpscript.getCode()]; //Code
+                      open_files[cur_path].tabdata]; //Code
         var content = MochiKit.Base.queryString(keys, values);
 
         //Using doXHR (New in MochiKit 1.4) to do a post request
