@@ -9,9 +9,9 @@ import tempfile, shutil
 import os
 import zipfile
 import random
-import threading
 from Queue import Queue
 from os.path import join
+from cherrypy.lib.cptools import serveFile
 log = logging.getLogger("roboide.controllers")
 
 REPO = "http://studentrobotics.org/isvn/"
@@ -86,6 +86,15 @@ class Feed(FeedController):
 class Root(controllers.RootController):
 
     feed = Feed()
+
+    @expose()
+    def index(self):
+        """
+        In case the apache rewrite rule isn't paying attention, serve up the
+        index file from here.
+        """
+        loc = os.path.join(os.path.dirname(__file__), "static/index.html")
+        return serveFile(loc)
 
     def get_revision(self, revision):
         """
