@@ -342,7 +342,26 @@
 		var start=this.textarea.selectionStart;
 		var end= this.textarea.selectionEnd;
 		var start_last_line= Math.max(0 , this.textarea.value.substring(0, start).lastIndexOf("\n") + 1 );
-		var begin_line= this.textarea.value.substring(start_last_line, start).replace(/^([ \t]*).*/gm, "$1");
+        /*STUDENT ROBOTICS PATCH
+        Written by Stephen English, 19/08/2007
+        If the last character of the previous line when enter is pressed is a
+        colon, then add four spaces to the start of the next line to aid
+        indentation.
+        */
+        var last_line = this.textarea.value.substring(0, start);
+        if(last_line.length > 0){
+            if(last_line.substring(last_line.length-1, last_line.length) ==
+                    ":"){
+                //Put in a tab on the next line for python apps
+                var begin_line = "    ";
+            } else {
+                var begin_line = "";
+            }
+        }
+		var begin_line = begin_line + 
+                    this.textarea.value.substring(start_last_line, start).replace(/^([ \t]*).*/gm, "$1");
+        
+        /*END OF PATCH*/
 		if(begin_line=="\n" || begin_line=="\r" || begin_line.length==0)
 			return false;
 			
