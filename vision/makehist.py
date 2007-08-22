@@ -38,7 +38,7 @@ def rgb_to_hsv(r, g, b):
     
 
 im = Image.open(sys.argv[1])
-out = Image.new("RGB", (352, 288))
+out = Image.new("RGB", (320, 240))
 dataout = out.load()
 rgb = list(im.getdata())
 hsv = [rgb_to_hsv(x[0], x[1], x[2]) for x in rgb]
@@ -67,9 +67,9 @@ def get_data(huemin=0, huemax=360, satmin=0, satmax=100, valmin=0, valmax=100):
         if cursat >= satmin and cursat <= satmax and \
             curval >= valmin and curval <= valmax and \
             curhue >= huemin and curhue <= huemax:
-                dataout[i%352, i/352] =  (34, 255, 0)
+                dataout[i%320, i/320] =  (34, 255, 0)
         else:
-                dataout[i%352, i/352] = rgb[i]
+                dataout[i%320, i/320] = rgb[i]
 
 
         if cursat >= satmin and cursat <= satmax and \
