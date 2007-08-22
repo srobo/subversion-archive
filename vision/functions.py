@@ -4,6 +4,89 @@ from PIL import Image
 
 DEFAULTSATCUTOFF = 40
 
+def makemax(a, b, labels):
+    if labels[a] == labels[b]:
+        return
+    elif labels[a] > labels[b]:
+        #Change all instances of labels[b] to labels[a]
+        change = labels[b]
+        new = labels[a]
+    else:
+        change = labels[a]
+        new = labels[b]
+
+    for i in range(0, len(labels)):
+        if labels[i] == change:
+            labels[i] = labels[a]
+
+def get_surrounding_labels(blobs, x, y, WIDTH, HEIGHT):
+    toleft = None
+    totop = None
+    totopleft = None
+    totopright = None
+    curpos = y*WIDTH+x
+    if x > 0:
+        toleft = blobs[curpos - 1] 
+        if y > 0:
+            totopleft = blobs[curpos-(WIDTH+1)]
+    if y > 0:
+        totop = blobs[curpos - WIDTH]
+        if x < WIDTH - 1:
+            totopright = blobs[curpos-(WIDTH-1)]
+    return toleft, totop, totopleft, totopright
+
+def merge(labels, current, cells):
+    for cell in cells:
+        if cell != None:
+            if cell != 0:
+                makemax(current, cell, labels)
+
+def label(data, minhue, maxhue, minsat, WIDTH, HEIGHT):
+    labels = [0]
+    blobs = [0] * WIDTH * HEIGHT #Initialise to all zeros
+    topblobno = 1
+
+    for y in range(0, HEIGHT):
+        for x in range(0, WIDTH):
+            curpos = y*WIDTH+x
+            if data[curpos][1] > minsat and data[curpos][0] > minhue \
+                    and data[curpos][0] < maxhue:
+                toleft, totop, totopleft, totopright = \
+                    get_surrounding_labels(blobs, x, y, WIDTH, HEIGHT)
+
+                if toleft != None: #Look at the one to the left
+                    if toleft != 0:
+                        merge(labels, toleft, [totop, totopleft, totopright])
+                        blobs[curpos] = toleft
+                        continue
+
+                if totopleft != None: #Look at the one to the left
+                    if totopleft != 0:
+                        merge(labels, totopleft, [totop, toleft, totopright])
+                        blobs[curpos] = totopleft
+                        continue
+
+                if totop != None: #Look at the one to the left
+                    if totop != 0:
+                        merge(labels, totop, [toleft, totopleft, totopright])
+                        blobs[curpos] = totop
+                        continue
+
+                if totopright != None: #Look at the one to the left
+                    if totopright != 0:
+                        merge(labels, totopright, [totop, totopleft, toleft])
+                        blobs[curpos] = totopright
+                        continue
+
+                #If got this far it's a new blob
+                labels.append(topblobno)        #New label
+                blobs[curpos] = len(labels)-1   #It's the last one in the list as
+                                                #it was just appended
+                topblobno = topblobno + 1
+
+    return blobs, labels
+
+
 def get_min_sat(sathist):
     """
     Saturations below this value are white.

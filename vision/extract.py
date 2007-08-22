@@ -5,16 +5,6 @@ from functions import *
 
 MINWIDTH = 2 #Minimum width of a peak
 
-colours = [0,   #Red
-           42,  #Yellow
-           151, #Light green
-           164, #Dark green
-           195, #Cyan
-           220, #Blue
-           240, #Purple
-           315] #Pink
-           
-
 #1. Load image as list of pixels
 rgb = get_image_pixels(sys.argv[1])
 
@@ -67,3 +57,27 @@ for peak in peaks:
     
     #Go through image, labelling blobs for this colour
     #TODO: Best to go through image once, checking for all the colours at once?
+    filtered = [x for x in hsv]
+    blobs, labels = label(filtered, peak[0], peak[1], minsat, 320, 240)
+    
+    geometry = {}
+
+    for label in [l for l in labels if l > 0]:
+        geometry[label] = [0, 0, 0]
+
+    
+    for y in range(0, 240):
+        for x in range(0, 320):
+            curpos = y*320+x
+            if blobs[curpos] > 0:
+                label = labels[blobs[curpos]]
+                geometry[label][0] += x
+                geometry[label][1] += y
+                geometry[label][2] += 1
+    
+    for l in geometry.itervalues():
+        print "Colour %d, x=%d, y=%d, mass=%d" % (colour,
+                                                  float(l[0]) / l[2],
+                                                  float(l[1]) / l[2],
+                                                  l[2])
+
