@@ -27,25 +27,20 @@ int main( int argc, char** argv )
 		fprintf (stdout, "USAGE:\n");
 		fprintf (stdout, "  test [OPTIONS]\n\n");
 		fprintf (stdout, "Options:\n");
-		fprintf (stdout, " -t      Transmit data to A9 Xbee via /tmp/xbee1\n");
-		fprintf (stdout, " -r      Receive mode via /tmp/xbee\n");
+		fprintf (stdout, " -s <socket>     Transmit/Receive via specified socket\n");
 		return (0);
 	}
 			
-	if (argc > 1)
+	if (argc > 2)
 	{		
-		if (!strcmp (argv[1], "-t"))
+		if (!strcmp (argv[1], "-s"))
 		{
-			xbc = xbee_conn_new( "/tmp/xbee1", context );
-			printf ("\nBegin Transmit:\n");
-			g_timeout_add(3000, (GSourceFunc)tx, (gpointer)xbc);
-		}
-		else if (!strcmp (argv[1], "-r"))
-		{
-			xbc = xbee_conn_new( "/tmp/xbee", context );
-			printf ("\nBegin Receive:\n");
+			xbc = xbee_conn_new (argv[2], context);
+			printf ("\nReceive mode activated:\n");
 			callbacks.rx_frame = &rx_data;
 			xbee_conn_register_callbacks (xbc, &callbacks);
+			printf ("\nBegin Transmit:\n");
+			g_timeout_add(3000, (GSourceFunc)tx, (gpointer)xbc);
 		}
 	}
 	
