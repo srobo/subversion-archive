@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #include "xb-fd-source.h"
+#include "libxcli.h"
 
 #define XB_CONN_OUTBUF_LEN 512
 
@@ -47,7 +48,6 @@ typedef struct
 	uint8_t *data;
 } xb_frame_t;
 
-
 struct xbee_conn_t
 {
 	GObject parent;
@@ -62,6 +62,11 @@ struct xbee_conn_t
 
 	GQueue *out_frames;
 	int outpos;	
+
+	uint16_t inpos;
+	uint8_t inbuf [ XBEE_MAX_FRAME ];
+
+	uint16_t flen;
 };
 
 /* Open a connection to the server */

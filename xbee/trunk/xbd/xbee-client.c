@@ -57,8 +57,8 @@ static void xbee_client_instance_init( GTypeInstance *gti, gpointer g_class )
 	XbeeClient *client = (XbeeClient*)gti;
 	assert( gti != NULL );
 
-	client->in_frames = NULL;
-	client->out_frames = NULL;
+	client->in_frames = g_queue_new();
+	client->out_frames = g_queue_new();
 	client->inpos = 0;
 	client->outpos = 0;
 	client->server = NULL;
@@ -332,7 +332,10 @@ void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *inf
 		len = len + 12;
 	}
 
+	frame->len = len;
+
 	g_queue_push_head ( client->out_frames, frame );	
+	printf ("Frame Pushed\n");
 
 	/* Data (in queue) ready to write */
 	xbee_fd_source_data_ready ( client->source );
@@ -342,7 +345,7 @@ void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *inf
 static int xbee_client_write_frame ( XbeeClient *client )
 {
 	xb_frame_t *frame;
-	assert (client != NULL);
+	assert (client != NULL && client->out_frames != NULL);
 
 	frame = (xb_frame_t*)g_queue_peek_tail (client->out_frames);
 	assert (frame != NULL);

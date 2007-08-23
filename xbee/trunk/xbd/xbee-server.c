@@ -207,7 +207,7 @@ static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint8_
 	/* Convert address into channel */
 
 	XbeeClient *client;
-	client = (XbeeClient*)g_slist_nth_data ( server -> clients, channel );
+	client = (XbeeClient*)g_slist_nth_data ( server->clients, channel );
 	assert ( client != NULL );
 	
 	xbee_client_transmit ( client, data, info, len );

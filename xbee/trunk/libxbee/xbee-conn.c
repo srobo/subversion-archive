@@ -24,7 +24,8 @@ static int xbee_conn_write_whole_frame ( XbeeConn *conn );
 static void xbee_conn_out_queue_add ( XbeeConn *conn, uint8_t *data, uint16_t len );
 /* Connects to the server at the given address */
 static gboolean xbee_conn_create_socket ( XbeeConn *conn, char *addr );
-
+/* Attemps to read a frame from FD */
+static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn );
 
 GType xbee_conn_get_type (void)
 {
@@ -172,7 +173,14 @@ gboolean xbee_conn_create_socket ( XbeeConn *conn, char * addr )
 static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 {
 	assert ( conn != NULL );
-	
+	int ret_val = 1;
+		
+	while ( ret_val == 1 )
+	{
+		ret_val = xbee_conn_read_whole_frame (conn);
+		if (ret_val == -1)
+			return FALSE;
+	}
 	return TRUE;
 }
 
@@ -195,6 +203,8 @@ static gboolean xbee_conn_sock_outgoing( XbeeConn *conn )
 
 static gboolean xbee_conn_sock_data_ready( XbeeConn *conn )
 {
+
+	assert (conn != NULL);
 
 	if ( g_queue_peek_tail ( conn->out_frames ) == NULL )
 		return FALSE;
@@ -288,5 +298,56 @@ void xbee_conn_command_test ( XbeeConn * conn, gchar *data)
 	memmove (&fdata[1], data, datalen - 1);
 	
 	xbee_conn_out_queue_add ( conn, fdata, datalen);
+}
+
+static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
+{
+	assert ( conn != NULL );
+	
+	gboolean whole_frame = FALSE;
+	
+	
+	while ( !whole_frame )
+	{
+		int b;
+		
+		if ( conn->inpos < 2)
+		{
+			b = read (conn->fd, &conn->inbuf[conn->inpos], 2 - conn->inpos);
+		}
+		else
+		{
+			b = read (conn->fd, &conn->inbuf[conn->inpos - 2], conn->flen + 2 - conn->inpos);
+		}
+
+		if (b == -1)
+		{
+			if (errno == EAGAIN)
+				return 0;
+			
+			fprintf (stderr, "Error: Failed to read libxbee input: %m\n");
+			return -1;
+		}
+		
+		if ( b == 0 )
+			continue;
+		
+		conn->inpos += b;
+		if (b == 2)
+		{
+			conn->flen = (((uint16_t)conn->inbuf[0] << 8) | (conn->inbuf[1]));
+			if (conn->flen + 2 > XBEE_MAX_FRAME)
+			{
+				fprintf (stderr, "Frame too long\n");
+				return -1;
+			}
+		}
+		
+		if (conn->inpos == conn->flen + 2)
+			whole_frame = TRUE;
+	}
+	
+	printf ("Xbee Conn: Data received\n");
+	return 1;
 }
 

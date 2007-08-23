@@ -563,6 +563,7 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 		{
 			xb_rx_info_t info;
 			
+			printf ("RX_16 received\n");
 
 			info.src_addr.type = XB_ADDR_16;
 			memmove (info.src_addr.addr, &data[1], 2);
@@ -758,7 +759,6 @@ void xbee_module_set_incoming_callback( XbeeModule *xb,
 {
 	assert( xb != NULL );
 		
-//	xb->in_callback = f;
 }
 
 gboolean xbee_module_io_error( XbeeModule* xb )
