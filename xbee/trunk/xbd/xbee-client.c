@@ -27,6 +27,9 @@ static void xbee_client_class_init( XbeeClientClass *klass );
 
 static GObjectClass *parent_class = NULL;
 
+/* Write frame to FD */
+static int xbee_client_write_frame ( XbeeClient *client );
+
 GType xbee_client_get_type( void )
 {
 	static GType type = 0;
@@ -55,7 +58,9 @@ static void xbee_client_instance_init( GTypeInstance *gti, gpointer g_class )
 	assert( gti != NULL );
 
 	client->in_frames = NULL;
+	client->out_frames = NULL;
 	client->inpos = 0;
+	client->outpos = 0;
 	client->server = NULL;
 	client->dispose_has_run = FALSE;
 
@@ -207,13 +212,27 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 static gboolean xbee_client_sock_outgoing( XbeeClient *client )
 {
 	assert( client != NULL );
+	
+	int ret_val = 1;
+	
+	while ( xbee_client_data_ready (client) && (ret_val == 1))
+	{
+		ret_val = xbee_client_write_frame ( client );
+		if (ret_val == -1)
+			return FALSE;
+	}
 
 	return TRUE;
 }
 
 static gboolean xbee_client_data_ready( XbeeClient *client )
 {
-	return FALSE;
+	assert (client != NULL);
+	
+	if ( g_queue_peek_tail ( client->out_frames ) == NULL )
+		return FALSE;
+
+	return TRUE;
 }
 
 static gboolean xbee_client_sock_error( XbeeClient *client )
@@ -318,4 +337,55 @@ void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *inf
 	/* Data (in queue) ready to write */
 	xbee_fd_source_data_ready ( client->source );
 	
+}
+
+static int xbee_client_write_frame ( XbeeClient *client )
+{
+	xb_frame_t *frame;
+	assert (client != NULL);
+
+	frame = (xb_frame_t*)g_queue_peek_tail (client->out_frames);
+	assert (frame != NULL);
+
+	while ( client->outpos < (frame->len + 2) )
+	{
+		
+		int b = 0;
+
+		if ( client->outpos < 2)
+		{
+			uint8_t flen[2];
+
+			/* MSByte for frame length 1st */
+			flen[0] = (frame->len >> 8 ) & 0xFF;
+			flen[1] = frame->len & 0xFF;
+
+			/* Write Frame Length */
+			b = write ( client->fd, &flen [client->outpos], 2 - client->outpos );
+		}
+		else
+			/* Write Frame Data */
+			b = write ( client->fd, &frame->data [ client->outpos - 2], frame->len + 2 - client->outpos );
+
+		/* If error occurs */
+		if (b == -1)
+		{
+			if ( errno == EAGAIN )
+				return 0;
+			
+			fprintf ( stderr, "Error: Failed to write %m\n" );
+			return -1;
+		}
+		
+		/* do not do anything in this iteration if nothing written */
+		if (b==0)
+			continue;
+		
+		client->outpos += b;
+	}
+	
+	g_queue_pop_tail ( client->out_frames );
+	client->outpos = 0;
+	g_debug ("Client: Frame written");
+	return 1;
 }
