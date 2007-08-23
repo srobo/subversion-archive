@@ -148,7 +148,7 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 
 	while( xbee_client_read_frame( client ) == 0 )
 	{
-		g_debug( "xbee_client: Frame received.\n" );
+		//g_debug( "xbee_client: Frame received.\n" );
 
 		if( client->flen > 0 )
 		{
@@ -280,7 +280,7 @@ static void xbee_client_finalize( GObject *obj )
 void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *info, uint8_t len)
 {
 	
-	g_debug ("Client: xbee_client_transmit\n");
+	//g_debug ("Client: xbee_client_transmit\n");
    
 	xb_frame_t *frame;
 	frame = (xb_frame_t*)g_malloc (sizeof (xb_frame_t) );
@@ -389,6 +389,6 @@ static int xbee_client_write_frame ( XbeeClient *client )
 	
 	g_queue_pop_tail ( client->out_frames );
 	client->outpos = 0;
-	g_debug ("Client: Frame written");
+	//g_debug ("Client: Frame written");
 	return 1;
 }
