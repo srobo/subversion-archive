@@ -2,7 +2,8 @@ import colorsys
 import sys
 from PIL import Image
 
-DEFAULTSATCUTOFF = 40
+DEFAULTSATCUTOFF = 30
+MINMASS = 25
 
 def makemax(a, b, labels):
     if labels[a] == labels[b]:
@@ -86,16 +87,32 @@ def label(data, minhue, maxhue, minsat, WIDTH, HEIGHT):
 
     return blobs, labels
 
+DEFAULTSATPEAK = 100
+MINWHITEWIDTH = 2
 
 def get_min_sat(sathist):
     """
     Saturations below this value are white.
+    Go from 0 (fully saturated) right, until the count has gone above then
+    below DEFAULTSATPEAK - if that was wider than MINWHITEWIDTH then presume
+    that was the white peak.
+    If don't find anything, return DEFAULTSATCUTOFF
     """
+    whitepeakstart = 0
+    for i in range(100):
+        if whitepeakstart == 0:
+            if sathist[i] > DEFAULTSATPEAK:
+                whitepeakstart = i
+        else:
+            if sathist[i] < DEFAULTSATPEAK and \
+                    i > whitepeakstart + MINWHITEWIDTH:
+                return i
     return DEFAULTSATCUTOFF
 
 def get_cut_off(huehist):
     """
-    Return a cut off between background white and a peak
+    Return a cut off between background white and a peak. Just averaging, seems
+    to be OK.
     """
     return float(sum(huehist)) / 360
 
@@ -149,18 +166,18 @@ def rgb_to_hsv(r, g, b):
         if h > 1:
             h = h - 1
 
-    return (h*360, s*100, v*100)
+    return (h*359, s*99, v*99)
     
 
 def get_image_pixels(filename):
-    im = Image.open(sys.argv[1])
-    return list(im.getdata())
+    im = Image.open(sys.argv[1]).resize((80, 60))
+    return list(im.getdata()), im.size
 
 
-def get_huehist(hsv, minsat):
-    huecount = [0] * 360
+def get_hist(hsv, bins, getid, minid, minno):
+    hist = [0] * bins
     for i in range(0, len(hsv)):
-        if hsv[i][1] >= minsat:
-            curhue = int(hsv[i][0])
-            huecount[curhue] = huecount[curhue] + 1
-    return huecount
+        if hsv[i][minid] >= minno:
+            cur = int(hsv[i][getid])
+            hist[cur] = hist[cur] + 1
+    return hist

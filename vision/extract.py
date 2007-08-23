@@ -6,16 +6,18 @@ from functions import *
 MINWIDTH = 2 #Minimum width of a peak
 
 #1. Load image as list of pixels
-rgb = get_image_pixels(sys.argv[1])
+rgb, (WIDTH, HEIGHT) = get_image_pixels(sys.argv[1])
 
 #2. Convert to HSV
 hsv = [rgb_to_hsv(x[0], x[1], x[2]) for x in rgb]
 
 #3. Get a minimum saturation - below this is white
-minsat = get_min_sat([])
+minsat = get_min_sat(get_hist(hsv, 100, 1, 0, 0))
+
+print minsat
 
 #4. Generate a histogram of hue values
-huehist = get_huehist(hsv, minsat)
+huehist = get_hist(hsv, 360, 0, 1, minsat)
 
 #5. Find a minimum useful peak height
 huecutoff = get_cut_off(huehist)
@@ -58,26 +60,27 @@ for peak in peaks:
     #Go through image, labelling blobs for this colour
     #TODO: Best to go through image once, checking for all the colours at once?
     filtered = [x for x in hsv]
-    blobs, labels = label(filtered, peak[0], peak[1], minsat, 320, 240)
+
+    blobs, labels = label(filtered, peak[0], peak[1], minsat, WIDTH, HEIGHT)
     
     geometry = {}
 
-    for label in [l for l in labels if l > 0]:
-        geometry[label] = [0, 0, 0]
-
+    for lab in [l for l in labels if l > 0]:
+        geometry[lab] = [0, 0, 0]
     
-    for y in range(0, 240):
-        for x in range(0, 320):
-            curpos = y*320+x
+    for y in range(0, HEIGHT):
+        for x in range(0, WIDTH):
+            curpos = y*WIDTH+x
             if blobs[curpos] > 0:
-                label = labels[blobs[curpos]]
-                geometry[label][0] += x
-                geometry[label][1] += y
-                geometry[label][2] += 1
+                lab = labels[blobs[curpos]]
+                geometry[lab][0] += x
+                geometry[lab][1] += y
+                geometry[lab][2] += 1
     
     for l in geometry.itervalues():
-        print "Colour %d, x=%d, y=%d, mass=%d" % (colour,
-                                                  float(l[0]) / l[2],
-                                                  float(l[1]) / l[2],
-                                                  l[2])
+        if l[2] > MINMASS:
+            print "Colour %d, x=%d, y=%d, mass=%d" % (colour,
+                                                    float(l[0]) / l[2],
+                                                    float(l[1]) / l[2],
+                                                    l[2])
 

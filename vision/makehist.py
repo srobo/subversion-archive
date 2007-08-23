@@ -37,8 +37,9 @@ def rgb_to_hsv(r, g, b):
     return (h*360, s*100, v*100)
     
 
-im = Image.open(sys.argv[1])
-out = Image.new("RGB", (320, 240))
+im = Image.open(sys.argv[1]).resize((80, 60))
+WIDTH, HEIGHT = im.size
+out = Image.new("RGB", (WIDTH, HEIGHT))
 dataout = out.load()
 rgb = list(im.getdata())
 hsv = [rgb_to_hsv(x[0], x[1], x[2]) for x in rgb]
@@ -67,9 +68,9 @@ def get_data(huemin=0, huemax=360, satmin=0, satmax=100, valmin=0, valmax=100):
         if cursat >= satmin and cursat <= satmax and \
             curval >= valmin and curval <= valmax and \
             curhue >= huemin and curhue <= huemax:
-                dataout[i%320, i/320] =  (34, 255, 0)
+                dataout[i%WIDTH, i/WIDTH] =  (34, 255, 0)
         else:
-                dataout[i%320, i/320] = rgb[i]
+                dataout[i%WIDTH, i/WIDTH] = rgb[i]
 
 
         if cursat >= satmin and cursat <= satmax and \
@@ -104,8 +105,8 @@ def get_data(huemin=0, huemax=360, satmin=0, satmax=100, valmin=0, valmax=100):
     
     subplot(321)
     cla()
-    title("Hues for val %d - %d and sat %d - %d" % (valmin, valmax, satmin,
-        satmax))
+    title("Hues for val %d - %d and sat %d - %d. Average %d" % (valmin, valmax, satmin,
+        satmax, sum(hues)/360))
     plot(hues)
     axis([-5, 370, 0, max(hues)]) #, max(sats), max(vals))])
     
