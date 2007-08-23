@@ -347,7 +347,31 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 			whole_frame = TRUE;
 	}
 	
-	conn->callbacks.rx_frame (conn->inbuf, conn->flen);
+
+	
+	xbee_conn_info_t info;
+
+	
+	info.src_addr.type = conn->inbuf[0];
+	if (info.src_addr.type == XB_ADDR_16)
+	{
+		memmove (info.src_addr.addr, &conn->inbuf[1], 2);
+		info.rssi = conn->inbuf[3];
+		info.pan_broadcast = conn->inbuf[4] ? TRUE : FALSE;
+		info.address_broadcast = conn->inbuf[5] ? TRUE : FALSE;
+		conn->flen = conn->flen - 6;
+		conn->callbacks.rx_frame (&conn->inbuf[6], conn->flen, &info);
+	}
+	else
+	{	
+		memmove (info.src_addr.addr, &conn->inbuf[1], 8);
+		info.rssi = conn->inbuf[9];
+		info.pan_broadcast = conn->inbuf[10] ? TRUE : FALSE;
+		info.address_broadcast = conn->inbuf[11] ? TRUE : FALSE;
+		conn->flen = conn->flen - 12;
+		conn->callbacks.rx_frame (&conn->inbuf[12], conn->flen, &info);
+	}
+	
 	conn->inpos = 0;
 	conn->flen = 0;
 	return 1;

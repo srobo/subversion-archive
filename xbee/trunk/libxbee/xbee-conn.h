@@ -48,9 +48,20 @@ typedef struct
 	uint8_t *data;
 } xb_frame_t;
 
+
+
 typedef struct
 {
-	void (*rx_frame) (uint8_t *data, uint16_t len);
+	xb_addr_t src_addr;
+	uint8_t rssi;
+	gboolean pan_broadcast;
+	gboolean address_broadcast;
+}xbee_conn_info_t;
+
+
+typedef struct
+{
+	void (*rx_frame) (uint8_t *data, uint16_t len, xbee_conn_info_t *info);
 } xb_conn_callbacks_t;
 
 struct xbee_conn_t
@@ -74,6 +85,7 @@ struct xbee_conn_t
 	uint16_t flen;
 	
 	xb_conn_callbacks_t callbacks;
+
 };
 
 /* Open a connection to the server */
