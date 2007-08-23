@@ -159,10 +159,10 @@ int main(void) {
 	//int static unused_initialized_variable_to_make_gdb_happy = 1;
 	initialise_PwmBoard();
     while (1){
-		if(USIIFG || USISTTIFG){
+		if((USICTL1 & USIIFG) || (USICTL1 & USISTTIFG)){
 		polled_i2c();
 		}
-		//sweepServo();
+//		sweepServo();
 	}
 }
 

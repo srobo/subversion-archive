@@ -140,7 +140,6 @@ inline void isr_usi (void){
 		I2C_State = state_idle;           // Reset state machine
 		break;
 	}
-
 	USICTL1 &= ~USIIFG;                  // Clear pending flags
 }
 
