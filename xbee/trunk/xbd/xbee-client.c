@@ -262,12 +262,60 @@ void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *inf
 {
 	
 	g_debug ("Client: xbee_client_transmit\n");
+   
+	xb_frame_t *frame;
+	frame = (xb_frame_t*)g_malloc (sizeof (xb_frame_t) );
+	assert (client != NULL && data != NULL && info != NULL && frame != NULL);
+	
+	uint8_t broadcast;
 
+	/* Frame Structure */
+	/* Byte: */
+	/* 0: address type */
+	/* 16Bit: */
+	/* 1-2: Source Address */
+	/* 3: RSSI */
+	/* 4: PAN_BROADCAST */
+	/* 5: ADDRESS_BROADCAST */
+	/* 6-(len-1): RX data */
+	/* 64Bit */
+	/* 1-8: Source Address */
+	/* 9: RSSI */
+	/* 10: PAN_BROADCAST */
+	/* 11: ADDRESS_BROADCAST */
+	/* 12-(len-1): RX data */
+	
+	
+	if (info->src_addr.type == XB_ADDR_16)
+	{
+		frame->data = (uint8_t*) g_malloc ( (len + 6) * sizeof (uint8_t) );
+		g_memmove ( &frame->data[0], &info->src_addr.type, 1);
+		g_memmove ( &frame->data[1], &info->src_addr.addr, 2);
+		g_memmove ( &frame->data[3], &info->rssi, 1);
+		broadcast = (info->pan_broadcast) ? 1 : 0;
+		g_memmove ( &frame->data[4], &broadcast, 1);
+		broadcast = info->address_broadcast ? 1 : 0;
+		g_memmove ( &frame->data[5], &broadcast, 1);
+		g_memmove ( &frame->data[6], data, len );
+		len = len + 6;
+	}
+	else
+	{
+		frame->data = (uint8_t*) g_malloc ( (len + 12) * sizeof (uint8_t) );
+		g_memmove ( &frame->data[0], &info->src_addr.type, 1);
+		g_memmove ( &frame->data[1], &info->src_addr.addr, 8);
+		g_memmove ( &frame->data[9], &info->rssi, 1);
+		broadcast = (info->pan_broadcast) ? 1 : 0;
+		g_memmove ( &frame->data[10], &broadcast, 1);
+		broadcast = info->address_broadcast ? 1 : 0;
+		g_memmove ( &frame->data[11], &broadcast, 1);
+		g_memmove ( &frame->data[12], data, len);
+		len = len + 12;
+	}
+
+	g_queue_push_head ( client->out_frames, frame );	
+
+	/* Data (in queue) ready to write */
+	xbee_fd_source_data_ready ( client->source );
+	
 }
-
-	
-	
-	       
-	
-		
-		

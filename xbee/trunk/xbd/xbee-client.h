@@ -52,6 +52,9 @@ struct xbee_client_ts
 	/* Incoming frames */
 	GQueue *in_frames;
 
+	/* Outgoing frames */
+	GQueue *out_frames;
+
 	/* Socket frame reception stuff */
 	uint8_t inbuf[ XB_CLIENT_INBUF_LEN ];
 	uint16_t inpos, flen;
