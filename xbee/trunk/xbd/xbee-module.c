@@ -476,6 +476,8 @@ XbeeModule* xbee_module_open( char* fname, GMainContext *context )
 					 (xbee_fd_callback)xbee_module_io_error,
 					 (xbee_fd_callback)xbee_module_outgoing_queued );
 					 
+//	xbee_module_add_source( xb, context );
+
 	return xb;
 }
 
@@ -770,5 +772,6 @@ void xbee_module_register_callbacks ( XbeeModule *xb, xbee_module_events_t *call
 	assert (callbacks != NULL && xb != NULL );
 	
 	xb->xb_callbacks = *callbacks;
+	xb->userdata = userdata;
 
 }
