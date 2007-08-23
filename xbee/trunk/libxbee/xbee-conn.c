@@ -351,3 +351,10 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 	return 1;
 }
 
+void xbee_conn_register_callbacks (XbeeConn *conn, xb_conn_callbacks_t *callbacks)
+{
+	assert (conn != NULL && callbacks != NULL);
+
+	conn->callbacks = *callbacks;
+
+}

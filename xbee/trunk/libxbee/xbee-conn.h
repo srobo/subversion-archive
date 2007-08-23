@@ -48,6 +48,11 @@ typedef struct
 	uint8_t *data;
 } xb_frame_t;
 
+typedef struct
+{
+	void (*rx_frame) (uint8_t *data, uint16_t len);
+} xb_conn_callbacks_t;
+
 struct xbee_conn_t
 {
 	GObject parent;
@@ -67,6 +72,8 @@ struct xbee_conn_t
 	uint8_t inbuf [ XBEE_MAX_FRAME ];
 
 	uint16_t flen;
+	
+	xb_conn_callbacks_t callbacks;
 };
 
 /* Open a connection to the server */
@@ -88,5 +95,8 @@ gboolean xbee_conn_transmit( XbeeConn* conn, xb_addr_t addr, uint8_t* data, uint
 
 /* Xbee Command Test */
 void xbee_conn_command_test ( XbeeConn * conn, gchar *data);
+
+/* Register the Libxbee Callbacks */
+void xbee_conn_register_callbacks (XbeeConn *conn, xb_conn_callbacks_t *callbacks);
 
 #endif	/* __XBEE_CONN_H */
