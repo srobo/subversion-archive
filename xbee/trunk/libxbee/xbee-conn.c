@@ -264,6 +264,9 @@ static int xbee_conn_write_whole_frame ( XbeeConn *conn )
 	}
 
 	g_queue_pop_tail ( conn->out_frames );
+	g_free (frame->data);
+	g_free (frame);
+
 	conn->outpos = 0;
 	return 1;
 }
