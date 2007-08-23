@@ -64,4 +64,7 @@ XbeeClient* xbee_client_new( GMainContext *context,
 			     XbeeServer *server,
 			     xbee_client_disconnect_t dis ); 
 
+/* Transmit data from XbeeClient to libxbee */
+void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *info, uint8_t len);
+
 #endif	/* __XBEE_CLIENT_H */

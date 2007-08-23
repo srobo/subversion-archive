@@ -257,3 +257,17 @@ static void xbee_client_finalize( GObject *obj )
 	
 	G_OBJECT_CLASS (parent_class)->finalize (obj);	
 }
+
+void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *info, uint8_t len)
+{
+	
+	g_debug ("Client: xbee_client_transmit\n");
+
+}
+
+	
+	
+	       
+	
+		
+		

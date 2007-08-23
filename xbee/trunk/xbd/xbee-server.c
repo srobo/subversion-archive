@@ -22,7 +22,7 @@ static gboolean xbee_server_source_error( XbeeServer* serv );
 static gboolean xbee_server_req_con( XbeeServer *serv );
 
 /* Callback for incoming data from an XbeeModule */
-static void xbee_server_incoming_data( xb_rx_info_t *indo, uint8_t *data, uint8_t len, gpointer *userdata );
+static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint8_t len, gpointer *userdata );
 
 /* Callback for when an XbeeClient is disconnected */
 void xbee_client_disconnect( XbeeClient *client,
@@ -195,10 +195,22 @@ static gboolean xbee_server_source_error( XbeeServer* serv )
 	return FALSE;
 }
 
-static void xbee_server_incoming_data( xb_rx_info_t *indo, uint8_t *data, uint8_t len, gpointer *userdata)
+static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint8_t len, gpointer *userdata)
 {
+	uint8_t channel = 0;
+	XbeeServer *server = (XbeeServer*)userdata;
+
 	g_debug ("Server: Server has received a frame from XB\n");
 
+	assert (info != NULL && data != NULL && server != NULL);
+
+	/* Convert address into channel */
+
+	XbeeClient *client;
+	client = (XbeeClient*)g_slist_nth_data ( server -> clients, channel );
+	assert ( client != NULL );
+	
+	xbee_client_transmit ( client, data, info, len );
 	/* TODO: look at frame channel number and send to correct client */
 }
 
