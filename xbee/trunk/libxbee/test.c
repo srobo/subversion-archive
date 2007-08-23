@@ -4,6 +4,7 @@
 
 gboolean tx( XbeeConn *xbc );
 void xbtest ( XbeeConn *xbc );
+void rx_data (uint8_t * data, uint16_t len);
 
 int main( int argc, char** argv )
 {
@@ -11,6 +12,8 @@ int main( int argc, char** argv )
 	GMainLoop* ml;
 	GMainContext *context;
 	
+	xb_conn_callbacks_t callbacks;
+
 	ml = g_main_loop_new( NULL, FALSE );
 	context = g_main_loop_get_context( ml );
 
@@ -18,8 +21,13 @@ int main( int argc, char** argv )
 
 	xbc = xbee_conn_new( "/tmp/xbee", context );
 
+	callbacks.rx_frame = &rx_data;
+	xbee_conn_register_callbacks (xbc, &callbacks);
+
+
+
 	//g_timeout_add( 250, (GSourceFunc)tx, (gpointer)xbc );
-	g_timeout_add(3000, (GSourceFunc)tx, (gpointer)xbc);
+//	g_timeout_add(3000, (GSourceFunc)tx, (gpointer)xbc);
 	
 	g_main_loop_run( ml );
 
@@ -49,3 +57,18 @@ void xbtest ( XbeeConn *xbc )
   xbee_conn_command_test (xbc, data);
   
 }
+
+void rx_data (uint8_t * data, uint16_t len)
+{
+	int i =0;
+	
+	printf ("\nRx_data Function:");
+	printf ("\nLen is at: %2.2X\n", (unsigned int)len);
+
+	for (i=0; i<len; i++)
+	{
+		printf ("%2.2X ", (unsigned int)data[i]);
+	}
+	
+}
+

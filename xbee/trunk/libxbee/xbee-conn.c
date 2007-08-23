@@ -190,7 +190,7 @@ static gboolean xbee_conn_sock_outgoing( XbeeConn *conn )
 	int ret_val = 1;
 
 	assert ( conn != NULL );
-
+	
 	while ( xbee_conn_sock_data_ready(conn) && (ret_val == 1) )
 	{
 		ret_val = xbee_conn_write_whole_frame (conn); 
@@ -347,7 +347,9 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 			whole_frame = TRUE;
 	}
 	
-	printf ("Xbee Conn: Data received\n");
+	conn->callbacks.rx_frame (conn->inbuf, conn->flen);
+	conn->inpos = 0;
+	conn->flen = 0;
 	return 1;
 }
 
