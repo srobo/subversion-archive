@@ -332,12 +332,13 @@ void MSDInitEP(void)
  *****************************************************************************/	
 	
 void SDCardInit(void) 
-{
+{// this now basically does nothing
 	SDC_Error status;
-	SocketInitialize();
-	mInitAllLEDs();
-	status=MediaInitialize(&gblFlag);
-	if (status) { 
+	
+	//SocketInitialize(); - dont need this, it just wiggles some pins on the imaginary card tb
+	//mInitAllLEDs();	- dont need just sets some tris bits tb
+	status=MediaInitialize(&gblFlag);//mediaintalise has been neutered tb
+	if (status) { // this should never run tb 
 		/* If there was some error, turn on all leds */
 		mLED_1_On(); mLED_2_On(); mLED_3_On(); mLED_4_On();
 		gblFlag.isSDMMC=0;
@@ -424,7 +425,7 @@ void MSDCommandHandler(void)		// In reality it is to read from EP1
  *
  * Overview:        This function sends the CSW and sets the State to MSD_WAIT
  *                  It also changes MSD_BD_OUT to point to msd_csw (structure
- *                  for reading CSW) Note that this was changed in
+ *                  for reading CSW) Nat this was changed in
  *                  MSD_DATA_OUT state to point to msd_buffer in order to
  *                  read data from host
  *

@@ -2,11 +2,12 @@
 magic_cookie={66E99B07-E706-4689-9E80-9B2582898A13}
 file_version=1.0
 [PATH_INFO]
+BuildDirPolicy=BuildDirIsSourceDir
 dir_src=
 dir_bin=C:\MCHPMSD\MSD\_output
 dir_tmp=C:\MCHPMSD\MSD\_output
 dir_sin=
-dir_inc=C:\MCHPMSD\MSD
+dir_inc=C:\Documents and Settings\Tom\Desktop\ecssr\firmware\pwr-brd\MSD;C:\MCHPMSD\MSD
 dir_lib=C:\mcc18\lib
 dir_lkr=C:\MCHPMSD\MSD
 [CAT_FILTERS]
@@ -68,9 +69,10 @@ suite_guid={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
 suite_state=
 [TOOL_SETTINGS]
 TS{DD2213A8-6310-47B1-8376-9430CDFC013F}=
-TS{BFD27FBA-4A02-4C0E-A5E5-B812F3E7707C}=/o"$(TARGETBASE).cof"
+TS{BFD27FBA-4A02-4C0E-A5E5-B812F3E7707C}=/o"$(BINDIR_)$(TARGETBASE).cof"
 TS{C2AF05E7-1416-4625-923D-E114DB6E2B96}=-w1 -Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
 TS{ADE93A55-C7C7-4D4D-A4BA-59305F7D0391}=
-[TOOL_LOC_STAMPS]
-tool_loc{96C98149-AA1B-4CF9-B967-FAE79CAB663C}=C:\mcc18\bin\mplink.exe
-tool_loc{E56A1C86-9D32-4DF6-8C34-FE0388B1B644}=C:\mcc18\bin\mcc18.exe
+[INSTRUMENTED_TRACE]
+enable=0
+transport=0
+format=0

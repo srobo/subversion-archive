@@ -149,7 +149,8 @@ SDC_Error MediaInitialize(SDCSTATE *Flag)
 	// clear out flags 
 	Flag->_byte = 0x0;
 
-    SDC_CS = 1;                               //Initialize Chip Select line
+	//dont need this as card coesnt exist tb
+    //SDC_CS = 1;                               //Initialize Chip Select line
      
     // This function was called for a reason Turn it on
     //SDC_ON;
@@ -165,9 +166,13 @@ SDC_Error MediaInitialize(SDCSTATE *Flag)
     for(timeout=0; timeout<10; timeout++)
         mSend8ClkCycles();
 
-    SDC_CS = 0;
+	// again card doesnt exist tb
+    //SDC_CS = 0;
 
     Delayms(1);
+
+/* dont need any of this stuff tb
+
 
     // Send CMD0 to reset the media 
     response = SendSDCCmd(GO_IDLE_STATE,0x0);
@@ -184,6 +189,9 @@ SDC_Error MediaInitialize(SDCSTATE *Flag)
         status = sdcCardNotInitFailure;      // we have not got anything back from the card 
         goto InitError;
     }                   
+
+
+
 
 	// According to spec cmd1 must be repeated until MMC card is fully initialized
     timeout = 0xFFF;
@@ -204,7 +212,13 @@ SDC_Error MediaInitialize(SDCSTATE *Flag)
 	    // get the CSD register before increasing the spped page 4-8 of sd card manual last line
 	    CSDstatus=CSDRead();
 	    if(!CSDstatus)
+
+*/
+			//we likwe this bit tb
         	OpenSPI(SPI_FOSC_4, MODE_11, SMPMID);       //Increase clock speed
+
+/*
+
         else 
         	status=sdcCardTypeInvalid;
 	}
@@ -230,6 +244,8 @@ SDC_Error MediaInitialize(SDCSTATE *Flag)
         status = sdcCardNotInitFailure;
         goto InitError; 
     }
+
+*/
 
     return(status);	
     
@@ -259,8 +275,9 @@ byte MediaDetect()
 {
     // give it a debounce here
     Delayms(10);
-    	    
-    return(!MEDIA_CD);
+    
+	return(1);//force return that a card really exists even tho its a lie! tb	    
+    //return(!MEDIA_CD);  //mediacd is rb4 connected to the switch presumably
 }//end MediaDetect
 
 
