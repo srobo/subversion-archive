@@ -2,7 +2,6 @@
 # Generates an initrd
 ##############################
 
-INITRD_DIR:=$(BUILD_DIR)/initrd
 INITRD_TARGET:=initrd.cramfs
 
 INITRD_SKELETON := target/device/arm/nslu2/initrd_skeleton

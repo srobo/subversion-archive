@@ -208,9 +208,9 @@ ifeq ($(strip $(BR2_CROSS_TOOLCHAIN_TARGET_UTILS)),y)
 endif
 	touch -c $(INITRD_DIR)/usr/bin/ldd
 
+UCLIBC_TARGETS+= $(INITRD_DIR) $(INITRD_DIR)/lib/libc.so.0
 endif
 
-UCLIBC_TARGETS+= $(INITRD_DIR)/lib/libc.so.0
 endif
 
 uclibc-configured: $(UCLIBC_DIR)/.configured
