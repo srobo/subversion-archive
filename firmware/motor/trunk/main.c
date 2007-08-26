@@ -9,6 +9,7 @@ static int i = 0;
 int main( void )
 {
 	pwm_ratio_t v = 0;
+	i = 1;
 
 	/* Disable the watchdog timer */
 	WDTCTL = WDTHOLD | WDTPW;
