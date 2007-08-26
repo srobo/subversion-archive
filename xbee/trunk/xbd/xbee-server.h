@@ -16,9 +16,6 @@
 struct xbee_con_ts;
 typedef struct xbee_con_ts xbee_con_t;
 
-//struct xbee_server_ts;
-//typedef struct xbee_server_ts XbeeServer;
-
 /* Server related properties */
 struct xbee_server_ts
 {

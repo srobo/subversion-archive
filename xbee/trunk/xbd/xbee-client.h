@@ -9,9 +9,6 @@
 
 #define XB_CLIENT_INBUF_LEN 512
 
-//struct xbee_client_ts;
-//typedef struct xbee_client_ts XbeeClient;
-
 typedef struct
 {
 	GObjectClass parent;
