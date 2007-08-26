@@ -1,5 +1,5 @@
 #include "common.h"
-#include "ucsi.h"
+#include "msp430/usci.h"
 #include <signal.h>
 #include "i2c.h"
 
