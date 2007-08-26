@@ -187,6 +187,37 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 		ret_val = xbee_conn_read_whole_frame (conn);
 		if (ret_val == -1)
 			return FALSE;
+		if (ret_val == 1)
+		{
+			
+			xbee_conn_info_t info;
+			
+			
+			info.src_addr.type = conn->inbuf[0];
+			if (info.src_addr.type == XB_ADDR_16)
+			{
+				memmove (info.src_addr.addr, &conn->inbuf[1], 2);
+				info.rssi = conn->inbuf[3];
+				info.pan_broadcast = conn->inbuf[4] ? TRUE : FALSE;
+				info.address_broadcast = conn->inbuf[5] ? TRUE : FALSE;
+				info.src_channel = conn->inbuf[6];
+				info.dst_channel = conn->inbuf[7];
+				conn->flen = conn->flen - 8;
+				conn->callbacks.rx_frame (&conn->inbuf[8], conn->flen, &info);
+			}
+			else
+			{	
+				memmove (info.src_addr.addr, &conn->inbuf[1], 8);
+				info.rssi = conn->inbuf[9];
+				info.pan_broadcast = conn->inbuf[10] ? TRUE : FALSE;
+				info.address_broadcast = conn->inbuf[11] ? TRUE : FALSE;
+				info.src_channel = conn->inbuf[12];
+				info.dst_channel = conn->inbuf[13];
+				conn->flen = conn->flen - 14;
+				conn->callbacks.rx_frame (&conn->inbuf[14], conn->flen, &info);
+			}
+		}
+		
 	}
 	return TRUE;
 }
@@ -358,33 +389,6 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 	}
 	
 
-	
-	xbee_conn_info_t info;
-
-	
-	info.src_addr.type = conn->inbuf[0];
-	if (info.src_addr.type == XB_ADDR_16)
-	{
-		memmove (info.src_addr.addr, &conn->inbuf[1], 2);
-		info.rssi = conn->inbuf[3];
-		info.pan_broadcast = conn->inbuf[4] ? TRUE : FALSE;
-		info.address_broadcast = conn->inbuf[5] ? TRUE : FALSE;
-		info.src_channel = conn->inbuf[6];
-		info.dst_channel = conn->inbuf[7];
-		conn->flen = conn->flen - 8;
-		conn->callbacks.rx_frame (&conn->inbuf[8], conn->flen, &info);
-	}
-	else
-	{	
-		memmove (info.src_addr.addr, &conn->inbuf[1], 8);
-		info.rssi = conn->inbuf[9];
-		info.pan_broadcast = conn->inbuf[10] ? TRUE : FALSE;
-		info.address_broadcast = conn->inbuf[11] ? TRUE : FALSE;
-		info.src_channel = conn->inbuf[12];
-		info.dst_channel = conn->inbuf[13];
-		conn->flen = conn->flen - 14;
-		conn->callbacks.rx_frame (&conn->inbuf[14], conn->flen, &info);
-	}
 	
 	conn->inpos = 0;
 	conn->flen = 0;
