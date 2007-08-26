@@ -22,9 +22,6 @@ struct xbee_ts;
 
 typedef struct xbee_ts XbeeModule;	
 
-typedef void (*xbee_callback_t) ( XbeeModule *xb,
-				  uint8_t *data,
-				  uint16_t len );
 typedef struct
 {
 	GObjectClass parent;
@@ -157,14 +154,6 @@ void xbee_module_close( XbeeModule *xb );
 
 /* Add an xbee to a mainloop */
 void xbee_module_add_source( XbeeModule *xb, GMainContext *context );
-
-/* Set the callback for when a frame is received.
- * Frame is freed after callback function completes.
- * Data pointed to by data and len pointers is unavailable after
- * the callback has returned.
- */
-void xbee_module_set_incoming_callback( XbeeModule *xb, 
-					xbee_callback_t f );
 
 /* Transmit a frame */
 int xbee_transmit( XbeeModule* xb, xb_addr_t* addr, void* buf, uint8_t len );

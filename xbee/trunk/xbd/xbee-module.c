@@ -754,13 +754,6 @@ static uint8_t xbee_module_outgoing_escape_byte( XbeeModule* xb, uint8_t d )
 	return d;
 }
 
-void xbee_module_set_incoming_callback( XbeeModule *xb, 
-					xbee_callback_t f )
-{
-	assert( xb != NULL );
-		
-}
-
 gboolean xbee_module_io_error( XbeeModule* xb )
 {
 	fprintf( stderr, "Erk, error.  I should do something\n" );
