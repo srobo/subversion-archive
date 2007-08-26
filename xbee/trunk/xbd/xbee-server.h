@@ -41,6 +41,8 @@ struct xbee_server_ts
 	GSList *modules;
 
 	gboolean dispose_has_run;
+
+	gpointer *client[256];
 };
 
 typedef struct
