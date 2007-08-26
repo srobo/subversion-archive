@@ -177,7 +177,7 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				   *     2-9: Address - MSB first
 				   *     10->(9+len): Data for transmission */
 
-				int len;
+				uint8_t len;
 			        xb_addr_t addr;
 				uint8_t* data;
 				addr.type = f[1];
