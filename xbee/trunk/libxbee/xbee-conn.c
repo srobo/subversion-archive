@@ -8,7 +8,6 @@
 #include <string.h>
 #include "xbee-conn.h"
 #include "commands.h"
-#include "libxcli.h"
 #include "common-fd.h"
 
 static void xbee_conn_instance_init (GTypeInstance *gti, gpointer g_class );
