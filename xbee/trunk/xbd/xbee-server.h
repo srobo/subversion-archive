@@ -81,4 +81,7 @@ void xbee_server_transmit( XbeeServer* serv,
 /*Request a channel for a client */
 gboolean xbee_server_req_client_channel ( XbeeServer *server, gpointer *client, uint8_t channel );
 
+/* Assign a free channel to a client */
+int16_t xbee_server_assign_channel ( XbeeServer *server, gpointer *client );
+
 #endif	/* __XBEE_SERVER_H */

@@ -314,3 +314,22 @@ gboolean xbee_server_req_client_channel ( XbeeServer *server, gpointer *client, 
 		return FALSE;
 
 }
+
+int16_t xbee_server_assign_channel ( XbeeServer *server, gpointer *client )
+{	
+	int16_t i;
+
+	for (i=0; i<256; i++)
+	{
+		if (server->channels[i] == NULL)
+		{
+			server->channels[i] = client;
+			return i;
+		}
+	}
+
+	return -1;	
+}
+
+	
+			
