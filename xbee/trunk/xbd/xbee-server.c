@@ -299,3 +299,18 @@ static void xbee_server_class_init( XbeeServerClass *klass )
 	gobject_class->dispose = xbee_server_dispose;
 	gobject_class->finalize = xbee_server_finalize;	
 }
+
+gboolean xbee_server_req_client_channel ( XbeeServer *server, gpointer *client, uint8_t channel )
+{
+	
+	assert (server != NULL && client != NULL);
+	
+	if (server->channels [ channel] == NULL)
+	{
+		server->channels [channel] = client;
+		return TRUE;
+	}
+	else
+		return FALSE;
+
+}

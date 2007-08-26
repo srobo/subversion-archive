@@ -42,7 +42,8 @@ struct xbee_server_ts
 
 	gboolean dispose_has_run;
 
-	gpointer *client[256];
+	gpointer *channels[256];
+
 };
 
 typedef struct
@@ -77,6 +78,7 @@ void xbee_server_transmit( XbeeServer* serv,
 			   xb_addr_t* addr,
 			   void *buf, 
 			   uint8_t len );
-
+/*Request a channel for a client */
+gboolean xbee_server_req_client_channel ( XbeeServer *server, gpointer *client, uint8_t channel );
 
 #endif	/* __XBEE_SERVER_H */
