@@ -13,7 +13,7 @@ void rx_data (uint8_t * data, uint16_t len, xbee_conn_info_t *info);
 void config_options (int argc, char **argv);
 
 static gchar *socket = NULL,
-	*address = NULL,
+//	*address = NULL,
 //	*channel = NULL,
 	*receive = NULL,
 	*transmit = NULL;
