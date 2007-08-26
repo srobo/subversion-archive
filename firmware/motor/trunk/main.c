@@ -2,6 +2,7 @@
 #include "motor.h"
 #include "pwm.h"
 #include "i2c.h"
+#include "init.h"
 
 static int i = 0;
 
