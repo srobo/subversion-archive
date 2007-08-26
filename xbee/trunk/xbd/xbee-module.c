@@ -47,9 +47,6 @@ static gboolean xbee_module_outgoing_queued( XbeeModule* xb );
 /* Returns the next byte to transmit */
 static uint8_t xbee_module_outgoing_next( XbeeModule* xb );
 
-/* Allocates a new frame and copies it in */
-static gboolean xbee_module_out_queue_add( XbeeModule* xb, uint8_t *data, uint8_t len );
-
 /* Adds the frame directly to the queue (memory allocation must have
  * already been done) */
 static void xbee_module_out_queue_add_frame( XbeeModule* xb, xb_frame_t* frame );
@@ -200,22 +197,6 @@ static uint8_t xbee_module_sum_block( uint8_t* buf, uint16_t len, uint8_t cur )
 		cur += buf[len - 1];
 
 	return cur;
-}
-
-static gboolean xbee_module_out_queue_add( XbeeModule* xb, uint8_t *data, uint8_t len )
-{
-	xb_frame_t *frame;
-	assert( xb != NULL && data != NULL );
-	
-	frame = g_malloc( sizeof( xb_frame_t ) );
-
-	/* Copy data into frame */
-	frame->data = g_memdup( data, len );
-	frame->len = len;
-
-	g_queue_push_head( xb->out_frames, frame );
-
-	return TRUE;
 }
 
 static void xbee_module_out_queue_add_frame( XbeeModule* xb, xb_frame_t* frame )
