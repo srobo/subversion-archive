@@ -185,6 +185,8 @@ static gboolean xbee_server_req_con( XbeeServer *serv )
 				  xbee_client_disconnect );
 	assert( client != NULL );
 	serv->clients = g_slist_append( serv->clients, client );
+	client->channel = g_slist_position ( serv->clients, g_slist_last (serv->clients) );
+	printf ("Channel: %d\n", client->channel);
 
 	return TRUE;
 }
@@ -197,7 +199,7 @@ static gboolean xbee_server_source_error( XbeeServer* serv )
 
 static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint8_t len, gpointer *userdata)
 {
-	uint8_t channel = 0;
+
 	XbeeServer *server = (XbeeServer*)userdata;
 
 	g_debug ("Server: Server has received a frame from XB\n");
@@ -207,10 +209,19 @@ static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint8_
 	/* Convert address into channel */
 
 	XbeeClient *client;
-	client = (XbeeClient*)g_slist_nth_data ( server->clients, channel );
-	assert ( client != NULL );
 	
-	xbee_client_transmit ( client, data, info, len );
+	if (info->dst_channel > (g_slist_position (server->clients, g_slist_last (server->clients))))
+		{
+			fprintf (stderr, "Unable to transmit to channel...channel not available...handle this\n");
+		}
+	    else 
+	    {
+			    client = (XbeeClient*)g_slist_nth_data ( server->clients, info->dst_channel);
+			    assert (client != NULL);
+			    xbee_client_transmit ( client, data, info, len);
+	    }
+	    
+
 	/* TODO: look at frame channel number and send to correct client */
 }
 

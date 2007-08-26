@@ -280,8 +280,6 @@ static void xbee_client_finalize( GObject *obj )
 void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *info, uint8_t len)
 {
 	
-	//g_debug ("Client: xbee_client_transmit\n");
-   
 	xb_frame_t *frame;
 	frame = (xb_frame_t*)g_malloc (sizeof (xb_frame_t) );
 	assert (client != NULL && data != NULL && info != NULL && frame != NULL);
@@ -307,7 +305,7 @@ void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *inf
 	
 	if (info->src_addr.type == XB_ADDR_16)
 	{
-		frame->data = (uint8_t*) g_malloc ( (len + 6) * sizeof (uint8_t) );
+		frame->data = (uint8_t*) g_malloc ( (len + 8) * sizeof (uint8_t) );
 		g_memmove ( &frame->data[0], &info->src_addr.type, 1);
 		g_memmove ( &frame->data[1], &info->src_addr.addr, 2);
 		g_memmove ( &frame->data[3], &info->rssi, 1);
@@ -315,12 +313,15 @@ void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *inf
 		g_memmove ( &frame->data[4], &broadcast, 1);
 		broadcast = info->address_broadcast ? 1 : 0;
 		g_memmove ( &frame->data[5], &broadcast, 1);
-		g_memmove ( &frame->data[6], data, len );
-		len = len + 6;
+		frame->data[6] = info->src_channel;
+		frame->data[7] = info->dst_channel;
+		g_memmove ( &frame->data[8], data, len );
+
+		len = len + 8;
 	}
 	else
 	{
-		frame->data = (uint8_t*) g_malloc ( (len + 12) * sizeof (uint8_t) );
+		frame->data = (uint8_t*) g_malloc ( (len + 14) * sizeof (uint8_t) );
 		g_memmove ( &frame->data[0], &info->src_addr.type, 1);
 		g_memmove ( &frame->data[1], &info->src_addr.addr, 8);
 		g_memmove ( &frame->data[9], &info->rssi, 1);
@@ -328,8 +329,10 @@ void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *inf
 		g_memmove ( &frame->data[10], &broadcast, 1);
 		broadcast = info->address_broadcast ? 1 : 0;
 		g_memmove ( &frame->data[11], &broadcast, 1);
-		g_memmove ( &frame->data[12], data, len);
-		len = len + 12;
+		frame->data[12] = info->src_channel;
+		frame->data[13] = info->dst_channel;
+		g_memmove ( &frame->data[14], data, len);
+		len = len + 14;
 	}
 
 	frame->len = len;

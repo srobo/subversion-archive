@@ -56,6 +56,8 @@ typedef struct
 	uint8_t rssi;
 	gboolean pan_broadcast;
 	gboolean address_broadcast;
+	uint8_t src_channel;
+	uint8_t dst_channel;
 }xbee_conn_info_t;
 
 
@@ -103,7 +105,7 @@ chan_num_t xbee_conn_get_channel( XbeeConn* xbc,
 void xbee_conn_release_channel( XbeeConn* xbc, chan_num_t channel );
 
 /* Transmit some data */
-gboolean xbee_conn_transmit( XbeeConn* conn, xb_addr_t addr, uint8_t* data, uint16_t len );
+gboolean xbee_conn_transmit( XbeeConn* conn, xb_addr_t addr, uint8_t* data, uint16_t len , uint8_t dst_channel);
 
 /* Xbee Command Test */
 void xbee_conn_command_test ( XbeeConn * conn, gchar *data);

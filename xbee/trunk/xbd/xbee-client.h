@@ -61,6 +61,8 @@ struct xbee_client_ts
 	uint16_t inpos, flen;
 
 	gboolean dispose_has_run;
+
+	uint8_t channel;
 };
 
 XbeeClient* xbee_client_new( GMainContext *context, 

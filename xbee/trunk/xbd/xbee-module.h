@@ -64,6 +64,8 @@ typedef struct
 	uint8_t rssi;
 	gboolean pan_broadcast;
 	gboolean address_broadcast;
+	uint8_t src_channel;
+	uint8_t dst_channel;
 }xb_rx_info_t;
 
 typedef struct 

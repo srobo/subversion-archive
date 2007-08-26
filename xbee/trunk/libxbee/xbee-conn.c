@@ -52,19 +52,21 @@ GType xbee_conn_get_type (void)
 }
 
 
-gboolean xbee_conn_transmit( XbeeConn* conn, xb_addr_t addr, uint8_t* data, uint16_t len )
+gboolean xbee_conn_transmit( XbeeConn* conn, xb_addr_t addr, uint8_t* data, uint16_t len, uint8_t dst_channel )
 {
  	/* Transmit Frame Layout 
 	   0: Command Code: XBEE_COMMAND_TRANSMIT
 	   * 1: Address type
 	   *** 16-bit address format:
 	   *     2-3: Address - MSB first.
+	   *     4 - Src_channel
+	   *     5 - Dst_channel
 	   *     4->(3+len): Data for transmission.
 	   *** 64-bit address format:
 	   *     2-9: Address - MSB first
 	   *     10->(9+len): Data for transmission */
 
-	uint8_t fdata[len + 10];
+	uint8_t fdata[len + 12];
 
 	assert ( conn != NULL && data !=NULL );
 		
@@ -73,25 +75,30 @@ gboolean xbee_conn_transmit( XbeeConn* conn, xb_addr_t addr, uint8_t* data, uint
 	fdata[1] = addr.type;	
 	if (addr.type == XB_ADDR_16)
 	{
-		if ((len + 6) > XBEE_MAX_FRAME) /* checks length of (data + command + address-type + 16bit address + 16 bit frame length) */
+		if ((len + 8) > XBEE_MAX_FRAME) /* checks length of (data + command + address-type + 16bit address + 16 bit frame length) */
 		{
 			fprintf (stderr, "Error: Data exceeds maximum frame length %m\n");
 			return FALSE;
 		}
 		memmove (&fdata[2], addr.addr, 2);
-		memmove (&fdata[4], data, len);
-		len = len + 4;
+		fdata[4] = 0;
+		fdata[5] = dst_channel;
+		
+		memmove (&fdata[6], data, len);
+		len = len + 6;
 	}
 	else
 	{
-		if ((len + 12) > XBEE_MAX_FRAME) /* checks length of (data + command + address-type + 64bit address + 16bit frame legnth) */
+		if ((len + 14) > XBEE_MAX_FRAME) /* checks length of (data + command + address-type + 64bit address + 16bit frame legnth) */
 		{
 			fprintf (stderr, "Error: Data exceeds maximum frame length %m\n");
 			return FALSE;
 		}			
 		memmove (&fdata[2], addr.addr, 8);
-		memmove (&fdata[10], data, len);
-		len = len + 10;
+		fdata[10] = 0;
+		fdata[11] = dst_channel;
+		memmove (&fdata[12], data, len);
+		len = len + 12;
 	}
 		 
 	xbee_conn_out_queue_add ( conn, fdata, len );
@@ -362,8 +369,10 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 		info.rssi = conn->inbuf[3];
 		info.pan_broadcast = conn->inbuf[4] ? TRUE : FALSE;
 		info.address_broadcast = conn->inbuf[5] ? TRUE : FALSE;
-		conn->flen = conn->flen - 6;
-		conn->callbacks.rx_frame (&conn->inbuf[6], conn->flen, &info);
+		info.src_channel = conn->inbuf[6];
+		info.dst_channel = conn->inbuf[7];
+		conn->flen = conn->flen - 8;
+		conn->callbacks.rx_frame (&conn->inbuf[8], conn->flen, &info);
 	}
 	else
 	{	
@@ -371,8 +380,10 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 		info.rssi = conn->inbuf[9];
 		info.pan_broadcast = conn->inbuf[10] ? TRUE : FALSE;
 		info.address_broadcast = conn->inbuf[11] ? TRUE : FALSE;
-		conn->flen = conn->flen - 12;
-		conn->callbacks.rx_frame (&conn->inbuf[12], conn->flen, &info);
+		info.src_channel = conn->inbuf[12];
+		info.dst_channel = conn->inbuf[13];
+		conn->flen = conn->flen - 14;
+		conn->callbacks.rx_frame (&conn->inbuf[14], conn->flen, &info);
 	}
 	
 	conn->inpos = 0;

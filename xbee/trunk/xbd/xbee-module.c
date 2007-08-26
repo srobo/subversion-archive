@@ -571,8 +571,11 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 			
 			info.address_broadcast = (data[4] & 0x02) ? TRUE : FALSE;
 			info.pan_broadcast  = (data[4] & 0x04) ? TRUE : FALSE;
+			
+			info.src_channel = data[5];
+			info.dst_channel = data[6];
 
-			xb->xb_callbacks.rx_frame (&info, &data[5], flen - 5, xb->userdata);
+			xb->xb_callbacks.rx_frame (&info, &data[7], flen - 7, xb->userdata);
 			break;
 		}
 		case XBEE_FRAME_RX_64:
@@ -586,7 +589,10 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 			info.address_broadcast = (data[10] & 0x02) ? TRUE : FALSE;
 			info.pan_broadcast  = (data[10] & 0x04) ? TRUE : FALSE;
 
-			xb->xb_callbacks.rx_frame (&info, &data[11], flen - 11, xb->userdata);
+			info.src_channel = data[11];
+			info.dst_channel = data[12];
+
+			xb->xb_callbacks.rx_frame (&info, &data[13], flen - 13, xb->userdata);
 			break;
 		}
 
