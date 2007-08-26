@@ -6,6 +6,7 @@
 
 #include "xbee-module.h"
 #include "xb-fd-source.h"
+#include "xbd-common.h"
 
 /* Server stuff */
 /* The mainloop needs to monitor the sockets for incoming data.
@@ -15,8 +16,8 @@
 struct xbee_con_ts;
 typedef struct xbee_con_ts xbee_con_t;
 
-struct xbee_server_ts;
-typedef struct xbee_server_ts XbeeServer;
+//struct xbee_server_ts;
+//typedef struct xbee_server_ts XbeeServer;
 
 /* Server related properties */
 struct xbee_server_ts
@@ -42,7 +43,7 @@ struct xbee_server_ts
 
 	gboolean dispose_has_run;
 
-	gpointer *channels[256];
+	XbeeClient *channels[256];
 
 };
 
@@ -79,9 +80,9 @@ void xbee_server_transmit( XbeeServer* serv,
 			   void *buf, 
 			   uint8_t len );
 /*Request a channel for a client */
-gboolean xbee_server_req_client_channel ( XbeeServer *server, gpointer *client, uint8_t channel );
+gboolean xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client, uint8_t channel );
 
 /* Assign a free channel to a client */
-int16_t xbee_server_assign_channel ( XbeeServer *server, gpointer *client );
+int16_t xbee_server_assign_channel ( XbeeServer *server, XbeeClient *client );
 
 #endif	/* __XBEE_SERVER_H */

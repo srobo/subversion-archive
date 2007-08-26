@@ -300,7 +300,7 @@ static void xbee_server_class_init( XbeeServerClass *klass )
 	gobject_class->finalize = xbee_server_finalize;	
 }
 
-gboolean xbee_server_req_client_channel ( XbeeServer *server, gpointer *client, uint8_t channel )
+gboolean xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client, uint8_t channel )
 {
 	
 	assert (server != NULL && client != NULL);
@@ -315,7 +315,7 @@ gboolean xbee_server_req_client_channel ( XbeeServer *server, gpointer *client, 
 
 }
 
-int16_t xbee_server_assign_channel ( XbeeServer *server, gpointer *client )
+int16_t xbee_server_assign_channel ( XbeeServer *server, XbeeClient *client )
 {	
 	int16_t i;
 

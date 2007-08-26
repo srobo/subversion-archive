@@ -5,11 +5,12 @@
 #include <stdint.h>
 #include "xb-fd-source.h"
 #include "xbee-server.h"
+#include "xbd-common.h"
 
 #define XB_CLIENT_INBUF_LEN 512
 
-struct xbee_client_ts;
-typedef struct xbee_client_ts XbeeClient;
+//struct xbee_client_ts;
+//typedef struct xbee_client_ts XbeeClient;
 
 typedef struct
 {
