@@ -1,5 +1,8 @@
 #include "common.h"
 #include "init.h"
+#include "pwm.h"
+#include "motor.h"
+#include "i2c.h"
 
 /* Initialise the GPIO ports */
 void init_gpio( void );
