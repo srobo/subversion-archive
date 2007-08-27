@@ -7,14 +7,17 @@
 #define DEBUGMODE
 
 const unsigned char DEFAULTSATCUTOFF = 30;
-const unsigned char MINMASS = 100;
-const unsigned char MINHUEWIDTH = 2;
+const unsigned int MINMASS = 500;
+const unsigned char MINHUEWIDTH = 1;
 const unsigned char MINVAL = 50;
 const unsigned int DEFAULTSATPEAK = 150;
 const unsigned int MINSATPEAK = 15;
 const unsigned char MINWHITEWIDTH = 2;
 const unsigned char SATBINS = 100;
-const unsigned int HUEBINS = 360;
+const unsigned int HUEBINS = 180;
+
+const unsigned int CAMWIDTH = 352;
+const unsigned int CAMHEIGHT = 288;
 
 typedef struct peak {
     unsigned int start;
@@ -56,7 +59,7 @@ void srprinthist(CvHistogram *hist, unsigned int bins){
     
     for(i=0;i<bins;i++){
         bin_val = cvQueryHistValue_1D(hist, i);
-        printf("%f\n", bin_val);
+        printf("%d - %f\n", i, bin_val);
     }
     printf("Histogram printed\n");
 }
@@ -92,7 +95,10 @@ srPeak* findpeaks(CvHistogram *hist, unsigned int bins,
                 peakstate = OUT;
                 if(i-curpeakstart > MINHUEWIDTH){
                     tmp = (srPeak*) malloc(sizeof(srPeak));
-                    //TODO: Check NULL
+                    if(tmp == NULL){
+                        srlog(ERROR, "Could not allocate memory for a peak record.");
+                        return NULL;
+                    }
                     tmp->start = curpeakstart;
                     tmp->end = i;
                     tmp->mass = curpeakmass;
@@ -100,8 +106,10 @@ srPeak* findpeaks(CvHistogram *hist, unsigned int bins,
                     if(head == NULL){
                         head = tmp;
                         tail = tmp;
-                    } else
+                    } else {
                         tail->next = tmp;
+                        tail = tmp;
+                    }
                 }
                 curpeakmass = 0;
             } else
@@ -142,9 +150,60 @@ unsigned char get_min_sat(CvHistogram *sathist){
     return DEFAULTSATCUTOFF;
 }
 
+CvCapture *get_camera(){
+    srlog(DEBUG, "Opening camera");
+    CvCapture *capture = cvCaptureFromCAM(1);
+    if (capture == NULL){
+        srlog(ERROR, "Failed to open camera");
+        //TODO: Exit here?
+        return NULL;
+    }
+
+    //Setting to CAMWIDTH, CAMHEIGHT
+    cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH, CAMWIDTH);
+    cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT, CAMHEIGHT);
+    return capture;
+}
+
+IplImage *get_frame(CvCapture *capture){
+    IplImage *frame = cvQueryFrame(capture);
+    if(frame == NULL){
+        srlog(ERROR, "Failed to grab initial frame.");
+        //TODO: Exit here?
+        return NULL;
+    }
+    return frame;
+}
+
+IplImage *allo_frame(CvSize framesize, unsigned char depth, unsigned char channels){
+    IplImage *frame = cvCreateImage(framesize, depth, channels);
+    if(frame == NULL){
+        srlog(ERROR, "Failed to allocate scratchpad.");
+        //TODO: Exit here?
+        return NULL;
+    }
+    return frame;
+}
+
+CvHistogram *allo_hist(unsigned char dimensions, int *bins, float **ranges){
+    CvHistogram *hist = cvCreateHist(dimensions, bins, CV_HIST_ARRAY, ranges, 1);
+
+    if(hist == NULL){
+        srlog(ERROR, "Could not allocate histogram");
+        //TODO: Exit here?
+        return NULL;
+    }
+    return hist;
+}
+
+
 int main(int argc, char **argv){
     CvCapture *capture = NULL;
-    IplImage *frame = NULL, *hsv, *hue, *sat, *val, *dsthsv, *dstrgb, *satthresh, *recmask;
+    IplImage *frame = NULL, *hsv, *hue, *sat, *val,
+             *satthresh, *huemask, *comthresh;
+#ifdef DEBUGMODE
+    IplImage *dsthsv, *dstrgb;
+#endif
     CvSize framesize;
     CvHistogram *sathist, *huehist;
     int sathistbins[] = {SATBINS};
@@ -155,6 +214,8 @@ int main(int argc, char **argv){
     float *h_ranges2[] = { h_ranges };
     
     unsigned char minsat;
+    srPeak *headpeak, *tmppeak;
+    unsigned int minhue;
 
     CvMemStorage *contour_storage;
     CvSeq *cont;
@@ -166,59 +227,42 @@ int main(int argc, char **argv){
 #ifdef DEBUGMODE
     //No idea what this returns on fail.
     cvNamedWindow("testcam", CV_WINDOW_AUTOSIZE);
+    cvNamedWindow("satthresh", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("filled", CV_WINDOW_AUTOSIZE);
 #endif
 
-    srlog(DEBUG, "Opening camera");
-    capture = cvCaptureFromCAM(1);
-    if (capture == NULL){
-        srlog(ERROR, "Failed to open camera");
-        goto camfail;
-    }
-
+    capture = get_camera();
+    
     //Get a frame to find the image size
-    frame = cvQueryFrame(capture);
-    if(frame == NULL){
-        srlog(ERROR, "Failed to grab initial frame.");
-        goto initgrabfail;
-    }
- 
+    frame = get_frame(capture); 
     framesize = cvGetSize(frame);
+#ifdef DEBUGMODE
+    printf("Framesize %dx%d.\n", framesize.width, framesize.height);
+#endif
     
     srlog(DEBUG, "Allocating scratchpads");
-    hsv = cvCreateImage(framesize, IPL_DEPTH_8U, 3);
-    hue = cvCreateImage(framesize, IPL_DEPTH_8U, 1);
-    sat = cvCreateImage(framesize, IPL_DEPTH_8U, 1);
-    val = cvCreateImage(framesize, IPL_DEPTH_8U, 1);
-    recmask = cvCreateImage(framesize, IPL_DEPTH_8U, 1);
-    satthresh = cvCreateImage(framesize, IPL_DEPTH_8U, 1);
-    dsthsv = cvCreateImage(framesize, IPL_DEPTH_8U, 3);
-    dstrgb = cvCreateImage(framesize, IPL_DEPTH_8U, 3);
-
-    if((hsv == NULL) || (hue == NULL) || (sat == NULL) || (val == NULL) ||
-        (dsthsv == NULL) || (dstrgb == NULL) || (satthresh == NULL)){
-        srlog(ERROR, "Error allocating scratchpads.");
-        goto allocatefail;
-    }
+    hsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
+    hue = allo_frame(framesize, IPL_DEPTH_8U, 1);
+    sat = allo_frame(framesize, IPL_DEPTH_8U, 1);
+    val = allo_frame(framesize, IPL_DEPTH_8U, 1);
+    huemask = allo_frame(framesize, IPL_DEPTH_8U, 1);
+    satthresh = allo_frame(framesize, IPL_DEPTH_8U, 1);
+    comthresh = allo_frame(framesize, IPL_DEPTH_8U, 1);
+#ifdef DEBUGMODE
+    dsthsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
+    dstrgb = allo_frame(framesize, IPL_DEPTH_8U, 3);
+#endif
 
     srlog(DEBUG, "Allocating histograms");
-    sathist = cvCreateHist(1, sathistbins, CV_HIST_ARRAY, s_ranges2, 1);
-    huehist = cvCreateHist(1, huehistbins, CV_HIST_ARRAY, h_ranges2, 1);
-
-    if((sathist == NULL) || (huehist == NULL)){
-        srlog(ERROR, "Could not allocate histograms");
-        goto histallocatefail;
-    }
+    sathist = allo_hist(1, sathistbins, s_ranges2);
+    huehist = allo_hist(1, huehistbins, h_ranges2);
 
     while (1){
         srlog(DEBUG, "Grabbing frame");
-        frame = cvQueryFrame(capture);
+        frame = get_frame(capture);
+#ifdef DEBUGMODE
         cvShowImage("testcam", frame);
-        if(frame == NULL){
-            srlog(ERROR, "Failed to grab frame.");
-            goto grabfail;
-        }
-        
+#endif
         srlog(DEBUG, "Converting to HSV");
         cvCvtColor(frame, hsv, CV_BGR2HSV);
 
@@ -231,57 +275,84 @@ int main(int argc, char **argv){
         srlog(DEBUG, "Calculating minimum saturation.");
         minsat = get_min_sat(sathist);
 #ifdef DEBUGMODE
-        printf("Minsat = %d\n", minsat);
+        printf("Minimum saturation of blobs = %d\n", minsat);
 #endif
         
         srlog(DEBUG, "Generating mask of > minsat pixels");
         cvThreshold(sat, satthresh, minsat, 255, CV_THRESH_BINARY);
+#ifdef DEBUGMODE
+        cvShowImage("satthresh", satthresh);
+#endif
 
+        srlog(DEBUG, "Generating hue histogram");
+        cvCalcHist(&hue, huehist, 0, satthresh);
+
+        srlog(DEBUG, "Finding minimum hue peak value");
+        minhue = get_hue_cut_off(huehist, HUEBINS);
+#ifdef DEBUGMODE
+        printf("Minimum hue weighting in histogram = %d.\n", minhue);
+#endif
+
+        srlog(DEBUG, "Finding hue peaks");
+        headpeak = findpeaks(huehist, HUEBINS, minhue);
+
+#ifdef DEBUGMODE
+        cvSetZero(dsthsv);
+#endif
         contour_storage = cvCreateMemStorage(0); //TODO: Look this up
 
-        num_contours = cvFindContours(satthresh, contour_storage, &cont,
+        tmppeak = headpeak;
+        while(tmppeak){
+#ifdef DEBUGMODE
+            printf("Peak found from hue %d to %d, Mass %d.\n",
+                    tmppeak->start, tmppeak->end, tmppeak->mass);
+#endif
+            
+            srlog(DEBUG, "Masking out peak");
+            cvInRangeS(hue, cvScalarAll(tmppeak->start), cvScalarAll(tmppeak->end), huemask);
+            //huemask now 0xff if it was in that range
+            srlog(DEBUG, "Combining huemask and satthresh.");
+            cvAnd(huemask, satthresh, comthresh, NULL);
+
+            srlog(DEBUG, "Finding contours");
+            num_contours = cvFindContours(comthresh, contour_storage, &cont,
                        sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE,
                        cvPoint(0,0));
 
-        cvSetZero(dsthsv);
-        for(; cont; cont = cont->h_next){
-            //CvScalar color = CV_RGB( rand()&255, rand()&255, rand()&255 );
-            area =  cvContourArea(cont, CV_WHOLE_SEQ);
+            srlog(DEBUG, "Looping through contours");
+            for(; cont; cont = cont->h_next){
+                area = abs(cvContourArea(cont, CV_WHOLE_SEQ));
 
-            if(area < -MINMASS){
-                outline = cvBoundingRect(cont, 0);
-                cvSetZero(recmask);
+                if(area > MINMASS){
+#ifdef DEBUGMODE
+                    srlog(DEBUG, "Drawing the contour");
+                    outline = cvBoundingRect(cont, 0);
 
-                cvDrawContours(recmask, cont, cvScalarAll(255), cvScalarAll(255), 0, CV_FILLED, 8,
-                        cvPoint(0,0));
-                
-                avghue = cvAvg(hue, recmask);
-                printf("%f\n", avghue.val[0]*2);
-                avghue.val[1] = 255;
-                avghue.val[2] = 255;
+                    avghue = cvScalar(((tmppeak->start)+(tmppeak->end))/2, 255, 255, 0);
 
-                cvRectangle(dsthsv, cvPoint(outline.x, outline.y),
-                                  cvPoint(outline.x+outline.width, outline.y+outline.height),
-                                  avghue, CV_FILLED, 8, 0);
-                cvCvtColor(dsthsv, dstrgb, CV_HSV2RGB); 
-                srshow("filled", dstrgb);
-
+                    cvRectangle(dsthsv, cvPoint(outline.x, outline.y),
+                                    cvPoint(outline.x+outline.width, outline.y+outline.height),
+                                    avghue, CV_FILLED, 8, 0);
+#endif
+                                        
+                }
             }
+            tmppeak = tmppeak->next;
         }
+
+        srlog(DEBUG, "Freeing peaks");
+        freepeaks(headpeak);
         
+#ifdef DEBUGMODE
+        cvCvtColor(dsthsv, dstrgb, CV_HSV2RGB);        
+        srshow("filled", dstrgb);
+#endif
 
         cvReleaseMemStorage(&contour_storage);
-        
+#ifdef DEBUGMODE
         srlog(DEBUG, "Saving frame to out.jpg");
         cvSaveImage("out.jpg", frame);
+#endif
     }
-
-grabfail:
-histallocatefail:
-allocatefail:
-    //cvRelease scratchpads here
-initgrabfail:
-camfail:
-    cvReleaseCapture(&capture);
     return 0;
 }
