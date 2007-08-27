@@ -1,10 +1,14 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
+#include <time.h>
 #include "opencv/cv.h"
 #include "opencv/highgui.h"
 
 #define DEBUG 0
 #define ERROR 1
 #define DEBUGMODE
+#define DEBUGDISPLAY
 
 const unsigned char DEFAULTSATCUTOFF = 30;
 const unsigned int MINMASS = 500;
@@ -27,14 +31,27 @@ typedef struct peak {
 } srPeak;
 
 void srlog(char level, char *m){
+#ifdef DEBUGMODE
+    struct tm * tm;
+    struct timeval tv;
+    struct timezone tz;
+
+    gettimeofday(&tv, &tz);
+    tm = localtime(&tv.tv_sec);
+    printf("%02d:%02d:%02d.%d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int) tv.tv_usec);
+
     switch(level){
         case DEBUG:
-#ifndef DEBUGMODE
+            printf(" - DEBUG - %s\n", m);
             break;
-#endif
         case ERROR:
-            printf("%s\n", m);
+            printf(" - ERROR - %s\n", m);
     }
+#endif
+#ifndef DEBUGMODE
+    if(level == ERROR)
+        printf("%s\n", m);
+#endif
 }
 
 void srshow(char *window, IplImage *frame){
@@ -91,7 +108,8 @@ srPeak* findpeaks(CvHistogram *hist, unsigned int bins,
                 curpeakmass += bin_val;
             }
         }else
-            if(bin_val < thresh){
+            if((bin_val < thresh) || (i == bins-1)){
+
                 peakstate = OUT;
                 if(i-curpeakstart > MINHUEWIDTH){
                     tmp = (srPeak*) malloc(sizeof(srPeak));
@@ -114,6 +132,36 @@ srPeak* findpeaks(CvHistogram *hist, unsigned int bins,
                 curpeakmass = 0;
             } else
                 curpeakmass += bin_val;
+    }
+    //Is there a peak continuing off the end?
+    if(peakstate == IN){
+        //Should it be wrapped with the one at the start
+        if(head->start == 0){
+            //Merge them
+            head->start = curpeakstart;
+            head->mass += curpeakmass;
+        } else {
+            //Finish a peak off
+            if(i-curpeakstart > MINHUEWIDTH){
+                tmp = (srPeak*) malloc(sizeof(srPeak));
+                if(tmp == NULL){
+                    srlog(ERROR, "Could not allocate memory for a peak record.");
+                    return NULL;
+                }
+                tmp->start = curpeakstart;
+                tmp->end = i;
+                tmp->mass = curpeakmass;
+                tmp->next = NULL;
+                if(head == NULL){
+                    head = tmp;
+                    tail = tmp;
+                } else {
+                    tail->next = tmp;
+                    tail = tmp;
+                }
+            }
+
+        }
     }
     return head;
 }
@@ -200,9 +248,11 @@ CvHistogram *allo_hist(unsigned char dimensions, int *bins, float **ranges){
 int main(int argc, char **argv){
     CvCapture *capture = NULL;
     IplImage *frame = NULL, *hsv, *hue, *sat, *val,
-             *satthresh, *huemask, *comthresh;
-#ifdef DEBUGMODE
+             *satthresh, *huemask, *hue2mask, *comthresh, *tmpmask;
+#ifdef DEBUGDISPLAY
     IplImage *dsthsv, *dstrgb;
+    CvRect outline;
+    CvScalar avghue;
 #endif
     CvSize framesize;
     CvHistogram *sathist, *huehist;
@@ -219,12 +269,10 @@ int main(int argc, char **argv){
 
     CvMemStorage *contour_storage;
     CvSeq *cont;
-    CvRect outline;
-    CvScalar avghue;
     int num_contours;
     double area;
 
-#ifdef DEBUGMODE
+#ifdef DEBUGDISPLAY
     //No idea what this returns on fail.
     cvNamedWindow("testcam", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("satthresh", CV_WINDOW_AUTOSIZE);
@@ -248,7 +296,9 @@ int main(int argc, char **argv){
     huemask = allo_frame(framesize, IPL_DEPTH_8U, 1);
     satthresh = allo_frame(framesize, IPL_DEPTH_8U, 1);
     comthresh = allo_frame(framesize, IPL_DEPTH_8U, 1);
-#ifdef DEBUGMODE
+    tmpmask = allo_frame(framesize, IPL_DEPTH_8U, 1);
+    hue2mask = allo_frame(framesize, IPL_DEPTH_8U, 1);
+#ifdef DEBUGDISPLAY
     dsthsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
     dstrgb = allo_frame(framesize, IPL_DEPTH_8U, 3);
 #endif
@@ -260,7 +310,7 @@ int main(int argc, char **argv){
     while (1){
         srlog(DEBUG, "Grabbing frame");
         frame = get_frame(capture);
-#ifdef DEBUGMODE
+#ifdef DEBUGDISPLAY
         cvShowImage("testcam", frame);
 #endif
         srlog(DEBUG, "Converting to HSV");
@@ -280,7 +330,7 @@ int main(int argc, char **argv){
         
         srlog(DEBUG, "Generating mask of > minsat pixels");
         cvThreshold(sat, satthresh, minsat, 255, CV_THRESH_BINARY);
-#ifdef DEBUGMODE
+#ifdef DEBUGDISPLAY
         cvShowImage("satthresh", satthresh);
 #endif
 
@@ -296,7 +346,7 @@ int main(int argc, char **argv){
         srlog(DEBUG, "Finding hue peaks");
         headpeak = findpeaks(huehist, HUEBINS, minhue);
 
-#ifdef DEBUGMODE
+#ifdef DEBUGDISPLAY
         cvSetZero(dsthsv);
 #endif
         contour_storage = cvCreateMemStorage(0); //TODO: Look this up
@@ -309,8 +359,13 @@ int main(int argc, char **argv){
 #endif
             
             srlog(DEBUG, "Masking out peak");
-            cvInRangeS(hue, cvScalarAll(tmppeak->start), cvScalarAll(tmppeak->end), huemask);
-            //huemask now 0xff if it was in that range
+            if(tmppeak->start < tmppeak->end)
+                cvInRangeS(hue, cvScalarAll(tmppeak->start), cvScalarAll(tmppeak->end), huemask);
+            else {
+                cvInRangeS(hue, cvScalarAll(tmppeak->start), cvScalarAll(255), huemask);
+                cvInRangeS(hue, cvScalarAll(0), cvScalarAll(tmppeak->end), hue2mask);
+                cvOr(huemask, hue2mask, tmpmask, NULL);
+            }
             srlog(DEBUG, "Combining huemask and satthresh.");
             cvAnd(huemask, satthresh, comthresh, NULL);
 
@@ -324,7 +379,7 @@ int main(int argc, char **argv){
                 area = abs(cvContourArea(cont, CV_WHOLE_SEQ));
 
                 if(area > MINMASS){
-#ifdef DEBUGMODE
+#ifdef DEBUGDISPLAY
                     srlog(DEBUG, "Drawing the contour");
                     outline = cvBoundingRect(cont, 0);
 
@@ -343,7 +398,7 @@ int main(int argc, char **argv){
         srlog(DEBUG, "Freeing peaks");
         freepeaks(headpeak);
         
-#ifdef DEBUGMODE
+#ifdef DEBUGDISPLAY
         cvCvtColor(dsthsv, dstrgb, CV_HSV2RGB);        
         srshow("filled", dstrgb);
 #endif
