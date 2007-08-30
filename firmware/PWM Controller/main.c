@@ -97,20 +97,20 @@ void initialise_PwmBoard(void){
 	BCSCTL1 = CALBC1_INIT;
 
 	P1OUT = P1OUT_INIT;		//Init output data of port1&2
-    P2OUT  = P2OUT_INIT;
+	P2OUT  = P2OUT_INIT;
 
 	P1REN |= P1REN_INIT;	//Init something ???
 
-    P1SEL  = P1SEL_INIT;	//Select port or module -function on port1
-    P2SEL  = P2SEL_INIT;	//Select port or module -function on port2d
+	P1SEL  = P1SEL_INIT;	//Select port or module -function on port1
+	P2SEL  = P2SEL_INIT;	//Select port or module -function on port2d
 
-    P1DIR  = P1DIR_INIT;	//Init port direction register of port1
-    P2DIR  = P2DIR_INIT;	//Init port direction register of port2
+	P1DIR  = P1DIR_INIT;	//Init port direction register of port1
+	P2DIR  = P2DIR_INIT;	//Init port direction register of port2
 
 	P1IES  = P1IES_INIT;	//init port interrupts
 	P2IES  = P2IES_INIT;
-    P1IE   = P1IE_INIT;
-    P2IE   = P2IE_INIT;
+	P1IE   = P1IE_INIT;
+	P2IE   = P2IE_INIT;
 	
 	/**Initialising program**/
 	//set all servos to there ~1.5ms position
