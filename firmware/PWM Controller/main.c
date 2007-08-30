@@ -111,6 +111,7 @@ void initialise_PwmBoard(void){
 	P2IES  = P2IES_INIT;
 	P1IE   = P1IE_INIT;
 	P2IE   = P2IE_INIT;
+	P2IFG = 0x00; //clear all flags that might have been set
 	
 	/**Initialising program**/
 	//set all servos to there ~1.5ms position
@@ -167,12 +168,27 @@ int main(void) {
 }
 
 /**
+ISR for IO interrupt
+If a negative edge (rail = 0) then set P1 to be all low
+**/
+interrupt (PORT2_VECTOR) isr_port2(void){
+	P1OUT = 0x00;
+	P2IFG = 0x00;
+}
+
+/**
 ISR for TACCR0. Is called at the end of the pulse period ~20ms, 
 it resets TIMERA, resets current_servo, and put servo0 pin high
 **/
 interrupt (TIMERA0_VECTOR) isr_TACR0(void){
 	current_servo = 0;
-	P1OUT = (0xFE);
+	set_p1out(0xFE);
+}
+
+void set_p1out(uint8_t p1){
+	if(P2IN & RAIL_MONITOR_PIN){ //if rail is high then change pin output
+		P1OUT = p1;
+	}
 }
 /**
 ISR for TACCR1, TACCR2 (not available on F2012) and overflow. 
@@ -187,9 +203,9 @@ interrupt (TIMERA1_VECTOR) isr_TAIV(void){ //both for period interrupt and
 			if(current_servo<SERVO_NUMBER){
 				//get servo# pulse width, increment cc1 by its width
 				TACCR1 += getServoPWM(current_servo);
-				P1OUT = ~(0x1<<current_servo); //set servo# output high
+				set_p1out(~(0x1<<current_servo)); //set servo# output high
 			}else{
-				P1OUT = (0xFF);
+				set_p1out(0xFF);
 				TACCR1 = getServoPWM(0); //reset CC1 to pulse Servo0
 			}
 			break;
