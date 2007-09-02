@@ -28,14 +28,14 @@ void motor_set( uint8_t channel, speed_t speed,  motor_state_t state )
 		switch( state )
 		{
 		case M_OFF:
-			v = 1; break;
-		case M_FORWARD:
-			v = 2; break;
-		case M_BACKWARD:
 			v = 3; break;
-		default:
-			//case PWM_BRAKE:
+		case M_FORWARD:
 			v = 0; break;
+		case M_BACKWARD:
+			v = 1; break;
+		default:
+		case M_BRAKE:
+			v = 2; break;
 		}
 
 		/* Calculate the shift necessary */
