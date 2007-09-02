@@ -24,7 +24,8 @@ void init_gpio( void )
 	/* Configure all as IO initially */
 	P1SEL = P3SEL = P4SEL = 0;
 
-	/*  */
-	P1SEL |= 0xC;
-	P2SEL |= 0xC;
+	/* Timer outputs */
+	P1SEL |= 0x0C;
+	/* Crystal inputs */
+	P2SEL |= 0xC0;
 }
