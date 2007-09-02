@@ -1,2 +1,2 @@
-pwm-test: pwm-test.c
-	$(CC) -o i2c-test i2c-test.c
+motor-test: motor-test.c
+	$(CC) -o motor-test motor-test.c
