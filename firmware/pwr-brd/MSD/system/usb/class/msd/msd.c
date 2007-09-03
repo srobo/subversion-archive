@@ -96,7 +96,6 @@ void ResetSenseData(void);
 void MSDDataIn(void);
 void MSDDataOut(void);
 
-extern void SocketInitialize(void);
 extern SDC_Error SectorRead(dword, byte*);
 extern SDC_Error SectorWrite(dword, byte*);
 extern SDC_Error CSDRead(void);
@@ -332,10 +331,6 @@ void MSDInitEP(void)
 	
 void SDCardInit(void) 
 {// this now basically does nothing
-	
-	//SocketInitialize(); - dont need this, it just wiggles some pins on the imaginary card tb
-	//mInitAllLEDs();	- dont need just sets some tris bits tb
-
 	/* TODO: Possibly some initialisation here. */
 
 	gblFlag.isSDMMC=1;

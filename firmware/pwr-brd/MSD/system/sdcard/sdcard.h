@@ -255,7 +255,6 @@ typedef union
 #define mSendCRC()              WriteSPI(0xFF);WriteSPI(0xFF);
 #define mSend8ClkCycles()       WriteSPI(0xFF);
 
-void SocketInitialize(void);
 SDC_Error SectorRead(dword, byte*);
 SDC_Error SectorWrite(dword, byte*);
 SDC_Error CSDRead(void);

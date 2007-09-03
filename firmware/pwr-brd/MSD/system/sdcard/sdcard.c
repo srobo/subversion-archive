@@ -144,34 +144,6 @@ byte MediaDetect()
 }//end MediaDetect
 
 
-/******************************************************************************
- * Function:        void SocketInitialize(void)
- *
- * PreCondition:    None
- *
- * Input:           None
- *                  
- * Output:          None
- *
- * Side Effects:    None
- *
- * Overview:        SocketInitialize initializes the socket interface.
- *                  It initializes card select and detect signals.
- *
- * Note:            None
- *****************************************************************************/
-void SocketInitialize(void)
-{    
-    // Turn off the card
-//    SDC_ON_DIR=OUTPUT;					// Card Power - output
-    MEDIA_CD_DIR = INPUT;				//Card Detect - input
-    SDC_CS = 1;							//Initialize Chip Select line
-    SDC_CS_DIR = OUTPUT;				//Card Select - output
-	MEDIA_WD_DIR = INPUT;				//Write Protect - input
-	
-}//end SocketInitialize
-
-
 int DetectSDCard(void)
 { 
 //	SDC_ON=1;                     // Turned the power for the card ON (RB4 signal available)
