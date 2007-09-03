@@ -692,9 +692,7 @@ void ResetSenseData(void)
  *
  * Side Effects:    None
  *
- * Overview:        This function processes the data from CSD register
- *                  (read during intiailization of sdcard)to find the number
- *                  of blocks (gblNumBLKS) and block length (gblBLKLen)
+ * Overview:        This function gets the size of the device.
  *                  This data is then copied to msd_buffer and a response
  *                  for Read Capacity Command is prepared
  * Note:            None
@@ -704,8 +702,8 @@ void MSDReadCapacityHandler()
 {
 	/* Hard-coded size for the moment */
 	/* 512 byte blocks for the moment - TODO: Change to 64 */
-	gblBLKLen._dword = 512;
-	gblNumBLKS._dword = 100;
+	gblBLKLen._dword = 512;	/* Block length */
+	gblNumBLKS._dword = 100; /* Number of blocks */
 
 	// prepare the data response
 	msd_buffer[0]=gblNumBLKS.v[3];
