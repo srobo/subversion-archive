@@ -138,122 +138,24 @@ byte ReadMedia(void);
  *
  * Overview:        MediaInitialize initializes the secure digital media card and supporting variables.
  *
- * Note:            goto's were used for errro conditions
  *****************************************************************************/
 SDC_Error MediaInitialize(SDCSTATE *Flag)
 {
     word timeout;
     SDC_Error       status = sdcValid, CSDstatus = sdcValid;
   
-    SDC_RESPONSE    response; 
 	// clear out flags 
 	Flag->_byte = 0x0;
 
-	//dont need this as card coesnt exist tb
-    //SDC_CS = 1;                               //Initialize Chip Select line
-     
-    // This function was called for a reason Turn it on
-    //SDC_ON;
-
-    //Media powers up in the open-drain mode and cannot handle a clock faster
-    //than 400kHz. Initialize SPI port to slower than 400kHz
-    OpenSPI(SPI_FOSC_64, MODE_11, SMPMID);
-
-    // let the card power on and initialize
-    Delayms(100);
-
-    //Media requires 80 clock cycles to startup [8 clocks/BYTE * 10 us]
-    for(timeout=0; timeout<10; timeout++)
-        mSend8ClkCycles();
-
-	// again card doesnt exist tb
-    //SDC_CS = 0;
-
-    Delayms(1);
-
-/* dont need any of this stuff tb
-
-
-    // Send CMD0 to reset the media 
-    response = SendSDCCmd(GO_IDLE_STATE,0x0);
-    
-    if(response.r1._byte == SDC_BAD_RESPONSE)
-    {
-        status = sdcCardInitCommFailure;      // we have not got anything back from the card 
-        goto InitError;
-    }
-    
-    // See if the device is ready
-    if(response.r1._byte != 0x01)                  //0x01=No Err&Busy Initializing
-    {
-        status = sdcCardNotInitFailure;      // we have not got anything back from the card 
-        goto InitError;
-    }                   
-
-
-
-
-	// According to spec cmd1 must be repeated until MMC card is fully initialized
-    timeout = 0xFFF;
-    
-    do
-    {
-		response = SendSDCCmd(SEND_OP_COND,0x0);
-        timeout--;            
-    }while(response.r1._byte != 0x00 && timeout != 0);
-        
-    // see if it failed        
-    if(timeout == 0)        
-    {
-        status = sdcCardInitTimeout;      // we have not got anything back from the card 
-        goto InitError;
-    }                        
-    else  {
-	    // get the CSD register before increasing the spped page 4-8 of sd card manual last line
-	    CSDstatus=CSDRead();
-	    if(!CSDstatus)
-
-*/
-			//we likwe this bit tb
-        	OpenSPI(SPI_FOSC_4, MODE_11, SMPMID);       //Increase clock speed
-
-/*
-
-        else 
-        	status=sdcCardTypeInvalid;
-	}
-
-	// Turn off CRC7 if we can, might be an invalid cmd on some cards (CMD59)
-	// response = SendMMCCmd(cmdCRC_ON_OFF,0x0);
-		
-	// Ok Now set the block length to 512. It should be already
-	SendSDCCmd(SET_BLOCKLEN,BLOCKLEN_512);
-	
-	// set the write protect state
-	if(IsWriteProtected())
-		Flag->isWP = TRUE;
-
-    // read it a couple times until we sucessfully read it, seen san disks that really do not 
-    // like this init routine for somereason, almost have to prime the device...
-    for(timeout = 0xFF; timeout > 0 && SectorRead(0x0,(byte*)msd_buffer)!= sdcValid; timeout--)
-    {;}
-
-    // see if we had an issue
-    if(timeout == 0)  
-    {      
-        status = sdcCardNotInitFailure;
-        goto InitError; 
-    }
-
-*/
+	/* SD Card initialisation was here:
+	    - initialised the SPI device
+	    - took the SD card out of idle
+	    - read the SD CSD register (which contains things like
+	      the SD card size)
+	    - set isWP in Flag if write protected. */
 
     return(status);	
-    
-InitError:
-    SDC_CS = 1;                               // deselect the devices
-    
-    return(status);                            
-}//end MediaInitialize
+}
 
 /******************************************************************************
  * Function:        BYTE MediaDetect(void)
