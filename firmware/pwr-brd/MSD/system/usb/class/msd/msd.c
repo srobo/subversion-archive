@@ -98,7 +98,6 @@ void MSDDataOut(void);
 
 extern SDC_Error SectorRead(dword, byte*);
 extern SDC_Error SectorWrite(dword, byte*);
-extern SDC_Error CSDRead(void);
 extern int DetectSDCard (void);
 extern byte IsWriteProtected(void);
 
@@ -703,24 +702,10 @@ void ResetSenseData(void)
 	
 void MSDReadCapacityHandler()
 {
-	dword one=0x1, C_size, C_mult, Mult, C_size_U, C_size_H, C_size_L, C_mult_H, C_mult_L;
-	dword C_Read_Bl_Len;
-	
-	// Get the block length
-	C_Read_Bl_Len=gblCSDReg._byte[5]&0x0f;
-	gblBLKLen._dword=one<<C_Read_Bl_Len;
-	
-	// Get the number of blocks using C_size and C_mult
-	C_size_U=gblCSDReg._byte[6]&0x03;		// 2 LSB bits
-	C_size_H=gblCSDReg._byte[7];		
-	C_size_L=(gblCSDReg._byte[8]&0xC0)>>6;	// 2 MSB, right shift by 6places
-	// to get in LSB
-	C_size=(C_size_U<<10)|(C_size_H<<2)|(C_size_L);
-	C_mult_H=gblCSDReg._byte[9]&0x03;
-	C_mult_L=(gblCSDReg._byte[10]&0x80)>>7;
-	C_mult=(C_mult_H<<1)|C_mult_L;
-	Mult = one<<(C_mult+2);
-	gblNumBLKS._dword=Mult*(C_size+1)-1;	// last LBA is noLBAs-1
+	/* Hard-coded size for the moment */
+	/* 512 byte blocks for the moment - TODO: Change to 64 */
+	gblBLKLen._dword = 512;
+	gblNumBLKS._dword = 100;
 
 	// prepare the data response
 	msd_buffer[0]=gblNumBLKS.v[3];

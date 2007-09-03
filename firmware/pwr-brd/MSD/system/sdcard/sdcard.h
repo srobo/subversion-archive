@@ -257,6 +257,5 @@ typedef union
 
 SDC_Error SectorRead(dword, byte*);
 SDC_Error SectorWrite(dword, byte*);
-SDC_Error CSDRead(void);
 int DetectSDCard (void);
 byte IsWriteProtected(void);

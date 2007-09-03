@@ -41,7 +41,8 @@
  #include "sdcard.h"
 
 extern volatile far byte msd_buffer[512]; 
-CSD gblCSDReg;
+/* Where the SD Card CSD register was read into */
+CSD gblCSDReg;			
 
 #pragma udata
 
@@ -525,85 +526,4 @@ void ShutdownMedia(void)
     // SDC_OFF;        
 }
 
-/******************************************************************************
- * Function:        SDC_Error CSDRead(BYTE *buffer)
- *
- * PreCondition:    None
- *
- * Input:           buffer      - Buffer where data will be stored
- *                  
- * Output:          See SDC_Error.
- *
- * Side Effects:    None
- *
- * Overview:        CSDRead reads Card Specific Data (CSD) from the card by issuing the 
- *					CMD9 SEND_CSD command. The contents of CSD register are used to find the 
- *					card size, i.e. gblNumBlks and block length i.e. gblBlkLen
- * 					Response type for SEND_CSD is R1
- *****************************************************************************/
-SDC_Error CSDRead()
-{
-    word index, timeout=0x2ff;
-    SDC_RESPONSE response;
-    byte data_token;
-    SDC_Error status = sdcValid;
-    byte cmd=SEND_CSD;
-    dword address=0x00;
-	CMD_PACKET CmdPacket;
-	    
-    SDC_CS = 0;                                  //Card Select
-    
-    // Copy over data
-    CmdPacket.cmd        = sdmmc_cmdtable[cmd].CmdCode;
-    CmdPacket.address    = address;
-    CmdPacket.crc        = sdmmc_cmdtable[cmd].CRC;       // Calc CRC here
-    
-    
-    WriteSPI(CmdPacket.cmd);                  //Send Command
-    WriteSPI(CmdPacket.addr3);                //Most Significant Byte
-    WriteSPI(CmdPacket.addr2);
-    WriteSPI(CmdPacket.addr1);
-    WriteSPI(CmdPacket.addr0);                //Least Significant Byte
-    WriteSPI(CmdPacket.crc);                  //Send CRC
 
-    // see if  we are going to get a response    
-
-    do
-    {
-            response.r1._byte = ReadMedia();
-            timeout--;
-    } while((response.r1._byte == 0xFF) && (timeout != 0));
-  
-   // Make sure the command was accepted
-    if(response.r1._byte != 0x00)
-    {
-        status = sdcCardBadCmd;
-    }
-    else
-    {
-        index = 0x2FF;                                     
-     
-        //Now, must wait for the start token of data block   
-        do
-        {
-            data_token = ReadMedia();
-            index--;
-        }while((data_token == SDC_FLOATING_BUS) && (index != 0));
-    
-        // Hopefully that zero is the datatoken 
-        if((index == 0) || (data_token != DATA_START_TOKEN))
-            status = sdcCardTimeout;
-        else
-        {
-            for(index = 0; index < CSD_SIZE; index++)//Reads in 16-byte of data
-			{
-					gblCSDReg._byte[index] = ReadMedia();
-            }  
-        }
-        
-        mSend8ClkCycles();                        //Required clocking (see spec)
-    }
-
-    SDC_CS = 1;
-    return(status);
-}//end CSDRead
