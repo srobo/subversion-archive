@@ -96,7 +96,6 @@ void ResetSenseData(void);
 void MSDDataIn(void);
 void MSDDataOut(void);
 
-extern SDC_Error MediaInitialize(SDCSTATE*);
 extern void SocketInitialize(void);
 extern SDC_Error SectorRead(dword, byte*);
 extern SDC_Error SectorWrite(dword, byte*);
@@ -333,16 +332,14 @@ void MSDInitEP(void)
 	
 void SDCardInit(void) 
 {// this now basically does nothing
-	SDC_Error status;
 	
 	//SocketInitialize(); - dont need this, it just wiggles some pins on the imaginary card tb
 	//mInitAllLEDs();	- dont need just sets some tris bits tb
-	status=MediaInitialize(&gblFlag);//mediaintalise has been neutered tb
-	if (status) { // this should never run tb 
-		/* If there was some error, turn on all leds */
-		mLED_1_On(); mLED_2_On(); mLED_3_On(); mLED_4_On();
-		gblFlag.isSDMMC=0;
-	} else gblFlag.isSDMMC=1; 		
+
+	/* TODO: Possibly some initialisation here. */
+
+	gblFlag.isSDMMC=1;
+
 	MSD_State=MSD_WAIT;
 }    
 

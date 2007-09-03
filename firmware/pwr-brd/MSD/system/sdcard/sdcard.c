@@ -117,45 +117,6 @@ byte ReadMedia(void);
 
 /** D E C L A R A T I O N S **************************************************/
 #pragma code
-/******************************************************************************
- * Function:        SDC_Error MediaInitialize(SDCSTATE *Flag)
- *
- * PreCondition:    None
- *
- * Input:           None
- *                  
- * Output:          sdcValid                    - Everything is fine
- *                  sdcCardInitCommFailure      - Communication has never been established with card
- *                  sdcCardNotInitFailure       - Card did not go into an initialization phase
- *                  sdcCardInitTimeout          - Card initialization has timedout
- *                  sdcCardTypeInvalid          - Card type was not able to be defined
- *                  sdcCardBadCmd               - Card did not reconized the command
- *                  sdcCardTimeout              - Card timedout during a read, write or erase sequence    
- *                  sdcCardCRCError             - A CRC error has occurred during a read, data should be invalidated
- *                  sdcCardDataRejected         - Card and data sent's CRC did not match
- *
- * Side Effects:    none
- *
- * Overview:        MediaInitialize initializes the secure digital media card and supporting variables.
- *
- *****************************************************************************/
-SDC_Error MediaInitialize(SDCSTATE *Flag)
-{
-    word timeout;
-    SDC_Error       status = sdcValid, CSDstatus = sdcValid;
-  
-	// clear out flags 
-	Flag->_byte = 0x0;
-
-	/* SD Card initialisation was here:
-	    - initialised the SPI device
-	    - took the SD card out of idle
-	    - read the SD CSD register (which contains things like
-	      the SD card size)
-	    - set isWP in Flag if write protected. */
-
-    return(status);	
-}
 
 /******************************************************************************
  * Function:        BYTE MediaDetect(void)
