@@ -991,6 +991,10 @@ void MSDModeSenseHandler()
  *****************************************************************************/	
 void MSDMediumRemovalHandler()
 {
+	/* TODO: We may be able to handle the remove the media command.
+	   It probably arrives when one unmounts the device.
+	   (Guess we won't get that from Windows...) */
+
 	if(DetectSDCard()) {
 		msd_csw.bCSWStatus=0x00;
 		msd_csw.dCSWDataResidue=0x00;
