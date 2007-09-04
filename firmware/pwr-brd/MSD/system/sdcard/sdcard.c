@@ -144,15 +144,6 @@ byte MediaDetect()
     //return(!MEDIA_CD);  //mediacd is rb4 connected to the switch presumably
 }//end MediaDetect
 
-int DetectSDCard(void)
-{ 
-//	SDC_ON=1;                     // Turned the power for the card ON (RB4 signal available)
-	if (MEDIA_CD)				// RB4==1 ---> SD Card not present 				 
-		return 0;
-	else 
-		return 1; 	     
-}	                                 
-
 /******************************************************************************
  * Function:        BYTE ReadMedia(void)
  *

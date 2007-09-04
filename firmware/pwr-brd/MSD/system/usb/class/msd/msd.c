@@ -98,7 +98,6 @@ void MSDDataOut(void);
 
 extern SDC_Error SectorRead(dword, byte*);
 extern SDC_Error SectorWrite(dword, byte*);
-extern int DetectSDCard (void);
 extern byte IsWriteProtected(void);
 
 /** D E C L A R A T I O N S **************************************************/
