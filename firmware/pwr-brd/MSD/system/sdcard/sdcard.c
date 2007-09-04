@@ -324,8 +324,7 @@ SDC_Error SectorWrite(dword sector_addr, byte* buffer)
  *****************************************************************************/
 byte IsWriteProtected(void)
 {
-    if(MEDIA_WD) return TRUE;
-    else return FALSE;
+	return FALSE;
 }
 
 /******************************************************************************
