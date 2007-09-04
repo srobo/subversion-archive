@@ -13,13 +13,13 @@ Block read protocol
 typedef enum
 {
   state_idle = 0, //wait for a start condition
-  state_rx_address,
+  state_prepfor_rx_address,
   state_check_address,
-  state_rx_command,
-  state_check_command,
+  state_prepfor_rx_data,
+  state_check_rx_data,
   state_rx_data,
-  state_check_data,
-  state_prep_for_start
+  state_check_rx_data,
+  state_prepfor_start
 }state_t;
 
 char i2c_data[32];		// i2c data, array can contain a maximum of 32 values to be sent or read as per SMBUS specification
@@ -62,33 +62,55 @@ void enable_i2c(void){
 	USICTL1 &= ~USIIFG;                  // Clear pending flag
 }
 
+/*
+This function will return the SMBUS crc8 checksum for the parameter given
+From:linux-2.6.1/drivers/i2c/i2c-core.c
+*/
+#define POLY    (0x1070U << 3)
+static u8 crc8(u16 data){
+	int i;
+	for(i = 0; i < 8; i++) {
+		if (data & 0x8000)
+			data = data ^ POLY;
+		data = data << 1;
+	}
+	return (u8)(data >> 8);
+}
+
+
+
 //******************************************************************************
 // USI interrupt service routine
 //******************************************************************************
 inline void isr_usi (void){
   if (USICTL1 & USISTTIFG)             // Start entry?
   {
-    I2C_State = state_rx_address;                     // Enter 1st state on start
+    I2C_State = state_prepfor_rx_address;                     // Enter 1st state on start
   }
 
   switch(I2C_State){
     case state_idle: // Idle, will only be here after resetting state machine
         break;
 
-	case state_rx_address: // RX Address
+	case state_prepfor_rx_address: // RX Address
 		USICNT = (USICNT & 0xE0) + 0x08; //  (Keep previous setting, make sure counter is 0, then add 8)Bit counter = 8, RX address
 		USICTL1 &= ~USISTTIFG;   // Clear start flag
 		I2C_State = state_check_address;           // Go to next state: check address
+		i2c_data_number = 0;
 		break;
 
 	case state_check_address: // Process Address and send Ack
-		if (USISRL & 0x01){	// If read... This is done so that the addresses can be compared directly
+		if (USISRL & 0x01){	// If read
 			SLV_Addr++;		// Save R/W bit
 		}	
 		if (USISRL == SLV_Addr){	// Address match?
-			USICTL0 |= USIOE;		// SDA = output ??? can it switch so fast
+			USICTL0 |= USIOE;		// SDA = output
+			if(USISRL & 0x01){ //read
+				I2C_State = state_prepfor_rx_data;	// Go to next state: TX data
+			}else{ //write
+				I2C_State = state_prepfor_rx_data;	// Go to next state: RX data
+			}
 			USISRL = 0x00;			// Send Ack
-			I2C_State = state_rx_command;	// Go to next state: RX data
 			USICNT |= 0x01;			//  Bit counter = 1, send Ack bit
 		}else{ //Not correct address, reset to idle
 			SLV_Addr = ADDRESS;         // Reset slave address
@@ -96,28 +118,54 @@ inline void isr_usi (void){
 			}
 		break;
 
-	case state_rx_command: // prep to Receive data byte 1
+	case state_prepfor_rx_data: // prep to Receive data byte 1
 		USICTL0 &= ~USIOE;	// SDA = input
 		USICNT |=  0x08;	// Bit counter = 8, RX data
-		I2C_State = state_check_command;// Go to next state: Test data
+		I2C_State = state_check_rx_data;// Go to next state: Test data
 		break;
 
-	case state_check_command:// Check Data & TX (N)Ack and understand command
+	case state_check_rx_data:// Check Data & TX (N)Ack and understand command
 		USICTL0 |= USIOE;        // SDA = output
 		if (1){  // If data valid... ALWAYS VALID
-			I2C_State = smbus_parse(USISRL);  // Prep for Start condition;
+			i2c_data[i2c_data_number++] =USISRL;  // store data
 			USISRL = 0x00;         // Send Ack
+			I2C_State = state_prepfor_rx_data; //prep for more data
 		}else{
-			USISRL = 0xFF;         // Send NAck
+			USISRL = 0xFF;        // Send NAck
 		}
 		USICNT |= 0x01;          // Bit counter = 1, send (N)Ack bit
 		break;
+	
+	case state_prepfor_tx_data: //prep to transmit one byte
+		//figure out how to look for an ACK, need to make sure flag is cleared when first entering this case. Also will a Start be detected on output?
+		//ifsuccesfull send more data
+		USICTL0 |= USIOE;        // SDA = output
+		USICNT |=  0x08;	// Bit counter = 8, RX data
+		USISRL = i2c_data[i2c_data_number++]; // Send data
+		I2C_State = state_check_tx_data;// Go to next state: Test data
+		break;
+		
+	case state_prepfor_tx_ack://check for ACK
+		USICTL0 &= ~USIOE;	// SDA = input
+		I2C_State = state_prepfor_tx_data;
+		break;	
+		
+	case state_prepfor_start: // Prep for Start condition
+		USICTL0 &= ~USIOE;       // SDA = input
+		SLV_Addr = ADDRESS;      // Reset slave address
+		I2C_State = state_idle;  // Reset state machine
+		break;
+	}
+	USICTL1 &= ~USIIFG;                  // Clear pending flags
+}
 
+
+/*
 	case state_rx_data: //Write word , prepping to recieve data
 		if(new_i2c_data++ < i2c_data_number){ // Receive data byte
 			USICTL0 &= ~USIOE;       // SDA = input
 			USICNT |=  0x08;         // Bit counter = 8, RX data
-			I2C_State = state_check_data;          // Go to next state: Test data and (N)Ack
+			I2C_State = state_check_rx_data;          // Go to next state: Test data and (N)Ack
 		}else{ // Prep for Start condition
 			i2c_session_complete =1;
 			USICTL0 &= ~USIOE;       // SDA = input
@@ -126,7 +174,7 @@ inline void isr_usi (void){
 		}
 		break;
 		
-	case state_check_data: //store data
+	case state_check_rx_data: //store data
 		USICTL0 |= USIOE;        // SDA = output
 		i2c_data[new_i2c_data-1] = USISRL; //store data in aray
 		USISRL = 0x00;         // Send Ack
@@ -134,14 +182,7 @@ inline void isr_usi (void){
 		USICNT |= 0x01;          // Bit counter = 1, send Ack bit
 		break;
 	
-	case state_prep_for_start: // Prep for Start condition
-		USICTL0 &= ~USIOE;       // SDA = input
-		SLV_Addr = ADDRESS;         // Reset slave address
-		I2C_State = state_idle;           // Reset state machine
-		break;
-	}
-	USICTL1 &= ~USIIFG;                  // Clear pending flags
-}
+*/
 
 char smbus_parse(char command){
 	char state =6;
@@ -160,7 +201,7 @@ char smbus_parse(char command){
 			//send back block of code with PWM status
 			break;
 		default:
-			state = state_prep_for_start; //unknown data, prep for start 
+			state = state_prepfor_start; //unknown data, prep for start 
 	}
 	return state;
 }
