@@ -1026,28 +1026,26 @@ void MSDMediumRemovalHandler()
  *****************************************************************************/	
 void MSDTestUnitReadyHandler()
 {
+	/* TODO: Return "not ready yet" until we know the slug is
+	   powered up and running */
+
 	msd_csw.bCSWStatus=0x0;
 	ResetSenseData();
-	/*
-	  if(!gblFlag.isSDMMC) {
-	  gblSenseData.SenseKey=S_NOT_READY;
-	  gblSenseData.ASC=ASC_LOGICAL_UNIT_NOT_SUPPORTED;
-	  gblSenseData.ASCQ=ASC_LOGICAL_UNIT_NOT_SUPPORTED;
-	  msd_csw.bCSWStatus=0x01;
-	  mLED_2_On();
-	  }
-	*/
-	if(!DetectSDCard()) {
-		gblSenseData.SenseKey=S_UNIT_ATTENTION;
-		gblSenseData.ASC=ASC_MEDIUM_NOT_PRESENT;
-		gblSenseData.ASCQ=ASCQ_MEDIUM_NOT_PRESENT;
-		msd_csw.bCSWStatus=0x01;
-		gblFlag.isSDMMC=0;
-	} else {
-		ToggleRUNLED();
-	}
-	//}
+
+	/* This commented block should be run if medium not present.
+	   Not sure if this the exact response that we want. */
+/* 		gblSenseData.SenseKey=S_UNIT_ATTENTION; */
+/* 		gblSenseData.ASC=ASC_MEDIUM_NOT_PRESENT; */
+/* 		gblSenseData.ASCQ=ASCQ_MEDIUM_NOT_PRESENT; */
+/* 		msd_csw.bCSWStatus=0x01; */
+/* 		gblFlag.isSDMMC=0; */
+
+	togglerunled();
+
 	msd_csw.dCSWDataResidue=0x00;
+
+	/* TODO: This was commented out in the original msd code,
+	   but it seems a little odd! */
 	//SendCSW();
 	return;
 }
