@@ -114,7 +114,6 @@ const rom typSDC_CMD sdmmc_cmdtable[] =
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
 void Delayms(byte);
 byte MediaDetect(void);
-SDC_RESPONSE SendSDCCmd(byte, dword);
 byte ReadMedia(void);
 
 /** D E C L A R A T I O N S **************************************************/
@@ -145,7 +144,6 @@ byte MediaDetect()
     //return(!MEDIA_CD);  //mediacd is rb4 connected to the switch presumably
 }//end MediaDetect
 
-
 int DetectSDCard(void)
 { 
 //	SDC_ON=1;                     // Turned the power for the card ON (RB4 signal available)
@@ -154,101 +152,6 @@ int DetectSDCard(void)
 	else 
 		return 1; 	     
 }	                                 
-     
-/******************************************************************************
- * Function:        SDC_RESPONSE SendSDCCmd(BYTE cmd, DWORD address)
- *
- *
- * Input:           None
- *                  
- * Output:          response            - Response from the card
- *                                      - 0x00 or 0x01 Command received 
- *                                        successfully, else, command failed
- *                  -Bit 0              - In idle state if 1
- *                  -Bit 1              - Erase Reset if 1
- *                  -Bit 2              - Illgal Command if 1
- *                  -Bit 3              - Com CRC Error if 1
- *                  -Bit 4              - Erase Sequence Error if 1
- *                  -Bit 5              - Address Error if 1
- *                  -Bit 6              - Parameter Error if 1
- *                  -Bit 7              - Not used, always '0'
- *
- * Side Effects:    None
- *
- * Overview:        SendSDCCmd prepares the command packet and sends it out
- *                  over the SPI interface. Response data of type 'R1' or 'R2' for SEND_STATUS command (see
- *                  SD or MMC product manuals) is returned.
- *
- * Note:            SDC_CS is not set at the end of this function.
- *                  if the command has no data stage, call macro
- *                  mSendMediaCmd_NoData(), it reasserts SDC_CS to 1.
- *                  If the command has a data stage, SDC_CS must be
- *                  reasserted after the data transfer stage is complete.
- *                  See SectorRead and SectorWrite for examples.
- *****************************************************************************/
-SDC_RESPONSE SendSDCCmd(byte cmd, dword address)
-{        
-    word timeout = 8;
-	byte index;
-	SDC_RESPONSE response;
-	CMD_PACKET CmdPacket;
-	    
-    SDC_CS = 0;                           //Card Select
-    
-    // Copy over data
-    CmdPacket.cmd        = sdmmc_cmdtable[cmd].CmdCode;
-    CmdPacket.address    = address;
-    CmdPacket.crc        = sdmmc_cmdtable[cmd].CRC;       // Calc CRC here
-    
-    
-    WriteSPI(CmdPacket.cmd);                //Send Command
-   	WriteSPI(CmdPacket.addr3);              //Most Significant Byte
-    WriteSPI(CmdPacket.addr2);
-   	WriteSPI(CmdPacket.addr1);
-    WriteSPI(CmdPacket.addr0);              //Least Significant Byte
-    WriteSPI(CmdPacket.crc);                //Send CRC
-
-    // see if  we are going to get a response    
-    if(sdmmc_cmdtable[cmd].responsetype == R1 || sdmmc_cmdtable[cmd].responsetype == R1b)
-    {
-        do
-        {
-            response.r1._byte = ReadMedia();
-            timeout--;
-        }while((response.r1._byte == 0xFF) && (timeout != 0));
-    }
-    else if(sdmmc_cmdtable[cmd].responsetype == R2)
-    {
-        ReadMedia();
-        
-        response.r2._byte1 = ReadMedia();
-        response.r2._byte0 = ReadMedia();
-    }
-    
-    if(sdmmc_cmdtable[cmd].responsetype == R1b)
-    {
-		response.r1._byte = 0x00;
-		
-		for(index =0; index < 0xFF && response.r1._byte == 0x00; index++)
-		{
-	        timeout = 0xFFFF;
-	           
-	        do
-	        {
-	            response.r1._byte = ReadMedia();
-	            timeout--;
-	        }while((response.r1._byte == 0x00) && (timeout != 0)); 
-		}
-    }
-        
-    mSend8ClkCycles();                      //Required clocking (see spec)
- 
-    // see if we are expecting data or not
-    if(!(sdmmc_cmdtable[cmd].moredataexpected))
-        SDC_CS = 1;
-    
-    return(response);        
-}
 
 /******************************************************************************
  * Function:        BYTE ReadMedia(void)
