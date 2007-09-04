@@ -350,51 +350,15 @@ SDC_Error SectorRead(dword sector_addr, byte* buffer)
 	STRLED = 1;
 	#endif
 
-    // send the cmd
-    response = SendSDCCmd(READ_SINGLE_BLOCK,(sector_addr << 9));
-
-    // Make sure the command was accepted
-    if(response.r1._byte != 0x00)
-    {
-        status = sdcCardBadCmd;
-    }
-    else
-    {
-        index = 0x2FF;                                     
-     
-        //Now, must wait for the start token of data block   
-        do
-        {
-            data_token = ReadMedia();
-            index--;
-        }while((data_token == SDC_FLOATING_BUS) && (index != 0));
-    
-        // Hopefully that zero is the datatoken 
-        if((index == 0) || (data_token != DATA_START_TOKEN))
-            status = sdcCardTimeout;
-        else
-        {
-            for(index = 0; index < SDC_SECTOR_SIZE; index++)
-                                                 //Reads in 512-byte of data
-			{
-					buffer[index] = ReadMedia();
-            }  
-            // Now ensure CRC    
-            mReadCRC();                          //Read 2 bytes of CRC
-            //status = mmcCardCRCError;
-        }
-        
-        mSend8ClkCycles();                       //Required clocking (see spec)
-    }
-
-    SDC_CS = 1;
+	/* TODO: Read stuff! */
+	/* Remember that it's the _sector_ address */
 
 	#ifdef STATUSLED
 	STRLED = 0;
 	#endif
 
     return(status);
-}//end SectorRead
+}
 
 /******************************************************************************
  * Function:        SDC_Error SectorWrite(DWORD sector_addr, BYTE *buffer)
@@ -431,55 +395,15 @@ SDC_Error SectorWrite(dword sector_addr, byte* buffer)
 	STWTRIS = OUTPUT;
 	STWLED = 1;
 	#endif
-	
-    // send the cmd
-    response = SendSDCCmd(WRITE_SINGLE_BLOCK,(sector_addr << 9));
-    
-    // see if it was accepted
-    if(response.r1._byte != 0x00)
-        status = sdcCardBadCmd;    
-    else
-    {
-        WriteSPI(DATA_START_TOKEN);               //Send data start token
-        
-        for(index = 0; index < 512; index++)      //Send 512 bytes of data
-            WriteSPI(buffer[index]);
-            
-        // calc crc    
-        mSendCRC();                               //Send 2 bytes of CRC
-        
-        data_response = ReadMedia();              //Read response
-        
-        if((data_response & 0x0F) != DATA_ACCEPTED)
-        {
-            status = sdcCardDataRejected;
-        }
-        else
-        {
-            index = 0;                            //using i as a timeout counter
-            
-            do                                    //Wait for write completion
-            {
-                data_response = ReadMedia();
-                index++;
-            }while((data_response == 0x00) && (index != 0));
-            
-            if(index == 0)                        //if timeout first
-                status = sdcCardTimeout;
-        }
-        
-        mSend8ClkCycles();        
-    }
-    
-    SDC_CS = 1;
+
+	/* TODO: Write stuff! */
     
 	#ifdef STATUSLED
 	STWLED = 0;
 	#endif
 	
-	
   	return(status);
-} //end SectorWrite
+} 
 
 
 /******************************************************************************
