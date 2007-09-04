@@ -995,16 +995,15 @@ void MSDMediumRemovalHandler()
 	   It probably arrives when one unmounts the device.
 	   (Guess we won't get that from Windows...) */
 
-	if(DetectSDCard()) {
-		msd_csw.bCSWStatus=0x00;
-		msd_csw.dCSWDataResidue=0x00;
-	} else {
-		gblSenseData.SenseKey=S_NOT_READY;
-		gblSenseData.ASC=ASC_MEDIUM_NOT_PRESENT;
-		gblSenseData.ASCQ=ASCQ_MEDIUM_NOT_PRESENT;
-		msd_csw.bCSWStatus=0x01;
-	}	
-	return;
+	/* At the moment always "allow" media removal: */
+	msd_csw.bCSWStatus=0x00;
+	msd_csw.dCSWDataResidue=0x00;
+
+/* This is the response if we can't remove the media.. */
+/* 		gblSenseData.SenseKey=S_NOT_READY; */
+/* 		gblSenseData.ASC=ASC_MEDIUM_NOT_PRESENT; */
+/* 		gblSenseData.ASCQ=ASCQ_MEDIUM_NOT_PRESENT; */
+/* 		msd_csw.bCSWStatus=0x01; */
 }  
 
 /******************************************************************************
