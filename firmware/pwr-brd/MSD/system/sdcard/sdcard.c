@@ -201,30 +201,5 @@ byte IsWriteProtected(void)
 	return FALSE;
 }
 
-/******************************************************************************
- * Function:        ShutdownMedia(void)
- *
- * PreCondition:    None
- *
- * Input:           None
- *                  
- * Output:          Node
- *
- * Side Effects:    None
- *
- * Overview:        Closes the SPI bus and deselect the device. 
- *					(Turn off the power if possible.)
- *****************************************************************************/
-void ShutdownMedia(void)
-{
-    // close the spi bus
-    CloseSPI();
-    
-    // deselect the device
-    SDC_CS = 1;                               
-    
-    // Turn off the card
-    // SDC_OFF;        
-}
 
 
