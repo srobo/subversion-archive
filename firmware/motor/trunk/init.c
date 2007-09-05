@@ -26,6 +26,10 @@ void init_gpio( void )
 
 	/* Timer outputs */
 	P1SEL |= 0x0C;
+
 	/* Crystal inputs */
 	P2SEL |= 0xC0;
+
+	/* Use the I2C pins */
+	P3SEL |= 6;
 }
