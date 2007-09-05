@@ -220,12 +220,6 @@ typedef union
     };
 } CID;
 
-//Macros
-#define mSendMediaCmd_NoData()  SendMediaCmd();SDC_CS=1;
-#define mReadCRC()              WriteSPI(0xFF);WriteSPI(0xFF);
-#define mSendCRC()              WriteSPI(0xFF);WriteSPI(0xFF);
-#define mSend8ClkCycles()       WriteSPI(0xFF);
-
 SDC_Error SectorRead(dword, byte*);
 SDC_Error SectorWrite(dword, byte*);
 byte IsWriteProtected(void);
