@@ -101,35 +101,6 @@
 #define DATA_CRC_ERR                0b00001011
 #define DATA_WRT_ERR                0b00001101
 
-// The SD Card Commands (SPI Bus Mode)
-// Bit 7 = 0, Bit 6 = 1, Bits 5-0=Command Code
-#define     cmdGO_IDLE_STATE        0x40		//0 is the 6-bit command
-#define     cmdSEND_OP_COND         0x41		//1        
-#define     cmdSEND_CSD             0x49		//9
-#define     cmdSEND_CID             0x4a		//10
-#define     cmdSTOP_TRANSMISSION    0x4c		//12
-#define     cmdSEND_STATUS          0x4d		//13
-#define     cmdSET_BLOCKLEN         0x50		//16
-#define     cmdREAD_SINGLE_BLOCK    0x51		//17
-#define     cmdREAD_MULTI_BLOCK     0x52		//18
-#define     cmdWRITE_SINGLE_BLOCK   0x58		//24    
-#define     cmdWRITE_MULTI_BLOCK    0x59		//25
-#define     cmdTAG_SECTOR_START     0x60		//32
-#define     cmdTAG_SECTOR_END       0x61		//33
-#define     cmdUNTAG_SECTOR         0x62		//34
-#define     cmdTAG_ERASE_GRP_START  0x63		//35 
-#define     cmdTAG_ERASE_GRP_END    0x64		//36
-#define     cmdUNTAG_ERASE_GRP      0x65		//37
-#define     cmdERASE                0x66		//38
-#define     cmdSD_APP_OP_COND       0x69		//41
-#define     cmdLOCK_UNLOCK          0x71		//49
-#define     cmdAPP_CMD              0x77		//55
-#define     cmdREAD_OCR             0x7a		//58
-#define     cmdCRC_ON_OFF           0x7b		//59
-
-
-
-
 // the various possible responses
 typedef enum
 {
