@@ -3,48 +3,52 @@
 #include <signal.h>
 #include "i2c.h"
 
+interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
+{
+}
+
+interrupt (USCIAB0RX_VECTOR) usci_rx_isr( void )
+{
+	/* Did we just receive a START? */
+	if( UCB0STAT & UCSTTIFG )
+	{
+		
+	}
+     
+}
+
 void i2c_init( void )
 {
-    UCB0CTL0 = 0;
-    UCB0CTL1 = 0;
-
-    P3SEL = 6; //Enable peripherals on pins 1 and 2
-    P3DIR = 6; //This is a complete stab in the dark
-    
-    //1. Set UCSWRST to hold the USCI in reset:
-    //      i2c comms stops
-    //      SDA and SCL are high impedence
-    //      UCBxI2CSTAT, bits 6-0 are cleared
-    //      UCBxTXIE and UCBxRXIE are cleared
-    //      UCBxTXIFG and UCBxRXIFG are cleared
-    //      All other bits and registers unchanged
-    //  Other bits in this register are for master mode
-
+    /* After power-up, USCI is held in reset (UCSWRST set) */
+    /* Set UCSWRST just in case */
     UCB0CTL1 |= UCSWRST;
 
-    //2. Set UCMODEx to 11 for i2c mode
+    UCB0CTL0 = /* UCA10: 7 bit address */
+	    /* USCLA10: Don't care about slave addressing */
+	    /* UCMM: Don't care about multi-master */
+	    /* UCMST: Slave mode */
+	    UCMODE_I2C		/* I2C mode */
+	    | UCSYNC;		/* Synchronous mode */
 
-    UCB0CTL0 |= UCMODE0;
-    UCB0CTL0 |= UCMODE1;
+    /* Don't want to touch UCSWRST whilst fiddling with this register */
+    UCB0CTL1 &= UCSWRST;
+    UCB0CTL1 |= UCSSEL_SMCLK	/* Clock source is SMCLK */
+	    /* UCTR: receive mode for now */
+	    /* UCTXNACK: ACK normally */
+	    /* UCTXSTP: No STOP now */
+	    /* UCTXSTT: No START now */;
+
+    UCB0I2COA = I2C_ADDRESS;
     
-    //3. Set UCSYNC = 1
-    UCB0CTL0 |= UCSYNC;
+    /* Enable the receive and transmit interrupts */
+    IE2 |= UCB0TXIE | UCB0RXIE;
+    
+    /* Enable all of the state interrupts */
+    UCB0I2CIE |= UCNACKIE	/* NACK */
+	    | UCSTPIE		/* STOP */
+	    | UCSTTIE		/* START */
+	    | UCALIE;		/* Arbitration lost */
 
-    //UCMST cleared already
-
-    //5. Set the address in the UCBxI2COA register. UCA10 = 0 for 7 bit
-    //addressing
-
-    UCB0I2COA = 0x2A;
-
-    //Enable interrupts
-    //Interrupt on start of data
-    UCB0I2CIE |= UCSTTIE;
-    IFG2 |= UCB0RXIE;
-
-    //Drop down the RESET.
+    /* Release from reset */
     UCB0CTL1 &= ~UCSWRST;
-
-    return;
-
 }
