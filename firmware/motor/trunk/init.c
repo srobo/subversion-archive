@@ -3,6 +3,7 @@
 #include "pwm.h"
 #include "motor.h"
 #include "i2c.h"
+#include <signal.h>
 
 /* Initialise the GPIO ports */
 void init_gpio( void );
@@ -14,6 +15,7 @@ void init( void )
 	motor_init();
 	i2c_init();
 
+	eint();
 }
 
 void init_gpio( void )
