@@ -46,33 +46,9 @@ extern volatile far byte msd_buffer[512];
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
 void Delayms(byte);
-byte ReadMedia(void);
 
 /** D E C L A R A T I O N S **************************************************/
 #pragma code
-
-/******************************************************************************
- * Function:        BYTE ReadMedia(void)
- *
- * PreCondition:    None
- *
- * Input:           None
- *                  
- * Output:          BYTE    - One byte of data read in from SPI port
- *
- * Side Effects:    None
- *
- * Overview:        ReadMedia reads in one byte of data while sending out 0xFF
- *
- * Note:            Could not use ReadSPI because it initializes SSPBUF to
- *                  0x00. The card expects 0xFF (see spec).
- *****************************************************************************/
-byte ReadMedia(void)
-{
-    SSPBUF = 0xFF;                              //Data Out - Logic ones
-    while(!SSPSTATbits.BF);                     //Wait until cycle complete
-    return(SSPBUF);                             //Return with byte read 
-}//end ReadMedia
 
 void Delayms(byte milliseconds)
 {
