@@ -41,9 +41,6 @@
  #include "sdcard.h"
 
 extern volatile far byte msd_buffer[512]; 
-/* Where the SD Card CSD register was read into */
-/* TODO: Remove this! */
-CSD gblCSDReg;			
 
 #pragma udata
 

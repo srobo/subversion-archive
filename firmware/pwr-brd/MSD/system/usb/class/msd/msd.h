@@ -384,7 +384,6 @@ typedef union {
 } RequestSenseResponse;
 
 /** E X T E R N S ************************************************************/
-extern CSD gblCSDReg;					// declared in sdcard.c
 
 /** P U B L I C  P R O T O T Y P E S *****************************************/
 void USBCheckMSDRequest(void);
