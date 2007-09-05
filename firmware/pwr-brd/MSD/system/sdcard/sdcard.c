@@ -46,36 +46,10 @@ extern volatile far byte msd_buffer[512];
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
 void Delayms(byte);
-byte MediaDetect(void);
 byte ReadMedia(void);
 
 /** D E C L A R A T I O N S **************************************************/
 #pragma code
-
-/******************************************************************************
- * Function:        BYTE MediaDetect(void)
- *
- * PreCondition:    SocketInitialize function has been executed.
- *
- * Input:           void
- *                  
- * Output:          TRUE   - Card detected
- *                  FALSE   - No card detected
- *
- * Side Effects:    None
- *
- * Overview:        None
- *
- * Note:            None
- *****************************************************************************/
-byte MediaDetect()
-{
-    // give it a debounce here
-    Delayms(10);
-    
-	return(1);//force return that a card really exists even tho its a lie! tb	    
-    //return(!MEDIA_CD);  //mediacd is rb4 connected to the switch presumably
-}//end MediaDetect
 
 /******************************************************************************
  * Function:        BYTE ReadMedia(void)
