@@ -3,6 +3,12 @@
 
 #define I2C_ADDRESS 0x12
 
+/* The commands */
+enum {
+	M_CONF
+};
+
+
 void i2c_init( void );
 
 #endif	/* __I2C_H */

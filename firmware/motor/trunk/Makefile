@@ -1,5 +1,5 @@
 CC := msp430-gcc
-CFLAGS := -g -mmcu=msp430x2234 -O3 -Wall
+CFLAGS := -g -mmcu=msp430x2234  -Wall
 LDFLAGS :=
 
 H_FILES = common.h i2c.h init.h motor.h pwm.h
