@@ -6,6 +6,7 @@
 
 static uint8_t cmd;
 static uint8_t pos = 0;
+static uint8_t buf[10];
 
 /* Just received a byte   */
 void byte_rx( uint8_t pos, uint8_t b );
