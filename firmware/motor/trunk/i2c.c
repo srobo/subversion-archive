@@ -8,7 +8,13 @@ static uint8_t cmd;
 static uint8_t pos = 0;
 static uint8_t buf[10];
 
-/* Just received a byte   */
+#define MODULE_IDENTITY 0x0201
+#define FIRMWARE_REV 0x0304
+static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
+					MODULE_IDENTITY & 0xFF, 
+					(FIRMWARE_REV >> 8) & 0xFF,
+					FIRMWARE_REV & 0xFF };
+/* Just received a byte */
 void byte_rx( uint8_t pos, uint8_t b );
 
 /* Need to send a byte */
@@ -23,6 +29,13 @@ interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 		byte_rx( pos, tmp );
 		pos++;
 	}
+
+	if( IFG2 & UCB0TXIFG )
+	{
+		UCB0TXBUF = byte_tx(pos);
+		pos++;
+	}
+
 }
 
 /* start/stop/nack/arb-lost interrupts */
@@ -130,5 +143,20 @@ void byte_rx( uint8_t pos, uint8_t b )
 /* Need to send a byte */
 uint8_t byte_tx( uint8_t pos )
 {
+	const uint8_t lengths[] = {4,0};
+
+	if( cmd >= M_LAST_COMMAND )
+		return 0;
+
+	if( pos > lengths[cmd] )
+		return 0;	/* CRC to go here! */
+
+	switch(cmd)
+	{
+	case M_IDENTIFY:
+		return i2c_identity[pos];
+		break;
+	} 
+
 	return 0;
 }

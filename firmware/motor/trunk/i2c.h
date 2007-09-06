@@ -5,9 +5,10 @@
 
 /* The commands */
 enum {
-	M_CONF
+	M_IDENTIFY,
+	M_CONF,
+	M_LAST_COMMAND
 };
-
 
 void i2c_init( void );
 
