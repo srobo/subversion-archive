@@ -15,9 +15,6 @@ void init( void )
 	motor_init();
 	i2c_init();
 
-/* 	DCOCTL = CALDCO_16MHZ; */
-/* 	BCSCTL1 = CALBC1_16MHZ; */
-
 	eint();
 }
 
@@ -39,6 +36,6 @@ void init_gpio( void )
 	P3SEL |= 6;
 
 	/* Debug light off */
-	P4OUT &= ~0x80;
+	FLAG_OFF();
 
 }

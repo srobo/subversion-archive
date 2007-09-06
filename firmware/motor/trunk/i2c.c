@@ -5,6 +5,8 @@
 #include "motor.h"
 
 static uint8_t cmd;
+static uint8_t pos = 0;
+
 static uint8_t buf[10];
 
 /* Just received a byte   */
@@ -15,30 +17,25 @@ uint8_t byte_tx( uint8_t pos );
 
 interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 {
-	uint8_t
-		a = UCB0CTL0,
-		b = UCB0CTL1,
-		c = UCB0STAT,
-		d = IFG2,
-		e = IE2;
-	if( ! (IFG2 & UCB0TXIFG ) )
-		while (1);
+	if( IFG2 & UCB0RXIFG )
+	{
+		uint8_t tmp = UCB0RXBUF;
 
-	IFG2 &= ~UCB0TXIFG;
+		//byte_rx( pos, tmp );
+		buf[pos] = tmp;
+		pos++;
+	}
 }
 
-/* The state interrupts get funneled in here
-   (at least while in receive mode) */
+/* start/stop/nack/arb-lost interrupts */
 interrupt (USCIAB0RX_VECTOR) usci_rx_isr( void )
 {
-	static uint8_t pos = 0;
-	uint8_t t = IFG2;
-
 	/* Start? */
 	if( UCB0STAT & UCSTTIFG )
 	{
-		/* Reset counter to zero */
+		/* Reset to beginning of register */
 		pos = 0;
+		FLAG();
 
 		/* Clear the flag */
 		UCB0STAT &= ~UCSTTIFG;
@@ -46,17 +43,9 @@ interrupt (USCIAB0RX_VECTOR) usci_rx_isr( void )
 
 	/* Stop? */
 	if( UCB0STAT & UCSTPIFG )
-		UCB0STAT &= ~UCSTPIFG;
-
-	if( IFG2 & UCB0RXIFG )
 	{
-		uint8_t tmp = UCB0RXBUF;
-
-		FLAG();
-
-		//byte_rx( pos, tmp );
-		buf[pos] = tmp;
-		pos++;
+		UCB0STAT &= ~UCSTPIFG;
+		FLAG_OFF();
 	}
 }
 
@@ -90,13 +79,13 @@ void i2c_init( void )
 	    | UCALIE;		/* Arbitration lost */
 
     /* Clear the interrupt flags */
-    IFG2 &= ~0x0F;
+    IFG2 &= ~( UCB0TXIFG | UCB0RXIFG );
 
     /* Release from reset */
     UCB0CTL1 &= ~UCSWRST;
 
     /* Enable the receive and transmit interrupts */
-    IE2 |=  UCB0RXIE; /* UCB0TXIE */
+    IE2 |=  UCB0RXIE | UCB0TXIE;
 }
 
 void byte_rx( uint8_t pos, uint8_t b )
