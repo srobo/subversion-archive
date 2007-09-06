@@ -43,6 +43,8 @@
 
 #include "system\usb\usb_compile_time_validation.h" // Optional
 //#include "user\user_mouse.h"                        // Modifiable
+#include <i2c.h>
+#include <usart.h>
 
 /** V A R I A B L E S ********************************************************/
 #pragma udata
@@ -86,13 +88,31 @@ void _reset (void)
 void main(void)
 {
     InitializeSystem();
+    
+    TRISC|=0x20;
+    OpenUSART(
+USART_TX_INT_OFF &
+USART_RX_INT_OFF &
+USART_ASYNCH_MODE &
+USART_EIGHT_BIT &
+USART_CONT_RX & USART_BRGH_HIGH,25);
+// for 115200 brg = 25.041
+//for 9600 brg = 311.5
+
+// STEVE, I SUGGEST YOU BY UNCOMMMENTING START HERE (IVE UNCOMMENTED COS ITS A TEMP BLOCKING FN....
+//while(1)
+//	{
+		putrsUSART("Hello World");
+		delay(200);
+//	}	
+    //OpenI2C(,);  
     while(1)
-    {
-	    
-	    
-     	USBTasks();         // USB Tasks
-        ProcessIO();        // See msd.c & msd.h
-    } //end while
+	    {
+		    
+		    
+	     	USBTasks();         // USB Tasks
+	        ProcessIO();        // See msd.c & msd.h
+	    } //end while
 }//end main
 
 /******************************************************************************
@@ -126,7 +146,7 @@ static void InitializeSystem(void)
 //re1 - fet control servo rail
 //re2 - fet slug rail
 
-	PORTC=PORTC^0x01; // MUST BE set BEFORE UNTRISTATING ELSE SLUG BOOT!!!
+	PORTC|=0x01; // MUST BE set BEFORE UNTRISTATING ELSE SLUG BOOT!!!
 	TRISC=0XFE;// make slug pin Out
 	TRISE = 0;
 	PORTE = 0b111; // turn all power rails on

@@ -40,6 +40,7 @@ file_019=no
 file_020=no
 file_021=no
 file_022=no
+file_023=no
 [FILE_INFO]
 file_000=system\usb\usbmmap.c
 file_001=system\usb\usb9\usb9.c
@@ -63,7 +64,8 @@ file_018=system\usb\usb_compile_time_validation.h
 file_019=system\usb\class\msd\msd.h
 file_020=system\sdcard\sdcard.h
 file_021=system\Compiler.h
-file_022=18f4550.lkr
+file_022=C:\MCC18\h\i2c.h
+file_023=18f4550.lkr
 [SUITE_INFO]
 suite_guid={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
 suite_state=
