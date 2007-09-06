@@ -47,11 +47,14 @@
 /** V A R I A B L E S ********************************************************/
 #pragma udata
 
+long int startupdel;
+
 
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
 static void InitializeSystem(void);
 void USBTasks(void);
+void delay(int time);
 
 /** V E C T O R  R E M A P P I N G *******************************************/
 
@@ -114,6 +117,28 @@ void main(void)
  *****************************************************************************/
 static void InitializeSystem(void)
 {
+	//ecssr init routine sets io and turns on slug
+	//rc0 slug boot switch blip low to boot
+
+//rd0-4 switch
+//rd5-7 leds
+//re0 - big power motor fet thing
+//re1 - fet control servo rail
+//re2 - fet slug rail
+
+	PORTC=PORTC^0x01; // MUST BE set BEFORE UNTRISTATING ELSE SLUG BOOT!!!
+	TRISC=0XFE;// make slug pin Out
+	TRISE = 0;
+	PORTE = 0b111; // turn all power rails on
+
+	delay(20);
+	PORTCbits.RC0=0;// blip slug
+	delay(20);
+	PORTCbits.RC0=1; // never press the button, ever!! (dont hold down)
+
+// end tempfw inserts
+
+
     ADCON1 |= 0x0F;                 // Default all pins to digital
     
     #if defined(USE_USB_BUS_SENSE_IO)
@@ -155,7 +180,18 @@ void USBTasks(void)
 }// end USBTasks
 
 
+void delay(int time)
+{
+	int sponge =0;
+	//good time about 20
+	startupdel=0;
+	
+	for (startupdel=0;startupdel<(time*100);startupdel++)
+	{
+		for(sponge=0;sponge<250;sponge++);
+	}
 
+}
 
            
 /** EOF main.c ***************************************************************/
