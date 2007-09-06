@@ -7,8 +7,6 @@
 static uint8_t cmd;
 static uint8_t pos = 0;
 
-static uint8_t buf[10];
-
 /* Just received a byte   */
 void byte_rx( uint8_t pos, uint8_t b );
 
@@ -21,8 +19,7 @@ interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 	{
 		uint8_t tmp = UCB0RXBUF;
 
-		//byte_rx( pos, tmp );
-		buf[pos] = tmp;
+		byte_rx( pos, tmp );
 		pos++;
 	}
 }
@@ -96,11 +93,6 @@ void byte_rx( uint8_t pos, uint8_t b )
 		return;
 	}
 
-	if( pos < 11 )
-		buf[pos-1] = b;
-	return;
-
-
 	switch(cmd)
 	{
 	case M_CONF:
@@ -114,6 +106,7 @@ void byte_rx( uint8_t pos, uint8_t b )
 			motor_state_t state;
 
 			buf[1] = b;
+			/* Buf 0 is LSB */
 
 			/* Format: bits:
 			 * 15-12: Unused
@@ -121,11 +114,10 @@ void byte_rx( uint8_t pos, uint8_t b )
 			 *  10-9: Mode
 			 *   8-0: PWM Ratio */
 
-			channel = (buf[0]&0x08)?1:0;
-			speed = ((uint16_t)buf[1]) 
-				| ((uint16_t)(buf[0]&1) << 8);
-			state = (buf[0] >> 1) & 0x3;
-
+			channel = (buf[1]&0x08)?1:0;
+			speed = ((uint16_t)buf[0]) 
+				| ((uint16_t)(buf[1]&1) << 8);
+			state = (buf[1] >> 1) & 0x3;
 
 			motor_set( channel, speed, state );
 		}
