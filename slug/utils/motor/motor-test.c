@@ -7,76 +7,84 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 
-/* PCF8574A address: 0011 1000 = 0x38 */
-
-#define ADDRESS 0x0F
-#define POS0 3
-#define POS1 135
+#define ADDRESS 0x12
 
 typedef enum
 {
 	FALSE = 0, TRUE
 } bool;
 
-bool err_enable = TRUE;
-
-void setservo( int fd, uint8_t n, uint8_t val )
+typedef enum
 {
-	uint16_t p;
+	M_OFF = 0,
+	M_FORWARD,
+	M_BACKWARD,
+	M_BRAKE
+} motor_state_t;
 
-	p = ((uint16_t)val<<8) | n;
+#define MOTOR_MAX 328
 
-	if( i2c_smbus_write_word_data( fd, 1, p ) < 0 && err_enable )
-		fprintf( stderr, "i2c failed: %m\n" );
-}
+typedef uint16_t pwm_ratio_t;
 
-void spam( int fd )
+void motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
 {
-	uint8_t addr = 0;
-	err_enable = FALSE;
+	uint16_t v = 0;
+	if( val>MOTOR_MAX )
+		val = MOTOR_MAX;
 
-	for( addr=0; addr<128; addr++ )
-	{
-		if( addr == ADDRESS )
-			addr++;
+	v = val;
+	v |= ((uint16_t)s) << 9;
+	v |= m?0x800:0;
 
-		if( ioctl( fd, I2C_SLAVE, addr ) < 0 )
-		{
-			fprintf( stderr, "Failed to set slave address: %m\n" );
-			break;
-		}
-
-		setservo( fd, 1, 0 );
-	}
+	i2c_smbus_write_word_data( fd, 0, v );
 }
 
 int main( int argc, char** argv )
 {
-	uint8_t d = POS0;
-	uint8_t val = 0;
-	uint8_t servo,i;
 	int fd;
+	uint8_t channel;
+	motor_state_t dir;
+	pwm_ratio_t pwm;
 
-	fd = open( "/dev/i2c-0", O_RDWR );
-
-	if( argc == 2 )
+	if( argc < 4 )
 	{
-		if( strcmp( argv[1], "spam" ) == 0 )
-			spam(fd);
-		return 0;
-	}
-
-	if( argc != 3 )
-	{
-		printf("Usage: i2c-test SERVO VALUE\n");
+		printf("Usage: %s CHANNEL DIR PWM_VALUE\n"
+		       "Where:\n"
+		       "\t CHANNEL is the motor number (0 or 1).\n"
+		       "\t DIR is the motor direction:\n"
+		       "\t\tf = foward\n"
+		       "\t\tb = backward\n"
+		       "\t\to = off\n"
+		       "\t\ts = brake\n"
+		       "\t PWM_VALUE is a member of [0,%u]\n"
+		       , argv[0], MOTOR_MAX );
 		return 1;
 	}
 
-	servo = atol( argv[1] );
-	val = atol( argv[2] );	
+	channel = strtoul( argv[1], NULL, 10 );
+	switch( *argv[2] )
+	{
+	case 'f':
+		dir = M_FORWARD;
+		break;
+	case 'b':
+		dir = M_BACKWARD;
+		break;
+	case 'o':
+		dir = M_OFF;
+		break;
+	case 's':
+		dir = M_BRAKE;
+		break;
+	default:
+		fprintf(stderr, "Invalid direction code - quitting\n");
+		return 2;
+	}
+	pwm = strtoul( argv[3], NULL, 10 );
 
-	printf( "servo: %u value: %u\n", servo, val );
+	fd = open( "/dev/i2c-0", O_RDWR );
 
 	if( fd == -1 )
 	{
@@ -90,7 +98,7 @@ int main( int argc, char** argv )
 		return 2;
 	}
 
-	setservo(fd,servo,val);
+	motor_set( fd, channel, dir, pwm );
 	
 	return 0;
 }
