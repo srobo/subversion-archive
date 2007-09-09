@@ -6,6 +6,7 @@ header file
 #define I2C_HEADER
 
 #define ADDRESS 0x1E
+#define IDENTIFIER 0x0001U
 
 char available_i2c_data_number(void);
 char available_i2c_data(void);

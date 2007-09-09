@@ -24,12 +24,12 @@ typedef enum
   state_checkack_tx_data
 }state_t;
 
-char i2c_data[32];		// i2c data, array can contain a maximum of 32 values to be sent or read as per SMBUS specification
-char SLV_Addr = ADDRESS;		// Address is 0x48, LSB  for R/W << CORECT 0x70??
+uint8_t i2c_data[32];		// i2c data, array can contain a maximum of 32 values to be sent or read as per SMBUS specification
+uint8_t SLV_Addr = ADDRESS;		// Address is 0x48, LSB  for R/W << CORECT 0x70??
 state_t I2C_State = state_idle;		//i2c transmition states
-char i2c_session_complete = 0;		//set when transmission is complete, guess could be replaced by reading one of the states
-char new_i2c_data = 0;		// number of data already recieved
-char i2c_data_number = 0;	//number of data bytes to be recieved
+uint8_t i2c_session_complete = 0;		//set when transmission is complete, guess could be replaced by reading one of the states
+uint8_t new_i2c_data = 0;		// number of data already recieved
+uint8_t i2c_data_number = 0;	//number of data bytes to be recieved
 
 /**
 This function will return the number of available bytes of data. If called before an i2c session is complete it will return 0.
@@ -125,7 +125,7 @@ inline void isr_usi (void){
 			}else{							//Master is sending data
 				I2C_State = state_prepfor_rx_command;
 			}
-			PEC = i2c_smbus_pec(PEC, 1, *USISRL); /**Is this the correct way of making a value a pointer?**/
+			PEC = i2c_smbus_pec(PEC, 1, &USISRL); /**Is this the correct way of making a value a pointer?**/
 			USICTL0 |= USIOE;				// SDA = output
 			USISRL = 0x00;					// Send Ack
 			USICNT |= 0x01;					//  Bit counter = 1, send Ack bit
@@ -148,7 +148,7 @@ inline void isr_usi (void){
 		USICTL0 |= USIOE;					// SDA = output
 		if (1){								/** If data valid... ALWAYS VALID**/
 			I2C_State = smbus_parse(USISRL);//parse command
-			PEC = i2c_smbus_pec(PEC, 1, *USISRL); /**Is this the correct way of making a value a pointer?**/
+			PEC = i2c_smbus_pec(PEC, 1, &USISRL); /**Is this the correct way of making a value a pointer?**/
 			USISRL = 0x00;					// Send ACK
 		}else{
 			USISRL = 0xFF;					// Send NACK
@@ -167,9 +167,9 @@ inline void isr_usi (void){
 		
 	case state_check_rx_data:				//check & store data
 		USICTL0 |= USIOE;					// SDA = output
-		i2c_data[++new_i2c_data] = USISRL;	//store data in next index
+		i2c_data[(uint8_t)new_i2c_data++] = USISRL;	//store data in next index
 		if(new_i2c_data == i2c_data_number){//last byte is PEC
-			if(PEC == i2c_data[i2c_data_number]){ //compare PEC with the PEC sent by the master
+			if(PEC == i2c_data[(uint8_t)i2c_data_number]){ //compare PEC with the PEC sent by the master
 				USISRL = 0x00;				// Send Ack
 				i2c_session_complete =1;
 			}else{
@@ -177,7 +177,7 @@ inline void isr_usi (void){
 			}
 			I2C_State = state_prepfor_rx_start;
 		}else{
-			PEC = i2c_smbus_pec(PEC, 1, i2c_data[new_i2c_data]); //process the last message into the checksum
+			PEC = i2c_smbus_pec(PEC, 1, &i2c_data[(uint8_t)new_i2c_data]); //process the last message into the checksum
 			I2C_State = state_prepfor_rx_data;//go back and set up for next byte
 		}
 		USICNT |= 0x01;						// Bit counter = 1, send Ack bit
@@ -187,8 +187,25 @@ inline void isr_usi (void){
 	Send data and check for (N)ACK
 	******************************************************************************/
 	case state_send_tx_data:
+		USICTL0 |= USIOE;        // SDA = output
+		USISRL = i2c_data[new_i2c_data];       // Send data
+		USICNT |=  0x08;         // Bit counter = 8, TX data
+		I2C_State = state_prepforack_tx_data;// Go to next state: receive (N)Ack
 		break;
-	case state_checkack_tx_data:
+		
+	case state_prepforack_tx_data:
+		USICTL0 &= ~USIOE;       // SDA = input
+		USICNT |= 0x01;          // Bit counter = 1, receive (N)Ack
+		I2C_State = state_checkack_tx_data;          // Go to next state: check (N)Ack
+		break;
+		
+	case state_checkack_tx_data:// Process Data Ack/NAck
+		if (USISRL & 0x01){       // If Nack received...
+			I2C_State = state_prepfor_rx_start;
+		}else{                    // Ack received
+			new_i2c_data++;         // Increment Slave data
+			I2C_State = state_send_tx_data;
+		}
 		break;
 	/****************************************************************************
 	Reset the statemachine
@@ -215,13 +232,15 @@ char smbus_parse(char command){
 	switch(command){
 		case 0:
 			//send identifier back to master
+			i2c_data[0]=(IDENTIFIER & 0xFF);
+			i2c_data[1]=(IDENTIFIER>>8) & 0xFF);
+			i2c_data[2]= PEC
 			break;
-		case 1:
+		case 1: //get servo position from master
 			state = state_prepfor_rx_data;
-			i2c_data_number = 2; //number of bytes to be recieved
+			i2c_data_number = 3; //number of bytes to be recieved
 			new_i2c_data = 0;
 			i2c_session_complete = 0;
-			//get servo position from master
 			break;
 		case 2:
 			//send back block of code with PWM status
