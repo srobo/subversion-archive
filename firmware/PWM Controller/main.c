@@ -160,7 +160,7 @@ int main(void) {
 	//int static unused_initialized_variable_to_make_gdb_happy = 1;
 	initialise_PwmBoard();
     while (1){
-		if((USICTL1 & USIIFG) || (USICTL1 & USISTTIFG)){
+		if((USICTL1 & USIIFG) || (USICTL1 & USISTTIFG)){ //process i2c if either a START, Counter=0 flag is set
 		polled_i2c();
 		}
 //		sweepServo();
@@ -240,7 +240,7 @@ void polled_i2c(void){
 		number_of_data = available_i2c_data();
 		data = get_i2cData();
 		setServoPWM(data[0], (MIN_PULSE + 25*(uint16_t)data[1])); //takes values from 0-135
-	}
+	}	
 }
 
 interrupt (NOVECTOR) IntServiceRoutine(void)

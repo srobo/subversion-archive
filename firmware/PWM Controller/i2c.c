@@ -14,12 +14,14 @@ typedef enum
 {
   state_idle = 0, //wait for a start condition
   state_prepfor_rx_address,
-  state_check_address,
+  state_check_rx_address,
+  state_prepfor_rx_command,
+  state_check_rx_command,
   state_prepfor_rx_data,
   state_check_rx_data,
-  state_rx_data,
-  state_check_rx_data,
-  state_prepfor_start
+  state_prepfor_rx_start,
+  state_send_tx_data,
+  state_checkack_tx_data
 }state_t;
 
 char i2c_data[32];		// i2c data, array can contain a maximum of 32 values to be sent or read as per SMBUS specification
@@ -62,128 +64,152 @@ void enable_i2c(void){
 	USICTL1 &= ~USIIFG;                  // Clear pending flag
 }
 
-/*
-This function will return the SMBUS crc8 checksum for the parameter given
-From:linux-2.6.1/drivers/i2c/i2c-core.c
-*/
+/**
+ The SMBus parts ,
+ From: http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.1.tar.bz2/linux-2.6.1/drivers/i2c/
+**/
 #define POLY    (0x1070U << 3)
-static u8 crc8(u16 data){
-	int i;
+uint8_t PEC;
+static uint8_t crc8(uint16_t data){
+	uint16_t i;
 	for(i = 0; i < 8; i++) {
 		if (data & 0x8000)
 			data = data ^ POLY;
 		data = data << 1;
 	}
-	return (u8)(data >> 8);
+	return (uint8_t)(data >> 8);
+}
+
+/**
+@param crc: The crc calculated up to now
+@param count: The # of entries in the array message
+@param *message: The array containing the message to checksum
+**/
+uint8_t i2c_smbus_pec(uint8_t crc, uint16_t count, uint8_t *message){
+	uint16_t i;
+	for(i = 0; i < count; i++)				//checksum untill all bytes have been processed
+		crc = crc8((crc ^ message[i]) << 8);
+	return crc;
 }
 
 
-
 //******************************************************************************
-// USI interrupt service routine
+// I2C State Machine
 //******************************************************************************
 inline void isr_usi (void){
   if (USICTL1 & USISTTIFG)             // Start entry?
   {
-    I2C_State = state_prepfor_rx_address;                     // Enter 1st state on start
+    I2C_State = state_prepfor_rx_address;
   }
 
   switch(I2C_State){
     case state_idle: // Idle, will only be here after resetting state machine
         break;
 
-	case state_prepfor_rx_address: // RX Address
-		USICNT = (USICNT & 0xE0) + 0x08; //  (Keep previous setting, make sure counter is 0, then add 8)Bit counter = 8, RX address
-		USICTL1 &= ~USISTTIFG;   // Clear start flag
-		I2C_State = state_check_address;           // Go to next state: check address
-		i2c_data_number = 0;
+	/****************************************************************************
+	Recieve address and check if it
+	******************************************************************************/
+	case state_prepfor_rx_address:
+		USICNT = (USICNT & 0xE0) + 0x08;	//  (Keep previous setting, make sure counter is 0, then prep for 8bit address
+		USICTL1 &= ~USISTTIFG;				// Clear start flag
+		I2C_State = state_check_rx_address;	// Go to next state: check address
 		break;
 
-	case state_check_address: // Process Address and send Ack
-		if (USISRL & 0x01){	// If read
-			SLV_Addr++;		// Save R/W bit
+	case state_check_rx_address:
+		if (USISRL & 0x01){					// Master is expecting to read data
+			SLV_Addr++;						// Save R/W bit
 		}	
-		if (USISRL == SLV_Addr){	// Address match?
-			USICTL0 |= USIOE;		// SDA = output
-			if(USISRL & 0x01){ //read
-				I2C_State = state_prepfor_rx_data;	// Go to next state: TX data
-			}else{ //write
-				I2C_State = state_prepfor_rx_data;	// Go to next state: RX data
+		if (USISRL == SLV_Addr){			// Address match
+			if(USISRL & 0x01){				//Master is expecting to read data
+				I2C_State = state_send_tx_data;
+			}else{							//Master is sending data
+				I2C_State = state_prepfor_rx_command;
 			}
-			USISRL = 0x00;			// Send Ack
-			USICNT |= 0x01;			//  Bit counter = 1, send Ack bit
-		}else{ //Not correct address, reset to idle
-			SLV_Addr = ADDRESS;         // Reset slave address
-			I2C_State = state_idle;     // Reset state machine
-			}
-		break;
-
-	case state_prepfor_rx_data: // prep to Receive data byte 1
-		USICTL0 &= ~USIOE;	// SDA = input
-		USICNT |=  0x08;	// Bit counter = 8, RX data
-		I2C_State = state_check_rx_data;// Go to next state: Test data
-		break;
-
-	case state_check_rx_data:// Check Data & TX (N)Ack and understand command
-		USICTL0 |= USIOE;        // SDA = output
-		if (1){  // If data valid... ALWAYS VALID
-			i2c_data[i2c_data_number++] =USISRL;  // store data
-			USISRL = 0x00;         // Send Ack
-			I2C_State = state_prepfor_rx_data; //prep for more data
-		}else{
-			USISRL = 0xFF;        // Send NAck
+			PEC = i2c_smbus_pec(PEC, 1, *USISRL); /**Is this the correct way of making a value a pointer?**/
+			USICTL0 |= USIOE;				// SDA = output
+			USISRL = 0x00;					// Send Ack
+			USICNT |= 0x01;					//  Bit counter = 1, send Ack bit
+		}else{								//Not correct address, reset to idle
+			SLV_Addr = ADDRESS;				// Reset slave address
+			I2C_State = state_idle;			// Reset state machine
 		}
-		USICNT |= 0x01;          // Bit counter = 1, send (N)Ack bit
-		break;
-	
-	case state_prepfor_tx_data: //prep to transmit one byte
-		//figure out how to look for an ACK, need to make sure flag is cleared when first entering this case. Also will a Start be detected on output?
-		//ifsuccesfull send more data
-		USICTL0 |= USIOE;        // SDA = output
-		USICNT |=  0x08;	// Bit counter = 8, RX data
-		USISRL = i2c_data[i2c_data_number++]; // Send data
-		I2C_State = state_check_tx_data;// Go to next state: Test data
 		break;
 		
-	case state_prepfor_tx_ack://check for ACK
-		USICTL0 &= ~USIOE;	// SDA = input
-		I2C_State = state_prepfor_tx_data;
-		break;	
+	/****************************************************************************
+	Recieve smbus command and see if a corresponding command exist
+	******************************************************************************/
+	case state_prepfor_rx_command:
+		USICTL0 &= ~USIOE;					// SDA = input
+		USICNT |= 0x08;						// Bit counter = 8, RX data
+		I2C_State = state_check_rx_command;	// Go to next state: Test data
+		break;
+
+	case state_check_rx_command:
+		USICTL0 |= USIOE;					// SDA = output
+		if (1){								/** If data valid... ALWAYS VALID**/
+			I2C_State = smbus_parse(USISRL);//parse command
+			PEC = i2c_smbus_pec(PEC, 1, *USISRL); /**Is this the correct way of making a value a pointer?**/
+			USISRL = 0x00;					// Send ACK
+		}else{
+			USISRL = 0xFF;					// Send NACK
+		}
+		USICNT |= 0x01;						// Bit counter = 1, send (N)ACK
+		break;
 		
-	case state_prepfor_start: // Prep for Start condition
-		USICTL0 &= ~USIOE;       // SDA = input
-		SLV_Addr = ADDRESS;      // Reset slave address
-		I2C_State = state_idle;  // Reset state machine
+	/****************************************************************************
+	Recieve data and store it in the buffer array
+	******************************************************************************/
+	case state_prepfor_rx_data:
+			USICTL0 &= ~USIOE;				// SDA = input
+			USICNT |=  0x08;				// Bit counter = 8, RX
+			I2C_State = state_check_rx_data;
+		break;
+		
+	case state_check_rx_data:				//check & store data
+		USICTL0 |= USIOE;					// SDA = output
+		i2c_data[++new_i2c_data] = USISRL;	//store data in next index
+		if(new_i2c_data == i2c_data_number){//last byte is PEC
+			if(PEC == i2c_data[i2c_data_number]){ //compare PEC with the PEC sent by the master
+				USISRL = 0x00;				// Send Ack
+				i2c_session_complete =1;
+			}else{
+				USISRL = 0xFF;				// Send NACK
+			}
+			I2C_State = state_prepfor_rx_start;
+		}else{
+			PEC = i2c_smbus_pec(PEC, 1, i2c_data[new_i2c_data]); //process the last message into the checksum
+			I2C_State = state_prepfor_rx_data;//go back and set up for next byte
+		}
+		USICNT |= 0x01;						// Bit counter = 1, send Ack bit
+		break;
+		
+	/****************************************************************************
+	Send data and check for (N)ACK
+	******************************************************************************/
+	case state_send_tx_data:
+		break;
+	case state_checkack_tx_data:
+		break;
+	/****************************************************************************
+	Reset the statemachine
+	******************************************************************************/
+	case state_prepfor_rx_start:
+		USICTL0 &= ~USIOE;					// SDA = input
+		SLV_Addr = ADDRESS;					// Reset slave address
+		I2C_State = state_idle;				// Reset state machine
+		PEC = 0;							//Reset PEC
 		break;
 	}
-	USICTL1 &= ~USIIFG;                  // Clear pending flags
+	
+	/****************************************************************************
+	Exit state machine
+	******************************************************************************/
+	USICTL1 &= ~USIIFG;						// Clear pending flags
 }
 
-
-/*
-	case state_rx_data: //Write word , prepping to recieve data
-		if(new_i2c_data++ < i2c_data_number){ // Receive data byte
-			USICTL0 &= ~USIOE;       // SDA = input
-			USICNT |=  0x08;         // Bit counter = 8, RX data
-			I2C_State = state_check_rx_data;          // Go to next state: Test data and (N)Ack
-		}else{ // Prep for Start condition
-			i2c_session_complete =1;
-			USICTL0 &= ~USIOE;       // SDA = input
-			SLV_Addr = ADDRESS;         // Reset slave address
-			I2C_State = state_idle;           // Reset state machine
-		}
-		break;
-		
-	case state_check_rx_data: //store data
-		USICTL0 |= USIOE;        // SDA = output
-		i2c_data[new_i2c_data-1] = USISRL; //store data in aray
-		USISRL = 0x00;         // Send Ack
-		I2C_State = state_rx_data; 	//go back and set up for next bit if there is one
-		USICNT |= 0x01;          // Bit counter = 1, send Ack bit
-		break;
-	
-*/
-
+/**
+Parse command and setup i2c statemachine appropriatly
+**/
 char smbus_parse(char command){
 	char state =6;
 	switch(command){
@@ -191,7 +217,7 @@ char smbus_parse(char command){
 			//send identifier back to master
 			break;
 		case 1:
-			state = state_rx_data;
+			state = state_prepfor_rx_data;
 			i2c_data_number = 2; //number of bytes to be recieved
 			new_i2c_data = 0;
 			i2c_session_complete = 0;
@@ -201,7 +227,7 @@ char smbus_parse(char command){
 			//send back block of code with PWM status
 			break;
 		default:
-			state = state_prepfor_start; //unknown data, prep for start 
+			state = state_prepfor_rx_start; //unknown data, prep for start 
 	}
 	return state;
 }
