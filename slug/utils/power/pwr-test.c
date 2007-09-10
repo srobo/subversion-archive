@@ -9,12 +9,10 @@
 #include <string.h>
 #include <time.h>
 
-/* PCF8574A address: 01000000 = 0x40 */
-
+/* PCF8574A address: 01000000 = 0x20 */
 
 //#define ADDRESS 0x0F
-#define ADDRESS 0x20
-
+#define ADDRESS 0x55 // - DIO Chip
 
 #define POS0 3
 #define POS1 135
@@ -30,9 +28,7 @@ void setpins( int fd, uint8_t val )
 {
 	uint16_t p;
 
-	
-
-	if( i2c_smbus_write_byte_data( fd, 1, val ) < 0 && err_enable )
+	if( i2c_smbus_write_byte_data( fd, 3, val ) < 0 && err_enable )
 		fprintf( stderr, "i2c failed: %m\n" );
 }
 
@@ -59,29 +55,19 @@ int main( int argc, char** argv )
 		return 2;
 	}
 
+    if( ioctl( fd, I2C_PEC, 1) < 0)
+    {
+        fprintf( stderr, "Failed to enable PEC\n");
+        return 3;
+    }
 
 	printf("hamster\n");
 
-	val = 0xAA;
 	while(1) 
 	  {
-	    //val=~val;
-	    //for(i=0;i<255;i++)
-	      // { 
-		setpins(fd,0xAA);
-	     sleep(1);
-		printf("sp%d\n",i) ;
-		// }
-	     setpins(fd,0x55);
-	     sleep(1);
-	      printf("eon\n") ;
-	     
-
-//nanosleep(&pause,NULL);
-//sleep(1);
+		setpins(fd,0x56);
+		sleep(1);
+		printf("Tom smells!\n");
 	  }
-
-	
-	
 	return 0;
 }
