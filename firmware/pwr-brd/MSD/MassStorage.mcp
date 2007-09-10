@@ -4,12 +4,12 @@ file_version=1.0
 [PATH_INFO]
 BuildDirPolicy=BuildDirIsSourceDir
 dir_src=
-dir_bin=C:\MCHPMSD\MSD\_output
-dir_tmp=C:\MCHPMSD\MSD\_output
+dir_bin=C:\ecssr\firmware\pwr-brd\MSD\_output
+dir_tmp=C:\ecssr\firmware\pwr-brd\MSD\_output
 dir_sin=
-dir_inc=C:\Documents and Settings\Tom\Desktop\ecssr\firmware\pwr-brd\MSD;C:\MCHPMSD\MSD
+dir_inc=C:\ecssr\firmware\pwr-brd\MSD;C:\Documents and Settings\Tom\Desktop\ecssr\firmware\pwr-brd\MSD;C:\MCHPMSD\MSD
 dir_lib=C:\mcc18\lib
-dir_lkr=C:\MCHPMSD\MSD
+dir_lkr=C:\ecssr\firmware\pwr-brd\MSD
 [CAT_FILTERS]
 filter_src=*.asm;*.c
 filter_inc=*.h;*.inc
@@ -41,6 +41,9 @@ file_020=no
 file_021=no
 file_022=no
 file_023=no
+file_024=no
+file_025=no
+file_026=no
 [FILE_INFO]
 file_000=system\usb\usbmmap.c
 file_001=system\usb\usb9\usb9.c
@@ -65,7 +68,10 @@ file_019=system\usb\class\msd\msd.h
 file_020=system\sdcard\sdcard.h
 file_021=system\Compiler.h
 file_022=C:\MCC18\h\i2c.h
-file_023=18f4550.lkr
+file_023=C:\MCC18\h\usart.h
+file_024=C:\MCC18\h\string.h
+file_025=C:\MCC18\h\adc.h
+file_026=18f4550.lkr
 [SUITE_INFO]
 suite_guid={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
 suite_state=

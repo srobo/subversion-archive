@@ -45,11 +45,15 @@
 //#include "user\user_mouse.h"                        // Modifiable
 #include <i2c.h>
 #include <usart.h>
+#include <stdlib.h>
+#include <adc.h>
 
 /** V A R I A B L E S ********************************************************/
 #pragma udata
 
 long int startupdel;
+int bcount;
+char outstr[10];
 
 
 
@@ -88,23 +92,58 @@ void _reset (void)
 void main(void)
 {
     InitializeSystem();
-    
-    TRISC|=0x20;
-    OpenUSART(
-USART_TX_INT_OFF &
-USART_RX_INT_OFF &
-USART_ASYNCH_MODE &
-USART_EIGHT_BIT &
-USART_CONT_RX & USART_BRGH_HIGH,25);
-// for 115200 brg = 25.041
-//for 9600 brg = 311.5
 
-// STEVE, I SUGGEST YOU BY UNCOMMMENTING START HERE (IVE UNCOMMENTED COS ITS A TEMP BLOCKING FN....
-//while(1)
-//	{
-		putrsUSART("Hello World");
-		delay(200);
-//	}	
+
+    
+    OpenADC( ADC_FOSC_64 &
+	ADC_RIGHT_JUST &
+	ADC_20_TAD,
+	
+	ADC_CH0 &
+	ADC_INT_OFF &
+	ADC_VREFPLUS_VDD &
+	ADC_VREFMINUS_VSS
+	
+	, 0x0D );// this is to A/D pins ref from rails
+
+	
+	SetChanADC(0);
+	
+	
+while(1)
+	{
+		
+		
+			while(BusyUSART());
+			WriteUSART(10);
+			while(BusyUSART());
+			WriteUSART(13);
+			
+			SetChanADC(ADC_CH0);
+			ConvertADC();
+			while(BusyADC());
+			itoa(ReadADC(),&outstr);
+			putsUSART(outstr);
+			
+			WriteUSART(" ");
+			
+			SetChanADC(ADC_CH1);
+			ConvertADC();
+			while(BusyADC());
+			itoa(ReadADC(),&outstr);
+			putsUSART(outstr);
+		
+		
+
+		//PORTC=~PORTC;
+		//PORTD=~PORTD;
+//		PORTD=bcount << 2;
+//		itoa(bcount,&outstr);
+//		putsUSART(outstr);
+//		WriteUSART(PORTD);
+	
+		delay(5);
+	}	
     //OpenI2C(,);  
     while(1)
 	    {
@@ -150,6 +189,7 @@ static void InitializeSystem(void)
 	TRISC=0XFE;// make slug pin Out
 	TRISE = 0;
 	PORTE = 0b111; // turn all power rails on
+	TRISD|=0x0F;
 
 	delay(20);
 	PORTCbits.RC0=0;// blip slug
@@ -157,6 +197,25 @@ static void InitializeSystem(void)
 	PORTCbits.RC0=1; // never press the button, ever!! (dont hold down)
 
 // end tempfw inserts
+
+    TRISC|=0x20;
+    OpenUSART(
+	USART_TX_INT_OFF &
+	USART_RX_INT_OFF &
+	USART_ASYNCH_MODE &
+	USART_EIGHT_BIT &
+	USART_CONT_RX & 
+	USART_BRGH_HIGH, // checked, this does mean bit brgh bit set
+	152);  // this is 19200
+	
+// for 115200 brg = 25.041
+//for 9600 brg = 312.6
+//52.08 for 57600 baud
+// this calculation was found to be rubbish, by for loop found rangfe to be 147-157dec, so using 152 (for 19200)
+	//TRISC=0X00;
+	
+	
+	
 
 
     ADCON1 |= 0x0F;                 // Default all pins to digital
