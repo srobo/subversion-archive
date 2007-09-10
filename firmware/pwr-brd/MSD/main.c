@@ -54,6 +54,9 @@
 /** V A R I A B L E S ********************************************************/
 #pragma udata
 
+#define u8 unsigned char
+#define u16 unsigned int
+
 long int startupdel;
 int bcount;
 char outstr[10];
@@ -65,6 +68,9 @@ static void InitializeSystem(void);
 void USBTasks(void);
 void delay(int time);
 void i2cservice(void);
+u8 i2c_smbus_pec(u8 crc, u8 *p, u8 count);
+u8 crc8(u16 data);
+
 /** V E C T O R  R E M A P P I N G *******************************************/
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
@@ -96,106 +102,17 @@ void main(void)
 {
     InitializeSystem();
 
-
-	TRISBbits.TRISB0=1; //Set to inputs for the SPI module
-	TRISBbits.TRISB1=1;
-
-	SSPSTATbits.CKE=1; //Enable SMBus specific inputs
-	SSPSTATbits.SMP=1; //Slew rate control for 100khz operation
-    	
-    	SSPCON2bits.SEN = 0; //Disable clock stretching
-  	SSPCON2bits.RSEN = 0; //Masking disabled
-	SSPCON2bits.PEN=0; //Next 4 bits are an address mask. 0000 means no mask
-	SSPCON2bits.RCEN=0;
-	SSPCON2bits.ACKEN=0;
-	SSPCON2bits.ACKDT=0;
-  	//SSPCON2bits.ACKSTAT; //Unused in slave
-  	SSPCON2bits.GCEN=0; //Disable interrupt on address 0000h
- 
-  	SSPCON1bits.SSPM0=0; //0110 = 7 bit I2C slave mode without interrupts. 1110(3-0) for interrupts
-  	SSPCON1bits.SSPM1=1;
-  	SSPCON1bits.SSPM2=1;
-  	SSPCON1bits.SSPM3=0;
-  	SSPCON1bits.CKP=1; //Release clock if clock stretching
-  	SSPCON1bits.SSPEN=1; //Enable I2C!
-  	//SSPCON1bits.SSPOV; //Receive overflow indicator
-  	//SSPCON1bits.WCOL; //Write collision detect bit
-
-	SSPADD=0x55<<1; //55 used in slug software
-	TRISD=0x0F;
-	PORTD = 0x55;
-
-while(1)
-{
-	manage_usart();
-	if (PIR1bits.SSPIF) 
-	{
-		PORTD = PORTD + 16;
-		dump2 = SSPBUF;
-		mputcharUSART(dump2);
-		PIR1bits.SSPIF=0;
-		
-	}
-		
-	//PIR1bits.SSPIF=0;
-	//SSPCON1bits.SSPOV=0;
-	
-	//while(BusyADC());
-	//itoa(Read,&outstr);
-	//putsUSART(outstr);
-	
-}
-
-
-
-
-	
-
-
-
-//while(1)
-	
-		/*
-		
-			while(BusyUSART());
-			WriteUSART(10);
-			while(BusyUSART());
-			WriteUSART(13);
-			
-			SetChanADC(ADC_CH0);
-			ConvertADC();
-			while(BusyADC());
-			itoa(ReadADC(),&outstr);
-			putsUSART(outstr);
-			
-			WriteUSART(" ");
-			
-			SetChanADC(ADC_CH1);
-			ConvertADC();
-			while(BusyADC());
-			itoa(ReadADC(),&outstr);
-			putsUSART(outstr);
-		
-		*/
-
-		//PORTC=~PORTC;
-		//PORTD=~PORTD;
-//		PORTD=bcount << 2;
-//		itoa(bcount,&outstr);
-//		putsUSART(outstr);
-//		WriteUSART(PORTD);
-	
-//		delay(5);
-//	}	
-    //OpenI2C(,);  
     while(1)
 	    {
-		
+	    	manage_usart();		
 	     	USBTasks();         // USB Tasks
 	        i2cservice();
 	        ProcessIO();        // See msd.c & msd.h
 	    } //end while
 }//end main
+
+
+
 
 /******************************************************************************
  * Function:        static void InitializeSystem(void)
@@ -232,7 +149,7 @@ static void InitializeSystem(void)
 	TRISC=0XFE;// make slug pin Out
 	TRISE = 0;
 	PORTE = 0b111; // turn all power rails on
-	TRISD|=0x0F;
+	TRISD=0x0F;
 
 	delay(20);
 	PORTCbits.RC0=0;// blip slug
@@ -251,12 +168,8 @@ static void InitializeSystem(void)
 	USART_BRGH_HIGH, // checked, this does mean bit brgh bit set
 	152);  // this is 19200
 	
-// for 115200 brg = 25.041
-//for 9600 brg = 312.6
-//52.08 for 57600 baud
-// this calculation was found to be rubbish, by for loop found rangfe to be 147-157dec, so using 152 (for 19200)
-	//TRISC=0X00;
-	
+
+//-------ADC setup ---------------------------	
 	
 	    OpenADC( ADC_FOSC_64 &
 	ADC_RIGHT_JUST &
@@ -268,6 +181,34 @@ static void InitializeSystem(void)
 	ADC_VREFMINUS_VSS
 	, 0x0D );// this is to A/D pins ref from rails
 	
+//----I2C setup ---------
+
+	TRISBbits.TRISB0=1; //Set to inputs for the SPI module
+	TRISBbits.TRISB1=1;
+
+	SSPSTATbits.CKE=1; //Enable SMBus specific inputs
+	SSPSTATbits.SMP=1; //Slew rate control for 100khz operation
+    	
+    	SSPCON2bits.SEN = 0; //Disable clock stretching
+  	SSPCON2bits.RSEN = 0; //Masking disabled
+	SSPCON2bits.PEN=0; //Next 4 bits are an address mask. 0000 means no mask
+	SSPCON2bits.RCEN=0;
+	SSPCON2bits.ACKEN=0;
+	SSPCON2bits.ACKDT=0;
+  	//SSPCON2bits.ACKSTAT; //Unused in slave
+  	SSPCON2bits.GCEN=0; //Disable interrupt on address 0000h
+ 
+  	SSPCON1bits.SSPM0=0; //0110 = 7 bit I2C slave mode without interrupts. 1110(3-0) for interrupts
+  	SSPCON1bits.SSPM1=1;
+  	SSPCON1bits.SSPM2=1;
+  	SSPCON1bits.SSPM3=0;
+  	SSPCON1bits.CKP=1; //Release clock if clock stretching
+  	SSPCON1bits.SSPEN=1; //Enable I2C!
+  	//SSPCON1bits.SSPOV; //Receive overflow indicator
+  	//SSPCON1bits.WCOL; //Write collision detect bit
+
+	SSPADD=0x55<<1; //55 used in slug software
+
 
 
    // ADCON1 |= 0x0F;                 // Default all pins to digital
@@ -312,8 +253,47 @@ void USBTasks(void)
 
 void i2cservice(void)
 {
+	
+	
+	if (PIR1bits.SSPIF) 
+		{
+			PORTD = PORTD + 16;
+			dump2 = SSPBUF;
+			mputcharUSART(dump2);
+			PIR1bits.SSPIF=0;		
+		}
+	
 	return(0);
 }
+
+
+
+
+
+#define POLY    (0x1070U << 3)
+
+u8 crc8(u16 data){
+	int i;
+	for(i = 0; i < 8; i++) {
+		if (data & 0x8000)
+			data = data ^ POLY;
+		data = data << 1;
+	}
+	return (u8)(data >> 8);
+}
+
+u8 i2c_smbus_pec(u8 crc, u8 *p, u8 count)
+{
+        int i;
+
+        for(i = 0; i < count; i++)
+                crc = crc8((crc ^ p[i]) << 8);
+        return crc;
+}
+
+
+
+
 
 
 
@@ -333,3 +313,24 @@ void delay(int time)
            
 /** EOF main.c ***************************************************************/
 
+
+
+
+		/*	while(BusyUSART());
+			WriteUSART(10);
+			while(BusyUSART());
+			WriteUSART(13);
+			
+			SetChanADC(ADC_CH0);
+			ConvertADC();
+			while(BusyADC());
+			itoa(ReadADC(),&outstr);
+			putsUSART(outstr);
+			
+			WriteUSART(" ");
+			
+			SetChanADC(ADC_CH1);
+			ConvertADC();
+			while(BusyADC());
+			itoa(ReadADC(),&outstr);
+			putsUSART(outstr); */

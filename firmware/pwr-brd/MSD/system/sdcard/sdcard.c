@@ -123,8 +123,8 @@ SDC_Error SectorRead(dword sector_addr, byte* buffer)
     SDC_Error status = sdcValid;
 
 	#ifdef STATUSLED
-	STRTRIS = OUTPUT;
-	STRLED = 1;
+//	STRTRIS = OUTPUT;  lost by tb to checked context
+//	STRLED = 1;
 	#endif
 
 	/* TODO: Read stuff! */
