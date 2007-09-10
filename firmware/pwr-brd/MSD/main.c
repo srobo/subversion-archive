@@ -36,6 +36,7 @@
 
 /** I N C L U D E S **********************************************************/
 #include <p18cxxx.h>
+//#include <p18f4550.h>
 //#include "system\sdcard\sdcard.h"
 #include "system\typedefs.h"                        // Required
 #include "system\usb\usb.h"                         // Required
@@ -43,8 +44,10 @@
 
 #include "system\usb\usb_compile_time_validation.h" // Optional
 //#include "user\user_mouse.h"                        // Modifiable
+
 #include <i2c.h>
 #include <usart.h>
+#include "musart.h"
 #include <stdlib.h>
 #include <adc.h>
 
@@ -54,14 +57,14 @@
 long int startupdel;
 int bcount;
 char outstr[10];
-
+char dump2;
 
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
 static void InitializeSystem(void);
 void USBTasks(void);
 void delay(int time);
-
+void i2cservice(void);
 /** V E C T O R  R E M A P P I N G *******************************************/
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
@@ -94,25 +97,65 @@ void main(void)
     InitializeSystem();
 
 
-    
-    OpenADC( ADC_FOSC_64 &
-	ADC_RIGHT_JUST &
-	ADC_20_TAD,
+	TRISBbits.TRISB0=1; //Set to inputs for the SPI module
+	TRISBbits.TRISB1=1;
+
+	SSPSTATbits.CKE=1; //Enable SMBus specific inputs
+	SSPSTATbits.SMP=1; //Slew rate control for 100khz operation
+    	
+    	SSPCON2bits.SEN = 0; //Disable clock stretching
+  	SSPCON2bits.RSEN = 0; //Masking disabled
+	SSPCON2bits.PEN=0; //Next 4 bits are an address mask. 0000 means no mask
+	SSPCON2bits.RCEN=0;
+	SSPCON2bits.ACKEN=0;
+	SSPCON2bits.ACKDT=0;
+  	//SSPCON2bits.ACKSTAT; //Unused in slave
+  	SSPCON2bits.GCEN=0; //Disable interrupt on address 0000h
+ 
+  	SSPCON1bits.SSPM0=0; //0110 = 7 bit I2C slave mode without interrupts. 1110(3-0) for interrupts
+  	SSPCON1bits.SSPM1=1;
+  	SSPCON1bits.SSPM2=1;
+  	SSPCON1bits.SSPM3=0;
+  	SSPCON1bits.CKP=1; //Release clock if clock stretching
+  	SSPCON1bits.SSPEN=1; //Enable I2C!
+  	//SSPCON1bits.SSPOV; //Receive overflow indicator
+  	//SSPCON1bits.WCOL; //Write collision detect bit
+
+	SSPADD=0x55<<1; //55 used in slug software
+	TRISD=0x0F;
+	PORTD = 0x55;
+
+while(1)
+{
+	manage_usart();
+	if (PIR1bits.SSPIF) 
+	{
+		PORTD = PORTD + 16;
+		dump2 = SSPBUF;
+		mputcharUSART(dump2);
+		PIR1bits.SSPIF=0;
+		
+	}
+		
+	//PIR1bits.SSPIF=0;
+	//SSPCON1bits.SSPOV=0;
 	
-	ADC_CH0 &
-	ADC_INT_OFF &
-	ADC_VREFPLUS_VDD &
-	ADC_VREFMINUS_VSS
+	//while(BusyADC());
+	//itoa(Read,&outstr);
+	//putsUSART(outstr);
 	
-	, 0x0D );// this is to A/D pins ref from rails
+}
+
+
+
 
 	
-	SetChanADC(0);
+
+
+
+//while(1)
 	
-	
-while(1)
-	{
-		
+		/*
 		
 			while(BusyUSART());
 			WriteUSART(10);
@@ -133,7 +176,7 @@ while(1)
 			itoa(ReadADC(),&outstr);
 			putsUSART(outstr);
 		
-		
+		*/
 
 		//PORTC=~PORTC;
 		//PORTD=~PORTD;
@@ -142,14 +185,14 @@ while(1)
 //		putsUSART(outstr);
 //		WriteUSART(PORTD);
 	
-		delay(5);
-	}	
+//		delay(5);
+//	}	
     //OpenI2C(,);  
     while(1)
 	    {
-		    
-		    
+		
 	     	USBTasks();         // USB Tasks
+	        i2cservice();
 	        ProcessIO();        // See msd.c & msd.h
 	    } //end while
 }//end main
@@ -215,10 +258,19 @@ static void InitializeSystem(void)
 	//TRISC=0X00;
 	
 	
+	    OpenADC( ADC_FOSC_64 &
+	ADC_RIGHT_JUST &
+	ADC_20_TAD,
+	
+	ADC_CH0 &
+	ADC_INT_OFF &
+	ADC_VREFPLUS_VDD &
+	ADC_VREFMINUS_VSS
+	, 0x0D );// this is to A/D pins ref from rails
 	
 
 
-    ADCON1 |= 0x0F;                 // Default all pins to digital
+   // ADCON1 |= 0x0F;                 // Default all pins to digital
     
     #if defined(USE_USB_BUS_SENSE_IO)
     tris_usb_bus_sense = INPUT_PIN; // See io_cfg.h
@@ -257,6 +309,12 @@ void USBTasks(void)
         USBDriverService();                 // Interrupt or polling method
 
 }// end USBTasks
+
+void i2cservice(void)
+{
+	return(0);
+}
+
 
 
 void delay(int time)
