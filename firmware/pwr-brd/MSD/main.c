@@ -57,10 +57,25 @@
 #define u8 unsigned char
 #define u16 unsigned int
 
+#define IDENTIFY 10
+#define SETLED 11
+#define SETLEDCOUNT 1
+#define CHECKUSB 12
+#define GETV 13
+#define GETI 14
+#define GETDIP 15
+#define SETRAILS 16
+
+#define GOOD 0
+#define BAD 1
+
+
+
 long int startupdel;
 int bcount;
 char outstr[10];
 char dump2;
+char i2cstatus = BAD;
 
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
@@ -70,7 +85,7 @@ void delay(int time);
 void i2cservice(void);
 u8 i2c_smbus_pec(u8 crc, u8 *p, u8 count);
 u8 crc8(u16 data);
-
+void docmd(u8 command, u8 *data);
 /** V E C T O R  R E M A P P I N G *******************************************/
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
@@ -101,13 +116,30 @@ void _reset (void)
 void main(void)
 {
     InitializeSystem();
+    /*u8 loader;
+    u8 tmp;
+    
+     mputcharUSART(0xFF);
+    loader = 0xAA;
+    tmp = crc8((u16)loader << 8);
+    mputcharUSART(tmp);
+    flush_usart_send();
+
+    tmp = crc8((tmp ^ ((u16)0x0b)) << 8);
+    mputcharUSART(tmp);
+
+    tmp = crc8((tmp ^ ((u16)0x06)) << 8);
+    mputcharUSART(tmp);
+    flush_usart_send();
+    
+    while(1);*/
 
     while(1)
 	    {
 	    	manage_usart();		
-	     	USBTasks();         // USB Tasks
+	     	//USBTasks();         // USB Tasks
 	        i2cservice();
-	        ProcessIO();        // See msd.c & msd.h
+	        //ProcessIO();        // See msd.c & msd.h
 	    } //end while
 }//end main
 
@@ -134,6 +166,101 @@ void main(void)
  *
  * Note:            None
  *****************************************************************************/
+
+
+void i2cservice(void)
+{
+	static enum states {
+				WAIT,
+				GOTADDRESS,
+				GOTCOMMAND,
+				GOTDATA
+			} state = WAIT;
+			
+	static u8 adddump;
+	static u8 command;
+	static u8 data[32]; // size according to smbus spec
+	static u8 datacount;
+	static u8 datapos;
+	static u8 checksum;
+	
+	u8 tmpdata;
+	
+	if (PIR1bits.SSPIF){
+		mputcharUSART(0xFE);
+		tmpdata = SSPBUF;
+		PIR1bits.SSPIF = 0;
+		if(!SSPSTATbits.D_A) // if get start bit, drop everything and start again 
+		{
+			datacount= 0;
+			i2cstatus = BAD;
+			state = GOTADDRESS;
+			adddump = tmpdata;
+			checksum = crc8((u16)adddump<<8);
+			mputcharUSART(0x01);
+			mputcharUSART(SSPSTAT);
+			mputcharUSART(adddump);
+			mputcharUSART(checksum);
+		} else {
+			switch(state){
+				case GOTADDRESS:
+					state=GOTCOMMAND;
+					command = tmpdata;
+					mputcharUSART(0x99);
+					mputcharUSART(command);
+					checksum = crc8((u16)(checksum^command)<<8);
+					mputcharUSART(checksum);
+						
+					switch (command)
+					{
+						case SETLED:
+							datacount = SETLEDCOUNT;
+							break;
+						default:
+							datacount = 5;
+					}
+					datapos = datacount;		
+					mputcharUSART(0x02);
+					break;
+				case GOTCOMMAND:
+					data[datacount-datapos] = tmpdata; // start entering data at start of array
+					checksum = crc8((u16)(checksum^data[datacount-datapos])<<8);
+					mputcharUSART(checksum);
+					datapos--;	
+					mputcharUSART(datapos+1); // :)
+						
+					if(datapos == 0)
+						state = GOTDATA;
+					mputcharUSART(0x03);
+					break;
+				case GOTDATA:
+					mputcharUSART(0x04);
+					mputcharUSART(tmpdata);
+					mputcharUSART(checksum);
+					if (tmpdata == checksum) 
+					{
+						mputcharUSART(0x05);
+						docmd(command, data);
+						i2cstatus = GOOD; 
+					}
+					else i2cstatus = BAD;
+					state = WAIT;
+					break;
+			}
+		}
+	}
+	return;
+}
+
+void docmd(u8 command, u8 *data){
+	switch(command){
+		case SETLED:
+			//SET the top 4 MSD bits of port D to data
+			PORTD = *data << 4;
+			break;
+	}
+}	
+
 static void InitializeSystem(void)
 {
 	//ecssr init routine sets io and turns on slug
@@ -142,7 +269,7 @@ static void InitializeSystem(void)
 //rd0-4 switch
 //rd5-7 leds
 //re0 - big power motor fet thing
-//re1 - fet control servo rail
+//e1 - fet control servo rail
 //re2 - fet slug rail
 
 	PORTC|=0x01; // MUST BE set BEFORE UNTRISTATING ELSE SLUG BOOT!!!
@@ -208,6 +335,7 @@ static void InitializeSystem(void)
   	//SSPCON1bits.WCOL; //Write collision detect bit
 
 	SSPADD=0x55<<1; //55 used in slug software
+//	clear sm flags;....
 
 
 
@@ -250,25 +378,6 @@ void USBTasks(void)
         USBDriverService();                 // Interrupt or polling method
 
 }// end USBTasks
-
-void i2cservice(void)
-{
-	
-	
-	if (PIR1bits.SSPIF) 
-		{
-			PORTD = PORTD + 16;
-			dump2 = SSPBUF;
-			mputcharUSART(dump2);
-			PIR1bits.SSPIF=0;		
-		}
-	
-	return(0);
-}
-
-
-
-
 
 #define POLY    (0x1070U << 3)
 
