@@ -62,6 +62,7 @@
 
 typedef struct {
     u8 bytestoreadin;
+    u8 bytestoreadout;
     void (*docmd)(u8 *data);
 } t_command;
 
@@ -70,6 +71,7 @@ int bcount;
 char outstr[10];
 char dump2;
 char i2cstatus = BAD;
+
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
 static void InitializeSystem(void);
@@ -90,13 +92,13 @@ void getdip(u8 *data);
 void setrails(u8 *data);
 /** V E C T O R  R E M A P P I N G *******************************************/
 
-t_command commands[] = {{0, *identify},
-                        {1, *setled},
-                        {0, *checkusb},
-                        {0, *getv},
-                        {0, *geti},
-                        {0, *getdip},
-                        {1, *setrails}};
+t_command commands[] = {{0, 1,*identify},
+                        {1, 0,*setled},
+                        {0, 1,*checkusb},
+                        {0, 2,*getv},
+                        {0, 2,*geti},
+                        {0, 1,*getdip},
+                        {1, 0,*setrails}};
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
 #pragma code _RESET_INTERRUPT_VECTOR = 0x000020
@@ -125,6 +127,7 @@ void _reset (void)
  *****************************************************************************/
 void main(void)
 {
+	char poo;
     InitializeSystem();
 
     while(1)
@@ -132,8 +135,10 @@ void main(void)
         manage_usart();		
         USBTasks();         // USB Tasks
         i2cservice();
+        poo = SSPSTAT;
+        PORTD= ((poo<<2)&0xF0);
         ProcessIO();        // See msd.c & msd.h
-        swin();
+        //swin();
     } //end while
 }//end main
 
@@ -142,39 +147,61 @@ void i2cservice(void)
     static enum states {
         WAIT,
             GOTADDRESSREAD,
+            GOTADDRESSWRITE,
             GOTCOMMAND,
-            GOTDATA
+            GOTDATA,
+            SENTCHECKSUM
     } state = WAIT;
 
     static u8 adddump;
     static u8 command;
-    static u8 data[32]; // size according to smbus spec
+    static u8 data[32]; // size according to smbus spec    
     static u8 datacount;
     static u8 datapos;
     static u8 checksum;
+    int i;
 
     u8 tmpdata;
 
     if (PIR1bits.SSPIF){ 
-        tmpdata = SSPBUF;
-        PIR1bits.SSPIF = 0;
-        if(!SSPSTATbits.D_A) // if get start bit, drop everything and start again 
+	    mputcharUSART('X');
+        if(!SSPSTATbits.D_A) //It's an address byte
         {
-            datacount= 0;
-            i2cstatus = BAD;
-            state = GOTADDRESSREAD;
-            adddump = tmpdata;
-            checksum = crc8(adddump);
+            i2cstatus = BAD; //This is to check abandoned machines later
+            datapos = 0;
+            adddump = SSPBUF;
+        	PIR1bits.SSPIF = 0;
+            if (!SSPSTATbits.R_W) //About to receive something from the slug
+            {
+	            datacount = 0;
+	            state = GOTADDRESSREAD;
+	            checksum = crc8(adddump);
+	            mputcharUSART('R');
+            }
+            else //Being asked to send stuff to the slug
+           	{
+	           	datacount = commands[command].bytestoreadout;
+	           	checksum = crc8(checksum^(adddump));
+	           	
+	           	state = GOTADDRESSWRITE;
+	        	//NOW SEND THE FIRST BYTE YOU TOOLS
+	       		mputcharUSART('W');
+	       		SSPBUF = data[datapos];
+	            SSPCON1bits.CKP = 1;
+	            checksum = crc8(checksum^data[datapos]);
+	            datapos++;
+	      	}
         } else {
             switch(state){
-                case GOTADDRESSREAD:
+                case GOTADDRESSREAD: //Just received a command
+                    tmpdata = SSPBUF;
+        			PIR1bits.SSPIF = 0;
                     command = tmpdata;
                     checksum = crc8(checksum^command);
                     datacount = commands[command].bytestoreadin;
-                    datapos =0;
 
                     if(datacount == 0){ //Special case of pure commands (getdips etc)
-                        commands[command].docmd(data); //data not used
+                        commands[command].docmd(data); //Data filled up ready to send to slug (Maybe)
                         state = WAIT;
                         break;
                     }
@@ -182,7 +209,9 @@ void i2cservice(void)
                     break;
 
                 case GOTCOMMAND:
-                    //Read in the data
+                    //Read in the data       
+                    tmpdata = SSPBUF;
+        			PIR1bits.SSPIF = 0;
                     data[datapos] = tmpdata; // start entering data at start of array
                     checksum = crc8(checksum^data[datapos]);
                     datapos++;
@@ -191,6 +220,8 @@ void i2cservice(void)
                     break;
 
                 case GOTDATA:
+                	tmpdata = SSPBUF;
+        			PIR1bits.SSPIF = 0;
                     if (tmpdata == checksum) 
                     {
                         commands[command].docmd(data);
@@ -199,6 +230,30 @@ void i2cservice(void)
                     else i2cstatus = BAD;
                     state = WAIT;
                     break;
+             	case GOTADDRESSWRITE:
+        			PIR1bits.SSPIF = 0;
+             		if (datapos<datacount)
+             		{
+	             		mputcharUSART('e');
+	             		mputcharUSART('a'+datapos);
+	             		mputcharUSART('A' + data[datapos]);
+	             		SSPBUF = data[datapos];
+	             		SSPCON1bits.CKP = 1;
+	             		checksum = crc8(checksum^data[datapos]);
+	             		datapos++;
+	             	}
+	             	else
+	             	{
+		             	mputcharUSART('s');
+		             	SSPBUF = checksum;
+		             	SSPCON1bits.CKP = 1;
+		             	state = SENTCHECKSUM;
+		         	}
+             		break;
+             	case SENTCHECKSUM:
+             		i2cstatus = GOOD;
+             		PIR1bits.SSPIF = 0;
+             		break;
             }
         }
     }
@@ -210,10 +265,8 @@ void identify(u8 *data){
 	}	
 void setled(u8 *data){
     //SET the top 4 MSD bits of port D to data
-    PORTD = *data << 4;
-}	
-
-
+    return;//PORTD = *data << 4;
+}
 
 void checkusb(u8 *data){
 	return;
@@ -225,6 +278,7 @@ void geti(u8 *data){
 	return;
 	}
 void getdip(u8 *data){
+	data[0]=PORTD&0x0F;
 	return;
 	}
 void setrails(u8 *data){
@@ -256,8 +310,8 @@ static void InitializeSystem(void)
     //ecssr init routine sets io and turns on slug
     //rc0 slug boot switch blip low to boot
 
-    //rd0-4 switch
-    //rd5-7 leds
+    //rd0-3 switch
+    //rd4-7 leds
     //re0 - big power motor fet thing
     //e1 - fet control servo rail
     //re2 - fet slug rail
