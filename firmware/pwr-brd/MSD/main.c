@@ -84,8 +84,9 @@ void USBTasks(void);
 void delay(int time);
 void i2cservice(void);
 u8 i2c_smbus_pec(u8 crc, u8 *p, u8 count);
-u8 crc8(u16 data);
+u8 crc8(u8 tmpdata);
 void docmd(u8 command, u8 *data);
+void swin(void);
 /** V E C T O R  R E M A P P I N G *******************************************/
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
@@ -123,32 +124,12 @@ void main(void)
 	     	USBTasks();         // USB Tasks
 	        i2cservice();
 	        ProcessIO();        // See msd.c & msd.h
+	        swin();
 	    } //end while
 }//end main
 
 
 
-
-/******************************************************************************
- * Function:        static void InitializeSystem(void)
- *
- * PreCondition:    None
- *
- * Input:           None
- *
- * Output:          None
- *
- * Side Effects:    None
- *
- * Overview:        InitializeSystem is a centralize initialization routine.
- *                  All required USB initialization routines are called from
- *                  here.
- *
- *                  User application initialization routine should also be
- *                  called from here.                  
- *
- * Note:            None
- *****************************************************************************/
 
 
 void i2cservice(void)
@@ -169,7 +150,7 @@ void i2cservice(void)
 	
 	u8 tmpdata;
 	
-	if (PIR1bits.SSPIF){
+	if (PIR1bits.SSPIF){ 
 		tmpdata = SSPBUF;
 		PIR1bits.SSPIF = 0;
 		if(!SSPSTATbits.D_A) // if get start bit, drop everything and start again 
@@ -178,13 +159,13 @@ void i2cservice(void)
 			i2cstatus = BAD;
 			state = GOTADDRESS;
 			adddump = tmpdata;
-			checksum = crc8((u16)adddump<<8);
+			checksum = crc8(adddump);
 		} else {
 			switch(state){
 				case GOTADDRESS:
 					state=GOTCOMMAND;
 					command = tmpdata;
-					checksum = crc8((u16)(checksum^command)<<8);						
+					checksum = crc8(checksum^command);						
 					switch (command)
 					{
 						case SETLED:
@@ -197,7 +178,7 @@ void i2cservice(void)
 					break;
 				case GOTCOMMAND:
 					data[datacount-datapos] = tmpdata; // start entering data at start of array
-					checksum = crc8((u16)(checksum^data[datacount-datapos])<<8);
+					checksum = crc8(checksum^data[datacount-datapos]);
 					datapos--;							
 					if(datapos == 0)
 						state = GOTDATA;
@@ -226,6 +207,26 @@ void docmd(u8 command, u8 *data){
 	}
 }	
 
+/******************************************************************************
+ * Function:        static void InitializeSystem(void)
+ *
+ * PreCondition:    None
+ *
+ * Input:           None
+ *
+ * Output:          None
+ *
+ * Side Effects:    None
+ *
+ * Overview:        InitializeSystem is a centralize initialization routine.
+ *                  All required USB initialization routines are called from
+ *                  here.
+ *
+ *                  User application initialization routine should also be
+ *                  called from here.                  
+ *
+ * Note:            None
+ *****************************************************************************/
 static void InitializeSystem(void)
 {
 	//ecssr init routine sets io and turns on slug
@@ -305,8 +306,10 @@ static void InitializeSystem(void)
 // -------current sence set up---------------------
 
 	TRISBbits.TRISB3=0;	TRISBbits.TRISB2=0;
-	PORTBbits.RB3 = 1;
-	PORTBbits.RB2 = 1;
+	PORTBbits.RB3 = 1; // !shdn
+	PORTBbits.RB2 = 0;    	// gsel 0 allows upto appx 4A with track resistor (heating element hot!)
+				// gesl 1 allows upto about 2A ish		
+		
 	
 
 
@@ -351,10 +354,43 @@ void USBTasks(void)
 
 }// end USBTasks
 
+
+
+void swin(void)
+{
+	char strcount;
+	if (PORTD&0x01)// switch nearest usb socket
+	{
+			mputcharUSART(10);
+			mputcharUSART(13);
+			SetChanADC(ADC_CH0);
+			ConvertADC();
+			while(BusyADC());
+			itoa(ReadADC(),&outstr);
+			
+			strcount =0;
+			while(outstr[strcount]!= 0 ) mputcharUSART(outstr[(strcount++)]);
+			
+			//putsUSART(outstr);
+			mputcharUSART(' ');
+			SetChanADC(ADC_CH1);
+			ConvertADC();
+			while(BusyADC());
+			itoa(ReadADC(),&outstr);
+			strcount =0;
+			while(outstr[strcount]!= 0 ) mputcharUSART(outstr[(strcount++)]);
+			delay(1);
+	}
+	
+	return(0);
+}
+
 #define POLY    (0x1070U << 3)
 
-u8 crc8(u16 data){
+u8 crc8(u8 tempdata){
 	int i;
+	int data;
+	data = (u16)tempdata<<8;
 	for(i = 0; i < 8; i++) {
 		if (data & 0x8000)
 			data = data ^ POLY;
@@ -362,20 +398,6 @@ u8 crc8(u16 data){
 	}
 	return (u8)(data >> 8);
 }
-
-u8 i2c_smbus_pec(u8 crc, u8 *p, u8 count)
-{
-        int i;
-
-        for(i = 0; i < count; i++)
-                crc = crc8((crc ^ p[i]) << 8);
-        return crc;
-}
-
-
-
-
-
 
 
 void delay(int time)
@@ -397,21 +419,3 @@ void delay(int time)
 
 
 
-		/*	while(BusyUSART());
-			WriteUSART(10);
-			while(BusyUSART());
-			WriteUSART(13);
-			
-			SetChanADC(ADC_CH0);
-			ConvertADC();
-			while(BusyADC());
-			itoa(ReadADC(),&outstr);
-			putsUSART(outstr);
-			
-			WriteUSART(" ");
-			
-			SetChanADC(ADC_CH1);
-			ConvertADC();
-			while(BusyADC());
-			itoa(ReadADC(),&outstr);
-			putsUSART(outstr); */
