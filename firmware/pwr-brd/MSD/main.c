@@ -57,15 +57,6 @@
 #define u8 unsigned char
 #define u16 unsigned int
 
-#define IDENTIFY 10
-#define SETLED 11
-#define SETLEDCOUNT 1
-#define CHECKUSB 12
-#define GETV 13
-#define GETI 14
-#define GETDIP 15
-#define SETRAILS 16
-
 #define GOOD 0
 #define BAD 1
 
@@ -95,7 +86,7 @@ void setled(u8 *data);
 void checkusb(u8 *data);
 void getv(u8 *data);
 void geti(u8 *data);
-void setdip(u8 *data);
+void getdip(u8 *data);
 void setrails(u8 *data);
 /** V E C T O R  R E M A P P I N G *******************************************/
 
@@ -180,10 +171,12 @@ void i2cservice(void)
                     command = tmpdata;
                     checksum = crc8(checksum^command);
                     datacount = commands[command].bytestoreadin;
+                    datapos =0;
 
                     if(datacount == 0){ //Special case of pure commands (getdips etc)
                         commands[command].docmd(data); //data not used
-                        state == WAIT;
+                        state = WAIT;
+                        break;
                     }
                     state=GOTCOMMAND;
                     break;
@@ -212,10 +205,31 @@ void i2cservice(void)
     return;
 }
 
+void identify(u8 *data){
+	return;
+	}	
 void setled(u8 *data){
     //SET the top 4 MSD bits of port D to data
     PORTD = *data << 4;
 }	
+
+
+
+void checkusb(u8 *data){
+	return;
+	}
+void getv(u8 *data){
+	return;
+	}
+void geti(u8 *data){
+	return;
+	}
+void getdip(u8 *data){
+	return;
+	}
+void setrails(u8 *data){
+	return;
+	}
 
 /******************************************************************************
  * Function:        static void InitializeSystem(void)
