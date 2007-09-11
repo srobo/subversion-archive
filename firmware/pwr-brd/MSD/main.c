@@ -116,30 +116,13 @@ void _reset (void)
 void main(void)
 {
     InitializeSystem();
-    /*u8 loader;
-    u8 tmp;
-    
-     mputcharUSART(0xFF);
-    loader = 0xAA;
-    tmp = crc8((u16)loader << 8);
-    mputcharUSART(tmp);
-    flush_usart_send();
-
-    tmp = crc8((tmp ^ ((u16)0x0b)) << 8);
-    mputcharUSART(tmp);
-
-    tmp = crc8((tmp ^ ((u16)0x06)) << 8);
-    mputcharUSART(tmp);
-    flush_usart_send();
-    
-    while(1);*/
 
     while(1)
 	    {
 	    	manage_usart();		
-	     	//USBTasks();         // USB Tasks
+	     	USBTasks();         // USB Tasks
 	        i2cservice();
-	        //ProcessIO();        // See msd.c & msd.h
+	        ProcessIO();        // See msd.c & msd.h
 	    } //end while
 }//end main
 
@@ -187,7 +170,6 @@ void i2cservice(void)
 	u8 tmpdata;
 	
 	if (PIR1bits.SSPIF){
-		mputcharUSART(0xFE);
 		tmpdata = SSPBUF;
 		PIR1bits.SSPIF = 0;
 		if(!SSPSTATbits.D_A) // if get start bit, drop everything and start again 
@@ -197,20 +179,12 @@ void i2cservice(void)
 			state = GOTADDRESS;
 			adddump = tmpdata;
 			checksum = crc8((u16)adddump<<8);
-			mputcharUSART(0x01);
-			mputcharUSART(SSPSTAT);
-			mputcharUSART(adddump);
-			mputcharUSART(checksum);
 		} else {
 			switch(state){
 				case GOTADDRESS:
 					state=GOTCOMMAND;
 					command = tmpdata;
-					mputcharUSART(0x99);
-					mputcharUSART(command);
-					checksum = crc8((u16)(checksum^command)<<8);
-					mputcharUSART(checksum);
-						
+					checksum = crc8((u16)(checksum^command)<<8);						
 					switch (command)
 					{
 						case SETLED:
@@ -220,26 +194,17 @@ void i2cservice(void)
 							datacount = 5;
 					}
 					datapos = datacount;		
-					mputcharUSART(0x02);
 					break;
 				case GOTCOMMAND:
 					data[datacount-datapos] = tmpdata; // start entering data at start of array
 					checksum = crc8((u16)(checksum^data[datacount-datapos])<<8);
-					mputcharUSART(checksum);
-					datapos--;	
-					mputcharUSART(datapos+1); // :)
-						
+					datapos--;							
 					if(datapos == 0)
 						state = GOTDATA;
-					mputcharUSART(0x03);
 					break;
 				case GOTDATA:
-					mputcharUSART(0x04);
-					mputcharUSART(tmpdata);
-					mputcharUSART(checksum);
 					if (tmpdata == checksum) 
 					{
-						mputcharUSART(0x05);
 						docmd(command, data);
 						i2cstatus = GOOD; 
 					}
@@ -336,6 +301,13 @@ static void InitializeSystem(void)
 
 	SSPADD=0x55<<1; //55 used in slug software
 //	clear sm flags;....
+
+// -------current sence set up---------------------
+
+	TRISBbits.TRISB3=0;	TRISBbits.TRISB2=0;
+	PORTBbits.RB3 = 1;
+	PORTBbits.RB2 = 1;
+	
 
 
 
