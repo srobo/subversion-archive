@@ -97,7 +97,7 @@ uint8_t i2c_smbus_pec(uint8_t crc, uint16_t count, uint8_t *message){
 // I2C State Machine
 //******************************************************************************
 inline void isr_usi (void){
-  if (USICTL1 & USISTTIFG)             // Start entry?
+  if (USICTL1 & USISTTIFG && !state_prepfor_rx_data)// goto start if new com, but dont if its just restarting
   {
     I2C_State = state_prepfor_rx_address;
   }
@@ -193,11 +193,12 @@ inline void isr_usi (void){
 		I2C_State = state_prepforack_tx_data;// Go to next state: receive (N)Ack
 		break;
 		
-	case state_prepforack_tx_data:
+	case state_prepforack_tx_data: 
 		USICTL0 &= ~USIOE;       // SDA = input
 		USICNT |= 0x01;          // Bit counter = 1, receive (N)Ack
 		I2C_State = state_checkack_tx_data;          // Go to next state: check (N)Ack
 		break;
+	//after this i need to check for the NACK but also readyu the machine for more data...
 		
 	case state_checkack_tx_data:// Process Data Ack/NAck
 		if (USISRL & 0x01){       // If Nack received...
@@ -234,7 +235,11 @@ char smbus_parse(char command){
 			//send identifier back to master
 			i2c_data[0]=(IDENTIFIER & 0xFF);
 			i2c_data[1]=(IDENTIFIER>>8) & 0xFF);
-			i2c_data[2]= PEC
+			i2c_data[2]= i2c_smbus_pec(PEC, 2, i2c_data);
+			//set statemachine variables
+			i2c_data_number = 3;
+			i2c_session_complete = 0;
+			state = state_prepfor_rx_data;
 			break;
 		case 1: //get servo position from master
 			state = state_prepfor_rx_data;
