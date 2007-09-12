@@ -207,7 +207,6 @@ void i2cservice(void)
         if(!SSPSTATbits.D_A) //It's an address byte
         {
             i2cstatus = BAD; //This is to check abandoned machines later
-            datapos = 0;
             adddump = SSPBUF;
         	PIR1bits.SSPIF = 0;
             if (!SSPSTATbits.R_W) //About to receive something from the slug
@@ -215,6 +214,7 @@ void i2cservice(void)
 	            datacount = 0;
 	            state = GOTADDRESSREAD;
 	            checksum = crc8(adddump);
+	            datapos = 0;
 	            mputcharUSART('R');
             }
             else //Being asked to send stuff to the slug
@@ -222,13 +222,17 @@ void i2cservice(void)
 	           	datacount = commands[command].bytestoreadout;
 	           	checksum = crc8(checksum^(adddump));
 	           	
+	           	//Clock stretching is currently in effect
+	           	//Can have a bit of time to generate data, so do it now
+	           	commands[command].docmd(data); //Data filled up ready to send to slug (Maybe)
+	           	
 	           	state = GOTADDRESSWRITE;
-	        	//NOW SEND THE FIRST BYTE YOU TOOLS
+	        	
 	       		mputcharUSART('W');
-	       		SSPBUF = data[datapos];
-	            SSPCON1bits.CKP = 1;
-	            checksum = crc8(checksum^data[datapos]);
-	            datapos++;
+	       		SSPBUF = data[0];
+	            SSPCON1bits.CKP = 1; //Disable the clock stretching
+	            checksum = crc8(checksum^data[0]);
+	            datapos = 1;
 	      	}
         } else {
             switch(state){
@@ -240,7 +244,8 @@ void i2cservice(void)
                     datacount = commands[command].bytestoreadin;
 
                     if(datacount == 0){ //Special case of pure commands (getdips etc)
-                        commands[command].docmd(data); //Data filled up ready to send to slug (Maybe)
+	                    //Will call the function to generate data whilst the clock stretch
+	                    //is in effect
                         state = WAIT;
                         break;
                     }
