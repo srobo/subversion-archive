@@ -71,6 +71,11 @@ int bcount;
 char outstr[10];
 char dump2;
 char i2cstatus = BAD;
+int voltage = 0;// local variables holding results of adc
+int current = 0;
+char usbflag=0; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
+char usbdataused=0;// set by usb code, cleared by i2c code
+char usbbuf[32];
 
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
@@ -82,6 +87,7 @@ u8 i2c_smbus_pec(u8 crc, u8 *p, u8 count);
 u8 crc8(u8 tmpdata);
 void docmd(u8 command, u8 *data);
 void swin(void);
+void adcserv(void);
 
 void identify(u8 *data);
 void setled(u8 *data);
@@ -90,15 +96,24 @@ void getv(u8 *data);
 void geti(u8 *data);
 void getdip(u8 *data);
 void setrails(u8 *data);
-/** V E C T O R  R E M A P P I N G *******************************************/
+void getrails(u8 *data);
+void sendser(u8 *data);
+void getusbbuf(u8 *data);
+void setusbbuf(u8 *data);
 
+/** V E C T O R  R E M A P P I N G *******************************************/
+//						{bytes in, bytesout, function name}
 t_command commands[] = {{0, 1,*identify},
                         {1, 0,*setled},
                         {0, 1,*checkusb},
                         {0, 2,*getv},
                         {0, 2,*geti},
                         {0, 1,*getdip},
-                        {1, 0,*setrails}};
+                        {1, 0,*setrails},
+	                    {0, 1,*getrails},
+		                {32,0,*getusbbuf},
+			            {32,0,*setusbbuf},
+		                {32,0,*sendser}};
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
 #pragma code _RESET_INTERRUPT_VECTOR = 0x000020
@@ -135,12 +150,36 @@ void main(void)
         manage_usart();		
         USBTasks();         // USB Tasks
         i2cservice();
-        poo = SSPSTAT;
-        PORTD= ((poo<<2)&0xF0);
         ProcessIO();        // See msd.c & msd.h
         //swin();
+        adcserv();
     } //end while
 }//end main
+
+void adcserv(void)
+{
+	if (!BusyADC())
+	{
+		if(ADCON0bits.CHS0)
+		{
+			voltage = ReadADC();
+			SetChanADC(ADC_CH1);
+			ConvertADC();
+		}
+		else
+		{
+			current = ReadADC();
+			SetChanADC(ADC_CH0);
+			ConvertADC();
+		}
+	}
+        
+       
+    return;
+        //itoa(ReadADC(),&outstr);
+        //strcount =0;
+        //while(outstr[strcount]!= 0 ) mputcharUSART(outstr[(strcount++)]);   
+}
 
 void i2cservice(void)
 {
@@ -261,6 +300,7 @@ void i2cservice(void)
 }
 
 void identify(u8 *data){
+	data[0]='I'; // maby read from EE later?
 	return;
 	}	
 void setled(u8 *data){
@@ -269,21 +309,56 @@ void setled(u8 *data){
 }
 
 void checkusb(u8 *data){
+	data[0]=usbflag;
 	return;
 	}
 void getv(u8 *data){
+	data[0]= (u8)(voltage&0x00FF);
+	data[1]= (u8)((voltage&0xFF00)>>4);
 	return;
 	}
 void geti(u8 *data){
+	data[0]= (u8)(current&0x00FF);
+	data[1]= (u8)((current&0xFF00)>>4);
 	return;
 	}
 void getdip(u8 *data){
 	data[0]=PORTD&0x0F;
 	return;
 	}
+	
 void setrails(u8 *data){
+	PORTE= data[0]&0x07;
+	PORTB= (PORTB&(~0x18))|(data[0]&0x18);
 	return;
 	}
+void getrails(u8 *data){
+	data[0]= (PORTE&0x07)|(PORTB&0x18);
+	return;
+	}
+void sendser(u8 *data){
+	char strcount =0; // send string to ring buffer untill null.
+	while(data[strcount]!= 0 ) mputcharUSART(data[(strcount++)]); 
+	return;
+	}
+void getusbbuf(u8 *data)
+{
+	char loopcount;
+	for (loopcount=0;loopcount<32;loopcount++)
+	{
+		data[loopcount]=usbbuf[loopcount];
+	}
+	usbdataused=0;
+}
+void setusbbuf(u8 *data)
+{
+	char loopcount;
+	for (loopcount=0;loopcount<32;loopcount++)
+	{
+		usbbuf[loopcount]=data[loopcount];
+	}
+	usbdataused=0;	
+}		
 
 /******************************************************************************
  * Function:        static void InitializeSystem(void)
@@ -439,25 +514,6 @@ void swin(void)
     char strcount;
     if (PORTD&0x01)// switch nearest usb socket
     {
-        mputcharUSART(10);
-        mputcharUSART(13);
-        SetChanADC(ADC_CH0);
-        ConvertADC();
-        while(BusyADC());
-        itoa(ReadADC(),&outstr);
-
-        strcount =0;
-        while(outstr[strcount]!= 0 ) mputcharUSART(outstr[(strcount++)]);
-
-        //putsUSART(outstr);
-        mputcharUSART(' ');
-        SetChanADC(ADC_CH1);
-        ConvertADC();
-        while(BusyADC());
-        itoa(ReadADC(),&outstr);
-        strcount =0;
-        while(outstr[strcount]!= 0 ) mputcharUSART(outstr[(strcount++)]);
-        delay(1);
     }
 
     return(0);
