@@ -30,7 +30,7 @@ static u8 i2c_smbus_pec(u8 crc, u8 *p, size_t count)
 
 
 int main(int argc, char **argv){
-    u8 tmp[] = {0xAA, 0x03, 0x56};
+    u8 tmp[] = {0xAA, 0x0b, 0x06};
     u8 moo;
     moo = i2c_smbus_pec(0, tmp, 3);
     printf("%x\n", moo);
