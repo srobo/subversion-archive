@@ -71,8 +71,8 @@ int bcount;
 char outstr[10];
 char dump2;
 char i2cstatus = BAD;
-int voltage = 0;// local variables holding results of adc
-int current = 0;
+int voltage = 0x5555;// local variables holding results of adc
+int current = 0xAAAA;
 char usbflag=0; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
 char usbdataused=0;// set by usb code, cleared by i2c code
 char usbbuf[32];
@@ -103,17 +103,17 @@ void setusbbuf(u8 *data);
 
 /** V E C T O R  R E M A P P I N G *******************************************/
 //						{bytes in, bytesout, function name}
-t_command commands[] = {{0, 1,*identify},
+t_command commands[] = {{0, 1,*identify}, //0
                         {1, 0,*setled},
-                        {0, 1,*checkusb},
+                        {0, 1,*checkusb},//2
                         {0, 2,*getv},
-                        {0, 2,*geti},
+                        {0, 2,*geti},//4
                         {0, 1,*getdip},
-                        {1, 0,*setrails},
+                        {1, 0,*setrails},//6
 	                    {0, 1,*getrails},
-		                {32,0,*getusbbuf},
+		                {0,32,*getusbbuf},//8
 			            {32,0,*setusbbuf},
-		                {32,0,*sendser}};
+		                {32,0,*sendser}};//10
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
 #pragma code _RESET_INTERRUPT_VECTOR = 0x000020
@@ -160,11 +160,15 @@ void adcserv(void)
 {
 	if (!BusyADC())
 	{
-		if(ADCON0bits.CHS0)
+		
+		
+		if(!ADCON0bits.CHS0)
 		{
+			PORTD=~PORTD;
 			voltage = ReadADC();
 			SetChanADC(ADC_CH1);
 			ConvertADC();
+			
 		}
 		else
 		{
@@ -319,12 +323,12 @@ void checkusb(u8 *data){
 	}
 void getv(u8 *data){
 	data[0]= (u8)(voltage&0x00FF);
-	data[1]= (u8)((voltage&0xFF00)>>4);
+	data[1]= (u8)((voltage&0xFF00)>>8);
 	return;
 	}
 void geti(u8 *data){
 	data[0]= (u8)(current&0x00FF);
-	data[1]= (u8)((current&0xFF00)>>4);
+	data[1]= (u8)((current&0xFF00)>>8);
 	return;
 	}
 void getdip(u8 *data){
@@ -339,11 +343,6 @@ void setrails(u8 *data){
 	}
 void getrails(u8 *data){
 	data[0]= (PORTE&0x07)|(PORTB&0x18);
-	return;
-	}
-void sendser(u8 *data){
-	char strcount =0; // send string to ring buffer untill null.
-	while(data[strcount]!= 0 ) mputcharUSART(data[(strcount++)]); 
 	return;
 	}
 void getusbbuf(u8 *data)
@@ -365,6 +364,11 @@ void setusbbuf(u8 *data)
 	usbdataused=0;	
 }		
 
+void sendser(u8 *data){
+	char strcount =0; // send string to ring buffer untill null.
+	while(data[strcount]!= 0 ) mputcharUSART(data[(strcount++)]); 
+	return;
+	}
 /******************************************************************************
  * Function:        static void InitializeSystem(void)
  *
@@ -431,6 +435,10 @@ static void InitializeSystem(void)
             ADC_VREFPLUS_VDD &
             ADC_VREFMINUS_VSS
             , 0x0D );// this is to A/D pins ref from rails
+            
+            // have to start the viscious circle
+            SetChanADC(ADC_CH0);
+			ConvertADC();
 
     //----I2C setup ---------
 
@@ -458,7 +466,8 @@ static void InitializeSystem(void)
     //SSPCON1bits.SSPOV; //Receive overflow indicator
     //SSPCON1bits.WCOL; //Write collision detect bit
 
-    SSPADD=0x55<<1; //55 used in slug software
+    //SSPADD=0x55<<1; //55 used in slug software
+    SSPADD=0x3f<<1;
     //	clear sm flags;....
 
     // -------current sence set up---------------------
