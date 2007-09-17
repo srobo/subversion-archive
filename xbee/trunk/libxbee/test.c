@@ -13,12 +13,10 @@ void rx_data (uint8_t * data, uint16_t len, xbee_conn_info_t *info);
 void config_options (int argc, char **argv);
 
 static gchar *socket = NULL,
-//	*address = NULL,
-//	*channel = NULL,
 	*receive = NULL,
 	*transmit = NULL;
-static int8_t channel = -1;
-static int16_t address = -1;
+static int channel;// = 1;
+static int address;// = 0xA9;
 
 
 static GOptionEntry entries[] = 
@@ -48,7 +46,7 @@ int main( int argc, char** argv )
 	g_type_init ();
 
 	xbc = xbee_conn_new (socket, context);
-	xbee_conn_set_channel (xbc, 0);
+	xbee_conn_set_channel (xbc, 1);
 
 			if (receive != NULL)
 			{
@@ -163,6 +161,5 @@ void config_options ( int argc, char **argv )
 		g_print ("No mode specified\n");
 		exit (1);
 	}
-
 
 }
