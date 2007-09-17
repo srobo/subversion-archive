@@ -199,7 +199,7 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 			case XBEE_COMMAND_SET_CHANNEL:
 			{
 				/* Xbee Command Set Client layout 
-				   0: Command Code: XBEE_COMMAND_SET_CLIENT
+				   0: Command Code: XBEE_CONN_RX_CHANNEL
 				   1: Requested Listen Channel*/
 				
 				int16_t channel;				
@@ -211,19 +211,19 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				case 0:
 				{
 					fprintf (stderr, "Invalid Channel Number Requested\n");
-					channel = -1;
+					return FALSE;
 					break;
 				}
 				case -1:
 				{
 					fprintf (stderr, "Requested Channel is unavailable\n");
-					channel = -1;
+					return FALSE;
 					break;
 				}
 				case -2:
 				{
 					fprintf (stderr, "No Free Channels\n");
-					channel = -1;
+					return FALSE;
 					break;
 				}
 				default:
@@ -242,8 +242,8 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				
 				assert (data != NULL && frame != NULL);
 				
-				data[0] = XBEE_CONN_RECEIVE_TXDATA;
-				data[1] = channel;
+				data[0] = XBEE_CONN_RX_CHANNEL;
+				data[1] = (uint8_t)(channel & 0xFF);
 				frame->len = 2;
 				
 				g_queue_push_head ( client->out_frames, frame );
@@ -445,8 +445,10 @@ static int xbee_client_write_frame ( XbeeClient *client )
 	
 	g_queue_pop_tail ( client->out_frames );
 
-	g_free (frame->data);
-	g_free (frame);
+//	g_free (frame->data);
+//	g_free (frame);
+
+	fprintf (stderr, "Leaving write, length is  : %u\n", frame->len);
 
 	client->outpos = 0;
 	//g_debug ("Client: Frame written");

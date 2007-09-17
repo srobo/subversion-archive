@@ -231,6 +231,8 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 			
 		}
 
+		conn->flen = 0;
+
 	}
 	return TRUE;
 }
@@ -373,7 +375,7 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 		{
 			//b = read (conn->fd, &conn->inbuf[conn->inpos - 2], conn->flen + 2 - conn->inpos);
 			/* Check the plus two on the end ! */
-			b = read (conn->fd, &conn->inbuf[conn->inpos - 2], conn->flen + 2 - conn->inpos);
+			b = read (conn->fd, &conn->inbuf[conn->inpos], conn->flen + 2 - conn->inpos);
 		}
 
 		if (b == -1)
@@ -395,7 +397,7 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 
 			if (conn->flen + 2 > XBEE_MAX_FRAME)
 			{
-				fprintf (stderr, "Frame too long\n");
+				fprintf (stderr, "Frame too long: %u\n", conn->flen);
 				return -1;
 			}
 		}
@@ -424,8 +426,9 @@ void xbee_conn_set_channel ( XbeeConn *conn, uint8_t channel )
 	
 	uint8_t data[2];
 
+	fprintf (stderr, "Setting Channel: %d", channel);
 	data[0] = XBEE_COMMAND_SET_CHANNEL;
 	data[1] = channel;
 
-	xbee_conn_out_queue_add ( conn, data, 2 );
+	xbee_conn_out_queue_add ( conn, &data[0], 2 );
 }
