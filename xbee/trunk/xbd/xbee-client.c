@@ -356,34 +356,36 @@ void xbee_client_transmit ( XbeeClient *client, uint8_t *data, xb_rx_info_t *inf
 	
 	if (info->src_addr.type == XB_ADDR_16)
 	{
-		frame->data = (uint8_t*) g_malloc ( (len + 8) * sizeof (uint8_t) );
-		g_memmove ( &frame->data[0], &info->src_addr.type, 1);
-		g_memmove ( &frame->data[1], &info->src_addr.addr, 2);
-		g_memmove ( &frame->data[3], &info->rssi, 1);
+		frame->data = (uint8_t*) g_malloc ( (len + 9) * sizeof (uint8_t) );
+		frame->data[0] = XBEE_CONN_RECEIVE_TXDATA;	       
+		g_memmove ( &frame->data[1], &info->src_addr.type, 1);
+		g_memmove ( &frame->data[2], &info->src_addr.addr, 2);
+		g_memmove ( &frame->data[4], &info->rssi, 1);
 		broadcast = (info->pan_broadcast) ? 1 : 0;
-		g_memmove ( &frame->data[4], &broadcast, 1);
-		broadcast = info->address_broadcast ? 1 : 0;
 		g_memmove ( &frame->data[5], &broadcast, 1);
-		frame->data[6] = info->src_channel;
-		frame->data[7] = info->dst_channel;
-		g_memmove ( &frame->data[8], data, len );
+		broadcast = info->address_broadcast ? 1 : 0;
+		g_memmove ( &frame->data[6], &broadcast, 1);
+		frame->data[7] = info->src_channel;
+		frame->data[8] = info->dst_channel;
+		g_memmove ( &frame->data[9], data, len );
 
-		len = len + 8;
+		len = len + 9;
 	}
 	else
 	{
-		frame->data = (uint8_t*) g_malloc ( (len + 14) * sizeof (uint8_t) );
-		g_memmove ( &frame->data[0], &info->src_addr.type, 1);
-		g_memmove ( &frame->data[1], &info->src_addr.addr, 8);
-		g_memmove ( &frame->data[9], &info->rssi, 1);
+		frame->data = (uint8_t*) g_malloc ( (len + 15) * sizeof (uint8_t) );
+		frame->data[0] = XBEE_CONN_RECEIVE_TXDATA;
+		g_memmove ( &frame->data[1], &info->src_addr.type, 1);
+		g_memmove ( &frame->data[2], &info->src_addr.addr, 8);
+		g_memmove ( &frame->data[10], &info->rssi, 1);
 		broadcast = (info->pan_broadcast) ? 1 : 0;
-		g_memmove ( &frame->data[10], &broadcast, 1);
-		broadcast = info->address_broadcast ? 1 : 0;
 		g_memmove ( &frame->data[11], &broadcast, 1);
-		frame->data[12] = info->src_channel;
-		frame->data[13] = info->dst_channel;
-		g_memmove ( &frame->data[14], data, len);
-		len = len + 14;
+		broadcast = info->address_broadcast ? 1 : 0;
+		g_memmove ( &frame->data[12], &broadcast, 1);
+		frame->data[13] = info->src_channel;
+		frame->data[14] = info->dst_channel;
+		g_memmove ( &frame->data[15], data, len);
+		len = len + 15;
 	}
 
 	frame->len = len;

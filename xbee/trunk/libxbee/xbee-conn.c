@@ -203,28 +203,28 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 			}
 			case XBEE_CONN_RECEIVE_TXDATA:
 			{
-				info.src_addr.type = conn->inbuf[0];
+				info.src_addr.type = data[1];
 				if (info.src_addr.type == XB_ADDR_16)
 				{
-					memmove (info.src_addr.addr, &conn->inbuf[1], 2);
-					info.rssi = conn->inbuf[3];
-					info.pan_broadcast = conn->inbuf[4] ? TRUE : FALSE;
-					info.address_broadcast = conn->inbuf[5] ? TRUE : FALSE;
-					info.src_channel = conn->inbuf[6];
-					info.dst_channel = conn->inbuf[7];
-					conn->flen = conn->flen - 8;
-					conn->callbacks.rx_frame (&conn->inbuf[8], conn->flen, &info);
+					memmove (info.src_addr.addr, &data[2], 2);
+					info.rssi = data[4];
+					info.pan_broadcast = data[5] ? TRUE : FALSE;
+					info.address_broadcast = data[6] ? TRUE : FALSE;
+					info.src_channel = data[7];
+					info.dst_channel = data[8];
+					conn->flen = conn->flen - 9;
+					conn->callbacks.rx_frame (&data[9], conn->flen, &info);
 				}
 				else
 				{	
-					memmove (info.src_addr.addr, &conn->inbuf[1], 8);
-					info.rssi = conn->inbuf[9];
-					info.pan_broadcast = conn->inbuf[10] ? TRUE : FALSE;
-					info.address_broadcast = conn->inbuf[11] ? TRUE : FALSE;
-					info.src_channel = conn->inbuf[12];
-					info.dst_channel = conn->inbuf[13];
-					conn->flen = conn->flen - 14;
-					conn->callbacks.rx_frame (&conn->inbuf[14], conn->flen, &info);
+					memmove (info.src_addr.addr, &data[2], 8);
+					info.rssi = data[10];
+					info.pan_broadcast = data[11] ? TRUE : FALSE;
+					info.address_broadcast = data[12] ? TRUE : FALSE;
+					info.src_channel = data[13];
+					info.dst_channel = data[14];
+					conn->flen = conn->flen - 15;
+					conn->callbacks.rx_frame (&data[15], conn->flen, &info);
 				}
 			}
 			}
