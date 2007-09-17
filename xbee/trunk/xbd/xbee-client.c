@@ -204,7 +204,7 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				   2: LSB of channel request*/
 				
 				int16_t channel;				
-				channel = (int16_t)((f[1] << 8) | f[2]);
+				channel = (int16_t)(((int16_t)f[1] << 8) | (int16_t)f[2]);
 
 				channel = xbee_server_req_client_channel (client->server, client, channel);
 				

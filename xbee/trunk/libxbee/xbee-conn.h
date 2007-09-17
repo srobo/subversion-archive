@@ -92,7 +92,7 @@ struct xbee_conn_t
 	xb_conn_callbacks_t callbacks;
 
 	/* Client Channel Number */
-	uint8_t channel;
+	int16_t channel;
 
 };
 

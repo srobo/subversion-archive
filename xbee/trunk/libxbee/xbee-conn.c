@@ -197,7 +197,7 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 			{
 			case XBEE_CONN_RX_CHANNEL:
 			{
-				conn->channel = (int16_t)((data[1] << 8) | (data[2]));
+				conn->channel = (int16_t)(((int16_t)data[1] << 8) | ((int16_t)data[2]));
 				conn->callbacks.chan_set (conn->channel);
 				break;
 			}
