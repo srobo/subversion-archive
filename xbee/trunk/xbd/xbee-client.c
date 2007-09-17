@@ -200,11 +200,13 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 			{
 				/* Xbee Command Set Client layout 
 				   0: Command Code: XBEE_CONN_RX_CHANNEL
-				   1: Requested Listen Channel*/
+				   1: MSB of channel request
+				   2: LSB of channel request*/
 				
 				int16_t channel;				
+				channel = (int16_t)((f[1] << 8) | f[2]);
 
-				channel = xbee_server_req_client_channel (client->server, client, f[1]);
+				channel = xbee_server_req_client_channel (client->server, client, channel);
 				switch (channel)
 				{
 				
@@ -228,7 +230,7 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				}
 				default:
 				{
-					fprintf (stderr, "Channel Assigned: %d\n", channel);
+					fprintf (stderr, "Channel Assigned: %d\n", (uint8_t)(channel & 0xFF));
 					break;
 				}
 
@@ -244,6 +246,7 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				
 				data[0] = XBEE_CONN_RX_CHANNEL;
 				data[1] = (uint8_t)(channel & 0xFF);
+			      
 				frame->len = 2;
 				
 				g_queue_push_head ( client->out_frames, frame );

@@ -323,10 +323,10 @@ int16_t xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client,
 		{
 			for (i=1; i != 256; i++)
 			{
-				if (server->channels[channel] == NULL)
+				if (server->channels[i] == NULL)
 				{
-					server->channels[channel] = client;
-					return channel;
+					server->channels[i] = client;
+					return i;
 				}
 			}
 			return -2;

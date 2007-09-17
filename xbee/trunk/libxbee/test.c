@@ -47,20 +47,19 @@ int main( int argc, char** argv )
 
 	xbc = xbee_conn_new (socket, context);
 	
-	xbee_conn_set_channel (xbc, channel);
-
-			if (receive != NULL)
-			{
-				printf ("\nReceive mode activated:\n");
-				callbacks.rx_frame = &rx_data;
-				xbee_conn_register_callbacks (xbc, &callbacks);
-			}
-			else if (transmit != NULL)
-			{
-				printf ("\nBegin Transmit:\n");
-				g_timeout_add(3000, (GSourceFunc)tx, (gpointer)xbc);
-			}
-
+	if (receive != NULL)
+	{
+		xbee_conn_set_channel (xbc, channel);
+		printf ("\nReceive mode activated:\n");
+		callbacks.rx_frame = &rx_data;
+		xbee_conn_register_callbacks (xbc, &callbacks);
+	}
+	else if (transmit != NULL)
+	{
+		printf ("\nBegin Transmit on channel: %u\n", channel);
+		g_timeout_add(3000, (GSourceFunc)tx, (gpointer)xbc);
+	}
+	
 	g_main_loop_run( ml );
 
 	return 0;
@@ -76,7 +75,7 @@ gboolean tx( XbeeConn *xbc)
 		};
 	assert( xbc != NULL );
 
-	xbee_conn_transmit( xbc, addr, data, 11, channel );
+	xbee_conn_transmit( xbc, addr, data, 11, (uint8_t)(channel & 0xFF));
 	
 	return TRUE;
 }
@@ -163,7 +162,7 @@ void config_options ( int argc, char **argv )
 		exit (1);
 	}
 
-	if (receive != NULL && (channel <= 0))
+	if (receive != NULL && (channel <= 0 && channel != -1))
 	{
 		g_print ("No Listening Channel Specified\n");
 		exit (1);
