@@ -192,7 +192,7 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 
 		if (ret_val == 1)
 		{
-			uint8_t *data = &conn->inbuf[0];
+			uint8_t *data = &conn->inbuf[2];
 			xbee_conn_info_t info;
 			
 			fprintf (stderr, "Switch for conn is: %d\n", data[0]);
@@ -377,7 +377,7 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 		}
 		else
 		{
-			b = read (conn->fd, &conn->inbuf[conn->inpos - 2], conn->flen + 2 - conn->inpos);
+			b = read (conn->fd, &conn->inbuf[conn->inpos], conn->flen + 2 - conn->inpos);
 		}
 
 		if (b == -1)

@@ -84,7 +84,7 @@ struct xbee_conn_t
 
 	uint16_t inpos;
 
-	//Input buffer for data, does NOT contain frame length prefix
+	//Input buffer for data, contains frame length prefix
 	uint8_t inbuf [ XBEE_MAX_FRAME ];
 
 	uint16_t flen;
