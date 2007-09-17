@@ -11,6 +11,7 @@ gboolean tx( XbeeConn *xbc );
 void xbtest ( XbeeConn *xbc );
 void rx_data (uint8_t * data, uint16_t len, xbee_conn_info_t *info);
 void config_options (int argc, char **argv);
+void receive_chan (int16_t channel);
 
 static gchar *socket = NULL,
 	*receive = NULL,
@@ -49,9 +50,10 @@ int main( int argc, char** argv )
 	
 	if (receive != NULL)
 	{
-		xbee_conn_set_channel (xbc, channel);
 		printf ("\nReceive mode activated:\n");
 		callbacks.rx_frame = &rx_data;
+		callbacks.chan_set = &receive_chan;
+		xbee_conn_set_channel (xbc, channel);
 		xbee_conn_register_callbacks (xbc, &callbacks);
 	}
 	else if (transmit != NULL)
@@ -170,4 +172,34 @@ void config_options ( int argc, char **argv )
 
 	
 
+}
+
+void receive_chan (int16_t channel)
+{
+	
+	switch (channel)
+	{
+		
+	case 0:
+	{
+		fprintf (stderr, "Invalid Channel Number Requested\n");
+		break;
+	}
+	case -1:
+	{
+		fprintf (stderr, "Requested Channel is unavailable\n");
+		break;
+	}
+	case -2:
+	{
+		fprintf (stderr, "No Free Channels\n");
+		break;
+	}
+	default:
+	{
+		fprintf (stderr, "Channel Assigned: %d\n", (uint8_t)(channel & 0xFF));
+		break;
+	}
+	
+	}
 }

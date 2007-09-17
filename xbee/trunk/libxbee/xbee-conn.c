@@ -181,6 +181,8 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 {
 	assert ( conn != NULL );
 	int ret_val = 1;
+
+	fprintf (stderr, "Conn: Frame incoming\n");
 		
 	while ( ret_val == 1 )
 	{
@@ -190,16 +192,17 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 
 		if (ret_val == 1)
 		{
-
-			uint8_t *data = &conn->inbuf[2];
+			uint8_t *data = &conn->inbuf[0];
 			xbee_conn_info_t info;
+			
+			fprintf (stderr, "Switch for conn is: %d\n", data[0]);
 			
 			switch (data[0])
 			{
 			case XBEE_CONN_RX_CHANNEL:
 			{
 				conn->channel = (int16_t)((data[1] << 8) | (data[2]));
-				fprintf (stderr, "Channel Request Response: %d\n", conn->channel);
+				conn->callbacks.chan_set (conn->channel);
 				break;
 			}
 			case XBEE_CONN_RECEIVE_TXDATA:
@@ -374,9 +377,7 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 		}
 		else
 		{
-			//b = read (conn->fd, &conn->inbuf[conn->inpos - 2], conn->flen + 2 - conn->inpos);
-			/* Check the plus two on the end ! */
-			b = read (conn->fd, &conn->inbuf[conn->inpos], conn->flen + 2 - conn->inpos);
+			b = read (conn->fd, &conn->inbuf[conn->inpos - 2], conn->flen + 2 - conn->inpos);
 		}
 
 		if (b == -1)

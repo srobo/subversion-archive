@@ -64,6 +64,7 @@ typedef struct
 typedef struct
 {
 	void (*rx_frame) (uint8_t *data, uint16_t len, xbee_conn_info_t *info);
+	void (*chan_set) (int16_t channel);
 } xb_conn_callbacks_t;
 
 struct xbee_conn_t
@@ -82,6 +83,8 @@ struct xbee_conn_t
 	int outpos;	
 
 	uint16_t inpos;
+
+	//Input buffer for data, does NOT contain frame length prefix
 	uint8_t inbuf [ XBEE_MAX_FRAME ];
 
 	uint16_t flen;

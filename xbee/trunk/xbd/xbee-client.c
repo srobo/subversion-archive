@@ -207,51 +207,22 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				channel = (int16_t)((f[1] << 8) | f[2]);
 
 				channel = xbee_server_req_client_channel (client->server, client, channel);
-
-/*
-				switch (channel)
-				{
-				
-				case 0:
-				{
-					fprintf (stderr, "Invalid Channel Number Requested\n");
-					return FALSE;
-					break;
-				}
-				case -1:
-				{
-					fprintf (stderr, "Requested Channel is unavailable\n");
-					return FALSE;
-					break;
-				}
-				case -2:
-				{
-					fprintf (stderr, "No Free Channels\n");
-					return FALSE;
-					break;
-				}
-				default:
-				{
-					fprintf (stderr, "Channel Assigned: %d\n", (uint8_t)(channel & 0xFF));
-					break;
-				}
-
-				}*/
 				
 				xb_frame_t *frame;
-				uint8_t *data;
 
 				frame = (xb_frame_t*)g_malloc(sizeof(xb_frame_t));
-				data = (uint8_t*)g_malloc(sizeof(uint8_t) * 3);
+				frame->data = (uint8_t*)g_malloc(sizeof(uint8_t) * 3);
 				
-				assert (data != NULL && frame != NULL);
+				assert (frame->data != NULL && frame != NULL);
 				
-				data[0] = XBEE_CONN_RX_CHANNEL;
-				data[1] = (channel >> 8) & 0xFF;
-				data[2] = (channel & 0xFF);
+				frame->data[0] = XBEE_CONN_RX_CHANNEL;
+				frame->data[1] = (channel >> 8) & 0xFF;
+				frame->data[2] = (channel & 0xFF);
 				frame->len = 3;
 				
+				fprintf (stderr, "Pushing Channel to queue\n");
 				g_queue_push_head ( client->out_frames, frame );
+				xbee_fd_source_data_ready ( client->source );
 
 			}
 			
@@ -454,8 +425,6 @@ static int xbee_client_write_frame ( XbeeClient *client )
 
 //	g_free (frame->data);
 //	g_free (frame);
-
-	fprintf (stderr, "Leaving write, length is  : %u\n", frame->len);
 
 	client->outpos = 0;
 	//g_debug ("Client: Frame written");
