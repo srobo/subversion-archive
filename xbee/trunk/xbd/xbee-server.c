@@ -301,36 +301,28 @@ static void xbee_server_class_init( XbeeServerClass *klass )
 	gobject_class->finalize = xbee_server_finalize;	
 }
 
-gboolean xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client, uint8_t channel )
+int16_t xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client, uint8_t channel )
 {
+
+	int16_t i;
 	
 	assert (server != NULL && client != NULL);
 	
-	if (server->channels [ channel] == NULL)
+	if (server->channels [channel] == NULL)
 	{
 		server->channels [channel] = client;
-		return TRUE;
+		return channel;	
 	}
 	else
-		return FALSE;
-
-}
-
-int16_t xbee_server_assign_channel ( XbeeServer *server, XbeeClient *client )
-{	
-	int16_t i;
-
-	for (i=0; i<256; i++)
-	{
-		if (server->channels[i] == NULL)
+	{	
+		for (i=0; i<256; i++)
 		{
-			server->channels[i] = client;
-			return i;
+			if (server->channels[i] == NULL)
+			{
+				server->channels[i] = client;
+				return i;
+			}
 		}
+		return -1;	
 	}
-
-	return -1;	
-}
-
-	
-			
+}	

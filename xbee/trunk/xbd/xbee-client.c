@@ -202,8 +202,11 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				   0: Command Code: XBEE_COMMAND_SET_CLIENT
 				   1: Requested Listen Channel*/
 				
-				if (xbee_server_req_client_channel (client->server, client, f[1]))
+				if (xbee_server_req_client_channel (client->server, client, f[1]) > 0)
+				{
 					fprintf (stderr, "Channel Assigned Successfully\n");
+					/* Munge data back */
+				}
 				else
 					fprintf (stderr, "Failed to assigne channel\n");
 			}
