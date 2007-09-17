@@ -73,9 +73,12 @@ char dump2;
 char i2cstatus = BAD;
 int voltage = 0x5555;// local variables holding results of adc
 int current = 0xAAAA;
-char usbflag=0; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
+
+
+
+char usbflag=6; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
 char usbdataused=0;// set by usb code, cleared by i2c code
-char usbbuf[32];
+char usbbuf[32]={1,2,3,4,5,6,7};
 
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
@@ -103,17 +106,17 @@ void setusbbuf(u8 *data);
 
 /** V E C T O R  R E M A P P I N G *******************************************/
 //						{bytes in, bytesout, function name}
-t_command commands[] = {{0, 1,*identify}, //0
-                        {1, 0,*setled},
-                        {0, 1,*checkusb},//2
-                        {0, 2,*getv},
-                        {0, 2,*geti},//4
-                        {0, 1,*getdip},
-                        {1, 0,*setrails},//6
-	                    {0, 1,*getrails},
-		                {0,32,*getusbbuf},//8
-			            {32,0,*setusbbuf},
-		                {32,0,*sendser}};//10
+t_command commands[] = {{0, 1,identify}, //0
+                        {1, 0,setled},
+                        {0, 1,checkusb},//2
+                        {0, 2,getv},
+                        {0, 2,geti},//4
+                        {0, 1,getdip},
+                        {1, 0,setrails},//6
+	                    {0, 1,getrails},
+		                {0,1,getusbbuf},//8
+			            {1,0,setusbbuf},
+		                {1,0,sendser}};//10
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
 #pragma code _RESET_INTERRUPT_VECTOR = 0x000020
@@ -164,7 +167,7 @@ void adcserv(void)
 		
 		if(!ADCON0bits.CHS0)
 		{
-			PORTD=~PORTD;
+			//PORTD=~PORTD;
 			voltage = ReadADC();
 			SetChanADC(ADC_CH1);
 			ConvertADC();
@@ -207,7 +210,7 @@ void i2cservice(void)
     u8 tmpdata;
 
     if (PIR1bits.SSPIF){ 
-	    mputcharUSART('X');
+	    //mputcharUSART('X');
         if(!SSPSTATbits.D_A) //It's an address byte
         {
             i2cstatus = BAD; //This is to check abandoned machines later
@@ -219,7 +222,7 @@ void i2cservice(void)
 	            state = GOTADDRESSREAD;
 	            checksum = crc8(adddump);
 	            datapos = 0;
-	            mputcharUSART('R');
+	            //mputcharUSART('R');
             }
             else //Being asked to send stuff to the slug
            	{
@@ -232,7 +235,7 @@ void i2cservice(void)
 	           	
 	           	state = GOTADDRESSWRITE;
 	        	
-	       		mputcharUSART('W');
+	       		//mputcharUSART('W');
 	       		SSPBUF = data[0];
 	            SSPCON1bits.CKP = 1; //Disable the clock stretching
 	            checksum = crc8(checksum^data[0]);
@@ -256,7 +259,7 @@ void i2cservice(void)
                     state=GOTCOMMAND;
                     break;
 
-                case GOTCOMMAND:
+                case GOTCOMMAND:              
                     //Read in the data       
                     tmpdata = SSPBUF;
         			PIR1bits.SSPIF = 0;
@@ -282,9 +285,9 @@ void i2cservice(void)
         			PIR1bits.SSPIF = 0;
              		if (datapos<datacount)
              		{
-	             		mputcharUSART('e');
-	             		mputcharUSART('a'+datapos);
-	             		mputcharUSART('A' + data[datapos]);
+	             		//mputcharUSART('e');
+	             		//mputcharUSART('a'+datapos);
+	             		//mputcharUSART('A' + data[datapos]);
 	             		SSPBUF = data[datapos];
 	             		SSPCON1bits.CKP = 1;
 	             		checksum = crc8(checksum^data[datapos]);
@@ -292,7 +295,7 @@ void i2cservice(void)
 	             	}
 	             	else
 	             	{
-		             	mputcharUSART('s');
+		             	//mputcharUSART('s');
 		             	SSPBUF = checksum;
 		             	SSPCON1bits.CKP = 1;
 		             	state = SENTCHECKSUM;
@@ -313,12 +316,13 @@ void identify(u8 *data){
 	return;
 	}	
 void setled(u8 *data){
-    //SET the top 4 MSD bits of port D to data
-    return;//PORTD = *data << 4;
+    PORTD = (*data << 4)&0xf0;
+    return;
 }
 
 void checkusb(u8 *data){
 	data[0]=usbflag;
+	//read or write bit (7) set in msd code
 	return;
 	}
 void getv(u8 *data){
@@ -338,35 +342,38 @@ void getdip(u8 *data){
 	
 void setrails(u8 *data){
 	PORTE= data[0]&0x07;
-	PORTB= (PORTB&(~0x18))|(data[0]&0x18);
+	PORTB= (PORTB&(~0x18))|((data[0]>>1)&0x18);
 	return;
 	}
 void getrails(u8 *data){
-	data[0]= (PORTE&0x07)|(PORTB&0x18);
+	data[0]= (PORTE&0x07)|((PORTB&0x18)<<1);
 	return;
 	}
 void getusbbuf(u8 *data)
 {
 	char loopcount;
-	for (loopcount=0;loopcount<32;loopcount++)
+	for (loopcount=0;loopcount<usbflag;loopcount++)
 	{
 		data[loopcount]=usbbuf[loopcount];
 	}
-	usbdataused=0;
+	usbflag=0;
 }
 void setusbbuf(u8 *data)
 {
-	char loopcount;
-	for (loopcount=0;loopcount<32;loopcount++)
-	{
-		usbbuf[loopcount]=data[loopcount];
-	}
+	//char loopcount;
+	//for (loopcount=0;loopcount<32;loopcount++)
+	//{
+	//	usbbuf[loopcount]=data[loopcount];
+	//}
 	usbdataused=0;	
 }		
 
 void sendser(u8 *data){
-	char strcount =0; // send string to ring buffer untill null.
-	while(data[strcount]!= 0 ) mputcharUSART(data[(strcount++)]); 
+	//char strcount =0; // send string to ring buffer untill null.
+	//while(data[strcount]!= 0 ) mputcharUSART(data[(strcount++)]); 
+	//mputcharUSART(data[1]);
+	mputcharUSART(data[0]);
+	
 	return;
 	}
 /******************************************************************************
@@ -405,7 +412,9 @@ static void InitializeSystem(void)
     TRISE = 0;
     PORTE = 0b111; // turn all power rails on
     TRISD=0x0F;
-
+    
+	PORTD =0;
+	
     delay(20);
     PORTCbits.RC0=0;// blip slug
     delay(20);
