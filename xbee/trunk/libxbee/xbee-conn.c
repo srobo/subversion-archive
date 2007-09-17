@@ -182,8 +182,6 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 	assert ( conn != NULL );
 	int ret_val = 1;
 
-	fprintf (stderr, "Conn: Frame incoming\n");
-		
 	while ( ret_val == 1 )
 	{
 		ret_val = xbee_conn_read_whole_frame (conn);
@@ -194,8 +192,6 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 		{
 			uint8_t *data = &conn->inbuf[2];
 			xbee_conn_info_t info;
-			
-			fprintf (stderr, "Switch for conn is: %d\n", data[0]);
 			
 			switch (data[0])
 			{
@@ -428,7 +424,7 @@ void xbee_conn_set_channel ( XbeeConn *conn, int16_t channel )
 	
 	uint8_t data[3];
 
-	fprintf (stderr, "Setting Channel: %d", channel);
+	fprintf (stderr, "Requesting Channel: %d\n", channel);
 	data[0] = XBEE_COMMAND_SET_CHANNEL;
 	data[1] = (uint8_t)((channel >> 8) & 0xFF);
 	data[2] = (uint8_t)(channel & 0xFF);
