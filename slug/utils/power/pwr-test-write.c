@@ -33,7 +33,6 @@ void setpins( int fd, uint8_t val )
 }
 
 
-
 int main( int argc, char** argv )
 {
 	uint8_t d = POS0;

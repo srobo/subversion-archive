@@ -45,6 +45,18 @@ uint8_t readbyte(int fd, uint8_t cmd) {
     return 0xFF & tmp;
 }
 
+char setpins( int fd, uint8_t command, uint8_t val )
+{
+	uint16_t p;
+
+	if( i2c_smbus_write_byte_data( fd, command , val ) < 0 && err_enable )
+	  {
+		fprintf( stderr, "i2c failed: %m\n" );
+		return 1;
+	  }
+	return 0;
+}
+
 int main( int argc, char** argv )
 {
 	int fd;
@@ -74,14 +86,18 @@ int main( int argc, char** argv )
     }
 
 
-
+    char val = 0xa5;
 	while(1) 
 	  {
-        printf("Read dips as %x\n", readbyte(fd, 5));
-	printf("Read ID as %x\n", readbyte(fd, 0));
-	printf("Read rails as %x\n", readbyte(fd, 7));
-	printf("Read v as %x\n", readword(fd, 3));	
-	printf("Read I as %x\n", readword(fd, 4));
+	    
+	    //printf("Read dips as %x\n", readbyte(fd, 5));
+	    //printf("Read ID as %x\n", readbyte(fd, 0));
+	    //printf("Read rails as %x\n", readbyte(fd, 7));
+	    //printf("Read v as %x\n", readword(fd, 3));	
+	    //printf("Read I as %x\n", readword(fd, 4));	
+	    printf("setpins to %x returned %x\n",val,setpins(fd,1,val));
+	    val = ~val;
+	
         sleep(1);
 	  }
 	return 0;
