@@ -78,6 +78,10 @@ void xbee_server_transmit( XbeeServer* serv,
 			   uint8_t len );
 
 /*Request a channel for a client */
-int16_t xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client, uint8_t channel );
+/* Return Values: */
+/* -2 - No Available Channels */
+/* -1 - Requested Channel Unavailable */
+/*  0 - Invalid Channel Number Requested */
+int16_t xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client, int16_t channe );
 
 #endif	/* __XBEE_SERVER_H */

@@ -298,37 +298,41 @@ static void xbee_server_class_init( XbeeServerClass *klass )
 	gobject_class->finalize = xbee_server_finalize;	
 }
 
-int16_t xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client, uint8_t channel )
+int16_t xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client, int16_t channel )
 {
 
-	uint8_t i;
-       
+	uint16_t i;
+
 	assert (server != NULL && client != NULL);
-	
-	if (channel >= 1)
+
+	/* Assign Requested Channel */
+	if (channel >= 1 && channel <=255)
 	{
-		if (server->channels [channel] == NULL)
+		if (server->channels[channel] == NULL)
 		{
-			server->channels [channel] = client;
-			return channel;	
+			server->channels[channel] = client;
+			return channel;
 		}
 		else
-		{	
-			for (i=1; i<255; i++)
-			{
-				if (server->channels[i] == NULL)
-				{
-					server->channels[i] = client;
-					return i;
-				}
-			}
-			return -1;	
-		}
+			return -1;
 	}
 	else
 	{
-		/* Broadcast Mode */
-		return 0;
+		/* Assign any availableChannel */
+		if (channel == -1) 
+		{
+			for (i=1; i != 256; i++)
+			{
+				if (server->channels[channel] == NULL)
+				{
+					server->channels[channel] = client;
+					return channel;
+				}
+			}
+			return -2;
+		}
 	}
-
+	
+	/* Invalid Channel Number Requested */
+	return 0;
 }
