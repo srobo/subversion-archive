@@ -148,8 +148,6 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 
 	while( xbee_client_read_frame( client ) == 0 )
 	{
-		//g_debug( "xbee_client: Frame received.\n" );
-
 		if( client->flen > 0 )
 		{
 			uint8_t *f = &client->inbuf[2];
@@ -194,18 +192,30 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 					len = client->flen - 10;
 					data = &f[10];
 				}
-
+				
 				xbee_server_transmit (client->server, &addr, data, len);
-					
 			}
 			break;
+			case XBEE_COMMAND_SET_CHANNEL:
+			{
+				/* Xbee Command Set Client layout 
+				   0: Command Code: XBEE_COMMAND_SET_CLIENT
+				   1: Requested Listen Channel*/
+				
+				if (xbee_server_req_client_channel (client->server, client, f[1]))
+					fprintf (stderr, "Channel Assigned Successfully\n");
+				else
+					fprintf (stderr, "Failed to assigne channel\n");
+			}
+			break;
+			
 			}
 		}
-
 		/* Discard frame - it's been processed */
 		client->inpos = client->flen = 0;
+		
 	}
-
+   
 	return TRUE;
 }
 
