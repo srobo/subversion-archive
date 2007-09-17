@@ -264,7 +264,9 @@ static gboolean xbee_client_data_ready( XbeeClient *client )
 
 static gboolean xbee_client_sock_error( XbeeClient *client )
 {
+
 	fprintf( stderr, "Error with client socket.  Handle this...\n" );
+	fprintf( stderr, "Disable Client Channel??\n");
 	return FALSE;
 }
 

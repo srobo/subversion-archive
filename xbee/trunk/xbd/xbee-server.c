@@ -311,6 +311,7 @@ int16_t xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client,
 		if (server->channels[channel] == NULL)
 		{
 			server->channels[channel] = client;
+			client->channel = channel;
 			return channel;
 		}
 		else
@@ -326,6 +327,7 @@ int16_t xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client,
 				if (server->channels[i] == NULL)
 				{
 					server->channels[i] = client;
+					client->channel = i;
 					return i;
 				}
 			}
