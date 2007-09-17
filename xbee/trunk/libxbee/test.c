@@ -53,7 +53,6 @@ int main( int argc, char** argv )
 		printf ("\nReceive mode activated:\n");
 		callbacks.rx_frame = &rx_data;
 		callbacks.chan_set = &receive_chan;
-		fprintf (stderr, "Channel at prompt is: %d\n", channel);
 		xbee_conn_set_channel (xbc, channel);
 		xbee_conn_register_callbacks (xbc, &callbacks);
 	}
@@ -198,7 +197,6 @@ void receive_chan (int16_t channel)
 	}
 	default:
 	{
-		fprintf (stderr, "Case is: %d\n", channel);
 		fprintf (stderr, "Channel Assigned: %d\n", (uint8_t)(channel & 0xFF));
 		break;
 	}

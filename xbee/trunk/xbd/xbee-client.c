@@ -423,8 +423,8 @@ static int xbee_client_write_frame ( XbeeClient *client )
 	
 	g_queue_pop_tail ( client->out_frames );
 
-//	g_free (frame->data);
-//	g_free (frame);
+	g_free (frame->data);
+	g_free (frame);
 
 	client->outpos = 0;
 	//g_debug ("Client: Frame written");
