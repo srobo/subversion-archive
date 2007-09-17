@@ -113,4 +113,7 @@ void xbee_conn_command_test ( XbeeConn * conn, gchar *data);
 /* Register the Libxbee Callbacks */
 void xbee_conn_register_callbacks (XbeeConn *conn, xb_conn_callbacks_t *callbacks);
 
+/* Sets the channel of the client associated with the XbeeConn */
+void xbee_conn_set_channel ( XbeeConn *conn, uint8_t channel );
+
 #endif	/* __XBEE_CONN_H */

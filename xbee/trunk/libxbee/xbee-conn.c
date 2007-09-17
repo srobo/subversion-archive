@@ -8,6 +8,7 @@
 #include <string.h>
 #include "xbee-conn.h"
 #include "commands.h"
+#include "libxcli.h"
 #include "common-fd.h"
 
 static void xbee_conn_instance_init (GTypeInstance *gti, gpointer g_class );
@@ -400,4 +401,16 @@ void xbee_conn_register_callbacks (XbeeConn *conn, xb_conn_callbacks_t *callback
 
 	conn->callbacks = *callbacks;
 
+}
+
+void xbee_conn_set_channel ( XbeeConn *conn, uint8_t channel )
+{
+	assert ( conn != NULL );
+	
+	uint8_t data[2];
+
+	data[0] = XBEE_COMMAND_SET_CHANNEL;
+	data[1] = channel;
+
+	xbee_conn_out_queue_add ( conn, data, 2 );
 }
