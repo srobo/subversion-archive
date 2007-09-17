@@ -8,4 +8,10 @@ typedef enum
 	XBEE_COMMAND_SET_CHANNEL = 2
 } xbee_client_command_t;
 
+typedef enum
+{
+	XBEE_CONN_RX_CHANNEL = 0,
+	XBEE_CONN_RECEIVE_TXDATA = 1
+} xbee_conn_command_t;
+
 #endif

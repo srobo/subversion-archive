@@ -202,23 +202,57 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				   0: Command Code: XBEE_COMMAND_SET_CLIENT
 				   1: Requested Listen Channel*/
 				
-				int16_t channel;
+				int16_t channel;				
 
-				if ((channel = xbee_server_req_client_channel (client->server, client, f[1])) > 0)
+				channel = xbee_server_req_client_channel (client->server, client, f[1]);
+				switch (channel)
 				{
-					fprintf (stderr, "Channel Assigned Successfully: %d\n", channel);
-					/* Send back assigned channel number */
-				}
-				else
+				
+				case 0:
 				{
-					if (channel == -1)
-						fprintf (stderr, "Failed to assigne channel\n");
-					else
-						fprintf (stderr, "Broadcast Mode\n");
+					fprintf (stderr, "Invalid Channel Number Requested\n");
+					channel = -1;
+					break;
 				}
+				case -1:
+				{
+					fprintf (stderr, "Requested Channel is unavailable\n");
+					channel = -1;
+					break;
+				}
+				case -2:
+				{
+					fprintf (stderr, "No Free Channels\n");
+					channel = -1;
+					break;
+				}
+				default:
+				{
+					fprintf (stderr, "Channel Assigned: %d\n", channel);
+					break;
+				}
+
+				}
+				
+				xb_frame_t *frame;
+				uint8_t *data;
+
+				frame = (xb_frame_t*)g_malloc(sizeof(xb_frame_t));
+				data = (uint8_t*)g_malloc(sizeof(uint8_t) * 2);
+				
+				assert (data != NULL && frame != NULL);
+				
+				data[0] = XBEE_CONN_RECEIVE_TXDATA;
+				data[1] = channel;
+				frame->len = 2;
+				
+				g_queue_push_head ( client->out_frames, frame );
+
 			}
-			break;
-			}
+			
+			}	
+				
+		       
 		}
 		/* Discard frame - it's been processed */
 		client->inpos = client->flen = 0;
