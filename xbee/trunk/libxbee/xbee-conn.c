@@ -378,7 +378,8 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 		conn->inpos += b;
 		if (b == 2)
 		{
-			conn->flen = (((uint16_t)conn->inbuf[0] << 8) | (conn->inbuf[1]));
+			conn->flen = (((uint16_t)conn->inbuf[0] << 8) | ((uint16_t)conn->inbuf[1]));
+
 			if (conn->flen + 2 > XBEE_MAX_FRAME)
 			{
 				fprintf (stderr, "Frame too long\n");
@@ -393,7 +394,6 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 
 	
 	conn->inpos = 0;
-	conn->flen = 0;
 	return 1;
 }
 

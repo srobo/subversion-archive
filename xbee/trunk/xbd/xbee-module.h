@@ -70,7 +70,7 @@ typedef struct
 
 typedef struct 
 {
-	void (*rx_frame) (xb_rx_info_t *info, uint8_t *data, uint8_t len, gpointer *userdata);
+	void (*rx_frame) (xb_rx_info_t *info, uint8_t *data, uint16_t len, gpointer *userdata);
 }xbee_module_events_t;
 
 struct xbee_ts

@@ -22,7 +22,7 @@ static gboolean xbee_server_source_error( XbeeServer* serv );
 static gboolean xbee_server_req_con( XbeeServer *serv );
 
 /* Callback for incoming data from an XbeeModule */
-static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint8_t len, gpointer *userdata );
+static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint16_t len, gpointer *userdata );
 
 /* Callback for when an XbeeClient is disconnected */
 void xbee_client_disconnect( XbeeClient *client,
@@ -198,7 +198,7 @@ static gboolean xbee_server_source_error( XbeeServer* serv )
 	return FALSE;
 }
 
-static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint8_t len, gpointer *userdata)
+static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint16_t len, gpointer *userdata)
 {
 
 	XbeeServer *server = (XbeeServer*)userdata;
@@ -206,8 +206,6 @@ static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint8_
 	g_debug ("Server: Server has received a frame from XB\n");
 
 	assert (info != NULL && data != NULL && server != NULL);
-
-	/* Convert address into channel */
 
 	XbeeClient *client;
 	
@@ -217,7 +215,6 @@ static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint8_
 	}
 	else 
 	{
-		client = (XbeeClient*)g_slist_nth_data ( server->clients, info->dst_channel);
 		assert (client != NULL);
 		xbee_client_transmit ( client, data, info, len);
 	}

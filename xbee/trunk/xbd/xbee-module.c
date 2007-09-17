@@ -533,7 +533,8 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 	{
 		uint16_t flen;
 		uint8_t *data;
-		flen = (xb->inbuf[1] << 8) | xb->inbuf[2];
+		flen = ((uint16_t)xb->inbuf[1] << 8) | (uint16_t)xb->inbuf[2];
+		fprintf (stderr, "Received Frame-length is: %d\n", flen);
 		data = &xb->inbuf[3];
 
 		/* TODO: Process frame! */

@@ -15,7 +15,7 @@ void config_options (int argc, char **argv);
 static gchar *socket = NULL,
 	*receive = NULL,
 	*transmit = NULL;
-static int channel;// = 1;
+static int channel = -1;
 static int address;// = 0xA9;
 
 
@@ -46,7 +46,8 @@ int main( int argc, char** argv )
 	g_type_init ();
 
 	xbc = xbee_conn_new (socket, context);
-	xbee_conn_set_channel (xbc, 1);
+	
+	xbee_conn_set_channel (xbc, channel);
 
 			if (receive != NULL)
 			{
@@ -125,7 +126,7 @@ void rx_data (uint8_t * data, uint16_t len, xbee_conn_info_t *info)
 	else
 		printf ("Address Broadcast: NO\n");
 
-	printf ("Data Length: %d\n", (unsigned int)len);
+	printf ("Data Length: %d\n", len);
 	printf ("Data: ");
 	for (i=0; i<len; i++)
 	{
@@ -161,5 +162,13 @@ void config_options ( int argc, char **argv )
 		g_print ("No mode specified\n");
 		exit (1);
 	}
+
+	if (receive != NULL && (channel <= 0))
+	{
+		g_print ("No Listening Channel Specified\n");
+		exit (1);
+	}
+
+	
 
 }
