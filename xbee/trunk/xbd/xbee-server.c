@@ -211,16 +211,16 @@ static void xbee_server_incoming_data( xb_rx_info_t *info, uint8_t *data, uint8_
 
 	XbeeClient *client;
 	
-	if (info->dst_channel > (g_slist_position (server->clients, g_slist_last (server->clients))))
-		{
-			fprintf (stderr, "Unable to transmit to channel...channel not available...handle this\n");
-		}
-	    else 
-	    {
-			    client = (XbeeClient*)g_slist_nth_data ( server->clients, info->dst_channel);
-			    assert (client != NULL);
-			    xbee_client_transmit ( client, data, info, len);
-	    }
+	if ((client = server->channels [info->dst_channel]) == NULL)
+	{
+		fprintf (stderr, "Unable to transmit to channel...channel not available...handle this\n");
+	}
+	else 
+	{
+		client = (XbeeClient*)g_slist_nth_data ( server->clients, info->dst_channel);
+		assert (client != NULL);
+		xbee_client_transmit ( client, data, info, len);
+	}
 	    
 
 	/* TODO: look at frame channel number and send to correct client */
@@ -304,25 +304,34 @@ static void xbee_server_class_init( XbeeServerClass *klass )
 int16_t xbee_server_req_client_channel ( XbeeServer *server, XbeeClient *client, uint8_t channel )
 {
 
-	int16_t i;
-	
+	uint8_t i;
+       
 	assert (server != NULL && client != NULL);
 	
-	if (server->channels [channel] == NULL)
+	if (channel >= 1)
 	{
-		server->channels [channel] = client;
-		return channel;	
+		if (server->channels [channel] == NULL)
+		{
+			server->channels [channel] = client;
+			return channel;	
+		}
+		else
+		{	
+			for (i=1; i<255; i++)
+			{
+				if (server->channels[i] == NULL)
+				{
+					server->channels[i] = client;
+					return i;
+				}
+			}
+			return -1;	
+		}
 	}
 	else
-	{	
-		for (i=0; i<256; i++)
-		{
-			if (server->channels[i] == NULL)
-			{
-				server->channels[i] = client;
-				return i;
-			}
-		}
-		return -1;	
+	{
+		/* Broadcast Mode */
+		return 0;
 	}
-}	
+
+}

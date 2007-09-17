@@ -202,23 +202,27 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				   0: Command Code: XBEE_COMMAND_SET_CLIENT
 				   1: Requested Listen Channel*/
 				
-				if (xbee_server_req_client_channel (client->server, client, f[1]) > 0)
+				int16_t channel;
+
+				if ((channel = xbee_server_req_client_channel (client->server, client, f[1])) > 0)
 				{
-					fprintf (stderr, "Channel Assigned Successfully\n");
-					/* Munge data back */
+					fprintf (stderr, "Channel Assigned Successfully: %d\n", channel);
+					/* Send back assigned channel number */
 				}
 				else
-					fprintf (stderr, "Failed to assigne channel\n");
+				{
+					if (channel == -1)
+						fprintf (stderr, "Failed to assigne channel\n");
+					else
+						fprintf (stderr, "Broadcast Mode\n");
+				}
 			}
 			break;
-			
 			}
 		}
 		/* Discard frame - it's been processed */
 		client->inpos = client->flen = 0;
-		
 	}
-   
 	return TRUE;
 }
 

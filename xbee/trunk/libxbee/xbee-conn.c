@@ -358,6 +358,8 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 		}
 		else
 		{
+			//b = read (conn->fd, &conn->inbuf[conn->inpos - 2], conn->flen + 2 - conn->inpos);
+			/* Check the plus two on the end ! */
 			b = read (conn->fd, &conn->inbuf[conn->inpos - 2], conn->flen + 2 - conn->inpos);
 		}
 
