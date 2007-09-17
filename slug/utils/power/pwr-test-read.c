@@ -90,11 +90,11 @@ int main( int argc, char** argv )
 	while(1) 
 	  {
 	    
-	    //printf("Read dips as %x\n", readbyte(fd, 5));
-	    //printf("Read ID as %x\n", readbyte(fd, 0));
-	    //printf("Read rails as %x\n", readbyte(fd, 7));
-	    //printf("Read v as %x\n", readword(fd, 3));	
-	    //printf("Read I as %x\n", readword(fd, 4));	
+	    printf("Read dips as %x\n", readbyte(fd, 5));
+	    printf("Read ID as %x\n", readbyte(fd, 0));
+	    printf("Read rails as %x\n", readbyte(fd, 7));
+	    printf("Read v as %x\n", readword(fd, 3));	
+	    printf("Read I as %x\n", readword(fd, 4));	
 	    printf("setpins to %x returned %x\n",val,setpins(fd,1,val));
 	    val = ~val;
 	
