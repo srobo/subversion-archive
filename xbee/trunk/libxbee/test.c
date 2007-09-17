@@ -48,6 +48,7 @@ int main( int argc, char** argv )
 	g_type_init ();
 
 	xbc = xbee_conn_new (socket, context);
+	xbee_conn_set_channel (xbc, 0);
 
 			if (receive != NULL)
 			{
