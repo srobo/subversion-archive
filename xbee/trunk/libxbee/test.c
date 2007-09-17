@@ -47,7 +47,8 @@ int main( int argc, char** argv )
 
 	g_type_init ();
 
-			xbc = xbee_conn_new (socket, context);
+	xbc = xbee_conn_new (socket, context);
+
 			if (receive != NULL)
 			{
 				printf ("\nReceive mode activated:\n");

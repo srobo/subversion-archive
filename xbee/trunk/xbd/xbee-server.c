@@ -185,8 +185,9 @@ static gboolean xbee_server_req_con( XbeeServer *serv )
 				  xbee_client_disconnect );
 	assert( client != NULL );
 	serv->clients = g_slist_append( serv->clients, client );
-	client->channel = g_slist_position ( serv->clients, g_slist_last (serv->clients) );
-	printf ("Channel: %d\n", client->channel);
+
+//	client->channel = g_slist_position ( serv->clients, g_slist_last (serv->clients) );
+//	printf ("Channel: %d\n", client->channel);
 
 	return TRUE;
 }
