@@ -198,8 +198,9 @@ static gboolean xbee_conn_sock_incoming( XbeeConn *conn )
 			{
 			case XBEE_CONN_RX_CHANNEL:
 			{
-				conn->channel = data[1];
-				fprintf (stderr, "Channel Allocated as: %d\n", conn->channel);
+				conn->channel = (int16_t)((data[1] << 8) | (data[2]));
+				fprintf (stderr, "Channel Request Response: %d\n", conn->channel);
+				break;
 			}
 			case XBEE_CONN_RECEIVE_TXDATA:
 			{
@@ -389,7 +390,7 @@ static gboolean xbee_conn_read_whole_frame ( XbeeConn *conn )
 		
 		if ( b == 0 )
 			continue;
-		
+	
 		conn->inpos += b;
 		if (b == 2)
 		{

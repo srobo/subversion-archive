@@ -207,6 +207,8 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 				channel = (int16_t)((f[1] << 8) | f[2]);
 
 				channel = xbee_server_req_client_channel (client->server, client, channel);
+
+/*
 				switch (channel)
 				{
 				
@@ -234,20 +236,20 @@ static gboolean xbee_client_sock_incoming( XbeeClient *client )
 					break;
 				}
 
-				}
+				}*/
 				
 				xb_frame_t *frame;
 				uint8_t *data;
 
 				frame = (xb_frame_t*)g_malloc(sizeof(xb_frame_t));
-				data = (uint8_t*)g_malloc(sizeof(uint8_t) * 2);
+				data = (uint8_t*)g_malloc(sizeof(uint8_t) * 3);
 				
 				assert (data != NULL && frame != NULL);
 				
 				data[0] = XBEE_CONN_RX_CHANNEL;
-				data[1] = (uint8_t)(channel & 0xFF);
-			      
-				frame->len = 2;
+				data[1] = (channel >> 8) & 0xFF;
+				data[2] = (channel & 0xFF);
+				frame->len = 3;
 				
 				g_queue_push_head ( client->out_frames, frame );
 
