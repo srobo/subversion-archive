@@ -1,4 +1,4 @@
-/*********************************************************************
+ /*********************************************************************
  *
  *             Microchip USB C18 Firmware -  MSD Version 1.0
  *
@@ -776,7 +776,7 @@ void MSDReadHandler()
 	msd_csw.bCSWStatus=0x0;
 	msd_csw.dCSWDataResidue=0x0;
 		
-	if (LBA._dword + TransferLength._word > gblNumBLKS._dword) {
+	if (LBA._dword + TransferLength._word -1 > gblNumBLKS._dword) {
 		msd_csw.bCSWStatus=0x01;
 		// prepare sense data See page 51 SBC-2
 		gblSenseData.SenseKey=S_ILLEGAL_REQUEST;
