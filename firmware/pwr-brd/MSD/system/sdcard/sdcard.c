@@ -44,6 +44,9 @@ extern volatile far byte msd_buffer[512];
 extern unsigned char usbflag;
 extern unsigned char data[32];
 extern unsigned long sectadd;
+unsigned char tempsect[100];
+
+char b[20];
 
 #pragma udata
 
@@ -122,6 +125,8 @@ SDC_Error SectorRead(dword sector_addr, byte* buffer)
 {
 	unsigned char sectorposition = 0;
 	int fill =0;
+
+	char i;
 	
     //word index;
     //SDC_RESPONSE    response;
@@ -129,13 +134,28 @@ SDC_Error SectorRead(dword sector_addr, byte* buffer)
     SDC_Error status = sdcValid;
 
 	sectadd=sector_addr;
+	
+		
+	
+	
+		mputcharUSART('$');
+		
+	    ultoa(sector_addr,b);
+        i =0;
+        //b[0]='a';
+        //b[1]=0;
+        while(b[i]!= 0 ) mputcharUSART(b[(i++)]);
+
+		mputcharUSART(' ');
 
 	/* TODO: Read stuff! */
 	/* Remember that it's the _sector_ address */
 	
 	mputcharUSART('Y');
+	
 
-	for (fill=0;fill<512;fill++) buffer[fill]=0;
+	for (fill=0;fill<512;fill++) buffer[fill]=2;//tempsect[(fill%100)];
+	//for (fill=0;fill<512;fill++) buffer[fill]=(fill%9);
 	
 	/*
 	
@@ -189,21 +209,18 @@ SDC_Error SectorRead(dword sector_addr, byte* buffer)
  *****************************************************************************/
 SDC_Error SectorWrite(dword sector_addr, byte* buffer)
 {
+	int fill = 0;
     word index;
     byte data_response;
 	SDC_RESPONSE    response; 
     SDC_Error status = sdcValid;
   	
-	#ifdef STATUSLED
-	STWTRIS = OUTPUT;
-	STWLED = 1;
-	#endif
-
 	/* TODO: Write stuff! */
-    
-	#ifdef STATUSLED
-	STWLED = 0;
-	#endif
+    /*
+    mputcharUSART('X');
+
+	for (fill=0;fill<512;fill++) tempsect[(fill%100)]=buffer[fill];
+    */
 	
   	return(status);
 } 
