@@ -73,7 +73,6 @@ char dump2;
 unsigned char i2cstatus = BAD;
 int voltage = 0x5555;// local variables holding results of adc
 int current = 0xAAAA;
-char tempstat=23;
 
 
 u8 data[32]; // size according to smbus spec 
@@ -174,9 +173,10 @@ void adcserv(void)
 {
 	if (!BusyADC())
 	{
+		// currently this totallyt rodgers the msd code, dunno why!
 		
 		PORTD=~PORTD;
-	/*	
+	
 		if(!ADCON0bits.CHS0)
 		{
 			
@@ -192,7 +192,7 @@ void adcserv(void)
 			ConvertADC();
 		}
 		
-		*/
+		
 		
 	}
         

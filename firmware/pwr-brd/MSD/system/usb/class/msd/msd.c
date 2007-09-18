@@ -763,7 +763,6 @@ void MSDReadHandler()
 	DWORD LBA;
 	byte Flags;
 	dword sectorNumber;
-	mputcharUSART('1');
 	LBA.v[3]=gblCBW.CBWCB[2];
 	LBA.v[2]=gblCBW.CBWCB[3];
 	LBA.v[1]=gblCBW.CBWCB[4];
@@ -775,9 +774,7 @@ void MSDReadHandler()
 	Flags=gblCBW.CBWCB[1];
 	
 	msd_csw.bCSWStatus=0x0;
-	msd_csw.dCSWDataResidue=0x0;
-	mputcharUSART('2');
-		
+	msd_csw.dCSWDataResidue=0x0;	
 	if (LBA._dword + TransferLength._word -1 > gblNumBLKS._dword) {
 		mputcharUSART('3');
 		msd_csw.bCSWStatus=0x01;
@@ -786,15 +783,11 @@ void MSDReadHandler()
 		gblSenseData.ASC=ASC_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE;
 		gblSenseData.ASCQ=ASCQ_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE;
 	} else {
-		mputcharUSART('4');
-		while (TransferLength._word > 0) {
-			mputcharUSART('5');							
+		while (TransferLength._word > 0) {						
 			TransferLength._word--;					// we have read 1 LBA
 			//status = 0;
-			status = SectorRead(LBA._dword, (byte*)&msd_buffer[0]);
-			mputcharUSART('A'+status);	
+			status = SectorRead(LBA._dword, (byte*)&msd_buffer[0]);	
 			LBA._dword++;							// read the next LBA
-			//status = 0;//tempstat;
 			if (status==sdcValid) {
 				mputcharUSART('6');
 				msd_csw.bCSWStatus=0x00;			// success
@@ -802,15 +795,9 @@ void MSDReadHandler()
 				//512 bytes of data read
 				ptrNextData=(byte *)&msd_buffer[0];
 				while (msd_csw.dCSWDataResidue>0)
-				{
-					mputcharUSART('7');
 					MSDDataIn();					// send the data
-					mputcharUSART('P');
-				}
 				msd_csw.dCSWDataResidue=0x0;		// for next time
-				mputcharUSART('8');
 			} else {
-				mputcharUSART('9');
 				msd_csw.bCSWStatus=0x01;			// Error 0x01 Refer page#18
 				// of BOT specifications
 				/* Don't read any more data*/
