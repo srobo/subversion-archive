@@ -80,7 +80,6 @@ unsigned long sectadd=0xabcdef12;
 unsigned char usbflag=0x44; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
 unsigned char usbdataused=0;// set by usb code, cleared by i2c code
 unsigned char usbbuf[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-//unsigned char tempsect[256];
 
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
@@ -508,7 +507,11 @@ static void InitializeSystem(void)
     PORTBbits.RB3 = 1; // !shdn
     PORTBbits.RB2 = 0;    	// gsel 0 allows upto appx 4A with track resistor (heating element hot!)
     // gesl 1 allows upto about 2A ish		
-    
+
+
+
+
+
     // ADCON1 |= 0x0F;                 // Default all pins to digital
 
 #if defined(USE_USB_BUS_SENSE_IO)

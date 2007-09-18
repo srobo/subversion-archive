@@ -96,10 +96,6 @@ void ResetSenseData(void);
 void MSDDataIn(void);
 void MSDDataOut(void);
 
-void prdebug(char sentinel, char data);
-void iprdebug(char sentinel, int data);
-void lprdebug(char sentinel, long data);
-
 extern SDC_Error SectorReadj(dword, byte*);
 extern SDC_Error SectorWrite(dword, byte*);
 extern byte IsWriteProtected(void);
@@ -404,9 +400,7 @@ void MSDCommandHandler(void)		// In reality it is to read from EP1
 		MSDStopStartHandler();
 		break;
 	default:
-			//mputcharUSART('k');
-			 prdebug('k',gblCBW.CBWCB[0]);			
-    
+			mputcharUSART('k');
         	ResetSenseData();
 		gblSenseData.SenseKey=S_ILLEGAL_REQUEST;
 		gblSenseData.ASC=ASC_INVALID_COMMAND_OPCODE;
@@ -762,7 +756,6 @@ void MSDReadCapacityHandler()
 	
 void MSDReadHandler()
 {
-	extern 	char b[20];
 	word i;
 	SDC_Error status;
 	WORD TransferLength;
@@ -775,44 +768,16 @@ void MSDReadHandler()
 	LBA.v[1]=gblCBW.CBWCB[4];
 	LBA.v[0]=gblCBW.CBWCB[5];
 	
-	
-	
-			mputcharUSART(10);
-			mputcharUSART(13);
-			mputcharUSART('£');
-		
-	    ultoa(LBA._dword,b);
-        i =0;
-        //b[0]='a';
-        //b[1]=0;
-        while(b[i]!= 0 ) mputcharUSART(b[(i++)]);
-
-		mputcharUSART(' ');
-		
-		
-		
-		
-	
 	TransferLength.v[1]=gblCBW.CBWCB[7];
 	TransferLength.v[0]=gblCBW.CBWCB[8];
-	
-	
-		mputcharUSART('-');
-	    itoa(TransferLength._word,b);
-        i =0;
-        while(b[i]!= 0 ) mputcharUSART(b[(i++)]);
-		mputcharUSART(' ');
-	
 	
 	Flags=gblCBW.CBWCB[1];
 	
 	msd_csw.bCSWStatus=0x0;
 	msd_csw.dCSWDataResidue=0x0;
 		
-	if (LBA._dword + TransferLength._word -1 > gblNumBLKS._dword) {
-		mputcharUSART('+');
+	if (LBA._dword + TransferLength._word > gblNumBLKS._dword) {
 		msd_csw.bCSWStatus=0x01;
-		
 		// prepare sense data See page 51 SBC-2
 		gblSenseData.SenseKey=S_ILLEGAL_REQUEST;
 		gblSenseData.ASC=ASC_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE;
@@ -976,27 +941,8 @@ void MSDWriteHandler()
 void MSDRequestSenseHandler(void)
 {
 	byte i;
-	/*
-	char b[20];
-	
-		mputcharUSART('*');
-		
-	    btoa(gblSenseData.ASC,b);
-        i =0;
-        //b[0]='a';
-        //b[1]=0;
-        while(b[i]!= 0 ) mputcharUSART(b[(i++)]);
-
-		mputcharUSART(' ');
-
-		btoa(gblSenseData.ASCQ,b);
-        i =0;
-        while(b[i]!= 0 ) mputcharUSART(b[(i++)]);
-      */  
-        
 	for(i=0;i<sizeof(RequestSenseResponse);i++)
 		msd_buffer[i]=gblSenseData._byte[i];
-	
 	
 	msd_csw.dCSWDataResidue=sizeof(RequestSenseResponse);
 	msd_csw.bCSWStatus=0x0;					// success
@@ -1162,40 +1108,6 @@ void MSDStopStartHandler()
 	msd_csw.dCSWDataResidue=0x00;
 	return;
 }
-
-void prdebug(char sentinel, char data)
-{
-	unsigned char b[5];
-	int i =0;
-	mputcharUSART(sentinel);
-   	btoa(data,b);
-    i =0;
-    while(b[i]!= 0 ) mputcharUSART(b[(i++)]);
-	mputcharUSART(' ');
-}
-
-void iprdebug(char sentinel, int data)
-{
-	unsigned char b[5];
-	int i =0;
-	mputcharUSART(sentinel);
-   	itoa(data,b);
-    i =0;
-    while(b[i]!= 0 ) mputcharUSART(b[(i++)]);
-	mputcharUSART(' ');
-}
-
-void lprdebug(char sentinel, long data)
-{
-	unsigned char b[5];
-	int i =0;
-	mputcharUSART(sentinel);
-   	ultoa(data,b);
-    i =0;
-    while(b[i]!= 0 ) mputcharUSART(b[(i++)]);
-	mputcharUSART(' ');
-}
-
 #endif //def USB_USE_MSD
 
 /** EOF msd.c ***************************************************************/
