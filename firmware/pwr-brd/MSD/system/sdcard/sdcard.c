@@ -120,12 +120,11 @@ Error:
  *****************************************************************************/
 SDC_Error SectorRead(dword sector_addr, byte* buffer)
 {
-	unsigned char sectorposition = 0;
 	int fill =0;
 
     SDC_Error status = sdcValid;
 
-	for (fill=0;fill<512;fill++) buffer[fill]=0;
+	for (fill=0;fill<512;fill++) buffer[fill]=0x7e;
 
     return(status);
 }
