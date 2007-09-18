@@ -360,36 +360,47 @@ void MSDCommandHandler(void)		// In reality it is to read from EP1
 {	
 	switch(gblCBW.CBWCB[0]) {
     	case INQUIRY:
+    		mputcharUSART('a');
         	MSDInquiryHandler();
 		break;
         case READ_CAPACITY:
+		mputcharUSART('b');
 		MSDReadCapacityHandler();            
 		break;
 	case READ_10:
+			mputcharUSART('c');
         	MSDReadHandler();
 		break;
     	case WRITE_10:
+    		mputcharUSART('d');
     	   	MSDWriteHandler();
 		break;
         case REQUEST_SENSE:
+        mputcharUSART('e');
 		MSDRequestSenseHandler();
 		break;
 	case MODE_SENSE:
+			mputcharUSART('f');
 	    	MSDModeSenseHandler();
 		break;
 	case PREVENT_ALLOW_MEDIUM_REMOVAL:
+		mputcharUSART('g');
 		MSDMediumRemovalHandler();
 		break;
 	case TEST_UNIT_READY:
+		mputcharUSART('h');
 		MSDTestUnitReadyHandler();
 		break;
 	case VERIFY:
+		mputcharUSART('i');
 		MSDVerifyHandler();
 		break;
 	case STOP_START:
+		mputcharUSART('j');
 		MSDStopStartHandler();
 		break;
 	default:
+			mputcharUSART('k');
         	ResetSenseData();
 		gblSenseData.SenseKey=S_ILLEGAL_REQUEST;
 		gblSenseData.ASC=ASC_INVALID_COMMAND_OPCODE;
