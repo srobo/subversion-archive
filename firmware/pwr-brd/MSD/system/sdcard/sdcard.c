@@ -123,10 +123,11 @@ SDC_Error SectorRead(dword sector_addr, byte* buffer)
 	int fill =0;
 
     SDC_Error status = sdcValid;
+    
 
-	for (fill=0;fill<512;fill++) buffer[fill]=0x7e;
+	for (fill=0;fill<512;fill++) buffer[fill]=0x23;
 
-    return(status);
+    return(0);//(status);
 }
 
 /******************************************************************************
