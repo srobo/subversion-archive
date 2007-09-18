@@ -44,6 +44,7 @@ extern volatile far byte msd_buffer[512];
 extern unsigned char usbflag;
 extern unsigned char data[32];
 extern unsigned long sectadd;
+extern char tempstat;
 
 #pragma udata
 
@@ -118,15 +119,14 @@ Error:
  *                  be converted to byte address. This is accomplished by
  *                  shifting the address left 9 times.
  *****************************************************************************/
-SDC_Error SectorRead(dword sector_addr, byte* buffer)
+char SectorRead(dword sector_addr, byte* buffer)
 {
 	int fill =0;
 
     SDC_Error status = sdcValid;
     
-
 	for (fill=0;fill<512;fill++) buffer[fill]=0x23;
-
+	//tempstat=0;
     return(0);//(status);
 }
 

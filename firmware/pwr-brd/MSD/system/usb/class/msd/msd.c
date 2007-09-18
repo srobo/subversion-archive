@@ -99,6 +99,7 @@ void MSDDataOut(void);
 extern SDC_Error SectorReadj(dword, byte*);
 extern SDC_Error SectorWrite(dword, byte*);
 extern byte IsWriteProtected(void);
+extern char tempstat;
 
 /** D E C L A R A T I O N S **************************************************/
 #pragma code
@@ -789,10 +790,11 @@ void MSDReadHandler()
 		while (TransferLength._word > 0) {
 			mputcharUSART('5');							
 			TransferLength._word--;					// we have read 1 LBA
+			//status = 0;
 			status = SectorRead(LBA._dword, (byte*)&msd_buffer[0]);
 			mputcharUSART('A'+status);	
 			LBA._dword++;							// read the next LBA
-			status =0;
+			//status = 0;//tempstat;
 			if (status==sdcValid) {
 				mputcharUSART('6');
 				msd_csw.bCSWStatus=0x00;			// success

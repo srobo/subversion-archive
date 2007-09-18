@@ -220,6 +220,6 @@ typedef union
     };
 } CID;
 
-SDC_Error SectorRead(dword, byte*);
+char SectorRead(dword, byte*);
 SDC_Error SectorWrite(dword, byte*);
 byte IsWriteProtected(void);
