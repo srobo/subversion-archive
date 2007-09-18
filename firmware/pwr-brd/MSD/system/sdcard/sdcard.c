@@ -41,6 +41,9 @@
  #include "sdcard.h"
 
 extern volatile far byte msd_buffer[512]; 
+extern unsigned char usbflag;
+extern unsigned char data[32];
+extern unsigned long sectadd;
 
 #pragma udata
 
@@ -117,22 +120,45 @@ Error:
  *****************************************************************************/
 SDC_Error SectorRead(dword sector_addr, byte* buffer)
 {
-    word index;
-    SDC_RESPONSE    response;
+	unsigned char sectorposition = 0;
+	int fill =0;
+	
+    //word index;
+    //SDC_RESPONSE    response;
     byte data_token;
     SDC_Error status = sdcValid;
 
-	#ifdef STATUSLED
-//	STRTRIS = OUTPUT;  lost by tb to checked context
-//	STRLED = 1;
-	#endif
+	sectadd=sector_addr;
 
 	/* TODO: Read stuff! */
 	/* Remember that it's the _sector_ address */
+	
+	mputcharUSART('Y');
 
-	#ifdef STATUSLED
-	STRLED = 0;
-	#endif
+	for (fill=0;fill<512;fill++) buffer[fill]=0;
+	
+	/*
+	
+	for (sectorposition=0;sectorposition<16;sectorposition++)
+	{
+		mputcharUSART('1'+sectorposition);
+		usbflag=(sectorposition|0x40); // set readflag
+		
+		while(1)
+		{	
+		i2cservice();
+		if (usbflag==0)
+			{
+				char temploop;
+				for (temploop=0;temploop<32;temploop++) buffer[sectorposition+temploop] = data[temploop];// copy i2c to msd buffer
+				break;// break because 
+			}
+	
+		}
+	}
+	*/
+
+	
 
     return(status);
 }

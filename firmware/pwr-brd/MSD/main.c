@@ -70,15 +70,16 @@ long int startupdel;
 int bcount;
 char outstr[10];
 char dump2;
-char i2cstatus = BAD;
+unsigned char i2cstatus = BAD;
 int voltage = 0x5555;// local variables holding results of adc
 int current = 0xAAAA;
 
 
-
-char usbflag=6; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
-char usbdataused=0;// set by usb code, cleared by i2c code
-char usbbuf[32]={1,2,3,4,5,6,7};
+u8 data[32]; // size according to smbus spec 
+unsigned long sectadd=0xabcdef12;
+unsigned char usbflag=0x44; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
+unsigned char usbdataused=0;// set by usb code, cleared by i2c code
+unsigned char usbbuf[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
@@ -103,6 +104,8 @@ void getrails(u8 *data);
 void sendser(u8 *data);
 void getusbbuf(u8 *data);
 void setusbbuf(u8 *data);
+void getsectorlo(u8 *data);
+void getsectorhi(u8 *data);
 
 /** V E C T O R  R E M A P P I N G *******************************************/
 //						{bytes in, bytesout, function name}
@@ -116,7 +119,9 @@ t_command commands[] = {{0, 1,identify}, //0
 	                    {0, 1,getrails},
 		                {0,1,getusbbuf},//8
 			            {1,0,setusbbuf},
-		                {1,0,sendser}};//10
+		                {1,0,sendser},//10
+			            {0,2,getsectorlo},
+				        {0,2,getsectorhi}};//12
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
 #pragma code _RESET_INTERRUPT_VECTOR = 0x000020
@@ -201,7 +206,7 @@ void i2cservice(void)
 
     static u8 adddump;
     static u8 command;
-    static u8 data[32]; // size according to smbus spec    
+   
     static u8 datacount;
     static u8 datapos;
     static u8 checksum;
@@ -210,7 +215,8 @@ void i2cservice(void)
     u8 tmpdata;
 
     if (PIR1bits.SSPIF){ 
-	    //mputcharUSART('X');
+	    mputcharUSART('X');
+	    
         if(!SSPSTATbits.D_A) //It's an address byte
         {
             i2cstatus = BAD; //This is to check abandoned machines later
@@ -273,8 +279,9 @@ void i2cservice(void)
                 case GOTDATA:
                 	tmpdata = SSPBUF;
         			PIR1bits.SSPIF = 0;
-                    if (tmpdata == checksum) 
-                    {
+                    //if (tmpdata == checksum) 
+                    if (1) // temporary fix so no checksumm for testing
+	                {
                         commands[command].docmd(data);
                         i2cstatus = GOOD; 
                     }
@@ -322,7 +329,10 @@ void setled(u8 *data){
 
 void checkusb(u8 *data){
 	data[0]=usbflag;
-	//read or write bit (7) set in msd code
+	//read bit = <6> i2c -> usb
+	//write bit  = <7> usb ->i
+	// 5 lsb position within sector
+	
 	return;
 	}
 void getv(u8 *data){
@@ -351,11 +361,11 @@ void getrails(u8 *data){
 	}
 void getusbbuf(u8 *data)
 {
-	char loopcount;
-	for (loopcount=0;loopcount<usbflag;loopcount++)
-	{
-		data[loopcount]=usbbuf[loopcount];
-	}
+	//char loopcount;
+	//for (loopcount=0;loopcount<usbflag;loopcount++)
+	//{
+	//	data[loopcount]=usbbuf[loopcount];
+	//}
 	usbflag=0;
 }
 void setusbbuf(u8 *data)
@@ -365,7 +375,8 @@ void setusbbuf(u8 *data)
 	//{
 	//	usbbuf[loopcount]=data[loopcount];
 	//}
-	usbdataused=0;	
+	//usbdataused=0;	
+	usbflag=0;
 }		
 
 void sendser(u8 *data){
@@ -376,6 +387,17 @@ void sendser(u8 *data){
 	
 	return;
 	}
+	
+void getsectorlo(u8 *data)
+{
+	data[1]=(u8)((sectadd>>8)&0xff);
+	data[0]=(u8)(sectadd&0xFF);
+}
+void getsectorhi(u8 *data)
+{
+	data[1]=(u8)((sectadd>>24)&0xff);
+	data[0]=(u8)((sectadd>>16)&0xFF);
+}
 /******************************************************************************
  * Function:        static void InitializeSystem(void)
  *
