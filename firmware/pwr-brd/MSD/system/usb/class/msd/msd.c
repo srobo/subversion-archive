@@ -369,7 +369,7 @@ void MSDCommandHandler(void)		// In reality it is to read from EP1
 		MSDReadCapacityHandler();            
 		break;
 	case READ_10:
-			mputcharUSART('c');
+			mputcharUSART('X');
         	MSDReadHandler();
 		break;
     	case WRITE_10:

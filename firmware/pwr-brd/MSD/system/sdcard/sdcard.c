@@ -148,6 +148,7 @@ char SectorRead(dword sector_addr, byte* buffer)
 				buffer[sectorposition+temploop] = data[temploop];// copy i2c to msd buffer
 	}
 	buffer[0]=1;
+	//buffer[20]=0xaa;
     return(0);//(status);
 }
 

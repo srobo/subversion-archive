@@ -335,8 +335,8 @@ void i2cservice(void)
              		i2cstatus = GOOD;
              		PIR1bits.SSPIF = 0;
              		break;
-             	default:
-             		tmpdata = SSPBUF;
+             	//default:
+             		//tmpdata = SSPBUF;
 		            
              		
             }
