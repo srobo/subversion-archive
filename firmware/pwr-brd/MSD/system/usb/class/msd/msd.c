@@ -785,7 +785,6 @@ void MSDReadHandler()
 	} else {
 		while (TransferLength._word > 0) {						
 			TransferLength._word--;					// we have read 1 LBA
-			//status = 0;
 			status = SectorRead(LBA._dword, (byte*)&msd_buffer[0]);	
 			LBA._dword++;							// read the next LBA
 			if (status==sdcValid) {

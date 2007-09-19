@@ -62,6 +62,8 @@ void flush_usart_send(){
 }
 
 void mputcharUSART(unsigned char data){
+	if((usart_send_head +1)%USART_SEND_BUFFER_SIZE == usart_send_tail)
+		PORTDbits.RD7=1;
    usart_send_buffer[usart_send_head++] = data;
    if(usart_send_head == USART_SEND_BUFFER_SIZE)
 	   usart_send_head = 0;

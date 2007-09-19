@@ -39,6 +39,7 @@
  *****************************************************************************/
  
  #include "sdcard.h"
+ #include "p18f4550.h"
 
 extern volatile far byte msd_buffer[512]; 
 extern unsigned char usbflag;
@@ -121,12 +122,32 @@ Error:
  *****************************************************************************/
 char SectorRead(dword sector_addr, byte* buffer)
 {
+	unsigned char sectorposition = 0;
 	int fill =0;
+	char temploop;
 
     SDC_Error status = sdcValid;
-    
-	for (fill=0;fill<512;fill++) buffer[fill]=0x23;
-	//tempstat=0;
+    sectadd=sector_addr;
+	//for (fill=0;fill<512;fill++) buffer[fill]=0xfe;
+
+
+	//PORTDbits.RD5=1;
+	for (sectorposition=0;sectorposition<16;sectorposition++)
+	{
+		//mputcharUSART('1'+sectorposition);
+		usbflag=(sectorposition|0x40); // set readflag
+		
+		mputcharUSART('T');
+		while(usbflag!=0)
+		{				
+		i2cservice();
+		manage_usart();	
+		}
+		mputcharUSART('M');
+		for (temploop=0;temploop<32;temploop++) 
+				buffer[sectorposition+temploop] = data[temploop];// copy i2c to msd buffer
+	}
+	buffer[0]=1;
     return(0);//(status);
 }
 

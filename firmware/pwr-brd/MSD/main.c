@@ -77,7 +77,7 @@ int current = 0xAAAA;
 
 u8 data[32]; // size according to smbus spec 
 unsigned long sectadd=0xabcdef12;
-unsigned char usbflag=0x44; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
+unsigned char usbflag=0x00; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
 unsigned char usbdataused=0;// set by usb code, cleared by i2c code
 //unsigned char usbbuf[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 
@@ -92,6 +92,8 @@ u8 crc8(u8 tmpdata);
 void docmd(u8 command, u8 *data);
 void swin(void);
 void adcserv(void);
+
+void prdbg(char sentinel, char data);
 
 void identify(u8 *data);
 void setled(u8 *data);
@@ -117,11 +119,12 @@ t_command commands[] = {{0, 1,identify}, //0
                         {0, 1,getdip},
                         {1, 0,setrails},//6
 	                    {0, 1,getrails},
-		                {0,1,getusbbuf},//8
-			            {1,0,setusbbuf},
+		                {0,32,getusbbuf},//8
+			            {1,32,setusbbuf},
 		                {1,0,sendser},//10
 			            {0,2,getsectorlo},
-				        {0,2,getsectorhi}};//12
+				        {0,2,getsectorhi},//12
+					    {32,0,setusbbuf}};
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
 #pragma code _RESET_INTERRUPT_VECTOR = 0x000020
@@ -157,7 +160,7 @@ void main(void)
     {
         manage_usart();		
         USBTasks();         // USB Tasks
-        //i2cservice();
+        i2cservice();
         ProcessIO();        // See msd.c & msd.h
         //swin();
         if ( PORTDbits.RD3)
@@ -225,15 +228,16 @@ void i2cservice(void)
     u8 tmpdata;
 
     if (PIR1bits.SSPIF){ 
-	    mputcharUSART('X');
-	    
+	    //mputcharUSART('X');
         if(!SSPSTATbits.D_A) //It's an address byte
         {
+	        mputcharUSART('A');
             i2cstatus = BAD; //This is to check abandoned machines later
             adddump = SSPBUF;
         	PIR1bits.SSPIF = 0;
             if (!SSPSTATbits.R_W) //About to receive something from the slug
             {
+	            mputcharUSART('N');
 	            datacount = 0;
 	            state = GOTADDRESSREAD;
 	            checksum = crc8(adddump);
@@ -242,6 +246,7 @@ void i2cservice(void)
             }
             else //Being asked to send stuff to the slug
            	{
+	           	mputcharUSART('C');
 	           	datacount = commands[command].bytestoreadout;
 	           	checksum = crc8(checksum^(adddump));
 	           	
@@ -260,23 +265,28 @@ void i2cservice(void)
         } else {
             switch(state){
                 case GOTADDRESSREAD: //Just received a command
-                    tmpdata = SSPBUF;
+                    command = SSPBUF;
         			PIR1bits.SSPIF = 0;
-                    command = tmpdata;
+                    //command = tmpdata;
+                    mputcharUSART('D');
+                    prdbg('=', command);
                     checksum = crc8(checksum^command);
                     datacount = commands[command].bytestoreadin;
 
                     if(datacount == 0){ //Special case of pure commands (getdips etc)
 	                    //Will call the function to generate data whilst the clock stretch
 	                    //is in effect
+	                    mputcharUSART('E');
                         state = WAIT;
-                        break;
-                    }
+                        //break;
+                    }else
                     state=GOTCOMMAND;
+                
                     break;
 
                 case GOTCOMMAND:              
-                    //Read in the data       
+                    //Read in the data   
+                    mputcharUSART('F');    
                     tmpdata = SSPBUF;
         			PIR1bits.SSPIF = 0;
                     data[datapos] = tmpdata; // start entering data at start of array
@@ -287,6 +297,7 @@ void i2cservice(void)
                     break;
 
                 case GOTDATA:
+                	mputcharUSART('G');
                 	tmpdata = SSPBUF;
         			PIR1bits.SSPIF = 0;
                     //if (tmpdata == checksum) 
@@ -299,10 +310,11 @@ void i2cservice(void)
                     state = WAIT;
                     break;
              	case GOTADDRESSWRITE:
+             		mputcharUSART('H');
         			PIR1bits.SSPIF = 0;
              		if (datapos<datacount)
              		{
-	             		//mputcharUSART('e');
+	             		mputcharUSART('P');
 	             		//mputcharUSART('a'+datapos);
 	             		//mputcharUSART('A' + data[datapos]);
 	             		SSPBUF = data[datapos];
@@ -312,17 +324,23 @@ void i2cservice(void)
 	             	}
 	             	else
 	             	{
-		             	//mputcharUSART('s');
+		             	mputcharUSART('I');
 		             	SSPBUF = checksum;
 		             	SSPCON1bits.CKP = 1;
 		             	state = SENTCHECKSUM;
 		         	}
              		break;
              	case SENTCHECKSUM:
+             		mputcharUSART('J');
              		i2cstatus = GOOD;
              		PIR1bits.SSPIF = 0;
              		break;
+             	default:
+             		tmpdata = SSPBUF;
+		            
+             		
             }
+            //mputcharUSART('O');
         }
     }
     return;
@@ -333,12 +351,14 @@ void identify(u8 *data){
 	return;
 	}	
 void setled(u8 *data){
-    PORTD = (*data << 4)&0xf0;
+    //PORTD = (*data << 4)&0xf0;
+    PORTD = PORTD |( 0x70&((*data << 4)&0xf0));
     return;
 }
 
 void checkusb(u8 *data){
 	data[0]=usbflag;
+	mputcharUSART('Q');
 	//read bit = <6> i2c -> usb
 	//write bit  = <7> usb ->i
 	// 5 lsb position within sector
@@ -371,6 +391,7 @@ void getrails(u8 *data){
 	}
 void getusbbuf(u8 *data)
 {
+	mputcharUSART('G');
 	//char loopcount;
 	//for (loopcount=0;loopcount<usbflag;loopcount++)
 	//{
@@ -380,6 +401,7 @@ void getusbbuf(u8 *data)
 }
 void setusbbuf(u8 *data)
 {
+	mputcharUSART('S');
 	//char loopcount;
 	//for (loopcount=0;loopcount<32;loopcount++)
 	//{
@@ -402,6 +424,7 @@ void getsectorlo(u8 *data)
 {
 	data[1]=(u8)((sectadd>>8)&0xff);
 	data[0]=(u8)(sectadd&0xFF);
+	mputcharUSART('F');
 }
 void getsectorhi(u8 *data)
 {
@@ -600,6 +623,14 @@ void delay(int time)
         for(sponge=0;sponge<250;sponge++);
     }
 
+}
+
+void prdbg(char sentinel, char data)
+{
+	char i=0,	b[4];
+	mputcharUSART(sentinel);
+	btoa(data,b);
+    while(b[i]!= 0 ) mputcharUSART(b[(i++)]); 
 }
 
 
