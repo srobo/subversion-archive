@@ -5,10 +5,34 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <unistd.h>
+#include <string.h>
 
 static uint16_t msd_get_sector_low( int fd );
 static uint16_t msd_get_sector_high( int fd );
 static uint16_t msd_get_sector_gen( int fd, uint8_t cmd );
+
+void show_block( uint8_t *data, uint16_t len )
+{
+	uint16_t i;
+
+	for(i=0; i<len; i++)
+		printf("%hX", data[i]);
+	printf("\n");
+}
+
+
+void chk_en( int fd )
+{
+   if( ioctl( fd, I2C_PEC, 1) < 0)
+        fprintf( stderr, "Failed to enable PEC\n");
+}
+
+void chk_dis( int fd )
+{
+   if( ioctl( fd, I2C_PEC, 0) < 0)
+        fprintf( stderr, "Failed to disable PEC\n");
+}
+
 
 msd_state_t msd_poll( int fd )
 {
@@ -19,14 +43,16 @@ msd_state_t msd_poll_full( int fd, uint8_t *subsector )
 {
 	int32_t i;
 
+	chk_en(fd);
 	i = i2c_smbus_read_byte_data( fd, CMD_POLL );
 
 	if( i < 0 ) {
 		fprintf( stderr, "Failed to read poll data: %m\n" );
 		return MSD_ERROR;
 	}
+	chk_dis(fd);
 
-	printf( "Read: %hX\n", (uint8_t)i );
+	//printf( "Read: %hX\n", (uint8_t)i );
 
 	if( subsector != NULL )
 		*subsector = (uint8_t)i & 0x1f;
@@ -43,18 +69,19 @@ msd_state_t msd_poll_full( int fd, uint8_t *subsector )
 void msd_send( int fd, uint8_t *data )
 {
 	int w;
+	uint8_t tbuf[34];
 	assert( data != NULL );
 
-	/* Send the command */
-	if( i2c_smbus_write_byte( fd, CMD_TX_DATA ) < 0 )
-	{
-		fprintf( stderr, "Failed to send subsector TX command: %m\n" );
-		exit(-1);
-	}
+	tbuf[0] = 13;//CMD_TX_DATA;
+	memcpy( &tbuf[1], data, 32 );
+	tbuf[33] = 0;
+
+	//show_block( tbuf, 34 );
+
 
 	/* At the moment, we're fudging the CRC... */
 	/* TODO! */
-	w = write( fd, data, 33 );
+	w = write( fd, tbuf, 34 );
 
 	if( w == -1 )
 	{
@@ -62,7 +89,7 @@ void msd_send( int fd, uint8_t *data )
 		exit(-1);
 	}
 
-	if( w != 32 )
+	if( w != 34 )
 	{
 		fprintf( stderr, "Failed to send subsector - only wrote %i bytes\n", w );
 		exit(-2);
@@ -112,6 +139,7 @@ static uint16_t msd_get_sector_gen( int fd, uint8_t cmd )
 {
 	int32_t i;
 
+	chk_en(fd);
 	i = i2c_smbus_read_word_data( fd, cmd );
 
 	if( i < 0 )
@@ -119,8 +147,9 @@ static uint16_t msd_get_sector_gen( int fd, uint8_t cmd )
 		fprintf( stderr, "Failed to read sector number: %m\n" );
 		exit(-1);
 	}
+	chk_dis(fd);
 
-	printf( "Read: %x\n", i );
+	//printf( "Read: %x\n", i );
 
 	return (uint16_t)i;
 }

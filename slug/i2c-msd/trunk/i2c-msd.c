@@ -9,8 +9,13 @@
 #include <sys/stat.h>
 #include <assert.h>
 #include <errno.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include "i2c-funcs.h"
+
+/* Number of seconds to poll insanely for */
+#define ACTIVE_TIMEOUT 2
 
 /* The name of the file to map as a mass storage device */
 char* image_fname;
@@ -114,6 +119,27 @@ int main( int argc, char** argv )
 	int b_fd;
 	off_t map_size = 0;
 	uint8_t *b_buf = NULL;
+	char *churn = "/|\\-";
+	uint8_t cpos = 0;
+	uint32_t w_count = 0, r_count = 0;
+	struct timeval last_active, now;
+
+	enum 
+	{
+		MODE_WAIT,	/* Wait for activity */
+		MODE_ACTIVE	/* Fast poll mode */
+	} mode;
+
+	/* The poll pause */
+	struct timespec pause_wait = {
+		.tv_sec = 0,
+		.tv_nsec = 100000000
+	};
+
+	struct timespec pause_active = {
+		.tv_sec = 0,
+		.tv_nsec = 100000
+	};
 
 	/* Parse args */
 	p = parse_args(argc, argv);
@@ -130,22 +156,61 @@ int main( int argc, char** argv )
 	assert( map_size > 0 );
 
 	printf( "%lu block device\n", map_size/512 );
+	printf("\n");
 
+	mode = MODE_WAIT;
+	while(1)
 	{
 		uint8_t subs;
 		uint32_t sector;
 		msd_state_t s = msd_poll_full( fd, &subs );
-		printf( "state: %hx subsector: %hx\n",
-			s, subs );
 
-		sector = msd_get_sector(fd);
-		printf( "sector: %x\n", sector );
+/* 		if( s == MSD_ERROR ) */
+/* 			return -5; */
 
+		printf( "%c r:%u w:%u\r", churn[cpos], r_count, w_count );
+		fflush(stdout);
+		cpos = (cpos==3)?0:cpos+1;
+		
+		if( s == MSD_READ || s == MSD_WRITE ) {
+			sector = msd_get_sector(fd);
+
+			if( s == MSD_READ ) {
+				msd_send( fd, b_buf + (sector * 512) + (subs * 32) );
+				w_count++;
+			}
+			else if ( s == MSD_WRITE ) {
+				msd_recv( fd, b_buf + (sector * 512) + (subs * 32) );
+				r_count++;
+			}
+
+			mode = MODE_ACTIVE;
+			if( gettimeofday(&last_active, NULL) < 0 ) {
+				fprintf(stderr, "Failed to get time! %m\n");
+				return -1;
+			}
+		}
+		else if( mode == MODE_ACTIVE )
+		{
+			if( gettimeofday(&now,NULL) < 0 ) {
+				fprintf(stderr, "Failed to get time! %m\n");
+				return -2;
+			}
+			
+			if( now.tv_sec - last_active.tv_sec > ACTIVE_TIMEOUT )
+				mode = MODE_WAIT;
+		}		
+
+		if( mode == MODE_WAIT )
+			nanosleep(&pause_wait, NULL);
+		else
+			nanosleep(&pause_active, NULL);
 	}
-
 
 	if( munmap( (void*)b_buf, map_size ) == -1 )
 		fprintf( stderr, "Failed to unmap image file: %m\n" );
+
+	close(b_fd);
 
 	return 0;
 }
