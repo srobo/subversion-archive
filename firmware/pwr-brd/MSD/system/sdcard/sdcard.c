@@ -180,21 +180,30 @@ char SectorRead(dword sector_addr, byte* buffer)
  *****************************************************************************/
 SDC_Error SectorWrite(dword sector_addr, byte* buffer)
 {
-    word index;
-    byte data_response;
-	SDC_RESPONSE    response; 
+
+		int sp;
+	unsigned char sectorposition = 0;
+	int fill =0;
+	char temploop;
     SDC_Error status = sdcValid;
   	
-	#ifdef STATUSLED
-	STWTRIS = OUTPUT;
-	STWLED = 1;
-	#endif
 
-	/* TODO: Write stuff! */
-    
-	#ifdef STATUSLED
-	STWLED = 0;
-	#endif
+
+	for (sectorposition=0;sectorposition<16;sectorposition++)
+	{
+		usbflag=(sectorposition|0x80); // set writeflag
+		
+		mputcharUSART('K');
+		while(usbflag!=0)
+		{				
+		i2cservice();
+		manage_usart();	
+		}
+		mputcharUSART('U');
+		for (temploop=0;temploop<32;temploop++) 
+				data[temploop] = buffer[((unsigned int)sectorposition*32)+(unsigned int)temploop] ;// copy msd buffer to i2c 
+	}
+
 	
   	return(status);
 } 
