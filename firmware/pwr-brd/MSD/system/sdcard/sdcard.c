@@ -41,6 +41,8 @@
  #include "sdcard.h"
  #include "p18f4550.h"
 
+
+
 extern volatile far byte msd_buffer[512]; 
 extern unsigned char usbflag;
 extern unsigned char data[32];
@@ -126,8 +128,8 @@ char SectorRead(dword sector_addr, byte* buffer)
 	unsigned char sectorposition = 0;
 	int fill =0;
 	char temploop;
-
     SDC_Error status = sdcValid;
+    RD4=1;
     sectadd=sector_addr;
 	//for (fill=0;fill<512;fill++) buffer[fill]=0xfe;
 
@@ -149,6 +151,7 @@ char SectorRead(dword sector_addr, byte* buffer)
 				buffer[((unsigned int)sectorposition*32)+(unsigned int)temploop] = data[temploop];// copy i2c to msd buffer
 	}
 	
+	RD4=0;
 	//buffer[0]=1;
 	//buffer[20]=0xaa;
     return(0);//(status);

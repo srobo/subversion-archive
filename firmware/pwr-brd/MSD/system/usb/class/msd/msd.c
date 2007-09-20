@@ -39,6 +39,7 @@
 #include "system\typedefs.h"
 #include "system\usb\usb.h"
 #include<string.h>
+//#include "system\Compiler.h"
 
 #ifdef USB_USE_MSD
 
@@ -788,6 +789,7 @@ void MSDReadHandler()
 			TransferLength._word--;					// we have read 1 LBA
 			status = SectorRead(LBA._dword, (byte*)&msd_buffer[0]);		
 			status = 0;
+			
 			LBA._dword++;							// read the next LBA
 			if (status==sdcValid) {
 				mputcharUSART('6');
@@ -795,8 +797,10 @@ void MSDReadHandler()
 				msd_csw.dCSWDataResidue=BLOCKLEN_512;//in order to send the
 				//512 bytes of data read
 				ptrNextData=(byte *)&msd_buffer[0];
+				PORTDbits.RD6=0;
 				while (msd_csw.dCSWDataResidue>0)
 					MSDDataIn();					// send the data
+					
 				msd_csw.dCSWDataResidue=0x0;		// for next time
 			} else {
 				msd_csw.bCSWStatus=0x01;			// Error 0x01 Refer page#18

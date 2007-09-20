@@ -158,17 +158,19 @@ void main(void)
 
     while(1)
     {
-        manage_usart();		
-        USBTasks();         // USB Tasks
-        i2cservice();
+        manage_usart();	
+         
+        USBTasks();         // USB Tasks 
+        i2cservice();    
         ProcessIO();        // See msd.c & msd.h
         //swin();
-        if ( PORTDbits.RD3)
+        /*if ( PORTDbits.RD3)
         {
 	         PORTDbits.RD4^=1;
 	        adcserv();
 	    } 
-	    else PORTDbits.RD4=0;
+	    else PORTDbits.RD4=0; */
+	    
     } //end while
 }//end main
 
@@ -311,10 +313,13 @@ void i2cservice(void)
                     break;
              	case GOTADDRESSWRITE:
              		mputcharUSART('H');
+             		 PORTDbits.RD5=1;
+             		 PORTDbits.RD6=1;
         			PIR1bits.SSPIF = 0;
              		if (datapos<datacount)
              		{
 	             		mputcharUSART('P');
+	             		PORTDbits.RD5=0;
 	             		//mputcharUSART('a'+datapos);
 	             		//mputcharUSART('A' + data[datapos]);
 	             		SSPBUF = data[datapos];
@@ -325,6 +330,7 @@ void i2cservice(void)
 	             	else
 	             	{
 		             	mputcharUSART('I');
+
 		             	SSPBUF = checksum;
 		             	SSPCON1bits.CKP = 1;
 		             	state = SENTCHECKSUM;
@@ -340,6 +346,7 @@ void i2cservice(void)
 		            
              		
             }
+            
             //mputcharUSART('O');
         }
     }
@@ -619,7 +626,7 @@ void delay(int time)
 
     for (startupdel=0;startupdel<(time*100);startupdel++)
     {
-        for(sponge=0;sponge<250;sponge++);
+        for(sponge=0;sponge<250;sponge++);	
     }
 
 }
