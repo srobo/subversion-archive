@@ -122,6 +122,7 @@ Error:
  *****************************************************************************/
 char SectorRead(dword sector_addr, byte* buffer)
 {
+		int sp;
 	unsigned char sectorposition = 0;
 	int fill =0;
 	char temploop;
@@ -145,9 +146,10 @@ char SectorRead(dword sector_addr, byte* buffer)
 		}
 		mputcharUSART('M');
 		for (temploop=0;temploop<32;temploop++) 
-				buffer[sectorposition+temploop] = data[temploop];// copy i2c to msd buffer
+				buffer[((unsigned int)sectorposition*32)+(unsigned int)temploop] = data[temploop];// copy i2c to msd buffer
 	}
-	buffer[0]=1;
+	
+	//buffer[0]=1;
 	//buffer[20]=0xaa;
     return(0);//(status);
 }

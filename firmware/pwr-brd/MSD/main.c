@@ -286,7 +286,7 @@ void i2cservice(void)
 
                 case GOTCOMMAND:              
                     //Read in the data   
-                    mputcharUSART('F');    
+                    //mputcharUSART('F');    
                     tmpdata = SSPBUF;
         			PIR1bits.SSPIF = 0;
                     data[datapos] = tmpdata; // start entering data at start of array
@@ -401,13 +401,12 @@ void getusbbuf(u8 *data)
 }
 void setusbbuf(u8 *data)
 {
-	mputcharUSART('S');
 	//char loopcount;
+	mputcharUSART('S');
 	//for (loopcount=0;loopcount<32;loopcount++)
 	//{
-	//	usbbuf[loopcount]=data[loopcount];
+	//	data[loopcount]=0x02;
 	//}
-	//usbdataused=0;	
 	usbflag=0;
 }		
 

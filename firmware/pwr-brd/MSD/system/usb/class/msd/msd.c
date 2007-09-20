@@ -714,7 +714,7 @@ void MSDReadCapacityHandler()
 	/* Hard-coded size for the moment */
 	/* 512 byte blocks for the moment - TODO: Change to 64 */
 	gblBLKLen._dword = 512;	/* Block length */
-	gblNumBLKS._dword = 1023; /* Number of blocks */
+	gblNumBLKS._dword = 3; /* Number of blocks */
 
 	// prepare the data response
 	msd_buffer[0]=gblNumBLKS.v[3];
@@ -757,6 +757,7 @@ void MSDReadCapacityHandler()
 	
 void MSDReadHandler()
 {
+
 	word i;
 	SDC_Error status;
 	WORD TransferLength;
@@ -785,7 +786,8 @@ void MSDReadHandler()
 	} else {
 		while (TransferLength._word > 0) {						
 			TransferLength._word--;					// we have read 1 LBA
-			status = SectorRead(LBA._dword, (byte*)&msd_buffer[0]);	
+			status = SectorRead(LBA._dword, (byte*)&msd_buffer[0]);		
+			status = 0;
 			LBA._dword++;							// read the next LBA
 			if (status==sdcValid) {
 				mputcharUSART('6');
