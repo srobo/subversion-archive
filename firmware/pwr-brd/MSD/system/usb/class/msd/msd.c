@@ -714,7 +714,7 @@ void MSDReadCapacityHandler()
 	/* Hard-coded size for the moment */
 	/* 512 byte blocks for the moment - TODO: Change to 64 */
 	gblBLKLen._dword = 512;	/* Block length */
-	gblNumBLKS._dword = 3; /* Number of blocks */
+	gblNumBLKS._dword = 1023; /* Number of blocks */
 
 	// prepare the data response
 	msd_buffer[0]=gblNumBLKS.v[3];
