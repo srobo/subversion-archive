@@ -20,7 +20,14 @@ unsigned char usart_data_waiting(){
 		return 0;
 }
 
+void init_usart(void)
+{
+	usart_send_head=0;
+	usart_send_tail=0;
+}
+
 void manage_usart(){
+	//return;
 	//Run once per cycle to send and receive serial data
 	//If there the tail in the send buffer trails the head
 	//then send the data pointed to by the tail and increment
@@ -62,6 +69,7 @@ void flush_usart_send(){
 }
 
 void mputcharUSART(unsigned char data){
+	//return;
 	if((usart_send_head +2)%USART_SEND_BUFFER_SIZE == usart_send_tail)
 		{
 			PORTDbits.RD7=1;

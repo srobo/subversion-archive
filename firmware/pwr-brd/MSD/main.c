@@ -74,6 +74,7 @@ unsigned char i2cstatus = BAD;
 int voltage = 0x5555;// local variables holding results of adc
 int current = 0xAAAA;
 
+#define i2c_debug if (0)
 
 u8 data[32]; // size according to smbus spec 
 unsigned long sectadd=0xabcdef12;
@@ -226,16 +227,31 @@ void i2cservice(void)
     static u8 datapos;
     static u8 checksum;
     int i;
+    
 
     u8 tmpdata;
 
-    if (PIR1bits.SSPIF){ 
+    if (PIR1bits.SSPIF){
+	    
+	    if(SSPCON1bits.SSPOV) // check for buffer overflow and goto to wait
+	    {
+		    mputcharUSART('.'); 
+		    tmpdata = SSPBUF;
+		    SSPCON1bits.SSPOV = 0;
+		    state = WAIT;
+		    return;
+		}
+		    
+		    
+	   
+	    
 	    //mputcharUSART('X');
         if(!SSPSTATbits.D_A) //It's an address byte
         {
-	        mputcharUSART('A');
+	        i2c_debug mputcharUSART('A');
             i2cstatus = BAD; //This is to check abandoned machines later
             adddump = SSPBUF;
+             i2c_debug prdbg('>', adddump);
         	PIR1bits.SSPIF = 0;
             if (!SSPSTATbits.R_W) //About to receive something from the slug
             {
@@ -260,6 +276,7 @@ void i2cservice(void)
 	        	
 	       		//mputcharUSART('W');
 	       		SSPBUF = data[0];
+	       		i2c_debug prdbg('[', data[0]);
 	            SSPCON1bits.CKP = 1; //Disable the clock stretching
 	            checksum = crc8(checksum^data[0]);
 	            datapos = 1;
@@ -290,6 +307,7 @@ void i2cservice(void)
                     //Read in the data   
                     //mputcharUSART('F');    
                     tmpdata = SSPBUF;
+                     i2c_debug prdbg('<', tmpdata);
         			PIR1bits.SSPIF = 0;
                     data[datapos] = tmpdata; // start entering data at start of array
                     checksum = crc8(checksum^data[datapos]);
@@ -301,6 +319,7 @@ void i2cservice(void)
                 case GOTDATA:
                 	mputcharUSART('G');
                 	tmpdata = SSPBUF;
+                	i2c_debug prdbg('?', tmpdata);
         			PIR1bits.SSPIF = 0;
                     //if (tmpdata == checksum) 
                     if (1) // temporary fix so no checksumm for testing
@@ -323,6 +342,7 @@ void i2cservice(void)
 	             		//mputcharUSART('a'+datapos);
 	             		//mputcharUSART('A' + data[datapos]);
 	             		SSPBUF = data[datapos];
+	             		i2c_debug prdbg(']', data[datapos]);
 	             		SSPCON1bits.CKP = 1;
 	             		checksum = crc8(checksum^data[datapos]);
 	             		datapos++;
@@ -332,6 +352,7 @@ void i2cservice(void)
 		             	mputcharUSART('I');
 
 		             	SSPBUF = checksum;
+		             	i2c_debug prdbg('_', checksum);
 		             	SSPCON1bits.CKP = 1;
 		             	state = SENTCHECKSUM;
 		         	}
@@ -341,8 +362,9 @@ void i2cservice(void)
              		i2cstatus = GOOD;
              		PIR1bits.SSPIF = 0;
              		break;
-             	//default:
-             		//tmpdata = SSPBUF;
+             	default:
+             		tmpdata = SSPBUF;
+             	i2c_debug 	prdbg('!', tmpdata);
 		            
              		
             }
@@ -482,6 +504,8 @@ static void InitializeSystem(void)
     PORTCbits.RC0=1; // never press the button, ever!! (dont hold down)
 
     // end tempfw inserts
+    
+    //init_usart();
 
     TRISC|=0x20;
     OpenUSART(
@@ -539,6 +563,8 @@ static void InitializeSystem(void)
     //SSPADD=0x55<<1; //55 used in slug software
     SSPADD=0x3f<<1;
     //	clear sm flags;....
+    
+    //SSPCON1bits.SSPOV; //Receive overflow indicator
 
     // -------current sence set up---------------------
 

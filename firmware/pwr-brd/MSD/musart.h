@@ -6,6 +6,8 @@
 
 void manage_usart( void );
 
+void init_usart(void);
+
 void mputcharUSART(unsigned char data);
 
 void mputrstringUSART(const rom unsigned char *data);

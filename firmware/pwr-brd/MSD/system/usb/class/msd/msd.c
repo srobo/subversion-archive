@@ -39,6 +39,7 @@
 #include "system\typedefs.h"
 #include "system\usb\usb.h"
 #include<string.h>
+#include<usart.h>
 //#include "system\Compiler.h"
 
 #ifdef USB_USE_MSD
@@ -96,6 +97,7 @@ void SendCSW(void);
 void ResetSenseData(void);
 void MSDDataIn(void);
 void MSDDataOut(void);
+void debug(char spoon);
 
 extern SDC_Error SectorReadj(dword, byte*);
 extern SDC_Error SectorWrite(dword, byte*);
@@ -468,12 +470,33 @@ void SendCSW(void)
 	
 void SendData(byte* dataAddr, byte dataSize)
 {
-	while(mMSDTxIsBusy());
+	
+	while(mMSDTxIsBusy())
+	{
+		if (PORTDbits.RD0)
+		{
+			debug(0x7b);
+		}
+
+	}
+	
+	
 	MSD_BD_IN.ADR=dataAddr;
 	MSD_BD_IN.Cnt=dataSize;
 	mUSBBufferReady(MSD_BD_IN);
 	USBDriverService();
 }
+
+void debug(char spoon)
+{
+	char e[4];		
+	while(BusyUSART());
+	putcUSART('Z');
+	btoa(spoon,e);	
+	while(BusyUSART());
+	putsUSART(e);
+}
+
 
 /******************************************************************************
  * Function:        void MSDDataIn(void)
@@ -502,11 +525,16 @@ void MSDDataIn(void)
 	/* Case (status==0) and (data to be sent > MSD_IN_EP_SIZE)*/
 	if ((msd_csw.bCSWStatus==0x00)&&(msd_csw.dCSWDataResidue>=MSD_IN_EP_SIZE)) {
 		/* Write next chunk of data to EP Buffer and send */
+		
+
+		PORTDbits.RD6^=1;
+		
 		SendData(ptrNextData,MSD_IN_EP_SIZE);
 		gblCBW.dCBWDataTransferLength-=	MSD_IN_EP_SIZE;
 		msd_csw.dCSWDataResidue-=MSD_IN_EP_SIZE;
 		ptrNextData+=MSD_IN_EP_SIZE;
 	} else {
+		
 		if (msd_csw.bCSWStatus!=0x0) { // error path status!=0
 			size=mMin(MSD_IN_EP_SIZE,gblCBW.dCBWDataTransferLength);
 			for (i=0;i<size;i++) msd_buffer[i]=0;	// prepare 0 data
@@ -797,10 +825,13 @@ void MSDReadHandler()
 				msd_csw.dCSWDataResidue=BLOCKLEN_512;//in order to send the
 				//512 bytes of data read
 				ptrNextData=(byte *)&msd_buffer[0];
-				PORTDbits.RD6=0;
+
 				while (msd_csw.dCSWDataResidue>0)
+//				{
 					MSDDataIn();					// send the data
-					
+//					while(BusyUSART());
+//					putcUSART('Z');
+//				}
 				msd_csw.dCSWDataResidue=0x0;		// for next time
 			} else {
 				msd_csw.bCSWStatus=0x01;			// Error 0x01 Refer page#18
