@@ -4,9 +4,17 @@
 ChangePinName(S102/CONN201, 1, 1)
 ChangePinName(S102/CONN201, 2, 2)
 
+# Start of element CONN109
+ChangePinName(CONN109, 1, 1)
+ChangePinName(CONN109, 2, 2)
+
 # Start of element S104/CONN201
 ChangePinName(S104/CONN201, 1, 1)
 ChangePinName(S104/CONN201, 2, 2)
+
+# Start of element CONN108
+ChangePinName(CONN108, 1, 1)
+ChangePinName(CONN108, 2, 2)
 
 # Start of element S109/R403
 ChangePinName(S109/R403, 1, 1)
@@ -16,6 +24,10 @@ ChangePinName(S109/R403, 2, 2)
 ChangePinName(S108/Q302, 2, S)
 ChangePinName(S108/Q302, 3, D)
 ChangePinName(S108/Q302, 1, G)
+
+# Start of element CONN107
+ChangePinName(CONN107, 1, 1)
+ChangePinName(CONN107, 2, 2)
 
 # Start of element S109/R402
 ChangePinName(S109/R402, 1, 1)
@@ -30,6 +42,10 @@ ChangePinName(S108/Q301, 1, G)
 ChangePinName(S103/R201, 1, 1)
 ChangePinName(S103/R201, 2, 2)
 
+# Start of element CONN106
+ChangePinName(CONN106, 1, 1)
+ChangePinName(CONN106, 2, 2)
+
 # Start of element S109/R401
 ChangePinName(S109/R401, 1, 1)
 ChangePinName(S109/R401, 2, 2)
@@ -38,9 +54,25 @@ ChangePinName(S109/R401, 2, 2)
 ChangePinName(S106/CONN301, 1, 1)
 ChangePinName(S106/CONN301, 2, 2)
 
+# Start of element CONN105
+ChangePinName(CONN105, 1, 1)
+ChangePinName(CONN105, 2, 2)
+
+# Start of element CONN104
+ChangePinName(CONN104, 1, 1)
+ChangePinName(CONN104, 2, 2)
+
 # Start of element S108/CONN301
 ChangePinName(S108/CONN301, 1, 1)
 ChangePinName(S108/CONN301, 2, 2)
+
+# Start of element CONN103
+ChangePinName(CONN103, 1, 1)
+ChangePinName(CONN103, 2, 2)
+
+# Start of element CONN102
+ChangePinName(CONN102, 1, 1)
+ChangePinName(CONN102, 2, 2)
 
 # Start of element CONN101
 ChangePinName(CONN101, 4, Vss)
