@@ -352,7 +352,7 @@ void i2cservice(void)
 		             	mputcharUSART('I');
 
 		             	SSPBUF = checksum;
-		             	i2c_debug prdbg('_', checksum);
+		             	i2c_debug prdbg('*', checksum);
 		             	SSPCON1bits.CKP = 1;
 		             	state = SENTCHECKSUM;
 		         	}

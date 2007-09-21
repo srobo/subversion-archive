@@ -97,7 +97,7 @@ void SendCSW(void);
 void ResetSenseData(void);
 void MSDDataIn(void);
 void MSDDataOut(void);
-void debug(char spoon);
+void debug(unsigned char spoon);
 
 extern SDC_Error SectorReadj(dword, byte*);
 extern SDC_Error SectorWrite(dword, byte*);
@@ -473,9 +473,20 @@ void SendData(byte* dataAddr, byte dataSize)
 	
 	while(mMSDTxIsBusy())
 	{
-		if (PORTDbits.RD0)
+		if (PORTDbits.RD0==1)
 		{
-			debug(0x7b);
+			while(BusyUSART());
+			putcUSART('%');
+			debug(UCON);
+			debug(UCFG);
+			debug(USTAT);
+			debug(UADDR);
+			debug(UFRMH);
+			debug(UFRML);
+			debug(UEP0);
+			debug(UEP1);
+			debug(UEP15);
+			
 		}
 
 	}
@@ -487,12 +498,12 @@ void SendData(byte* dataAddr, byte dataSize)
 	USBDriverService();
 }
 
-void debug(char spoon)
+void debug(unsigned char spoon)
 {
 	char e[4];		
 	while(BusyUSART());
-	putcUSART('Z');
-	btoa(spoon,e);	
+	putcUSART('_');
+	itoa((int)spoon,e);	
 	while(BusyUSART());
 	putsUSART(e);
 }
