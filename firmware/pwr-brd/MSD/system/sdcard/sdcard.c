@@ -49,6 +49,8 @@ extern unsigned char data[32];
 extern unsigned long sectadd;
 extern char tempstat;
 
+unsigned char* sd_outbuf;
+
 #pragma udata
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
@@ -194,20 +196,20 @@ SDC_Error SectorWrite(dword sector_addr, byte* buffer)
     SDC_Error status = sdcValid;
   	
 
+
 	sectadd=sector_addr;
 
 	for (sectorposition=0;sectorposition<1;sectorposition++)
 	{
 		usbflag=(sectorposition|0x80); // set writeflag
+	
+		/* Tell the i2c routines where to find the data to send */
+		sd_outbuf = buffer + ((unsigned int)sectorposition*32);
 		
-		//mputcharUSART('K');
+		//if(data[0]==0)RD5=1;
+		
 		while(usbflag!=0)
-		{				
-		i2cservice();	
-		}
-		//putcharUSART('U');
-		for (temploop=0;temploop<32;temploop++) 
-				data[temploop] = buffer[((unsigned int)sectorposition*32)+(unsigned int)temploop] ;// copy msd buffer to i2c 
+			i2cservice();	
 	}
 
 	

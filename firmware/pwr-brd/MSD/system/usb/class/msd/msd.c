@@ -538,7 +538,6 @@ void MSDDataIn(void)
 		/* Write next chunk of data to EP Buffer and send */
 		
 
-		PORTDbits.RD6^=1;
 		
 		SendData(ptrNextData,MSD_IN_EP_SIZE);
 		gblCBW.dCBWDataTransferLength-=	MSD_IN_EP_SIZE;
@@ -937,7 +936,7 @@ void MSDWriteHandler()
 		msd_csw.dCSWDataResidue=BLOCKLEN_512;
 		/* Read 512B into msd_buffer*/
 		while (msd_csw.dCSWDataResidue>0) 
-			MSDDataOut();	
+			MSDDataOut();		
 		if(IsWriteProtected()) {
 			gblSenseData.SenseKey=S_NOT_READY;
 			gblSenseData.ASC=ASC_WRITE_PROTECTED;

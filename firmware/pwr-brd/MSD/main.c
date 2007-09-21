@@ -82,6 +82,7 @@ unsigned char usbflag=0x00; // non zero means usb i2c bridge needs serviceing , 
 unsigned char usbdataused=0;// set by usb code, cleared by i2c code
 //unsigned char usbbuf[32]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 
+extern unsigned char* sd_outbuf;
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
 static void InitializeSystem(void);
@@ -121,7 +122,7 @@ t_command commands[] = {{0, 1,identify}, //0
                         {1, 0,setrails},//6
 	                    {0, 1,getrails},
 		                {0,32,getusbbuf},//8
-			            {1,32,setusbbuf},
+			            {32,0,setusbbuf},
 		                {1,0,sendser},//10
 			            {0,2,getsectorlo},
 				        {0,2,getsectorhi},//12
@@ -332,13 +333,11 @@ void i2cservice(void)
                     break;
              	case GOTADDRESSWRITE:
              		mputcharUSART('H');
-             		 PORTDbits.RD5=1;
-             		 PORTDbits.RD6=1;
+
         			PIR1bits.SSPIF = 0;
              		if (datapos<datacount)
              		{
 	             		mputcharUSART('P');
-	             		PORTDbits.RD5=0;
 	             		//mputcharUSART('a'+datapos);
 	             		//mputcharUSART('A' + data[datapos]);
 	             		SSPBUF = data[datapos];
@@ -420,12 +419,11 @@ void getrails(u8 *data){
 	}
 void getusbbuf(u8 *data)
 {
-	mputcharUSART('G');
-	//char loopcount;
-	//for (loopcount=0;loopcount<usbflag;loopcount++)
-	//{
-	//	data[loopcount]=usbbuf[loopcount];
-	//}
+	unsigned char pos;
+	
+	for(pos=0; pos<32; pos++)
+		data[pos] = sd_outbuf[pos];	
+	
 	usbflag=0;
 }
 void setusbbuf(u8 *data)

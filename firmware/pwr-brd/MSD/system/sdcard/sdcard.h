@@ -223,3 +223,5 @@ typedef union
 char SectorRead(dword, byte*);
 SDC_Error SectorWrite(dword, byte*);
 byte IsWriteProtected(void);
+
+extern unsigned char* sd_outbuf;
