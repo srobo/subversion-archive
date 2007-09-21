@@ -131,25 +131,28 @@ char SectorRead(dword sector_addr, byte* buffer)
     SDC_Error status = sdcValid;
     RD4=1;
     sectadd=sector_addr;
-	//for (fill=0;fill<512;fill++) buffer[fill]=0xfe;
+	
+	for (fill=0;fill<512;fill++) buffer[fill]=0xfe;
 
 
-	//PORTDbits.RD5=1;
-	for (sectorposition=0;sectorposition<16;sectorposition++)
+
+	for (sectorposition=0;sectorposition<1;sectorposition++)
 	{
-		//mputcharUSART('1'+sectorposition);
+	
 		usbflag=(sectorposition|0x40); // set readflag
 		
 		mputcharUSART('T');
 		while(usbflag!=0)
 		{				
 		i2cservice();
-		manage_usart();	
+		//manage_usart();	
 		}
 		mputcharUSART('M');
 		for (temploop=0;temploop<32;temploop++) 
 				buffer[((unsigned int)sectorposition*32)+(unsigned int)temploop] = data[temploop];// copy i2c to msd buffer
 	}
+	
+	
 	
 	RD4=0;
 	//buffer[0]=1;
@@ -191,18 +194,18 @@ SDC_Error SectorWrite(dword sector_addr, byte* buffer)
     SDC_Error status = sdcValid;
   	
 
+	sectadd=sector_addr;
 
-	for (sectorposition=0;sectorposition<16;sectorposition++)
+	for (sectorposition=0;sectorposition<1;sectorposition++)
 	{
 		usbflag=(sectorposition|0x80); // set writeflag
 		
-		mputcharUSART('K');
+		//mputcharUSART('K');
 		while(usbflag!=0)
 		{				
-		i2cservice();
-		manage_usart();	
+		i2cservice();	
 		}
-		mputcharUSART('U');
+		//putcharUSART('U');
 		for (temploop=0;temploop<32;temploop++) 
 				data[temploop] = buffer[((unsigned int)sectorposition*32)+(unsigned int)temploop] ;// copy msd buffer to i2c 
 	}

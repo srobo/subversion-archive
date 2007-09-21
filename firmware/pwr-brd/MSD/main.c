@@ -159,7 +159,7 @@ void main(void)
 
     while(1)
     {
-        manage_usart();	
+        //manage_usart();	
          
         USBTasks();         // USB Tasks 
         i2cservice();    
@@ -505,7 +505,7 @@ static void InitializeSystem(void)
 
     // end tempfw inserts
     
-    //init_usart();
+    init_usart();
 
     TRISC|=0x20;
     OpenUSART(

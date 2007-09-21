@@ -471,8 +471,8 @@ void SendCSW(void)
 void SendData(byte* dataAddr, byte dataSize)
 {
 	
-	while(mMSDTxIsBusy())
-	{
+	while(mMSDTxIsBusy());
+/*	{
 		if (PORTDbits.RD0==1)
 		{
 			while(BusyUSART());
@@ -489,7 +489,7 @@ void SendData(byte* dataAddr, byte dataSize)
 			
 		}
 
-	}
+	}*/
 	
 	
 	MSD_BD_IN.ADR=dataAddr;
