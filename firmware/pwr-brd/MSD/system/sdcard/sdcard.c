@@ -138,7 +138,7 @@ char SectorRead(dword sector_addr, byte* buffer)
 
 
 
-	for (sectorposition=0;sectorposition<1;sectorposition++)
+	for (sectorposition=0;sectorposition<2;sectorposition++)
 	{
 	
 		usbflag=(sectorposition|0x40); // set readflag
@@ -199,7 +199,7 @@ SDC_Error SectorWrite(dword sector_addr, byte* buffer)
 
 	sectadd=sector_addr;
 
-	for (sectorposition=0;sectorposition<1;sectorposition++)
+	for (sectorposition=0;sectorposition<2;sectorposition++)
 	{
 		usbflag=(sectorposition|0x80); // set writeflag
 	

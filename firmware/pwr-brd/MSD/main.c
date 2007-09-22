@@ -110,6 +110,7 @@ void getusbbuf(u8 *data);
 void setusbbuf(u8 *data);
 void getsectorlo(u8 *data);
 void getsectorhi(u8 *data);
+void datagood(u8 *data);
 
 /** V E C T O R  R E M A P P I N G *******************************************/
 //						{bytes in, bytesout, function name}
@@ -126,7 +127,8 @@ t_command commands[] = {{0, 1,identify}, //0
 		                {1,0,sendser},//10
 			            {0,2,getsectorlo},
 				        {0,2,getsectorhi},//12
-					    {32,0,setusbbuf}};
+					    {32,0,setusbbuf},//old not really needed kept for 
+						{1, 0,datagood}};//14
 
 extern void _startup (void);        // See c018i.c in your C18 compiler dir
 #pragma code _RESET_INTERRUPT_VECTOR = 0x000020
@@ -423,17 +425,10 @@ void getusbbuf(u8 *data)
 	
 	for(pos=0; pos<32; pos++)
 		data[pos] = sd_outbuf[pos];	
-	
-	usbflag=0;
 }
 void setusbbuf(u8 *data)
 {
-	//char loopcount;
 	mputcharUSART('S');
-	//for (loopcount=0;loopcount<32;loopcount++)
-	//{
-	//	data[loopcount]=0x02;
-	//}
 	usbflag=0;
 }		
 
@@ -456,6 +451,11 @@ void getsectorhi(u8 *data)
 {
 	data[1]=(u8)((sectadd>>24)&0xff);
 	data[0]=(u8)((sectadd>>16)&0xFF);
+}
+
+void datagood(u8 *data)
+{
+		usbflag=0;
 }
 /******************************************************************************
  * Function:        static void InitializeSystem(void)
