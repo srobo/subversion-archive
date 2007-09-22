@@ -50,7 +50,7 @@
 
 #define MOREDATA    !0
 #define NODATA      0
-#define SDC_SECTOR_SIZE    512
+#define SDC_SECTOR_SIZE    64 //512 we changed this tb
 #define CSD_SIZE 16			// 16 Bytes CSD register
 
 // used in delayms function
@@ -84,7 +84,7 @@
 #define BLOCKLEN_64                 0x0040
 #define BLOCKLEN_128                0x0080
 #define BLOCKLEN_256                0x0100
-#define BLOCKLEN_512                0x0200
+#define BLOCKLEN_512                SR_BLOCKLEN // was 0x200 we changed this tb &rs
 
 #define SDC_FLOATING_BUS    0xFF
 #define SDC_BAD_RESPONSE    SDC_FLOATING_BUS

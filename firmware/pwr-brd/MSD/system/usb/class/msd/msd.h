@@ -55,7 +55,9 @@
 #define MSD_RESET 0xff
 #define GET_MAX_LUN 0xfe
 
-#define BLOCKLEN_512                0x0200
+
+
+#define BLOCKLEN_512                SR_BLOCKLEN // 0x0200 we changed this
 
 #define STMSDTRIS TRISD0
 #define STRUNTRIS TRISD1

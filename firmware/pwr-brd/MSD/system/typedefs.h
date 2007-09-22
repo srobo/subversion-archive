@@ -37,6 +37,8 @@
 #ifndef TYPEDEFS_H
 #define TYPEDEFS_H
 
+#define SR_BLOCKLEN 512
+
 typedef unsigned char   byte;           // 8-bit
 typedef unsigned int    word;           // 16-bit
 typedef unsigned long   dword;          // 32-bit
