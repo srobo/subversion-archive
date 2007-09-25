@@ -15,6 +15,7 @@ from cherrypy.lib.cptools import serveFile
 log = logging.getLogger("roboide.controllers")
 
 REPO = "http://studentrobotics.org/isvn/"
+#REPO = "file:///tmp/cheese"
 ZIPNAME = "robot.zip"
 
 class Client:
@@ -248,8 +249,6 @@ class Root(controllers.RootController):
         return dict(curtime=curtime, code=code, revision=revision, path=file,
                 name=os.path.basename(file))
 
-    #TODO: Create an action that uses client.log to return a JSON list of
-    #previous file revisions for a mochikit drop down
     @expose("json")
     def gethistory(self, file):
         c = Client()
@@ -260,7 +259,8 @@ class Root(controllers.RootController):
             print "LOG FAILED"
             return dict([])
 
-        return dict(history=[{"author":x["author"], \
+        return dict(  path=file,\
+                      history=[{"author":x["author"], \
                       "date":time.strftime("%H:%M:%S %d/%m/%Y", \
                       time.localtime(x["date"])), \
                       "message":x["message"], "rev":x["revision"].number} \
@@ -389,7 +389,8 @@ class Root(controllers.RootController):
         #TODO: Check for path naugtiness
         path = os.path.dirname(file)
         basename = os.path.basename(file)
-        rev = self.get_revision(rev)
+        rev = self.get_revision("HEAD") #Always check in over the head to get
+        #old revisions to merge over new ones
 
         if not client.is_url(REPO + path): #new dir needed...
             reload = "true"

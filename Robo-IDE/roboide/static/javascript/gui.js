@@ -40,7 +40,7 @@ function pollAction(result)
                 var lr = "lr" + file;
                 MochiKit.Visual.Highlight(lr, {'startcolor' : '#ffff99'});
             }
-            }
+    }
 
     if(result["log"].length != undefined){
         if(result["log"][0]["rev"] > poll_data["logrev"]){
@@ -377,10 +377,13 @@ function showtab(tabpath, force) {
             namefield = MochiKit.DOM.getElement("filename");
             MochiKit.DOM.setNodeAttribute(namefield, "value",
                     open_files[tabpath].editedfilename);
+            //Set the correct history
+            MochiKit.DOM.replaceChildNodes("file_log",
+                open_files[tabpath]["history"]);
+
             //TODO: Also load commit message
             
             //Update the history log
-            getLog(tabpath);
             setStatus( "File: " + cur_path + " Revision: " + open_files[tabpath].revision);
         }
     }
@@ -566,7 +569,7 @@ function filesaved(result) {
 }
 
 function loadFile(file, revision) {
-    if(open_files[file]){
+    if(open_files[file] && (open_files[file]["revision"] == revision)){
         //File already loaded!
         showtab(file);
         return;
@@ -583,19 +586,19 @@ function gotFile(result) {
     if(open_files[result["path"]]){
         //Close the current tab
         closetab(result["path"]);
-    } else {
-        //Add this info to the list of open files
-        open_files[result["path"]] = {"revision" : result["revision"],
-                                      "name" : result["name"],
-                                      "tabdata" : result["code"],
-                                      "dirty" : false,
-                                      "editedfilename" : result["path"],
-                                      "changed" : false,
-                                      "system" : false};
-
-        //Load the current script up
-        showtab(result["path"]);
     }
+    //Add this info to the list of open files
+    open_files[result["path"]] = {"revision" : result["revision"],
+                                    "name" : result["name"],
+                                    "tabdata" : result["code"],
+                                    "dirty" : false,
+                                    "editedfilename" : result["path"],
+                                    "changed" : false,
+                                    "system" : false};
+
+    getLog(result["path"]);
+    //Load the current script up
+    showtab(result["path"]);
 }
 
 //FILE HISTORY DISPLAY AND PICKING
@@ -606,23 +609,29 @@ function getLog(file) {
     d.addCallback(gotLog);
 }
 
+function returnSelect(data, currev) {
+    return MochiKit.DOM.createDOM("OPTION",
+            (data["rev"] == currev) ? {"value" : data["rev"],"selected" : "selected"} : {"value" : data["rev"]},
+            "Rev: " + data["rev"] + ", Author: " + data["author"] + ", Date: " +
+    data["date"]);
+}
+
 function gotLog(result) {
-    //file_log
+    fortab = result["path"];
+    
+    rs = function(a) {
+            return returnSelect(a, open_files[fortab]["revision"]);
+         };
+
     historyselect = MochiKit.DOM.createDOM("SELECT", {'id':'logselect'},
-        MochiKit.Base.map(returnSelect, result["history"]));
+        MochiKit.Base.map(rs, result["history"]));
+    open_files[fortab]["history"] = historyselect;
     MochiKit.DOM.replaceChildNodes("file_log", historyselect);
 }
 
 function loadHistory() {
     box = MochiKit.DOM.getElement("logselect");
     loadFile(cur_path, box.options[box.selectedIndex].value);
-}
-
-function returnSelect(data) {
-    return MochiKit.DOM.createDOM("OPTION",
-            (data["rev"] == cur_rev) ? {"value" : data["rev"],"selected" : "selected"} : {"value" : data["rev"]},
-            "Rev: " + data["rev"] + ", Author: " + data["author"] + ", Date: " +
-    data["date"]);
 }
 
 //MISC
