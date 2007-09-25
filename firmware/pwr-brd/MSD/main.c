@@ -12,8 +12,8 @@
  * Software License Agreement
  *
  * The software supplied herewith by Microchip Technology Incorporated
- * (the “Company”) for its PICmicro® Microcontroller is intended and
- * supplied to you, the Company’s customer, for use solely and
+ * (the Â“CompanyÂ”) for its PICmicroÂ® Microcontroller is intended and
+ * supplied to you, the CompanyÂ’s customer, for use solely and
  * exclusively on Microchip PICmicro Microcontroller products. The
  * software is owned by the Company and/or its supplier, and is
  * protected under applicable copyright laws. All rights are reserved.
@@ -22,7 +22,7 @@
  * civil liability for the breach of the terms and conditions of this
  * license.
  *
- * THIS SOFTWARE IS PROVIDED IN AN “AS IS” CONDITION. NO WARRANTIES,
+ * THIS SOFTWARE IS PROVIDED IN AN Â“AS ISÂ” CONDITION. NO WARRANTIES,
  * WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
  * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
  * PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
@@ -488,18 +488,24 @@ static void InitializeSystem(void)
     //e1 - fet control servo rail
     //re2 - fet slug rail
 
-    PORTC|=0x01; // MUST BE set BEFORE UNTRISTATING ELSE SLUG BOOT!!!
+    PORTC=0x01; // MUST BE set BEFORE UNTRISTATING ELSE SLUG BOOT!!!
+    TRISA=0XFF;
+    TRISB=0XFF;
     TRISC=0XFE;// make slug pin Out
-    TRISE = 0;
-    PORTE = 0b111; // turn all power rails on
     TRISD=0x0F;
+    TRISE = 0;
+    PORTE = 0b110; // turn all power rails on
+    //IN real life will be 111 but changted to accomodate prototype2 relay error
+
     
-	PORTD =0;
+    PORTD =0;
 	
-    delay(20);
+
+    delay(50);
     PORTCbits.RC0=0;// blip slug
     delay(20);
     PORTCbits.RC0=1; // never press the button, ever!! (dont hold down)
+    delay(20); // JUST TO BE SURE NO POWER RAIL FLUCTUATION
 
     // end tempfw inserts
     
