@@ -12,13 +12,15 @@
 </head>
 <body>
     <div id="sidebar">
-        <h2>Files</h2>
-        <a href="./feed/atom1.0">
-            <img style="border: none;" src="./static/images/feed.png" alt="Atom"/>Atom 1.0</a>
-        <a href="./feed/rss2.0">
-            <img style="border: none;" src="./static/images/feed.png" alt="RSS 2.0"/>RSS 2.0</a>
-        <button id="checkout" onclick="checkout()">Checkout Selected</button>
-        <button id="delete" onclick="deleteclick()">Delete Selected</button>
+        <div id="feeds">
+        <img id="logo" src="./static/images/logo.png" />
+            <a href="./feed/atom1.0" style="float: right">
+                Atom 1.0<img style="border: none;" src="./static/images/feed.png" alt="Atom"/></a>
+            <a href="./feed/rss2.0" style="float: left">
+                <img style="border: none;" src="./static/images/feed.png" alt="RSS 2.0"/>RSS 2.0</a>
+            <button id="checkout" onclick="checkout()">Checkout Selected</button>
+            <button id="delete" onclick="deleteclick()">Delete Selected</button>
+        </div>
         <div id="filelist"></div>
     </div>
     <div id="code_block">

@@ -8,10 +8,15 @@ html, body, th, td {
   font: x-small "Lucida Grande", "Lucida Sans Unicode", geneva, verdana, sans-serif;
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 a.link, a, a.active {
   color: #369;
+}
+
+#codeblock {
+    height: 100%;
 }
 
 #main_content {
@@ -42,7 +47,7 @@ a.link, a, a.active {
     top: 0;
     left: 0;
     right: 0;
-    height: 425px;
+    height: 100%;
     overflow: scroll;
     z-index: 10;
 }
@@ -80,9 +85,24 @@ span.list_box {
   border: 1px solid #aaa;
   background-color: #eee;
   margin: 0.5em;
+  padding: 1em;
   float: left;
   width: 200px;
-  height: 500px;
+  height: 525px;
+  margin-bottom: 20px;
+}
+
+#feeds {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+#feeds button{
+    margin-top: 0.5em;
+}
+
+#logo {
+    margin-bottom: 1em;
 }
 
 #sidebar h2 {

@@ -569,12 +569,14 @@ function filesaved(result) {
 }
 
 function loadFile(file, revision) {
+    var revision = (revision == null) ? "HEAD" : revision;
+
     if(open_files[file] && (open_files[file]["revision"] == revision)){
         //File already loaded!
         showtab(file);
         return;
     }
-    var revision = (revision == null) ? "HEAD" : revision;
+
     var d = MochiKit.Async.loadJSONDoc("./filesrc", {file : file,
                                                      revision : revision});
     d.addCallback(gotFile);
