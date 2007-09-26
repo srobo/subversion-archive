@@ -1,2 +1,2 @@
-pwm-test: pwm-test.c
-	$(CC) -o pwm-test pwm-test.c
+dio-test: dio-test.c
+	$(CC) -o dio-test dio-test.c
