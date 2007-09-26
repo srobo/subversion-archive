@@ -5,7 +5,7 @@ Building is fairly simple.  Follow these steps:
     they go and how fast your disk is.  Please allow this ASCII art
     diagram to explain:
 
-    Faster Cores		^  * Blink
+    More Cores   		^  * Blink
     Faster Disk			|   
 				|  * Get some Coffee.
 				|   
