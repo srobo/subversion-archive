@@ -1,4 +1,4 @@
-config BR2_PACKAGE_SPCTOOLS
+config BR2_PACKAGE_SPCAVIEW
 	bool "spcatools"
 	default n
 	help
