@@ -27,13 +27,8 @@ $(OPENCV_DIR)/.configured: $(OPENCV_DIR)/.source
 		--target=$(GNU_TARGET_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
-		--with-v4l --with-python --without-quicktime --with-swig --without-gtk --disable-apps -C $(OPENCV_DIR)/config.cache );
+		--with-v4l --without-python --without-quicktime --with-swig --without-libpng --without-gtk --disable-apps -C $(OPENCV_DIR)/config.cache );
 	touch $@
-
-# 		PATH="../../package/opencv:$$PATH" \
-# 		PKG_CONFIG_PREFIX=$(STAGING_DIR) \
-# 		PKG_CONFIG_PATH=$(STAGING_DIR)/lib/pkgconfig:$(STAGING_DIR)/usr/local/lib/pkgconfig \
-# 		LDFLAGS="-L$(STAGING_DIR)/lib " \ 
 
 $(OPENCV_DIR)/cv/src/.libs/libcv.so.1.0.0: $(OPENCV_DIR)/.configured
 	$(MAKE) CFLAGS="$(TARGET_CFLAGS)" CC=$(TARGET_CC) -C $(OPENCV_DIR) 
