@@ -19,7 +19,9 @@ $(OPENCV_DIR)/.source: $(DL_DIR)/opencv-$(OPENCV_DATE).tar.bz2
 	touch $(OPENCV_DIR)/.source
 
 $(OPENCV_DIR)/.configured: $(OPENCV_DIR)/.source
-#	rm -f $(OPENCV_DIR)/config.cache
+	#Hack to remove the libpng dependency
+	sed -i -e 's/IMAGELIBS="-lpng12 $$IMAGELIBS"//' $(OPENCV_DIR)/configure
+	sed -i -e 's/LIBS="-lpng12 $$LIBS"//' $(OPENCV_DIR)/configure
 	( cd $(OPENCV_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) " \
