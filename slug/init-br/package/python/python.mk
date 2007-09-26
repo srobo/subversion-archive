@@ -3,7 +3,7 @@
 # python
 #
 #############################################################
-PYTHON_VERSION=2.5.1
+PYTHON_VERSION=2.4.2
 PYTHON_SOURCE:=Python-$(PYTHON_VERSION).tar.bz2
 PYTHON_SITE:=http://python.org/ftp/python/$(PYTHON_VERSION)
 PYTHON_DIR:=$(BUILD_DIR)/Python-$(PYTHON_VERSION)
@@ -21,7 +21,7 @@ $(PYTHON_DIR)/.unpacked: $(DL_DIR)/$(PYTHON_SOURCE)
 	touch $(PYTHON_DIR)/.unpacked
 
 $(PYTHON_DIR)/.patched: $(PYTHON_DIR)/.unpacked
-	toolchain/patch-kernel.sh $(PYTHON_DIR) package/python/ \*.patch
+	toolchain/patch-kernel.sh $(PYTHON_DIR) package/python/ python\*.patch
 	touch $(PYTHON_DIR)/.patched
 
 $(PYTHON_DIR)/.hostpython: $(PYTHON_DIR)/.patched
@@ -29,6 +29,7 @@ $(PYTHON_DIR)/.hostpython: $(PYTHON_DIR)/.patched
 		OPT="-O1" \
 		./configure \
 		--with-cxx=no \
+		--with-system-ffi \
 		$(DISABLE_NLS); \
 		make python Parser/pygen; \
 		mv python hostpython; \
@@ -81,16 +82,16 @@ $(TARGET_DIR)/$(PYTHON_TARGET_BINARY): $(PYTHON_DIR)/$(PYTHON_BINARY)
 		$(TARGET_DIR)/usr/lib/python*/test
 
 #Install the python header files
-$(STAGING_DIR)/usr/include/python-2.5/Python.h: $(TARGET_DIR)/$(PYTHON_TARGET_BINARY)
-	mkdir -p $(STAGING_DIR)/usr/include/python-2.5
-	cp $(TARGET_DIR)/usr/include/python2.5/*.h $(STAGING_DIR)/usr/include/python-2.5
+$(STAGING_DIR)/usr/include/python-2.4/Python.h: $(TARGET_DIR)/$(PYTHON_TARGET_BINARY)
+	mkdir -p $(STAGING_DIR)/usr/include/python-2.4
+	cp $(TARGET_DIR)/usr/include/python2.4/*.h $(STAGING_DIR)/usr/include/python-2.4
 
 #Install the python library
-$(STAGING_DIR)/usr/lib/libpython2.5.so: $(PYTHON_DIR)/$(PYTHON_BINARY)
+$(STAGING_DIR)/usr/lib/libpython2.4.so: $(PYTHON_DIR)/$(PYTHON_BINARY)
 	mkdir -p $(STAGING_IR)/usr/lib
-	cp $(PYTHON_DIR)/libpython2.5* $(STAGING_DIR)/usr/lib
+	cp $(PYTHON_DIR)/libpython2.4* $(STAGING_DIR)/usr/lib
 
-python: uclibc $(TARGET_DIR)/$(PYTHON_TARGET_BINARY) $(STAGING_DIR)/usr/include/python-2.5/Python.h $(STAGING_DIR)/usr/lib/libpython2.5.so
+python: uclibc $(TARGET_DIR)/$(PYTHON_TARGET_BINARY) $(STAGING_DIR)/usr/include/python-2.4/Python.h $(STAGING_DIR)/usr/lib/libpython2.4.so
 
 python-clean:
 	-$(MAKE) -C $(PYTHON_DIR) distclean
