@@ -25,7 +25,7 @@ def __set__( channel, dir, speed ):
         print "Wrongness.... should throw an error here"
 
     v = speed | (dir << 9) | (channel<<11)
-    c2py.writeworddata( ADDRESS, MOTOR_CMD_CONF, v )
+    c2py.writeworddata( ADDRESS, MOTOR_CMD_CONF, v, 0 )
 
 def setspeed( channel, speed ):
     dir = FORWARD
