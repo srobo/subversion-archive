@@ -50,7 +50,7 @@ void wait_trigger(void)
 	{
 		r = fgetc(stdin);		
 		if( r == EOF )
-			fprintf(stderr,"EOF - help\n");
+            exit(0);
 	}
 }
 
@@ -357,7 +357,8 @@ int main(int argc, char **argv){
     huehist = allo_hist(1, huehistbins, h_ranges2);
 
     while (1){
-	wait_trigger();
+	    wait_trigger();
+        
         srlog(DEBUG, "Grabbing frame");
         frame = get_frame(capture);
 #ifdef DEBUGDISPLAY
@@ -408,7 +409,6 @@ int main(int argc, char **argv){
             printf("Peak found from hue %d to %d, Mass %d.\n",
                     tmppeak->start, tmppeak->end, tmppeak->mass);
 #endif
-            
             srlog(DEBUG, "Masking out peak");
             if(tmppeak->start < tmppeak->end)
                 cvInRangeS(hue, cvScalarAll(tmppeak->start), cvScalarAll(tmppeak->end), huemask);
@@ -459,7 +459,8 @@ int main(int argc, char **argv){
             tmppeak = tmppeak->next;
         }
 
-        fputs("\n", stdout);
+        fputs("BLOBS\n", stdout);
+        fflush(stdout);
 
         srlog(DEBUG, "Freeing peaks");
         freepeaks(headpeak);
