@@ -2,7 +2,8 @@
 # opencv
 ##############################
 
-OPENCV_DATE := 2007-03-24
+OPENCV_DATE := 2007-09-26
+#2007-03-24
 OPENCV_REPOS := :pserver:anonymous@opencvlibrary.cvs.sourceforge.net:/cvsroot/opencvlibrary
 OPENCV_DIR := $(BUILD_DIR)/opencv-$(OPENCV_DATE)
 
@@ -22,6 +23,8 @@ $(OPENCV_DIR)/.configured: $(OPENCV_DIR)/.source
 	#Hack to remove the libpng dependency
 	sed -i -e 's/IMAGELIBS="-lpng12 $$IMAGELIBS"//' $(OPENCV_DIR)/configure
 	sed -i -e 's/LIBS="-lpng12 $$LIBS"//' $(OPENCV_DIR)/configure
+	sed -i -e 's/have_png=yes/have_png=no/' $(OPENCV_DIR)/configure
+	sed -i -e 's/#define HAVE_PNG//' $(OPENCV_DIR)/configure
 	( cd $(OPENCV_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) " \
