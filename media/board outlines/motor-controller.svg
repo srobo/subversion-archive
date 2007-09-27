@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448"
+   height="1052.3622"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   version="1.0"
+   sodipodi:docbase="/home/justyn/electronic/robotics/ugforge/media/board outlines"
+   sodipodi:docname="motor-controller.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="211.66608"
+     inkscape:cy="82.584799"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     width="744.09449px"
+     height="1052.3622px"
+     inkscape:window-width="1024"
+     inkscape:window-height="697"
+     inkscape:window-x="0"
+     inkscape:window-y="23" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:#ff0000;stroke-width:0.34786153;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2232"
+       width="371.26025"
+       height="181.6524"
+       x="0.14784811"
+       y="870.58032" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#ff0000;stroke-width:0.17716534;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2234"
+       sodipodi:cx="13.744388"
+       sodipodi:cy="886.67822"
+       sodipodi:rx="5.5242715"
+       sodipodi:ry="5.5242715"
+       d="M 19.268659 886.67822 A 5.5242715 5.5242715 0 1 1  8.2201161,886.67822 A 5.5242715 5.5242715 0 1 1  19.268659 886.67822 z"
+       transform="matrix(1.0472425,0,0,1.0472425,1.1405454,-40.629328)" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#ff0000;stroke-width:0.17716534;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2236"
+       sodipodi:cx="13.744388"
+       sodipodi:cy="886.67822"
+       sodipodi:rx="5.5242715"
+       sodipodi:ry="5.5242715"
+       d="M 19.268659 886.67822 A 5.5242715 5.5242715 0 1 1  8.2201161,886.67822 A 5.5242715 5.5242715 0 1 1  19.268659 886.67822 z"
+       transform="matrix(1.0472425,0,0,1.0472425,3.0629917,108.3271)" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#ff0000;stroke-width:0.17716534;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2238"
+       sodipodi:cx="13.744388"
+       sodipodi:cy="886.67822"
+       sodipodi:rx="5.5242715"
+       sodipodi:ry="5.5242715"
+       d="M 19.268659 886.67822 A 5.5242715 5.5242715 0 1 1  8.2201161,886.67822 A 5.5242715 5.5242715 0 1 1  19.268659 886.67822 z"
+       transform="matrix(1.0472425,0,0,1.0472425,341.63456,108.32711)" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#ff0000;stroke-width:0.17716534;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2240"
+       sodipodi:cx="13.744388"
+       sodipodi:cy="886.67822"
+       sodipodi:rx="5.5242715"
+       sodipodi:ry="5.5242715"
+       d="M 19.268659 886.67822 A 5.5242715 5.5242715 0 1 1  8.2201161,886.67822 A 5.5242715 5.5242715 0 1 1  19.268659 886.67822 z"
+       transform="matrix(1.0472425,0,0,1.0472425,341.63456,-3.7010813e-2)" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#ff0000;stroke-width:0.17716534;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2242"
+       sodipodi:cx="13.744388"
+       sodipodi:cy="886.67822"
+       sodipodi:rx="5.5242715"
+       sodipodi:ry="5.5242715"
+       d="M 19.268659 886.67822 A 5.5242715 5.5242715 0 1 1  8.2201161,886.67822 A 5.5242715 5.5242715 0 1 1  19.268659 886.67822 z"
+       transform="matrix(1.0472425,0,0,1.0472425,341.60629,-40.642436)" />
+  </g>
+</svg>
