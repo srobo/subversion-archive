@@ -41,6 +41,19 @@ typedef struct blob {
     unsigned int colour;
 } srBlob;
 
+/* Wait for a newline on stdin */
+void wait_trigger(void)
+{
+	int r = 0;
+
+	while( r != '\n' ) 
+	{
+		r = fgetc(stdin);		
+		if( r == EOF )
+			fprintf(stderr,"EOF - help\n");
+	}
+}
+
 void srlog(char level, char *m){
 #ifdef DEBUGMODE
     struct tm * tm;
@@ -344,6 +357,7 @@ int main(int argc, char **argv){
     huehist = allo_hist(1, huehistbins, h_ranges2);
 
     while (1){
+	wait_trigger();
         srlog(DEBUG, "Grabbing frame");
         frame = get_frame(capture);
 #ifdef DEBUGDISPLAY
