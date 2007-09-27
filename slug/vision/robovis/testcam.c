@@ -1,17 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <time.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "opencv/cv.h"
 #include "opencv/highgui.h"
 
 #define DEBUG 0
 #define ERROR 1
-#define DEBUGMODE
-#define DEBUGDISPLAY
+
+//#define DEBUGMODE
+//#define DEBUGDISPLAY
 
 const unsigned char DEFAULTSATCUTOFF = 30;
-const unsigned int MINMASS = 500;
+const unsigned int MINMASS = 200;
 const unsigned char MINHUEWIDTH = 1;
 const unsigned char MINVAL = 50;
 const unsigned int DEFAULTSATPEAK = 150;
@@ -29,6 +34,12 @@ typedef struct peak {
     unsigned int mass;
     struct peak *next;
 } srPeak;
+
+typedef struct blob {
+    unsigned int centrex, centrey;
+    unsigned int mass;
+    unsigned int colour;
+} srBlob;
 
 void srlog(char level, char *m){
 #ifdef DEBUGMODE
@@ -130,8 +141,30 @@ srPeak* findpeaks(CvHistogram *hist, unsigned int bins,
                     }
                 }
                 curpeakmass = 0;
-            } else
+            } else {
+                if((i-curpeakstart) > 5){
+                    tmp = (srPeak*) malloc(sizeof(srPeak));
+                    if(tmp == NULL){
+                        srlog(ERROR, "Could not allocate memory for a peak record.");
+                        return NULL;
+                    }
+                    tmp->start = curpeakstart;
+                    tmp->end = i;
+                    tmp->mass = curpeakmass;
+                    tmp->next = NULL;
+                    if(head == NULL){
+                        head = tmp;
+                        tail = tmp;
+                    } else {
+                        tail->next = tmp;
+                        tail = tmp;
+                    }
+                    peakstate = IN;
+                    curpeakstart = i;
+                    curpeakmass += bin_val;
+                }
                 curpeakmass += bin_val;
+        }
     }
     //Is there a peak continuing off the end?
     if(peakstate == IN){
@@ -200,7 +233,7 @@ unsigned char get_min_sat(CvHistogram *sathist){
 
 CvCapture *get_camera(){
     srlog(DEBUG, "Opening camera");
-    CvCapture *capture = cvCaptureFromCAM(1);
+    CvCapture *capture = cvCaptureFromCAM(0);
     if (capture == NULL){
         srlog(ERROR, "Failed to open camera");
         //TODO: Exit here?
@@ -272,6 +305,9 @@ int main(int argc, char **argv){
     int num_contours;
     double area;
 
+    srBlob curblob;
+    CvContour *curcontour;
+
 #ifdef DEBUGDISPLAY
     //No idea what this returns on fail.
     cvNamedWindow("testcam", CV_WINDOW_AUTOSIZE);
@@ -282,7 +318,7 @@ int main(int argc, char **argv){
     capture = get_camera();
     
     //Get a frame to find the image size
-    frame = get_frame(capture); 
+    frame = get_frame(capture);
     framesize = cvGetSize(frame);
 #ifdef DEBUGMODE
     printf("Framesize %dx%d.\n", framesize.width, framesize.height);
@@ -342,7 +378,7 @@ int main(int argc, char **argv){
 #ifdef DEBUGMODE
         printf("Minimum hue weighting in histogram = %d.\n", minhue);
 #endif
-
+        
         srlog(DEBUG, "Finding hue peaks");
         headpeak = findpeaks(huehist, HUEBINS, minhue);
 
@@ -352,6 +388,7 @@ int main(int argc, char **argv){
         contour_storage = cvCreateMemStorage(0); //TODO: Look this up
 
         tmppeak = headpeak;
+
         while(tmppeak){
 #ifdef DEBUGMODE
             printf("Peak found from hue %d to %d, Mass %d.\n",
@@ -379,6 +416,19 @@ int main(int argc, char **argv){
                 area = abs(cvContourArea(cont, CV_WHOLE_SEQ));
 
                 if(area > MINMASS){
+                    curcontour = (CvContour*)cont->ptr;
+                    curblob.centrex = curcontour->rect.x + (curcontour->rect.width)/2;
+                    curblob.centrey = curcontour->rect.y + (curcontour->rect.height)/2;
+                    if(curblob.centrex < CAMWIDTH && curblob.centrey < CAMHEIGHT){
+                        curblob.mass = area;
+                        curblob.colour = (tmppeak->end + tmppeak->start) / 2;
+
+                        fprintf(stdout, "%d,%d,%d,%d\n", curblob.centrex,
+                                                                    curblob.centrey,
+                                                                    curblob.mass,
+                                                                    curblob.colour);
+                    }
+
 #ifdef DEBUGDISPLAY
                     srlog(DEBUG, "Drawing the contour");
                     outline = cvBoundingRect(cont, 0);
@@ -394,6 +444,8 @@ int main(int argc, char **argv){
             }
             tmppeak = tmppeak->next;
         }
+
+        fputs("\n", stdout);
 
         srlog(DEBUG, "Freeing peaks");
         freepeaks(headpeak);
