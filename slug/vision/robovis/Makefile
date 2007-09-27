@@ -1,7 +1,7 @@
 CBFLAGS = `pkg-config --cflags blobslib`
 LDBFLAGS = `pkg-config --libs blobslib`
-CFLAGS = `pkg-config --cflags opencv` -Wall
-LDFLAGS = `pkg-config --libs opencv`
+CFLAGS ?= `pkg-config --cflags opencv` -Wall
+LDFLAGS ?= `pkg-config --libs opencv`
 
 PY_CFLAGS ?= /usr/include/python2.4
 
