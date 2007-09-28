@@ -192,3 +192,26 @@ quiz:
 
 
 dont tell them abot surprises mess upo theyre time plan
+
+Shires:
+
+Bedfordshire
+Buckinghamshire
+Cambridgeshire
+Cheshire
+Derbyshire
+Gloucestershire
+Hampshire
+Hertfordshire
+Lancashire
+Leicestershire
+Lincolnshire
+Northamptonshire
+North Yorkshire
+Nottinghamshire
+Oxfordshire
+Shropshire
+Staffordshire
+Warwickshire
+Wiltshire
+Worcestershire
