@@ -1,0 +1,19 @@
+/* CSS Document */
+
+body	{ font-family: Luxi Sans, sans-serif; color: #0D1F61; margin: 0 auto; text-align: center; }
+#wrapper	{ margin: 0; width: 100%; border: none; padding: 0px; }
+#page_title	{ text-align: center; vertical-align: center; margin: 0px; padding: 0px; background-color: #DFDBD7; height: 175px; }
+#page_main	{ }
+
+.head1	{ width: 100%; }
+.head1 td	{ vertical-align: middle; }
+
+a	{ text-decoration: none; color: blue; }
+a:visited	{ text-decoration: none; color: purple; }
+a:hover, a:visited:hover, a:active	{ text-decoration: none; color: red; }
+
+h3	{ font-weight: bolder; margin: 0; font-size: 44px; }
+img	{ border: none; }
+.left	{ text-align: left; }
+.center	{ text-align: center; }
+.right	{ text-align: right; }
