@@ -1,0 +1,121 @@
+colectoing tookens, this is an arena
+build a robot
+ai
+drive and collect token
+done by easter.
+"not remote control"
+not robot wars
+teanms of ...
+
+suport netowr
+mentor visting
+website forum
+teacher
+
+timescale
+they build the mechanics and some elec
+given pack of stuff and money on these dates
+3 install ments, now, 2 weeks, last day in november
+
+say use schools H&S rules.
+
+promice a manual by a date - PDF so it happens
+
+hold back manual so no cramp brainstorming
+
+flexability
+
+impossible to create rules - any questions. get in touch
+
+today you will be given some stuff - tale with
+
+----------------------------------------------------------------------------
+software:
+
+it is common people are not as intersted int hte programming as everything else
+
+overview of software 
+in-proc-out
+types of io
+slug
+python intro
+roboide can go back mistake, multi edit
+programing and debugging
+mass storage
+
+how to process results of sensors
+
+modualrity
+start simple
+given example code
+build-test cycle
+------------------------------------------------------------------------
+
+team/leadership:
+
+online forums
+teamwiki
+prizes for 
+best online community
+private wiki
+world readable blogs
+
+start earlyer and comunicate
+
+kiss
+
+teamwork, 
+help other teams mutual
+be realist in time planning
+time buffer
+creat leader compatibility and time
+give role
+communicatoin
+talk to mentor to resolve problems
+frequent meetings with team to present what theyre doing
+make sure that everyone knows whats got to be done
+
+
+------------------------------------------------------------------------
+
+mech:
+design cycle
+prototype
+drivetrain/sterring
+motors/gears
+bearings
+chassis
+token starategy
+physics of sensors
+kit of parts
+
+engineeroing principles
+modules
+cad
+design decisions
+nice/nasty photos
+
+----------------------------------------------------------------
+
+game/elec:
+
+this board does.... link to justyn diagrams
+
+colors to folow passed as argument main
+xbee start stop
+
+board outlines 
+
+look after boards
+
+general healthcare
+
+walking throught the algorithum  - cardboard blinkers cant move your nets. 
+
+you will be given rules
+
+game summary your gonna have a robot and some tokens and do this tackticks
+
+
+
+
