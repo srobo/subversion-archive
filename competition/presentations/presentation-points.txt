@@ -105,6 +105,8 @@ colors to folow passed as argument main
 xbee start stop
 
 board outlines 
+idea of value and retuns policy
+worth money delecate
 
 look after boards
 
@@ -117,5 +119,7 @@ you will be given rules
 game summary your gonna have a robot and some tokens and do this tackticks
 
 
-
+--------------------------------------------------
+documents for tomorow:
+dates
 
