@@ -418,6 +418,7 @@ void xbee_conn_register_callbacks (XbeeConn *conn, xb_conn_callbacks_t *callback
 
 }
 
+
 void xbee_conn_set_channel ( XbeeConn *conn, int16_t channel )
 {
 	assert ( conn != NULL );
@@ -425,6 +426,7 @@ void xbee_conn_set_channel ( XbeeConn *conn, int16_t channel )
 	uint8_t data[3];
 
 	fprintf (stderr, "Requesting Channel: %d\n", channel);
+
 	data[0] = XBEE_COMMAND_SET_CHANNEL;
 	data[1] = (uint8_t)((channel >> 8) & 0xFF);
 	data[2] = (uint8_t)(channel & 0xFF);
