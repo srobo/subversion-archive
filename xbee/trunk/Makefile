@@ -9,7 +9,7 @@ CFLAGS += -I./common
 CFLAGS += `pkg-config --cflags gtk+-2.0 gobject-2.0`
 LDFLAGS += `pkg-config --libs gtk+-2.0 gobject-2.0`
 
-all: xbd/xbd libxbee/test
+all: xbd/xbd libxbee/test compcode/compcode
 
 include ./*/include.mk
 
