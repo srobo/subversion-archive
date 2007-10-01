@@ -11,16 +11,13 @@
 \begin {document}
 
 \maketitle
-%\tableofcontents
 
+\noindent The following defines the rules and regulations of the Student Robotics 2008 competition.
 
-\noindent The following defines the rules and regulations of the competition. Failure to adhere to these regulations may result in disqualification.
+\newcounter{rule}[section]
+\newcommand{\rcn}{\stepcounter{rule}\arabic{section}.\arabic{rule}}
+\renewcommand{\labelenumi}{\rcn}
 
-\input {definitions}
-
-\include {conduct}
-\include {arena}
+\input {game-rules}
 \include {robots}
-\include {gameplay}
-
 \end {document}
