@@ -1,6 +1,7 @@
 \section{Specifications}
-\newcommand{\rcnii}{\stepcounter{rule}\arabic{subsection}.\arabic{rule}}
-\renewcommand{\labelenumi}{\rcn}
+\newcounter{rulei}[subsection]
+\newcommand{\rcnii}{\stepcounter{rulei}\arabic{section}.\arabic{subsection}.\arabic{rulei}}
+\renewcommand{\labelenumi}{\rcnii}
 
 \subsection{Arena}
 \begin{enumerate}
