@@ -166,10 +166,10 @@ staqff keep asking about ti me plan maby be a little distracting
 quiz:
 
 
-1:Name of the star robot in star wars that does no speak 
+1:Name of the robot in star wars that doesn't speak 
 2:Name Collin Pillingers lost mars lander
 3:Who presents art attack
-4:What is the most comon Pub name in britain
+4: What is the name of the loud man who has presented the Cillit Bang adverts?
 5:George is the informal name for what part of an aircraft
 6:at what point is temperature the same on the celcius and ferenheight scale
 7:Name as many counties ending in shire
@@ -177,12 +177,14 @@ quiz:
 9: which army is headed by general john gowan
 10: what is the perfect score in a game of 10 pin bowling
 
+#4:What is the most comon Pub name in britain
 
 
 1 R2D2
 2 beagle 2
 3 neil buchannan
-4 Red lion
+#4 Red lion
+4 Barry Scott
 5 Autopilot
 6 -40 
 7 greater than 10 - tiebreaker
