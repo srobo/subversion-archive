@@ -9,4 +9,5 @@ c2pymodule.o: c2pymodule.c
 .PHONY: clean
 
 clean:
-	-rm -f c2pymodule.{so,o}
+	rm -f c2pymodule.so
+	rm -f c2pymodule.o

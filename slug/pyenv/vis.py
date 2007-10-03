@@ -32,7 +32,7 @@ class Camera:
     def vispoll(self):
         text = ""
 
-        yield 0 #End of setup
+        yield None #End of setup
 
         event = VISEvent()
 
@@ -53,14 +53,13 @@ class Camera:
                     lines = lastfull.strip().split('\n')
                     event = VISEvent()
                     for line in lines:
-                        if line == "":
-                            continue
-                        info = line.split(",")
-                        event.addblob(info[0], info[1], info[2], info[3])
+                        if line != "":
+                            info = line.split(",")
+                            event.addblob(info[0], info[1], info[2], info[3])
 
                     if self.streaming:
                         self.getframe()
-
+                    
                     yield event
 
             #Haven't reached the end of a frame yet, so don't raise the event

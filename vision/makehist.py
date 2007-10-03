@@ -2,39 +2,7 @@ import colorsys
 import sys
 from PIL import Image
 from pylab import *
-
-def rgb_to_hsv(r, g, b):
-    r = float(r)/255
-    g = float(g)/255
-    b = float(b)/255
-	
-    minval = min(r, g, b)
-    maxval = max(r, g, b)
-    delta = maxval - minval
-
-    v = maxval
-    if delta == 0:
-        h = 0
-        s = 0
-    else:
-        s = delta / maxval
-        del_r = (((maxval - r) / 6) + (delta / 2)) / delta
-        del_g = (((maxval - g) / 6) + (delta / 2)) / delta
-        del_b = (((maxval - b) / 6) + (delta / 2)) / delta
-
-        if r == maxval:
-            h = del_b - del_g
-        elif g == maxval:
-            h = (float(1)/3) + del_r - del_b
-        elif b == maxval:
-            h = (float(2)/3) + del_g - del_r
-
-        if h < 0:
-            h = h + 1
-        if h > 1:
-            h = h - 1
-
-    return (h*360, s*100, v*100)
+from conv import rgb_to_hsv
     
 
 im = Image.open(sys.argv[1]).resize((80, 60))

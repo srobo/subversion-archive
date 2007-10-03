@@ -3,22 +3,39 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <stdint.h>
 #include "i2c-dev.h"
 
 static int fd;
 
-static PyObject* c2py_smbuswrite( PyObject *self, 
+static PyObject* c2py_smbuswritebyte( PyObject *self, 
 			    PyObject *args );
 
-static PyObject* c2py_smbusread( PyObject *self, 
+static PyObject* c2py_smbusreadbyte( PyObject *self, 
+			    PyObject *args );
+
+static PyObject* c2py_smbuswritebyte_data( PyObject *self, 
+			    PyObject *args );
+
+static PyObject* c2py_smbusreadbyte_data( PyObject *self, 
+			    PyObject *args );
+
+static PyObject* c2py_smbuswriteword_data( PyObject *self, 
+			    PyObject *args );
+
+static PyObject* c2py_smbusreadword_data( PyObject *self, 
 			    PyObject *args );
 
 static PyObject *I2CError;
 
 static PyMethodDef c2pyMethods[] = {
-	{"write",c2py_smbuswrite,METH_VARARGS,"Write to the SMBus"},
-	{"read",c2py_smbusread,METH_VARARGS,"Read from the SMBus"},
-    {NULL,NULL,0,NULL}
+	{"writebyte",c2py_smbuswritebyte,METH_VARARGS,"Write a byte to the SMBus"},
+	{"readbyte",c2py_smbusreadbyte,METH_VARARGS,"Read a byte from the SMBus"},
+    {"readbytedata",c2py_smbusreadbyte_data,METH_VARARGS,"Read a byte from the SMBus with a command"},
+    {"writebytedata",c2py_smbuswritebyte_data,METH_VARARGS,"Write a byte to the SMBus with a command"},
+    {"readworddata",c2py_smbusreadword_data,METH_VARARGS,"Read a word from the SMBus with a command"},
+    {"writeworddata",c2py_smbuswriteword_data,METH_VARARGS,"Write a word to the SMBus with a command"},
+{NULL,NULL,0,NULL}
 };
 
 PyMODINIT_FUNC
@@ -38,64 +55,191 @@ initc2py(void)
         return;
     }
 
-    if( ioctl( fd, I2C_PEC, 1) < 0)
-    {
-        PyErr_SetString(I2CError, "Could not enable checksumming on i2c.\n");
-        return;
-    }
+    
 }
 
-static PyObject* c2py_smbuswrite( PyObject *self, 
+static PyObject* c2py_smbuswritebyte( PyObject *self, 
 				   PyObject *args )
 {
-    unsigned char address, command; //Address of device, command for device
-    int size, width, result;        //Size to send, width of buffer, result
-    const char *data = NULL;                     //Data buffer
+    unsigned char address;                 //Address of device
+    unsigned char data, usepec = 1;        //Data
 
-	if (!PyArg_ParseTuple(args,"BBis#", &address, &command, &size, &data, &width)){
-        PyErr_SetString(PyExc_TypeError, "Pass Address, ReadWrite, Command, Size, Data.");
+	if (!PyArg_ParseTuple(args,"BB|B", &address, &data, &usepec)){
 	    return NULL;
     }
 
-    if(size > width){
-        PyErr_SetString(PyExc_RuntimeError, "Not enough data provided.");
+    if(ioctl( fd, I2C_SLAVE, address)){
+        PyErr_SetString(I2CError, "Error setting I2C address.");
         return NULL;
     }
+    
+    if( ioctl( fd, I2C_PEC, usepec) < 0)
+    {
+        PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
+        return;
+    }
 
-    union i2c_smbus_data datablock;
-
-    memcpy(datablock.block, data, width);
-
-    if(i2c_smbus_access(fd, I2C_SMBUS_WRITE, command, size, &datablock)){
+    if(i2c_smbus_access(fd, I2C_SMBUS_WRITE, data, I2C_SMBUS_BYTE, NULL) < 0){
         PyErr_SetString(I2CError, "Error writing to bus");
         return NULL;
     }
-
-    I2CError = PyErr_NewException("I2C Error", NULL, NULL);
 
     Py_INCREF(Py_None);
 
     return Py_None;
 }
 
-static PyObject* c2py_smbusread( PyObject *self, 
+static PyObject* c2py_smbusreadbyte( PyObject *self, 
 				   PyObject *args )
 {
-    unsigned char address, command; //Address of device, command for device
-    int size,  result;        //Size to send, width of buffer, result
+    unsigned char address, usepec = 1; //Address of device
+    union i2c_smbus_data datablock;
     PyObject *retstr = NULL;
 
-	if (!PyArg_ParseTuple(args,"BBi", &address, &command, &size)){
-        PyErr_SetString(PyExc_TypeError, "Pass Address, ReadWrite, Command, Size, Data.");
+	if (!PyArg_ParseTuple(args,"B|B", &address, &usepec)){
 	    return NULL;
     }
+    
+    if(ioctl( fd, I2C_SLAVE, address)){
+        PyErr_SetString(I2CError, "Error setting I2C address.");
+        return NULL;
+    }
 
-    union i2c_smbus_data datablock;
+    if( ioctl( fd, I2C_PEC, usepec) < 0)
+    {
+        PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
+        return;
+    }
 
-    if(i2c_smbus_access(fd, I2C_SMBUS_READ, command, size, &datablock)){
+    if(i2c_smbus_access(fd, I2C_SMBUS_READ, 0, I2C_SMBUS_WRITE, &datablock)){
         PyErr_SetString(I2CError, "Error reading from bus");
         return NULL;
     }
 
-    return Py_BuildValue("s#", datablock.block, size);
+    return Py_BuildValue("i", 0x0FF & datablock.byte);
 }
+
+static PyObject* c2py_smbuswritebyte_data( PyObject *self, 
+				   PyObject *args )
+{
+    unsigned char address, command, usepec = 1, data;
+    union i2c_smbus_data datablock;
+
+	if (!PyArg_ParseTuple(args,"BBB|B", &address, &command, &data, &usepec)){
+	    return NULL;
+    }
+
+    if(ioctl( fd, I2C_SLAVE, address)){
+        PyErr_SetString(I2CError, "Error setting I2C address.");
+        return NULL;
+    }
+
+    if( ioctl( fd, I2C_PEC, usepec) < 0)
+    {
+        PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
+        return;
+    }
+    
+    datablock.byte = data;
+
+    if(i2c_smbus_access(fd, I2C_SMBUS_WRITE, command, I2C_SMBUS_BYTE_DATA, &datablock) < 0){
+        PyErr_SetString(I2CError, "Error writing to bus");
+        return NULL;
+    }
+
+    Py_INCREF(Py_None);
+
+    return Py_None;
+}
+static PyObject* c2py_smbusreadbyte_data( PyObject *self, 
+				   PyObject *args )
+{
+    unsigned char address, command, usepec = 1;
+    union i2c_smbus_data datablock;
+
+	if (!PyArg_ParseTuple(args,"BB|B", &address, &command, &usepec)){
+	    return NULL;
+    }
+    
+    if(ioctl( fd, I2C_SLAVE, address)){
+        PyErr_SetString(I2CError, "Error setting I2C address.");
+        return NULL;
+    }
+
+    if( ioctl( fd, I2C_PEC, usepec) < 0)
+    {
+        PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
+        return;
+    }
+    
+    if(i2c_smbus_access(fd, I2C_SMBUS_READ, command, I2C_SMBUS_BYTE_DATA, &datablock)){
+        PyErr_SetString(I2CError, "Error reading from bus");
+        return NULL;
+    }
+
+    return Py_BuildValue("i", datablock.byte & 0x0FF);
+}
+
+static PyObject* c2py_smbuswriteword_data( PyObject *self, 
+				   PyObject *args )
+{
+    unsigned char address, command, usepec = 1;
+    uint16_t data;
+    union i2c_smbus_data datablock;
+
+	if (!PyArg_ParseTuple(args,"BBH|B", &address, &command, &data, &usepec)){
+	    return NULL;
+    }
+
+    if(ioctl( fd, I2C_SLAVE, address)){
+        PyErr_SetString(I2CError, "Error setting I2C address.");
+        return NULL;
+    }
+
+    if( ioctl( fd, I2C_PEC, usepec) < 0)
+    {
+        PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
+        return;
+    }
+    
+    datablock.word = data;
+    fprintf(stdout, "Sending word %d\n", datablock.word);
+
+    if(i2c_smbus_access(fd, I2C_SMBUS_WRITE, command, I2C_SMBUS_WORD_DATA, &datablock) < 0){
+        PyErr_SetString(I2CError, "Error writing to bus");
+        return NULL;
+    }
+
+    Py_INCREF(Py_None);
+
+    return Py_None;
+}
+static PyObject* c2py_smbusreadword_data( PyObject *self, 
+				   PyObject *args )
+{
+    unsigned char address, command, usepec = 1;
+    union i2c_smbus_data datablock;
+
+	if (!PyArg_ParseTuple(args,"BB|B", &address, &command, &usepec)){
+	    return NULL;
+    }
+    
+    if(ioctl( fd, I2C_SLAVE, address)){
+        PyErr_SetString(I2CError, "Error setting I2C address.");
+        return NULL;
+    }
+
+    if( ioctl( fd, I2C_PEC, usepec) < 0)
+    {
+        PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
+        return;
+    }
+    
+    if(i2c_smbus_access(fd, I2C_SMBUS_READ, command, I2C_SMBUS_WORD_DATA, &datablock)){
+        PyErr_SetString(I2CError, "Error reading from bus");
+        return NULL;
+    }
+
+    return Py_BuildValue("i", datablock.word && 0x0FFFF);
+}
+

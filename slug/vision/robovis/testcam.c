@@ -17,6 +17,7 @@
 
 const unsigned char DEFAULTSATCUTOFF = 30;
 const unsigned int MINMASS = 200;
+const unsigned int MAXMASS = 2000;
 const unsigned char MINHUEWIDTH = 1;
 const unsigned char MINVAL = 50;
 const unsigned int DEFAULTSATPEAK = 150;
@@ -297,9 +298,9 @@ int main(int argc, char **argv){
              *satthresh, *huemask, *hue2mask, *comthresh, *tmpmask;
 #ifdef DEBUGDISPLAY
     IplImage *dsthsv, *dstrgb;
-    CvRect outline;
     CvScalar avghue;
 #endif
+    CvRect outline;
     CvSize framesize;
     CvHistogram *sathist, *huehist;
     int sathistbins[] = {SATBINS};
@@ -319,7 +320,6 @@ int main(int argc, char **argv){
     double area;
 
     srBlob curblob;
-    CvContour *curcontour;
 
 #ifdef DEBUGDISPLAY
     //No idea what this returns on fail.
@@ -380,7 +380,11 @@ int main(int argc, char **argv){
 #endif
         
         srlog(DEBUG, "Generating mask of > minsat pixels");
+        //huemask used temporarily
         cvThreshold(sat, satthresh, minsat, 255, CV_THRESH_BINARY);
+        cvErode(satthresh, huemask, NULL, 2);
+        cvDilate(huemask, satthresh, NULL, 4);
+
 #ifdef DEBUGDISPLAY
         cvShowImage("satthresh", satthresh);
 #endif
@@ -429,10 +433,12 @@ int main(int argc, char **argv){
             for(; cont; cont = cont->h_next){
                 area = abs(cvContourArea(cont, CV_WHOLE_SEQ));
 
-                if(area > MINMASS){
-                    curcontour = (CvContour*)cont->ptr;
-                    curblob.centrex = curcontour->rect.x + (curcontour->rect.width)/2;
-                    curblob.centrey = curcontour->rect.y + (curcontour->rect.height)/2;
+                if(area > MINMASS && area < MAXMASS){
+
+                    outline = cvBoundingRect(cont, 0);
+                    
+                    curblob.centrex = outline.x + (outline.width)/2;
+                    curblob.centrey = outline.y + (outline.height)/2;
                     if(curblob.centrex < CAMWIDTH && curblob.centrey < CAMHEIGHT){
                         curblob.mass = area;
                         curblob.colour = (tmppeak->end + tmppeak->start) / 2;
@@ -441,18 +447,16 @@ int main(int argc, char **argv){
                                                                     curblob.centrey,
                                                                     curblob.mass,
                                                                     curblob.colour);
-                    }
-
 #ifdef DEBUGDISPLAY
-                    srlog(DEBUG, "Drawing the contour");
-                    outline = cvBoundingRect(cont, 0);
+                        srlog(DEBUG, "Drawing the contour");
+                        
+                        avghue = cvScalar(((tmppeak->start)+(tmppeak->end))/2, 255, 255, 0);
 
-                    avghue = cvScalar(((tmppeak->start)+(tmppeak->end))/2, 255, 255, 0);
-
-                    cvRectangle(dsthsv, cvPoint(outline.x, outline.y),
-                                    cvPoint(outline.x+outline.width, outline.y+outline.height),
-                                    avghue, CV_FILLED, 8, 0);
+                        cvRectangle(dsthsv, cvPoint(outline.x, outline.y),
+                                        cvPoint(outline.x+outline.width, outline.y+outline.height),
+                                        avghue, CV_FILLED, 8, 0);
 #endif
+                    }
                                         
                 }
             }
@@ -473,8 +477,8 @@ int main(int argc, char **argv){
         cvReleaseMemStorage(&contour_storage);
 #ifdef DEBUGMODE
         srlog(DEBUG, "Saving frame to out.jpg");
-        cvSaveImage("out.jpg", frame);
 #endif
+        cvSaveImage("out.jpg", frame);
     }
     return 0;
 }

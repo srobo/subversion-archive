@@ -1,6 +1,7 @@
 import colorsys
 import sys
 from PIL import Image
+from pylab import *
 from functions import *
 
 MINWIDTH = 2 #Minimum width of a peak
@@ -8,16 +9,37 @@ MINWIDTH = 2 #Minimum width of a peak
 #1. Load image as list of pixels
 rgb, (WIDTH, HEIGHT) = get_image_pixels(sys.argv[1])
 
+out = Image.new("RGB", (WIDTH, HEIGHT)) 
+dataout = out.load()
+
 #2. Convert to HSV
 hsv = [rgb_to_hsv(x[0], x[1], x[2]) for x in rgb]
 
 #3. Get a minimum saturation - below this is white
-minsat = get_min_sat(get_hist(hsv, 100, 1, 0, 0))
+sathist = get_hist(hsv, 100, 1, [])
 
-print minsat
+minsat = get_min_sat(sathist)
+
+print "Minimum saturation: %d" % minsat
+
+minval = get_min_val()
+
+print "Minimum value is %d" % minval
+
+for i in range(len(hsv)):
+    if hsv[i][1] > minsat and hsv[i][2] > minval:
+        dataout[i%WIDTH, i/WIDTH] =  rgb[i]
+    else:
+        dataout[i%WIDTH, i/WIDTH] = (34, 255, 0)
+
+out.show()
 
 #4. Generate a histogram of hue values
-huehist = get_hist(hsv, 360, 0, 1, minsat)
+huehist = get_hist(hsv, 360, 0, [(1, minsat),(2, minval)])
+
+plot(huehist)
+show()
+clf()
 
 #5. Find a minimum useful peak height
 huecutoff = get_cut_off(huehist)

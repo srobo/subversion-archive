@@ -4,6 +4,9 @@ from PIL import Image
 
 DEFAULTSATCUTOFF = 30
 MINMASS = 25
+MINVAL = 50
+DEFAULTSATPEAK = 80
+MINWHITEWIDTH = 2
 
 def makemax(a, b, labels):
     if labels[a] == labels[b]:
@@ -87,8 +90,7 @@ def label(data, minhue, maxhue, minsat, WIDTH, HEIGHT):
 
     return blobs, labels
 
-DEFAULTSATPEAK = 100
-MINWHITEWIDTH = 2
+
 
 def get_min_sat(sathist):
     """
@@ -168,16 +170,20 @@ def rgb_to_hsv(r, g, b):
 
     return (h*359, s*99, v*99)
     
+def get_min_val():
+    return MINVAL
 
 def get_image_pixels(filename):
     im = Image.open(sys.argv[1]).resize((80, 60))
     return list(im.getdata()), im.size
 
 
-def get_hist(hsv, bins, getid, minid, minno):
+def get_hist(hsv, bins, getid, mins):
     hist = [0] * bins
     for i in range(0, len(hsv)):
-        if hsv[i][minid] >= minno:
-            cur = int(hsv[i][getid])
-            hist[cur] = hist[cur] + 1
+        for id, val in mins:
+            if hsv[i][id] < val:
+                continue
+        cur = int(hsv[i][getid])
+        hist[cur] = hist[cur] + 1
     return hist

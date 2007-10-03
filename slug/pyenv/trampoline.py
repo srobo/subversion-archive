@@ -7,12 +7,15 @@ BIG_TIME = 9999999999999
 class trampoline:
     q = [] #A list of polling tasks to execute when main stalled
 
-    def addtask(self, name, task):
+    def addtask(self, task):
         """
         This function adds a task to the queue. Tasks must be generators.
         """
         task.next() #Advance generator to first yield
-        self.q.append((name, task))
+        self.q.append(task)
+    
+    def removetask(self, task):
+        self.q.remove(task)
 
     def gettimeouttime(self, timeout):
         if timeout > 0:
@@ -44,7 +47,7 @@ class trampoline:
                 except StopIteration:
                     return
 
-            for name, task in self.q:
+            for task in self.q:
                 try:
                     result = task.next()
                 except StopIteration:
@@ -54,7 +57,6 @@ class trampoline:
                 if result != None:
                     #Got an event for the mainloop
                     robot.currentevent = result
-                    robot.currentevent.name = name
                     try:
                         timeout = main.next()
                     except StopIteration:
