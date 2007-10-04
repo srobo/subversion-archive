@@ -4,9 +4,6 @@ import math
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
-pygame.init()
-screen = pygame.display.set_mode((640, 480))
-
 class poly:
     def __init__(self, points, direction, width):
         self.points = []
@@ -16,7 +13,7 @@ class poly:
         self.colour = WHITE
         self.direction = list(direction)
         self.width = width
-        self.rotation = 0
+        self.rotation = 0.0
     
     def blit(self, surface, dirty):
         dirty.append(pygame.draw.polygon(surface, self.colour, self.points,
@@ -27,21 +24,26 @@ class poly:
             self.points[i][0] += self.direction[0]
             self.points[i][1] += self.direction[1]
     
-    def rotate(self, rads, centre):
+    def rotate(self, rads, centre, screen, dirty):
         #Find center of rotation
         #It's relative to p0
-        x = centre[0]
-        y = centre[1]
-        
-        centre = [0, 0]
 
-        centre[0] = self.points[0][0] + x * math.sin(self.rotation) + \
-                                        y * math.cos(self.rotation)
-        centre[1] = self.points[0][1] + x * math.cos(self.rotation) + \
-                                        y * math.sin(self.rotation)
+        cx = centre[0]
+        cy = centre[1]
+
+        p0x = self.points[0][0]
+        p0y = self.points[0][1]
         
-        x = centre[0]
-        y = centre[1]
+
+        x = p0x# + cx * math.cos(self.rotation) + \
+               #   cy * math.sin(self.rotation)
+        y = p0y# + cx * math.sin(self.rotation) + \
+               #   cy * math.cos(self.rotation)
+        
+        dirty.append(pygame.draw.circle(screen, (255, 0, 0), (x, y), 1))
+
+
+        print "Centre: %f, %f" % (x, y)
 
         #Now move each point rads relative to xy
         for i in range(len(self.points)):
@@ -52,26 +54,25 @@ class poly:
                 continue
 
             r = math.sqrt(px*px+py*py)
-            if py == 0:
-                if px > 0:
-                    a = 0
-                else:
-                    a = math.pi/2
-            elif px == 0:
+            if px == 0:
                 if py > 0:
-                    a = math.pi / 4
+                    a = 3 * (math.pi / 2)
                 else:
-                    a = 3 * (math.pi / 4)
+                    a = 1 * (math.pi / 2)
             else:
-                a = math.tan(py/px)
+                a = math.atan(py/px)
+
+            if px < 0:
+                a = math.pi + a
 
             #Now in polar, rotate point
             a += rads
 
             #Back to cartesian
+            print "From %f,%f (%f, %f)" % (px,py, r, a),
             px = r * math.cos(a)
             py = r * math.sin(a)
-
+            print " to %f,%f (%f, %f)" % (px, py, r, a)
 
             self.points[i][0] = px + x
             self.points[i][1] = py + y
@@ -128,30 +129,36 @@ class poly:
 
         return False
 
+if __name__ == "__main__":
+    pygame.init()
+    screen = pygame.display.set_mode((640, 480))
+    clock = pygame.time.Clock()
 
+    polys = []
+    polys.append(poly([(100, 100), (200, 100), (200, 200)], (0, 0.1), 1))
+    polys.append(poly([(300, 100), (250, 200), (300, 300)], (0.1, 0), 1))
 
-polys = []
-polys.append(poly([(100, 100), (200, 100), (200, 200)], (0, 0.1), 1))
-polys.append(poly([(300, 100), (250, 200), (300, 300)], (0.1, 0), 1))
+    polys.append(poly([(5, 5), (635, 5), (635, 475), (5, 475)], (0, 0), 10))
 
-polys.append(poly([(5, 5), (635, 5), (635, 475), (5, 475)], (0, 0), 10))
+    while True:
+        clock.tick(5)
+        dirty = []
 
-while True:
-    dirty = []
+        for i in range(len(polys)):
+            poly = polys[i]
+            opolys = polys[:i] + polys[i+1:]
 
-    for i in range(len(polys)):
-        poly = polys[i]
-        opolys = polys[:i] + polys[i+1:]
+            poly.wipe(screen, dirty)
+            if i == 0:
+                poly.rotate(0.1, (0, 0), screen, dirty)
+            poly.move()
 
-        poly.wipe(screen, dirty)
-        poly.move()
+            for o in opolys:
+                if poly.collide(o):
+                    #poly.direction[0] *= -1
+                    #poly.direction[1] *= -1
+                    print "Collidey death"
 
-        for o in opolys:
-            if poly.collide(o):
-                poly.direction[0] *= -1
-                poly.direction[1] *= -1
-                print "Collidey death"
+            poly.blit(screen, dirty)
 
-        poly.blit(screen, dirty)
-
-    pygame.display.update(dirty)
+        pygame.display.update(dirty)
