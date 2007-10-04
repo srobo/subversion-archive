@@ -3,6 +3,7 @@ import ode
 import time
 from math import sqrt
 from poly import poly
+import random
 
 pygame.init()
 
@@ -61,6 +62,27 @@ robot.setPosition((1, 2, 0.25))
 
 bodies.append(robot)
 
+tokens = []
+
+def maketoken():
+    global world, space
+
+    token = ode.Body(world)
+    M = ode.Mass()
+    M.setBox(30, 0.044, 0.044, 0.044)
+    token.serMass(M)
+    token.shape = "box"
+    token.boxsize = (0.044, 0.044, 0.044)
+
+    geom = ode.GeomBox(space, lengths=token.boxsize)
+    return token
+
+for i in range(30):
+    x = random.random() * 8
+    y = random.random() * 8
+    token = maketoken()
+    token.setPosition((x, y, 0.05))
+    tokens.append(token)
 
 def near_callback(args, geom1, geom2):
     contacts = ode.collide(geom1, geom2)
@@ -105,7 +127,6 @@ while True:
 
     m1 = force * (balance + 1)/2
     m2 = force * (1-((balance + 1) / 2))
-    print m1, m2
 
     screen.fill(BLACK)
 
@@ -118,6 +139,16 @@ while True:
 
     p = poly([p0, p1, p2, p3], (0,0), 0)
     p.blit(screen, [])
+    del p
+
+    for token in tokens:
+        p0 = [x*METRE for x in token.getRelPointPos((-0.022, -0.022, -0.022))[:2]]
+        p1 = [x*METRE for x in token.getRelPointPos((0.022, -0.022, -0.022))[:2]]
+        p2 = [x*METRE for x in token.getRelPointPos((0.20, 0.022, -0.022))[:2]]
+        p3 = [x*METRE for x in token.getRelPointPos((-0.20, 0.022, -0.022))[:2]]
+        p = poly([p0, p1, p2, p3], (0,0), 0)
+        p.blit(screen, [])
+        del p
 
     pygame.display.flip()
 
