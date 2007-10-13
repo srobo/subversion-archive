@@ -15,6 +15,9 @@ SCALE = 60
 FPS = 100
 
 class World:
+    motorleft = 0
+    motorright = 0
+
     class Box:
         def __init__(self, density, width, x, y, z, world, space, geoms = None):
             self.box = ode.Body(world)
@@ -226,11 +229,6 @@ class World:
         dt = 1.0/FPS
         lasttime = time.time()
 
-        stick = pygame.joystick.Joystick(0)
-        stick.init()
-        
-        balance = 0
-
         while True:
             yield None
             dirty = []
@@ -241,16 +239,8 @@ class World:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-                if event.type == pygame.JOYAXISMOTION:
-                    if event.axis == 1:
-                        force = SCALE * event.value
-                    elif event.axis == 0:
-                        balance = event.value
 
-            m1 = force * (balance + 1)/2
-            m2 = force * (1-((balance + 1) / 2))
-
-            self.robot.setspeed(m1, m2)
+            self.robot.setspeed(World.motorleft, World.motorright)
 
             self.space.collide((self.world, self.contactgroup), self.near_callback)
 
