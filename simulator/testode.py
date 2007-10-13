@@ -12,6 +12,7 @@ WIDTH = 8
 METRE = 640/WIDTH
 POWER = 4 #Watts
 SCALE = 100
+FPS = 100
 
 class World:
     class Box:
@@ -120,8 +121,7 @@ class World:
             j.attach(geom1.getBody(), geom2.getBody())
 
     def step(self):
-        fps = 100
-        dt = 1.0/fps
+        dt = 1.0/FPS
         lasttime = time.time()
 
         stick = pygame.joystick.Joystick(0)
@@ -130,6 +130,7 @@ class World:
         balance = 0
 
         while True:
+            yield 0
             dirty = []
             self.robot.setdirty(dirty)
             for token in self.tokens:
@@ -166,4 +167,8 @@ class World:
             self.contactgroup.empty()
 
 w = World()
-w.step()
+gen = w.step()
+
+while True:
+    gen.next()
+    w.clk.tick(FPS)
