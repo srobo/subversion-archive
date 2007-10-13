@@ -81,78 +81,52 @@ class World:
 
             geoms = []
 
-            topplane = ode.GeomBox(None, (0.2, 0.5, 0.01))
-            topplane.setPosition((0, 0.15, -0.225))
-            topplanet = ode.GeomTransform(space)
-            topplanet.setGeom(topplane)
-            topplanet.foo = "topplane"
-            geoms.append(topplanet)
+            def genplane(space, size, pos):
+                plane = ode.GeomBox(None, size)
+                plane.setPosition(pos)
+                planet = ode.GeomTransform(space)
+                planet.setGeom(plane)
 
-            botplane = ode.GeomBox(None, (0.2, 0.5, 0.01))
-            botplane.setPosition((0, -0.15, -0.225))
-            botplanet = ode.GeomTransform(space)
-            botplanet.setGeom(botplane)
-            botplanet.foo = "botplane"
-            geoms.append(botplanet)
+            topplane = genplane((0.2, 0.5, 0.01), (0, 0.15, -0.225))
+            geoms.append(topplane)
 
-#            lplane = ode.GeomBox(None, (0.1, 0.02, 0.01))
-#            lplane.setPosition((-0.24, 0, -0.225))
-#            lplanet = ode.GeomTransform(space)
-#            lplanet.setGeom(lplane)
-#            lplanet.foo = "lplane"
-#            geoms.append(lplanet)
-
-#            rplane = ode.GeomBox(None, (0.1, 0.02, 0.01))
-#            rplane.setPosition((+0.24, 0, -0.225))
-#            rplanet = ode.GeomTransform(space)
-#            rplanet.setGeom(rplane)
-#            rplane.foo = "rplane"
-#            geoms.append(rplanet)
+            botplane = genplane((0.2, 0.5, 0.01), (0, -0.15, -0.225))
+            geoms.append(botplane)
 
             World.Box.__init__(self, 40, 0.5, 1, 2, 0.255, world, space, geoms)
-            self.box.foo = "Moo"
 
-            wheelrad = 0.04
+
 
             #LEFT WHEEL
-            self.lwb = ode.Body(world)
-            lwbpos = (-0.215, 0, -0.2)
-            lwbact = self.box.getRelPointPos(lwbpos)
-            M = ode.Mass()
-            M.setCappedCylinderTotal(0.03, 1, wheelrad, 0.01)
-            self.lwb.setMass(M)
-            self.lwb.setPosition(lwbact)
+            def genwheel(world, space, box, position):
+                WHEELRAD = 0.04
+                WHEELLENGTH = 0.01
+                WHEELFORCE = 5
+                body = ode.Body(world)
 
-            lwheel = ode.GeomCapsule(space, radius=wheelrad, length=0.01)
-            lwheel.setBody(self.lwb)
+                M = ode.Mass()
+                #Arguments:
+                #Mass, Axis(1=x), Radius, Length
+                M.setCappedCylinderTotal(0.03, 1, WHEELRAD, WHEELLENGTH)
+                body.setMass(M)
+                body.setPosition(position)
 
-            self.jl = ode.HingeJoint(world)
-            self.jl.attach(self.box, self.lwb)
-            self.jl.setAnchor(lwbact)
-            self.jl.setAxis( (1, 0, 0) )
+                geom = ode.GeomCapsule(space, radius=WHEELRAD, length=WHEELLENGTH)
+                geom.setBody(body)
 
-            self.jl.setParam(ode.ParamVel, 0)
-            self.jl.setParam(ode.ParamFMax, 5)
+                joint = ode.HingeJoint(world)
+                joint.attach(box, body)
+                joint.setAnchor(position)
+                #Rotates on X axis
+                joint.setAxis( (1, 0, 0) )
 
-            #RIGHT WHEEL
-            self.rwb = ode.Body(world)
-            rwbpos = (+0.215, 0, -0.2)
-            rwbact = self.box.getRelPointPos(rwbpos)
-            M = ode.Mass()
-            M.setCappedCylinderTotal(0.03, 1, wheelrad, 0.01)
-            self.rwb.setMass(M)
-            self.rwb.setPosition(rwbact)
+                joint.setParam(ode.ParamVel, 0)
+                joint.setParam(ode.ParamFMax, WHEELFORCE)
 
-            rwheel = ode.GeomCapsule(space, radius=wheelrad, length=0.01)
-            rwheel.setBody(self.rwb)
-
-            self.jr = ode.HingeJoint(world)
-            self.jr.attach(self.box, self.rwb)
-            self.jr.setAnchor(rwbact)
-            self.jr.setAxis( (1, 0, 0) ) 
-
-            self.jr.setParam(ode.ParamVel, 0)
-            self.jr.setParam(ode.ParamFMax, 5)
+            self.lw = genwheel(world, space, self.box,
+                    self.box.getRelPointPos((-0.215, 0, -0.2)))
+            self.rw = genwheel(world, space, self.box,
+                    self.box.getRelPointPos((+0.215, 0, -0.2)))
 
             castorradius = 0.008
 
