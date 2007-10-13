@@ -4,7 +4,7 @@ import time
 
 BIG_TIME = 9999999999999
 
-class trampoline:
+class Trampoline:
     q = [] #A list of polling tasks to execute when main stalled
 
     def addtask(self, task):
@@ -13,6 +13,7 @@ class trampoline:
         """
         task.next() #Advance generator to first yield
         self.q.append(task)
+        return task
     
     def removetask(self, task):
         self.q.remove(task)
@@ -35,12 +36,14 @@ class trampoline:
 
         main = robot.main(self)
         robot.currentevent = None
+        robot.eventsource = None
         timeout = main.next() #Advance to the first yield statement.
         timeouttime = self.gettimeouttime(timeout)
         
         while 1:
             if time.time() > timeouttime: #Check to see if the yield has timed out
                 robot.currentevent = TimeoutEvent()
+                robot.eventsource = None
                 try:
                     timeout = main.next()
                     timeouttime = self.gettimeouttime(timeout)
@@ -57,6 +60,7 @@ class trampoline:
                 if result != None:
                     #Got an event for the mainloop
                     robot.currentevent = result
+                    robot.eventsource = task
                     try:
                         timeout = main.next()
                     except StopIteration:
@@ -65,5 +69,5 @@ class trampoline:
                     break #Break out of the for loop
             
 if __name__ == "__main__":
-    t = trampoline()
+    t = Trampoline()
     t.schedule()
