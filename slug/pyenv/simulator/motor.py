@@ -28,7 +28,6 @@ def __set__( channel, dir, speed ):
         physics.World.motorright = speed
 
 def setspeed( channel, dir, speed ):
-    dir = FORWARD
     if speed < 0:
         dir = BACKWARD
         speed = -speed

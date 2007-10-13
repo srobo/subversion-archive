@@ -11,12 +11,13 @@ WHITE = 255, 255, 255
 WIDTH = 8
 METRE = 640/WIDTH
 POWER = 4 #Watts
-SCALE = 60
+SCALE = 5
 FPS = 100
 
 class World:
     motorleft = 0
     motorright = 0
+    bumpers = {}
 
     class Box:
         def __init__(self, density, width, x, y, z, world, space, geoms = None):
@@ -55,19 +56,12 @@ class World:
             self.rect = pygame.Rect(floor(minx), floor(miny),
                             ceil(maxx-minx), ceil(maxy-miny))
 
-            topline = (p1[0]-p0[0], p1[1]-p0[1])
-            p0[0] += topline[0]/4
-            p0[1] += topline[1]/4
-
             p = poly([p0, p1, p2, p3], (0,0), 0)
             p.blit(screen, dirty)
-
             
             if self.__class__ == World.Robot:
-                #print "LEFT: %.2f %.2f %.2f"  % self.lwb.getRotation()[3:6]
-                #print "RIGHT: %.2f %.2f %.2f" %  self.rwb.getRotation()[3:6]
                 if self.box.getRotation()[8] > 0:
-                    c = [int(x*METRE) for x in self.box.getRelPointPos((0, 0, 0))[:2]]
+                    c = [int(x*METRE) for x in self.box.getRelPointPos((0, 0.2, 0))[:2]]
                     pygame.draw.circle(screen, BLACK, c, 5, 0)
 
             del p
@@ -81,13 +75,14 @@ class World:
     class Robot(Box):
         def __init__(self, world, space):
 
-            def genplane(space, size, pos, transparant = False):
+            def genplane(space, size, pos, transparant = False, name = ""):
                 plane = ode.GeomBox(None, size)
                 plane.setPosition(pos)
                 planet = ode.GeomTransform(space)
                 planet.setGeom(plane)
                 
                 planet.trans = transparant
+                planet.ident = name
                 return planet
             
             def genwheel(world, space, box, position):
@@ -136,18 +131,18 @@ class World:
             geoms = []
 
             #genplane arguments: space, size, position
-            topplane = genplane(space, (0.2, 0.5, 0.01), (0, 0.15, -0.240))
+            topplane = genplane(space, (0.5, 0.2, 0.01), (0, 0.15, -0.240))
             geoms.append(topplane)
 
-            botplane = genplane(space, (0.2, 0.5, 0.01), (0, -0.15, -0.240))
+            botplane = genplane(space, (0.5, 0.2, 0.01), (0, -0.15, -0.240))
             geoms.append(botplane)
 
-            bumpl = genplane(space, (0.1, 0.1, 0.01), (-0.245, 0.245, -0.240),
-                    True)
+            bumpl = genplane(space, (0.1, 0.1, 0.01), (-0.245, 0.255, -0.240),
+                    True, "bumpl")
             geoms.append(bumpl)
 
-            bumpr = genplane(space, (0.1, 0.1, 0.01), (0.245, 0.245, -0.240),
-                    True)
+            bumpr = genplane(space, (0.1, 0.1, 0.01), (0.245, 0.255, -0.240),
+                    True, "bumpr")
             geoms.append(bumpr)
 
             World.Box.__init__(self, 100, 0.5, 1, 2, 0.255, world, space, geoms)
@@ -167,8 +162,8 @@ class World:
                     (0, -0.2, -0.245)) 
 
         def setspeed(self, l, r):
-            self.lwj.setParam(ode.ParamVel, l)
-            self.rwj.setParam(ode.ParamVel, r)
+            self.lwj.setParam(ode.ParamVel, float(l)/100 * SCALE)
+            self.rwj.setParam(ode.ParamVel, float(r)/100 * SCALE)
 
     class Token(Box):
         def __init__(self, world, space, x, y):
@@ -199,17 +194,22 @@ class World:
         self.space = ode.Space() 
 
         floor = ode.GeomPlane(self.space, (0, 0, 1), 0) #Plane perpendicular to the normal
+        floor.ident = "floor"
         wall1 = ode.GeomPlane(self.space, (1, 0, 0), 0)
+        wall1.ident = "wall1"
         wall2 = ode.GeomPlane(self.space, (-1, 0, 0), -WIDTH)
+        wall2.ident = "wall2"
         wall3 = ode.GeomPlane(self.space, (0, 1, 0), 0)
+        wall3.ident = "wall3"
         wall4 = ode.GeomPlane(self.space, (0, -1, 0), -WIDTH)
+        wall4.ident = "wall4"
 
         self.bodies = []
 
         self.contactgroup = ode.JointGroup()
 
         self.robot = self.Robot(self.world, self.space)
-        self.tokens = self.createtokens(self.world, self.space, 30)
+        self.tokens = [] #self.createtokens(self.world, self.space, 1)
 
     
     def near_callback(self, args, geom1, geom2):
@@ -221,14 +221,21 @@ class World:
         world, contactgroup = args #Passed in through a tuple - can probably pass
             #anything in
 
-        if geom1.__class__ == ode.GeomCapsule:
-            #print geom1.__class__, geom2.__class__
-            if geom2.getBody() != None:
-                #print geom2.foo
-                for c in contacts:
-                    a = c.getContactGeomParams()[0]
-                    print a
-                    print geom2.getBody().getPosRelPoint(a)
+        try:
+            if geom1.ident == "bumpl" or geom2.ident == "bumpl":
+                if geom2.ident != "floor":
+                    World.bumpers["bumpl"] = True
+            if geom1.ident == "bumpr" or geom2.ident == "bumpr":
+                if geom2.ident != "floor":
+                    World.bumpers["bumpr"] = True
+        except:
+            pass
+
+        try:
+            if geom1.trans or geom2.trans:
+                return
+        except:
+            pass
 
         for c in contacts:
             c.setBounce(0.001)
@@ -253,6 +260,7 @@ class World:
 
             self.robot.setspeed(World.motorleft, World.motorright)
 
+            World.bumpers = {}
             self.space.collide((self.world, self.contactgroup), self.near_callback)
 
             self.world.step(dt)
