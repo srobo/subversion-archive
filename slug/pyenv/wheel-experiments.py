@@ -77,27 +77,14 @@ class World:
 
     class Robot(Box):
         def __init__(self, world, space):
-            #Implementing basic robot design
-
-            geoms = []
 
             def genplane(space, size, pos):
                 plane = ode.GeomBox(None, size)
                 plane.setPosition(pos)
                 planet = ode.GeomTransform(space)
                 planet.setGeom(plane)
-
-            topplane = genplane((0.2, 0.5, 0.01), (0, 0.15, -0.225))
-            geoms.append(topplane)
-
-            botplane = genplane((0.2, 0.5, 0.01), (0, -0.15, -0.225))
-            geoms.append(botplane)
-
-            World.Box.__init__(self, 40, 0.5, 1, 2, 0.255, world, space, geoms)
-
-
-
-            #LEFT WHEEL
+                return planet
+            
             def genwheel(world, space, box, position):
                 WHEELRAD = 0.04
                 WHEELLENGTH = 0.01
@@ -123,29 +110,51 @@ class World:
                 joint.setParam(ode.ParamVel, 0)
                 joint.setParam(ode.ParamFMax, WHEELFORCE)
 
-            self.lw = genwheel(world, space, self.box,
-                    self.box.getRelPointPos((-0.215, 0, -0.2)))
-            self.rw = genwheel(world, space, self.box,
-                    self.box.getRelPointPos((+0.215, 0, -0.2)))
+                return body, joint
 
-            castorradius = 0.008
+            def gencastor(world, space, box, abspos):
+                CASTORRADIUS = 0.008
 
-#            self.bf = ode.Body(world)
-#            bfpos = (0, +0.2, -0.024)
-#            M = ode.Mass()
-#            M.setSphere(2000, castorradius)
-#            self.bf.setMass(M)
-#            self.bf.setPosition(self.box.getRelPointPos(bfpos))
-#            
-#            s = ode.GeomSphere(space, castorradius)
-#            s.setBody(self.bf)
-#            
-#            j = ode.BallJoint(world)
-#            j.attach(self.box, self.l 
-        
+                body = ode.Body(world)
+                M = ode.Mass()
+                M.setSphere(2000, CASTORRADIUS)
+                body.setMass(M)
+                body.setPosition(abspos)
+            
+                s = ode.GeomSphere(space, CASTORRADIUS)
+                s.setBody(body)
+            
+                j = ode.BallJoint(world)
+                j.attach(box, body)
+                j.setAnchor(abspos)
+            geoms = []
+
+            #genplane arguments: space, size, position
+            topplane = genplane(space, (0.2, 0.5, 0.01), (0, 0.15, -0.225))
+            geoms.append(topplane)
+
+            botplane = genplane(space, (0.2, 0.5, 0.01), (0, -0.15, -0.225))
+            geoms.append(botplane)
+
+            World.Box.__init__(self, 40, 0.5, 1, 2, 0.255, world, space, geoms)
+            
+            #genwheel arguments: world, space, container, absolute pos
+            #returns a wheel body and a joint object
+            self.lw, self.lwj = genwheel(world, space, self.box,
+                    self.box.getRelPointPos((-0.245, 0, -0.2)))
+            self.rw, self.rwj = genwheel(world, space, self.box,
+                    self.box.getRelPointPos((+0.245, 0, -0.2)))
+
+            #gencaster arguments: world, space, box, absolute pos
+            #returns the castor body
+            self.bf = gencastor(world, space, self.box,
+                    (0, 0.2, -0.245))
+            self.bb = gencastor(world, space, self.box,
+                    (0, -0.2, -0.245))        
+
         def setspeed(self, l, r):
-            self.jl.setParam(ode.ParamVel, l)
-            self.jr.setParam(ode.ParamVel, r)
+            self.lwj.setParam(ode.ParamVel, l)
+            self.rwj.setParam(ode.ParamVel, r)
 
     class Token(Box):
         def __init__(self, world, space, x, y):
