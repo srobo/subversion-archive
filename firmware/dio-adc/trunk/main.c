@@ -14,8 +14,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "common.h"
-#include "motor.h"
-#include "pwm.h"
 #include "i2c.h"
 #include "init.h"
 
@@ -33,9 +31,6 @@ int main( void )
 	WDTCTL = WDTHOLD | WDTPW;
 
 	init();
-
-	motor_set( 0, 0, M_OFF );
-	motor_set( 1, 0, M_OFF );
 
 	while(1);
 }

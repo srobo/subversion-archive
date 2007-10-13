@@ -14,9 +14,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "common.h"
+#include "dio.h"
 #include "init.h"
-#include "pwm.h"
-#include "motor.h"
 #include "i2c.h"
 #include <signal.h>
 
@@ -26,11 +25,10 @@ void init_gpio( void );
 void init( void )
 {
 	init_gpio();
-	pwm_init();
-	motor_init();
 	i2c_init();
-
+	dio_init();
 	eint();
+
 }
 
 void init_gpio( void )

@@ -1,4 +1,4 @@
-/*   Copyright (C) 2007 Robert Spanton
+/*   Copyright (C) 2007 Robert Spanton and Chris Cross
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -13,23 +13,9 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
-#ifndef __PWM_H
-#define __PWM_H
-#include <stdint.h>
+#ifndef __DIO_H
+#define __DIO_H
 
-#define PWM_MAX 328
+void dio_init ( void );
 
-
-/* The type for holding a PWM ratio */
-typedef uint16_t pwm_ratio_t;
-
-/* Initialise the pwm system */
-void pwm_init();
-
-/* Set the ratio */
-void pwm_set( uint8_t channel, pwm_ratio_t r );
-
-/* Get the ratio */
-pwm_ratio_t pwm_get( uint8_t channel );
-
-#endif	/* __PWM_H */
+#endif 	/* __DIO_H  */

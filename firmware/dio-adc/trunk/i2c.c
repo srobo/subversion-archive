@@ -17,7 +17,7 @@
 #include "msp430/usci.h"
 #include <signal.h>
 #include "i2c.h"
-#include "motor.h"
+
 
 static uint8_t cmd;
 static uint8_t pos = 0;
@@ -130,9 +130,7 @@ void byte_rx( uint8_t pos, uint8_t b )
 			buf[0] = b;
 		else if( pos == 2 )
 		{
-			uint8_t channel;
-			speed_t speed;
-			motor_state_t state;
+			
 
 			buf[1] = b;
 			/* Buf 0 is LSB */
@@ -143,12 +141,8 @@ void byte_rx( uint8_t pos, uint8_t b )
 			 *  10-9: Mode
 			 *   8-0: PWM Ratio */
 
-			channel = (buf[1]&0x08)?1:0;
-			speed = ((uint16_t)buf[0]) 
-				| ((uint16_t)(buf[1]&1) << 8);
-			state = (buf[1] >> 1) & 0x3;
+			
 
-			motor_set( channel, speed, state );
 		}
 		break;
 
