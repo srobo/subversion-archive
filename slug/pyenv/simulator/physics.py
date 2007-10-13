@@ -81,11 +81,13 @@ class World:
     class Robot(Box):
         def __init__(self, world, space):
 
-            def genplane(space, size, pos):
+            def genplane(space, size, pos, transparant = False):
                 plane = ode.GeomBox(None, size)
                 plane.setPosition(pos)
                 planet = ode.GeomTransform(space)
                 planet.setGeom(plane)
+                
+                planet.trans = transparant
                 return planet
             
             def genwheel(world, space, box, position):
@@ -130,6 +132,7 @@ class World:
                 j = ode.BallJoint(world)
                 j.attach(box, body)
                 j.setAnchor(abspos)
+
             geoms = []
 
             #genplane arguments: space, size, position
@@ -138,6 +141,14 @@ class World:
 
             botplane = genplane(space, (0.2, 0.5, 0.01), (0, -0.15, -0.240))
             geoms.append(botplane)
+
+            bumpl = genplane(space, (0.1, 0.1, 0.01), (-0.245, 0.245, -0.240),
+                    True)
+            geoms.append(bumpl)
+
+            bumpr = genplane(space, (0.1, 0.1, 0.01), (0.245, 0.245, -0.240),
+                    True)
+            geoms.append(bumpr)
 
             World.Box.__init__(self, 100, 0.5, 1, 2, 0.255, world, space, geoms)
             
