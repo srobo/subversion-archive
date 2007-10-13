@@ -4,6 +4,7 @@ import time
 from math import sqrt
 from poly import poly
 import random
+import sys
 
 pygame.init()
 
@@ -60,7 +61,12 @@ geom.setBody(robot)
 
 robot.setPosition((1, 2, 0.25))
 
-bodies.append(robot)
+bumps = []
+
+#bumps.append(((0.245, 0.30, 0), ode.GeomBox(space, lengths=(0.01, 0.01,
+#    0.01))))
+#bumps.append(((-0.245, 0.30, 0), ode.GeomBox(space, lengths=(0.01, 0.01,
+#    0.01))))
 
 tokens = []
 
@@ -70,7 +76,7 @@ def maketoken():
     token = ode.Body(world)
     M = ode.Mass()
     M.setBox(30, 0.044, 0.044, 0.044)
-    token.serMass(M)
+    token.setMass(M)
     token.shape = "box"
     token.boxsize = (0.044, 0.044, 0.044)
 
@@ -85,13 +91,21 @@ for i in range(30):
     tokens.append(token)
 
 def near_callback(args, geom1, geom2):
+    if geom1.__class__ == ode.GeomPlane and geom2.__class__ == ode.GeomPlane:
+        return
+
     contacts = ode.collide(geom1, geom2)
 
     world, contactgroup = args #Passed in through a tuple - can probably pass
         #anything in
 
-    if geom1.__class__ == ode.GeomPlane and geom2.__class__ == ode.GeomPlane:
-        return
+    print geom1.__class__, geom2.__class__
+    print geom1.getBody(), geom2.getBody()
+    print geom1.getAABB(), geom2.getAABB()
+    if geom1.placeable():
+        print "G1", geom1.getPosition()
+    if geom2.placeable():
+        print "G2", geom2.getPosition()
 
     for c in contacts:
         c.setBounce(0.01)
@@ -110,15 +124,17 @@ force = 80
 m1 = force
 m2 = force
 
-print pygame.joystick.get_count()
-
 stick = pygame.joystick.Joystick(0)
 stick.init()
 
 SCALE = 100
 
+balance = 0
+
 while True:
     for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
         if event.type == pygame.JOYAXISMOTION:
             if event.axis == 1:
                 force = SCALE * event.value * -1
@@ -129,6 +145,12 @@ while True:
     m2 = force * (1-((balance + 1) / 2))
 
     screen.fill(BLACK)
+
+    for bumppos, bump in bumps:
+        newpos = robot.getRelPointPos(bumppos)
+        #print bumppos, newpos
+        bump.setPosition(newpos)
+        bump.setRotation(robot.getRotation())
 
     space.collide((world, contactgroup), near_callback)
 
@@ -144,16 +166,16 @@ while True:
     for token in tokens:
         p0 = [x*METRE for x in token.getRelPointPos((-0.022, -0.022, -0.022))[:2]]
         p1 = [x*METRE for x in token.getRelPointPos((0.022, -0.022, -0.022))[:2]]
-        p2 = [x*METRE for x in token.getRelPointPos((0.20, 0.022, -0.022))[:2]]
-        p3 = [x*METRE for x in token.getRelPointPos((-0.20, 0.022, -0.022))[:2]]
+        p2 = [x*METRE for x in token.getRelPointPos((0.022, 0.022, -0.022))[:2]]
+        p3 = [x*METRE for x in token.getRelPointPos((-0.022, 0.022, -0.022))[:2]]
         p = poly([p0, p1, p2, p3], (0,0), 0)
         p.blit(screen, [])
         del p
 
     pygame.display.flip()
 
-    robot.addRelForceAtRelPos((0, m1, 0), (-0.2, 0, 0))
-    robot.addRelForceAtRelPos((0, m2, 0), (+0.2, 0, 0))
+    robot.addRelForceAtRelPos((0, m1, 0), (-0.2, -0.2, 0))
+    robot.addRelForceAtRelPos((0, m2, 0), (+0.2, -0.2, 0))
 
     world.step(dt)
 
