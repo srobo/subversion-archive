@@ -21,7 +21,7 @@
 /* The commands */
 enum {
 	M_IDENTIFY,
-	M_CONF,
+	M_OUTPUT,
 	M_LAST_COMMAND
 };
 

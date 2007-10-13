@@ -124,26 +124,9 @@ void byte_rx( uint8_t pos, uint8_t b )
 
 	switch(cmd)
 	{
-	case M_CONF:
-		/* Set motor speed */
-		if( pos == 1 )
-			buf[0] = b;
-		else if( pos == 2 )
-		{
-			
-
-			buf[1] = b;
-			/* Buf 0 is LSB */
-
-			/* Format: bits:
-			 * 15-12: Unused
-			 *    11: Channel number
-			 *  10-9: Mode
-			 *   8-0: PWM Ratio */
-
-			
-
-		}
+	case M_OUTPUT:
+		/* Write data to port */
+		P1OUT = b;
 		break;
 
 	}
