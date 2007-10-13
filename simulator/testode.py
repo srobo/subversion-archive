@@ -1,184 +1,169 @@
 import pygame
 import ode
 import time
-from math import sqrt
+from math import sqrt, floor, ceil
 from poly import poly
 import random
 import sys
 
-pygame.init()
-
 BLACK = 0, 0, 0
 WHITE = 255, 255, 255
-
-METRE = 640/8
-
+WIDTH = 8
+METRE = 640/WIDTH
 POWER = 4 #Watts
-
-screen = pygame.display.set_mode((640, 640))
-clk = pygame.time.Clock()
-
-def scalp(vec, scal):
-    vec[0] *= scal
-    vec[1] *= scal
-    vec[2] *= scal
-
-def length (vec):
-    return sqrt (vec[0]**2 + vec[1]**2 + vec[2]**2)
-
-world = ode.World()
-world.setGravity( (0, 0, -9.81) )
-#world.setERP(0.8) #Error correction per time step
-world.setCFM(1E-5) #Global constraint force mixing value
-
-space = ode.Space() 
-
-floor = ode.GeomPlane(space, (0, 0, 1), 0) #Plane perpendicular to the normal
-wall1 = ode.GeomPlane(space, (1, 0, 0), 0)
-wall2 = ode.GeomPlane(space, (-1, 0, 0), -8)
-wall3 = ode.GeomPlane(space, (0, 1, 0), 0)
-wall4 = ode.GeomPlane(space, (0, -1, 0), -8)
-
-bodies = []
-
-contactgroup = ode.JointGroup()
-
-fps = 100
-dt = 1.0/fps
-lasttime = time.time()
-
-robot = ode.Body(world)
-
-M = ode.Mass()
-M.setBox(80, 0.5, 0.5, 0.5) #Density, lx, ly, lz
-robot.setMass(M)
-
-robot.shape = "box"
-robot.boxsize = (0.5, 0.5, 0.5)
-
-geom = ode.GeomBox(space, lengths=robot.boxsize)
-geom.setBody(robot)
-
-robot.setPosition((1, 2, 0.25))
-
-bumps = []
-
-#bumps.append(((0.245, 0.30, 0), ode.GeomBox(space, lengths=(0.01, 0.01,
-#    0.01))))
-#bumps.append(((-0.245, 0.30, 0), ode.GeomBox(space, lengths=(0.01, 0.01,
-#    0.01))))
-
-tokens = []
-
-def maketoken():
-    global world, space
-
-    token = ode.Body(world)
-    M = ode.Mass()
-    M.setBox(30, 0.044, 0.044, 0.044)
-    token.setMass(M)
-    token.shape = "box"
-    token.boxsize = (0.044, 0.044, 0.044)
-
-    geom = ode.GeomBox(space, lengths=token.boxsize)
-    geom.setBody(token)
-    return token
-
-for i in range(30):
-    x = random.random() * 8
-    y = random.random() * 8
-    token = maketoken()
-    token.setPosition((x, y, 0.05))
-    tokens.append(token)
-
-def near_callback(args, geom1, geom2):
-    if geom1.__class__ == ode.GeomPlane and geom2.__class__ == ode.GeomPlane:
-        return
-
-    contacts = ode.collide(geom1, geom2)
-
-    world, contactgroup = args #Passed in through a tuple - can probably pass
-        #anything in
-
-    print geom1.__class__, geom2.__class__
-    print geom1.getBody(), geom2.getBody()
-    print geom1.getAABB(), geom2.getAABB()
-    if geom1.placeable():
-        print "G1", geom1.getPosition()
-    if geom2.placeable():
-        print "G2", geom2.getPosition()
-
-    for c in contacts:
-        c.setBounce(0.01)
-        c.setMu(35)
-        j = ode.ContactJoint(world, contactgroup, c)
-        j.attach(geom1.getBody(), geom2.getBody())
-
-def rotate3(m, v):
-	"""Returns the rotation of 3-vector v by 3x3 (row major) matrix m."""
-	return (v[0] * m[0] + v[1] * m[1] + v[2] * m[2],
-		v[0] * m[3] + v[1] * m[4] + v[2] * m[5],
-		v[0] * m[6] + v[1] * m[7] + v[2] * m[8])
-
-force = 80
-
-m1 = force
-m2 = force
-
-stick = pygame.joystick.Joystick(0)
-stick.init()
-
 SCALE = 100
 
-balance = 0
+class World:
+    class Box:
+        def __init__(self, density, width, x, y, z, world, space):
+            self.box = ode.Body(world)
+            self.width = width
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-        if event.type == pygame.JOYAXISMOTION:
-            if event.axis == 1:
-                force = SCALE * event.value * -1
-            elif event.axis == 0:
-                balance = -event.value
+            M = ode.Mass()
+            M.setBox(density, width, width, width) #Density, lx, ly, lz
+            self.box.setMass(M)
 
-    m1 = force * (balance + 1)/2
-    m2 = force * (1-((balance + 1) / 2))
+            self.box.shape = "box"
+            self.box.boxsize = (width, width, width)
 
-    screen.fill(BLACK)
+            geom = ode.GeomBox(space, lengths=self.box.boxsize)
+            geom.setBody(self.box)
 
-    for bumppos, bump in bumps:
-        newpos = robot.getRelPointPos(bumppos)
-        #print bumppos, newpos
-        bump.setPosition(newpos)
-        bump.setRotation(robot.getRotation())
+            self.box.setPosition((x, y, z))
 
-    space.collide((world, contactgroup), near_callback)
+            self.rect = pygame.Rect(0,0,0,0)
 
-    p0 = [x*METRE for x in robot.getRelPointPos((-0.25, -0.25, -0.25))[:2]]
-    p1 = [x*METRE for x in robot.getRelPointPos((0.25, -0.25, -0.25))[:2]]
-    p2 = [x*METRE for x in robot.getRelPointPos((0.20, 0.25, -0.25))[:2]]
-    p3 = [x*METRE for x in robot.getRelPointPos((-0.20, 0.25, -0.25))[:2]]
+        def blit(self, screen, dirty):
+            hw = self.width/2
+            p0 = [x*METRE for x in self.box.getRelPointPos((-hw, -hw, -hw))[:2]]
+            p1 = [x*METRE for x in self.box.getRelPointPos((hw, -hw, -hw))[:2]]
+            p2 = [x*METRE for x in self.box.getRelPointPos((hw, hw, -hw))[:2]]
+            p3 = [x*METRE for x in self.box.getRelPointPos((-(hw), hw, -hw))[:2]]
+            
+            minx = min(p0[0], p1[0], p2[0], p3[0]) - 2
+            maxx = max(p0[0], p1[0], p2[0], p3[0]) + 2
+            miny = min(p0[1], p1[1], p2[1], p3[1]) - 2
+            maxy = max(p0[1], p1[1], p2[1], p3[1]) + 2
 
-    p = poly([p0, p1, p2, p3], (0,0), 0)
-    p.blit(screen, [])
-    del p
+            self.rect = pygame.Rect(floor(minx), floor(miny),
+                            ceil(maxx-minx), ceil(maxy-miny))
 
-    for token in tokens:
-        p0 = [x*METRE for x in token.getRelPointPos((-0.022, -0.022, -0.022))[:2]]
-        p1 = [x*METRE for x in token.getRelPointPos((0.022, -0.022, -0.022))[:2]]
-        p2 = [x*METRE for x in token.getRelPointPos((0.022, 0.022, -0.022))[:2]]
-        p3 = [x*METRE for x in token.getRelPointPos((-0.022, 0.022, -0.022))[:2]]
-        p = poly([p0, p1, p2, p3], (0,0), 0)
-        p.blit(screen, [])
-        del p
+            p = poly([p0, p1, p2, p3], (0,0), 0)
+            p.blit(screen, dirty)
+            del p
 
-    pygame.display.flip()
+        def setdirty(self, dirty):
+            dirty.append(self.rect)
 
-    robot.addRelForceAtRelPos((0, m1, 0), (-0.2, -0.2, 0))
-    robot.addRelForceAtRelPos((0, m2, 0), (+0.2, -0.2, 0))
+        def addRelForceAtRelPos(self, force, position):
+            self.box.addRelForceAtRelPos(force, position)
 
-    world.step(dt)
+    class Robot(Box):
+        def __init__(self, world, space):
+            World.Box.__init__(self, 80, 0.5, 1, 2, 0.25, world, space)
 
-    contactgroup.empty()
-    clk.tick(fps)
+    class Token(Box):
+        def __init__(self, world, space, x, y):
+            World.Box.__init__(self, 30, 0.044, x, y, 0.05, world, space)
+
+    def createtokens(self, world, space, number):
+        tokens = []
+
+        for i in range(number):
+            x = random.random() * WIDTH
+            y = random.random() * WIDTH
+            token = self.Token(world, space, x, y)
+            tokens.append(token)
+
+        return tokens
+
+    def __init__(self):
+        pygame.init()
+
+        self.screen = pygame.display.set_mode((640, 640))
+        self.clk = pygame.time.Clock()
+
+        self.world = ode.World()
+        self.world.setGravity( (0, 0, -9.81) )
+        #world.setERP(0.8) #Error correction per time step
+        self.world.setCFM(1E-5) #Global constraint force mixing value
+
+        self.space = ode.Space() 
+
+        floor = ode.GeomPlane(self.space, (0, 0, 1), 0) #Plane perpendicular to the normal
+        wall1 = ode.GeomPlane(self.space, (1, 0, 0), 0)
+        wall2 = ode.GeomPlane(self.space, (-1, 0, 0), -WIDTH)
+        wall3 = ode.GeomPlane(self.space, (0, 1, 0), 0)
+        wall4 = ode.GeomPlane(self.space, (0, -1, 0), -WIDTH)
+
+        self.bodies = []
+
+        self.contactgroup = ode.JointGroup()
+
+        self.robot = self.Robot(self.world, self.space)
+        self.tokens = self.createtokens(self.world, self.space, 30)
+
+    
+    def near_callback(self, args, geom1, geom2):
+        if geom1.__class__ == ode.GeomPlane and geom2.__class__ == ode.GeomPlane:
+            return
+
+        contacts = ode.collide(geom1, geom2)
+
+        world, contactgroup = args #Passed in through a tuple - can probably pass
+            #anything in
+
+        for c in contacts:
+            c.setBounce(0.01)
+            c.setMu(35)
+            j = ode.ContactJoint(world, contactgroup, c)
+            j.attach(geom1.getBody(), geom2.getBody())
+
+    def step(self):
+        fps = 100
+        dt = 1.0/fps
+        lasttime = time.time()
+
+        stick = pygame.joystick.Joystick(0)
+        stick.init()
+        
+        balance = 0
+
+        while True:
+            dirty = []
+            self.robot.setdirty(dirty)
+            for token in self.tokens:
+                token.setdirty(dirty)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                if event.type == pygame.JOYAXISMOTION:
+                    if event.axis == 1:
+                        force = SCALE * event.value * -1
+                    elif event.axis == 0:
+                        balance = -event.value
+
+            m1 = force * (balance + 1)/2
+            m2 = force * (1-((balance + 1) / 2))
+
+            self.space.collide((self.world, self.contactgroup), self.near_callback)
+
+            self.robot.addRelForceAtRelPos((0, m1, 0), (-0.2, -0.2, 0))
+            self.robot.addRelForceAtRelPos((0, m2, 0), (+0.2, -0.2, 0))
+
+            self.world.step(dt)
+
+            self.screen.fill(BLACK)
+
+            self.robot.blit(self.screen, dirty)
+
+            for token in self.tokens:
+                token.blit(self.screen, dirty)
+
+            pygame.display.update(dirty)
+
+            self.contactgroup.empty()
+
+w = World()
+w.step()
