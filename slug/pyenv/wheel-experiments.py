@@ -88,7 +88,7 @@ class World:
             def genwheel(world, space, box, position):
                 WHEELRAD = 0.04
                 WHEELLENGTH = 0.01
-                WHEELFORCE = 5
+                WHEELFORCE = 10
                 body = ode.Body(world)
 
                 M = ode.Mass()
@@ -130,27 +130,27 @@ class World:
             geoms = []
 
             #genplane arguments: space, size, position
-            topplane = genplane(space, (0.2, 0.5, 0.01), (0, 0.15, -0.225))
+            topplane = genplane(space, (0.2, 0.5, 0.01), (0, 0.15, -0.240))
             geoms.append(topplane)
 
-            botplane = genplane(space, (0.2, 0.5, 0.01), (0, -0.15, -0.225))
+            botplane = genplane(space, (0.2, 0.5, 0.01), (0, -0.15, -0.240))
             geoms.append(botplane)
 
-            World.Box.__init__(self, 40, 0.5, 1, 2, 0.255, world, space, geoms)
+            World.Box.__init__(self, 100, 0.5, 1, 2, 0.255, world, space, geoms)
             
             #genwheel arguments: world, space, container, absolute pos
             #returns a wheel body and a joint object
             self.lw, self.lwj = genwheel(world, space, self.box,
-                    self.box.getRelPointPos((-0.245, 0, -0.2)))
+                    self.box.getRelPointPos((-0.245, 0, -0.215)))
             self.rw, self.rwj = genwheel(world, space, self.box,
-                    self.box.getRelPointPos((+0.245, 0, -0.2)))
+                    self.box.getRelPointPos((+0.245, 0, -0.215)))
 
             #gencaster arguments: world, space, box, absolute pos
             #returns the castor body
             self.bf = gencastor(world, space, self.box,
                     (0, 0.2, -0.245))
             self.bb = gencastor(world, space, self.box,
-                    (0, -0.2, -0.245))        
+                    (0, -0.2, -0.245)) 
 
         def setspeed(self, l, r):
             self.lwj.setParam(ode.ParamVel, l)
@@ -243,9 +243,9 @@ class World:
                     sys.exit()
                 if event.type == pygame.JOYAXISMOTION:
                     if event.axis == 1:
-                        force = SCALE * event.value * -1
+                        force = SCALE * event.value
                     elif event.axis == 0:
-                        balance = -event.value
+                        balance = event.value
 
             m1 = force * (balance + 1)/2
             m2 = force * (1-((balance + 1) / 2))
@@ -253,9 +253,6 @@ class World:
             self.robot.setspeed(m1, m2)
 
             self.space.collide((self.world, self.contactgroup), self.near_callback)
-
-            #self.robot.addRelForceAtRelPos((0, m1, 0), (-0.2, -0.2, 0))
-            #self.robot.addRelForceAtRelPos((0, m2, 0), (+0.2, -0.2, 0))
 
             self.world.step(dt)
 
