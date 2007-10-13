@@ -81,6 +81,7 @@ def maketoken():
     token.boxsize = (0.044, 0.044, 0.044)
 
     geom = ode.GeomBox(space, lengths=token.boxsize)
+    geom.setBody(token)
     return token
 
 for i in range(30):
