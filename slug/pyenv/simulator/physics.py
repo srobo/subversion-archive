@@ -166,6 +166,9 @@ class World:
                     True, "bumpr")
             geoms.append(bumpr)
 
+            bumpeat = genplane(space, (0.2, 0.1, 0.01), (0, 0.255, -0.240),
+                    True, "bumpeat")
+
             World.Box.__init__(self, 100, 0.5, 1, 2, 0.255, world, space, geoms)
             
             #genwheel arguments: world, space, container, absolute pos
@@ -249,6 +252,12 @@ class World:
             if geom1.ident == "bumpr" or geom2.ident == "bumpr":
                 if geom2.ident != "floor":
                     World.bumpers["bumpr"] = True
+            if geom1.ident == "bumpeat":
+                for token in self.tokens:
+                    if token.box == geom2.getBody():
+                        print "YUM YUM YUM"
+                        token.box.disable()
+                        tokens.remove(token)
         except:
             pass
 

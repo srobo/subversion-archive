@@ -49,20 +49,15 @@ def main(trampoline):
 
             trampoline.addtask(v)
         elif eventsource == dp:
-            print "BUMP"
             trampoline.removetask(v)
-            print currentevent.events
 
             while max([x for k, x in currentevent.events]):
                 backward(30, 30)
                 yield 1
-            print physics.World.motorleft, physics.World.motorright
-            print "And now for some gratuitous backwards"
-            backward(20, 20)
+            backward(20, 50)
             yield 1
-            print "Done"
 
             trampoline.addtask(v)
         else:
-            forward(50, 50)
+            turnright(20)
             yield 1
