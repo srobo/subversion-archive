@@ -17,11 +17,9 @@ def main(trampoline):
     dp = d.diopoll()
     trampoline.addtask(dp)
 
-    forward(100, 100)
     while 1:
-        yield 0
-        if eventsource == dp:
-            while eventsource != None:
-                backward(100, 100)
-                yield 0.3
-            forward(100, 100)
+        setspeed(0, FORWARD, 20)
+        setspeed(1, BACKWARD, 20)
+        yield 1
+        forward(100, 100)
+        yield 1

@@ -1,7 +1,7 @@
 import pygame
 import ode
 import time
-from math import sqrt, floor, ceil
+from math import sqrt, floor, ceil, asin, pi, acos
 from poly import poly
 import random
 import sys
@@ -63,6 +63,17 @@ class World:
                 if self.box.getRotation()[8] > 0:
                     c = [int(x*METRE) for x in self.box.getRelPointPos((0, 0.2, 0))[:2]]
                     pygame.draw.circle(screen, BLACK, c, 5, 0)
+                
+                campos = [x*METRE for x in self.box.getRelPointPos((0, 0.2, 0))[:2]]
+                rot = [x*METRE for x in self.box.getRotation()[3:5]]
+
+                dirty.append(pygame.draw.line(screen, WHITE,
+                                 campos[:2],
+                                 (campos[0] - rot[0],
+                                  campos[1] + rot[1])))
+
+
+
 
             del p
 
@@ -71,6 +82,15 @@ class World:
 
         def addRelForceAtRelPos(self, force, position):
             self.box.addRelForceAtRelPos(force, position)
+
+        def getRelPointPos(self, pos):
+            return self.box.getRelPointPos(pos)
+        
+        def getRotation(self):
+            return self.box.getRotation()
+
+        def getPosition(self):
+            return self.box.getPosition()
 
     class Robot(Box):
         def __init__(self, world, space):
@@ -209,7 +229,7 @@ class World:
         self.contactgroup = ode.JointGroup()
 
         self.robot = self.Robot(self.world, self.space)
-        self.tokens = [] #self.createtokens(self.world, self.space, 1)
+        self.tokens = self.createtokens(self.world, self.space, 1)
 
     
     def near_callback(self, args, geom1, geom2):
@@ -259,6 +279,43 @@ class World:
                     sys.exit()
 
             self.robot.setspeed(World.motorleft, World.motorright)
+
+            #Emulate camera
+            campos = self.robot.getRelPointPos((0, 0.2, 0))
+            camrot = self.robot.getRotation()[3:6]
+
+            def subvec(a, b):
+                return (b[0]-a[0],
+                        b[1]-a[1],
+                        b[2]-a[2])
+
+            def cross(a, b):
+                return (a[1] * b[2] - a[2] * b[1],
+                        a[2] * b[0] - a[0] * b[2],
+                        a[0] * b[1] - a[1] * b[0])
+
+            def dot(a, b):
+                return (a[0]*b[0]+
+                        a[1]*b[1]+
+                        a[2]*b[2])
+            def mag(a):
+                return sqrt(a[0]**2+a[1]**2+a[2]**2)
+
+            for token in self.tokens:
+                pos = token.getPosition()
+                relvec = subvec(campos, pos)
+                relvec = (relvec[0] * -1,
+                          relvec[1],
+                          relvec[2])
+                adotb = dot(relvec, camrot)
+
+                
+                angle = adotb / (mag(relvec) * mag(camrot))
+                angle = (acos(angle) / pi) * 180
+
+                if adotb > 0 and angle < 30:
+                    print adotb, angle
+
 
             World.bumpers = {}
             self.space.collide((self.world, self.contactgroup), self.near_callback)
