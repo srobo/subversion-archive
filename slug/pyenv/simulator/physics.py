@@ -230,7 +230,7 @@ class World:
         self.contactgroup = ode.JointGroup()
 
         self.robot = self.Robot(self.world, self.space)
-        self.tokens = self.createtokens(self.world, self.space, 0)
+        self.tokens = self.createtokens(self.world, self.space, 10)
 
     
     def near_callback(self, args, geom1, geom2):
