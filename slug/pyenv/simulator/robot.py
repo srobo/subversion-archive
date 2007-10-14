@@ -1,5 +1,7 @@
 from motor import *
 import dio
+import vis
+import physics
 
 currentevent = None
 eventsource = None
@@ -12,14 +14,55 @@ def backward(a, b):
     setspeed(0, BACKWARD, a)
     setspeed(1, BACKWARD, b)
 
+def turnright(speed):
+    setspeed(1, FORWARD, speed)
+    setspeed(0, BACKWARD, speed)
+
+def turnleft(speed):
+    setspeed(0, FORWARD, speed)
+    setspeed(1, BACKWARD, speed)
+
+LEFT = 0
+RIGHT = 1
+
 def main(trampoline):
     d = dio.Dio()
     dp = d.diopoll()
+    c = vis.Camera()
+    v = c.vispoll()
     trampoline.addtask(dp)
+    trampoline.addtask(v)
+
+    dir = LEFT
 
     while 1:
-        setspeed(0, FORWARD, 20)
-        setspeed(1, BACKWARD, 20)
-        yield 1
-        forward(100, 100)
-        yield 1
+        if eventsource == v:
+            forward(100, 100)
+            trampoline.removetask(v)
+            blob = currentevent.blobs[0]
+            if blob.centrex > 0:
+                dir = RIGHT
+            else:
+                dir = LEFT
+
+            yield (float(blob.centrey) / 320) * 2
+
+            trampoline.addtask(v)
+        elif eventsource == dp:
+            print "BUMP"
+            trampoline.removetask(v)
+            print currentevent.events
+
+            while max([x for k, x in currentevent.events]):
+                backward(30, 30)
+                yield 1
+            print physics.World.motorleft, physics.World.motorright
+            print "And now for some gratuitous backwards"
+            backward(20, 20)
+            yield 1
+            print "Done"
+
+            trampoline.addtask(v)
+        else:
+            forward(50, 50)
+            yield 1

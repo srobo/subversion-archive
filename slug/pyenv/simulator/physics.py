@@ -18,6 +18,7 @@ class World:
     motorleft = 0
     motorright = 0
     bumpers = {}
+    blobs = []
 
     class Box:
         def __init__(self, density, width, x, y, z, world, space, geoms = None):
@@ -64,13 +65,13 @@ class World:
                     c = [int(x*METRE) for x in self.box.getRelPointPos((0, 0.2, 0))[:2]]
                     pygame.draw.circle(screen, BLACK, c, 5, 0)
                 
-                campos = [x*METRE for x in self.box.getRelPointPos((0, 0.2, 0))[:2]]
-                rot = [x*METRE for x in self.box.getRotation()[3:5]]
+                #campos = [x*METRE for x in self.box.getRelPointPos((0, 0.2, 0))[:2]]
+                #rot = [x*METRE for x in self.box.getRotation()[3:5]]
 
-                dirty.append(pygame.draw.line(screen, WHITE,
-                                 campos[:2],
-                                 (campos[0] - rot[0],
-                                  campos[1] + rot[1])))
+                #dirty.append(pygame.draw.line(screen, WHITE,
+                #                 campos[:2],
+                #                 (campos[0] - rot[0],
+                #                  campos[1] + rot[1])))
 
 
 
@@ -229,7 +230,7 @@ class World:
         self.contactgroup = ode.JointGroup()
 
         self.robot = self.Robot(self.world, self.space)
-        self.tokens = self.createtokens(self.world, self.space, 1)
+        self.tokens = self.createtokens(self.world, self.space, 0)
 
     
     def near_callback(self, args, geom1, geom2):
@@ -301,7 +302,7 @@ class World:
             def mag(a):
                 return sqrt(a[0]**2+a[1]**2+a[2]**2)
             
-            blobs = []
+            World.blobs = []
 
             for token in self.tokens:
                 pos = token.getPosition()
@@ -316,10 +317,12 @@ class World:
                 angle = adotb / (mag(relvec) * mag(camrot))
                 angle = (acos(angle) / pi) * 180
 
-                if adotb > 0.2 and adotb < 6 and angle < 30:
-                    print cc
-                    blobs.append((angle, adotb/6)
-
+                if adotb > 0.2 and adotb < 6 and angle < 20:
+                    mass =  (1/adotb) * 20
+                    if cc[2] > 0:
+                        World.blobs.append((angle / 20, adotb/6, mass))
+                    else:
+                        World.blobs.append((angle / -20, adotb/6, mass))
 
             World.bumpers = {}
             self.space.collide((self.world, self.contactgroup), self.near_callback)
