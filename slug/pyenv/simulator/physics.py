@@ -300,6 +300,8 @@ class World:
                         a[2]*b[2])
             def mag(a):
                 return sqrt(a[0]**2+a[1]**2+a[2]**2)
+            
+            blobs = []
 
             for token in self.tokens:
                 pos = token.getPosition()
@@ -308,13 +310,15 @@ class World:
                           relvec[1],
                           relvec[2])
                 adotb = dot(relvec, camrot)
-
+                
+                cc = cross(relvec, camrot)
                 
                 angle = adotb / (mag(relvec) * mag(camrot))
                 angle = (acos(angle) / pi) * 180
 
-                if adotb > 0 and angle < 30:
-                    print adotb, angle
+                if adotb > 0.2 and adotb < 6 and angle < 30:
+                    print cc
+                    blobs.append((angle, adotb/6)
 
 
             World.bumpers = {}
