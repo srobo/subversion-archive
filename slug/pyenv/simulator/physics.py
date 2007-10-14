@@ -19,6 +19,7 @@ class World:
     motorright = 0
     bumpers = {}
     blobs = []
+    time = 0
 
     class Box:
         def __init__(self, density, width, x, y, z, world, space, geoms = None):
@@ -337,6 +338,7 @@ class World:
             self.space.collide((self.world, self.contactgroup), self.near_callback)
 
             self.world.step(dt)
+            World.time = World.time + dt
 
             self.screen.fill(BLACK)
 
