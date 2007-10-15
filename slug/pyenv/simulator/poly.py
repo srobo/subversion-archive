@@ -1,4 +1,5 @@
 import pygame
+from math import floor, ceil
 import math
 
 BLACK = (0, 0, 0)
@@ -14,10 +15,21 @@ class poly:
         self.direction = list(direction)
         self.width = width
         self.rotation = 0.0
+        self.rect = pygame.Rect(0, 0, 0, 0)
     
     def blit(self, surface, dirty):
+        minx = min([x[0] for x in self.points]) - 2
+        maxx = max([x[0] for x in self.points]) + 2
+        miny = min([x[1] for x in self.points]) - 2
+        maxy = max([x[1] for x in self.points]) + 2
+
+        self.rect = pygame.Rect(floor(minx), floor(miny),
+                        ceil(maxx-minx), ceil(maxy-miny))
         dirty.append(pygame.draw.polygon(surface, self.colour, self.points,
             self.width))
+
+    def get_rect(self):
+        return self.rect
 
     def move(self):
         for i in range(len(self.points)):

@@ -51,16 +51,9 @@ class World:
             p2 = [x*METRE for x in self.box.getRelPointPos((hw, hw, -hw))[:2]]
             p3 = [x*METRE for x in self.box.getRelPointPos((-(hw), hw, -hw))[:2]]
             
-            minx = min(p0[0], p1[0], p2[0], p3[0]) - 2
-            maxx = max(p0[0], p1[0], p2[0], p3[0]) + 2
-            miny = min(p0[1], p1[1], p2[1], p3[1]) - 2
-            maxy = max(p0[1], p1[1], p2[1], p3[1]) + 2
-
-            self.rect = pygame.Rect(floor(minx), floor(miny),
-                            ceil(maxx-minx), ceil(maxy-miny))
-
             p = poly([p0, p1, p2, p3], (0,0), 0)
             p.blit(screen, dirty)
+            self.rect = p.get_rect()
             
             if self.__class__ == World.Robot:
                 if self.box.getRotation()[8] > 0:
