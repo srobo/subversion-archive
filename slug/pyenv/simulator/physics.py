@@ -44,26 +44,29 @@ class World:
 
             self.rect = pygame.Rect(0,0,0,0)
 
-        def blit(self, screen, dirty):
+        def getpoly(self):
             hw = self.width/2
             p0 = [x*METRE for x in self.box.getRelPointPos((-hw, -hw, -hw))[:2]]
             p1 = [x*METRE for x in self.box.getRelPointPos((hw, -hw, -hw))[:2]]
             p2 = [x*METRE for x in self.box.getRelPointPos((hw, hw, -hw))[:2]]
             p3 = [x*METRE for x in self.box.getRelPointPos((-(hw), hw, -hw))[:2]]
             
-            p = poly([p0, p1, p2, p3], (0,0), 0)
-            p.blit(screen, dirty)
+            p = poly([p0, p1, p2, p3], (0,0), WHITE, 0)
             self.rect = p.get_rect()
             
             if self.__class__ == World.Robot:
                 if self.box.getRotation()[8] > 0:
-                    c = [int(x*METRE) for x in self.box.getRelPointPos((0, 0.2, 0))[:2]]
-                    pygame.draw.circle(screen, BLACK, c, 5, 0)
-                
-            del p
+                    p0 = [x*METRE for x in self.box.getRelPointPos((-0.05, 0.25, 0))[:2]]
+                    p1 = [x*METRE for x in self.box.getRelPointPos((0.05, 0.25, 0))[:2]]
+                    p2 = [x*METRE for x in self.box.getRelPointPos((0.05, 0.15, 0))[:2]]
+                    p3 = [x*METRE for x in self.box.getRelPointPos((-0.05, 0.15, 0))[:2]]
+                    c = poly([p0, p1, p2, p3], (0,0), BLACK, 0)
+                    return [p, c]
 
-        def setdirty(self, dirty):
-            dirty.append(self.rect)
+            return [p]
+
+        def getdirty(self):
+            return self.rect
 
         def addRelForceAtRelPos(self, force, position):
             self.box.addRelForceAtRelPos(force, position)
@@ -188,12 +191,9 @@ class World:
 
         return tokens
 
-    def __init__(self, screen, screenlock, dirty):
+    def __init__(self, drawqueue):
 
-        self.screen = screen
-        self.screenlock = screenlock
-
-        self.dirty = dirty #Apending to lists atomic, don't need lock
+        self.drawqueue = drawqueue
 
         self.world = ode.World()
         self.world.setGravity( (0, 0, -9.81) )
@@ -264,11 +264,10 @@ class World:
         while True:
             yield None
 
-            self.screenlock.acquire()
-
-            self.robot.setdirty(self.dirty)
+            dirty = []
+            dirty.append(self.robot.getdirty())
             for token in self.tokens:
-                token.setdirty(self.dirty)
+                dirty.append(token.getdirty())
 
             self.robot.setspeed(World.motorleft, World.motorright)
 
@@ -321,15 +320,14 @@ class World:
             self.world.step(dt)
             World.time = World.time + dt
 
-
-            self.screen.fill(BLACK)
-
-            self.robot.blit(self.screen, self.dirty)
+            todraw = []
+            todraw.extend(self.robot.getpoly())
 
             for token in self.tokens:
-                token.blit(self.screen, self.dirty)
+                todraw.extend(token.getpoly())
 
-            self.screenlock.release()
+            #As the queue size is 1 this blocks on the drawing thread
+            self.drawqueue.put((dirty, todraw))
 
             self.contactgroup.empty()
 

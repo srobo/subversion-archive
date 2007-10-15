@@ -6,12 +6,12 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 class poly:
-    def __init__(self, points, direction, width):
+    def __init__(self, points, direction, colour, width):
         self.points = []
         for point in points:
             self.points.append(list(point))
 
-        self.colour = WHITE
+        self.colour = colour
         self.direction = list(direction)
         self.width = width
         self.rotation = 0.0
