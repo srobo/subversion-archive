@@ -13,7 +13,6 @@ WIDTH = 8
 METRE = 640/WIDTH
 POWER = 4 #Watts
 SCALE = 5
-FPS = 100
 
 class World:
     motorleft = 0
@@ -191,9 +190,10 @@ class World:
 
         return tokens
 
-    def __init__(self, drawqueue):
+    def __init__(self, drawqueue, fps):
 
         self.drawqueue = drawqueue
+        self.fps = fps
 
         self.world = ode.World()
         self.world.setGravity( (0, 0, -9.81) )
@@ -258,11 +258,12 @@ class World:
             j.attach(geom1.getBody(), geom2.getBody())
 
     def physics_poll(self):
-        dt = 1.0/FPS
-        lasttime = time.time()
-        
+        clk = pygame.time.Clock()
+                
         while True:
             yield None
+            dt = 1.0/self.fps
+            clk.tick(self.fps)
 
             dirty = []
             dirty.append(self.robot.getdirty())

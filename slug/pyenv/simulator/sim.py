@@ -10,29 +10,12 @@ from physics import World
 
 pygame.init()
 
+fps = 10
+
 screen = pygame.display.set_mode((840, 640))
 clk = pygame.time.Clock()
 
-curlineno = 0
-curlinelock = threading.RLock()
-
 BLACK = (0,0,0)
-
-def tracerobot(frame, event, arg):
-    global curlineno, curlinelock
-    if event == "line":
-       curlinelock.acquire()
-       curlineno = frame.f_lineno
-       curlinelock.release()
-    return tracerobot
-
-def trace(frame, event, arg):
-    if event == "call":
-        if "robot" in frame.f_code.co_filename:
-            return tracerobot
-        else:
-            return None
-    return trace
 
 def step():
     print "STEP"
@@ -44,17 +27,35 @@ simdrawqueue = Queue.Queue()
 simmask = pygame.Rect(0, 0, 640, 640)
 
 class SimThread(threading.Thread):
-    def __init__(self, drawqueue):
+    def __init__(self, drawqueue, fps):
         threading.Thread.__init__(self)
-        self.p = World(drawqueue)
+        self.p = World(drawqueue, fps)
         self.t = Trampoline()
         self.t.addtask(self.p.physics_poll())
+        self.curlineno = 0
+
+    def getcurline(self):
+        #TODO - Atomic... I think! Check
+        return self.curlineno
+
+    def tracerobot(self, frame, event, arg):
+        if event == "line":
+            self.curlineno = frame.f_lineno
+        return self.tracerobot
+
+    def trace(self, frame, event, arg):
+        if event == "call":
+            if "robot" in frame.f_code.co_filename:
+                return self.tracerobot
+            else:
+                return None
+        return trace
 
     def run(self):
-        sys.settrace(trace)
+        sys.settrace(self.trace)
         self.t.schedule()
 
-simthread = SimThread(simdrawqueue)
+simthread = SimThread(simdrawqueue, fps)
 simthread.start()
 
 dirty = []
@@ -67,11 +68,7 @@ while True:
         else:
             gui.process_event(event)
 
-    curlinelock.acquire()
-    lineno = curlineno
-    curlinelock.release()
-
-    gui.showline(curlineno)
+    gui.showline(simthread.getcurline())
     gui.drawgui(screen, dirty)
 
     try:
@@ -79,7 +76,7 @@ while True:
         pos = simdrawqueue.get_nowait()
         dirty.extend(pos[0])
 
-        #Get the last in the queue
+        #Get the last in the queue - sim going too fast
         while not simdrawqueue.empty():
             pos = simdrawqueue.get_nowait()
 
@@ -91,7 +88,8 @@ while True:
 
         screen.set_clip(none)
     except:
+        #Not going fast enough
         pass
 
     pygame.display.update(dirty)
-    clk.tick(25)
+    clk.tick(fps)
