@@ -61,6 +61,7 @@ class Trampoline:
                     #Got an event for the mainloop
                     robot.currentevent = result
                     robot.eventsource = task
+                    
                     try:
                         timeout = main.next()
                     except StopIteration:

@@ -5,6 +5,7 @@ from math import sqrt, floor, ceil, asin, pi, acos
 from poly import poly
 import random
 import sys
+import threading
 
 BLACK = 0, 0, 0
 WHITE = 255, 255, 255
@@ -66,17 +67,6 @@ class World:
                     c = [int(x*METRE) for x in self.box.getRelPointPos((0, 0.2, 0))[:2]]
                     pygame.draw.circle(screen, BLACK, c, 5, 0)
                 
-                #campos = [x*METRE for x in self.box.getRelPointPos((0, 0.2, 0))[:2]]
-                #rot = [x*METRE for x in self.box.getRotation()[3:5]]
-
-                #dirty.append(pygame.draw.line(screen, WHITE,
-                #                 campos[:2],
-                #                 (campos[0] - rot[0],
-                #                  campos[1] + rot[1])))
-
-
-
-
             del p
 
         def setdirty(self, dirty):
@@ -205,11 +195,12 @@ class World:
 
         return tokens
 
-    def __init__(self):
-        pygame.init()
+    def __init__(self, screen, screenlock, dirty):
 
-        self.screen = pygame.display.set_mode((640, 640))
-        self.clk = pygame.time.Clock()
+        self.screen = screen
+        self.screenlock = screenlock
+
+        self.dirty = dirty #Apending to lists atomic, don't need lock
 
         self.world = ode.World()
         self.world.setGravity( (0, 0, -9.81) )
@@ -235,7 +226,6 @@ class World:
 
         self.robot = self.Robot(self.world, self.space)
         self.tokens = self.createtokens(self.world, self.space, 10)
-
     
     def near_callback(self, args, geom1, geom2):
         if geom1.__class__ == ode.GeomPlane and geom2.__class__ == ode.GeomPlane:
@@ -277,17 +267,15 @@ class World:
     def physics_poll(self):
         dt = 1.0/FPS
         lasttime = time.time()
-
+        
         while True:
             yield None
-            dirty = []
-            self.robot.setdirty(dirty)
-            for token in self.tokens:
-                token.setdirty(dirty)
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
+            self.screenlock.acquire()
+
+            self.robot.setdirty(self.dirty)
+            for token in self.tokens:
+                token.setdirty(self.dirty)
 
             self.robot.setspeed(World.motorleft, World.motorright)
 
@@ -340,14 +328,15 @@ class World:
             self.world.step(dt)
             World.time = World.time + dt
 
+
             self.screen.fill(BLACK)
 
-            self.robot.blit(self.screen, dirty)
+            self.robot.blit(self.screen, self.dirty)
 
             for token in self.tokens:
-                token.blit(self.screen, dirty)
+                token.blit(self.screen, self.dirty)
 
-            pygame.display.update(dirty)
+            self.screenlock.release()
 
             self.contactgroup.empty()
 
