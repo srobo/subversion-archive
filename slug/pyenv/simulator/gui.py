@@ -1,5 +1,37 @@
-import threading
+import threading, Queue
 import gtk, gobject
+
+class LocalsStore(gtk.ListStore):
+    def __init__(self, locals):
+        super(LocalsStore, self).__init__(gobject.TYPE_STRING,
+                gobject.TYPE_STRING)
+
+        self.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        
+        for k, v in locals.iteritems():
+            self.append([k, v])
+
+class LocalsScroll(gtk.ScrolledWindow):
+    def __init__(self, model):
+        super(LocalsScroll, self).__init__()
+
+        self.model = model
+        self.localslist = gtk.TreeView(model)
+        
+        renderer = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("Variable", renderer, text=0)
+        self.localslist.append_column(column)
+
+        renderer = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("Value", renderer, text=1)
+        self.localslist.append_column(column)
+
+        self.localslist.show()
+        
+        self.add(self.localslist)
+        self.show()
+    def set_model(self, model):
+        self.localslist.set_model(model)
 
 class CodeStore(gtk.ListStore):
     def __init__(self, filename):
@@ -88,6 +120,14 @@ class SimGUI:
     def check_debug(self):
         if self.getdebugmode() == self.running:
             self.runtoggle(None, None)
+
+        try:
+            locals = self.localqueue.get_nowait()
+            self.locals = LocalsStore(locals)
+            self.scrolledlocals.set_model(self.locals)
+        except Queue.Empty:
+            pass
+
         return True
     
     def runtoggle(self, button, data=None):
@@ -104,12 +144,13 @@ class SimGUI:
             self.stepevent.set()
 
     def __init__(self, getcurline, stepevent, breakpoints, breaklock,
-            setdebugmode, getdebugmode):
+            setdebugmode, getdebugmode, localqueue):
 
         self.getcurline = getcurline
         self.shownline = 1
         self.setdebugmode = setdebugmode
         self.getdebugmode = getdebugmode
+        self.localqueue = localqueue
 
         self.stepevent = stepevent
 
@@ -121,11 +162,13 @@ class SimGUI:
         self.code = CodeStore("robot.py")
         self.scrolledcode = CodeScroll(self.code, breakpoints, breaklock)
 
+        self.locals = LocalsStore({})
+        self.scrolledlocals = LocalsScroll(self.locals)
+
         self.stepbutton = gtk.Button("Step")
         self.stepbutton.connect("clicked", self.step, None)
         self.stepbutton.set_sensitive(False)
         self.stepbutton.show()
-
 
         self.runbutton = gtk.ToggleButton("Run")
         self.runbutton.set_active(True)
@@ -142,6 +185,8 @@ class SimGUI:
         self.vbox.pack_start(self.scrolledcode, expand=True, fill=True,
                 padding=0)
         self.vbox.pack_start(self.hbox, expand=False, fill=True, padding=0)
+        self.vbox.pack_start(self.scrolledlocals, expand=True, fill=True,
+                padding=0)
         self.vbox.show()
 
         self.window.add(self.vbox)
@@ -162,9 +207,9 @@ class SimGUI:
 
 class gtkthread(threading.Thread):
     def __init__(self, getcurline, stepevent, breakpoints, breaklock,
-            setdebugmode, getdebugmode):
+            setdebugmode, getdebugmode, localqueue):
         threading.Thread.__init__(self)
         self.hello = SimGUI(getcurline, stepevent, breakpoints, breaklock,
-                setdebugmode, getdebugmode)
+                setdebugmode, getdebugmode, localqueue)
     def run(self):
         self.hello.main()

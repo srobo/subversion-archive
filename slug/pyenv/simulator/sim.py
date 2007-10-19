@@ -37,6 +37,7 @@ class SimThread(threading.Thread):
 
         self.breakpoints = {}
         self.breaklock = threading.RLock()
+        self.localqueue = Queue.Queue()
 
     def getcurline(self):
         return self.curlineno
@@ -56,6 +57,8 @@ class SimThread(threading.Thread):
             self.breaklock.release()
 
             if self.debugmode:
+                self.localqueue.put(frame.f_locals.copy())
+
                 self.stepevent.wait()
                 self.stepevent.clear()
 
@@ -78,7 +81,7 @@ simthread.start()
 
 gtkthread = gui.gtkthread(simthread.getcurline, simthread.stepevent,
         simthread.breakpoints, simthread.breaklock, simthread.setdebugmode,
-        simthread.getdebugmode)
+        simthread.getdebugmode, simthread.localqueue)
 gtkthread.start()
 
 dirty = []
