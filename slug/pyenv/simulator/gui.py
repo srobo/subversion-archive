@@ -1,4 +1,5 @@
 import StringIO, sys
+import code
 import threading, Queue
 import gtk, gobject
 
@@ -41,9 +42,9 @@ class CodeStore(gtk.ListStore):
 
         self.set_sort_column_id(0, gtk.SORT_ASCENDING)
         
-        code = [x.rstrip() for x in open(filename).readlines()]
+        lines = [x.rstrip() for x in open(filename).readlines()]
         lineno = 0
-        for line in code:
+        for line in lines:
             self.append([lineno, None, line])
             lineno = lineno + 1
 
@@ -57,26 +58,27 @@ class CodeScroll(gtk.ScrolledWindow):
 
     def rowactivated(self, treeview, path, view_column):
         lineno = path[0]
-        print "Hey there"
         if self.model[lineno][1] == gtk.STOCK_STOP:
             self.model[lineno][1] = None
             self.breaklock.acquire()
             try:
-                self.breakpoints.pop(lineno+1)
+                self.breakpoints.pop((self.path, lineno+1))
             except KeyError:
                 pass
             self.breaklock.release()
         else:
             self.model[lineno][1] = gtk.STOCK_STOP
             self.breaklock.acquire()
-            self.breakpoints[lineno+1] = 1
+            self.breakpoints[(self.path, lineno+1)] = 1
             self.breaklock.release()
 
-    def __init__(self, model, breakpoints, breaklock):
+    def __init__(self, model, path, breakpoints, breaklock):
         super(CodeScroll, self).__init__()
 
         self.breaklock = breaklock
         self.breakpoints = breakpoints
+
+        self.path = path
 
         self.model = model
         self.codelist = gtk.TreeView(model)
@@ -110,12 +112,15 @@ class SimGUI:
 
     def destroy(self, widget, data=None):
         gtk.main_quit()
+        sys.exit(0)
 
     def check_curline(self):
-        curline = self.getcurline() #Hope this is atomic...
-        if curline != self.shownline:
-            self.scrolledcode.linechanged(curline)
-            self.shownline = curline
+        curfile, curline = self.getcurline() #Hope this is atomic...
+        if curfile != "":
+            if curline != self.shownline:
+                self.pages[curfile].linechanged(curline)
+                self.codepages.set_current_page(self.files.index(curfile))
+                self.shownline = curline
 
         return True
     
@@ -124,33 +129,36 @@ class SimGUI:
             self.runtoggle(None, None)
 
         try:
-            locals = self.localqueue.get_nowait()
-            self.locals = LocalsStore(locals)
+            self.localsdict = self.localqueue.get_nowait()
+            self.locals = LocalsStore(self.localsdict)
             self.scrolledlocals.set_model(self.locals)
+            self.cmdtext.set_sensitive(True)
         except Queue.Empty:
             pass
 
         return True
 
+    def writetocodewin(self, text):
+        iter = self.cmdoutbuf.get_end_iter()
+        self.cmdoutbuf.insert(iter, text)
+        self.scrolloutputtobottom()
+
     def check_stdout(self):
         if self.s.len > self.spos:
-            iter = self.cmdoutbuf.get_end_iter()
+            curlen = self.s.len
             self.s.seek(self.spos)
-            txt = self.s.read()
-            self.cmdoutbuf.insert(iter, txt)
-            self.spos = self.s.len
-            self.scrolloutputtobottom()
+            txt = self.s.read(curlen-self.spos)
+            self.spos = curlen
+            self.writetocodewin(txt)
         return True
     
     def scrolloutputtobottom(self):
-        adj = self.cmdoutscroll.get_vadjustment()
-        adj.set_value(adj.upper)
+        self.cmdoutput.scroll_to_mark(self.cmdoutbuf.get_insert(), 0)
 
     def runtoggle(self, button, data=None):
         if self.running:
             self.runbutton.set_active(False)
             self.stepbutton.set_sensitive(True)
-            self.cmdtext.set_sensitive(True)
             self.running = False
             self.setdebugmode(True)
         else:
@@ -162,7 +170,9 @@ class SimGUI:
             self.stepevent.set()
     
     def processcmd(self, widget, data=None):
-        print self.cmdtext.get_text()
+        ii = code.InteractiveInterpreter(locals=self.localsdict)
+        ii.write = self.writetocodewin
+        ii.runsource(self.cmdtext.get_text())
 
     def __init__(self, getcurline, stepevent, breakpoints, breaklock,
             setdebugmode, getdebugmode, localqueue):
@@ -179,9 +189,20 @@ class SimGUI:
         self.window.connect("delete_event", self.delete_event)
 
         self.window.connect("destroy", self.destroy)
+        
+        self.codepages = gtk.Notebook()
+        self.pages = {}
+        self.files = ["/home/stephen/ecssr/slug/pyenv/simulator/user/robot.py",
+                      "/home/stephen/ecssr/slug/pyenv/simulator/user/r2.py"]
 
-        self.code = CodeStore("robot.py")
-        self.scrolledcode = CodeScroll(self.code, breakpoints, breaklock)
+
+        for file in self.files:
+            codestore = CodeStore(file)
+            scrolledcode = CodeScroll(codestore, file, breakpoints, breaklock)
+            self.pages[file] = scrolledcode
+            self.codepages.append_page(scrolledcode, gtk.Label(file))
+
+        self.codepages.show()
 
         self.locals = LocalsStore({})
         self.scrolledlocals = LocalsScroll(self.locals)
@@ -217,7 +238,7 @@ class SimGUI:
         self.cmdoutscroll.show()
 
         self.vbox = gtk.VBox(False, 10)
-        self.vbox.pack_start(self.scrolledcode, expand=True, fill=True,
+        self.vbox.pack_start(self.codepages, expand=True, fill=True,
                 padding=0)
         self.vbox.pack_start(self.hbox, expand=False, fill=True, padding=0)
         self.vbox.pack_start(self.scrolledlocals, expand=True, fill=True,
@@ -233,7 +254,9 @@ class SimGUI:
         self.s = StringIO.StringIO()
         self.spos = 0
         self.stdout = sys.stdout
+        self.stderr = sys.stderr
         sys.stdout = self.s
+        sys.stderr = self.s
 
         gobject.idle_add(self.check_debug)
         gobject.idle_add(self.check_curline)

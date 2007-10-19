@@ -30,6 +30,7 @@ class SimThread(threading.Thread):
         self.t = Trampoline()
         self.t.addtask(self.p.physics_poll())
         self.curlineno = 0
+        self.curfile = ""
 
         self.debugmode = False
         self.stepevent = threading.Event()
@@ -40,7 +41,7 @@ class SimThread(threading.Thread):
         self.localqueue = Queue.Queue()
 
     def getcurline(self):
-        return self.curlineno
+        return self.curfile, self.curlineno
 
     def getdebugmode(self):
         return self.debugmode
@@ -51,13 +52,18 @@ class SimThread(threading.Thread):
     def tracerobot(self, frame, event, arg):
         if event == "line":
             self.curlineno = frame.f_lineno
+            self.curfile = frame.f_code.co_filename
             self.breaklock.acquire()
-            if self.curlineno in self.breakpoints:
+            if (frame.f_code.co_filename, self.curlineno) in self.breakpoints:
                 self.debugmode = True
             self.breaklock.release()
 
             if self.debugmode:
-                self.localqueue.put(frame.f_locals.copy())
+                ns = frame.f_globals.copy()
+                for k, v in frame.f_locals.copy().iteritems():
+                    ns[k] = v
+
+                self.localqueue.put(ns)
 
                 self.stepevent.wait()
                 self.stepevent.clear()
@@ -66,7 +72,7 @@ class SimThread(threading.Thread):
 
     def trace(self, frame, event, arg):
         if event == "call":
-            if "robot" in frame.f_code.co_filename:
+            if "user" in frame.f_code.co_filename:
                 return self.tracerobot
             else:
                 return None
