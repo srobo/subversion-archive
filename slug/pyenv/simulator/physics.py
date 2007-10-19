@@ -265,11 +265,6 @@ class World:
             dt = 1.0/self.fps
             clk.tick(self.fps)
 
-            dirty = []
-            dirty.append(self.robot.getdirty())
-            for token in self.tokens:
-                dirty.append(token.getdirty())
-
             self.robot.setspeed(World.motorleft, World.motorright)
 
             #Emulate camera
@@ -328,7 +323,7 @@ class World:
                 todraw.extend(token.getpoly())
 
             #As the queue size is 1 this blocks on the drawing thread
-            self.drawqueue.put((dirty, todraw))
+            self.drawqueue.put(todraw)
 
             self.contactgroup.empty()
 

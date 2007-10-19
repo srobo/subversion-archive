@@ -17,16 +17,15 @@ class poly:
         self.rotation = 0.0
         self.rect = pygame.Rect(0, 0, 0, 0)
     
-    def blit(self, surface, dirty):
-        minx = min([x[0] for x in self.points]) - 2
-        maxx = max([x[0] for x in self.points]) + 2
-        miny = min([x[1] for x in self.points]) - 2
-        maxy = max([x[1] for x in self.points]) + 2
+    def blit(self, surface):
+        minx = min([x[0] for x in self.points]) - 5
+        maxx = max([x[0] for x in self.points]) + 5
+        miny = min([x[1] for x in self.points]) - 5
+        maxy = max([x[1] for x in self.points]) + 5
 
         self.rect = pygame.Rect(floor(minx), floor(miny),
                         ceil(maxx-minx), ceil(maxy-miny))
-        dirty.append(pygame.draw.polygon(surface, self.colour, self.points,
-            self.width))
+        pygame.draw.polygon(surface, self.colour, self.points, self.width)
 
     def get_rect(self):
         return self.rect

@@ -7,6 +7,7 @@ import Queue
 from trampoline import Trampoline
 import time
 from physics import World
+import tgtk
 
 pygame.init()
 
@@ -20,7 +21,7 @@ BLACK = (0,0,0)
 def step():
     print "STEP"
 
-gui = gui.GUI(step)
+#gui = gui.GUI(step)
 guimask = pygame.Rect(640, 0, 200, 640)
 
 simdrawqueue = Queue.Queue()
@@ -58,23 +59,30 @@ class SimThread(threading.Thread):
 simthread = SimThread(simdrawqueue, fps)
 simthread.start()
 
+gtkthread = tgtk.gtkthread()
+gtkthread.start()
+
 dirty = []
+lastdirty = []
 
 while True:
+
+    dirty = lastdirty[:] #Make a copy of lastdirty
+    lastdirty = []
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         else:
-            gui.process_event(event)
+            pass
+            #gui.process_event(event)
 
-    gui.showline(simthread.getcurline())
-    gui.drawgui(screen, dirty)
+    #gui.showline(simthread.getcurline())
+    #gui.drawgui(screen, dirty)
 
     try:
         #Get the dirty for the set after the one just drawn
         pos = simdrawqueue.get_nowait()
-        dirty.extend(pos[0])
 
         #Get the last in the queue - sim going too fast
         while not simdrawqueue.empty():
@@ -83,8 +91,9 @@ while True:
         screen.set_clip(simmask)
 
         screen.fill(BLACK)
-        for poly in pos[1]:
-            poly.blit(screen, dirty)
+        for poly in pos:
+            poly.blit(screen)
+            lastdirty.append(poly.get_rect())
 
         screen.set_clip(none)
     except:
