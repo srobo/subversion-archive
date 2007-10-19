@@ -59,5 +59,6 @@ def main(trampoline):
 
             trampoline.addtask(v)
         else:
+            print "Yelp"
             turnright(20)
             yield 1

@@ -1,3 +1,4 @@
+import StringIO, sys
 import threading, Queue
 import gtk, gobject
 
@@ -56,6 +57,7 @@ class CodeScroll(gtk.ScrolledWindow):
 
     def rowactivated(self, treeview, path, view_column):
         lineno = path[0]
+        print "Hey there"
         if self.model[lineno][1] == gtk.STOCK_STOP:
             self.model[lineno][1] = None
             self.breaklock.acquire()
@@ -129,19 +131,33 @@ class SimGUI:
             pass
 
         return True
+
+    def check_stdout(self):
+        if self.s.len > self.spos:
+            iter = self.cmdoutbuf.get_end_iter()
+            self.s.seek(self.spos)
+            txt = self.s.read()
+            self.cmdoutbuf.insert(iter, txt)
+            self.spos = self.s.len
+        return True
     
     def runtoggle(self, button, data=None):
         if self.running:
             self.runbutton.set_active(False)
             self.stepbutton.set_sensitive(True)
+            self.cmdtext.set_sensitive(True)
             self.running = False
             self.setdebugmode(True)
         else:
             self.runbutton.set_active(True)
             self.stepbutton.set_sensitive(False)
+            self.cmdtext.set_sensitive(False)
             self.running = True
             self.setdebugmode(False)
             self.stepevent.set()
+    
+    def processcmd(self, widget, data=None):
+        print self.cmdtext.get_text()
 
     def __init__(self, getcurline, stepevent, breakpoints, breaklock,
             setdebugmode, getdebugmode, localqueue):
@@ -181,20 +197,38 @@ class SimGUI:
         self.hbox.pack_start(self.stepbutton, expand=True, fill=True, padding=0)
         self.hbox.show()
 
+        self.cmdtext = gtk.Entry()
+        self.cmdtext.set_sensitive(False)
+        self.cmdtext.connect("activate", self.processcmd)
+        self.cmdtext.show()
+        self.cmdoutput = gtk.TextView()
+        self.cmdoutput.set_editable(False)
+        self.cmdoutput.set_wrap_mode(gtk.WRAP_CHAR)
+        self.cmdoutbuf = self.cmdoutput.get_buffer()
+        self.cmdoutput.show()
+
         self.vbox = gtk.VBox(False, 10)
         self.vbox.pack_start(self.scrolledcode, expand=True, fill=True,
                 padding=0)
         self.vbox.pack_start(self.hbox, expand=False, fill=True, padding=0)
         self.vbox.pack_start(self.scrolledlocals, expand=True, fill=True,
                 padding=0)
+        self.vbox.pack_start(self.cmdtext, expand=False, fill=True, padding=0)
+        self.vbox.pack_start(self.cmdoutput, expand=True, fill=True, padding=0)
         self.vbox.show()
 
         self.window.add(self.vbox)
 
         self.window.show()
 
+        self.s = StringIO.StringIO()
+        self.spos = 0
+        self.stdout = sys.stdout
+        sys.stdout = self.s
+
         gobject.idle_add(self.check_debug)
         gobject.idle_add(self.check_curline)
+        gobject.idle_add(self.check_stdout)
 
         self.window.resize(400, 640)
 
