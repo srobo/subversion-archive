@@ -139,8 +139,13 @@ class SimGUI:
             txt = self.s.read()
             self.cmdoutbuf.insert(iter, txt)
             self.spos = self.s.len
+            self.scrolloutputtobottom()
         return True
     
+    def scrolloutputtobottom(self):
+        adj = self.cmdoutscroll.get_vadjustment()
+        adj.set_value(adj.upper)
+
     def runtoggle(self, button, data=None):
         if self.running:
             self.runbutton.set_active(False)
@@ -206,6 +211,10 @@ class SimGUI:
         self.cmdoutput.set_wrap_mode(gtk.WRAP_CHAR)
         self.cmdoutbuf = self.cmdoutput.get_buffer()
         self.cmdoutput.show()
+        self.cmdoutscroll = gtk.ScrolledWindow()
+        self.cmdoutscroll.add(self.cmdoutput)
+        self.cmdoutscroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        self.cmdoutscroll.show()
 
         self.vbox = gtk.VBox(False, 10)
         self.vbox.pack_start(self.scrolledcode, expand=True, fill=True,
@@ -214,7 +223,7 @@ class SimGUI:
         self.vbox.pack_start(self.scrolledlocals, expand=True, fill=True,
                 padding=0)
         self.vbox.pack_start(self.cmdtext, expand=False, fill=True, padding=0)
-        self.vbox.pack_start(self.cmdoutput, expand=True, fill=True, padding=0)
+        self.vbox.pack_start(self.cmdoutscroll, expand=True, fill=True, padding=0)
         self.vbox.show()
 
         self.window.add(self.vbox)
