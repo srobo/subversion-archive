@@ -1,78 +1,105 @@
-import pygame
-from pgu import gui
+import threading
+import gtk, gobject
 
-WHITE = (255,255,255)
-BLACK = (0, 0, 0)
+class CodeStore(gtk.ListStore):
+    def __init__(self, filename):
+        super(CodeStore, self).__init__(gobject.TYPE_INT,
+        gobject.TYPE_STRING)
 
-class GUI:
-    def __init__(self, step):
-        self.step = step
-        self.altered = False
-        self.curline = 0
-        self.form = gui.Form()
+        self.set_sort_column_id(0, gtk.SORT_ASCENDING)
         
-        class DebugConsole(gui.Table):
-            def __init__(self,**params):
-                WIDTH = 200
-                HEIGHT = 640
+        code = [x.rstrip() for x in open(filename).readlines()]
+        lineno = 0
+        for line in code:
+            self.append([lineno, line])
+            lineno = lineno + 1
 
-                gui.Table.__init__(self, **params)
-                
-                self.tr()
-                self.td(gui.Label("Debug Console", color=WHITE), colspan=1)
-                self.tr()
-                
-                self.codelist = gui.TextArea("", width=200, height=400,size=10)
+class CodeScroll(gtk.ScrolledWindow):
+    def linechanged(self, lineno):
+        #Select row val
+        selector = self.codelist.get_selection()
+        selector.select_path(lineno-1)
+        #Make sure it's visible
+        self.codelist.scroll_to_cell(lineno-1, None, False)
 
-                self.td(self.codelist)
-                self.tr()
-                
-                self.stepbutton = gui.Button("Step")
-                self.td(self.stepbutton)
+    def __init__(self, model):
+        super(CodeScroll, self).__init__()
 
-        self.app = gui.App()
-        self.t = DebugConsole()
+        self.codelist = gtk.TreeView(model)
+        
+        renderer = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("Line", renderer, text=0)
+        self.codelist.append_column(column)
 
-        self.t.stepbutton.connect(gui.CLICK, self.pressed_step, None)
+        renderer = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("Code", renderer, text=1)
+        self.codelist.append_column(column)
 
-        self.rlines = [a.rstrip() for a in open("robot.py").readlines()]
-        print "\n".join(self.rlines)
+        self.codelist.show()
+        
+        self.add(self.codelist)
+        self.show()
 
-        c = gui.Container(align=-1,valign=-1)
-        c.add(self.t, 640, 0)
-        self.app.init(c)
+class SimGUI:
 
-        self.mask = pygame.Rect(640, 0, 200, 640)
+    def hello(self, widget, data=None):
+        print "Hey there"
 
-    def showline(self, no):
-        if no != self.curline:
-            rlines = self.rlines
+    def delete_event(self, widget, event, data=None):
+        return False
 
-            no = no - 1
+    def destroy(self, widget, data=None):
+        gtk.main_quit()
 
-            start = no - 5
-            if start < 0: start = 0
-            end = no + 5
-            if end >= len(rlines): end = len(rlines)-1
+    def check_curline(self):
+        curline = self.curline[0] #Hope this is atomic...
+        if curline != self.shownline:
+            self.scrolledcode.linechanged(curline)
+            self.shownline = curline
 
-            body = "\n".join(rlines[start:no])
-            body = body + "\n--> " + rlines[no]
-            body = body + "\n".join(rlines[no+1:end])
-            self.t.codelist.value = body
+        return True
 
-            self.altered = True
-            self.curline = no
+    def __init__(self, curline):
 
-    def pressed_step(self, arg):
-        self.step()
+        self.curline = curline
+        self.shownline = 1
 
-    def process_event(self, e):
-        self.altered = True
-        self.app.event(e)
+        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.window.connect("delete_event", self.delete_event)
 
-    def drawgui(self, screen, dirty):
-        if self.altered:
-            screen.fill(BLACK, self.mask)
-            self.app.paint(screen)
-            dirty.append(self.mask)
-            self.altered = False
+        self.window.connect("destroy", self.destroy)
+
+        self.code = CodeStore("robot.py")
+        self.scrolledcode = CodeScroll(self.code)
+
+        self.button = gtk.Button("Step")
+        self.button.connect("clicked", self.hello, None)
+        self.button.show()
+
+        self.vbox = gtk.VBox(False, 10)
+        self.vbox.pack_start(self.scrolledcode, expand=True, fill=True,
+                padding=0)
+        self.vbox.pack_start(self.button, expand=False, fill=True, padding=0)
+        self.vbox.show()
+
+        self.window.add(self.vbox)
+
+        self.window.show()
+
+        gobject.idle_add(self.check_curline)
+
+        self.window.resize(400, 640)
+
+    def main(self):
+        gtk.gdk.threads_init()
+        gtk.gdk.threads_enter()
+        gtk.main()
+        gtk.gdk.threads_leave()
+
+
+class gtkthread(threading.Thread):
+    def __init__(self, curline):
+        threading.Thread.__init__(self)
+        self.hello = SimGUI(curline)
+    def run(self):
+        self.hello.main()

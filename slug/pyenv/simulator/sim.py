@@ -7,22 +7,18 @@ import Queue
 from trampoline import Trampoline
 import time
 from physics import World
-import tgtk
 
 pygame.init()
 
 fps = 10
 
-screen = pygame.display.set_mode((840, 640))
+screen = pygame.display.set_mode((640, 640))
 clk = pygame.time.Clock()
 
 BLACK = (0,0,0)
 
 def step():
     print "STEP"
-
-#gui = gui.GUI(step)
-guimask = pygame.Rect(640, 0, 200, 640)
 
 simdrawqueue = Queue.Queue()
 simmask = pygame.Rect(0, 0, 640, 640)
@@ -33,7 +29,7 @@ class SimThread(threading.Thread):
         self.p = World(drawqueue, fps)
         self.t = Trampoline()
         self.t.addtask(self.p.physics_poll())
-        self.curlineno = 0
+        self.curlineno = [0]
 
     def getcurline(self):
         #TODO - Atomic... I think! Check
@@ -41,7 +37,7 @@ class SimThread(threading.Thread):
 
     def tracerobot(self, frame, event, arg):
         if event == "line":
-            self.curlineno = frame.f_lineno
+            self.curlineno[0] = frame.f_lineno
         return self.tracerobot
 
     def trace(self, frame, event, arg):
@@ -59,7 +55,7 @@ class SimThread(threading.Thread):
 simthread = SimThread(simdrawqueue, fps)
 simthread.start()
 
-gtkthread = tgtk.gtkthread()
+gtkthread = gui.gtkthread(simthread.getcurline())
 gtkthread.start()
 
 dirty = []
@@ -73,12 +69,6 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        else:
-            pass
-            #gui.process_event(event)
-
-    #gui.showline(simthread.getcurline())
-    #gui.drawgui(screen, dirty)
 
     try:
         #Get the dirty for the set after the one just drawn
@@ -88,14 +78,11 @@ while True:
         while not simdrawqueue.empty():
             pos = simdrawqueue.get_nowait()
 
-        screen.set_clip(simmask)
-
         screen.fill(BLACK)
         for poly in pos:
             poly.blit(screen)
             lastdirty.append(poly.get_rect())
 
-        screen.set_clip(none)
     except:
         #Not going fast enough
         pass
