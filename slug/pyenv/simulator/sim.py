@@ -4,9 +4,9 @@ import threading
 import sys
 import time
 import Queue
-from trampoline import Trampoline
 import time
-from physics import World
+from http import checkout
+import zipfile
 
 pygame.init()
 
@@ -22,6 +22,15 @@ def step():
 
 simdrawqueue = Queue.Queue()
 simmask = pygame.Rect(0, 0, 640, 640)
+zipname = checkout()
+z = zipfile.ZipFile(zipname)
+for file in z.namelist():
+    f = open("/home/stephen/ecssr/slug/pyenv/simulator/user/" + file, "wb")
+    f.write(z.read(file))
+    f.close()
+
+from trampoline import Trampoline
+from physics import World
 
 class SimThread(threading.Thread):
     def __init__(self, drawqueue, fps):
