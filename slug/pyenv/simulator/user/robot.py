@@ -2,6 +2,7 @@ from motor import *
 import dio
 import vis
 import physics
+import r2
 
 currentevent = None
 eventsource = None
@@ -39,6 +40,7 @@ def main(trampoline):
         if eventsource == v:
             forward(100, 100)
             trampoline.removetask(v)
+            r2.moo(4)
             blob = currentevent.blobs[0]
             if blob.centrex > 0:
                 dir = RIGHT
@@ -59,6 +61,5 @@ def main(trampoline):
 
             trampoline.addtask(v)
         else:
-            print "Yelp"
             turnright(20)
             yield 1
