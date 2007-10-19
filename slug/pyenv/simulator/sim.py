@@ -29,15 +29,36 @@ class SimThread(threading.Thread):
         self.p = World(drawqueue, fps)
         self.t = Trampoline()
         self.t.addtask(self.p.physics_poll())
-        self.curlineno = [0]
+        self.curlineno = 0
+
+        self.debugmode = False
+        self.stepevent = threading.Event()
+        self.stepevent.clear()
+
+        self.breakpoints = {}
+        self.breaklock = threading.RLock()
 
     def getcurline(self):
-        #TODO - Atomic... I think! Check
         return self.curlineno
+
+    def getdebugmode(self):
+        return self.debugmode
+
+    def setdebugmode(self, mode):
+        self.debugmode = mode
 
     def tracerobot(self, frame, event, arg):
         if event == "line":
-            self.curlineno[0] = frame.f_lineno
+            self.curlineno = frame.f_lineno
+            self.breaklock.acquire()
+            if self.curlineno in self.breakpoints:
+                self.debugmode = True
+            self.breaklock.release()
+
+            if self.debugmode:
+                self.stepevent.wait()
+                self.stepevent.clear()
+
         return self.tracerobot
 
     def trace(self, frame, event, arg):
@@ -55,7 +76,9 @@ class SimThread(threading.Thread):
 simthread = SimThread(simdrawqueue, fps)
 simthread.start()
 
-gtkthread = gui.gtkthread(simthread.getcurline())
+gtkthread = gui.gtkthread(simthread.getcurline, simthread.stepevent,
+        simthread.breakpoints, simthread.breaklock, simthread.setdebugmode,
+        simthread.getdebugmode)
 gtkthread.start()
 
 dirty = []
