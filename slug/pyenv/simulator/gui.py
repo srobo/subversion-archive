@@ -154,8 +154,8 @@ class SimGUI(threading.Thread):
         self.spos = 0
         self.stdout = sys.stdout
         self.stderr = sys.stderr
-        #sys.stdout = self.s
-        #sys.stderr = self.s
+        sys.stdout = self.s
+        sys.stderr = self.s
 
         gobject.idle_add(self.checkq)
         gobject.idle_add(self.check_stdout)
