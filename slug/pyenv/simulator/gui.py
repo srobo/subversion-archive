@@ -15,7 +15,6 @@ class SimGUI(threading.Thread):
 
     def destroy(self, widget, data=None):
         gtk.main_quit()
-        sys.exit(0)
 
     def checkq(self):
         #TODO: Get a signal on the queue having an item on it
@@ -167,3 +166,5 @@ class SimGUI(threading.Thread):
         gtk.gdk.threads_enter()
         gtk.main()
         gtk.gdk.threads_leave()
+        sys.stdout = self.stdout
+        sys.stderr = self.stderr

@@ -2,11 +2,8 @@ import pygame
 import gui
 import threading
 import sys
-import time
 import Queue
-import time
-from http import checkout
-import zipfile, os.path
+import zipfile, os, os.path
 import getsrc
 
 import motor, dio, vis, events
@@ -16,13 +13,14 @@ FPS = 10
 #1. Try to get some code!
 sc = getsrc.SourceLoader()
 sc.main()
-if sc.success == False:
+if sc.success[0] == False:
     sys.exit(0)
 
 #Got a zip file in sc.success, and robot.py is in the path
-zippath = sc.success
+zippath, delzip = sc.success
 del sc
 z = zipfile.ZipFile(zippath)
+
 #Read in the files in the zip file and their contents
 files = [(os.path.join(zippath, a), z.read(a)) for a in z.namelist()]
 
@@ -149,6 +147,13 @@ display.start()
 simthread = SimThread(display.simdrawqueue, zippath, FPS)
 simthread.start()
 
-gtkthread = gui.SimGUI(simthread.breakpoints, simthread.breaklock,
+gtk = gui.SimGUI(simthread.breakpoints, simthread.breaklock,
         simthread.fromsimq, simthread.tosimq, files)
-gtkthread.run()
+gtk.run()
+
+if delzip:
+    try:
+        os.remove(zippath)
+    except:
+        pass
+sys.exit()
