@@ -17,8 +17,9 @@ if sc.success == False:
     sys.exit(0)
 
 #Got a zip file in sc.success, and robot.py is in the path
-zippath = os.path.dirname(sc.success)
-z = zipfile.ZipFile(sc.success)
+zippath = sc.success
+del sc
+z = zipfile.ZipFile(zippath)
 #Read in the files in the zip file and their contents
 files = [(os.path.join(zippath, a), z.read(a)) for a in z.namelist()]
 
@@ -37,13 +38,14 @@ from trampoline import Trampoline
 from physics import World
 
 class SimThread(threading.Thread):
-    def __init__(self, drawqueue, fps):
+    def __init__(self, drawqueue, watchpath, fps):
         threading.Thread.__init__(self)
         self.p = World(drawqueue, fps)
         self.t = Trampoline()
         self.t.addtask(self.p.physics_poll())
 
         self.debugmode = True
+        self.watchpath = watchpath
 
         self.breakpoints = {}
         self.breaklock = threading.RLock()
@@ -57,7 +59,7 @@ class SimThread(threading.Thread):
             
             #Check to see if stop on breakpoint
             self.breaklock.acquire()
-            if (frame.f_code.co_filename, curlineno) in self.breakpoints:
+            if (curfile, curlineno-1) in self.breakpoints:
                 self.debugmode = True
             self.breaklock.release()
 
@@ -78,9 +80,13 @@ class SimThread(threading.Thread):
                 self.fromsimq.put((curfile, curlineno, ns))
                 
                 #Block on run or step from the GUI
-                msg = self.tosimq.get()
-                if msg == "RUN":
-                    self.debugmode = False
+                while True:
+                    msg = self.tosimq.get()
+                    if msg == "RUN":
+                        self.debugmode = False
+                        break
+                    elif msg == "STEP":
+                        break
             else:
                 self.fromsimq.put((curfile, curlineno, {}))
 
@@ -88,7 +94,7 @@ class SimThread(threading.Thread):
 
     def trace(self, frame, event, arg):
         if event == "call":
-            if "user" in frame.f_code.co_filename:
+            if self.watchpath in frame.f_code.co_filename:
                 return self.tracerobot
             else:
                 return None
@@ -98,7 +104,7 @@ class SimThread(threading.Thread):
         sys.settrace(self.trace)
         self.t.schedule()
 
-simthread = SimThread(simdrawqueue, fps)
+simthread = SimThread(simdrawqueue, zippath, fps)
 simthread.start()
 
 gtkthread = gui.SimGUI(simthread.breakpoints, simthread.breaklock,

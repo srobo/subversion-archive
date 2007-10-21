@@ -21,7 +21,6 @@ class SimGUI(threading.Thread):
         #TODO: Get a signal on the queue having an item on it
         try:
             curfile, curline, locals = self.fromsimq.get_nowait()
-            print curfile
             if curfile in self.files:
                 self.pages[curfile].linechanged(curline)
                 self.codepages.set_current_page(self.files.index(curfile))
