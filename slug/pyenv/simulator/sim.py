@@ -17,9 +17,6 @@ clk = pygame.time.Clock()
 
 BLACK = (0,0,0)
 
-def step():
-    print "STEP"
-
 simdrawqueue = Queue.Queue()
 simmask = pygame.Rect(0, 0, 640, 640)
 zipname = checkout()
@@ -38,44 +35,47 @@ class SimThread(threading.Thread):
         self.p = World(drawqueue, fps)
         self.t = Trampoline()
         self.t.addtask(self.p.physics_poll())
-        self.curlineno = 0
-        self.curfile = ""
 
-        self.debugmode = False
-        self.stepevent = threading.Event()
-        self.stepevent.clear()
+        self.debugmode = True
 
         self.breakpoints = {}
         self.breaklock = threading.RLock()
-        self.localqueue = Queue.Queue()
-
-    def getcurline(self):
-        return self.curfile, self.curlineno
-
-    def getdebugmode(self):
-        return self.debugmode
-
-    def setdebugmode(self, mode):
-        self.debugmode = mode
+        self.fromsimq = Queue.Queue()
+        self.tosimq = Queue.Queue()
 
     def tracerobot(self, frame, event, arg):
         if event == "line":
-            self.curlineno = frame.f_lineno
-            self.curfile = frame.f_code.co_filename
+            curlineno = frame.f_lineno
+            curfile = frame.f_code.co_filename
+            
+            #Check to see if stop on breakpoint
             self.breaklock.acquire()
-            if (frame.f_code.co_filename, self.curlineno) in self.breakpoints:
+            if (frame.f_code.co_filename, curlineno) in self.breakpoints:
                 self.debugmode = True
             self.breaklock.release()
+
+            #Has the stop button been pressed?
+            #TODO: Check nothing else can happen here
+            try:
+                msg = self.tosimq.get_nowait()
+                if msg == "STOP":
+                    self.debugmode = True
+            except Queue.Empty:
+                pass
 
             if self.debugmode:
                 ns = frame.f_globals.copy()
                 for k, v in frame.f_locals.copy().iteritems():
                     ns[k] = v
 
-                self.localqueue.put(ns)
-
-                self.stepevent.wait()
-                self.stepevent.clear()
+                self.fromsimq.put((curfile, curlineno, ns))
+                
+                #Block on run or step from the GUI
+                msg = self.tosimq.get()
+                if msg == "RUN":
+                    self.debugmode = False
+            else:
+                self.fromsimq.put((curfile, curlineno, {}))
 
         return self.tracerobot
 
@@ -94,9 +94,11 @@ class SimThread(threading.Thread):
 simthread = SimThread(simdrawqueue, fps)
 simthread.start()
 
-gtkthread = gui.gtkthread(simthread.getcurline, simthread.stepevent,
-        simthread.breakpoints, simthread.breaklock, simthread.setdebugmode,
-        simthread.getdebugmode, simthread.localqueue)
+files = ["/home/stephen/ecssr/slug/pyenv/simulator/user/robot.py",
+         "/home/stephen/ecssr/slug/pyenv/simulator/user/r2.py"]
+
+gtkthread = gui.gtkthread(simthread.breakpoints, simthread.breaklock,
+        simthread.fromsimq, simthread.tosimq, files)
 gtkthread.start()
 
 dirty = []

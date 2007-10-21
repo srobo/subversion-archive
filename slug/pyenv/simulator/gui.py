@@ -62,14 +62,14 @@ class CodeScroll(gtk.ScrolledWindow):
             self.model[lineno][1] = None
             self.breaklock.acquire()
             try:
-                self.breakpoints.pop((self.path, lineno+1))
+                self.breakpoints.pop((self.path, lineno))
             except KeyError:
                 pass
             self.breaklock.release()
         else:
             self.model[lineno][1] = gtk.STOCK_STOP
             self.breaklock.acquire()
-            self.breakpoints[(self.path, lineno+1)] = 1
+            self.breakpoints[(self.path, lineno)] = 1
             self.breaklock.release()
 
     def __init__(self, model, path, breakpoints, breaklock):
@@ -105,7 +105,7 @@ class CodeScroll(gtk.ScrolledWindow):
 class SimGUI:
 
     def step(self, widget, data=None):
-        self.stepevent.set()
+        self.tosimq.put("STEP")
 
     def delete_event(self, widget, event, data=None):
         return False
@@ -114,30 +114,43 @@ class SimGUI:
         gtk.main_quit()
         sys.exit(0)
 
-    def check_curline(self):
-        curfile, curline = self.getcurline() #Hope this is atomic...
-        if curfile != "":
-            if curline != self.shownline:
+    def checkq(self):
+        #TODO: Get a signal on the queue having an item on it
+        try:
+            curfile, curline, locals = self.fromsimq.get_nowait()
+            if curfile in self.files:
                 self.pages[curfile].linechanged(curline)
                 self.codepages.set_current_page(self.files.index(curfile))
-                self.shownline = curline
 
-        return True
-    
-    def check_debug(self):
-        if self.getdebugmode() == self.running:
-            self.runtoggle(None, None)
+            if len(locals) > 0:
+                #In debug mode
+                self.localsdict = locals
 
-        try:
-            self.localsdict = self.localqueue.get_nowait()
-            self.locals = LocalsStore(self.localsdict)
-            self.scrolledlocals.set_model(self.locals)
-            self.cmdtext.set_sensitive(True)
+                self.locals = LocalsStore(self.localsdict)
+                self.scrolledlocals.set_model(self.locals)
+                
+                if self.running:
+                    self.cmdtext.set_sensitive(True)
+                    self.runbutton.set_active(False)
+                    self.stepbutton.set_sensitive(True)
+                    self.running = False
+            else:
+                if not self.running:
+                    self.runbutton.set_active(True)
+                    self.stepbutton.set_sensitive(False)
+                    self.cmdtext.set_sensitive(False)
+                    self.running = True
+
         except Queue.Empty:
             pass
-
         return True
 
+    def runtoggle(self, button, data=None):
+        if self.running:
+            self.tosimq.put("STOP")
+        else:
+            self.tosimq.put("RUN")
+                        
     def writetocodewin(self, text):
         iter = self.cmdoutbuf.get_end_iter()
         self.cmdoutbuf.insert(iter, text)
@@ -154,36 +167,17 @@ class SimGUI:
     
     def scrolloutputtobottom(self):
         self.cmdoutput.scroll_to_mark(self.cmdoutbuf.get_insert(), 0)
-
-    def runtoggle(self, button, data=None):
-        if self.running:
-            self.runbutton.set_active(False)
-            self.stepbutton.set_sensitive(True)
-            self.running = False
-            self.setdebugmode(True)
-        else:
-            self.runbutton.set_active(True)
-            self.stepbutton.set_sensitive(False)
-            self.cmdtext.set_sensitive(False)
-            self.running = True
-            self.setdebugmode(False)
-            self.stepevent.set()
     
     def processcmd(self, widget, data=None):
         ii = code.InteractiveInterpreter(locals=self.localsdict)
         ii.write = self.writetocodewin
         ii.runsource(self.cmdtext.get_text())
 
-    def __init__(self, getcurline, stepevent, breakpoints, breaklock,
-            setdebugmode, getdebugmode, localqueue):
+    def __init__(self, breakpoints, breaklock, fromsimq, tosimq, files):
 
-        self.getcurline = getcurline
-        self.shownline = 1
-        self.setdebugmode = setdebugmode
-        self.getdebugmode = getdebugmode
-        self.localqueue = localqueue
-
-        self.stepevent = stepevent
+        self.running = False
+        self.fromsimq = fromsimq
+        self.tosimq = tosimq
 
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.connect("delete_event", self.delete_event)
@@ -192,9 +186,7 @@ class SimGUI:
         
         self.codepages = gtk.Notebook()
         self.pages = {}
-        self.files = ["/home/stephen/ecssr/slug/pyenv/simulator/user/robot.py",
-                      "/home/stephen/ecssr/slug/pyenv/simulator/user/r2.py"]
-
+        self.files = files
 
         for file in self.files:
             codestore = CodeStore(file)
@@ -209,12 +201,11 @@ class SimGUI:
 
         self.stepbutton = gtk.Button("Step")
         self.stepbutton.connect("clicked", self.step, None)
-        self.stepbutton.set_sensitive(False)
+        self.stepbutton.set_sensitive(True)
         self.stepbutton.show()
 
         self.runbutton = gtk.ToggleButton("Run")
-        self.runbutton.set_active(True)
-        self.running = True
+        self.runbutton.set_active(self.running)
         self.runbutton.connect("toggled", self.runtoggle, None)
         self.runbutton.show()
 
@@ -255,11 +246,10 @@ class SimGUI:
         self.spos = 0
         self.stdout = sys.stdout
         self.stderr = sys.stderr
-        sys.stdout = self.s
-        sys.stderr = self.s
+        #sys.stdout = self.s
+        #sys.stderr = self.s
 
-        gobject.idle_add(self.check_debug)
-        gobject.idle_add(self.check_curline)
+        gobject.idle_add(self.checkq)
         gobject.idle_add(self.check_stdout)
 
         self.window.resize(400, 640)
@@ -272,10 +262,8 @@ class SimGUI:
 
 
 class gtkthread(threading.Thread):
-    def __init__(self, getcurline, stepevent, breakpoints, breaklock,
-            setdebugmode, getdebugmode, localqueue):
+    def __init__(self, breakpoints, breaklock, fromsimq, tosimq, files):
         threading.Thread.__init__(self)
-        self.hello = SimGUI(getcurline, stepevent, breakpoints, breaklock,
-                setdebugmode, getdebugmode, localqueue)
+        self.gui = SimGUI(breakpoints, breaklock, fromsimq, tosimq, files)
     def run(self):
-        self.hello.main()
+        self.gui.main()
