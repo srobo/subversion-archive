@@ -9,6 +9,8 @@ from http import checkout
 import zipfile, os.path
 import getsrc
 
+import motor, dio, vis, events
+
 FPS = 10
 
 #1. Try to get some code!
