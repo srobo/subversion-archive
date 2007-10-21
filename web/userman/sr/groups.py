@@ -1,6 +1,6 @@
 import ldap, types
 import sr_ldap
-import srusers
+import users
 
 # Get a list of all groups
 def list():
@@ -57,26 +57,26 @@ class group:
         else:
             return False
 
-    def user_add(self,users):
+    def user_add(self,userl):
         """Add a user to the group"""
-        if users.__class__ is srusers.user:
-            users = [user.username]
-        elif type(users) is not types.ListType:
-            users = [users]
+        if userl.__class__ is users.user:
+            userl = [user.username]
+        elif type(userl) is not types.ListType:
+            userl = [userl]
         
-        for user in users:
+        for user in userl:
             if user not in self.members:
                 self.members.append( user )
                 self.new_users.append( user )
 
-    def user_rm(self,users):
+    def user_rm(self,userl):
         """Remove a user from a group"""
-        if users.__class__ is srusers.user:
-            users = [user.username]
-        elif type(users) is not types.ListType:
-            users = [users]
+        if userl.__class__ is users.user:
+            userl = [user.username]
+        elif type(userl) is not types.ListType:
+            userl = [userl]
             
-        for user in users:
+        for user in userl:
             if user in self.members:
                 self.members.remove(user)
                 self.removed_users.append(user)

@@ -1,4 +1,4 @@
-import srusers, sys, srgroup
+import sr, sys
 
 class user:
     """Manage user accounts.
@@ -52,7 +52,7 @@ Usage:
             print self.add.__doc__
             return
 
-        u = srusers.user( args[0] )
+        u = sr.users.user( args[0] )
 
         if u.in_db:
             print "User '%s' already exists" % (args[0] )
@@ -73,7 +73,7 @@ Usage:
             print self.list.__doc__
             return
 
-        print " ".join(srusers.list())
+        print " ".join(sr.users.list())
 
     def delete(self, args):
         """Delete a user.
@@ -83,7 +83,7 @@ Usage:
             print self.delete.__doc__
             return
 
-        u = srusers.user( args[0] )
+        u = sr.users.user( args[0] )
         if u.delete():
             print "User '%s' deleted" % (args[0])
         else:
@@ -98,7 +98,7 @@ Usage:
             print self.info.__doc__
             return
 
-        u = srusers.user( args[0] )
+        u = sr.users.user( args[0] )
 
         if not u.in_db:
             print "User '%s' not found\n" % (args[0])
@@ -117,7 +117,7 @@ Usage:
 
         uname = args[0]
 
-        u = srusers.user( uname )
+        u = sr.users.user( uname )
 
         if not u.in_db:
             print "User '%s' not found\n" % (args[0])
