@@ -6,7 +6,21 @@ import time
 import Queue
 import time
 from http import checkout
-import zipfile
+import zipfile, os.path
+
+
+#1. Try to get some code!
+import getsrc
+sc = getsrc.SourceLoader()
+sc.main()
+if sc.success == False:
+    sys.exit(0)
+
+#Got a zip file in sc.success, and robot.py is in the path
+zippath = os.path.dirname(sc.success)
+z = zipfile.ZipFile(sc.success)
+#Read in the files in the zip file and their contents
+files = [(os.path.join(zippath, a), z.read(a)) for a in z.namelist()]
 
 pygame.init()
 
@@ -18,13 +32,6 @@ clk = pygame.time.Clock()
 BLACK = (0,0,0)
 
 simdrawqueue = Queue.Queue()
-simmask = pygame.Rect(0, 0, 640, 640)
-zipname = checkout()
-z = zipfile.ZipFile(zipname)
-for file in z.namelist():
-    f = open("/home/stephen/ecssr/slug/pyenv/simulator/user/" + file, "wb")
-    f.write(z.read(file))
-    f.close()
 
 from trampoline import Trampoline
 from physics import World
@@ -94,10 +101,7 @@ class SimThread(threading.Thread):
 simthread = SimThread(simdrawqueue, fps)
 simthread.start()
 
-files = ["/home/stephen/ecssr/slug/pyenv/simulator/user/robot.py",
-         "/home/stephen/ecssr/slug/pyenv/simulator/user/r2.py"]
-
-gtkthread = gui.gtkthread(simthread.breakpoints, simthread.breaklock,
+gtkthread = gui.SimGUI(simthread.breakpoints, simthread.breaklock,
         simthread.fromsimq, simthread.tosimq, files)
 gtkthread.start()
 

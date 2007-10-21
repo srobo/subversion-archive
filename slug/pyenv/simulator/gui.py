@@ -2,108 +2,11 @@ import StringIO, sys
 import code
 import threading, Queue
 import gtk, gobject
+import os.path
+from locscroll import LocalsScroll, LocalsStore
+from codscroll import CodeScroll, CodeStore
 
-class LocalsStore(gtk.ListStore):
-    def __init__(self, locals):
-        super(LocalsStore, self).__init__(gobject.TYPE_STRING,
-                gobject.TYPE_STRING)
-
-        self.set_sort_column_id(0, gtk.SORT_ASCENDING)
-        
-        for k, v in locals.iteritems():
-            self.append([k, v])
-
-class LocalsScroll(gtk.ScrolledWindow):
-    def __init__(self, model):
-        super(LocalsScroll, self).__init__()
-
-        self.model = model
-        self.localslist = gtk.TreeView(model)
-        
-        renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Variable", renderer, text=0)
-        self.localslist.append_column(column)
-
-        renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Value", renderer, text=1)
-        self.localslist.append_column(column)
-
-        self.localslist.show()
-        
-        self.add(self.localslist)
-        self.show()
-    def set_model(self, model):
-        self.localslist.set_model(model)
-
-class CodeStore(gtk.ListStore):
-    def __init__(self, filename):
-        super(CodeStore, self).__init__(gobject.TYPE_INT,
-        gobject.TYPE_STRING, gobject.TYPE_STRING)
-
-        self.set_sort_column_id(0, gtk.SORT_ASCENDING)
-        
-        lines = [x.rstrip() for x in open(filename).readlines()]
-        lineno = 0
-        for line in lines:
-            self.append([lineno, None, line])
-            lineno = lineno + 1
-
-class CodeScroll(gtk.ScrolledWindow):
-    def linechanged(self, lineno):
-        #Select row val
-        selector = self.codelist.get_selection()
-        selector.select_path(lineno-1)
-        #Make sure it's visible
-        self.codelist.scroll_to_cell(lineno-1, None, False)
-
-    def rowactivated(self, treeview, path, view_column):
-        lineno = path[0]
-        if self.model[lineno][1] == gtk.STOCK_STOP:
-            self.model[lineno][1] = None
-            self.breaklock.acquire()
-            try:
-                self.breakpoints.pop((self.path, lineno))
-            except KeyError:
-                pass
-            self.breaklock.release()
-        else:
-            self.model[lineno][1] = gtk.STOCK_STOP
-            self.breaklock.acquire()
-            self.breakpoints[(self.path, lineno)] = 1
-            self.breaklock.release()
-
-    def __init__(self, model, path, breakpoints, breaklock):
-        super(CodeScroll, self).__init__()
-
-        self.breaklock = breaklock
-        self.breakpoints = breakpoints
-
-        self.path = path
-
-        self.model = model
-        self.codelist = gtk.TreeView(model)
-        
-        renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Line", renderer, text=0)
-        self.codelist.append_column(column)
-
-        renderer = gtk.CellRendererPixbuf()
-        column = gtk.TreeViewColumn("", renderer, stock_id=1)
-        self.codelist.append_column(column)
-
-        renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Code", renderer, text=2)
-        self.codelist.append_column(column)
-
-        self.codelist.connect("row-activated", self.rowactivated)
-
-        self.codelist.show()
-        
-        self.add(self.codelist)
-        self.show()
-
-class SimGUI:
-
+class SimGUI(threading.Thread):
     def step(self, widget, data=None):
         self.tosimq.put("STEP")
 
@@ -118,6 +21,7 @@ class SimGUI:
         #TODO: Get a signal on the queue having an item on it
         try:
             curfile, curline, locals = self.fromsimq.get_nowait()
+            print curfile
             if curfile in self.files:
                 self.pages[curfile].linechanged(curline)
                 self.codepages.set_current_page(self.files.index(curfile))
@@ -174,6 +78,7 @@ class SimGUI:
         ii.runsource(self.cmdtext.get_text())
 
     def __init__(self, breakpoints, breaklock, fromsimq, tosimq, files):
+        super(SimGUI, self).__init__()
 
         self.running = False
         self.fromsimq = fromsimq
@@ -186,13 +91,17 @@ class SimGUI:
         
         self.codepages = gtk.Notebook()
         self.pages = {}
-        self.files = files
 
-        for file in self.files:
-            codestore = CodeStore(file)
-            scrolledcode = CodeScroll(codestore, file, breakpoints, breaklock)
-            self.pages[file] = scrolledcode
-            self.codepages.append_page(scrolledcode, gtk.Label(file))
+        self.files = []
+
+        for filename, contents in files:
+            self.files.append(filename)
+            codestore = CodeStore(filename, contents)
+            scrolledcode = CodeScroll(codestore, filename, breakpoints, breaklock)
+
+            self.pages[filename] = scrolledcode
+            self.codepages.append_page(scrolledcode,
+                    gtk.Label(os.path.basename(filename)))
 
         self.codepages.show()
 
@@ -260,10 +169,5 @@ class SimGUI:
         gtk.main()
         gtk.gdk.threads_leave()
 
-
-class gtkthread(threading.Thread):
-    def __init__(self, breakpoints, breaklock, fromsimq, tosimq, files):
-        threading.Thread.__init__(self)
-        self.gui = SimGUI(breakpoints, breaklock, fromsimq, tosimq, files)
     def run(self):
-        self.gui.main()
+        self.main()

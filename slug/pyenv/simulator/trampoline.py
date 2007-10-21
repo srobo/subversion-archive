@@ -1,4 +1,4 @@
-from user import robot
+import robot
 from events import *
 import time
 
@@ -25,7 +25,6 @@ class Trampoline:
             timeouttime = BIG_TIME #Largest possible time.
         
         return timeouttime
-
 
     def schedule(self):
         """
