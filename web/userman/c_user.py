@@ -1,4 +1,4 @@
-import srusers, sys
+import srusers, sys, srgroup
 
 class user:
     """Manage user accounts.
@@ -14,7 +14,8 @@ class user:
                           "info" : self.info,
                           "add" : self.add,
                           "rm" : self.delete,
-                          "list" : self.list }
+                          "list" : self.list,
+                          "groups" : self.groups }
 
         if len(args) < 1:
             self.help([])
@@ -105,6 +106,26 @@ Usage:
             print u
 
             
-        
-        
+    def groups(self, args):
+        """Display a list of the groups a user is in.
+Usage:
+	user groups USERNAME"""
+
+        if len(args) < 1:
+            print self.groups.__doc__
+            return
+
+        uname = args[0]
+
+        u = srusers.user( uname )
+
+        if not u.in_db:
+            print "User '%s' not found\n" % (args[0])
+        else:
+            groups = u.groups()
+
+            if len(groups) == 0:
+                print "'%s' is not in any groups." % (uname)
+            else:
+                print " ".join(groups)
 

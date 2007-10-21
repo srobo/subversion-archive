@@ -187,8 +187,20 @@ class user:
             desc = desc + "%s: %s" % (human, pval)
 
         return desc
-
+    
+    def groups(self):
+        """Returns a list of the groups the user is in"""
         
+        filter =  "(&(objectClass=posixGroup)(memberUid=%s))" % ( self.username )
+
+        res = self.l.search_st( "ou=groups,o=sr",
+                                ldap.SCOPE_ONELEVEL,
+                                filterstr=filter,
+                                attrlist=["cn"] )
+
+        groups = [x[1]["cn"][0] for x in res]
+
+        return groups
 
         
         

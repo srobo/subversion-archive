@@ -3,18 +3,21 @@ import srgroup, sys
 class group:
     """Manage groups.
     Subcommands:
-     - list
-     - info
-     - create
-     - rm"""
+     - list - List all groups
+     - members - Display members of a group
+     - create - Create a group
+     - rm - Delete a group
+     - addusers - Add users to a group
+     - delusers - Remove users from a group"""
 
     def __init__(self, args):
         self.commands = { "help" : self.help,
-                          "info" : self.info,
+                          "members" : self.members,
                           "create" : self.create,
                           "rm" : self.delete,
-                          "list" : self.list
-                          }
+                          "list" : self.list,
+                          "addusers" : self.addusers,
+                          "delusers" : self.delusers }
 
         if len(args) < 1:
             self.help([])
@@ -92,13 +95,13 @@ Usage:
         g.rm()
         print "Group '%s' deleted." % (args[0] )
 
-    def info(self, args):
-        """Print information about a group.
+    def members(self, args):
+        """Display group members.
 Usage:
-	group info USERNAME"""
+	group members USERNAME"""
 
         if len(args) < 1:
-            print self.info.__doc__
+            print self.members.__doc__
             return
 
         g = srgroup.group( args[0] )
@@ -108,3 +111,44 @@ Usage:
         else:
             print g
 
+    def addusers(self, args):
+        """Add users to a group
+Usage:
+	group addusers GROUPNAME USERS"""
+        
+        if len(args) < 2:
+            print self.addusers.__doc__
+            return
+
+        gname = args[0]
+        users = args[1:]
+
+        g = srgroup.group(gname)
+
+        if not g.in_db:
+            print "Group '%s' already exists" % ( gname )
+            return
+
+        g.user_add( users )
+        g.save()
+
+    def delusers(self, args):
+        """Remove users from a group
+Usage:
+	group delusers GROUPNAME USERS"""
+
+        if len(args) < 2:
+            print self.addusers.__doc__
+            return
+
+        gname = args[0]
+        users = args[1:]
+
+        g = srgroup.group(gname)
+
+        if not g.in_db:
+            print "Group '%s' already exists" % ( gname )
+            return
+
+        g.user_rm( users )
+        g.save()

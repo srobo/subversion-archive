@@ -69,14 +69,17 @@ class group:
                 self.members.append( user )
                 self.new_users.append( user )
 
-    def user_rm(self,user):
+    def user_rm(self,users):
         """Remove a user from a group"""
-        if user.__class__ is srusers.user:
-            user = user.username
+        if users.__class__ is srusers.user:
+            users = [user.username]
+        elif type(users) is not types.ListType:
+            users = [users]
             
-        if user in self.members:
-            self.members.remove(user)
-            self.removed_users.append(user)
+        for user in users:
+            if user in self.members:
+                self.members.remove(user)
+                self.removed_users.append(user)
 
     def rm(self):
         """Delete the group"""
