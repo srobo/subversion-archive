@@ -1,0 +1,44 @@
+#!/bin/env python
+import sys, getpass
+import c_user, c_group
+
+def usage():
+    print """Usage:
+    %s command command_args
+
+    Where command is one of:
+    	user
+        group
+
+    Type %s COMMAND help to get more information.""" % (sys.argv[0], sys.argv[0])
+
+def c_help(args):
+    global commands
+
+    if len(args) == 0:
+        usage()
+        return
+
+    if args[0] in commands:
+        print commands[args[0]].__doc__
+
+    sys.exit(0)
+
+commands = { "user":c_user.user,
+             "group":c_group.group,
+             "help":c_help }
+
+if len(sys.argv) < 2:
+    usage()
+    sys.exit(1)
+
+cmd = sys.argv[1]
+if cmd in commands.keys():
+    if len(sys.argv) > 2:
+        args = sys.argv[2:]
+    else:
+        args = []
+
+    commands[cmd]( args )
+
+
