@@ -1,6 +1,18 @@
 import ldap, types
 import sr_ldap
 
+def list():
+    l = sr_ldap.conn
+    sr_ldap.bind()
+
+    u_res = l.search_st( "ou=users,o=sr",
+                         ldap.SCOPE_ONELEVEL,
+                         filterstr = "(objectClass=inetOrgPerson)",
+                         attrlist = ["uid"] )
+    users = [x[1]["uid"][0] for x in u_res]
+
+    return users
+
 class user:
     """A user"""
     map = { "cname" : "cn",

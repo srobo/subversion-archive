@@ -3,6 +3,7 @@ import srusers, sys
 class user:
     """Manage user accounts.
     Subcommands:
+     - list - List all users
      - info - Display user information
      - add - Add a user
      - rm - Remove a user
@@ -12,7 +13,8 @@ class user:
         self.commands = { "help" : self.help,
                           "info" : self.info,
                           "add" : self.add,
-                          "rm" : self.delete }
+                          "rm" : self.delete,
+                          "list" : self.list }
 
         if len(args) < 1:
             self.help([])
@@ -63,6 +65,14 @@ Usage:
             print "User '%s' successfully created." % (args[0])
         else:
             print "Failed to create user '%s'"
+
+    def list(self, args):
+        """List all users"""
+        if len(args) > 0:
+            print self.list.__doc__
+            return
+
+        print " ".join(srusers.list())
 
     def delete(self, args):
         """Delete a user.
