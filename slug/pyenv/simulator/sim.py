@@ -7,10 +7,11 @@ import Queue
 import time
 from http import checkout
 import zipfile, os.path
+import getsrc
 
+FPS = 10
 
 #1. Try to get some code!
-import getsrc
 sc = getsrc.SourceLoader()
 sc.main()
 if sc.success == False:
@@ -23,23 +24,13 @@ z = zipfile.ZipFile(zippath)
 #Read in the files in the zip file and their contents
 files = [(os.path.join(zippath, a), z.read(a)) for a in z.namelist()]
 
-pygame.init()
-
-fps = 10
-
-screen = pygame.display.set_mode((640, 640))
-clk = pygame.time.Clock()
-
-BLACK = (0,0,0)
-
-simdrawqueue = Queue.Queue()
-
+#Can now bring in the trampiline which will import robot.py
 from trampoline import Trampoline
 from physics import World
 
 class SimThread(threading.Thread):
     def __init__(self, drawqueue, watchpath, fps):
-        threading.Thread.__init__(self)
+        super(SimThread, self).__init__()
         self.p = World(drawqueue, fps)
         self.t = Trampoline()
         self.t.addtask(self.p.physics_poll())
@@ -104,41 +95,58 @@ class SimThread(threading.Thread):
         sys.settrace(self.trace)
         self.t.schedule()
 
-simthread = SimThread(simdrawqueue, zippath, fps)
+class SimDisplay(threading.Thread):
+    BLACK = (0,0,0)
+
+    def __init__(self, fps):
+        super(SimDisplay, self).__init__()
+        pygame.init()
+
+        self.fps = fps
+        
+        self.screen = pygame.display.set_mode((640, 640))
+        self.clk = pygame.time.Clock()
+        self.simdrawqueue = Queue.Queue()
+
+    def run(self):
+        dirty = []
+        lastdirty = []
+
+        while True:
+
+            dirty = lastdirty[:] #Make a copy of lastdirty
+            lastdirty = []
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return
+
+            try:
+                #Get the dirty for the set after the one just drawn
+                pos = self.simdrawqueue.get_nowait()
+
+                #Get the last in the queue - sim going too fast
+                while not self.simdrawqueue.empty():
+                    pos = simdrawqueue.get_nowait()
+
+                self.screen.fill(SimDisplay.BLACK)
+                for poly in pos:
+                    poly.blit(self.screen)
+                    lastdirty.append(poly.get_rect())
+
+            except:
+                #Not going fast enough
+                pass
+
+            pygame.display.update(dirty)
+            self.clk.tick(self.fps)
+
+display = SimDisplay(FPS)
+display.start()
+
+simthread = SimThread(display.simdrawqueue, zippath, FPS)
 simthread.start()
 
 gtkthread = gui.SimGUI(simthread.breakpoints, simthread.breaklock,
         simthread.fromsimq, simthread.tosimq, files)
-gtkthread.start()
-
-dirty = []
-lastdirty = []
-
-while True:
-
-    dirty = lastdirty[:] #Make a copy of lastdirty
-    lastdirty = []
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-
-    try:
-        #Get the dirty for the set after the one just drawn
-        pos = simdrawqueue.get_nowait()
-
-        #Get the last in the queue - sim going too fast
-        while not simdrawqueue.empty():
-            pos = simdrawqueue.get_nowait()
-
-        screen.fill(BLACK)
-        for poly in pos:
-            poly.blit(screen)
-            lastdirty.append(poly.get_rect())
-
-    except:
-        #Not going fast enough
-        pass
-
-    pygame.display.update(dirty)
-    clk.tick(fps)
+gtkthread.run()
