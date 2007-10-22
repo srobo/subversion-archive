@@ -42,7 +42,7 @@ class group:
             print self.__doc__
             return
 
-        print " ".join(srgroups.list())
+        print " ".join(sr.groups.list())
 
     def help(self, args):
         if len(args) < 1:
@@ -66,7 +66,7 @@ Usage:
             print self.create.__doc__
             return
 
-        g = srgroups.group( args[0] )
+        g = sr.group( args[0] )
 
         if g.in_db:
             print "Group '%s' already exists" % (args[0] )
@@ -86,7 +86,7 @@ Usage:
             print self.delete.__doc__
             return
 
-        g = srgroups.group( args[0] )
+        g = sr.group( args[0] )
 
         if not g.in_db:
             print "Group '%s' doesn't exist" % ( args[0] )
@@ -104,7 +104,7 @@ Usage:
             print self.members.__doc__
             return
 
-        g = srgroups.group( args[0] )
+        g = sr.group( args[0] )
 
         if not g.in_db:
             print "Group '%s' not found\n" % (args[0])
@@ -123,7 +123,7 @@ Usage:
         gname = args[0]
         users = args[1:]
 
-        g = srgroups.group(gname)
+        g = sr.group(gname)
 
         if not g.in_db:
             print "Group '%s' already exists" % ( gname )
@@ -144,7 +144,7 @@ Usage:
         gname = args[0]
         users = args[1:]
 
-        g = srgroups.group(gname)
+        g = sr.group(gname)
 
         if not g.in_db:
             print "Group '%s' already exists" % ( gname )
