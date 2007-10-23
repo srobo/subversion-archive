@@ -1,3 +1,4 @@
+import types
 import robot
 from events import *
 import time
@@ -5,27 +6,6 @@ import time
 BIG_TIME = 9999999999999
 
 class Trampoline:
-    q = [] #A list of polling tasks to execute when main stalled
-
-    def addtask(self, task):
-        """
-        This function adds a task to the queue. Tasks must be generators.
-        """
-        task.next() #Advance generator to first yield
-        self.q.append(task)
-        return task
-    
-    def removetask(self, task):
-        self.q.remove(task)
-
-    def gettimeouttime(self, timeout):
-        if timeout > 0:
-            timeouttime = time.time() + timeout
-        else:
-            timeouttime = BIG_TIME #Largest possible time.
-        
-        return timeouttime
-
     def schedule(self):
         """
         Run the main function until it yields, then go through the polling
@@ -33,41 +13,60 @@ class Trampoline:
         out.
         """
 
-        main = robot.main(self)
-        robot.currentevent = None
-        robot.eventsource = None
-        timeout = main.next() #Advance to the first yield statement.
-        timeouttime = self.gettimeouttime(timeout)
-        
-        while 1:
-            if time.time() > timeouttime: #Check to see if the yield has timed out
-                robot.currentevent = TimeoutEvent()
-                robot.eventsource = None
-                try:
-                    timeout = main.next()
-                    timeouttime = self.gettimeouttime(timeout)
-                except StopIteration:
-                    return
+        stack = []
 
-            for task in self.q:
-                try:
-                    result = task.next()
-                except StopIteration:
-                    self.q.remove(task)
+        robot.event = None
+        
+        stack.append(robot.main(corner=0,colour=0,game=0))
+        
+        while True:
+            try:
+                #Try to run the function on the top of the stack
+                args = stack[-1].next() #Advance to the first yield statement
+            except StopIteration:
+                #Remove the function on the top of the stack
+                stack.pop()
+                if len(stack) == 0:
+                    #Run out of things to trampoline
+                    #Put the main function back in...
+                    stack.append(robot.main(corner=0,colour=0,game=0))
+                    #Go back to start of while loop
                     continue
 
-                if result != None:
-                    #Got an event for the mainloop
-                    robot.currentevent = result
-                    robot.eventsource = task
+            if args[0].__class__ == types.FunctionType:
+                #Push the function onto the stack
+                #Passing the rest of the yield as arguments
+                stack.append(args[0](*args[1:]))
+            else:
+                polls = []
+                timeout = None
+                for arg in args:
+                    if arg.__class__ == types.GeneratorType:
+                        polls.append(arg)
+                    elif isinstance(arg, int) or isinstance(arg, float):
+                        timeout = time.time() + arg
+                
+                #Check we have something to wait on
+                if len(polls) > 0 or timeout != None:
+                    #Loop waiting for something to happen
+                    result = None
+                    while True:
+                        if timeout != None and timeout < time.time():
+                            #Timed out
+                            result = TimeoutEvent(timeout)
+                        else:
+                            for poll in polls:
+                                try:
+                                    result = poll.next()
+                                except StopIteration:
+                                    polls.remove(poll)
+
+                        #See if anything happened
+                        if result != None:
+                            robot.event = result
+                            #Break out of this inner while loop
+                            break
                     
-                    try:
-                        timeout = main.next()
-                    except StopIteration:
-                        return
-                    timeouttime = self.gettimeouttime(timeout)
-                    break #Break out of the for loop
-            
 if __name__ == "__main__":
     t = Trampoline()
     t.schedule()
