@@ -1,0 +1,11 @@
+prefix=/target
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Fontconfig
+Description: Font configuration and customization library
+Version: 2.4.2
+Libs: -L${libdir} -lfontconfig
+Libs.private: 
+Cflags: -I${includedir}

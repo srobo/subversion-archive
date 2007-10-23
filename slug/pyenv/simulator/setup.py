@@ -1,10 +1,31 @@
 from distutils.core import setup
 import py2exe, pygame, ode
+import os, shutil
+
+ver = "0.1"
+
+try:
+    shutil.rmtree("build")
+    print "Removed build directory"
+except:
+    print "Could not remove build directory"
+    
+try:
+    shutil.rmtree("dist")
+    print "Removed dist directory"
+except:
+    print "Could not remove dist directory"
+    
+try:
+    os.remove("dist-%s.zip" % ver)
+    print "Removed dist-%s.zip" % ver
+except:
+    print "Could not remove dist-%s.zip" % ver
 
 setup(
     name = 'ProgPractice',
     description = 'Student Robotics Programming Practice System',
-    version = '0.1',
+    version = ver,
 
     windows = [
                   {
@@ -27,3 +48,29 @@ setup(
                   
               }
 )
+
+print "Copying GTK libraries into the dist folder"
+
+shutil.copytree("gtk", "dist/gtk")
+shutil.copytree("gobject", "dist/gobject")
+shutil.copytree("gtkbin", "dist/gtkbin")
+
+print "Zipping up into dist-%s.zip" % ver
+
+import zipfile, os
+from os.path import join
+
+try:
+    import zlib
+    z = zipfile.ZipFile("dist-%s.zip" % ver, 'w', zipfile.ZIP_DEFLATED)
+    print "Using zlib compression"
+except ImportError:
+    z = zipfile.ZipFile("dist-%s.zip" % ver, 'w')
+    print "Unable to use zlib compression"
+    
+for root, dirs, files in os.walk("dist"):
+    for fileName in files:
+        print "Adding %s" % join(root, fileName)
+        z.write(join(root, fileName))
+
+z.close()
