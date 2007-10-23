@@ -11,8 +11,8 @@ BLACK = 0, 0, 0
 WHITE = 255, 255, 255
 WIDTH = 8
 METRE = 640/WIDTH
-POWER = 4 #Watts
-SCALE = 5
+SCALE = 25
+WHEELFORCE = 10
 
 class World:
     motorleft = 0
@@ -95,7 +95,6 @@ class World:
             def genwheel(world, space, box, position):
                 WHEELRAD = 0.04
                 WHEELLENGTH = 0.01
-                WHEELFORCE = 10
                 body = ode.Body(world)
 
                 M = ode.Mass()
@@ -306,9 +305,9 @@ class World:
                 if adotb > 0.2 and adotb < 6 and angle < 20:
                     mass =  (1/adotb) * 20
                     if cc[2] > 0:
-                        World.blobs.append((angle / 20, adotb/6, mass))
+                        World.blobs.append((angle/20, adotb/6, mass))
                     else:
-                        World.blobs.append((angle / -20, adotb/6, mass))
+                        World.blobs.append((angle/20, adotb/6, mass))
 
             World.bumpers = {}
             self.space.collide((self.world, self.contactgroup), self.near_callback)

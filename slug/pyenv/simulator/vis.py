@@ -28,7 +28,7 @@ def vispoll():
         logging.debug("Got blobs %s" % blobs)
         event = VISEvent()
         for blob in blobs:
-            event.addblob(int(blob[0]*FRAMEWIDTH),
+            event.addblob(int((blob[0]+1)*FRAMEWIDTH/2),
                             int(blob[1]*FRAMEHEIGHT),
                             int(blob[2]),
                             0)
