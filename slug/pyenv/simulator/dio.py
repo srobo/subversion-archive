@@ -1,37 +1,31 @@
 from events import Event
-import logging
 import physics
 
 class DIOEvent(Event):
     def __init__(self, events):
+        super(DIOEvent, self).__init__(diopoll)
         self.events = events
 
-class Dio:
-    def read(self):
-        return physics.World.bumpers
+def diopoll():
+    last_read = physics.World.bumpers
+    yield None
 
-    def diopoll(self):
-        self.last_read = self.read()
-        yield None
+    while 1:
+        v = physics.World.bumpers
 
-        while 1:
-            v = self.read()
+        pins = {}
 
-            events = []
+        for key, val in v.iteritems():
+            if not key in last_read:
+                pins[key] = val
 
-            for key, val in v.iteritems():
-                if not key in self.last_read:
-                    events.append((key, True))
+        for key, val in last_read.iteritems():
+            if not key in v:
+                pins[key] = val
 
-            for key, val in self.last_read.iteritems():
-                if not key in v:
-                    events.append((key, False))
+        last_read = v
 
-            self.last_read = v
-
-            if len(events) > 0:
-                yield DIOEvent(events)
-            else:
-                yield None
-
-
+        if len(pins) > 0:
+            yield DIOEvent(events)
+        else:
+            yield None

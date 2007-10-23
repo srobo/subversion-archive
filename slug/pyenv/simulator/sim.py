@@ -21,6 +21,8 @@ z = zipfile.ZipFile(zippath)
 #Read in the files in the zip file and their contents
 files = [(os.path.join(zippath, a), z.read(a)) for a in z.namelist()]
 
+#Start the simulation
+
 from simthread import SimThread
 from simdisplay import SimDisplay
 

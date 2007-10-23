@@ -1,9 +1,7 @@
 import types
 import robot
-from events import *
+from events import TimeoutEvent
 import time
-
-BIG_TIME = 9999999999999
 
 class Trampoline:
     def schedule(self):

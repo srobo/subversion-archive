@@ -7,7 +7,7 @@ class Event:
 
     def __eq__(self, obj):
         if self.source != None:
-            return self.source == obj
+            return obj == self.source
         else:
             return NotImplemented
 
