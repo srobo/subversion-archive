@@ -189,9 +189,9 @@ class World:
 
         return tokens
 
-    def __init__(self, drawqueue, fps):
+    def __init__(self, draw, fps):
 
-        self.drawqueue = drawqueue
+        self.draw = draw
         self.fps = fps
 
         self.world = ode.World()
@@ -322,7 +322,7 @@ class World:
                 todraw.extend(token.getpoly())
 
             #As the queue size is 1 this blocks on the drawing thread
-            self.drawqueue.put(todraw)
+            self.draw.draw(todraw)
 
             self.contactgroup.empty()
 

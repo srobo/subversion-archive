@@ -26,6 +26,6 @@ def diopoll():
         last_read = v
 
         if len(pins) > 0:
-            yield DIOEvent(events)
+            yield DIOEvent(pins)
         else:
             yield None

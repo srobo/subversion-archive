@@ -5,7 +5,7 @@ import getsrc
 
 import motor, dio, vis, events
 
-FPS = 10
+FPS = 20
 
 #1. Try to get some code!
 sc = getsrc.SourceLoader()
@@ -24,12 +24,8 @@ files = [(os.path.join(zippath, a), z.read(a)) for a in z.namelist()]
 #Start the simulation
 
 from simthread import SimThread
-from simdisplay import SimDisplay
 
-display = SimDisplay(FPS)
-display.start()
-
-simthread = SimThread(display.simdrawqueue, zippath, FPS)
+simthread = SimThread(zippath, FPS)
 simthread.start()
 
 gtk = gui.SimGUI(simthread.breakpoints, simthread.breaklock,

@@ -3,11 +3,13 @@ import threading, Queue, sys
 #Can now bring in the trampiline which will import robot.py
 from trampoline import Trampoline
 from physics import World
+from simdisplay import SimDisplay
 
 class SimThread(threading.Thread):
-    def __init__(self, drawqueue, watchpath, fps):
+    def __init__(self, watchpath, fps):
         super(SimThread, self).__init__()
-        self.p = World(drawqueue, fps)
+        self.display = SimDisplay()
+        self.p = World(self.display, fps)
         self.t = Trampoline()
         self.t.addtask(self.p.physics_poll())
 

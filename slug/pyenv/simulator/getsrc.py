@@ -86,7 +86,6 @@ class SourceLoader():
                 sys.path.insert(0, fileloc)
                 try:
                     import robot
-                    print fileloc
                     self.success = fileloc, True
                     self.window.destroy()
                     return
