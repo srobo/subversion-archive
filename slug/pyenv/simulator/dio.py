@@ -3,7 +3,7 @@ import physics
 
 class DIOEvent(Event):
     def __init__(self, events):
-        super(DIOEvent, self).__init__(diopoll)
+        Event.__init__(self, diopoll)
         self.events = events
 
 def diopoll():

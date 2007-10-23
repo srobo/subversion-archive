@@ -1,5 +1,6 @@
 from events import Event
 import physics
+import logging
 
 FRAMEWIDTH = 352
 FRAMEHEIGHT = 288
@@ -13,7 +14,7 @@ class VISEvent(Event):
             self.colour = colour
     
     def __init__(self):
-        super(VISEvent, self).__init__(vispoll)
+        Event.__init__(self, vispoll)
         self.blobs = []
 
     def addblob(self, centrex, centrey, mass, colour):
@@ -24,13 +25,11 @@ def vispoll():
 
     while True:
         blobs = physics.World.blobs
-        if len(blobs) > 0:
-            event = VISEvent()
-            for blob in blobs:
-                event.addblob(int(blob[0]*FRAMEWIDTH),
-                                int(blob[1]*FRAMEHEIGHT),
-                                int(blob[2]),
-                                0)
-            yield event
-        else:
-            yield None
+        logging.debug("Got blobs %s" % blobs)
+        event = VISEvent()
+        for blob in blobs:
+            event.addblob(int(blob[0]*FRAMEWIDTH),
+                            int(blob[1]*FRAMEHEIGHT),
+                            int(blob[2]),
+                            0)
+        yield event

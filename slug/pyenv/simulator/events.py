@@ -13,4 +13,5 @@ class Event:
 
 class TimeoutEvent(Event):
     def __init__(self, when):
+        Event.__init__(self)
         self.when = when

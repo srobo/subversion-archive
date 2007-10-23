@@ -122,7 +122,7 @@ class SimGUI(threading.Thread):
         self.hbox.show()
 
         self.cmdtext = gtk.Entry()
-        self.cmdtext.set_sensitive(False)
+        self.cmdtext.set_sensitive(True)
         self.cmdtext.connect("activate", self.processcmd)
         self.cmdtext.show()
         self.cmdoutput = gtk.TextView()
