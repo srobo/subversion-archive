@@ -26,4 +26,30 @@ void adc_init(void){
 	P2SEL |= 0x1F;		//Set A0 - A4 as Input Pins	
 }
 
-
+void adc_sample(void){
+	int adresult[8];
+	int adcx = 0;
+	
+	for(adcx=0; adcx<8; adcx++){			//fill array with zeroes
+		adresult[adcx] = 0;
+	}
+	
+	adcx = 0;
+	
+	while(1){
+		for(adcx=0; adcx<8; adcx++){
+			ADC10CTL0 &= ~ENC;		//ENC = 0, ADC disabled
+			ADC10CTL1 &= ~0xF000;		//clear before setting
+			ADC10CTL1 |= (adcx<<12);	//change input pin being sampled
+			ADC10CTL0 |= ENC;		//ENC = 1, ADC enabled
+			ADC10CTL0  |= ADC10SC;		//Start conversion
+			
+			while (ADC10CTL1 & ADC10BUSY)	//do nothing until conversion has finished
+			{
+			}
+							
+			adresult[adcx] = ADC10MEM;	//store analogue value in array
+			
+		}
+	}
+}
