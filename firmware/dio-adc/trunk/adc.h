@@ -1,4 +1,4 @@
-/*   Copyright (C) 2007 Robert Spanton
+/*   Copyright (C) 2007 Robert Spanton and Chris Cross
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -13,29 +13,9 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
-#include "common.h"
-#include "i2c.h"
-#include "init.h"
-#include <msp430/adc10.h>
+#ifndef __ADC_H
+#define __ADC_H
 
-static int i = 0;
-void adc_init(void);
+void adc_init ( void );
 
-void UNEXPECTED()
-{
-}
-
-int main( void )
-{
-	i = 0;
-	
-	/* Disable the watchdog timer */
-	WDTCTL = WDTHOLD | WDTPW;
-
-	init();
-	adc_init();
-	while(1)
-	{
-	}
-}
-
+#endif 	/* __ADC_H  */

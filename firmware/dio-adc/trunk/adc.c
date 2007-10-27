@@ -13,29 +13,17 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
+    
+#include "adc.h"
 #include "common.h"
-#include "i2c.h"
-#include "init.h"
 #include <msp430/adc10.h>
 
-static int i = 0;
-void adc_init(void);
-
-void UNEXPECTED()
-{
+void adc_init(void){
+			//Use Vcc and Vss as referance voltages, 
+	ADC10CTL0 = SREF_AVCC_AVSS| ADC10SHT_DIV64 | ADC10SR | ADC10ON | ENC | ADC10SC;	
+	ADC10CTL1 = ADC10DIV_7;	//Set to single conversion mode
+	ADC10AE = 0xFF;		//Enable all inputs as Analogue Inputs
+	P2SEL |= 0x1F;		//Set A0 - A4 as Input Pins	
 }
 
-int main( void )
-{
-	i = 0;
-	
-	/* Disable the watchdog timer */
-	WDTCTL = WDTHOLD | WDTPW;
-
-	init();
-	adc_init();
-	while(1)
-	{
-	}
-}
 
