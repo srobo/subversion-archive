@@ -1,0 +1,49 @@
+Photoplotter Info File: /home/rob/ecssr/proj-svn/pcb/io-joint/tags/build-00/gerbers/bstop.gpi
+
+ Date              : 10/27/2007 19:43:46 
+ Plotfile          : /home/rob/ecssr/proj-svn/pcb/io-joint/tags/build-00/gerbers/bstop
+ Apertures         : generated: 
+ Device            : Gerber photoplotter with RS-274-X aperture generation
+
+Parameter settings:
+
+ Emulate Apertures : no
+ Emulate Thermal   : no
+ Emulate Annulus   : no
+ Tolerance Draw  + :  0.00 %
+ Tolerance Draw  - :  0.00 %
+ Tolerance Flash + :  0.00 %
+ Tolerance Flash - :  0.00 %
+ Rotate            : no
+ Mirror            : no
+ Optimize          : yes
+ Auto fit          : yes
+ OffsetX           : 0inch
+ OffsetY           : 0inch
+
+Plotfile Info:
+
+ Coordinate Format : 2.4
+ Coordinate Units  : Inch
+ Data Mode         : Absolute
+ Zero Suppression  : None
+ End Of Block      : *
+
+Apertures used:
+
+ Code     Shape     Size                  used
+
+ D10      round     0.1340inch               4
+ D11      round     0.0867inch              40
+ D12      round     0.0710inch               1
+ D13      octagon   0.0710inch               1
+ D14      round     0.0630inch               4
+ D15      round     0.1360inch               2
+ D16      round     0.0600inch               2
+ D17      rectangle 0.0198inch x 0.0533inch    38
+ D18      oval      0.1280inch x 0.0680inch     4
+ D19      octagon   0.0600inch              16
+ D20      rectangle 0.0867inch x 0.0710inch     4
+ D21      rectangle 0.0710inch x 0.0867inch     4
+ D22      round     0.0476inch              24
+

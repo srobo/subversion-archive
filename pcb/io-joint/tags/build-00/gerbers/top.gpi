@@ -1,0 +1,53 @@
+Photoplotter Info File: /home/rob/ecssr/proj-svn/pcb/io-joint/tags/build-00/gerbers/top.gpi
+
+ Date              : 10/27/2007 19:39:17 
+ Plotfile          : /home/rob/ecssr/proj-svn/pcb/io-joint/tags/build-00/gerbers/top
+ Apertures         : generated: 
+ Device            : Gerber photoplotter with RS-274-X aperture generation
+
+Parameter settings:
+
+ Emulate Apertures : no
+ Emulate Thermal   : no
+ Emulate Annulus   : no
+ Tolerance Draw  + :  0.00 %
+ Tolerance Draw  - :  0.00 %
+ Tolerance Flash + :  0.00 %
+ Tolerance Flash - :  0.00 %
+ Rotate            : no
+ Mirror            : no
+ Optimize          : yes
+ Auto fit          : yes
+ OffsetX           : 0inch
+ OffsetY           : 0inch
+
+Plotfile Info:
+
+ Coordinate Format : 2.4
+ Coordinate Units  : Inch
+ Data Mode         : Absolute
+ Zero Suppression  : None
+ End Of Block      : *
+
+Apertures used:
+
+ Code     Shape     Size                  used
+
+ D10      rectangle 0.0433inch x 0.0394inch     2
+ D11      rectangle 0.0787inch x 0.0630inch    32
+ D12      rectangle 0.0394inch x 0.0551inch    24
+ D13      round     0.0787inch              40
+ D14      round     0.0630inch               1
+ D15      octagon   0.0630inch               1
+ D16      round     0.0550inch               4
+ D17      round     0.0520inch               2
+ D18      oval      0.1200inch x 0.0600inch     4
+ D19      octagon   0.0520inch              16
+ D20      rectangle 0.0551inch x 0.0394inch    24
+ D21      rectangle 0.0630inch x 0.0787inch     2
+ D22      draw      0.0120inch              98
+ D23      draw      0.0240inch            1498
+ D24      draw      0.0160inch             105
+ D25      round     0.0396inch              24
+ D26      draw      0.0100inch              31
+
