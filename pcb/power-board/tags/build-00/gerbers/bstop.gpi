@@ -1,0 +1,60 @@
+Photoplotter Info File: /home/rob/ecssr/proj-svn/pcb/power-board/tags/build-00/gerbers/bstop.gpi
+
+ Date              : 10/27/2007 20:11:03 
+ Plotfile          : /home/rob/ecssr/proj-svn/pcb/power-board/tags/build-00/gerbers/bstop
+ Apertures         : generated: 
+ Device            : Gerber photoplotter with RS-274-X aperture generation
+
+Parameter settings:
+
+ Emulate Apertures : no
+ Emulate Thermal   : no
+ Emulate Annulus   : no
+ Tolerance Draw  + :  0.00 %
+ Tolerance Draw  - :  0.00 %
+ Tolerance Flash + :  0.00 %
+ Tolerance Flash - :  0.00 %
+ Rotate            : no
+ Mirror            : no
+ Optimize          : yes
+ Auto fit          : yes
+ OffsetX           : 0inch
+ OffsetY           : 0inch
+
+Plotfile Info:
+
+ Coordinate Format : 2.4
+ Coordinate Units  : Inch
+ Data Mode         : Absolute
+ Zero Suppression  : None
+ End Of Block      : *
+
+Apertures used:
+
+ Code     Shape     Size                  used
+
+ D10      round     0.1340inch               6
+ D11      octagon   0.2620inch              22
+ D12      octagon   0.0710inch               9
+ D13      round     0.0710inch               9
+ D14      octagon   0.0600inch              20
+ D15      oval      0.1850inch x 0.0965inch     6
+ D16      oval      0.0840inch x 0.1600inch     6
+ D17      rectangle 0.0710inch x 0.0867inch    14
+ D18      oval      0.1120inch x 0.0600inch     8
+ D19      round     0.0630inch              16
+ D20      round     0.1360inch               8
+ D21      rectangle 0.0867inch x 0.0710inch     6
+ D22      oval      0.1280inch x 0.0680inch    15
+ D23      round     0.0640inch               4
+ D24      round     0.1380inch               2
+ D25      oval      0.1110inch x 0.0595inch    20
+ D26      round     0.1080inch               5
+ D27      rectangle 0.0789inch x 0.0710inch     2
+ D28      oval      0.0867inch x 0.1655inch     2
+ D29      oval      0.1655inch x 0.0867inch     1
+ D30      octagon   0.0680inch               6
+ D31      round     0.0552inch              16
+ D32      round     0.0476inch               1
+ D33      square    0.0476inch               9
+

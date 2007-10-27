@@ -1,0 +1,69 @@
+Photoplotter Info File: /home/rob/ecssr/proj-svn/pcb/power-board/tags/build-00/gerbers/bottom.gpi
+
+ Date              : 10/27/2007 20:10:11 
+ Plotfile          : /home/rob/ecssr/proj-svn/pcb/power-board/tags/build-00/gerbers/bottom
+ Apertures         : generated: 
+ Device            : Gerber photoplotter with RS-274-X aperture generation
+
+Parameter settings:
+
+ Emulate Apertures : no
+ Emulate Thermal   : no
+ Emulate Annulus   : no
+ Tolerance Draw  + :  0.00 %
+ Tolerance Draw  - :  0.00 %
+ Tolerance Flash + :  0.00 %
+ Tolerance Flash - :  0.00 %
+ Rotate            : no
+ Mirror            : no
+ Optimize          : yes
+ Auto fit          : yes
+ OffsetX           : 0inch
+ OffsetY           : 0inch
+
+Plotfile Info:
+
+ Coordinate Format : 2.4
+ Coordinate Units  : Inch
+ Data Mode         : Absolute
+ Zero Suppression  : None
+ End Of Block      : *
+
+Apertures used:
+
+ Code     Shape     Size                  used
+
+ D10      draw      0.0140inch              34
+ D11      octagon   0.2540inch              22
+ D12      octagon   0.0630inch               9
+ D13      round     0.0630inch               9
+ D14      octagon   0.0520inch              20
+ D15      oval      0.1770inch x 0.0885inch     6
+ D16      oval      0.0760inch x 0.1520inch     6
+ D17      rectangle 0.0630inch x 0.0787inch    14
+ D18      oval      0.1040inch x 0.0520inch     8
+ D19      round     0.0550inch              16
+ D20      rectangle 0.0787inch x 0.0630inch     6
+ D21      oval      0.1200inch x 0.0600inch    15
+ D22      round     0.0560inch               4
+ D23      round     0.1300inch               2
+ D24      oval      0.1030inch x 0.0515inch    20
+ D25      round     0.1000inch               5
+ D26      rectangle 0.0709inch x 0.0630inch     2
+ D27      oval      0.0787inch x 0.1575inch     2
+ D28      oval      0.1575inch x 0.0787inch     1
+ D29      octagon   0.0600inch               6
+ D30      draw      0.0160inch            3863
+ D31      round     0.0472inch              16
+ D32      draw      0.0120inch             149
+ D33      round     0.0396inch               1
+ D34      square    0.0396inch               9
+ D35      draw      0.0760inch              67
+ D36      draw      0.0320inch               8
+ D37      draw      0.0500inch               5
+ D38      draw      0.0860inch              10
+ D39      draw      0.0157inch              17
+ D40      draw      0.0560inch              13
+ D41      draw      0.0118inch               6
+ D42      draw      0.0700inch               3
+
