@@ -1,6 +1,6 @@
 Photoplotter Info File: /home/rob/ecssr/proj-svn/pcb/power-board/tags/build-00/gerbers/placement-top.gpi
 
- Date              : 10/27/2007 20:12:03 
+ Date              : 10/27/2007 20:54:36 
  Plotfile          : /home/rob/ecssr/proj-svn/pcb/power-board/tags/build-00/gerbers/placement-top
  Apertures         : generated: 
  Device            : Gerber photoplotter with RS-274-X aperture generation
@@ -33,19 +33,19 @@ Apertures used:
 
  Code     Shape     Size                  used
 
- D10      draw      0.0060inch             339
- D11      draw      0.0020inch              13
- D12      rectangle 0.0300inch x 0.2200inch     3
- D13      rectangle 0.0350inch x 0.0500inch     6
- D14      draw      0.0050inch             149
- D15      draw      0.0560inch               6
- D16      draw      0.0010inch              56
- D17      draw      0.0080inch             110
- D18      rectangle 0.0350inch x 0.0450inch     4
- D19      rectangle 0.0300inch x 0.0450inch     4
- D20      draw      0.0001inch               8
- D21      draw      0.0100inch               1
- D22      draw      0.0040inch             155
- D23      rectangle 0.0340inch x 0.0300inch     1
- D24      draw      0.0000inch              19
+ D10      draw      0.0100inch              15
+ D11      draw      0.0060inch             491
+ D12      draw      0.0050inch             747
+ D13      draw      0.0020inch              13
+ D14      draw      0.0040inch            1473
+ D15      rectangle 0.0300inch x 0.2200inch     3
+ D16      rectangle 0.0350inch x 0.0500inch     6
+ D17      draw      0.0560inch               6
+ D18      draw      0.0010inch              56
+ D19      draw      0.0080inch             110
+ D20      rectangle 0.0350inch x 0.0450inch     4
+ D21      rectangle 0.0300inch x 0.0450inch     4
+ D22      draw      0.0001inch               8
+ D23      draw      0.0030inch              45
+ D24      rectangle 0.0340inch x 0.0300inch     1
 
