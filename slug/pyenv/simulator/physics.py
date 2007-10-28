@@ -12,7 +12,7 @@ WHITE = 255, 255, 255
 WIDTH = 8
 METRE = 640/WIDTH
 SCALE = 25
-WHEELFORCE = 10
+WHEELFORCE = 50
 
 class World:
     motorleft = 0
@@ -22,8 +22,10 @@ class World:
     time = 0
 
     class Box:
-        def __init__(self, density, width, x, y, z, world, space, geoms = None):
+        def __init__(self, density, width, x, y, z, world, space, geoms = None,
+                ident = None):
             self.box = ode.Body(world)
+            self.box.container = self
             self.width = width
 
             M = ode.Mass()
@@ -35,9 +37,13 @@ class World:
             
             if geoms == None:
                 geoms = [ode.GeomBox(space, lengths=self.box.boxsize)]
+                if ident != None:
+                    geoms[0].ident = ident
 
             for geom in geoms:
                 geom.setBody(self.box)
+
+            self.geoms = geoms
 
             self.box.setPosition((x, y, z))
 
@@ -82,14 +88,14 @@ class World:
     class Robot(Box):
         def __init__(self, world, space):
 
-            def genplane(space, size, pos, transparant = False, name = ""):
+            def genplane(space, size, pos, transparant = False, ident = ""):
                 plane = ode.GeomBox(None, size)
                 plane.setPosition(pos)
                 planet = ode.GeomTransform(space)
                 planet.setGeom(plane)
                 
                 planet.trans = transparant
-                planet.ident = name
+                planet.ident = ident
                 return planet
             
             def genwheel(world, space, box, position):
@@ -137,10 +143,12 @@ class World:
             geoms = []
 
             #genplane arguments: space, size, position
-            topplane = genplane(space, (0.5, 0.2, 0.01), (0, 0.15, -0.240))
+            topplane = genplane(space, (0.5, 0.2, 0.01), (0, 0.15, -0.240),
+                    ident="topplane")
             geoms.append(topplane)
 
-            botplane = genplane(space, (0.5, 0.2, 0.01), (0, -0.15, -0.240))
+            botplane = genplane(space, (0.5, 0.2, 0.01), (0, -0.15, -0.240),
+                    ident="botplane")
             geoms.append(botplane)
 
             bumpl = genplane(space, (0.1, 0.1, 0.01), (-0.245, 0.255, -0.240),
@@ -153,8 +161,9 @@ class World:
 
             bumpeat = genplane(space, (0.2, 0.1, 0.01), (0, 0.255, -0.240),
                     True, "bumpeat")
+            geoms.append(bumpeat)
 
-            World.Box.__init__(self, 100, 0.5, 1, 2, 0.255, world, space, geoms)
+            World.Box.__init__(self, 500, 0.5, 1, 2, 0.255, world, space, geoms)
             
             #genwheel arguments: world, space, container, absolute pos
             #returns a wheel body and a joint object
@@ -176,7 +185,8 @@ class World:
 
     class Token(Box):
         def __init__(self, world, space, x, y):
-            World.Box.__init__(self, 470, 0.044, x, y, 0.05, world, space)
+            World.Box.__init__(self, 470, 0.044, x, y, 0.05, world, space,
+                    ident="token")
 
     def createtokens(self, world, space, number):
         tokens = []
@@ -198,6 +208,7 @@ class World:
         self.world.setGravity( (0, 0, -9.81) )
         #world.setERP(0.8) #Error correction per time step
         self.world.setCFM(1E-5) #Global constraint force mixing value
+        #TODO: Figure out why this isn't -8
 
         self.space = ode.Space() 
 
@@ -227,6 +238,8 @@ class World:
 
         world, contactgroup = args #Passed in through a tuple - can probably pass
             #anything in
+        
+        mu = 10
 
         try:
             if geom1.ident == "bumpl" or geom2.ident == "bumpl":
@@ -235,24 +248,41 @@ class World:
             if geom1.ident == "bumpr" or geom2.ident == "bumpr":
                 if geom2.ident != "floor":
                     World.bumpers["bumpr"] = True
-            if geom1.ident == "bumpeat":
-                for token in self.tokens:
-                    if token.box == geom2.getBody():
-                        print "YUM YUM YUM"
-                        token.box.disable()
-                        tokens.remove(token)
-        except:
+        except AttributeError:
+            pass
+
+        try:
+            eaten = None
+            if geom1.ident == "token" and geom2.ident == "bumpeat":
+                eaten = geom1.getBody().container
+            if geom2.ident == "token" and geom1.ident == "bumpeat":
+                eaten = geom2.getBody().container
+            
+            if eaten != None:
+                eaten.box.disable()
+                for geom in eaten.geoms:
+                    self.space.remove(geom)
+                self.tokens.remove(eaten)
+                return
+        except AttributeError:
             pass
 
         try:
             if geom1.trans or geom2.trans:
                 return
-        except:
+        except AttributeError:
+            pass
+        
+        try:
+            if (geom1.ident == "token" and geom2.ident == "floor") or \
+              (geom2.ident == "token" and geom1.ident == "floor"):
+                mu = 1
+        except AttributeError:
             pass
 
         for c in contacts:
             c.setBounce(0.001)
-            c.setMu(10)
+            c.setMu(mu)
             j = ode.ContactJoint(world, contactgroup, c)
             j.attach(geom1.getBody(), geom2.getBody())
 
