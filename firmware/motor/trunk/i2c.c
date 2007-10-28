@@ -111,7 +111,7 @@ interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 			if( pos == 0 ) 
 			{
 				size = cmd->tx( buf );
-				checksum = crc8( checksum ^ (I2C_ADDRESS << 1) );
+				checksum = crc8( checksum ^ ((I2C_ADDRESS << 1)|1) );
 			}
 	
 			if( pos < size )
