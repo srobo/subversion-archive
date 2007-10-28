@@ -234,11 +234,6 @@ class World:
         if geom1.__class__ == ode.GeomPlane and geom2.__class__ == ode.GeomPlane:
             return
 
-        contacts = ode.collide(geom1, geom2)
-
-        world, contactgroup = args #Passed in through a tuple - can probably pass
-            #anything in
-        
         mu = 10
 
         try:
@@ -279,6 +274,11 @@ class World:
                 mu = 1
         except AttributeError:
             pass
+
+        contacts = ode.collide(geom1, geom2)
+
+        world, contactgroup = args #Passed in through a tuple - can probably pass
+            #anything in
 
         for c in contacts:
             c.setBounce(0.001)
