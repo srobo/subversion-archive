@@ -51,9 +51,9 @@ setup(
 
 print "Copying GTK libraries into the dist folder"
 
-shutil.copytree("gtk", "dist/gtk")
-shutil.copytree("gobject", "dist/gobject")
-shutil.copytree("gtkbin", "dist/gtkbin")
+shutil.copytree("gtk-bak", "dist/gtk")
+shutil.copytree("gobject-bak", "dist/gobject")
+shutil.copytree("gtkbin-bak", "dist/gtkbin")
 
 print "Zipping up into dist-%s.zip" % ver
 
