@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /~stephen/ide/
+RewriteBase /~stephen/
 AuthType Basic
 AuthName "Testing login"
 AuthBasicProvider file
@@ -15,6 +15,6 @@ RewriteRule . - [E=RU:%1]
 #Finally add that as a http header X-Forwarded-User
 RequestHeader add X-Forwarded-User %{RU}e
 
-RewriteRule ^ide/static/(.*)$ ../$1
-RewriteRule ^ide/$ ../
+RewriteRule ^ide/static/(.*)$ $1
+RewriteRule ^ide/$  index.html
 RewriteRule ^ide/(.*)$ http://127.0.0.1:8088/$1 [proxy]

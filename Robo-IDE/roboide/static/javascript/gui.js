@@ -61,6 +61,7 @@ MochiKit.DOM.addLoadEvent( function() {
     //On page load - this replaces a onload action of the body tag
     //Hook up the save file button
     MochiKit.Signal.connect('savefile','onclick', saveFile);
+    MochiKit.Signal.connect(window, 'onbeforeunload', beforeunload);
     //Grab a file list
     updatefilelist();
 
@@ -102,6 +103,16 @@ MochiKit.DOM.addLoadEvent( function() {
     //Start polling
     setTimeout( "polled()", POLL_TIME );
 });
+
+function beforeunload(e) {
+    savecurrenttab();
+    for (var tab in open_files) {
+        if(!closetab(tab)){
+            e.confirmUnload("You should close tabs before closing this window");
+            break;
+        }
+    }
+}
 
 function updatefilelist() {
     /*Called to update the file list
@@ -333,6 +344,9 @@ function savecurrenttab(){
 
     //See if the code has changed compared to that in the textarea
     if(code != open_files[cur_path].tabdata){
+        d = MochiKit.DOM.getElement("debug");
+        d.innerHTML = diffString(code, open_files[cur_path].tabdata);
+
         //Marking the tab as dirty makes it prompt to save
         open_files[cur_path].dirty = true;
         //Save the new code
@@ -403,9 +417,11 @@ function closetab(tabpath) {
 
     //Refuse to close the New tab
     //There isn't a button to do this anyway
-    if(tabpath == ""){
-        return;
-    }
+    if(tabpath == "")
+        return true;
+
+    if(!open_files[tabpath])
+        return true;
 
     //If closing the current tab, save its data to its textbox first
     if(tabpath == cur_path){
@@ -415,8 +431,8 @@ function closetab(tabpath) {
     //If the file has been changed, prompt the user that they might want to
     //save
     if(open_files[tabpath].dirty){
-        if(!confirm("Changes have been made to this file. Still close?")){
-            return;
+        if(!confirm("Changes have been made to " + tabpath + ". Still close?")){
+            return false;
         }
     }
 
@@ -425,6 +441,7 @@ function closetab(tabpath) {
     delete open_files[tabpath];
     //Show the New tab
     showtab("", true);
+    return true;
 }
 
 function generatetablist() {
@@ -632,8 +649,7 @@ function gotLog(result) {
 }
 
 function loadHistory() {
-    box = MochiKit.DOM.getElement("logselect");
-    loadFile(cur_path, box.options[box.selectedIndex].value);
+    loadFile(cur_path, MochiKit.DOM.getNodeAttribute("logselect", "value"));
 }
 
 //MISC

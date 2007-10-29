@@ -5,7 +5,6 @@
 html, body, th, td {
   color: black;
   background-color: #ddd;
-  font: x-small "Lucida Grande", "Lucida Sans Unicode", geneva, verdana, sans-serif;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -15,30 +14,52 @@ a.link, a, a.active {
   color: #369;
 }
 
-#codeblock {
-    height: 100%;
+#sidebar {
+  border: 1px solid #aaa;
+  background-color: #eee;
+  margin: 0.5em;
+  padding: 1em;
+  float: left;
+  width: 200px;
+  height: 525px;
 }
 
-#main_content {
-    width: 100%;
-    height: 100%;
+#feeds {
+    text-align: center;
+    margin-bottom: 1em;
 }
 
-#history {
-    position: absolute;
-    top: 0px;
-    right: 0px;
+#feeds button{
+    margin-top: 0.5em;
+}
+
+#logo {
+    margin-bottom: 1em;
+}
+
+#sidebar h2 {
+  margin-top: 0;
+}
+
+#sidebar ul {
+  margin-left: 1.5em;
+  padding-left: 0;
 }
 
 #code_block {
-  position: absolute;
-  left: 250px;
-  right: 0px;
+    float: right;
+}
+
+html>body #code_block {
+    float: none;
+    margin-left: 270px;
+}
+
+#history {
+    float: right;
 }
 
 #content {
-    position: absolute;
-    width: 100%;
 }
 
 #fulllog {
@@ -81,43 +102,17 @@ span.list_box {
     float: right;
 }
 
-#sidebar {
-  border: 1px solid #aaa;
-  background-color: #eee;
-  margin: 0.5em;
-  padding: 1em;
-  float: left;
-  width: 200px;
-  height: 525px;
-  margin-bottom: 20px;
-}
 
-#feeds {
-    text-align: center;
-    margin-bottom: 1em;
-}
-
-#feeds button{
-    margin-top: 0.5em;
-}
-
-#logo {
-    margin-bottom: 1em;
-}
-
-#sidebar h2 {
-  margin-top: 0;
-}
-
-#sidebar ul {
-  margin-left: 1.5em;
-  padding-left: 0;
-}
 
 #tablist {
     padding: 3px;
     margin-left: 0px;
     border-bottom: 1px solid #778;
+}
+
+#tablistdiv {
+    margin-top: 5px;
+    width: 100%;
 }
 
 #tablist li {
@@ -131,8 +126,7 @@ span.list_box {
 }
 
 #tablist li a.top {
-    padding: 3px 0.5em;
-    margin-left: 3px;
+    padding: 3px 3px 3px 3px;
     border: 1px solid #778;
     border-bottom: none;
     background: #DDE;

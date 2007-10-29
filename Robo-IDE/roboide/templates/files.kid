@@ -12,16 +12,6 @@
 <title py:content="rev">Robotics IDE</title>
 </head>
 <body>
-    <div id="sidebar">
-        <h2>Files</h2>
-        <a href="./feed/atom1.0">
-            <img style="border: none;" src="./static/images/feed.png" alt="Atom"/>Atom 1.0</a>
-        <a href="./feed/rss2.0">
-            <img style="border: none;" src="./static/images/feed.png" alt="RSS 2.0"/>RSS 2.0</a>
-        <button id="checkout" onclick="checkout()">Checkout Selected</button>
-        <button id="delete" onclick="deleteclick()">Delete Selected</button>
-        <div id="filelist"></div>
-    </div>
     <div id="code_block">
         <div id="tablistdiv"></div>
         <div id="history"><p>
@@ -35,11 +25,23 @@
                 style="width:100%;height:425px;"></textarea>
             </div>
             <div id="fulllog"></div>
-        <div id="savebox">
-        <p>Commit message: <input id="message" value="Default Save Message"/>
-         File name: <input id="filename" value=""/>
-        <button id="savefile">Save File!</button></p></div>
-</div>
+            <div id="savebox">
+                <p>Commit message: <input id="message" value="Default Save Message"/>
+                File name: <input id="filename" value=""/>
+                <button id="savefile">Save File!</button></p>
+            </div>
+        </div>
     </div>
+    <div id="sidebar">
+        <h2>Files</h2>
+        <a href="./feed/atom1.0">
+            <img style="border: none;" src="./static/images/feed.png" alt="Atom"/>Atom 1.0</a>
+        <a href="./feed/rss2.0">
+            <img style="border: none;" src="./static/images/feed.png" alt="RSS 2.0"/>RSS 2.0</a>
+        <button id="checkout" onclick="checkout()">Checkout Selected</button>
+        <button id="delete" onclick="deleteclick()">Delete Selected</button>
+        <div id="filelist"></div>
+    </div>
+
 </body>
 </html>

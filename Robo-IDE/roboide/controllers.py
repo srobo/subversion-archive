@@ -115,7 +115,7 @@ class Root(controllers.RootController):
         return rev
 
     @expose()
-    def checkout(self, files):
+    def checkout(self, files=""):
         """
         This function grabs a set of files and makes a zip available. Should be
         linked to directly.
@@ -125,9 +125,6 @@ class Root(controllers.RootController):
             A zip file as a downloadable file with appropriate HTTP headers
             sent.
         """
-        if files == "":
-            return ""
-
         client = Client()
         files = files.split(",")
         rev = self.get_revision("HEAD")
@@ -138,42 +135,52 @@ class Root(controllers.RootController):
 
         dirs = [""] #List of directories already created
 
-        for file in files:
-            path = os.path.dirname(file)
-            if not path in dirs:
-                #If the directory path isn't in the dirs list
-                #Need to create a directory for it
-                #Makedirs creates parent directories as necessary
-                os.makedirs(os.path.join(root, path))
-                #TODO: Is there a os.path to do this safely?
-                pathparts = path.split("/")
-                
-                #Need to put all created directories in dirs
-                for i in range(0, len(pathparts)):
-                    #e.g. if path was moo/poo/loo
-                    #subdir is:
-                    #moo
-                    #moo/poo
-                    #moo/poo/loo
-                    subdir = "/".join(pathparts[0:i+1])
-                    if not subdir in dirs:
-                        dirs.append(subdir)
-
-            #Directory exists, copy file into it
-            f = open(os.path.join(root, file), "wb")
-            f.write(client.cat(REPO + file, rev))
-            f.close()
+        if files == [""]:
+            client.export(REPO,
+                    root + "/all",
+                    revision=rev,
+                    recurse=True)
+        else:
+            for file in files:
+                path = os.path.dirname(file)
+                if not path in dirs:
+                    #If the directory path isn't in the dirs list
+                    #Need to create a directory for it
+                    #Makedirs creates parent directories as necessary
+                    os.makedirs(os.path.join(root, path))
+                    #TODO: Is there a os.path to do this safely?
+                    pathparts = path.split("/")
+                    
+                    #Need to put all created directories in dirs
+                    for i in range(0, len(pathparts)):
+                        #e.g. if path was moo/poo/loo
+                        #subdir is:
+                        #moo
+                        #moo/poo
+                        #moo/poo/loo
+                        subdir = "/".join(pathparts[0:i+1])
+                        if not subdir in dirs:
+                            dirs.append(subdir)
+                #Directory exists, copy file into it
+                f = open(os.path.join(root, file), "wb")
+                f.write(client.cat(REPO + file, rev))
+                f.close()
 
         #Now should have a tree in root.
         #Create a zip file in a temporary directory
         zfile = tempfile.mktemp()
         zip = zipfile.ZipFile(zfile, "w")
+        #Check for an all directory on its own in the root
+        head = root
+        if(os.listdir(root) == ["all"]):
+            head = root + "/all"
+
         #Walk through the tree of files checked out and add them
         #to the zipfile
-        for node, dirs, files in os.walk(root):
+        for node, dirs, files in os.walk(head):
             for name in files:
                 #If the file is in the root directory
-                if node == root:
+                if node == head:
                     #Add it named just its name
                     zip.write(os.path.join(node, name), name)
                 else:
