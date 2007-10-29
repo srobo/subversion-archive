@@ -327,7 +327,7 @@ class Root(controllers.RootController):
             try:
                 newlogs = client.log(client.REPO, discover_changed_paths=True,
                     revision_end=pysvn.Revision(pysvn.opt_revision_kind.number,
-                        int(logrev)+1))
+                        int(logrev)))
 
                 l =[{"author":x["author"], \
                         "date":time.strftime("%H:%M:%S %d/%m/%Y", \
