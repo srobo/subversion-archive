@@ -2,7 +2,7 @@ from distutils.core import setup
 import py2exe, pygame, ode
 import os, shutil
 
-ver = "0.1"
+ver = "0.2"
 
 try:
     shutil.rmtree("build")

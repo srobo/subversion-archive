@@ -6,7 +6,7 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s',
-                    filename='/tmp/myapp.log',
+                    filename='simulator.log',
                     filemode='w')
 
 class Trampoline:
@@ -38,7 +38,12 @@ class Trampoline:
                 #Try to run the function on the top of the stack
                 #Extend to an empty list to force it to be a list
                 args = None
-                args = stack[-1].next() #Advance to the first yield statement
+                try:                    
+                    args = stack[-1].next() #Advance to the first yield statement
+                except AttributeError:
+                    #A function returned putting a None on the stack
+                    raise StopIteration
+                    
                 if isinstance(args, types.TupleType):
                     args = list(args)
                 else:
@@ -50,6 +55,12 @@ class Trampoline:
                 stack.pop()
                 if len(stack) == 0:
                     #Run out of things to trampoline
+                    logging.debug("Running background polls")
+                    for poll in self.bgpolls:
+                        try:
+                            poll.next()
+                        except StopIteration:
+                            self.bgpolls.remove(poll)
                     #Put the main function back in...
                     stack.append(robot.main(corner=0,colour=0,game=0))
                     #Go back to start of while loop
