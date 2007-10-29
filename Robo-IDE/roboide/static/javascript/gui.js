@@ -370,10 +370,12 @@ function showtab(tabpath, force) {
     var force = (force == null) ? false : true;
 
     if(tabpath == "Log"){
+        MochiKit.Style.hideElement("code");
         MochiKit.Style.showElement("fulllog");
         cur_path = tabpath;
     } else {
         MochiKit.Style.hideElement("fulllog");
+        MochiKit.Style.showElement("code");
 
         if((tabpath != cur_path) || force){
             //If the selected tab isn't the current one

@@ -59,18 +59,8 @@ html>body #code_block {
     float: right;
 }
 
-#content {
-}
-
 #fulllog {
-    position: absolute;
     background-color: white;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    overflow: scroll;
-    z-index: 10;
 }
 
 #fltable {

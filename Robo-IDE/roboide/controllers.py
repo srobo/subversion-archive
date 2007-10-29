@@ -9,13 +9,11 @@ import tempfile, shutil
 import os
 import zipfile
 import random
-from Queue import Queue
 from os.path import join
 from cherrypy.lib.cptools import serveFile
+import sr
 log = logging.getLogger("roboide.controllers")
 
-REPO = "http://studentrobotics.org/isvn/"
-#REPO = "file:///tmp/cheese"
 ZIPNAME = "robot.zip"
 
 class Client:
@@ -37,9 +35,30 @@ class Client:
         c.callback_get_login = get_login
         c.set_store_passwords(False)
         c.set_auth_cache(False)
-
+        
         #Using self.__dict__[] to avoid calling setattr in recursive death
         self.__dict__["client"] = c
+        
+        def ldap_login():
+            """
+            This is the standard anonymous login.
+            """
+            return ("uid=anon,ou=users,o=sr","9uqdXSF4")
+        
+        sr.set_userinfo(ldap_login)
+
+        user = sr.user(cherrypy.request.headers["X-Forwarded-User"])
+        groups = user.groups()
+        for group in groups:
+            if "team" in group:
+                n = int(group[4:])
+                self.__dict__["REPO"] = \
+                "http://studentrobotics.org/isvn2/%d/" % n
+                return
+        
+        self.__dict__["REPO"] = "http://studentrobotics.org/isvn/"
+        logging.error("Team not found for user")
+
 
     def is_url(self, url):
         """Override the default is_url which just tells you if the url looks
@@ -136,7 +155,7 @@ class Root(controllers.RootController):
         dirs = [""] #List of directories already created
 
         if files == [""]:
-            client.export(REPO,
+            client.export(client.REPO,
                     root + "/all",
                     revision=rev,
                     recurse=True)
@@ -163,7 +182,7 @@ class Root(controllers.RootController):
                             dirs.append(subdir)
                 #Directory exists, copy file into it
                 f = open(os.path.join(root, file), "wb")
-                f.write(client.cat(REPO + file, rev))
+                f.write(client.cat(client.REPO + file, rev))
                 f.close()
 
         #Now should have a tree in root.
@@ -218,11 +237,11 @@ class Root(controllers.RootController):
 
         rev = self.get_revision(revision)
 
-        if file != None and file != "" and client.is_url(REPO + file):
+        if file != None and file != "" and client.is_url(client.REPO + file):
             #Load file from SVN
             mime = ""
             try:
-                mime = client.propget("svn:mime-type", REPO+file, revision=rev).values()[0]
+                mime = client.propget("svn:mime-type", client.REPO+file, revision=rev).values()[0]
             except pysvn.ClientError:
                 code = "Error getting mime type"
                 revision = 0
@@ -236,16 +255,16 @@ class Root(controllers.RootController):
                 #Ugforge doesn't support locking, so do this the hard way...
                 while True:
                     try:
-                        ver = client.log(REPO + file, limit=1, revision_start=rev)[0]["revision"]
-                        code = client.cat(REPO + file, revision=rev)
-                        ver2 = client.log(REPO + file, limit=1,
+                        ver = client.log(client.REPO + file, limit=1, revision_start=rev)[0]["revision"]
+                        code = client.cat(client.REPO + file, revision=rev)
+                        ver2 = client.log(client.REPO + file, limit=1,
                                 revision_start=rev)[0]["revision"]
                         if ver2.number == ver.number:
                             revision = ver.number
                             break
                         else:
                             print "Collision catting %s. Should be v rare!" % \
-                                REPO + file
+                                client.REPO + file
                     except pysvn.ClientError:
                         code = "No file loaded."
                         revision = 0
@@ -261,10 +280,10 @@ class Root(controllers.RootController):
         c = Client()
 
         try:
-            log = c.log(REPO+file)
+            log = c.log(c.REPO+file)
         except:
-            print "LOG FAILED"
-            return dict([])
+            logging.debug("Log failed for %s" % c.REPO+file)
+            return dict(path=file,history=[])
 
         return dict(  path=file,\
                       history=[{"author":x["author"], \
@@ -275,7 +294,7 @@ class Root(controllers.RootController):
 
     def checkoutintotmpdir(self, client, revision, base):
         tmpdir = tempfile.mkdtemp()
-        client.checkout(REPO + base, tmpdir, recurse=False, revision=revision)
+        client.checkout(client.REPO + base, tmpdir, recurse=False, revision=revision)
         return tmpdir
 
     @expose("json")
@@ -299,14 +318,14 @@ class Root(controllers.RootController):
             for file in files:
                 r[file] = {}
                 try:
-                    info = client.info2( REPO + file )[0][1]
+                    info = client.info2( client.REPO + file )[0][1]
                     r[file]["rev"] = info["last_changed_rev"].number
                 except pysvn.ClientError:
                     pass
 
         if logrev != None:
             try:
-                newlogs = client.log(REPO, discover_changed_paths=True,
+                newlogs = client.log(client.REPO, discover_changed_paths=True,
                     revision_end=pysvn.Revision(pysvn.opt_revision_kind.number,
                         int(logrev)+1))
 
@@ -339,7 +358,7 @@ class Root(controllers.RootController):
                 return True, "Files deleted"
             client.callback_get_log_message = cb
 
-            urls = [REPO + str(x) for x in files]
+            urls = [client.REPO + str(x) for x in files]
             
             message = "Files deleted successfully: \n" + "\n".join(files)
 
@@ -350,10 +369,10 @@ class Root(controllers.RootController):
                 #TODO: Need to prune empty directories. Get data from filelist
                 #and then build a list of empty directories.
                 for dir in paths:
-                    if len(client.ls(REPO + dir)) == 0:
+                    if len(client.ls(client.REPO + dir)) == 0:
                         #The directory is empty, OK to delete it
-                        log.debug("Deleting empty directory: " + REPO + dir)
-                        client.remove(REPO + dir)
+                        log.debug("Deleting empty directory: " + client.REPO + dir)
+                        client.remove(client.REPO + dir)
                         message += "\nRemove empty directory " + dir
                     
             except pysvn.ClientError:
@@ -371,7 +390,7 @@ class Root(controllers.RootController):
                         action, path
         """
         client = Client()
-        log = client.log(REPO, discover_changed_paths=True)
+        log = client.log(client.REPO, discover_changed_paths=True)
 
         return dict(log=[{"author":x["author"], \
                       "date":time.strftime("%H:%M:%S %d/%m/%Y", \
@@ -399,7 +418,7 @@ class Root(controllers.RootController):
         rev = self.get_revision("HEAD") #Always check in over the head to get
         #old revisions to merge over new ones
 
-        if not client.is_url(REPO + path): #new dir needed...
+        if not client.is_url(client.REPO + path): #new dir needed...
             reload = "true"
             try:
                 self.create_svn_dir(client, path)
@@ -472,12 +491,12 @@ class Root(controllers.RootController):
         returns: None, may through a pysvn.ClientError
         """
 
-        if not client.is_url(REPO + path):
+        if not client.is_url(client.REPO + path):
             upperpath = os.path.dirname(path)
             #Recurse to ensure folder parents exist
             self.create_svn_dir(client, upperpath)
 
-            client.mkdir(REPO + path, "New Directory: " + path)
+            client.mkdir(client.REPO + path, "New Directory: " + path)
 
     @expose("json")
     def filelist(self, client = None):
@@ -496,7 +515,7 @@ class Root(controllers.RootController):
         
         #This returns a flat list of files
         #This is sorted, so a directory is defined before the files in it
-        files = client.ls(REPO, recurse=True)
+        files = client.ls(client.REPO, recurse=True)
         
         #Start off with a directory to represent the root of the path
         head = dict(name="HEAD",path="",kind="FOLDER",children={})
@@ -504,7 +523,7 @@ class Root(controllers.RootController):
         #Go through each file, creating appropriate directories and files
         #In a tree structure based around dictionaries
         for details in files:
-            filename = details["name"][len(REPO):] #Strip off the repo URL
+            filename = details["name"][len(client.REPO):] #Strip off the repo URL
             basename = os.path.basename(filename)  #/etc/bla - returns bla
             top = head  #for each file recurse from the head. TODO: slow?
             for path in filename.split("/"):

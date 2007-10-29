@@ -34,15 +34,17 @@
         <div id="tablistdiv"></div>
         <div id="status_block">Loading status...</div>
         <div id="content">
-            <div id="box">
-            <textarea id="codebox" style="width:100%;height:425px;"></textarea>
+            <div id="code">
+                <div id="box">
+                    <textarea id="codebox" style="width:100%;height:425px;"></textarea>
+                </div>
+                <div id="savebox">
+                    <p>Commit message: <input id="message" value="Default Save Message"/>
+                    File name: <input id="filename" value=""/>
+                    <button id="savefile">Save File!</button></p>
+                </div>
             </div>
             <div id="fulllog" style="display: none;"></div>
-            <div id="savebox">
-                <p>Commit message: <input id="message" value="Default Save Message"/>
-                File name: <input id="filename" value=""/>
-                <button id="savefile">Save File!</button></p>
-            </div>
         </div>
     </div>
     <div id="debug"></div>
