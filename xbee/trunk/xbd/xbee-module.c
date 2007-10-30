@@ -618,7 +618,8 @@ int xbee_module_read_frame( XbeeModule* xb )
 			return -1;
 		}
 
-		if( r == 0 ) continue;
+		/* Serial devices can return 0 - but doesn't mean EOF */
+		if( r == 0 ) break;
 
 
 /*  		printf( "Read: %2.2X\n", (unsigned int)d ); */
