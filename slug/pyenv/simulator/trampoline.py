@@ -4,11 +4,6 @@ from events import TimeoutEvent
 import time
 import logging
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s %(message)s',
-                    filename='simulator.log',
-                    filemode='w')
-
 class Trampoline:
     def __init__(self):
         self.bgpolls = []

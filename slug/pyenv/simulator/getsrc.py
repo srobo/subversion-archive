@@ -1,5 +1,6 @@
 import gtk, sys, os, os.path, gobject
 import http, Queue
+import logging
 
 class SourceLoader():
     def delete_event(self, widget, event, data=None):
@@ -58,12 +59,15 @@ class SourceLoader():
         d.run()
 
     def download(self, widget, data=None):
+        logging.debug("Starting download")
         self.inq = Queue.Queue()
         username = self.tu.get_text()
         password = self.tp.get_text()
+        
         self.tu.set_sensitive(False)
         self.tp.set_sensitive(False)
         self.netbut.set_sensitive(False)
+        logging.debug("Starting download thread")
         self.downloader = http.BGDownloader(username, password, self.inq)
         self.downloader.start()
         gobject.idle_add(self.checkdownload)
@@ -71,6 +75,7 @@ class SourceLoader():
     def checkdownload(self):
         try:
             fileloc = self.inq.get_nowait()
+            logging.debug("Download finished - %s" % fileloc)
             if fileloc == "":
                 d = gtk.Dialog("Error", None, gtk.DIALOG_MODAL,
                         (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
@@ -83,14 +88,27 @@ class SourceLoader():
                 self.tp.set_sensitive(True)
                 self.netbut.set_sensitive(True)
             else:
+                logging.debug("Loading file")
                 sys.path.insert(0, fileloc)
+                logging.debug("sys.path now %s" % str(sys.path))
                 try:
                     import robot
+                    logging.debug("Imported robot")
                     self.success = fileloc, True
                     self.window.destroy()
                     return
                 except:
-                    pass
+                    logging.debug("Failed to import robot code")
+                    d = gtk.Dialog("Error", None, gtk.DIALOG_MODAL,
+                            (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+                    l = gtk.Label("Could not import robot code from Student Robotics")
+                    l.show()
+                    d.vbox.pack_start(l, False, True, 0)
+                    d.connect("response", lambda x, y: d.destroy())
+                    d.run()
+            self.tu.set_sensitive(True)
+            self.tp.set_sensitive(True)
+            self.netbut.set_sensitive(True)
             return False
         except Queue.Empty:
             return True
@@ -158,6 +176,7 @@ class SourceLoader():
         nethbox.pack_start(lp, expand=False, fill=True, padding=0)
 
         self.tp = gtk.Entry()
+        self.tp.set_visibility(False)
         self.tp.connect("changed", self.checkfields)
         self.tp.show()
         nethbox.pack_start(self.tp, expand=True, fill=True, padding=0)
@@ -175,6 +194,7 @@ class SourceLoader():
         self.window.show()
 
     def main(self):
+        logging.debug("Going into getsrc mainloop")
         gtk.main()
 
 if __name__ == "__main__":

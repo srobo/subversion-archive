@@ -1,6 +1,7 @@
 import urllib2
 import tempfile
 import threading
+import logging
 
 class BGDownloader(threading.Thread):
     def __init__(self, username, password, q):
@@ -10,6 +11,7 @@ class BGDownloader(threading.Thread):
         self.q = q
 
     def run(self):
+        logging.debug("Starting download")
         theurl = 'ide.studentrobotics.org/checkout'
         protocol = 'http://'
 
@@ -20,11 +22,14 @@ class BGDownloader(threading.Thread):
 
             opener = urllib2.build_opener(authhandler)
 
+            logging.debug("Downloading file")
             pagehandle = opener.open(protocol + theurl)
             tmpname = tempfile.mktemp()
+            logging.debug("Connection opened. Writing to %s" % tmpname)
             tmp = open(tmpname, "wb")
             tmp.write(pagehandle.read())
             tmp.close()
+            logging.debug("%s closed" % tmpname)
             self.q.put(tmpname)
         except:
             self.q.put("")
