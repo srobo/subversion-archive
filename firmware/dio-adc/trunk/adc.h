@@ -17,6 +17,7 @@
 #define __ADC_H
 
 void adc_init ( void );
-void adc_sample ( void ) ;
+void adc_sample ( void );
+
 
 #endif 	/* __ADC_H  */

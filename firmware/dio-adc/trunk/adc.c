@@ -17,10 +17,11 @@
 #include "adc.h"
 #include "common.h"
 #include <msp430/adc10.h>
+#include <signal.h>
 
 void adc_init(void){
 			//Use Vcc and Vss as referance voltages, 
-	ADC10CTL0 = SREF_AVCC_AVSS| ADC10SHT_DIV64 | ADC10SR | ADC10ON | ENC | ADC10SC;	
+	ADC10CTL0 = SREF_AVCC_AVSS| ADC10SHT_DIV64 | ADC10SR | ADC10ON | ENC | ADC10SC | ADC10IE;	
 	ADC10CTL1 = ADC10DIV_7;	//Set to single conversion mode
 	ADC10AE = 0xFF;		//Enable all inputs as Analogue Inputs
 	P2SEL |= 0x1F;		//Set A0 - A4 as Input Pins	
@@ -52,4 +53,8 @@ void adc_sample(void){
 			
 		}
 	}
+}
+
+interrupt (ADC10_VECTOR) intr_adc( void ){
+	
 }
