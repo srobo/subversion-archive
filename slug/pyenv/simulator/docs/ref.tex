@@ -16,10 +16,10 @@ about how to bring all this together see the tutorial.
 \section{Directory structure}
 Code must be contained within a zip file named robot.zip which acts as a Python
 module.  The zip file must contain at least two files named
-\texttt{__init__.py} and \texttt{robot.py}.  Other \texttt{.py} files can be
+\texttt{\_\_init\_\_.py} and \texttt{robot.py}.  Other \texttt{.py} files can be
 included to seperate code so it is more organised.  The Checkout function of
 the RoboIDE system creates zip files in this format.
-\subsection{__init__.py}
+\subsection{\_\_init\_\_.py}
 This file is used so Python can identify the zip file as a compressed module.
 It should be empty.
 \subsection{robot.py}
@@ -114,14 +114,41 @@ to process that image.  When this processing has finished, the vision system
 will raise an event (whether a token is seen or not).  Any tokens found are
 contained in a list called \texttt{blobs} that can be accessed through
 \texttt{event.blobs}.  Each blob in this list has a set of properties:
-\begin{reference}
-\item[\texttt{colour}] The colour of the blob
-\item[\texttt{mass}] The number of pixels that make up the blob
-\item[\texttt{centrex} The number of pixels from the left of the image of the centre
+\begin{description}
+\item[colour] The colour of the blob
+\item[mass] The number of pixels that make up the blob
+\item[centrex] The number of pixels from the left of the image of the centre
 of the blob left to right.
-\item[\texttt{centrey}] The number of pixels from the top of the image to the
+\item[centrey] The number of pixels from the top of the image to the
 centre of the blob top to bottom.
-\end{reference}
-\section{Event sources}
-\subsection{
+\end{description}
+
+\begin{verbatim}
+yield vision    #This will always return as soon as
+                #a frame has been processed
+
+for blob in event.blobs:    #Go through each blob in 
+                            #turn. This does nothing if
+                            #there are no blobs
+    if blob.colour == 0:    #For each blob, check its colour
+        pass
+\end{verbatim}
+\section{Controlling the robot}
+\subsection{Controlling the motors}
+The motor controller has two outputs. Each of these can be driven with 0\% to
+100\% of full power, forwards or backwards with the \texttt{setspeed} command.
+\begin{description}
+\item[setspeed(n)] This sets both of the motors to n\% of maximum
+power.  $-100<n<100$. Negative values of n drive the motors backwards.
+\item[setspeed(n, m)] This drives motor 1 to n\% of power and motor 2
+to m\% of power. $-100<n,m<100$.
+\end{description}
+\subsection{Controlling the PWM board}
+The Pulse Width Modulation board is used to control servo motors.  It is
+controlled with the \texttt{pwm} function that is takes the form:
+
+\texttt{pwm(n, m)}
+
+Where $0<n<5$ is the output on the PWM board that the servo is connected to
+and $0<m<100$ is the desired output value of the PWM board on that servo.
 \end{document}
