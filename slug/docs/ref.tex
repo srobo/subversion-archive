@@ -9,80 +9,102 @@
 \date{\today}
 \maketitle
 \begin{abstract}
-This document details the programming interface to be used when programming a
-Student Robotics robot.  For more information on programming in Python and
-about how to bring all this together see the tutorial.
+This document details the programming interface for Student Robotics
+robots.  For more information on programming in Python and about how
+to bring all this together see the tutorial. 
 \end{abstract}
 \section{Directory structure}
-Code must be contained within a zip file named robot.zip which acts as a Python
-module.  The zip file must contain at least two files named
-\texttt{\_\_init\_\_.py} and \texttt{robot.py}.  Other \texttt{.py} files can be
-included to seperate code so it is more organised.  The Checkout function of
-the RoboIDE system creates zip files in this format.
+The robot source code must be in a zip file named \texttt{robot.zip}.
+This zip file must act as a Python module, and so it must contain a
+file named \texttt{\_\_init\_\_.py}.  The zip file must contain a
+second file named \texttt{robot.py}.  Other \texttt{.py} files can be 
+included to improve code organisation.  The checkout function of the
+RoboIDE system creates zip files in this format. 
+
 \subsection{\_\_init\_\_.py}
 This file is used so Python can identify the zip file as a compressed module.
 It should be empty.
 \subsection{robot.py}
-This file must contain at least the main function for the robot control
+This file must at least contain the main function for the robot control
 algorithm.
 \subsection{File structure}
 \subsubsection{Imports}
-All files containg parts of the robot control algorithm must import the Student
+All files containing parts of the robot control algorithm must import the Student
 Robotics interface components with: \texttt{from sr import *}.  Other standard
 Python modules can be imported as required.
 \section{Main function}
-In the \texttt{robot.py} file there must be a function with the form:
+In \texttt{robot.py} there must be a function with the form:
 
-\texttt{def main(corner, colour, game):}
+\begin{verbatim}
+def main(corner, colour, game):
+\end{verbatim}
 
 When the robot is started, this function will be called.
 \section{Yielding control and interrupts}
 Once the main function is called, the algorithm has control of the robot.  The
-algorithm must \texttt{yield} control of the robot once it has configured any
-outputs.  The \texttt{yield} command passes control of the robot over to the
+algorithm must \texttt{yield} control of the robot once it has
+processed any incoming data, and configured any outputs accordingly.
+The \texttt{yield} command passes control of the robot over to the
 Student Robotics environment which will pass control back to the instruction
 after the \texttt{yield} statement.  When control is passed back to the
-algorithm the event variable is set to contain information 
+algorithm the \texttt{event} variable is set to contain information
+about the event that just occurred.
+
 \subsection{Using \texttt{yield}}
 \subsubsection{Timeouts}
-The \texttt{yield} statement can be used to wait for a set amount of time:
+The \texttt{yield} statement can be used to wait for a set amount of
+time.  For example:
 
-\texttt{yield 4}
+\begin{verbatim}
+yield 4
+\end{verbatim}
 
-Causes the algorithm to be delayed for 4 seconds.
+Causes the program to be delayed for 4 seconds.
+
 \subsubsection{Waiting on events}
-The \texttt{yield} statement can be used to wait for an event to occur:
+The \texttt{yield} statement can be used to wait for an event to
+occur.  For example:
 
-\texttt{yield dio}
+\begin{verbatim}
+yield dio
+\end{verbatim}
 
 Causes the algorithm to wait until a dio (digital IO) event is received.
+
 \subsubsection{Combinations of events and timeout}
 The \texttt{yield} statement can be used to wait on a combination of events and
 a timeout, whichever occurs first:
 
-\texttt{yield dio, 5}
+\begin{verbatim}
+yield dio, 5
+\end{verbatim}
 
 Causes the algorithm to wait until a dio event is received or 5 seconds,
 whichever comes first.
-\subsubsection{Calling subroutines}
-Control of the robot can be passed to subroutines, allowing the algorithm to be
-split up into easier to understand parts.  The \texttt{yield} statement can be
-used to pass control of the robot to a subroutine.  When the subroutine returns
-the algorithm continues from the yield statement.  If more information is
-passed to yield after the name of a subroutine, then that information is passed
-as an argument to that subroutine.
 
-\texttt{yield findTokens, 3}
+\subsubsection{Calling subroutines}
+Control of the robot can be passed to subroutines, allowing the program to be
+split up into easier to understand parts.  The \texttt{yield} statement can be
+used to pass control of the robot to a subroutine.  When the subroutine returns,
+the program continues from the yield statement.  If more information is
+passed to yield after the name of a subroutine, then that information is passed
+as argument(s) to that subroutine.  For example:
+
+\begin{verbatim}
+yield findTokens, 3
+\end{verbatim}
 
 Causes control of the robot to be passed to the findTokens subroutine with the
 argument 3.
+
 \subsection{The \texttt{event} variable}
-The \texttt{event} variable is set when control is returned to the algorithm
-after a yield. It contains information regarding the event that caused control
-to be passed back to the algorithm.
+The \texttt{event} variable is set when control is returned after a
+yield. It contains information regarding the event that caused control
+to be passed back.
+
 \subsubsection{Finding the event source}
-The \texttt{event} variable will return true when compared to the event source that led
-to its creation:
+The \texttt{event} variable will return true when compared to the
+event source that led to its creation:
 
 \begin{verbatim}
 yield dio, 5 #Wait until a dio event or 5 seconds passes
@@ -92,12 +114,13 @@ if event == dio:
 else:
     pass #A timeout is the only other option
 \end{verbatim}
+
 \subsection{Digital IO Events}
-Digital IO events are caused by a change of the digital inputs to the Joint IO
-board. After a dio event causes a \texttt{yield} statement to return control of
-the robot to the control algorithm, the \texttt{event} variable will be set.
-The dio inputs that have changed are contained in a dictionary called
-\texttt{pins} that can be accessed from \texttt{dio.pins}:
+Digital IO events are caused by a change in the digital inputs of the
+Joint IO board. After a dio event causes a \texttt{yield} statement to
+return control of the robot to the control algorithm, the
+\texttt{event} variable will be set. The dio inputs that have changed
+are contained in a dictionary that can be accessed from \texttt{dio.pins}: 
 
 \begin{verbatim}
 yield dio, 5
@@ -107,20 +130,21 @@ if event == dio:               #Is it a dio event?
         if event.pins[0] == 1: #Is input 0 now a 1?
             pass
 \end{verbatim}
+
 \subsection{Visual Events}
-When control is yielded and the \texttt{vision} event source is passed to the
-\texttt{yield} command the robot will grab an image with its webcam and start
-to process that image.  When this processing has finished, the vision system
-will raise an event (whether a token is seen or not).  Any tokens found are
-contained in a list called \texttt{blobs} that can be accessed through
-\texttt{event.blobs}.  Each blob in this list has a set of properties:
+When the \texttt{vision} event source is passed to the \texttt{yield}
+command, the robot will grab an image with its webcam and start to
+process that image.  When this processing has finished, the vision
+system will raise an event (whether a token is seen or not).  Any
+tokens found are placed in the list \texttt{event.blobs}.  Each blob in this
+list has a set of properties:  
 \begin{description}
 \item[colour] The colour of the blob
 \item[mass] The number of pixels that make up the blob
-\item[centrex] The number of pixels from the left of the image of the centre
-of the blob left to right.
-\item[centrey] The number of pixels from the top of the image to the
-centre of the blob top to bottom.
+\item[centrex] The number of pixels between the left of the image and
+  the centre of the blob.
+\item[centrey] The number of pixels down from the top of the image to the
+  centre of the blob.
 \end{description}
 
 \begin{verbatim}
@@ -133,22 +157,26 @@ for blob in event.blobs:    #Go through each blob in
     if blob.colour == 0:    #For each blob, check its colour
         pass
 \end{verbatim}
+
 \section{Controlling the robot}
 \subsection{Controlling the motors}
-The motor controller has two outputs. Each of these can be driven with 0\% to
-100\% of full power, forwards or backwards with the \texttt{setspeed} command.
+The motor controller has two outputs.  The \texttt{setspeed} command
+sets the direction of each motor and the power delivered to each one.
+
 \begin{description}
 \item[setspeed(n)] This sets both of the motors to n\% of maximum
 power.  $-100<n<100$. Negative values of n drive the motors backwards.
-\item[setspeed(n, m)] This drives motor 1 to n\% of power and motor 2
-to m\% of power. $-100<n,m<100$.
+\item[setspeed(n, m)] This sets the power delivered to motor 1 to n\%,
+  and the power delivered to motor 2 to m\%. $-100<n,m<100$.
 \end{description}
+
 \subsection{Controlling the PWM board}
 The Pulse Width Modulation board is used to control servo motors.  It is
-controlled with the \texttt{pwm} function that is takes the form:
+controlled with the \texttt{pwm} function that takes two arguments:
 
-\texttt{pwm(n, m)}
+\begin{verbatim}
+pwm(n, m)
+\end{verbatim}
 
-Where $0<n<5$ is the output on the PWM board that the servo is connected to
-and $0<m<100$ is the desired output value of the PWM board on that servo.
+This will set PWM board output $0<n<5$ to the position $0<m<100$.
 \end{document}
