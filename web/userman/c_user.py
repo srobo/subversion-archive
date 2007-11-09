@@ -22,7 +22,8 @@ class user:
                           "list" : self.list,
                           "groups" : self.groups,
                           "auto" : self.auto,
-                          "passwd" : self.passwd
+                          "passwd" : self.passwd,
+                          "rand_pass" : self.rand_pass
                           }
 
         if len(args) < 1:
@@ -162,6 +163,40 @@ Usage:
             print "Password set"
         else:
             print "Failed to set password"
+
+    
+    def rand_pass(self, args):
+        """Email the user a new random password.
+Usage:
+	user rand_pass USERNAME"""
+
+        if len(args) < 1:
+            print self.rand_pass.__doc__
+            return
+
+        uname = args[0]
+        u = sr.users.user( uname )
+
+        if not u.in_db:
+            print "User '%s' not found\n" % (args[0])
+            return False
+
+        new_passwd = sr.users.GenPasswd()
+        u.set_passwd( new = new_passwd )
+
+        msg = """Hi %s,
+Your new student robotics password is %s
+
+Thanks,
+
+The Student Robotics Team
+""" % (u.cname,new_passwd)
+
+        mailer.email( mailer.fromaddr,
+                      u.email,
+                      "New Student Robotics Password",
+                      msg )
+        return True
 
     def groups(self, args):
         """Display a list of the groups a user is in.
