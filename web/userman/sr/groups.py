@@ -1,15 +1,15 @@
 import ldap, types
 import sr_ldap
+from sr_ldap import get_conn
 import users
 
 # Get a list of all groups
 def list():
-    l = sr_ldap.conn
     sr_ldap.bind()
 
-    g_res = l.search_st( "ou=groups,o=sr",
-                         ldap.SCOPE_ONELEVEL,
-                         filterstr="(objectClass=posixGroup)" )
+    g_res = get_conn().search_st( "ou=groups,o=sr",
+                                  ldap.SCOPE_ONELEVEL,
+                                  filterstr="(objectClass=posixGroup)" )
 
     groups = [x[1]["cn"][0] for x in g_res]
 
@@ -21,7 +21,6 @@ class group:
     def __init__( self, name ):
         """Initialise the group object.
         Args: name = the name of the group"""
-        self.l = sr_ldap.conn
         sr_ldap.bind()
 
         self.name = name
@@ -42,7 +41,7 @@ class group:
             self.in_db = True
 
     def __load(self, name):
-        info = self.l.search_st( "ou=groups,o=sr",
+        info = get_conn().search_st( "ou=groups,o=sr",
                                  ldap.SCOPE_ONELEVEL,
                                  filterstr="(&(objectClass=posixGroup)(cn=%s))" % ( name ) )
         
@@ -86,7 +85,7 @@ class group:
         if not self.in_db:
             raise "Cannot delete group - doesn't exist"
         else:
-            self.l.delete_s( self.dn )
+            get_conn().delete_s( self.dn )
             self.in_db = False
             return True
     
@@ -105,7 +104,7 @@ class group:
         if len(self.members) > 0:
             modlist.append( ("memberUid", self.members) )
 
-        self.l.add_s( self.dn, modlist )
+        get_conn().add_s( self.dn, modlist )
 
         self.in_db = True
         self.new_users = []
@@ -120,14 +119,14 @@ class group:
                       "memberUid",
                       self.members ) ]
 
-        self.l.modify_s( self.dn, modlist )
+        get_conn().modify_s( self.dn, modlist )
 
         self.new_users = []
         self.removed_users = []
         
     def __get_new_gidNumber( self ):
         """Finds the next available GID"""
-        groups = self.l.search_st( "ou=groups,o=sr",
+        groups = get_conn().search_st( "ou=groups,o=sr",
                                    ldap.SCOPE_ONELEVEL,
                                    filterstr = "(objectClass=posixGroup)",
                                    attrlist = ["gidNumber"] )

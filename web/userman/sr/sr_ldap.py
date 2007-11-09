@@ -3,8 +3,12 @@ import ldap, sys, getpass
 conn = None
 bound = False
 
-if conn == None:
+def connect():
+    global conn
     conn = ldap.initialize("ldap://127.0.0.1/")
+
+if conn == None:
+    connect()
 
 def default_pass():
     sys.stderr.write("Password:")
@@ -15,6 +19,14 @@ user_callback = default_pass
 def set_userinfo( fn ):
     global user_callback
     user_callback = fn
+
+def unbind():
+    global conn, bound
+
+    if bound:
+        conn.unbind_s()
+        bound = False
+        connect()
 
 def bind():
     global bound, conn, user_callback
@@ -29,3 +41,6 @@ def bind():
 
         bound = True
 
+def get_conn():
+    global conn
+    return conn

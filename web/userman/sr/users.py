@@ -1,14 +1,14 @@
 import ldap, types
 import sr_ldap
+from sr_ldap import get_conn
 
 def list():
-    l = sr_ldap.conn
     sr_ldap.bind()
 
-    u_res = l.search_st( "ou=users,o=sr",
-                         ldap.SCOPE_ONELEVEL,
-                         filterstr = "(objectClass=inetOrgPerson)",
-                         attrlist = ["uid"] )
+    u_res = get_conn().search_st( "ou=users,o=sr",
+                                  ldap.SCOPE_ONELEVEL,
+                                  filterstr = "(objectClass=inetOrgPerson)",
+                                  attrlist = ["uid"] )
     users = [x[1]["uid"][0] for x in u_res]
 
     return users
@@ -28,7 +28,6 @@ class user:
 
     def __init__( self, username ):
         """Initialise the user object"""
-        self.l = sr_ldap.conn
         sr_ldap.bind()
 
         self.changed_props = []
@@ -53,7 +52,7 @@ class user:
             self.in_db = True
 
     def __load( self, username ):
-        info =  self.l.search_st( "ou=users,o=sr",
+        info =  get_conn().search_st( "ou=users,o=sr",
                                   ldap.SCOPE_ONELEVEL,
                                   filterstr="(&(objectClass=inetOrgPerson)(uid=%s))" % (username) )
 
@@ -67,7 +66,7 @@ class user:
 
     def __get_new_uidNumber( self ):
         """Finds the next available UID"""
-        users = self.l.search_st( "ou=users,o=sr",
+        users = get_conn().search_st( "ou=users,o=sr",
                                   ldap.SCOPE_ONELEVEL,
                                   filterstr = "(objectClass=inetOrgPerson)",
                                   attrlist = ["uidNumber"] )
@@ -110,7 +109,7 @@ class user:
         if not self.in_db:
             raise "Cannot delete user - doesn't exist in database"
         else:
-            self.l.delete_s( self.dn )
+            get_conn().delete_s( self.dn )
             self.in_db = False
             return True
 
@@ -120,7 +119,7 @@ class user:
         for prop in self.props:
             modlist.append( (prop, self.props[prop]) )
 
-        self.l.add_s( self.dn, modlist )
+        get_conn().add_s( self.dn, modlist )
 
         self.in_db = True
         self.changed_props = []
@@ -133,7 +132,7 @@ class user:
         for prop in self.changed_props:
             modlist.append( (ldap.MOD_REPLACE, prop, self.props[prop]) )
 
-        self.l.modify_s( self.dn, modlist )
+        get_conn().modify_s( self.dn, modlist )
         self.changed_props = []
         return True
 
@@ -193,7 +192,7 @@ class user:
         
         filter =  "(&(objectClass=posixGroup)(memberUid=%s))" % ( self.username )
 
-        res = self.l.search_st( "ou=groups,o=sr",
+        res = get_conn().search_st( "ou=groups,o=sr",
                                 ldap.SCOPE_ONELEVEL,
                                 filterstr=filter,
                                 attrlist=["cn"] )
@@ -201,6 +200,21 @@ class user:
         groups = [x[1]["cn"][0] for x in res]
 
         return groups
+    
+    def bind(self,p):
+        if self.in_db:
+            sr_ldap.unbind()
+            
+            try:
+                get_conn().bind_s( self.dn, p )
+            except ldap.INVALID_CREDENTIALS, ldap.LDAPError:
+                return False
 
+            return True
+
+    def set_passwd(self,old,new):
+        get_conn().passwd_s( self.dn, old, new )
+        return True
         
         
+    
