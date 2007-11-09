@@ -7,7 +7,8 @@ if conn == None:
     conn = ldap.initialize("ldap://127.0.0.1/")
 
 def default_pass():
-    return ("cn=Manager,o=sr",getpass.getpass())
+    sys.stderr.write("Password:")
+    return ("cn=Manager,o=sr",getpass.getpass(""))
 
 user_callback = default_pass
 
