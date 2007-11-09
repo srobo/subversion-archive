@@ -109,7 +109,7 @@ Usage:
         if not g.in_db:
             print "Group '%s' not found\n" % (args[0])
         else:
-            print g
+            print " ".join(g.members)
 
     def addusers(self, args):
         """Add users to a group
