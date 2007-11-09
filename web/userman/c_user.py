@@ -1,4 +1,6 @@
 import sr, sys
+import getpass
+import mailer
 
 class user:
     """Manage user accounts.
@@ -7,7 +9,10 @@ class user:
      - info - Display user information
      - add - Add a user
      - rm - Remove a user
-     - groups - Display a list of groups a user is in"""
+     - groups - Display a list of groups a user is in
+     - auto - Create, set a random password, and email the new user
+     - passwd - Set the user password
+     """
 
     def __init__(self, args):
         self.commands = { "help" : self.help,
@@ -15,7 +20,10 @@ class user:
                           "add" : self.add,
                           "rm" : self.delete,
                           "list" : self.list,
-                          "groups" : self.groups }
+                          "groups" : self.groups,
+                          "auto" : self.auto,
+                          "passwd" : self.passwd
+                          }
 
         if len(args) < 1:
             self.help([])
@@ -58,7 +66,7 @@ Usage:
             print "User '%s' already exists" % (args[0] )
             return
 
-        u.cname = args[1] + " " + args[2]
+        u.cname = args[1]
         u.sname = args[2]
         u.email = args[3]
 
@@ -105,7 +113,56 @@ Usage:
         else:
             print u
 
-            
+    def auto(self, args):
+        """Automate user creation: ***** INCOMPLETE ****
+  * Create the new user
+  * Set a random password
+  * Email them the new password
+
+Usage:
+	user auto USERNAME FIRST_NAME LAST_NAME EMAIL
+"""
+        if len(args) < 4:
+            print self.auto.__doc__
+            return
+
+        u = sr.users.user( args[0] )
+
+        if u.in_db:
+            print "User '%s' already exists" % (args[0] )
+            return
+
+        u.cname = args[1]
+        u.sname = args[2]
+        u.email = args[3]
+
+        if not u.save():
+            return False
+
+        mailer.email_pass( u, u.init_passwd, getpass.getpass("SMTP Password:") )
+        print "User '%s' created and mailed." % (args[0])
+        
+    def passwd(self,args):
+        """Set the user password.
+Usage:
+	user passwd USERNAME
+        """
+
+        if len(args) < 1:
+            print self.groups.__doc__
+
+        uname = args[0]
+
+        u = sr.users.user( uname )
+
+        if not u.in_db:
+            print "User '%s' not found\n" % (args[0])
+
+        if u.set_passwd( new = getpass.getpass("New password:") ):
+            print "Password set"
+        else:
+            print "Failed to set password"
+
     def groups(self, args):
         """Display a list of the groups a user is in.
 Usage:

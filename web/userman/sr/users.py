@@ -1,6 +1,19 @@
 import ldap, types
 import sr_ldap
+import string
+import random, sha, base64
 from sr_ldap import get_conn
+
+def GenPasswd():
+    chars = string.letters + string.digits
+    newpasswd = ""
+    for i in xrange(8):
+        newpasswd = newpasswd + random.choice(chars)
+    return newpasswd
+
+def encode_pass(p):
+    psha = sha.new(p)
+    return "{SHA}%s" %( base64.b64encode( psha.digest() ) )
 
 def list():
     sr_ldap.bind()
@@ -35,11 +48,14 @@ class user:
         if not self.__load( username ):
             uidNumber = self.__get_new_uidNumber()
 
+            self.init_passwd = GenPasswd()
+
             self.props = { "uid" : username,
                            "objectClass" : ['inetOrgPerson', 'uidObject', 'posixAccount'],
                            "uidNumber" : str(self.__get_new_uidNumber()),
                            "gidNumber" : "1999",
                            "homeDirectory" : "/home/%s" % ( username ),
+                           "userPassword" : encode_pass( self.init_passwd )
                            }
             self.dn = "uid=%s,ou=users,o=sr" % (username)
 
@@ -212,9 +228,21 @@ class user:
 
             return True
 
-    def set_passwd(self,old,new):
-        get_conn().passwd_s( self.dn, old, new )
+    def __mod_passwd(self,p):
+        modlist = [(ldap.MOD_REPLACE, "userPassword", encode_pass( p ) )]
+        get_conn().modify_s( self.dn, modlist )
         return True
+
+    def set_passwd(self,old = None,new = None):
+        if not self.in_db:
+            return False
+
+        if old == None:
+            # Modify operation on the db (don't know old pass)
+            return self.__mod_passwd(new)
+        else:
+            get_conn().passwd_s( self.dn, old, new )
+            return True
         
         
     
