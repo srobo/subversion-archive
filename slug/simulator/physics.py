@@ -243,7 +243,7 @@ class World:
             if geom1.ident == "bumpr" or geom2.ident == "bumpr":
                 if geom2.ident != "floor":
                     World.bumpers["bumpr"] = True
-        except AttributeError:
+        except:
             pass
 
         try:
@@ -259,20 +259,20 @@ class World:
                     self.space.remove(geom)
                 self.tokens.remove(eaten)
                 return
-        except AttributeError:
+        except:
             pass
 
         try:
             if geom1.trans or geom2.trans:
                 return
-        except AttributeError:
+        except:
             pass
         
         try:
             if (geom1.ident == "token" and geom2.ident == "floor") or \
               (geom2.ident == "token" and geom1.ident == "floor"):
                 mu = 1
-        except AttributeError:
+        except:
             pass
 
         contacts = ode.collide(geom1, geom2)
