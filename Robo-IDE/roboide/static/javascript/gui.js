@@ -19,6 +19,9 @@ function polled()
 
     var j = MochiKit.Async.loadJSONDoc("./polldata", poll_data );
     j.addCallback(pollAction);
+    j.addErrback(function (){
+        alert("Error connecting to studentrobotics.org. Please refresh.");
+        });
 }
 
 function pollAction(result)
@@ -100,6 +103,10 @@ MochiKit.DOM.addLoadEvent( function() {
     showtab("", true);
     var d = MochiKit.Async.loadJSONDoc("./fulllog");
     d.addCallback(show_fullog);
+    d.addErrback(function (){
+        alert("Error connecting to studentrobotics.org. Please refresh.");
+        });
+
     //Start polling
     setTimeout( "polled()", POLL_TIME );
 });
@@ -121,6 +128,10 @@ function updatefilelist() {
 */
     var d = MochiKit.Async.loadJSONDoc("./filelist");
     d.addCallback(gotFileList);
+    d.addErrback(function (){
+        alert("Error connecting to studentrobotics.org. Please refresh.");
+        });
+
 }
 
 function gotFileList(nodes){
@@ -304,6 +315,10 @@ function deleteclick() {
         var d = MochiKit.Async.loadJSONDoc("./delete",
                                             {files : files.join(",")})
         d.addCallback(deleteDone);
+        d.addErrback(function (){
+            alert("Error connecting to studentrobotics.org. Please refresh.");
+            });
+
     } else {
         alert("No files selected.");
     }
@@ -344,8 +359,8 @@ function savecurrenttab(){
 
     //See if the code has changed compared to that in the textarea
     if(code != open_files[cur_path].tabdata){
-        d = MochiKit.DOM.getElement("debug");
-        d.innerHTML = diffString(code, open_files[cur_path].tabdata);
+        //d = MochiKit.DOM.getElement("debug");
+        //d.innerHTML = diffString(code, open_files[cur_path].tabdata);
 
         //Marking the tab as dirty makes it prompt to save
         open_files[cur_path].dirty = true;
@@ -540,6 +555,10 @@ function saveFile(e) {
                             "headers" : {'Content-Type' : 
                             'application/x-www-form-urlencoded'}});
         d.addCallback(filesaved);
+        d.addErrback(function (){
+            alert("Error connecting to studentrobotics.org. Please refresh.");
+            });
+
     } else {
         alert("File not changed, not saving.");
     }
@@ -599,6 +618,10 @@ function loadFile(file, revision) {
     var d = MochiKit.Async.loadJSONDoc("./filesrc", {file : file,
                                                      revision : revision});
     d.addCallback(gotFile);
+    d.addErrback(function (){
+        alert("Error connecting to studentrobotics.org. Please refresh.");
+        });
+
 }
 
 function gotFile(result) {
@@ -628,6 +651,10 @@ function getLog(file) {
         return;
     var d = MochiKit.Async.loadJSONDoc("./gethistory?file="+file);
     d.addCallback(gotLog);
+    d.addErrback(function (){
+        alert("Error connecting to studentrobotics.org. Please refresh.");
+        });
+
 }
 
 function returnSelect(data, currev) {
