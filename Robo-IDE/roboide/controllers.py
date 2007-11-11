@@ -43,7 +43,8 @@ class Client:
             """
             This is the standard anonymous login.
             """
-            return ("uid=anon,ou=users,o=sr","9uqdXSF4")
+            password = open("ldapanonpass.txt", "r").read()
+            return ("uid=anon,ou=users,o=sr",password)
         
         sr.set_userinfo(ldap_login)
 
