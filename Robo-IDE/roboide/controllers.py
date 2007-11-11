@@ -1,4 +1,4 @@
-from turbogears import controllers, expose
+from turbogears import controllers, expose, config
 from turbogears.feed import FeedController
 import cherrypy
 import logging
@@ -6,7 +6,7 @@ import pysvn
 import time, datetime
 import re
 import tempfile, shutil
-import os
+import os, sys, os.path
 import zipfile
 import random
 from os.path import join
@@ -43,7 +43,7 @@ class Client:
             """
             This is the standard anonymous login.
             """
-            password = open("ldapanonpass.txt", "r").read()
+            password = config.get("anonpassword")
             return ("uid=anon,ou=users,o=sr",password)
         
         sr.set_userinfo(ldap_login)
