@@ -105,11 +105,7 @@ static gboolean xbee_fd_source_check( GSource *src )
 	xbee_fd_source_t *source = (xbee_fd_source_t*)src; 
 	gushort r = source->pollfd.revents;
 
-	if( r & (G_IO_ERR | G_IO_HUP | G_IO_NVAL) 
-	    && source->error_callback != NULL)
-		source->error_callback( source->userdata );
-	
-	if( r & ( G_IO_IN | G_IO_OUT ) )
+	if( r & ( G_IO_IN | G_IO_OUT | G_IO_ERR | G_IO_HUP | G_IO_NVAL) )
 		/* ready to dispatch */
 		return TRUE;
 
