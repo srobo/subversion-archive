@@ -22,6 +22,17 @@ struct xbee_ts;
 
 typedef struct xbee_ts XbeeModule;	
 
+/* Frame callback type - for when the XBee returns some sort of response */
+/* Arguments:
+   -   xb: The xbee module
+   -   id: The frame id
+   - data: The received data
+   -  len: The length of the received data */
+typedef void (* xb_response_callback_t) ( XbeeModule *xb, 
+					  uint8_t *data, 
+					  uint8_t len,
+					  gpointer userdata );
+
 typedef struct
 {
 	GObjectClass parent;
@@ -108,6 +119,17 @@ struct xbee_ts
 	gboolean tx_escaped;	/* Whether the next byte has been escaped */
 	/* The next byte to be transmitted within the current frame */
 	uint16_t tx_pos;
+
+	/* List of functions to call when a particular frame ID is received */
+	/* Note: Entry 0 in this array isn't used */
+	struct 
+	{
+		xb_response_callback_t callback;
+		gpointer userdata;
+	} response_callbacks[256];
+
+	/* A number used to hopefully accelerate frame ID selection */
+	uint8_t next_frame_id;
 
 	/*** Reception ***/
 	/* Buffer of incoming data */

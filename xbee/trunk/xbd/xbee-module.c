@@ -72,6 +72,26 @@ gboolean xbee_init( XbeeModule* xb );
 
 void xbee_instance_init( GTypeInstance *xb, gpointer g_class );
 
+/* Send an AT command 
+   Args:
+    -   command: Pointer to a 2 character array containing the AT
+                 command string.
+    - parameter: String containing the arguments for the AT command.
+                 Can be NULL (useful for just reading values).
+    -  callback: The callback function to call when the response comes in.
+                 Can be NULL.
+    -  userdata: The userdata to pass to the callback.
+*/
+gboolean xbee_module_at_command( XbeeModule *xb,
+				 gchar *command,
+				 gchar *parameter,
+				 xb_response_callback_t callback,
+				 gpointer userdata );
+
+/* Get the next free frame ID.
+   Returns 0 when none are free. */
+static uint8_t xbee_module_get_next_fid( XbeeModule *xb );
+
 /* Free information related to a module. */
 void xbee_free( XbeeModule* xb );
 
@@ -171,7 +191,7 @@ static gboolean xbee_module_proc_outgoing( XbeeModule* xb )
 			xb->frames_tx ++;
 			xb->tx_pos = xb->o_chk = 0;
 			xb->checked = FALSE;
-/* 			printf( "Frame transmitted\n" ); */
+
 			xbee_module_print_stats( xb );
 		}
 	}
@@ -278,7 +298,7 @@ int xbee_transmit( XbeeModule* xb, xb_addr_t* addr, void* buf, uint8_t len )
 	pos ++;
 
 	/* Frame ID: */
-	frame->data[1] = 1;	/* TODO: Frame ID */
+	frame->data[1] = 0;	/* TODO: Frame ID */
 
 	/* Copy data */
 	g_memmove( pos, buf, len );
@@ -498,6 +518,13 @@ GType xbee_module_get_type( void )
 void xbee_instance_init( GTypeInstance *gti, gpointer g_class )
 {
 	XbeeModule *xb = (XbeeModule*)gti;
+	uint16_t i;
+
+	/* Clear all frame callbacks */
+	for( i=0; i<256; i++ )
+		xb->response_callbacks[i].callback = NULL;
+
+	xb->next_frame_id = 1;
 
 	xb->api_mode = FALSE;
 	xb->at_time.tv_sec = 0;
@@ -581,6 +608,34 @@ gboolean xbee_module_proc_incoming( XbeeModule* xb )
 		case XBEE_FRAME_TX_STAT:
 			printf("Transmit status received.\n");
 			break;
+
+		case XBEE_FRAME_AT_COMMAND_RESP:
+		{
+			/* Response to an AT Command */
+			uint8_t fid;
+
+			/* Format:
+			     0: API code
+			     1: Frame ID
+			   2-3: AT Command Code
+			     4: Status
+			    5-: Requested value	*/
+
+			fid = data[1];
+
+			if( xb->response_callbacks[fid].callback != NULL )
+			{
+				xb->response_callbacks[fid].callback( xb, 
+								      &data[5],
+								      flen - 5,
+								      xb->response_callbacks[fid].userdata );
+				xb->response_callbacks[fid].callback = NULL;
+			}
+			else
+				g_warning( "AT command response received, but no handler is registered" );
+
+			break;
+		}
 
 		default:
 			printf("Unhandled frame received:\n");
@@ -756,4 +811,83 @@ void xbee_module_register_callbacks ( XbeeModule *xb, xbee_module_events_t *call
 	xb->xb_callbacks = *callbacks;
 	xb->userdata = userdata;
 
+}
+
+gboolean xbee_module_at_command( XbeeModule *xb,
+				 gchar *command,
+				 gchar *parameter,
+				 xb_response_callback_t callback,
+				 gpointer userdata )
+{
+	xb_frame_t *frame;
+	uint8_t fid = 0;
+	assert( xb != NULL && command != NULL );
+
+	if( callback != NULL )
+	{
+		fid = xbee_module_get_next_fid( xb );
+		if( fid == 0 )
+		{
+			g_debug( "No free frame IDs" );
+			return FALSE;
+		}
+
+		xb->response_callbacks[fid].callback = callback;
+		xb->response_callbacks[fid].userdata = userdata;
+	}
+
+	frame = g_malloc( sizeof(xb_frame_t) );
+
+	/* Frame structure:
+	   0: API Identifier
+	   1: Frame ID
+	   2-3: AT Command
+	   4-: Parameter string */
+	
+	frame->len = 4;
+	/* Add on the parameter string length */
+	if( parameter != NULL )
+		frame->len += strlen( parameter );
+
+	frame->data = g_malloc( frame->len );
+
+	frame->data[0] = XBEE_FRAME_AT_COMMAND;
+	frame->data[1] = fid;
+	frame->data[2] = command[0];
+	frame->data[3] = command[1];
+
+	if( parameter != NULL )
+		g_memmove( &frame->data[4], parameter, strlen( parameter ) );
+
+	/* Queue the frame for sending */
+	xbee_module_out_queue_add_frame( xb, frame );
+
+	return TRUE;
+}
+
+static uint8_t xbee_module_get_next_fid( XbeeModule *xb )
+{
+	uint16_t i,j;
+	assert( xb != NULL );
+	
+	for( i=0; i<256; i++ )
+	{
+		j = (xb->next_frame_id + i) % 256;
+
+		/* Skip entry 0 */
+		if( j==0 ) continue;
+
+		if( xb->response_callbacks[j].callback == NULL )
+			break;
+	}
+
+	if( i == 256 || j == 0 || xb->response_callbacks[j].callback != NULL )
+		return 0;
+
+	/* Set the next frame ID to be one higher than the current one */
+	xb->next_frame_id = (j+1)%256;
+	if( xb->next_frame_id == 0 )
+		xb->next_frame_id = 1;
+
+	return j;
 }
