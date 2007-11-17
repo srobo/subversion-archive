@@ -88,6 +88,17 @@ gboolean xbee_module_at_command( XbeeModule *xb,
 				 xb_response_callback_t callback,
 				 gpointer userdata );
 
+/*** Functions that send AT commands (when in API mode) ***/
+
+/* Request the serial number of the XBee */
+static gboolean xbee_module_req_snum( XbeeModule *xb );
+
+/* Callback for the XBee serial number responses */
+static void xbee_module_resp_snum( XbeeModule *xb,
+				   uint8_t *data, 
+				   uint8_t len,
+				   gpointer userdata );
+
 /* Get the next free frame ID.
    Returns 0 when none are free. */
 static uint8_t xbee_module_get_next_fid( XbeeModule *xb );
@@ -477,7 +488,9 @@ XbeeModule* xbee_module_open( char* fname, GMainContext *context )
 					 (xbee_fd_callback)xbee_module_io_error,
 					 (xbee_fd_callback)xbee_module_outgoing_queued );
 					 
-//	xbee_module_add_source( xb, context );
+	/* Request the XBee serial number (when the mainloop begins) */
+	if( !xbee_module_req_snum( xb ) )
+		g_warning("Failed to request the module address");
 
 	return xb;
 }
@@ -550,6 +563,10 @@ void xbee_instance_init( GTypeInstance *gti, gpointer g_class )
 	xb->o_chk = xb->tx_pos = 0;
 	xb->checked = FALSE;
 	xb->tx_escaped = FALSE;
+
+	/* The serial number hasn't yet been received */
+	xb->snum_h_received = FALSE;
+	xb->snum_l_received = FALSE;
 }
 
 gboolean xbee_module_proc_incoming( XbeeModule* xb )
@@ -890,4 +907,58 @@ static uint8_t xbee_module_get_next_fid( XbeeModule *xb )
 		xb->next_frame_id = 1;
 
 	return j;
+}
+
+static gboolean xbee_module_req_snum( XbeeModule *xb )
+{
+	assert( xb != NULL );
+
+	/* SL and SH are the "serial low" and "serial high" commands respectively */
+	if( !xbee_module_at_command( xb, 
+				     "SL", NULL, 
+				     xbee_module_resp_snum, GINT_TO_POINTER(0) ) )
+		return FALSE;
+
+	return xbee_module_at_command( xb, 
+				       "SH", NULL, 
+				       xbee_module_resp_snum, GINT_TO_POINTER(1) );
+}
+
+static void xbee_module_resp_snum( XbeeModule *xb,
+				   uint8_t *data, 
+				   uint8_t len,
+				   gpointer userdata )
+{
+	gint r = GPOINTER_TO_INT( userdata );
+	assert( xb != NULL && len == 4 && ( r == 0 || r == 1 ) );
+
+	if( r == 0 )
+	{
+		/* Low section */
+		g_memmove( &xb->snum[4], data, 4 );
+
+		xb->snum_l_received = TRUE;
+	}
+	else
+	{
+		/* High section */
+		g_memmove( &xb->snum[0], data, 4 );
+
+		xb->snum_h_received = TRUE;
+	}
+
+	if( xb->snum_l_received && xb->snum_h_received )
+	{
+		gchar *addr_str;
+
+		if( asprintf( &addr_str,
+			      "%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X",
+			      xb->snum[0], xb->snum[1],
+			      xb->snum[2], xb->snum[3],
+			      xb->snum[4], xb->snum[5],
+			      xb->snum[6], xb->snum[7] ) < 0 )
+			g_error( "Arg - asprintf failed!" );
+
+		g_debug("Local address: %s", addr_str);
+	}
 }

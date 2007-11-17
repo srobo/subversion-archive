@@ -151,6 +151,13 @@ struct xbee_ts
 	uint32_t bytes_rx, bytes_tx;   
 	uint32_t frames_rx, frames_tx;  /* Valid checksum frames received */
 
+	/*** XBee Properties ***/
+
+	/* The serial number */
+	uint8_t snum[8];
+	/* Whether the serial number has been received (high and low sections) */
+	gboolean snum_h_received, snum_l_received;
+
 };
 
 
