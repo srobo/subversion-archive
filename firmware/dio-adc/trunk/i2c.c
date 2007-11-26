@@ -19,21 +19,50 @@
 #include "i2c.h"
 
 
-static uint8_t cmd;
-static uint8_t pos = 0;
-static uint8_t buf[10];
 
+#define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x0201
 #define FIRMWARE_REV 0x0304
+
 static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
 					MODULE_IDENTITY & 0xFF, 
 					(FIRMWARE_REV >> 8) & 0xFF,
 					FIRMWARE_REV & 0xFF };
+					
+static uint8_t pos = 0;
+static uint8_t buf[I2C_BUF_LEN];
+static uint8_t checksum;
+
+typedef struct
+{
+	/* The receive size - 0 if receive not supported*/
+	uint8_t rx_size;
+
+	/* Receive function - processes buf data */
+	void (*rx) ( uint8_t* buf );
+
+	/* Transmit function - fills buf with data.
+	   Returns length of the data. */
+	uint8_t (*tx) ( uint8_t* buf );
+} i2c_cmd_t;
+
+
 /* Just received a byte */
 void byte_rx( uint8_t pos, uint8_t b );
 
 /* Need to send a byte */
 uint8_t byte_tx( uint8_t pos );
+
+const i2c_cmd_t cmds[] = 
+{
+	{ 0, NULL, i2cr_identity },
+	{ 2, NULL }
+};
+
+/* The current command */
+static const i2c_cmd_t *cmd = NULL;
+/* Whether we just got a start bit */
+static bool at_start = FALSE;
 
 interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 {
@@ -41,14 +70,67 @@ interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 	{
 		uint8_t tmp = UCB0RXBUF;
 
-		byte_rx( pos, tmp );
-		pos++;
+		/* Command? */
+		if( at_start )
+		{
+			if( tmp < sizeof(cmds) )
+				cmd = &cmds[tmp];
+			else
+				cmd = NULL;
+
+			checksum = crc8( I2C_ADDRESS << 1 );
+			checksum = crc8( checksum ^ tmp );
+
+			at_start = FALSE;
+		}
+		else if( cmd != NULL && cmd->rx != NULL )
+		{
+			if( pos < cmd->rx_size )
+			{
+				buf[pos] = tmp;
+				checksum = crc8( checksum ^ tmp );
+			}
+			
+			pos++;
+			
+			if( pos == cmd->rx_size + (USE_CHECKSUMS?1:0) )
+			{
+				if( !USE_CHECKSUMS || checksum == tmp )
+					cmd->rx( buf );
+			}
+		}
 	}
 
 	if( IFG2 & UCB0TXIFG )
 	{
-		UCB0TXBUF = byte_tx(pos);
-		pos++;
+		static uint8_t size = 0;
+		uint8_t tmp = 0;
+
+		if( cmd != NULL && cmd->tx != NULL )
+		{
+			if( pos == 0 ) 
+			{
+				size = cmd->tx( buf );
+				checksum = crc8( checksum ^ ((I2C_ADDRESS << 1)|1) );
+			}
+	
+			if( pos < size )
+				tmp = buf[ pos ];
+
+			if( USE_CHECKSUMS )
+			{
+				if( pos == size )
+					tmp = checksum;
+				else
+					checksum = crc8( checksum ^ tmp );
+			}
+
+			/* Random high number to avoid overflow situations */
+			if( pos < 128 )
+				pos++;
+		}
+		
+		UCB0TXBUF = tmp;
 	}
 
 }
@@ -61,6 +143,7 @@ interrupt (USCIAB0RX_VECTOR) usci_rx_isr( void )
 	{
 		/* Reset to beginning of register */
 		pos = 0;
+		at_start = TRUE;
 		FLAG();
 
 		/* Clear the flag */
