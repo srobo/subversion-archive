@@ -17,11 +17,10 @@
 #include "i2c.h"
 #include "init.h"
 #include <msp430/adc10.h>
+#include "adc.h"
 
 static int i = 0;
 
-void adc_init(void);
-void adc_sample(void); 
 
 void UNEXPECTED()
 {
