@@ -19,9 +19,14 @@
 #include <msp430/adc10.h>
 #include <signal.h>
 
+#define BLOCK_SIZE 8
+
+
+int block[BLOCK_SIZE];		//8 bit buffer for DTC block
+
 void adc_init(void){
 
-	int block[8];		//8 bit buffer for DTC block
+
 
 			//Setup ADC10CTL0 register 
 	ADC10CTL0 = SREF_AVCC_AVSS ;	//use vcc/vss as references
@@ -48,39 +53,14 @@ void adc_init(void){
 	
 	ADC10DTC1 = 0x0F;		//8 transfers per block, (1 transfer per input)
 	
-	ADC10SA = &block;		//start address of block 
+	ADC10SA = (int) &block;		//start address of block 
 }
 
-void adc_sample(void){
-	int adresult[8];
-	int adcx = 0;
-	
-	for(adcx=0; adcx<8; adcx++){			//fill array with zeroes
-		adresult[adcx] = 0;
-	}
-	
-	adcx = 0;
-	
-	while(1){
-		for(adcx=0; adcx<8; adcx++){
-			ADC10CTL0 &= ~ENC;		//ENC = 0, ADC disabled
-			ADC10CTL1 &= ~0xF000;		//clear before setting
-			ADC10CTL1 |= (adcx<<12);	//change input pin being sampled
-			ADC10CTL0 |= ENC;		//ENC = 1, ADC enabled
-			ADC10CTL0  |= ADC10SC;		//Start conversion
-			
-			while (ADC10CTL1 & ADC10BUSY)	//do nothing until conversion has finished
-			{
-			}
-							
-			adresult[adcx] = ADC10MEM;	//store analogue value in array
-			
-		}
-	}
+int *  adc_sample(void){			
+	return &block[0];			//returns pointer to the first conversion in the buffer
 }
 
 interrupt (ADC10_VECTOR) intr_adc( void ){
 	
-	//To be completed soon
-	
 }
+
