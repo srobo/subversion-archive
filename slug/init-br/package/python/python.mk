@@ -88,7 +88,7 @@ $(STAGING_DIR)/usr/include/python-2.4/Python.h: $(TARGET_DIR)/$(PYTHON_TARGET_BI
 
 #Install the python library
 $(STAGING_DIR)/usr/lib/libpython2.4.so: $(PYTHON_DIR)/$(PYTHON_BINARY)
-	mkdir -p $(STAGING_IR)/usr/lib
+	mkdir -p $(STAGING_DIR)/usr/lib
 	cp $(PYTHON_DIR)/libpython2.4* $(STAGING_DIR)/usr/lib
 
 python: uclibc $(TARGET_DIR)/$(PYTHON_TARGET_BINARY) $(STAGING_DIR)/usr/include/python-2.4/Python.h $(STAGING_DIR)/usr/lib/libpython2.4.so
