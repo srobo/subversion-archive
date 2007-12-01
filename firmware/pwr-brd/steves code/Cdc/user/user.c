@@ -49,12 +49,12 @@
 
 #define DecodeHexChar(n) (n < 65 ? n-48 : n-55)
 
-unsigned char just_data[32];
+//unsigned char just_data[32];
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
-void InitializeUSART(void);
-unsigned char DecodeHex(unsigned char *buffer);
-void MakeHex(unsigned char *buffer, unsigned char data);
+//void InitializeUSART(void);
+//unsigned char DecodeHex(unsigned char *buffer);
+//void MakeHex(unsigned char *buffer, unsigned char data);
 
 /** D E C L A R A T I O N S **************************************************/
 
@@ -162,12 +162,8 @@ void InitializeUSART(void)
  *
  * Note:            None
  *****************************************************************************/
-#pragma udata buffer_section_a
-unsigned char bufa[254];
-#pragma udata buffer_section_b
-unsigned char bufb[254];
-#pragma udata
 
+/*
 void ProcessIO(void)
 {
 	static unsigned char a = 0;
@@ -226,3 +222,4 @@ void ProcessIO(void)
 	
 	PORTB = ~(a | (b << 1));
 }
+*/

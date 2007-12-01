@@ -2,7 +2,7 @@
 #define USART
 #pragma udata usart_section
 #define USART_IN_BUFFER_SIZE 6
-#define USART_SEND_BUFFER_SIZE 58
+#define USART_SEND_BUFFER_SIZE 32
 
 void manage_usart( void );
 

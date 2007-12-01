@@ -42,7 +42,7 @@
 #ifdef USB_USE_CDC
 
 /** V A R I A B L E S ********************************************************/
-#pragma udata
+#pragma udata 
 byte cdc_rx_len;            // total rx length
 
 byte cdc_trf_state;         // States are defined cdc.h

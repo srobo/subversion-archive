@@ -41,7 +41,7 @@
 #include "io_cfg.h"                                 // Required
 
 #include "system\usb\usb_compile_time_validation.h" // Optional
-#include "user\user.h"                              // Modifiable
+//#include "user\user.h"                              // Modifiable
 
 #include <i2c.h>
 #include <usart.h>
@@ -49,24 +49,93 @@
 #include <stdlib.h>
 #include <adc.h>
 
-/** V A R I A B L E S ********************************************************/
-#pragma udata
-
-#define u8 unsigned char
-#define u16 unsigned int
+#define i2c_debug if (0)
 
 #define GOOD 0
 #define BAD 1
+#define u8 unsigned char
+#define u16 unsigned int
 
-long int startupdel;
-int bcount;
+
+
+
+/** V A R I A B L E S ********************************************************/
+
+#pragma udata
 int alive;
+long int startupdel;
+
+
+
+u8 data[32]; // size according to smbus spec 
+#pragma udata
+
+
+int bcount;
+
+int voltage = 0x5555;// local variables holding results of adc
+int current = 0xAAAA;
+
+unsigned long sectadd=0xabcdef12;
+unsigned char usbflag=0x00; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
+unsigned char i2cstatus = BAD;
+
+
+typedef struct {
+    u8 bytestoreadin;
+    u8 bytestoreadout;
+    void (*docmd)(u8 *data);
+} t_command;
+
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
 static void InitializeSystem(void);
 void USBTasks(void);
-
 void delay(int time);
+void prdbg(char sentinel, char data);
+
+void i2cservice(void);
+u8 crc8(u8 tmpdata);
+
+
+
+void identify(u8 *data);
+void setled(u8 *data);
+void checkusb(u8 *data);
+void getv(u8 *data);
+void geti(u8 *data);
+void getdip(u8 *data);
+void setrails(u8 *data);
+void getrails(u8 *data);
+void sendser(u8 *data);
+void getusbbuf(u8 *data);
+void setusbbuf(u8 *data);
+void getsectorlo(u8 *data);
+void getsectorhi(u8 *data);
+void datagood(u8 *data);
+
+
+
+//#pragma romdata // this seems to do squat all!
+//						{bytes in, bytesout, function name}
+ t_command commands[] = {{0, 1,identify}, //0
+                        {1, 0,setled},
+                        {0, 1,checkusb},//2
+                        {0, 2,getv},
+                        {0, 2,geti},//4
+                        {0, 1,getdip},
+                        {1, 0,setrails},//6
+	                    {0, 1,getrails},
+		                {0,32,getusbbuf},//8
+			            {32,0,setusbbuf},
+		                {1,0,sendser},//10
+			            {0,2,getsectorlo},
+				        {0,2,getsectorhi},//12
+					    {32,0,setusbbuf},//old not really needed kept for 
+						{1, 0,datagood}};//14
+
+#pragma udata
+
 
 /** V E C T O R  R E M A P P I N G *******************************************/
 
@@ -118,14 +187,9 @@ void main(void)
 		    PORTD^=0b10000000;
 		}
 		
-		
-	    if(mUSBUSARTIsTxTrfReady())
-		    {
-			    mUSBUSARTTxRam( &spoof, 1);
-			}
-		
 		if(PORTAbits.RA4) USBTasks();         // USB Tasks
-        
+	    if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);
+        i2cservice();
         //ProcessIO();        // See user\user.c & .h
     }//end while
 }//end main
@@ -307,6 +371,252 @@ void USBTasks(void)
 
 }// end USBTasks
 
+
+void i2cservice(void)
+{
+    static enum states {
+        WAIT,
+            GOTADDRESSREAD,
+            GOTADDRESSWRITE,
+            GOTCOMMAND,
+            GOTDATA,
+            SENTCHECKSUM
+    } state = WAIT;
+
+    static u8 adddump;
+    static u8 command;
+   
+    static u8 datacount;
+    static u8 datapos;
+    static u8 checksum;
+    int i;
+    
+
+    u8 tmpdata;
+
+    if (PIR1bits.SSPIF){
+	    
+	    if(SSPCON1bits.SSPOV) // check for buffer overflow and goto to wait
+	    {
+		    mputcharUSART('.'); 
+		    tmpdata = SSPBUF;
+		    SSPCON1bits.SSPOV = 0;
+		    state = WAIT;
+		    return;
+		}
+		    
+		    
+	   
+	    
+	    //mputcharUSART('X');
+        if(!SSPSTATbits.D_A) //It's an address byte
+        {
+	        i2c_debug mputcharUSART('A');
+            i2cstatus = BAD; //This is to check abandoned machines later
+            adddump = SSPBUF;
+             i2c_debug prdbg('>', adddump);
+        	PIR1bits.SSPIF = 0;
+            if (!SSPSTATbits.R_W) //About to receive something from the slug
+            {
+	            mputcharUSART('N');
+	            datacount = 0;
+	            state = GOTADDRESSREAD;
+	            checksum = crc8(adddump);
+	            datapos = 0;
+	            //mputcharUSART('R');
+            }
+            else //Being asked to send stuff to the slug
+           	{
+	           	mputcharUSART('C');
+	           	datacount = commands[command].bytestoreadout;
+	           	checksum = crc8(checksum^(adddump));
+	           	
+	           	//Clock stretching is currently in effect
+	           	//Can have a bit of time to generate data, so do it now
+	           	commands[command].docmd(data); //Data filled up ready to send to slug (Maybe)
+	           	
+	           	state = GOTADDRESSWRITE;
+	        	
+	       		//mputcharUSART('W');
+	       		SSPBUF = data[0];
+	       		i2c_debug prdbg('[', data[0]);
+	            SSPCON1bits.CKP = 1; //Disable the clock stretching
+	            checksum = crc8(checksum^data[0]);
+	            datapos = 1;
+	      	}
+        } else {
+            switch(state){
+                case GOTADDRESSREAD: //Just received a command
+                    command = SSPBUF;
+        			PIR1bits.SSPIF = 0;
+                    //command = tmpdata;
+                    mputcharUSART('D');
+                    prdbg('=', command);
+                    checksum = crc8(checksum^command);
+                    datacount = commands[command].bytestoreadin;
+
+                    if(datacount == 0){ //Special case of pure commands (getdips etc)
+	                    //Will call the function to generate data whilst the clock stretch
+	                    //is in effect
+	                    mputcharUSART('E');
+                        state = WAIT;
+                        //break;
+                    }else
+                    state=GOTCOMMAND;
+                
+                    break;
+
+                case GOTCOMMAND:              
+                    //Read in the data   
+                    //mputcharUSART('F');    
+                    tmpdata = SSPBUF;
+                     i2c_debug prdbg('<', tmpdata);
+        			PIR1bits.SSPIF = 0;
+                    data[datapos] = tmpdata; // start entering data at start of array
+                    checksum = crc8(checksum^data[datapos]);
+                    datapos++;
+                    if(datapos == datacount)
+                        state = GOTDATA;
+                    break;
+
+                case GOTDATA:
+                	mputcharUSART('G');
+                	tmpdata = SSPBUF;
+                	i2c_debug prdbg('?', tmpdata);
+        			PIR1bits.SSPIF = 0;
+                    //if (tmpdata == checksum) 
+                    if (1) // temporary fix so no checksumm for testing
+	                {
+                        commands[command].docmd(data);
+                        i2cstatus = GOOD; 
+                    }
+                    else i2cstatus = BAD;
+                    state = WAIT;
+                    break;
+             	case GOTADDRESSWRITE:
+             		mputcharUSART('H');
+
+        			PIR1bits.SSPIF = 0;
+             		if (datapos<datacount)
+             		{
+	             		mputcharUSART('P');
+	             		//mputcharUSART('a'+datapos);
+	             		//mputcharUSART('A' + data[datapos]);
+	             		SSPBUF = data[datapos];
+	             		i2c_debug prdbg(']', data[datapos]);
+	             		SSPCON1bits.CKP = 1;
+	             		checksum = crc8(checksum^data[datapos]);
+	             		datapos++;
+	             	}
+	             	else
+	             	{
+		             	mputcharUSART('I');
+
+		             	SSPBUF = checksum;
+		             	i2c_debug prdbg('*', checksum);
+		             	SSPCON1bits.CKP = 1;
+		             	state = SENTCHECKSUM;
+		         	}
+             		break;
+             	case SENTCHECKSUM:
+             		mputcharUSART('J');
+             		i2cstatus = GOOD;
+             		PIR1bits.SSPIF = 0;
+             		break;
+             	default:
+             		tmpdata = SSPBUF;
+             	i2c_debug 	prdbg('!', tmpdata);
+		            
+             		
+            }
+            
+            //mputcharUSART('O');
+        }
+    }
+    return;
+}
+
+
+
+void identify(u8 *data){
+	data[0]='I'; // maby read from EE later?
+	return;
+	}	
+void setled(u8 *data){
+    //PORTD = (*data << 4)&0xf0;
+    PORTD = PORTD |( 0x70&((*data << 4)&0xf0));
+    return;
+}
+
+void checkusb(u8 *data){
+	data[0]=usbflag;
+	mputcharUSART('Q');
+	//read bit = <6> i2c -> usb
+	//write bit  = <7> usb ->i
+	// 5 lsb position within sector
+	
+	return;
+	}
+void getv(u8 *data){
+	data[0]= (u8)(voltage&0x00FF);
+	data[1]= (u8)((voltage&0xFF00)>>8);
+	return;
+	}
+void geti(u8 *data){
+	data[0]= (u8)(current&0x00FF);
+	data[1]= (u8)((current&0xFF00)>>8);
+	return;
+	}
+void getdip(u8 *data){
+	data[0]=PORTD&0x0F;
+	return;
+	}
+	
+void setrails(u8 *data){
+	PORTE= data[0]&0x07;
+	PORTB= (PORTB&(~0x18))|((data[0]>>1)&0x18);
+	return;
+	}
+void getrails(u8 *data){
+	data[0]= (PORTE&0x07)|((PORTB&0x18)<<1);
+	return;
+	}
+void getusbbuf(u8 *data)
+{
+}
+void setusbbuf(u8 *data)
+{
+}		
+
+void sendser(u8 *data){
+	//char strcount =0; // send string to ring buffer untill null.
+	//while(data[strcount]!= 0 ) mputcharUSART(data[(strcount++)]); 
+	//mputcharUSART(data[1]);
+	mputcharUSART(data[0]);
+	
+	return;
+	}
+	
+void getsectorlo(u8 *data)
+{
+	data[1]=(u8)((sectadd>>8)&0xff);
+	data[0]=(u8)(sectadd&0xFF);
+	mputcharUSART('F');
+}
+void getsectorhi(u8 *data)
+{
+	data[1]=(u8)((sectadd>>24)&0xff);
+	data[0]=(u8)((sectadd>>16)&0xFF);
+}
+
+void datagood(u8 *data)
+{
+		usbflag=0;
+}
+
+
+
+
 void delay(int time)
 {
     int sponge =0;
@@ -319,6 +629,65 @@ void delay(int time)
     }
 
 }
+
+void prdbg(char sentinel, char data)
+{
+	char i=0,	b[4];
+	mputcharUSART(sentinel);
+	btoa(data,b);
+    while(b[i]!= 0 ) mputcharUSART(b[(i++)]); 
+}
+
+
+#define POLY    (0x1070U << 3)
+
+u8 crc8(u8 tempdata){
+    int i;
+    int data;
+    data = (u16)tempdata<<8;
+    for(i = 0; i < 8; i++) {
+        if (data & 0x8000)
+            data = data ^ POLY;
+        data = data << 1;
+    }
+    return (u8)(data >> 8);
+}
+
+
+void adcserv(void)
+{
+	if (!BusyADC())
+	{
+		// currently this totallyt rodgers the msd code, dunno why!
+		
+		PORTD=~PORTD;
+	
+		if(!ADCON0bits.CHS0)
+		{
+			
+			voltage = ReadADC();
+			SetChanADC(ADC_CH1);
+			ConvertADC();
+			
+		}
+		else
+		{
+			current = ReadADC();
+			SetChanADC(ADC_CH0);
+			ConvertADC();
+		}
+		
+		
+		
+	}
+        
+       
+    return;
+        //itoa(ReadADC(),&outstr);
+        //strcount =0;
+        //while(outstr[strcount]!= 0 ) mputcharUSART(outstr[(strcount++)]);   
+}
+
 
 
 
