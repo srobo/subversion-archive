@@ -35,20 +35,20 @@ $(OPENCV_DIR)/.configured: $(OPENCV_DIR)/.source
 		--with-v4l --without-python --without-quicktime --with-swig --without-libpng --without-gtk --disable-apps -C $(OPENCV_DIR)/config.cache );
 	touch $@
 
-$(OPENCV_DIR)/cv/src/.libs/libcv.so.1.0.0: $(OPENCV_DIR)/.configured
+$(OPENCV_DIR)/cv/src/.libs/libcv.so.2.0.0: $(OPENCV_DIR)/.configured
 	$(MAKE) CFLAGS="$(TARGET_CFLAGS)" CC=$(TARGET_CC) -C $(OPENCV_DIR) 
 
-$(STAGING_DIR)/usr/local/lib/libcv.so.1.0.0: $(OPENCV_DIR)/cv/src/.libs/libcv.so.1.0.0
+$(STAGING_DIR)/usr/local/lib/libcv.so.2.0.0: $(OPENCV_DIR)/cv/src/.libs/libcv.so.2.0.0
 	$(MAKE) DESTDIR=$(STAGING_DIR) -C $(OPENCV_DIR) install
 
-$(TARGET_DIR)/usr/local/lib/libcv.so.1.0.0: $(STAGING_DIR)/usr/local/lib/libcv.so.1.0.0
+$(TARGET_DIR)/usr/local/lib/libcv.so.2.0.0: $(STAGING_DIR)/usr/local/lib/libcv.so.2.0.0
 	mkdir -p $(TARGET_DIR)/usr/local/lib
 	cp $(STAGING_DIR)/usr/local/lib/libcv* $(TARGET_DIR)/usr/local/lib
 	cp $(STAGING_DIR)/usr/local/lib/libcx* $(TARGET_DIR)/usr/local/lib
 	cp $(STAGING_DIR)/usr/local/lib/libml* $(TARGET_DIR)/usr/local/lib
 	cp $(STAGING_DIR)/usr/local/lib/libhighgui* $(TARGET_DIR)/usr/local/lib
 
-opencv: libpng jpeg $(TARGET_DIR)/usr/local/lib/libcv.so.1.0.0
+opencv: libpng jpeg $(TARGET_DIR)/usr/local/lib/libcv.so.2.0.0
 
 ifeq ($(strip $(BR2_PACKAGE_OPENCV)),y)
 TARGETS+=opencv
