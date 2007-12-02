@@ -1,0 +1,7 @@
+config BR2_PACKAGE_LIBXB
+	bool "libxb"
+	default n
+	select BR2_PACKAGE_GLIB
+	help
+		Builds libxb, a library for interacting with Maxstream 
+		XBee modules.
