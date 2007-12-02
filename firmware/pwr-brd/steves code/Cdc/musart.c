@@ -41,6 +41,8 @@ void manage_usart(){
 	    		usart_send_tail = 0;
 	    }
     
+/* tom hacked out sothat rx now handled by saftey routine    
+    
     //If there is a byte to receive, grab it and put it into the buffer
     //If the head of the buffer is one before the tail then
     //dump the byte
@@ -55,6 +57,9 @@ void manage_usart(){
     		if(usart_in_head == USART_IN_BUFFER_SIZE)
     			usart_in_head = 0;
     	}
+
+*/
+
 }
 
 void flush_usart_send(){

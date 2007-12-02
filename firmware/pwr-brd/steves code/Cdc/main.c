@@ -57,6 +57,13 @@
 #define u8 unsigned char
 #define u16 unsigned int
 
+//saftey system constants
+#define HOWSAFE 18 // zero indexed
+
+// values for range within which to ignoor data - source address,rss and optoins seciotn
+#define STARTIG 2
+#define STOPIG 14
+
 
 
 
@@ -70,6 +77,9 @@ long int startupdel;
 
 u8 data[32]; // size according to smbus spec 
 #pragma udata
+
+
+u8 temp[HOWSAFE+1];
 
 
 int bcount;
@@ -97,6 +107,7 @@ void prdbg(char sentinel, char data);
 
 void i2cservice(void);
 u8 crc8(u8 tmpdata);
+void usartrxservice(void);
 
 void low_isr(void);
 void high_isr(void);
@@ -140,6 +151,27 @@ void datagood(u8 *data);
 
 #pragma udata
 
+/* 
+v = [ 0x7E, 0, 15,
+      0x80,                     # API identifier
+      0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07, # Source address
+      0x54,                                    # RSSI
+      0,                                       # Options
+      0x01,0x02,0x03,0x04,0xAA ]
+
+*/
+
+
+
+#pragma romdata
+unsigned char safe[HOWSAFE+1]={
+	  0x7E, 0, 15,
+      0x80,                     				// API identifier
+      0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07, //# Source address
+      0x54,                                    //# RSSI
+      0,                                       //# Options
+      0x01,0x02,0x03,0x04,0xAA};
+#pragma udata 
 
 /** V E C T O R  R E M A P P I N G *******************************************/
 
@@ -186,7 +218,7 @@ _asm GOTO low_isr _endasm
 #pragma interruptlow low_isr
 void low_isr (void)
 {
-	PORTD|=0b01000000;
+//	PORTD|=0b01000000;
 	//INTCONbits.TMR0IF=0;
 }
 
@@ -210,7 +242,7 @@ _asm GOTO high_isr _endasm
 #pragma interrupt high_isr
 void high_isr (void)
 {
-	PORTD^=0b00110000;
+	PORTD^=0b00010000;
 	INTCONbits.TMR0IF=0;
 }
 
@@ -223,14 +255,13 @@ void high_isr (void)
 void main(void)
 {
 	unsigned char spoof ='A';
-	
-	//ADCON1 |= 0x0F;
-	//TRISD==0x0F;
-	//PORTD==0b0100000;
-    //while(1);
+
+
 	
     InitializeSystem();
     
+    
+    //baud rate generator
     
     while(1)
     {
@@ -246,9 +277,43 @@ void main(void)
 		if(PORTAbits.RA4) USBTasks();         // USB Tasks
 	    if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);
         i2cservice();
+        usartrxservice();
         //ProcessIO();        // See user\user.c & .h
     }//end while
 }//end main
+
+
+
+
+void usartrxservice(void)
+{
+static u8 current=0;
+
+u8 rxbuf;
+    
+    if(PIR1bits.RCIF)
+    {
+	    PORTD^=0b00100000;// debug lights
+	    
+	    //buffer value so can use
+	    rxbuf=RCREG;
+	    temp[current]=rxbuf;
+	    current++;
+	    if(rxbuf==0x7e)//is it a sentinel if so resart
+	    	current=0;
+	    // is value within the areas we car about, if so, is it the same as the buffer
+	    else if((STARTIG<current<STOPIG)||(safe[current]==rxbuf))
+		{
+			    if (current==HOWSAFE) current=TMR0L=TMR0H=0; // we have got the the end of the buffer so restart he timer
+			} 
+		else current=0;//byte was wrong
+	}
+    
+    
+}
+
+
+
 
 /******************************************************************************
  * Function:        static void InitializeSystem(void)
@@ -324,7 +389,8 @@ static void InitializeSystem(void)
             USART_EIGHT_BIT &
             USART_CONT_RX & 
             USART_BRGH_HIGH, // checked, this does mean bit brgh bit set
-            152);  // this is 19200
+            25);
+            //152);  // this is 19200
 
 
     //-------ADC setup ---------------------------	
@@ -421,36 +487,6 @@ static void InitializeSystem(void)
 
 }//end InitializeSystem
 
-
-/******************************************************************************
- * Function:        void USBTasks(void)
- *
- * PreCondition:    InitializeSystem has been called.
- *
- * Input:           None
- *
- * Output:          None
- *
- * Side Effects:    None
- *
- * Overview:        Service loop for USB tasks.
- *
- * Note:            None
- *****************************************************************************/
-void USBTasks(void)
-{
-    /*
-     * Servicing Hardware
-     */
-    USBCheckBusStatus();                    // Must use polling method
-    if(UCFGbits.UTEYE!=1)
-        USBDriverService();                 // Interrupt or polling method
-    
-    #if defined(USB_USE_CDC)
-    CDCTxService();
-    #endif
-
-}// end USBTasks
 
 
 void i2cservice(void)
@@ -695,6 +731,41 @@ void datagood(u8 *data)
 {
 		usbflag=0;
 }
+
+
+
+
+/******************************************************************************
+ * Function:        void USBTasks(void)
+ *
+ * PreCondition:    InitializeSystem has been called.
+ *
+ * Input:           None
+ *
+ * Output:          None
+ *
+ * Side Effects:    None
+ *
+ * Overview:        Service loop for USB tasks.
+ *
+ * Note:            None
+ *****************************************************************************/
+void USBTasks(void)
+{
+    /*
+     * Servicing Hardware
+     */
+    USBCheckBusStatus();                    // Must use polling method
+    if(UCFGbits.UTEYE!=1)
+        USBDriverService();                 // Interrupt or polling method
+    
+    #if defined(USB_USE_CDC)
+    CDCTxService();
+    #endif
+
+}// end USBTasks
+
+
 
 
 

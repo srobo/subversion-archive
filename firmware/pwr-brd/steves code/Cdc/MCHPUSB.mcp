@@ -40,6 +40,7 @@ file_019=no
 file_020=no
 file_021=no
 file_022=no
+file_023=no
 [FILE_INFO]
 file_000=main.c
 file_001=system\usb\usbmmap.c
@@ -63,7 +64,8 @@ file_018=C:\MCC18\h\i2c.h
 file_019=C:\MCC18\h\timers.h
 file_020=C:\MCC18\h\p18cxxx.h
 file_021=C:\MCC18\h\p18f4550.h
-file_022=rm18f4550.lkr
+file_022=musart.h
+file_023=rm18f4550.lkr
 [SUITE_INFO]
 suite_guid={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
 suite_state=
