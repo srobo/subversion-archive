@@ -53,7 +53,7 @@ int main( int argc, char** argv )
 		return 2;
 	}
 
-     if( ioctl( fd, I2C_PEC, 0) < 0) 
+     if( ioctl( fd, I2C_PEC, 1) < 0) 
      { 
          fprintf( stderr, "Failed to enable PEC\n"); 
          return 3; 
