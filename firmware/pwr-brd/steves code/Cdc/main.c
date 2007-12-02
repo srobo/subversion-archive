@@ -243,6 +243,7 @@ _asm GOTO high_isr _endasm
 void high_isr (void)
 {
 	PORTD^=0b00010000;
+	PORTE&=0b11111110;
 	INTCONbits.TMR0IF=0;
 }
 
@@ -302,7 +303,7 @@ u8 rxbuf;
 		    if(rxbuf==0x7e)//is it a sentinel if so resart
 		    	place=1;
 		    // is value within the areas we car about, if so, is it the same as the buffer
-		    else if((safe[place]==rxbuf))//(STARTIG<place<STOPIG)||
+		    else if(((place>STARTIG)&&(place<STOPIG))||(safe[place]==rxbuf))//
 			{
 				    if (place==HOWSAFE-1) 
 				    {
