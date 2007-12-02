@@ -48,6 +48,8 @@
 #include "musart.h"
 #include <stdlib.h>
 #include <adc.h>
+#include <timers.h>
+//#include "ecssr-i2c.h"
 
 #define i2c_debug if (0)
 
@@ -178,7 +180,13 @@ void main(void)
     
     while(1)
     {
-		    PORTD|=0b01000000;
+        i2cservice();
+        manage_usart(); // steves ring management
+        //serservice();	    
+
+
+		if(PORTAbits.RA4) USBTasks();         // USB Tasks
+	    if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);	    
 	    
 	    if (alive++==8000)
 	    {
@@ -187,12 +195,51 @@ void main(void)
 		    PORTD^=0b10000000;
 		}
 		
-		if(PORTAbits.RA4) USBTasks();         // USB Tasks
-	    if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);
-        i2cservice();
-        //ProcessIO();        // See user\user.c & .h
+
+        
+        
+
+        
+        
     }//end while
 }//end main
+
+
+#pragma interrupt isr
+void isr()
+{
+	
+	//PORTD=0b00010000;
+	//if(INTCONbits.TMR0IF)
+	//{
+		//WriteTimer0(0);
+		//PORTD=0b00100000;
+	//}
+	
+	//INTCONbits.TMR0IF=0;
+	//INTCON=0b10100000;
+	
+	///return;
+}
+#pragma code
+
+
+#pragma interruptlow isrlow
+void isrlow()
+{
+	PORTD=0b00100000;
+	//PORTD=0b00100000;
+	//if(INTCONbits.TMR0IF)
+	//{
+		//WriteTimer0(0);
+		//PORTD=0b00100000;
+	//}
+	//INTCONbits.TMR0IF=0;
+	//INTCON=0b10100000;
+	
+	//return;
+}
+#pragma code
 
 /******************************************************************************
  * Function:        static void InitializeSystem(void)
@@ -231,6 +278,13 @@ static void InitializeSystem(void)
     TRISC=0XFE;// make slug pin Out
     TRISD=0x0F;
     TRISE = 0;
+    
+    LATE=0;
+    CMCON=0b00000111;
+    LATD=0;
+    SPPCON=0;
+    
+    
     PORTE = 0b110; // turn all power rails on
     //IN real life will be 111 but changted to accomodate prototype2 relay error
 
@@ -256,7 +310,7 @@ static void InitializeSystem(void)
     PORTCbits.RC0=1; // never press the button, ever!! (dont hold down)
     delay(5); // JUST TO BE SURE NO POWER RAIL FLUCTUATION
     
-    //init_usart();
+    init_usart();// - steves code, just clears buffers
 
     TRISC|=0x20;
     OpenUSART(
@@ -325,6 +379,29 @@ static void InitializeSystem(void)
     // gesl 1 allows upto about 2A ish		
 
     // ADCON1 |= 0x0F;                 // Default all pins to digital
+    
+    
+
+	//configure timer0
+	//OpenTimer0(T0_16BIT& T0_SOURCE_INT&T0_PS_1_256&TIMER_INT_ON);
+	
+	T0CON =0b10000000;
+	TMR0L=0;
+	TMR0H=0;
+	
+	//configure interrupts
+
+	INTCON=0b00100000;
+	INTCON2=0b00000111;
+	//INTCON3=0;
+	//PIE1=0;
+	//PIE2=0;
+	//IPR1=0;
+	//IPR2=0;
+	INTCONbits.GIE=1;
+
+	
+    
 
 #if defined(USE_USB_BUS_SENSE_IO)
     tris_usb_bus_sense = INPUT_PIN; // See io_cfg.h
