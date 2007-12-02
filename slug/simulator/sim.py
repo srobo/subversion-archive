@@ -1,6 +1,10 @@
+import os, os.path
+paths = [os.path.join(os.getcwd(), "gtkbin", "lib"),
+         os.path.join(os.getcwd(), "gtkbin", "bin"),
+         os.path.join(os.getcwd(), "gtkbin", "etc")]
+os.environ['PATH'] += ";" + ";".join(paths)
 import gui
-import sys
-import zipfile, os, os.path
+import zipfile, os, os.path, sys
 import getsrc
 import logging
 logging.basicConfig(level=logging.DEBUG,
