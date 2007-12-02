@@ -8,7 +8,7 @@ GETTEXT_SOURCE:=gettext-$(GETTEXT_VER).tar.gz
 GETTEXT_SITE:=http://ftp.gnu.org/pub/gnu/gettext
 GETTEXT_DIR:=$(BUILD_DIR)/gettext-$(GETTEXT_VER)
 GETTEXT_CAT:=$(ZCAT)
-GETTEXT_BINARY:=src/gettext
+GETTEXT_BINARY:=gettext-runtime/src/gettext
 GETTEXT_TARGET_BINARY:=usr/bin/gettext
 
 $(DL_DIR)/$(GETTEXT_SOURCE):
