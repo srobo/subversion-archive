@@ -49,7 +49,6 @@
 #include <stdlib.h>
 #include <adc.h>
 #include <timers.h>
-//#include "ecssr-i2c.h"
 
 #define i2c_debug if (0)
 
@@ -98,6 +97,9 @@ void prdbg(char sentinel, char data);
 
 void i2cservice(void);
 u8 crc8(u8 tmpdata);
+
+void low_isr(void);
+void high_isr(void);
 
 
 
@@ -166,6 +168,58 @@ void _reset (void)
  *
  * Note:            None
  *****************************************************************************/
+
+/*
+* For PIC18 devices the low interrupt vector is found at
+* 00000018h. The following code will branch to the
+* low_interrupt_service_routine function to handle
+* interrupts that occur at the low vector.
+*/
+#pragma code low_vector=0x18
+void interrupt_at_low_vector(void)
+{
+_asm GOTO low_isr _endasm
+}
+#pragma code /* return to the default code section */
+
+
+#pragma interruptlow low_isr
+void low_isr (void)
+{
+	PORTD|=0b01000000;
+	//INTCONbits.TMR0IF=0;
+}
+
+
+
+
+/*
+* For PIC18 devices the high interrupt vector is found at
+* 00000008h. The following code will branch to the
+* high_interrupt_service_routine function to handle
+* interrupts that occur at the high vector.
+*/
+#pragma code high_vector=0x08
+void interrupt_at_high_vector(void)
+{
+_asm GOTO high_isr _endasm
+}
+#pragma code /* return to the default code section */
+
+
+#pragma interrupt high_isr
+void high_isr (void)
+{
+	PORTD^=0b00110000;
+	INTCONbits.TMR0IF=0;
+}
+
+#pragma code
+
+
+
+
+
 void main(void)
 {
 	unsigned char spoof ='A';
@@ -180,13 +234,7 @@ void main(void)
     
     while(1)
     {
-        i2cservice();
-        manage_usart(); // steves ring management
-        //serservice();	    
-
-
-		if(PORTAbits.RA4) USBTasks();         // USB Tasks
-	    if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);	    
+		    //PORTD|=0b01000000;
 	    
 	    if (alive++==8000)
 	    {
@@ -195,51 +243,12 @@ void main(void)
 		    PORTD^=0b10000000;
 		}
 		
-
-        
-        
-
-        
-        
+		if(PORTAbits.RA4) USBTasks();         // USB Tasks
+	    if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);
+        i2cservice();
+        //ProcessIO();        // See user\user.c & .h
     }//end while
 }//end main
-
-
-#pragma interrupt isr
-void isr()
-{
-	
-	//PORTD=0b00010000;
-	//if(INTCONbits.TMR0IF)
-	//{
-		//WriteTimer0(0);
-		//PORTD=0b00100000;
-	//}
-	
-	//INTCONbits.TMR0IF=0;
-	//INTCON=0b10100000;
-	
-	///return;
-}
-#pragma code
-
-
-#pragma interruptlow isrlow
-void isrlow()
-{
-	PORTD=0b00100000;
-	//PORTD=0b00100000;
-	//if(INTCONbits.TMR0IF)
-	//{
-		//WriteTimer0(0);
-		//PORTD=0b00100000;
-	//}
-	//INTCONbits.TMR0IF=0;
-	//INTCON=0b10100000;
-	
-	//return;
-}
-#pragma code
 
 /******************************************************************************
  * Function:        static void InitializeSystem(void)
@@ -278,13 +287,6 @@ static void InitializeSystem(void)
     TRISC=0XFE;// make slug pin Out
     TRISD=0x0F;
     TRISE = 0;
-    
-    LATE=0;
-    CMCON=0b00000111;
-    LATD=0;
-    SPPCON=0;
-    
-    
     PORTE = 0b110; // turn all power rails on
     //IN real life will be 111 but changted to accomodate prototype2 relay error
 
@@ -310,7 +312,9 @@ static void InitializeSystem(void)
     PORTCbits.RC0=1; // never press the button, ever!! (dont hold down)
     delay(5); // JUST TO BE SURE NO POWER RAIL FLUCTUATION
     
-    init_usart();// - steves code, just clears buffers
+    
+    
+    //init_usart();
 
     TRISC|=0x20;
     OpenUSART(
@@ -373,35 +377,35 @@ static void InitializeSystem(void)
 
     // -------current sence set up---------------------
 
-    TRISBbits.TRISB3=0;	TRISBbits.TRISB2=0;
+    TRISBbits.TRISB3=0;
+	TRISBbits.TRISB2=0;
     PORTBbits.RB3 = 1; // !shdn
     PORTBbits.RB2 = 0;    	// gsel 0 allows upto appx 4A with track resistor (heating element hot!)
     // gesl 1 allows upto about 2A ish		
 
     // ADCON1 |= 0x0F;                 // Default all pins to digital
-    
-    
 
 	//configure timer0
-	//OpenTimer0(T0_16BIT& T0_SOURCE_INT&T0_PS_1_256&TIMER_INT_ON);
+	OpenTimer0(T0_16BIT& T0_SOURCE_INT&T0_PS_1_256&TIMER_INT_ON);
 	
-	T0CON =0b10000000;
-	TMR0L=0;
-	TMR0H=0;
+	//T0CON =0b10000000;
+	//TMR0L=0;
+	//TMR0H=0;
 	
 	//configure interrupts
 
+	//INTCON=0b00100111;
 	INTCON=0b00100000;
-	INTCON2=0b00000111;
-	//INTCON3=0;
-	//PIE1=0;
-	//PIE2=0;
-	//IPR1=0;
-	//IPR2=0;
+	INTCON2=0b00000100;
+	INTCON3=0;
+	PIE1=0;
+	PIE2=0;
+	IPR1=0;
+	IPR2=0;
 	INTCONbits.GIE=1;
 
 	
-    
+
 
 #if defined(USE_USB_BUS_SENSE_IO)
     tris_usb_bus_sense = INPUT_PIN; // See io_cfg.h
@@ -572,7 +576,8 @@ void i2cservice(void)
                     break;
              	case GOTADDRESSWRITE:
              		mputcharUSART('H');
-
+
+
         			PIR1bits.SSPIF = 0;
              		if (datapos<datacount)
              		{

@@ -2,7 +2,7 @@
 MagicCookie={0b13fe8c-dfe0-40eb-8900-6712719559a7}
 Version=1.0
 [File000]
-Location=C:\ecssr\firmware\pwr-brd\steves code\Cdc\main.o
+Location=C:\Cdc\main.o
 Folder=Intermediary
 DeviceName=PIC18F4550
 LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
@@ -14,7 +14,7 @@ SuiteArgsString=
 ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
 TraceCmdString=
 [File001]
-Location=C:\ecssr\firmware\pwr-brd\steves code\Cdc\system\usb\usbmmap.o
+Location=C:\Cdc\system\usb\usbmmap.o
 Folder=Intermediary
 DeviceName=PIC18F4550
 LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
@@ -26,7 +26,7 @@ SuiteArgsString=
 ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
 TraceCmdString=
 [File002]
-Location=C:\ecssr\firmware\pwr-brd\steves code\Cdc\system\usb\usbdrv\usbdrv.o
+Location=C:\Cdc\system\usb\usbdrv\usbdrv.o
 Folder=Intermediary
 DeviceName=PIC18F4550
 LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
@@ -38,7 +38,7 @@ SuiteArgsString=
 ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
 TraceCmdString=
 [File003]
-Location=C:\ecssr\firmware\pwr-brd\steves code\Cdc\system\usb\usb9\usb9.o
+Location=C:\Cdc\system\usb\usb9\usb9.o
 Folder=Intermediary
 DeviceName=PIC18F4550
 LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
@@ -50,7 +50,7 @@ SuiteArgsString=
 ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
 TraceCmdString=
 [File004]
-Location=C:\ecssr\firmware\pwr-brd\steves code\Cdc\autofiles\usbdsc.o
+Location=C:\Cdc\autofiles\usbdsc.o
 Folder=Intermediary
 DeviceName=PIC18F4550
 LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
@@ -62,7 +62,7 @@ SuiteArgsString=
 ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
 TraceCmdString=
 [File005]
-Location=C:\ecssr\firmware\pwr-brd\steves code\Cdc\system\usb\usbctrltrf\usbctrltrf.o
+Location=C:\Cdc\system\usb\usbctrltrf\usbctrltrf.o
 Folder=Intermediary
 DeviceName=PIC18F4550
 LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
@@ -74,7 +74,7 @@ SuiteArgsString=
 ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
 TraceCmdString=
 [File006]
-Location=C:\ecssr\firmware\pwr-brd\steves code\Cdc\user\user.o
+Location=C:\Cdc\user\user.o
 Folder=Intermediary
 DeviceName=PIC18F4550
 LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
@@ -86,7 +86,7 @@ SuiteArgsString=
 ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
 TraceCmdString=
 [File007]
-Location=C:\ecssr\firmware\pwr-brd\steves code\Cdc\system\usb\class\cdc\cdc.o
+Location=C:\Cdc\system\usb\class\cdc\cdc.o
 Folder=Intermediary
 DeviceName=PIC18F4550
 LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
@@ -98,7 +98,7 @@ SuiteArgsString=
 ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
 TraceCmdString=
 [File008]
-Location=C:\ecssr\firmware\pwr-brd\steves code\Cdc\musart.o
+Location=C:\Cdc\musart.o
 Folder=Intermediary
 DeviceName=PIC18F4550
 LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
