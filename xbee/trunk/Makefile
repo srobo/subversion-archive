@@ -1,13 +1,12 @@
-CFLAGS := -g -Wall
-LDFLAGS := 
+CFLAGS += -g -Wall
 CLEAN :=
 
 # common
 CFLAGS += -I./common
 
 # glib
-CFLAGS += `pkg-config --cflags gtk+-2.0 gobject-2.0`
-LDFLAGS += `pkg-config --libs gtk+-2.0 gobject-2.0`
+CFLAGS += `pkg-config $(PKG_CONFIG_ARGS) --cflags gobject-2.0`
+LDFLAGS += `pkg-config $(PKG_CONFIG_ARGS) --libs gobject-2.0`
 
 all: xbd/xbd libxbee/test
 
