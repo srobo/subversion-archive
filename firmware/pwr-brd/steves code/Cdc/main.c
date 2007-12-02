@@ -58,7 +58,7 @@
 #define u16 unsigned int
 
 //saftey system constants
-#define HOWSAFE 18 // zero indexed
+#define HOWSAFE 19 // zero indexed
 
 // values for range within which to ignoor data - source address,rss and optoins seciotn
 #define STARTIG 2
@@ -79,7 +79,7 @@ u8 data[32]; // size according to smbus spec
 #pragma udata
 
 
-u8 temp[HOWSAFE+1];
+u8 temp[HOWSAFE];
 
 
 int bcount;
@@ -164,7 +164,7 @@ v = [ 0x7E, 0, 15,
 
 
 #pragma romdata
-unsigned char safe[HOWSAFE+1]={
+unsigned char safe[HOWSAFE]={
 	  0x7E, 0, 15,
       0x80,                     				// API identifier
       0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07, //# Source address
@@ -287,7 +287,7 @@ void main(void)
 
 void usartrxservice(void)
 {
-static u8 current=0;
+static u8 place=0;
 
 u8 rxbuf;
     
@@ -297,16 +297,22 @@ u8 rxbuf;
 	    
 	    //buffer value so can use
 	    rxbuf=RCREG;
-	    temp[current]=rxbuf;
-	    current++;
-	    if(rxbuf==0x7e)//is it a sentinel if so resart
-	    	current=0;
-	    // is value within the areas we car about, if so, is it the same as the buffer
-	    else if((STARTIG<current<STOPIG)||(safe[current]==rxbuf))
-		{
-			    if (current==HOWSAFE) current=TMR0L=TMR0H=0; // we have got the the end of the buffer so restart he timer
-			} 
-		else current=0;//byte was wrong
+	    //temp[place]=rxbuf;
+
+		    if(rxbuf==0x7e)//is it a sentinel if so resart
+		    	place=1;
+		    // is value within the areas we car about, if so, is it the same as the buffer
+		    else if((safe[place]==rxbuf))//(STARTIG<place<STOPIG)||
+			{
+				    if (place==HOWSAFE-1) 
+				    {
+					    place=TMR0L=TMR0H=0; // we have got the the end of the buffer so restart he timer
+					   PORTD^=0b01000000;
+					}
+					else
+					place++;
+				} 
+			else place=0;//byte was wrong
 	}
     
     
@@ -344,7 +350,7 @@ static void InitializeSystem(void)
     //rd4-7 leds
     //re0 - big power motor fet thing
     //e1 - fet control servo rail
-    //re2 - fet slug rail
+   //re2 - fet slug rail
 
     PORTC=0x01; // MUST BE set BEFORE UNTRISTATING ELSE SLUG BOOT!!!
     TRISA=0XFF;
