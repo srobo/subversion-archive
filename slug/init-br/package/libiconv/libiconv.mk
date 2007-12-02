@@ -33,7 +33,7 @@ $(STAGING_DIR)/usr/local/include/iconv.h: $(ICONV_DIR)/src/iconv_no_i18n
 
 $(TARGET_DIR)/usr/local/bin/iconv: $(STAGING_DIR)/usr/local/include/iconv.h
 	mkdir -p $(TARGET_DIR)/usr/local/lib $(TARGET_DIR)/usr/local/bin
-	cp $(STAGING_DIR)/usr/local/lib/libiconv* $(STAGING_DIR)/usr/local/lib/preloadable_libiconv* $(TARGET_DIR)/usr/local/lib
+	cp -a $(STAGING_DIR)/usr/local/lib/libiconv* $(STAGING_DIR)/usr/local/lib/preloadable_libiconv* $(TARGET_DIR)/usr/local/lib
 	cp $(STAGING_DIR)/usr/local/bin/iconv $(TARGET_DIR)/usr/local/bin
 
 libiconv: $(TARGET_DIR)/usr/local/bin/iconv
