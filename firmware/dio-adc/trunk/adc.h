@@ -15,9 +15,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 #ifndef __ADC_H
 #define __ADC_H
-
+#include <stdint.h>
 void adc_init ( void );
-int * adc_sample ( void );
+uint16_t*  adc_sample(void);
 
 
 #endif 	/* __ADC_H  */

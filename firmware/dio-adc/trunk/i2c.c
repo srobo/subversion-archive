@@ -17,6 +17,8 @@
 #include "msp430/usci.h"
 #include <signal.h>
 #include "i2c.h"
+#include "smbus_pec.h"
+#include "adc.h"	
 
 
 
@@ -53,10 +55,21 @@ void byte_rx( uint8_t pos, uint8_t b );
 /* Need to send a byte */
 uint8_t byte_tx( uint8_t pos );
 
+
+/* Transmit (read) functions */
+static uint8_t i2cr_identity( uint8_t *buf );
+
+/* write dio data from i2c bus to port*/
+void  i2cw_dio_output( uint8_t* buf);
+
+/* write dio input data to i2c bus*/
+uint8_t  i2cr_dio_input( uint8_t* buf);
+
 const i2c_cmd_t cmds[] = 
 {
 	{ 0, NULL, i2cr_identity },
-	{ 2, NULL }
+	{ 1, i2cw_dio_output, NULL },
+	{ 0, NULL, i2cr_dio_input }
 };
 
 /* The current command */
@@ -197,41 +210,46 @@ void i2c_init( void )
     IE2 |=  UCB0RXIE | UCB0TXIE;
 }
 
-void byte_rx( uint8_t pos, uint8_t b )
+/* 	case M_OUTPUT: */
+/* 		/\* Write data to port *\/ */
+/* 		P1OUT = b; */
+
+/* 	case M_IDENTIFY: */
+/* 		return i2c_identity[pos]; */
+/* 		break; */
+
+static uint8_t i2cr_identity( uint8_t *buf )
 {
-	/* Command byte? */
-	if( pos == 0 ) {
-		cmd = b;
-		return;
-	}
+	uint8_t i;
 
-	switch(cmd)
-	{
-	case M_OUTPUT:
-		/* Write data to port */
-		P1OUT = b;
-		break;
+	for(i=0; i<4; i++)
+		buf[i] = i2c_identity[i];
 
-	}
+	return 4;
 }
 
-/* Need to send a byte */
-uint8_t byte_tx( uint8_t pos )
+/* receive dio data from i2c bus*/
+void  i2cw_dio_output( uint8_t* buf)
 {
-	const uint8_t lengths[] = {4,0};
+	P1OUT = *buf;
+}
 
-	if( cmd >= M_LAST_COMMAND )
-		return 0;
+/* write dio input data to i2c bus*/
+uint8_t  i2cr_dio_input( uint8_t* buf)
+{	
+	uint8_t x;
+	uint16_t * adc_buf;
+	
+	adc_buf = adc_sample();
+	
 
-	if( pos > lengths[cmd] )
-		return 0;	/* CRC to go here! */
+	/*send 16bit conversion results using two bytes. MSByte first*/
+	for(x=0;x<8;x++)
+	{	
+		buf[2*x] = (adc_buf[x] >> 8);
+		buf[(2*x)+1] = (adc_buf[x] & 0xFF);
+	}
 
-	switch(cmd)
-	{
-	case M_IDENTIFY:
-		return i2c_identity[pos];
-		break;
-	} 
 
-	return 0;
+	return 16;		
 }

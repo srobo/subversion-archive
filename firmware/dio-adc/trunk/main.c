@@ -32,10 +32,10 @@ int main( void )
 	
 	/* Disable the watchdog timer */
 	WDTCTL = WDTHOLD | WDTPW;
-
-	init();
+	
 	adc_init();
-	adc_sample();
+	init();
+	
 	
 	while(1)
 	{
