@@ -112,6 +112,8 @@ void usartrxservice(void);
 void low_isr(void);
 void high_isr(void);
 
+void adcserv(void);
+
 
 
 void identify(u8 *data);
@@ -170,7 +172,7 @@ unsigned char safe[HOWSAFE]={
       0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07, //# Source address
       0x54,                                    //# RSSI
       0,                                       //# Options
-      0x01,0x02,0x03,0x04,0xAA};
+      0x01,0x02,0x03,0x04,0x00};//last one is checksum
 #pragma udata 
 
 /** V E C T O R  R E M A P P I N G *******************************************/
@@ -273,12 +275,14 @@ void main(void)
 		    alive=0;
 		    //PORTDBits.RD7=!PORTDBits.RD7;
 		    PORTD^=0b10000000;
+		   
 		}
 		
 		if(PORTAbits.RA4) USBTasks();         // USB Tasks
-	    if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);
+	    //if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);
         i2cservice();
         usartrxservice();
+		 //adcserv();  // this may need to be moved intot he slow alive loop as it caused problems in the past
         //ProcessIO();        // See user\user.c & .h
     }//end while
 }//end main
@@ -289,29 +293,50 @@ void main(void)
 void usartrxservice(void)
 {
 static u8 place=0;
+static u8 xbchecksum=0;
 
 u8 rxbuf;
+u8 temp;
     
     if(PIR1bits.RCIF)
     {
-	    PORTD^=0b00100000;// debug lights
-	    
+	    	PORTD^=0b01000000;// debug lights
 	    //buffer value so can use
 	    rxbuf=RCREG;
 	    //temp[place]=rxbuf;
 
 		    if(rxbuf==0x7e)//is it a sentinel if so resart
-		    	place=1;
+		    {
+			    place=1;
+			    xbchecksum=0;
+			}
 		    // is value within the areas we car about, if so, is it the same as the buffer
-		    else if(((place>STARTIG)&&(place<STOPIG))||(safe[place]==rxbuf))//
+		    else if(((place>STARTIG)&&(place<STOPIG))||(safe[place]==rxbuf)||(place>HOWSAFE-2))//
 			{
 				    if (place==HOWSAFE-1) 
 				    {
-					    place=TMR0L=TMR0H=0; // we have got the the end of the buffer so restart he timer
-					   PORTD^=0b01000000;
+					    //temp = rxbuf+xbchecksum;
+					    //prdbg('A', temp);
+					    //if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &temp , 1);
+					    if(rxbuf+xbchecksum==0xff)
+					    {
+					    	place=TMR0L=TMR0H=0; // we have got the the end of the buffer so restart he timer
+					   		PORTD^=0b00100000;// debug lights
+					   	}
+					   	else 
+					   	{
+						   	place=0;
+						   	PORTD^=0b01000000;
+						}
 					}
 					else
-					place++;
+					{
+						if ((place>STARTIG)&&(place<HOWSAFE-1))// add up bytes between end of length and penultimate(checksum)
+						{
+							xbchecksum+=rxbuf;
+						}
+						place++;
+					}
 				} 
 			else place=0;//byte was wrong
 	}
@@ -396,7 +421,9 @@ static void InitializeSystem(void)
             USART_EIGHT_BIT &
             USART_CONT_RX & 
             USART_BRGH_HIGH, // checked, this does mean bit brgh bit set
-            25);
+            1249);
+            BAUDCONbits.BRG16=1;
+            //25); // this it 115200
             //152);  // this is 19200
 
 
@@ -675,7 +702,7 @@ void setled(u8 *data){
 
 void checkusb(u8 *data){
 	data[0]=usbflag;
-	mputcharUSART('Q');
+	//mputcharUSART('Q');
 	//read bit = <6> i2c -> usb
 	//write bit  = <7> usb ->i
 	// 5 lsb position within sector
@@ -714,11 +741,14 @@ void setusbbuf(u8 *data)
 }		
 
 void sendser(u8 *data){
+/*
 	//char strcount =0; // send string to ring buffer untill null.
 	//while(data[strcount]!= 0 ) mputcharUSART(data[(strcount++)]); 
 	//mputcharUSART(data[1]);
 	mputcharUSART(data[0]);
-	
+*/
+	if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &data[0], 1);
+		
 	return;
 	}
 	
@@ -790,14 +820,6 @@ void delay(int time)
 
 }
 
-void prdbg(char sentinel, char data)
-{
-	char i=0,	b[4];
-	mputcharUSART(sentinel);
-	btoa(data,b);
-    while(b[i]!= 0 ) mputcharUSART(b[(i++)]); 
-}
-
 
 #define POLY    (0x1070U << 3)
 
@@ -818,9 +840,9 @@ void adcserv(void)
 {
 	if (!BusyADC())
 	{
+				    
 		// currently this totallyt rodgers the msd code, dunno why!
 		
-		PORTD=~PORTD;
 	
 		if(!ADCON0bits.CHS0)
 		{
@@ -848,6 +870,14 @@ void adcserv(void)
         //while(outstr[strcount]!= 0 ) mputcharUSART(outstr[(strcount++)]);   
 }
 
+void prdbg(char sentinel, char data)
+{
+	char i=0,	b[4];
+	mputcharUSART(sentinel);
+	btoa(data,b);
+    while(b[i]!= 0 ) putsUSBUSART(b[(i++)]); 
+    //mputcharUSART(b[(i++)]); 
+}
 
 
 
