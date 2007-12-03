@@ -58,11 +58,11 @@
 #define u16 unsigned int
 
 //saftey system constants
-#define HOWSAFE 19 // zero indexed
+#define HOWSAFE 15 // zero indexed
 
 // values for range within which to ignoor data - source address,rss and optoins seciotn
 #define STARTIG 2
-#define STOPIG 14
+#define STOPIG 8
 
 
 
@@ -153,26 +153,26 @@ void datagood(u8 *data);
 
 #pragma udata
 
-/* 
-v = [ 0x7E, 0, 15,
-      0x80,                     # API identifier
-      0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07, # Source address
-      0x54,                                    # RSSI
-      0,                                       # Options
-      0x01,0x02,0x03,0x04,0xAA ]
-
-*/
-
-
+//0x7e 0x0 0xb 0x81 0x0 0x0 0x3b 0x2 0x0 0xff 0x1 0x2 0x3 0x4 0x38
 
 #pragma romdata
+
 unsigned char safe[HOWSAFE]={
-	  0x7E, 0, 15,
+	  0x7E, 0, 0x0b,
+      0x80,                     				// API identifier
+      0x00,0x01,0x02,0x03, //# Source address
+      0,0xff,0x01,0x02,0x03,0x04,0x00};//last one is checksum
+
+/*	
+unsigned char safe[HOWSAFE]={
+	  0x7E, 0, 17,
       0x80,                     				// API identifier
       0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07, //# Source address
       0x54,                                    //# RSSI
       0,                                       //# Options
-      0x01,0x02,0x03,0x04,0x00};//last one is checksum
+      0,0xff,0x01,0x02,0x03,0x04,0x00};//last one is checksum
+  */    
+      
 #pragma udata 
 
 /** V E C T O R  R E M A P P I N G *******************************************/
@@ -300,10 +300,9 @@ u8 temp;
     
     if(PIR1bits.RCIF)
     {
-	    	PORTD^=0b01000000;// debug lights
+	  
 	    //buffer value so can use
 	    rxbuf=RCREG;
-	    //temp[place]=rxbuf;
 
 		    if(rxbuf==0x7e)//is it a sentinel if so resart
 		    {
@@ -322,11 +321,12 @@ u8 temp;
 					    {
 					    	place=TMR0L=TMR0H=0; // we have got the the end of the buffer so restart he timer
 					   		PORTD^=0b00100000;// debug lights
+					   		PORTE|=0b1;
 					   	}
 					   	else 
 					   	{
 						   	place=0;
-						   	PORTD^=0b01000000;
+						   	
 						}
 					}
 					else
@@ -486,7 +486,7 @@ static void InitializeSystem(void)
     // ADCON1 |= 0x0F;                 // Default all pins to digital
 
 	//configure timer0
-	OpenTimer0(T0_16BIT& T0_SOURCE_INT&T0_PS_1_256&TIMER_INT_ON);
+	OpenTimer0(T0_16BIT& T0_SOURCE_INT&T0_PS_1_128&TIMER_INT_ON);
 	
 	//T0CON =0b10000000;
 	//TMR0L=0;
