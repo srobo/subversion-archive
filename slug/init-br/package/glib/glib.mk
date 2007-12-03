@@ -40,10 +40,10 @@ $(STAGING_DIR)/usr/local/lib/libglib-2.0.so.0.1200.0: $(GLIB_DIR)/glib/.libs/lib
 
 $(TARGET_DIR)/usr/local/lib/libglib-2.0.so.0.1200.0: $(STAGING_DIR)/usr/local/lib/libglib-2.0.so.0.1200.0
 	mkdir -p $(TARGET_DIR)/usr/local/lib
-	cp $(STAGING_DIR)/usr/local/lib/libglib* $(TARGET_DIR)/usr/local/lib
+	cp -a $(STAGING_DIR)/usr/local/lib/libglib* $(STAGING_DIR)/usr/local/lib/libgobject* $(TARGET_DIR)/usr/local/lib
 
 	mkdir -p $(TARGET_DIR)/usr/local/share/locale
-	cp -r $(STAGING_DIR)/usr/local/share/locale/* $(TARGET_DIR)/usr/local/share/locale
+	cp -a $(STAGING_DIR)/usr/local/share/locale/* $(TARGET_DIR)/usr/local/share/locale
 
 
 glib: libiconv pkgconfig libintl $(TARGET_DIR)/usr/local/lib/libglib-2.0.so.0.1200.0
