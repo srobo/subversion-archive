@@ -59,6 +59,17 @@ int main( int argc, char** argv )
          return 3; 
     } 
 
+	
+	uint8_t data= 0x01;			//port data	
+	
+	r = i2c_smbus_write_byte_data(fd, 1, data);	//send write command and data byte
+	if( r < 0 )
+		fprintf(stderr, "Failed to write\n");
+	else
+		printf( "Read %x from dio\n", r );
+	
+
+/*START of code to test reading from the input pins
 	r = i2c_smbus_write_byte(fd, 2);
 	if( r < 0 )
 		fprintf(stderr, "Failed to read dio pins\n");
@@ -75,6 +86,7 @@ int main( int argc, char** argv )
 		printf("\n buf[%d] = %d", y, (int)value);
 		printf("\n %d %d", (int)buf[2*y], (int)buf[(2*y)+1]);
 	}
+END of code to test reading from the inputs pins*/ 
 	
 /* 	if( i2c_smbus_write_byte( fd, setting ) < 0 ) */
 /* 		fprintf( stderr, "Failed to set io\n" ); */
