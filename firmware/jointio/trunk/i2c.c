@@ -20,8 +20,6 @@
 #include "smbus_pec.h"
 #include "adc.h"	
 
-
-
 #define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x0201
 #define FIRMWARE_REV 0x0304
@@ -48,13 +46,11 @@ typedef struct
 	uint8_t (*tx) ( uint8_t* buf );
 } i2c_cmd_t;
 
-
 /* Just received a byte */
 void byte_rx( uint8_t pos, uint8_t b );
 
 /* Need to send a byte */
 uint8_t byte_tx( uint8_t pos );
-
 
 /* Transmit (read) functions */
 static uint8_t i2cr_identity( uint8_t *buf );

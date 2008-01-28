@@ -1,4 +1,4 @@
-/*   Copyright (C) 2007 Robert Spanton
+/*   Copyright (C) 2007 Robert Spanton and Chris Cross
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -13,18 +13,11 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
-#ifndef __I2C_H
-#define __I2C_H
+#ifndef __ADC_H
+#define __ADC_H
+#include <stdint.h>
+void adc_init ( void );
+uint16_t*  adc_sample(void);
 
-#define I2C_ADDRESS 0x12
 
-/* The commands */
-enum {
-	M_IDENTIFY,
-	M_OUTPUT,
-	M_LAST_COMMAND
-};
-
-void i2c_init( void );
-
-#endif	/* __I2C_H */
+#endif 	/* __ADC_H  */
