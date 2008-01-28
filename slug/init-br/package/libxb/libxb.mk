@@ -2,8 +2,8 @@
 # libxb
 ##############################
 
-LIBXB_REVISION := 991
-LIBXB_SVN := http://svn.studentrobotics.org/xbee/trunk
+LIBXB_REVISION := 17
+LIBXB_SVN := https://libxb.svn.sourceforge.net/svnroot/libxb/pc/trunk
 LIBXB_SOURCE := $(DL_DIR)/libxb-$(LIBXB_REVISION)
 LIBXB_DIR := $(BUILD_DIR)/libxb-$(LIBXB_REVISION)
 
