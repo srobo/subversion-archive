@@ -1,2 +1,2 @@
-dio-test: dio-test.c
-	$(CC) -o dio-test dio-test.c 
+jointio-test: jointio-test.c
+	$(CC) -o jointio-test jointio-test.c 

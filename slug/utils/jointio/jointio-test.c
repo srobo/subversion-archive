@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ADDRESS 0x12
+#define ADDRESS 0x14
 #define POS0 3
 #define POS1 135
 
@@ -27,19 +27,9 @@ int main( int argc, char** argv )
 	uint8_t setting;
 	int fd;
 	uint8_t buf[16]; 
-
-	
-	
+	uint8_t data= 0x01;
 
 	fd = open( "/dev/i2c-0", O_RDWR );
-
-/* 	if( argc != 2 ) */
-/* 	{ */
-/* 		printf("Usage: dio-test VALUE\n"); */
-/* 		return 1; */
-/* 	} */
-
-/* 	setting = atol( argv[1] ); */
 
 	if( fd == -1 )
 	{
@@ -53,16 +43,13 @@ int main( int argc, char** argv )
 		return 2;
 	}
 
-     if( ioctl( fd, I2C_PEC, 1) < 0) 
-     { 
-         fprintf( stderr, "Failed to enable PEC\n"); 
-         return 3; 
-    } 
-
+	if( ioctl( fd, I2C_PEC, 1) < 0) 
+	{ 
+		fprintf( stderr, "Failed to enable PEC\n"); 
+		return 3; 
+	} 
 	
-	uint8_t data= 0x01;			//port data	
-	
-	r = i2c_smbus_write_byte_data(fd, 1, data);	//send write command and data byte
+	r = i2c_smbus_write_byte_data(fd, 1, 1);
 	if( r < 0 )
 		fprintf(stderr, "Failed to write\n");
 	else
@@ -70,23 +57,23 @@ int main( int argc, char** argv )
 	
 
 /*START of code to test reading from the input pins
-	r = i2c_smbus_write_byte(fd, 2);
-	if( r < 0 )
-		fprintf(stderr, "Failed to read dio pins\n");
-	else
-		printf( "Read %x from dio\n", r );
+  r = i2c_smbus_write_byte(fd, 2);
+  if( r < 0 )
+  fprintf(stderr, "Failed to read dio pins\n");
+  else
+  printf( "Read %x from dio\n", r );
 	
-	printf("%d\n",read(fd, buf, 16));	
+  printf("%d\n",read(fd, buf, 16));	
 	
-	int y;
-	uint16_t value;
-	for(y=0;y<8;y++)
-	{		
-		value = ((uint16_t)buf[2*y] << 8) |  (buf[(2*y)+1]);
-		printf("\n buf[%d] = %d", y, (int)value);
-		printf("\n %d %d", (int)buf[2*y], (int)buf[(2*y)+1]);
-	}
-END of code to test reading from the inputs pins*/ 
+  int y;
+  uint16_t value;
+  for(y=0;y<8;y++)
+  {		
+  value = ((uint16_t)buf[2*y] << 8) |  (buf[(2*y)+1]);
+  printf("\n buf[%d] = %d", y, (int)value);
+  printf("\n %d %d", (int)buf[2*y], (int)buf[(2*y)+1]);
+  }
+  END of code to test reading from the inputs pins*/ 
 	
 /* 	if( i2c_smbus_write_byte( fd, setting ) < 0 ) */
 /* 		fprintf( stderr, "Failed to set io\n" ); */
