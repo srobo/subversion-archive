@@ -145,7 +145,7 @@ void datagood(u8 *data);
 	                    {0, 1,getrails},
 		                {0,32,getusbbuf},//8
 			            {32,0,setusbbuf},
-		                {1,0,sendser},//10
+	                    {1,0,sendser},//10
 			            {0,2,getsectorlo},
 				        {0,2,getsectorhi},//12
 					    {32,0,setusbbuf},//old not really needed kept for 
@@ -282,7 +282,7 @@ void main(void)
 	    //if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);
         i2cservice();
         usartrxservice();
-		 //adcserv();  // this may need to be moved intot he slow alive loop as it caused problems in the past
+		adcserv();  // this may need to be moved intot he slow alive loop as it caused problems in the past
         //ProcessIO();        // See user\user.c & .h
     }//end while
 }//end main
@@ -697,6 +697,7 @@ void identify(u8 *data){
 void setled(u8 *data){
     //PORTD = (*data << 4)&0xf0;
     PORTD = PORTD |( 0x70&((*data << 4)&0xf0));
+    //if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &data[0], 1);
     return;
 }
 
@@ -741,12 +742,7 @@ void setusbbuf(u8 *data)
 }		
 
 void sendser(u8 *data){
-/*
-	//char strcount =0; // send string to ring buffer untill null.
-	//while(data[strcount]!= 0 ) mputcharUSART(data[(strcount++)]); 
-	//mputcharUSART(data[1]);
-	mputcharUSART(data[0]);
-*/
+	PORTD|=0x00100000;
 	if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &data[0], 1);
 		
 	return;
@@ -872,11 +868,13 @@ void adcserv(void)
 
 void prdbg(char sentinel, char data)
 {
+	/*
 	char i=0,	b[4];
 	mputcharUSART(sentinel);
 	btoa(data,b);
     while(b[i]!= 0 ) putsUSBUSART(b[(i++)]); 
     //mputcharUSART(b[(i++)]); 
+    */
 }
 
 
