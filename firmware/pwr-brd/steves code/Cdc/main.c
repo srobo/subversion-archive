@@ -58,7 +58,7 @@
 #define u16 unsigned int
 
 //saftey system constants
-#define HOWSAFE 15 // zero indexed
+#define HOWSAFE 12 // zero indexed
 
 // values for range within which to ignoor data - source address,rss and optoins seciotn
 #define STARTIG 2
@@ -157,12 +157,26 @@ void datagood(u8 *data);
 
 #pragma romdata
 
+
+//THIS IS THE ALIVE PACKET. IF ANYONE CHANGES IT, THEY WILL BE ILL WITH A THOUSAND PLAGUES.
+// NB: it is the packet Dave(Phil) and Mr Rob have termed the "Ping packet" 
+unsigned char safe[HOWSAFE]={
+	  0x7E, //  framing byte
+	  0, 0x0b, // length
+      0x80,             // API identifier for ive recived a packet
+      0x00,0x01,0x02,0x03, //# Source address -- this should be ignoored
+      0, //rssi -ignoored
+      0xff, // options -- ignoored
+      0x01,0x02, // the actuall data!!!
+      0x00};//last one is checksum
+
+/*
 unsigned char safe[HOWSAFE]={
 	  0x7E, 0, 0x0b,
       0x80,                     				// API identifier
       0x00,0x01,0x02,0x03, //# Source address
       0,0xff,0x01,0x02,0x03,0x04,0x00};//last one is checksum
-
+*/
 /*	
 unsigned char safe[HOWSAFE]={
 	  0x7E, 0, 17,
@@ -421,10 +435,13 @@ static void InitializeSystem(void)
             USART_EIGHT_BIT &
             USART_CONT_RX & 
             USART_BRGH_HIGH, // checked, this does mean bit brgh bit set
-            1249);
+            207);
             BAUDCONbits.BRG16=1;
-            //25); // this it 115200
-            //152);  // this is 19200
+            ////25); // this it 115200
+            ////152);  // this is 19200
+            // 57600 - 207 brg and brg16 set
+         
+            //1249 - 9600 baug brg and brg16 set
 
 
     //-------ADC setup ---------------------------	
@@ -487,6 +504,7 @@ static void InitializeSystem(void)
 
 	//configure timer0
 	OpenTimer0(T0_16BIT& T0_SOURCE_INT&T0_PS_1_128&TIMER_INT_ON);
+	// 12mips, 128 prescale 16bit overflow = 1.43s ((((48000000)/4)/128)/(2^16) = 1.43...  
 	
 	//T0CON =0b10000000;
 	//TMR0L=0;
