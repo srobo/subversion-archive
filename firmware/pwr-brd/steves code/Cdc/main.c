@@ -58,12 +58,11 @@
 #define u16 unsigned int
 
 //saftey system constants
-#define HOWSAFE 12 // zero indexed
+#define HOWSAFE 17 // zero indexed elsewhere but this is the total no....
 
 // values for range within which to ignoor data - source address,rss and optoins seciotn
 #define STARTIG 2
-#define STOPIG 8
-
+#define STOPIG 14 // this prob wont need to change with packet loength. 2-8 just skips address to rssi incl.
 
 
 
@@ -162,9 +161,9 @@ void datagood(u8 *data);
 // NB: it is the packet Dave(Phil) and Mr Rob have termed the "Ping packet" 
 unsigned char safe[HOWSAFE]={
 	  0x7E, //  framing byte
-	  0, 0x0b, // length
+	  0, 0x0D, // length
       0x80,             // API identifier for ive recived a packet
-      0x00,0x01,0x02,0x03, //# Source address -- this should be ignoored
+      0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07, //# Source address -- this should be ignoored
       0, //rssi -ignoored
       0xff, // options -- ignoored
       0x01,0x02, // the actuall data!!!
@@ -308,24 +307,43 @@ void usartrxservice(void)
 {
 static u8 place=0;
 static u8 xbchecksum=0;
+static u8 delim=0;
 
 u8 rxbuf;
-u8 temp;
+//u8 temp;
     
     if(PIR1bits.RCIF)
     {
 	  
 	    //buffer value so can use
 	    rxbuf=RCREG;
-
-		    if(rxbuf==0x7e)//is it a sentinel if so resart
+	    
+	    
+		    if(rxbuf==0x7e )//is it a sentinel if so resart
 		    {
 			    place=1;
 			    xbchecksum=0;
+			    return;
 			}
-		    // is value within the areas we car about, if so, is it the same as the buffer
-		    else if(((place>STARTIG)&&(place<STOPIG))||(safe[place]==rxbuf)||(place>HOWSAFE-2))//
+			
+			
+			//escaped char replacemnt scheme:
+			if(delim)
 			{
+				rxbuf ^= 0x20;
+				PORTD^=0b01000000;
+				delim =0;
+			}
+			if(rxbuf==0x7D)
+			{
+				delim =1;
+				return;
+			}
+			
+		    // is value within the areas we car about, if so, is it the same as the buffer
+		    if(((place>STARTIG)&&(place<STOPIG))||(safe[place]==rxbuf)||(place>HOWSAFE-2))//
+			{ //      in the ignoor zone                 char corret           checksum???
+				temp[place]=rxbuf;
 				    if (place==HOWSAFE-1) 
 				    {
 					    //temp = rxbuf+xbchecksum;
