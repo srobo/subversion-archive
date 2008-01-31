@@ -43,10 +43,10 @@ $(STAGING_DIR)/usr/local/lib/libcv.so.2.0.0: $(OPENCV_DIR)/cv/src/.libs/libcv.so
 
 $(TARGET_DIR)/usr/local/lib/libcv.so.2.0.0: $(STAGING_DIR)/usr/local/lib/libcv.so.2.0.0
 	mkdir -p $(TARGET_DIR)/usr/local/lib
-	cp $(STAGING_DIR)/usr/local/lib/libcv* $(TARGET_DIR)/usr/local/lib
-	cp $(STAGING_DIR)/usr/local/lib/libcx* $(TARGET_DIR)/usr/local/lib
-	cp $(STAGING_DIR)/usr/local/lib/libml* $(TARGET_DIR)/usr/local/lib
-	cp $(STAGING_DIR)/usr/local/lib/libhighgui* $(TARGET_DIR)/usr/local/lib
+	cp -a $(STAGING_DIR)/usr/local/lib/libcv* $(TARGET_DIR)/usr/local/lib
+	cp -a $(STAGING_DIR)/usr/local/lib/libcx* $(TARGET_DIR)/usr/local/lib
+	cp -a $(STAGING_DIR)/usr/local/lib/libml* $(TARGET_DIR)/usr/local/lib
+	cp -a $(STAGING_DIR)/usr/local/lib/libhighgui* $(TARGET_DIR)/usr/local/lib
 
 opencv: libpng jpeg $(TARGET_DIR)/usr/local/lib/libcv.so.2.0.0
 
