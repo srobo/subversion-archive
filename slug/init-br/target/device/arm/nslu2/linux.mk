@@ -118,6 +118,9 @@ $(LINUX_KERNEL): $(LINUX_DIR)/$(LINUX_BINLOC) $(BUSYBOX_DIR)/.configured
 	#cp -fpR --no-dereference $(LINUX_DIR)/$(LINUX_BINLOC) $(LINUX_KERNEL)
 	touch $(LINUX_KERNEL)
 
+$(TARGET_DIR)/lib/modules/latest: $(LINUX_KERNEL)
+	( cd $(TARGET_DIR)/lib/modules; \
+	  ln -s $(DOWNLOAD_LINUX_VERSION) latest ; )
 
 #Generate enough kernel headers for the toolchain to build - requires the kernel to be configured
 $(STAGING_DIR)/include/linux/version.h: $(LINUX_DIR)/include/linux/autoconf.h #$(LINUX_DIR)/include/linux/version.h
@@ -131,7 +134,7 @@ $(LINUX_DIR)/include/linux/version.h: $(LINUX_DIR)/include/linux/autoconf.h
 
 kernel-headers: $(STAGING_DIR)/include/linux/version.h
 
-linux: kernel-headers $(LINUX_KERNEL) 
+linux: kernel-headers $(LINUX_KERNEL) $(TARGET_DIR)/lib/modules/latest
 
 linux-source: $(DL_DIR)/$(LINUX_SOURCE)
 
