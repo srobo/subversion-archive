@@ -7,7 +7,7 @@ IXP425_OSAL_PATCH_DIR := $(BASE_DIR)/target/device/arm/ixp425-osal/patches
 
 IXP425_LIBOSAL := $(IXP425_OSAL_DIR)/ixp_osal/lib/ixp425/linux/linuxbe/libosal.a
 IXP425_OSAL_KMOD := $(IXP425_OSAL_DIR)/ixp400_xscale_sw/lib/linuxbe/ixp400.ko 
-IXP425_OSAL_KMOD_LOC := $(TARGET_DIR)/lib/modules/$(DOWNLOAD_LINUX_VERSION)/extra/ixp400.ko
+IXP425_OSAL_KMOD_LOC := $(TARGET_DIR)/lib/modules/latest/extra/ixp400.ko
 IXP425_OSAL_COMPONENTS := "qmgr npeMh npeDl ethAcc ethDB ethMii featureCtrl osServices oslinux"
 
 IXP425_OSAL_HEADER_DIR := $(STAGING_DIR)/include/linux/ixp4xx-csr

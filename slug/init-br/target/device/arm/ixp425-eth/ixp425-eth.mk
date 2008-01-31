@@ -7,7 +7,7 @@ IXP425_ETH_URL := ftp://download.intel.com/design/network/swsup/$(IXP425_ETH_SOU
 IXP425_ETH_PATCH_DIR := $(BASE_DIR)/target/device/arm/ixp425-eth/patches
 IXP425_ETH_DIR := $(BUILD_DIR)/ixp425-eth
 IXP425_ETH_KMOD := $(IXP425_ETH_DIR)/ixp425_eth.ko
-IXP425_ETH_KMOD_INSTALL := $(TARGET_DIR)/lib/modules/$(DOWNLOAD_LINUX_VERSION)/extra/ixp400_eth.ko
+IXP425_ETH_KMOD_INSTALL := $(TARGET_DIR)/lib/modules/latest/extra/ixp425_eth.ko
 
 $(DL_DIR)/$(IXP425_ETH_SOURCE):
 	wget -P $(DL_DIR) $(IXP425_ETH_URL)
