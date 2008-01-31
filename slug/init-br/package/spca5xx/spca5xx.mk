@@ -7,7 +7,7 @@
 SPCA5XX_VERSION:=20070508
 #20061216
 SPCA5XX_SOURCE:=gspcav1-$(SPCA5XX_VERSION).tar.gz
-SPCA5XX_SITE := http://mxhaard.free.fr/spca50x/Download/
+SPCA5XX_SITE := http://mxhaard.free.fr/spca50x/Download/oldrelease/
 SPCA5XX_DIR := $(BUILD_DIR)/gspcav1-$(SPCA5XX_VERSION)
 SPCA5XX_MODLOC := $(TARGET_DIR)/lib/modules/$(DOWNLOAD_LINUX_VERSION)/extra/gspca.ko
 
