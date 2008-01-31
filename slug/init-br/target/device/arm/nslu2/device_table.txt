@@ -81,7 +81,7 @@
 #/dev/input/js		c	660	0	0	13	0	0	1	4
 
 # Video stuff
-
+/dev/video0		c	660	0	0	81	0	0	0	-
 
 # MTD stuff
 /dev/mtd	c	640	0	0	90	0	0	2	4
@@ -103,7 +103,7 @@
 #/dev/ubda	b	640	0	0	98	1	1	1	15
 
 #i2c stuff
-/dev/i2c-0	c	640	0	0	89	0	0	0	-
+/dev/i2c-0		c	640	0	0	89	0	0	0	-
 
 # IDE Devices
 /dev/hda	b	640	0	0	3	0	0	0	-
