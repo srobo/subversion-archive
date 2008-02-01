@@ -1,13 +1,13 @@
 #!/bin/sh
 
 
-while ! { dd if=/dev/sda of=/dev/null bs=1 count=1 ; }
+while ! { dd if=/dev/sda2 of=/dev/null bs=1 count=1 ; }
 do
 sleep 1
 done
 
 mkdir /tmp/newroot
-mount /dev/sda /tmp/newroot/
+mount /dev/sda2 /tmp/newroot/
 pivot_root /tmp/newroot/ /tmp/newroot/initrd/
 
 echo "pivoted"
