@@ -1,0 +1,15 @@
+#!/bin/bash
+
+s=`ls -l initrd.cramfs  | egrep -o '[[:digit:]]{5,}'`
+
+hexsize=`python -c "print hex($s)" | tr a-f A-F`
+
+confsize=`grep "CONFIG_CMDLINE" build_armeb/linux-*nslu2/.config | egrep -o "initrd=[^ ]+" | cut -d , -f 2 | tr a-f A-F`
+
+if [[ "$hexsize" != "$confsize" ]]
+then
+    echo "ERROR: Configuration does not match initrd size."
+    echo "initrd=$hexsize, configured=$confsize"
+else
+    echo "OK: Configured initrd size is correct."
+fi
