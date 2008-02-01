@@ -1,0 +1,45 @@
+#!/bin/bash
+
+dev=$1
+
+if [[ "$dev" == "" ]]
+then
+    echo "Please supply a device path."
+    exit
+fi
+
+if [ ! -e $dev ]
+then
+    echo "Error: \"$dev\" isn't a device"
+    exit
+fi
+
+umount $dev
+umount ${dev}1
+umount ${dev}2
+
+dd if=/dev/zero of=$dev bs=1024 count=4
+parted -s $dev mklabel msdos
+parted -s $dev mkpart primary fat32 0 20M
+parted -s $dev -- mkpart primary ext2 20M -0
+
+sync
+echo Unplug and then plug the device back in please... then press enter.
+read
+
+while [[ ! -e /dev/sdb1 ]]
+do
+    sleep 1
+    echo "Waiting"
+done
+
+sudo chown $USER ${dev}1
+sudo chown $USER ${dev}2
+
+echo "Writing filesystem..."
+dd if=rootfs.armeb.ext2 of=${dev}2
+echo "Resizing filesystem..."
+resize2fs ${dev}2
+echo "Formatting user partition..."
+mkfs.vfat -F 32 ${dev}1
+sync
