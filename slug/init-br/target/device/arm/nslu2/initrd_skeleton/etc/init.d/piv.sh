@@ -20,6 +20,9 @@ umount /initrd/tmp
 
 killall syslogd klogd
 
+echo "Remounting root read-only"
+mount -o remount -o ro -o noatime /
+
 #Source the startup script on the newly mounted root
 exec /etc/ecssr.sh
 
