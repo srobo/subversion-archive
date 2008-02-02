@@ -5,11 +5,11 @@ LDFLAGS :=
 H_FILES = common.h i2c.h init.h dio.h adc.h smbus_pec.h
 C_FILES = main.c i2c.c init.c dio.c adc.c smbus_pec.c
 
-motor:  ${H_FILES} ${C_FILES}
+jointio:  ${H_FILES} ${C_FILES}
 	${CC} -o $@ ${C_FILES} ${CFLAGS} ${LDFLAGS}
 
 
 .PHONY: clean
 
 clean:
-	-rm -f motor
+	-rm -f jointio
