@@ -8,8 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PCF8574A address: 0011 1000 = 0x38 */
-
 #define ADDRESS 0x0F
 #define POS0 3
 #define POS1 135
