@@ -9,74 +9,118 @@
 #include <string.h>
 
 #define ADDRESS 0x14
-#define POS0 3
-#define POS1 135
+
+/* The commands */
+enum
+{
+	/* Get the identity from the board */
+	JOINTIO_IDENTIFY,
+	/* Set the outputs of the board */
+	JOINTIO_OUTPUT,
+	/* Read the board inputs */
+	JOINTIO_INPUT,
+
+	JOINTIO_TEST = 3
+};
 
 typedef enum
 {
 	FALSE = 0, TRUE
 } bool;
 
-bool err_enable = TRUE;
+/* Open and configure I2C device.
+   Returns the file descriptor. */
+int jointio_i2c_conf( void );
+
+/* Get the JointIO Identity. */
+uint32_t jointio_identify( int fd );
+
+/* Dump data to the terminal */
+void dump_data( uint8_t *data, uint32_t len );
 
 int main( int argc, char** argv )
 {
-	uint8_t d = POS0;
-	uint8_t val = 0;
-	int r;
-	uint8_t setting;
 	int fd;
-	uint8_t buf[16]; 
-	uint8_t data= 0x01;
+
+	fd = jointio_i2c_conf();
+
+	printf( "Test result: %x\n", (uint32_t)i2c_smbus_read_byte_data(fd, JOINTIO_TEST) );
+
+/* 	printf( "Read identity as %8.8x\n", jointio_identify(fd) ); */
+
+	return 0;
+}
+
+int jointio_i2c_conf( void )
+{
+	int fd;
 
 	fd = open( "/dev/i2c-0", O_RDWR );
 
 	if( fd == -1 )
 	{
 		fprintf( stderr, "Failed to open /dev/i2c-0: %m\n" );
-		return 1;
+		exit(1);
 	}
 
 	if( ioctl( fd, I2C_SLAVE, ADDRESS ) < 0 )
 	{
 		fprintf( stderr, "Failed to set slave address: %m\n" );
-		return 2;
+		exit(2);
 	}
 
-	if( ioctl( fd, I2C_PEC, 1) < 0) 
+	if( ioctl( fd, I2C_PEC, 0) < 0) 
 	{ 
 		fprintf( stderr, "Failed to enable PEC\n"); 
-		return 3; 
+		exit(3);
 	} 
-	
-	r = i2c_smbus_write_byte_data(fd, 1, 1);
-	if( r < 0 )
-		fprintf(stderr, "Failed to write\n");
-	else
-		printf( "Read %x from dio\n", r );
-	
 
-/*START of code to test reading from the input pins
-  r = i2c_smbus_write_byte(fd, 2);
-  if( r < 0 )
-  fprintf(stderr, "Failed to read dio pins\n");
-  else
-  printf( "Read %x from dio\n", r );
+	return fd;
+}
+
+uint32_t jointio_identify( int fd )
+{
+	uint8_t tmp[4];
+	uint32_t ident = 0;
+	int r;
+
+	/* Send the IDENTIFY command. */
+	if( i2c_smbus_write_quick( fd, JOINTIO_IDENTIFY ) < 0 )
+	{
+		fprintf( stderr, "Failed to read identity: %m\n" );
+		exit(4);
+	}
 	
-  printf("%d\n",read(fd, buf, 16));	
-	
-  int y;
-  uint16_t value;
-  for(y=0;y<8;y++)
-  {		
-  value = ((uint16_t)buf[2*y] << 8) |  (buf[(2*y)+1]);
-  printf("\n buf[%d] = %d", y, (int)value);
-  printf("\n %d %d", (int)buf[2*y], (int)buf[(2*y)+1]);
-  }
-  END of code to test reading from the inputs pins*/ 
-	
-/* 	if( i2c_smbus_write_byte( fd, setting ) < 0 ) */
-/* 		fprintf( stderr, "Failed to set io\n" ); */
-	
-	return 0;
+	r = read( fd, tmp, 4 );
+	if( r < 4 )
+	{
+		fprintf( stderr, "Identity could not be read: %m\n" );
+		if( r  > 0 )
+		{
+			fprintf( stderr, "%i bytes were read: ", r );
+			dump_data( tmp, r );
+			printf("\n");
+		}
+		exit(4);
+	}
+
+	dump_data( tmp, 4 );
+
+	for( r=0; r<4; r++ )
+		ident |= ((uint32_t)tmp[r]) << (8*r);
+
+	return ident;
+}
+
+void dump_data( uint8_t *data, uint32_t len )
+{
+	uint32_t i;
+
+	for(i=0;i<len;i++)
+	{
+		if( i != 0 )
+			printf( " " );
+
+		printf( "%2.2hhx", data[i] );
+	}
 }
