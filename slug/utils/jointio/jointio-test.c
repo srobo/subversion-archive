@@ -35,8 +35,27 @@ int jointio_i2c_conf( void );
 /* Get the JointIO Identity. */
 uint32_t jointio_identify( int fd );
 
+/* Set the digital outputs.
+   Returns FALSE on failure. */
+bool jointio_set_outputs( int fd, uint8_t val );
+
+/* Structure for holding inputs */
+typedef struct
+{
+	uint8_t digital;
+	uint16_t an[16];
+} input_t;
+
+/* Reads the inputs.
+   Returns FALSE on failure.
+   Fills in *v with the inputs. */
+bool jointio_get_inputs( int fd, input_t *v );
+
 /* Dump data to the terminal */
 void dump_data( uint8_t *data, uint32_t len );
+
+/* Perform the tests */
+void jointio_test( int fd );
 
 int main( int argc, char** argv )
 {
@@ -44,9 +63,15 @@ int main( int argc, char** argv )
 
 	fd = jointio_i2c_conf();
 
-	printf( "Test result: %x\n", (uint32_t)i2c_smbus_read_byte_data(fd, JOINTIO_TEST) );
+	/* Are we in test mode? */
+	if( argc == 2 && strcmp(argv[1],"test") == 0 )
+		jointio_test(fd);
+	else
+	{
+		printf( "Test result: %x\n", (uint32_t)i2c_smbus_read_byte_data(fd, JOINTIO_TEST) );
 
-/* 	printf( "Read identity as %8.8x\n", jointio_identify(fd) ); */
+		/* printf( "Read identity as %8.8x\n", jointio_identify(fd) );  */
+	}
 
 	return 0;
 }
@@ -69,7 +94,7 @@ int jointio_i2c_conf( void )
 		exit(2);
 	}
 
-	if( ioctl( fd, I2C_PEC, 0) < 0) 
+	if( ioctl( fd, I2C_PEC, 1) < 0) 
 	{ 
 		fprintf( stderr, "Failed to enable PEC\n"); 
 		exit(3);
@@ -123,4 +148,58 @@ void dump_data( uint8_t *data, uint32_t len )
 
 		printf( "%2.2hhx", data[i] );
 	}
+}
+
+bool jointio_set_outputs( int fd, uint8_t val )
+{
+	if( i2c_smbus_write_byte_data( fd, JOINTIO_OUTPUT, val ) < 0 )
+		return FALSE;
+	else
+		return TRUE;
+}
+
+bool jointio_get_inputs( int fd, input_t *v )
+{
+	uint8_t buf[17];
+
+	/* Write the command byte */
+	if( i2c_smbus_write_quick( fd, JOINTIO_INPUT ) < 0 )
+		return FALSE;
+
+	if( read( fd, buf, 17 ) )
+	{
+		
+	}	
+
+	return FALSE;
+}
+
+void jointio_test( int fd )
+{
+	uint8_t i;
+
+	printf("jointio: test mode\n");
+	printf("Make sure that input 0 is connected to output 0.\n");
+
+	for( i=0; i<10; i++ )
+	{
+		if( ! jointio_set_outputs( fd, 0 ) ) 
+		{
+			printf("Error: Failed to set output: %m\n");
+			exit(2);
+		}
+
+		
+			
+		
+
+		if( ! jointio_set_outputs( fd, 1 ) )
+		{
+			printf("Error: Failed to set output: %m\n");
+			exit(2);
+
+		}
+	}		
+
+	printf("Tests passed\n");		
 }
