@@ -1,0 +1,26 @@
+#!/bin/sh
+
+TMPDIR=/mnt/user/.robotmp
+
+# Mount the user partition
+mount -t vfat /dev/sda1 /mnt/user
+
+# Run the python on the partition
+if [ -e /mnt/user/robot.zip ]
+then
+    rm -rf $TMPDIR
+    mkdir $TMPDIR
+
+    # Unzip the code
+    unzip /mnt/user/robot.zip -d $TMPDIR
+
+    if [ -e $TMPDIR/run.py ]
+	then
+	cd $TMPDIR
+
+	# Log all output to /mnt/user/robot-log.txt
+	exec $TMPDIR/run.py 2>&1 > /mnt/user/robot-log.txt
+    fi
+else
+    echo "Warning: No robot code found."
+fi
