@@ -63,8 +63,11 @@ uint8_t  i2cr_dio_input( uint8_t* buf);
 
 const i2c_cmd_t cmds[] = 
 {
+	/* Supplies the board identity */
 	{ 0, NULL, i2cr_identity },
+	/* Takes the outputs for the dio */
 	{ 1, i2cw_dio_output, NULL },
+	/* Supplies the inputs from the dio */
 	{ 0, NULL, i2cr_dio_input }
 };
 
