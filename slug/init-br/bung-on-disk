@@ -42,4 +42,11 @@ echo "Resizing filesystem..."
 resize2fs ${dev}2
 echo "Formatting user partition..."
 mkfs.vfat -F 32 ${dev}1
+
+tdir=`mktemp -d`
+sudo mount ${dev}1 $tdir
+sudo cp -r user_part/* $tdir/
+sudo umount $tdir
+rm -rf $tdir
+
 sync
