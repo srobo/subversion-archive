@@ -209,14 +209,6 @@ void i2c_init( void )
     IE2 |=  UCB0RXIE | UCB0TXIE;
 }
 
-/* 	case M_OUTPUT: */
-/* 		/\* Write data to port *\/ */
-/* 		P1OUT = b; */
-
-/* 	case M_IDENTIFY: */
-/* 		return i2c_identity[pos]; */
-/* 		break; */
-
 static uint8_t i2cr_identity( uint8_t *buf )
 {
 	uint8_t i;
