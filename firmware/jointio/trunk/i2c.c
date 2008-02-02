@@ -1,4 +1,4 @@
-/*   Copyright (C) 2007 Robert Spanton
+/*   Copyright (C) 2007 Robert Spantonuf
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -229,18 +229,13 @@ void  i2cw_dio_output( uint8_t* buf)
 uint8_t  i2cr_dio_input( uint8_t* buf)
 {	
 	uint8_t x;
-	uint16_t * adc_buf;
 	
-	adc_buf = adc_sample();
-	
-
 	/*send 16bit conversion results using two bytes. MSByte first*/
 	for(x=0;x<8;x++)
 	{	
-		buf[2*x] = (adc_buf[x] >> 8);
-		buf[(2*x)+1] = (adc_buf[x] & 0xFF);
+		buf[2*x] = (adc_buffer[x] >> 8);
+		buf[(2*x)+1] = (adc_buffer[x] & 0xFF);
 	}
 
-
-	return 16;		
+	return 16;
 }

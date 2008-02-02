@@ -16,8 +16,13 @@
 #ifndef __ADC_H
 #define __ADC_H
 #include <stdint.h>
-void adc_init ( void );
-uint16_t*  adc_sample(void);
 
+void adc_init ( void );
+
+/* Perform the ADC samples */
+void adc_sample(void);
+
+/* Buffer of ADC readings */
+extern uint16_t adc_buffer[8];
 
 #endif 	/* __ADC_H  */

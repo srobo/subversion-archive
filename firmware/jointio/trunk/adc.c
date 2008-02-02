@@ -19,10 +19,7 @@
 #include <msp430/adc10.h>
 #include <signal.h>
 
-#define BLOCK_SIZE 8
-
-uint16_t block[BLOCK_SIZE];		//8 bit buffer for DTC block
-uint16_t y;				//counter variable
+uint16_t adc_buffer[8];
 
 void adc_init(void){
 
@@ -42,8 +39,10 @@ void adc_init(void){
 	P2SEL |= 0x1F;			//Set A0 - A4 as Input Pins 
 }
 
-uint16_t*  adc_sample(void){			
-	y = 0;				//reset pin counter
+void adc_sample( void )
+{
+	uint8_t y;
+
 	ADC10CTL0 |= ENC | ADC10SC;	//start and enable conversion
 
 	for(y=0;y<8;y++){
@@ -54,13 +53,8 @@ uint16_t*  adc_sample(void){
 		ADC10CTL0 |= ENC;
 		ADC10CTL0 |= ADC10SC;
 
-		while(ADC10BUSY & ADC10CTL1)
-		{
-			//do nothing		
-		}
-	
-		block[y] = ADC10MEM;
-	}
+		while(ADC10BUSY & ADC10CTL1);
 
-	return block;
+		adc_buffer[y] = ADC10MEM;
+	}
 }

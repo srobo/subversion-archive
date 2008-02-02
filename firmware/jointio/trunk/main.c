@@ -36,9 +36,9 @@ int main( void )
 	adc_init();
 	init();
 	
-	
 	while(1)
 	{
+		adc_sample();
 	}
 }
 
