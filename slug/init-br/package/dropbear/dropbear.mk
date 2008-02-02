@@ -70,8 +70,8 @@ $(TARGET_DIR)/$(DROPBEAR_TARGET_BINARY): $(DROPBEAR_DIR)/$(DROPBEAR_BINARY)
 	ln -snf ../sbin/dropbear $(TARGET_DIR)/usr/bin/dbclient
 	ln -snf ../sbin/dropbear $(TARGET_DIR)/usr/bin/dropbearkey
 	ln -snf ../sbin/dropbear $(TARGET_DIR)/usr/bin/dropbearconvert
-	cp $(DROPBEAR_DIR)/S50dropbear $(TARGET_DIR)/etc/init.d/
-	chmod a+x $(TARGET_DIR)/etc/init.d/S50dropbear
+# 	cp $(DROPBEAR_DIR)/S50dropbear $(TARGET_DIR)/etc/init.d/
+# 	chmod a+x $(TARGET_DIR)/etc/init.d/S50dropbear
 
 dropbear: uclibc zlib $(TARGET_DIR)/$(DROPBEAR_TARGET_BINARY)
 
