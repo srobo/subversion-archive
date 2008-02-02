@@ -38,7 +38,20 @@ void motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
 	v |= ((uint16_t)s) << 9;
 	v |= m?0x800:0;
 
-	i2c_smbus_write_word_data( fd, 0, v );
+	if( i2c_smbus_write_word_data( fd, 1, v ) < 0 )
+		fprintf( stderr, "Failed to set motor: %m\n" );
+}
+
+void motor_identify( int fd )
+{
+	int id;
+
+	id = i2c_smbus_read_word_data( fd, 0 );
+
+	if( id < 0 )
+		fprintf( stderr, "Failed to read motor identity: %m\n" );
+	else
+		printf( "Identified as %X\n", id );
 }
 
 int main( int argc, char** argv )
@@ -97,6 +110,14 @@ int main( int argc, char** argv )
 		fprintf( stderr, "Failed to set slave address: %m\n" );
 		return 2;
 	}
+
+	if( ioctl( fd, I2C_PEC, 1) < 0)
+	{
+		fprintf( stderr, "Failed to enable PEC\n");
+		return 3;
+	}
+
+	/* motor_identify(fd); */
 
 	motor_set( fd, channel, dir, pwm );
 	
