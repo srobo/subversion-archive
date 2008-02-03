@@ -115,9 +115,8 @@ interrupt (TIMERA0_VECTOR) isr_TACR0(void)
 inline void set_p1out(uint8_t p1)
 {
 	/* Only change the output if the rail is up */
-	if(P2IN & RAIL_MONITOR_PIN){
+	if(P2IN & RAIL_MONITOR_PIN)
 		P1OUT = p1;
-	}
 }
 
 /* ISR for TACCR1, TACCR2 (not available on F2012) and overflow. 
