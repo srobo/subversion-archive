@@ -27,9 +27,6 @@ char i2c_data[32];
 /* The I2C transmission state machine state */
 state_t I2C_State = state_idle;
 
-/* Whether a transmission is complete */
-char i2c_session_complete = 0;
-
 /* The number of bytes that have currently been received */
 static uint8_t data_pos = 0;
 
@@ -141,9 +138,6 @@ inline void isr_usi (void)
 		}
 		else
 		{
-			/* All data received */
-			i2c_session_complete = 1;
-
 			servo_set_pwm( i2c_data[0],
 				       (MIN_PULSE + ((MAX_PULSE-MIN_PULSE)/255)*(uint16_t)i2c_data[1]));
 			data_pos = 0;
@@ -194,7 +188,6 @@ state_t smbus_parse(char command)
 			/* 2 bytes to be received */
 			num_bytes = 2;
 			data_pos = 0;
-			i2c_session_complete = 0;
 
 			state = state_rx_data;
 			break;
