@@ -35,8 +35,8 @@ Function will initialise the MSP430 for the PWM board. This involves
 initialising the main oscillator, settings ports for IO, putting the USI
 in I2C mode, etc
 **/
-void initialise_PwmBoard(void){
-	
+void initialise_PwmBoard(void)
+{
 	/**Initialising MSP430**/
 	WDTCTL = WDTCTL_INIT;	//Initializing watchdog timer
 	DCOCTL = CALDCO_INIT;	//Initializing clock source
@@ -78,11 +78,12 @@ void initialise_PwmBoard(void){
 	eint(); //enable interrupts
 }
 
-int main(void) {
-
+int main(void)
+{
 	initialise_PwmBoard();
 
-	while (1){
+	while (1)
+	{
 		/* Process i2c if either a START, Counter=0 flag is set */
 		if( (USICTL1 & USIIFG) || (USICTL1 & USISTTIFG) )
 			polled_i2c();
@@ -95,7 +96,8 @@ int main(void) {
 ISR for IO interrupt
 If a negative edge (rail = 0) then set P1 to be all low
 **/
-interrupt (PORT2_VECTOR) isr_port2(void){
+interrupt (PORT2_VECTOR) isr_port2(void)
+{
 	P1OUT = 0x00;
 	P2IFG = 0x00;
 }
@@ -104,12 +106,14 @@ interrupt (PORT2_VECTOR) isr_port2(void){
 ISR for TACCR0. Is called at the end of the pulse period ~20ms, 
 it resets TIMERA, resets current_servo, and put servo0 pin high
 **/
-interrupt (TIMERA0_VECTOR) isr_TACR0(void){
+interrupt (TIMERA0_VECTOR) isr_TACR0(void)
+{
 	current_servo = 0;
 	set_p1out(0xFE);
 }
 
-inline void set_p1out(uint8_t p1){
+inline void set_p1out(uint8_t p1)
+{
 	if(P2IN & RAIL_MONITOR_PIN){ //if rail is high then change pin output
 		P1OUT = p1;
 	}
@@ -120,7 +124,8 @@ It is called at the end of every pulse ~0.8-2.2ms.
 Will set the current servo pin low and set the next servo pin high. 
 **/
 interrupt (TIMERA1_VECTOR) isr_TAIV(void){ //both for period interrupt and
-	switch( TAIV ){
+	switch( TAIV )
+	{
 	case  2: // CCR1
 		current_servo++;
 		//checks that there is a next servo!
@@ -138,7 +143,8 @@ interrupt (TIMERA1_VECTOR) isr_TAIV(void){ //both for period interrupt and
 	}
 }
 
-void polled_i2c(void){
+void polled_i2c(void)
+{
 	uint8_t number_of_data;
 	uint8_t * data;
 	isr_usi ();
