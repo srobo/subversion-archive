@@ -114,30 +114,35 @@ interrupt (TIMERA0_VECTOR) isr_TACR0(void)
 
 inline void set_p1out(uint8_t p1)
 {
-	if(P2IN & RAIL_MONITOR_PIN){ //if rail is high then change pin output
+	/* Only change the output if the rail is up */
+	if(P2IN & RAIL_MONITOR_PIN){
 		P1OUT = p1;
 	}
 }
-/**
-ISR for TACCR1, TACCR2 (not available on F2012) and overflow. 
-It is called at the end of every pulse ~0.8-2.2ms.
-Will set the current servo pin low and set the next servo pin high. 
-**/
-interrupt (TIMERA1_VECTOR) isr_TAIV(void){ //both for period interrupt and
+
+/* ISR for TACCR1, TACCR2 (not available on F2012) and overflow. 
+ * It is called at the end of every pulse ~0.8-2.2ms.
+ * Will set the current servo pin low and set the next servo pin high. */
+interrupt (TIMERA1_VECTOR) isr_TAIV(void)
+{ 
 	switch( TAIV )
 	{
 	case  2: // CCR1
 		current_servo++;
 		//checks that there is a next servo!
-		if(current_servo<SERVO_NUMBER){
+		if(current_servo<SERVO_NUMBER)
+		{
 			//get servo# pulse width, increment cc1 by its width
 			TACCR1 += getServoPWM(current_servo);
 			set_p1out(~(0x1<<current_servo)); //set servo# output high
-		}else{
+		} 
+		else
+		{
 			set_p1out(0xFF);
 			TACCR1 = getServoPWM(0); //reset CC1 to pulse Servo0
 		}
 		break;
+
 	case  4: break;       // CCR2 is not present on the F2013
 	case 10: break;       // overflow, will occur when
 	}
