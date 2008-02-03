@@ -7,6 +7,7 @@ Block read protocol
 **/
 #include "hardware.h"
 #include "i2c.h"
+#include "servo.h"
 
 typedef enum
 {
@@ -44,21 +45,6 @@ char i2c_data_number = 0;
 /* Process an I2C command.
  * Returns the new state for the I2C state machine. */
 state_t smbus_parse(char command);
-
-char available_i2c_data(void)
-{
-	if(i2c_session_complete)
-		return i2c_data_number;
-
-	return 0;
-}
-
-char * get_i2cData(void)
-{
-	new_i2c_data = 0; 
-
-	return i2c_data;
-}
 
 void initialise_i2c(void)
 {
@@ -157,6 +143,10 @@ inline void isr_usi (void)
 		{
 			/* All data received */
 			i2c_session_complete = 1;
+
+			servo_set_pwm( i2c_data[0],
+				       (MIN_PULSE + ((MAX_PULSE-MIN_PULSE)/255)*(uint16_t)i2c_data[1]));
+			new_i2c_data = 0;
 
 			/* START condition will happen next */
 			sda_input();

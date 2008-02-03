@@ -152,16 +152,7 @@ interrupt (TIMERA1_VECTOR) isr_TAIV(void)
 
 void polled_i2c(void)
 {
-	uint8_t number_of_data;
-	uint8_t * data;
 	isr_usi ();
-	if(available_i2c_data())
-	{
-		number_of_data = available_i2c_data();
-		data = get_i2cData();
-		servo_set_pwm( data[0],
-			       (MIN_PULSE + ((MAX_PULSE-MIN_PULSE)/255)*(uint16_t)data[1]));
-	}	
 }
 
 interrupt (NOVECTOR) IntServiceRoutine(void)
