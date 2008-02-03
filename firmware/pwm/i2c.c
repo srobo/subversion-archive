@@ -21,6 +21,14 @@ typedef enum
 	state_prep_for_start
 }state_t;
 
+/* Command lengths */
+static const uint8_t command_len[] = 
+{
+	0,			/* COMMAND_IDENTIFY */
+	2,			/* COMMAND_SET */
+	0			/* COMMAND_READ */
+};
+
 /* Buffer for I2C data */
 char i2c_data[32];
 
@@ -38,10 +46,6 @@ static uint8_t num_bytes = 0;
 #define sda_output() do { USICTL0 |= USIOE; } while (0)
 /* Set SDA to an input */
 #define sda_input() do { USICTL0 &= ~USIOE; } while (0)
-
-/* Process an I2C command.
- * Returns the new state for the I2C state machine. */
-state_t smbus_parse(char command);
 
 void initialise_i2c(void)
 {
@@ -117,7 +121,14 @@ inline void isr_usi (void)
 		sda_output();
 
 		/* Process the command */
-		I2C_State = smbus_parse(USISRL);
+		if( USISRL < sizeof( command_len ) )
+		{
+			num_bytes = command_len[ USISRL ];
+			I2C_State = state_rx_data;
+		}
+		else
+			/* Command is out of range */
+			I2C_State = state_prep_for_start;
 
 		/* Send ACK */
 		USISRL = 0x00;
@@ -173,33 +184,3 @@ inline void isr_usi (void)
 	USICTL1 &= ~USIIFG;
 }
 
-state_t smbus_parse(char command)
-{
-	char state = state_check_data;
-
-	switch(command){
-		/* Send identifier to master */
-		case COMMAND_IDENTIFY:
-			/* Not implemented */
-			break;
-
-			/* Get the position of a servo from the master */
-		case COMMAND_SET:
-			/* 2 bytes to be received */
-			num_bytes = 2;
-			data_pos = 0;
-
-			state = state_rx_data;
-			break;
-
-			/* Send servo states to master */
-		case COMMAND_READ:
-			/* Not implemented */
-			break;
-
-		default:
-			/* Unknown command - go back to the start */
-			state = state_prep_for_start;
-	}
-	return state;
-}
