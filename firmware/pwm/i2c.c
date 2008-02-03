@@ -30,7 +30,7 @@ static const uint8_t command_len[] =
 };
 
 /* Buffer for I2C data */
-char i2c_data[32];
+uint8_t i2c_data[32];
 
 /* The I2C transmission state machine state */
 state_t I2C_State = state_idle;
