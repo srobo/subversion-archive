@@ -4,11 +4,6 @@ uint16_t servo_pulse[SERVO_NUMBER];
 
 void servo_init( void )
 {
-	
-}
-
-void initialiseServoArray(uint16_t pulse_width)
-{
 	uint8_t i;
 
 	for(i=0; i<SERVO_NUMBER; i++)
