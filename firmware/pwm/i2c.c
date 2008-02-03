@@ -22,7 +22,6 @@ typedef enum
 
 /* Buffer for I2C data */
 char i2c_data[32];
-char SLV_Addr = ADDRESS;
 
 /* The I2C transmission state machine state */
 state_t I2C_State = state_idle;
@@ -92,16 +91,14 @@ inline void isr_usi (void)
 		break;
 
 	case state_check_address: // Process Address and send Ack
-		if (USISRL & 0x01){	// If read... This is done so that the addresses can be compared directly
-			SLV_Addr++;		// Save R/W bit
-		}	
-		if (USISRL == SLV_Addr){	// Address match?
+		/* Our Address? */
+		if ( (USISRL & 0xFE) == (ADDRESS << 1) )
+		{
 			USICTL0 |= USIOE;		// SDA = output ??? can it switch so fast
 			USISRL = 0x00;			// Send Ack
 			I2C_State = state_rx_command;	// Go to next state: RX data
 			USICNT |= 0x01;			//  Bit counter = 1, send Ack bit
 		}else{ //Not correct address, reset to idle
-			SLV_Addr = ADDRESS;         // Reset slave address
 			I2C_State = state_idle;     // Reset state machine
 		}
 		break;
@@ -131,7 +128,6 @@ inline void isr_usi (void)
 		}else{ // Prep for Start condition
 			i2c_session_complete =1;
 			USICTL0 &= ~USIOE;       // SDA = input
-			SLV_Addr = ADDRESS;         // Reset slave address
 			I2C_State = state_idle;           // Reset state machine
 		}
 		break;
@@ -146,7 +142,6 @@ inline void isr_usi (void)
 	
 	case state_prep_for_start: // Prep for Start condition
 		USICTL0 &= ~USIOE;       // SDA = input
-		SLV_Addr = ADDRESS;         // Reset slave address
 		I2C_State = state_idle;           // Reset state machine
 		break;
 	}
