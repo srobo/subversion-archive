@@ -103,59 +103,84 @@ inline void isr_usi (void)
 			sda_output();
 
 			/* Send ACK */
-			USISRL = 0x00;			// Send Ack
-			USICNT |= 0x01;			//  Bit counter = 1, send Ack bit
+			USISRL = 0x00;
+			/* ACK is 1 bit */
+			USICNT |= 0x01; 
 
-			/* Jump to the next state */
-			I2C_State = state_rx_command;	// Go to next state: RX data
+			/* Start receiving things */
+			I2C_State = state_rx_command;
 		}
 		else
-			I2C_State = state_idle;     // Reset state machine
+			I2C_State = state_idle;
 		break;
 
-	case state_rx_command: // prep to Receive data byte 1
+		/* Prepare to receive first data byte */
+	case state_rx_command:
 		sda_input();
-		USICNT |=  0x08;	// Bit counter = 8, RX data
-		I2C_State = state_check_command;// Go to next state: Test data
+		/* 8-bits to receive */
+		USICNT |=  0x08;
+
+		I2C_State = state_check_command;
 		break;
 
-	case state_check_command:// Check Data & TX (N)Ack and understand command
+		/* Process a command byte */
+	case state_check_command:
 		sda_output();
-		if (1){  // If data valid... ALWAYS VALID
-			I2C_State = smbus_parse(USISRL);  // Prep for Start condition;
-			USISRL = 0x00;         // Send Ack
-		}else{
-			USISRL = 0xFF;         // Send NAck
-		}
-		USICNT |= 0x01;          // Bit counter = 1, send (N)Ack bit
+
+		/* Process the command */
+		I2C_State = smbus_parse(USISRL);  // Prep for Start condition;
+
+		/* Send ACK */
+		USISRL = 0x00;
+		USICNT |= 0x01;
 		break;
 
-	case state_rx_data: //Write word , prepping to recieve data
-		if(new_i2c_data++ < i2c_data_number){ // Receive data byte
+		/* Receive data */
+	case state_rx_data:
+
+		if( new_i2c_data++ < i2c_data_number )
+		{ 
+			/* More data to receive */
 			sda_input();
-			USICNT |=  0x08;         // Bit counter = 8, RX data
+
+			USICNT |=  0x08;
+
 			I2C_State = state_check_data;          // Go to next state: Test data and (N)Ack
-		}else{ // Prep for Start condition
-			i2c_session_complete =1;
+		}
+		else
+		{
+			/* All data received */
+			i2c_session_complete = 1;
+
+			/* START condition will happen next */
 			sda_input();
-			I2C_State = state_idle;           // Reset state machine
+			I2C_State = state_idle;
 		}
 		break;
 		
-	case state_check_data: //store data
+		/* Store the received data */
+	case state_check_data:
 		sda_output();
-		i2c_data[new_i2c_data-1] = USISRL; //store data in aray
-		USISRL = 0x00;         // Send Ack
-		I2C_State = state_rx_data; 	//go back and set up for next bit if there is one
-		USICNT |= 0x01;          // Bit counter = 1, send Ack bit
+
+		i2c_data[new_i2c_data-1] = USISRL;
+
+		/* Send ACK */
+		USISRL = 0x00;
+		USICNT |= 0x01;
+
+		/* Receive the next byte */
+		I2C_State = state_rx_data;
 		break;
 	
-	case state_prep_for_start: // Prep for Start condition
+		/* Prepare for a START bit */
+	case state_prep_for_start:
 		sda_input();
-		I2C_State = state_idle;           // Reset state machine
+
+		I2C_State = state_idle;
 		break;
 	}
-	USICTL1 &= ~USIIFG;                  // Clear pending flags
+
+	USICTL1 &= ~USIIFG;
 }
 
 state_t smbus_parse(char command)
@@ -163,21 +188,29 @@ state_t smbus_parse(char command)
 	char state = state_check_data;
 
 	switch(command){
+		/* Send identifier to master */
 		case COMMAND_IDENTIFY:
-			//send identifier back to master
+			/* Not implemented */
 			break;
+
+			/* Get the position of a servo from the master */
 		case COMMAND_SET:
-			state = state_rx_data;
-			i2c_data_number = 2; //number of bytes to be recieved
+			/* 2 bytes to be received */
+			i2c_data_number = 2;
 			new_i2c_data = 0;
 			i2c_session_complete = 0;
-			//get servo position from master
+
+			state = state_rx_data;
 			break;
+
+			/* Send servo states to master */
 		case COMMAND_READ:
-			//send back block of code with PWM status
+			/* Not implemented */
 			break;
+
 		default:
-			state = state_prep_for_start; //unknown data, prep for start 
+			/* Unknown command - go back to the start */
+			state = state_prep_for_start;
 	}
 	return state;
 }
