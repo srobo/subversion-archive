@@ -4,9 +4,7 @@ SMBUS protols supported:
 Write word protocol
 Read word protocol
 Block read protocol
-
 **/
-
 #include "hardware.h"
 #include "i2c.h"
 
@@ -147,17 +145,17 @@ inline void isr_usi (void)
 char smbus_parse(char command){
 	char state =6;
 	switch(command){
-		case 0:
+		case COMMAND_IDENTIFY:
 			//send identifier back to master
 			break;
-		case 1:
+		case COMMAND_SET:
 			state = state_rx_data;
 			i2c_data_number = 2; //number of bytes to be recieved
 			new_i2c_data = 0;
 			i2c_session_complete = 0;
 			//get servo position from master
 			break;
-		case 2:
+		case COMMAND_READ:
 			//send back block of code with PWM status
 			break;
 		default:

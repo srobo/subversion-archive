@@ -8,6 +8,19 @@ header file
 #define ADDRESS 0x1E
 #define IDENTIFIER 0x0001U
 
+/* I2C Commands */
+enum
+{
+	/* Identify the device */
+	COMMAND_IDENTIFY = 0,
+
+	/* Set the servo position */
+	COMMAND_SET,
+
+	/* Read the servo positions back */
+	COMMAND_READ
+};
+
 void initialise_i2c(void);
 
 /* Returns the number of available bytes of data.
