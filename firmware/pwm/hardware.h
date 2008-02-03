@@ -5,8 +5,6 @@
 #include <signal.h>
 #include <iomacros.h>
 
-
-
 /**
 Main oscillator settings. Setup registers DCOCTL and BCSCTL1 so DCOCLK
 is main clock and is at 12Mhz
@@ -46,22 +44,5 @@ this sets the port directions. Port1.6 and 1.7 are set to input because they wil
 
 //Disable watchdog i think but comment says other wise ???system clock in div by 2
 #define WDTCTL_INIT     WDTPW|WDTHOLD
-
-/**
-Defining constants for the PWM board.
-**/
-#define PERIOD 60000
-#define TICKS_PER_MS (uint16_t)(PERIOD/20)
-#define MIN_PULSE (uint16_t)(0.8*TICKS_PER_MS)
-#define MIDDLE_PULSE (uint16_t)(1.5*TICKS_PER_MS)
-#define MAX_PULSE (uint16_t)(2.3*TICKS_PER_MS)
-#define SERVO_NUMBER 6
-
-void initialiseServoArray(unsigned int pulse_width);
-unsigned int getServoPWM(unsigned char servo);
-void setServoPWM(unsigned char servo, unsigned int pulse_width);
-void polled_i2c(void);
-void set_p1out(uint8_t p1);
-
 
 #endif //HARDWARE_H
