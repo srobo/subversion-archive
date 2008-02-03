@@ -15,6 +15,7 @@ import sr
 log = logging.getLogger("roboide.controllers")
 
 ZIPNAME = "robot.zip"
+SYSFILES = "/srv/sysfiles"
 
 class Client:
     """
@@ -26,19 +27,9 @@ class Client:
         """
         Create a pysvn client and use it
         """
-        def get_login(realm, username, may_save):
-            user = cherrypy.request.headers["X-Forwarded-User"]
-            log.debug("setting get_login with username %s" % user)
-            return True, user, "", False
+        username = cherrypy.request.headers["X-Forwarded-User"]
+        log.debug("USERNAME: %s" % username)
 
-        c = pysvn.Client()
-        c.callback_get_login = get_login
-        c.set_store_passwords(False)
-        c.set_auth_cache(False)
-        
-        #Using self.__dict__[] to avoid calling setattr in recursive death
-        self.__dict__["client"] = c
-        
         def ldap_login():
             """
             This is the standard anonymous login.
@@ -47,18 +38,38 @@ class Client:
             return ("uid=anon,ou=users,o=sr",password)
         
         sr.set_userinfo(ldap_login)
-
-        user = sr.user(cherrypy.request.headers["X-Forwarded-User"])
-        groups = user.groups()
-        for group in groups:
-            if "team" in group:
-                n = int(group[4:])
-                self.__dict__["REPO"] = \
-                "http://studentrobotics.org/isvn2/%d/" % n
-                return
         
-        self.__dict__["REPO"] = "http://studentrobotics.org/isvn/"
-        logging.error("Team not found for user")
+        if username in sr.users.list():
+            user = sr.user(username)
+            groups = user.groups()
+            for group in groups:
+                if "team" in group:
+                    n = int(group[4:])
+                    log.debug("User %s is in team %d" % (username, n))
+
+                    def get_login(realm, username, may_save):
+                        user = cherrypy.request.headers["X-Forwarded-User"]
+                        log.debug("setting get_login with username %s" % user)
+                        return True, user, "", False
+
+                    c = pysvn.Client()
+                    c.callback_get_login = get_login
+                    c.set_store_passwords(False)
+                    c.set_auth_cache(False)
+                    
+                    #Using self.__dict__[] to avoid calling setattr in recursive death
+                    self.__dict__["client"] = c
+            
+                    self.__dict__["REPO"] = \
+                    "http://studentrobotics.org/isvn2/%d/" % n
+
+                    return
+        
+            self.__dict__["REPO"] = "http://studentrobotics.org/isvn/"
+            log.error("Team not found for user")
+        else:
+            log.error("User not found!")
+            raise RuntimeError("Username incorrectly passed to Python")
 
 
     def is_url(self, url):
@@ -190,36 +201,53 @@ class Root(controllers.RootController):
         #Create a zip file in a temporary directory
         zfile = tempfile.mktemp()
         zip = zipfile.ZipFile(zfile, "w")
+
         #Check for an all directory on its own in the root
         head = root
         if(os.listdir(root) == ["all"]):
             head = root + "/all"
 
-        #Walk through the tree of files checked out and add them
-        #to the zipfile
-        for node, dirs, files in os.walk(head):
-            for name in files:
-                #If the file is in the root directory
-                if node == head:
-                    #Add it named just its name
-                    zip.write(os.path.join(node, name), name)
-                else:
-                    #Add it with a suitable path
-                    zip.write(os.path.join(node, name),
-                          node[len(root)+1:]+"/"+name)
+        def add_dir_to_zip(head, zip):
+            #Walk through the tree of files checked out and add them
+            #to the zipfile
+            for node, dirs, files in os.walk(head):
+                for name in files:
+                    #Skip .svn directories
+                    if ".svn" in node:
+                        continue
+                    #If the file is in the root directory
+                    if node == head:
+                        #Add it named just its name
+                        zip.write(os.path.join(node, name), name)
+                    else:
+                        #Add it with a suitable path
+                        zip.write(os.path.join(node, name),
+                            node[len(root)+1:]+"/"+name)
+        
+        add_dir_to_zip(head, zip)
         zip.close()
         #Zipfile now ready to be shipped.
         #Clean up root dir
         shutil.rmtree(root)
+
+        #Create a second zip file placing the user zip in the system zip
+        syszfile = tempfile.mktemp()
+        syszip = zipfile.ZipFile(syszfile, "w")
+        add_dir_to_zip(SYSFILES, syszip)
+
+        syszip.write(zfile, ZIPNAME)
+        #Get rid of the temporary zipfile
+        os.unlink(zfile)
+        syszip.close() 
+
         #Set up headers for correctly serving a zipfile
         cherrypy.response.headers['Content-Type'] = \
                 "application/x-download"
         cherrypy.response.headers['Content-Disposition'] = \
                 'attachment; filename="' + ZIPNAME + '"'
         #Read the data in from the temporary zipfile
-        zipdata = open(zfile, "rb").read()
-        #Get rid of the temporary zipfile
-        os.unlink(zfile)
+        zipdata = open(syszfile, "rb").read()
+        os.unlink(syszfile)
         #Return the data
         return zipdata
 
