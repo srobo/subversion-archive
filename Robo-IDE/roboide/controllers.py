@@ -17,60 +17,55 @@ log = logging.getLogger("roboide.controllers")
 ZIPNAME = "robot.zip"
 SYSFILES = "/srv/sysfiles"
 
+def getteams():
+    username = cherrypy.request.headers["X-Forwarded-User"]
+
+    def ldap_login():
+        """
+        This is the standard anonymous login.
+        """
+        password = config.get("anonpassword")
+        return ("uid=anon,ou=users,o=sr",password)
+    
+    sr.set_userinfo(ldap_login)
+    
+    if username in sr.users.list():
+        user = sr.user(username)
+        groups = user.groups()
+        return [group[4:] for group in groups \
+                                    if "team" in group]
+    else:
+        return RuntimeError("Could not find user")
+
+
 class Client:
     """
     A wrapper around a pysvn client. This creates a client and wraps calls to
     its functions.
     """
     client = None
-    def __init__(self):
+    def __init__(self, team):
         """
         Create a pysvn client and use it
         """
-        username = cherrypy.request.headers["X-Forwarded-User"]
-        log.debug("USERNAME: %s" % username)
+        def get_login(realm, username, may_save):
+            user = cherrypy.request.headers["X-Forwarded-User"]
+            return True, user, "", False
 
-        def ldap_login():
-            """
-            This is the standard anonymous login.
-            """
-            password = config.get("anonpassword")
-            return ("uid=anon,ou=users,o=sr",password)
+        c = pysvn.Client()
+        c.callback_get_login = get_login
+        c.set_store_passwords(False)
+        c.set_auth_cache(False)
         
-        sr.set_userinfo(ldap_login)
-        
-        if username in sr.users.list():
-            user = sr.user(username)
-            groups = user.groups()
-            for group in groups:
-                if "team" in group:
-                    n = int(group[4:])
-                    log.debug("User %s is in team %d" % (username, n))
+        #Using self.__dict__[] to avoid calling setattr in recursive death
+        self.__dict__["client"] = c
+        if not team in getteams():
+            raise RuntimeError("User can not access team %d" % team)
 
-                    def get_login(realm, username, may_save):
-                        user = cherrypy.request.headers["X-Forwarded-User"]
-                        log.debug("setting get_login with username %s" % user)
-                        return True, user, "", False
+        team = int(team)
 
-                    c = pysvn.Client()
-                    c.callback_get_login = get_login
-                    c.set_store_passwords(False)
-                    c.set_auth_cache(False)
-                    
-                    #Using self.__dict__[] to avoid calling setattr in recursive death
-                    self.__dict__["client"] = c
-            
-                    self.__dict__["REPO"] = \
-                    "http://studentrobotics.org/isvn2/%d/" % n
-
-                    return
-        
-            self.__dict__["REPO"] = "http://studentrobotics.org/isvn/"
-            log.error("Team not found for user")
-        else:
-            log.error("User not found!")
-            raise RuntimeError("Username incorrectly passed to Python")
-
+        self.__dict__["REPO"] = \
+        "http://studentrobotics.org/isvn2/%d/" % team
 
     def is_url(self, url):
         """Override the default is_url which just tells you if the url looks
@@ -81,6 +76,7 @@ class Client:
             return True
         except pysvn.ClientError:
             return False
+
     def __setattr__(self, name, val):
         """
         This special method is called when setting a value that isn't found
@@ -117,7 +113,11 @@ class Feed(FeedController):
 
 class Root(controllers.RootController):
 
-    feed = Feed()
+    #feed = Feed()
+
+    @expose("json")
+    def teams(self):
+        return {"teams" : getteams()}
 
     @expose()
     def index(self):
@@ -146,7 +146,7 @@ class Root(controllers.RootController):
         return rev
 
     @expose()
-    def checkout(self, files=""):
+    def checkout(self, team, files=""):
         """
         This function grabs a set of files and makes a zip available. Should be
         linked to directly.
@@ -156,7 +156,7 @@ class Root(controllers.RootController):
             A zip file as a downloadable file with appropriate HTTP headers
             sent.
         """
-        client = Client()
+        client = Client(team)
         files = files.split(",")
         rev = self.get_revision("HEAD")
 
@@ -252,7 +252,7 @@ class Root(controllers.RootController):
         return zipdata
 
     @expose("json")
-    def filesrc(self, file=None, revision="HEAD"):
+    def filesrc(self, team, file=None, revision="HEAD"):
         """
         Returns the contents of the file.
         Turns out the action parameter can be edit. Not sure how this is
@@ -260,7 +260,7 @@ class Root(controllers.RootController):
         TODO: Cope with revision other than head.
         """
         curtime = time.time()
-        client = Client()
+        client = Client(team)
         
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
 
@@ -305,8 +305,8 @@ class Root(controllers.RootController):
                 name=os.path.basename(file))
 
     @expose("json")
-    def gethistory(self, file):
-        c = Client()
+    def gethistory(self, team, file):
+        c = Client(team)
 
         try:
             log = c.log(c.REPO+file)
@@ -327,7 +327,7 @@ class Root(controllers.RootController):
         return tmpdir
 
     @expose("json")
-    def polldata(self,files = "",logrev=None):
+    def polldata(self, team, files = "",logrev=None):
         """Returns poll data:
             inputs: files - comma seperated list of files the client needs info
             on
@@ -338,8 +338,7 @@ class Root(controllers.RootController):
         #Default data
         r = {}
         l = {}
-        client = Client()
-        log.debug("Polled")
+        client = Client(team)
 
         if files != "":
             files = files.split(",")
@@ -356,7 +355,7 @@ class Root(controllers.RootController):
             try:
                 newlogs = client.log(client.REPO, discover_changed_paths=True,
                     revision_end=pysvn.Revision(pysvn.opt_revision_kind.number,
-                        int(logrev)))
+                        int(logrev)+1))
 
                 l =[{"author":x["author"], \
                         "date":time.strftime("%H:%M:%S %d/%m/%Y", \
@@ -368,11 +367,10 @@ class Root(controllers.RootController):
                 #No commits recently, no data to return
                 pass
 
-        log.debug(l)
         return dict(files=r, log=l)
     
     @expose("json")
-    def delete(self, files):
+    def delete(self, team, files):
         """
         Delete files from the repository, and prune empty directories.
         inputs: files - comma seperated list of paths
@@ -380,7 +378,7 @@ class Root(controllers.RootController):
         """
         if files != "":
             files = files.split(",")
-            client = Client()
+            client = Client(team)
 
             #This is called to get a log message for the deletion
             def cb():
@@ -410,7 +408,7 @@ class Root(controllers.RootController):
             return dict(Message = message)
     
     @expose("json")
-    def fulllog(self):
+    def fulllog(self, team):
         """Get a full log of file changes
             inputs: None
             returns (JSON): log - a list of dictionaries of:
@@ -418,7 +416,7 @@ class Root(controllers.RootController):
                     changed_paths is a list of dicts:
                         action, path
         """
-        client = Client()
+        client = Client(team)
         log = client.log(client.REPO, discover_changed_paths=True)
 
         return dict(log=[{"author":x["author"], \
@@ -429,7 +427,7 @@ class Root(controllers.RootController):
                           x.changed_paths]} for x in log])
 
     @expose("json")
-    def savefile(self, file, rev, message, code):
+    def savefile(self, team, file, rev, message, code):
         """Write a commit of one file.
         1. SVN checkout the file's directory
         2. Dump in the new file data
@@ -438,7 +436,7 @@ class Root(controllers.RootController):
 
         TODO: Usernames.
         """
-        client = Client()
+        client = Client(team)
         reload = "false"
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness
@@ -528,7 +526,7 @@ class Root(controllers.RootController):
             client.mkdir(client.REPO + path, "New Directory: " + path)
 
     @expose("json")
-    def filelist(self, client = None):
+    def filelist(self, team):
         """
         Returns a directory tree of the current repository.
         inputs: None
@@ -539,8 +537,7 @@ class Root(controllers.RootController):
                           name : name of file}, ...]}
         """    
 
-        if not client:
-            client = Client()
+        client = Client(team)
         
         #This returns a flat list of files
         #This is sorted, so a directory is defined before the files in it

@@ -8,6 +8,8 @@ open_files = {}; //A dictionary (hash table) of the currently open
 POLL_TIME = 2000; //In ms.
 poll_data = {}; /*The data to be shipped with the poll.
 files : comma seperated list of open files*/
+
+team = 0; /*The current team number*/
                             
 function polled()
 {
@@ -16,7 +18,7 @@ function polled()
       call in pollAction
       inputs: None
       returns: Nothing, but callback created*/
-
+    poll_data["team"] = team; 
     var j = MochiKit.Async.loadJSONDoc("./polldata", poll_data );
     j.addCallback(pollAction);
     j.addErrback(function (){
@@ -65,8 +67,6 @@ MochiKit.DOM.addLoadEvent( function() {
     //Hook up the save file button
     MochiKit.Signal.connect('savefile','onclick', saveFile);
     MochiKit.Signal.connect(window, 'onbeforeunload', beforeunload);
-    //Grab a file list
-    updatefilelist();
 
     //Create an emptyish tab
     open_files[""] = {"revision" : "0",
@@ -101,7 +101,41 @@ MochiKit.DOM.addLoadEvent( function() {
 
     //Show the blank tab
     showtab("", true);
-    var d = MochiKit.Async.loadJSONDoc("./fulllog");
+
+    var d = MochiKit.Async.loadJSONDoc("./teams");
+    d.addCallback(chooseteam);
+    d.addErrback("Error connecting to studentrobotics.org. Please refresh.");
+});
+
+function chooseteam(results) {
+    if (results["teams"].length == 0) {
+        alert("No teams registered.");
+        return;
+    }
+
+    if (results["teams"].length == 1){
+        loadteamdata(results["teams"][0]);
+        return;
+    }
+
+    teams = results["teams"].join("\n")
+
+    while (1) {
+        var n = prompt("Please choose a team number from the following:\n" + teams);
+        if (n in results["teams"]){
+            loadteamdata(n);
+            return;
+        } else
+            alert("Invalid team.");
+    }
+
+}
+
+function loadteamdata(t) {
+    team = t;
+    //Grab a file list
+    updatefilelist();
+    var d = MochiKit.Async.loadJSONDoc("./fulllog?team=" + team);
     d.addCallback(show_fullog);
     d.addErrback(function (){
         alert("Error connecting to studentrobotics.org. Please refresh.");
@@ -109,7 +143,7 @@ MochiKit.DOM.addLoadEvent( function() {
 
     //Start polling
     setTimeout( "polled()", POLL_TIME );
-});
+}
 
 function beforeunload(e) {
     savecurrenttab();
@@ -126,7 +160,7 @@ function updatefilelist() {
         inputs: None
         returns: None, but adds a callback to gotFileList
 */
-    var d = MochiKit.Async.loadJSONDoc("./filelist");
+    var d = MochiKit.Async.loadJSONDoc("./filelist", {team : team});
     d.addCallback(gotFileList);
     d.addErrback(function (){
         alert("Error connecting to studentrobotics.org. Please refresh.");
@@ -313,7 +347,8 @@ function deleteclick() {
         if(!confirm("Are you sure you want to delete:\n" + files.join("\n")))
             return;
         var d = MochiKit.Async.loadJSONDoc("./delete",
-                                            {files : files.join(",")})
+                                            {files : files.join(","),
+                                             team : team})
         d.addCallback(deleteDone);
         d.addErrback(function (){
             alert("Error connecting to studentrobotics.org. Please refresh.");
@@ -540,11 +575,12 @@ function saveFile(e) {
 
         //TODO: When commit message in open_files, read it from there
 
-        var keys = ["file", "rev", "message", "code"];
+        var keys = ["file", "rev", "message", "code", "team"];
         var values = [open_files[cur_path].editedfilename, //File
                       open_files[cur_path].revision, //rev
                       MochiKit.DOM.getElement("message").value, //message
-                      open_files[cur_path].tabdata]; //Code
+                      open_files[cur_path].tabdata, //Code
+                      team]; //Team
         var content = MochiKit.Base.queryString(keys, values);
 
         //Using doXHR (New in MochiKit 1.4) to do a post request
@@ -616,7 +652,8 @@ function loadFile(file, revision) {
     }
 
     var d = MochiKit.Async.loadJSONDoc("./filesrc", {file : file,
-                                                     revision : revision});
+                                                     revision : revision,
+                                                     team : team});
     d.addCallback(gotFile);
     d.addErrback(function (){
         alert("Error connecting to studentrobotics.org. Please refresh.");
@@ -649,7 +686,8 @@ function gotFile(result) {
 function getLog(file) {
     if(file == "")
         return;
-    var d = MochiKit.Async.loadJSONDoc("./gethistory?file="+file);
+    var args = {"file" : file, "team" : team};
+    var d = MochiKit.Async.loadJSONDoc("./gethistory", args);
     d.addCallback(gotLog);
     d.addErrback(function (){
         alert("Error connecting to studentrobotics.org. Please refresh.");
