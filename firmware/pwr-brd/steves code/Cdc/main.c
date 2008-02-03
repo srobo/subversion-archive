@@ -125,6 +125,7 @@ void getdip(u8 *data);
 void setrails(u8 *data);
 void getrails(u8 *data);
 void sendser(u8 *data);
+void isusb(u8 *data);
 //void getusbbuf(u8 *data);
 //void setusbbuf(u8 *data);
 //void getsectorlo(u8 *data);
@@ -137,16 +138,17 @@ void sendser(u8 *data);
 //						{bytes in, bytesout, function name}
  t_command commands[] = {{0, 4,identify}, //0
                         {1, 0,setled},
-                        {0, 1,checkusb},//2
-                        {0, 2,getv},
-                        {0, 2,geti},//4
-                        {0, 1,getdip},
-                        {1, 0,setrails},//6
-	                    {0, 1,getrails},
-	                    {1,1,sendser}};//8
+                        {0, 2,getv},//2
+                        {0, 2,geti},
+                        {0, 1,getdip},//4
+                        {1, 0,setrails},
+	                    {0, 1,getrails},//6
+	                    {1,0,sendser},
+		                {0,1,isusb}};
 							
 							
 //----------------------
+                        //{0, 1,checkusb},//2
 		                //{0,32,getusbbuf},//8
 			            //{32,0,setusbbuf},
 			            //{0,2,getsectorlo},
@@ -687,8 +689,8 @@ void i2cservice(void)
                 	tmpdata = SSPBUF;
                 	i2c_debug prdbg('?', tmpdata);
         			PIR1bits.SSPIF = 0;
-                    //if (tmpdata == checksum) 
-                    if (1) // temporary fix so no checksumm for testing
+                    if (tmpdata == checksum) 
+                    //if (1) // temporary fix so no checksumm for testing
 	                {
                         commands[command].docmd(data);
                         i2cstatus = GOOD; 
@@ -751,12 +753,13 @@ void identify(u8 *data){
 	}	
 void setled(u8 *data){
     //PORTD = (*data << 4)&0xf0;
-    PORTD = PORTD |( 0x70&((*data << 4)&0xf0));
+    PORTD = (PORTD&0x0f) | ((*data << 4)&0xf0);
     //if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &data[0], 1);
     return;
 }
 
-void checkusb(u8 *data){
+/*
+	void checkusb(u8 *data){
 	data[0]=usbflag;
 	//mputcharUSART('Q');
 	//read bit = <6> i2c -> usb
@@ -765,6 +768,7 @@ void checkusb(u8 *data){
 	
 	return;
 	}
+	*/
 void getv(u8 *data){
 	data[0]= (u8)(voltage&0x00FF);
 	data[1]= (u8)((voltage&0xFF00)>>8);
@@ -794,15 +798,14 @@ void sendser(u8 *data){
 	//PORTD|=0x00100000;
 	if(mUSBUSARTIsTxTrfReady()){
 		mUSBUSARTTxRam( &data[0], 1);	
-		data[0]=0; //return success
-		}
-	else{
-		data[0] = 1; // return failure
 	}
-
 	return;
 	}
 
+void isusb(u8 *data){
+	data[0]=PORTA;
+	return;
+	}
 /*	
 void getsectorlo(u8 *data)
 {
