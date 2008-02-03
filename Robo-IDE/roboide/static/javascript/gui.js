@@ -376,7 +376,7 @@ function checkout() {
     //files is an array of paths of selected files
     var files = get_selected();
     if(files.length > 0){
-        document.location = "./checkout?files=" + files.join(",");
+        document.location = "./checkout?team=" + team + "&files=" + files.join(",");
     } else {
         alert("No files selected.");
     }
