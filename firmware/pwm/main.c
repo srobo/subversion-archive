@@ -87,7 +87,10 @@ void init(void)
 	TACCTL1 = CCIE; //turn on interrupts for ccp module
 	
 	//setting timer A to count up to TACCR0, and also turn on interrupts
-	TACTL = TASSEL_SMCLK|MC_UPTO_CCR0|ID_DIV2|TAIE;
+	TACTL = TASSEL_SMCLK	/* SMCLK clock source */
+		| MC_UPTO_CCR0	/* Count up to the value in CCR0 */
+		| ID_DIV4	/* Divide the frequency by 4 */
+		| TAIE;		/*  */
 
 	current_servo = 0;
 	initialise_i2c();
@@ -156,7 +159,8 @@ void polled_i2c(void)
 	{
 		number_of_data = available_i2c_data();
 		data = get_i2cData();
-		servo_set_pwm(data[0], (MIN_PULSE + 25*(uint16_t)data[1])); //takes values from 0-135
+		servo_set_pwm( data[0],
+			       (MIN_PULSE + ((MAX_PULSE-MIN_PULSE)/255)*(uint16_t)data[1]));
 	}	
 }
 
