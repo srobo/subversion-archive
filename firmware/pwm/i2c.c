@@ -98,9 +98,9 @@ inline void isr_usi (void)
 			USISRL = 0x00;			// Send Ack
 			I2C_State = state_rx_command;	// Go to next state: RX data
 			USICNT |= 0x01;			//  Bit counter = 1, send Ack bit
-		}else{ //Not correct address, reset to idle
-			I2C_State = state_idle;     // Reset state machine
 		}
+		else
+			I2C_State = state_idle;     // Reset state machine
 		break;
 
 	case state_rx_command: // prep to Receive data byte 1
