@@ -8,6 +8,7 @@ Block read protocol
 #include "hardware.h"
 #include "i2c.h"
 #include "servo.h"
+#include "smbus_pec.h"
 
 typedef enum
 {
@@ -40,6 +41,8 @@ static uint8_t data_pos = 0;
 
 /* The number of bytes to be received */
 static uint8_t num_bytes = 0;
+
+static uint8_t checksum;
 
 /*** Device Macros ***/
 /* Set SDA to an output */
@@ -95,6 +98,11 @@ inline void isr_usi (void)
 		{
 			sda_output();
 
+			data_pos = 0;
+
+			/* Initialise the checksum */
+			checksum = crc8( USISRL );
+
 			/* Send ACK */
 			USISRL = 0x00;
 			/* ACK is 1 bit */
@@ -124,6 +132,9 @@ inline void isr_usi (void)
 		if( USISRL < sizeof( command_len ) )
 		{
 			num_bytes = command_len[ USISRL ];
+
+			checksum = crc8( checksum ^ USISRL );
+
 			I2C_State = state_rx_data;
 		}
 		else
@@ -138,7 +149,8 @@ inline void isr_usi (void)
 		/* Receive data */
 	case state_rx_data:
 
-		if( data_pos < num_bytes )
+		/* When using checksums we need to receive an additional byte */
+		if( data_pos < num_bytes + (USE_CHECKSUMS?1:0) )
 		{ 
 			/* More data to receive */
 			sda_input();
@@ -163,9 +175,17 @@ inline void isr_usi (void)
 	case state_check_data:
 		sda_output();
 
-		i2c_data[data_pos] = USISRL;
-		data_pos++;
+		if( !USE_CHECKSUMS || data_pos != num_bytes )
+		{
+			i2c_data[data_pos] = USISRL;
 
+			checksum = crc8( checksum ^ USISRL );
+		}
+		else if( checksum != USISRL )
+			I2C_State = state_prep_for_start;
+		
+		data_pos++;
+		
 		/* Send ACK */
 		USISRL = 0x00;
 		USICNT |= 0x01;

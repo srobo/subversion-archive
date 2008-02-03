@@ -8,10 +8,18 @@ include .config
 
 ifeq ($(strip $(SWEEP_SERVOS)),y)
 CFLAGS += -DSWEEP_SERVOS=1
+else
+CFLAGS += -DSWEEP_SERVOS=0
 endif
 
-C_FILES := main.c i2c.c sweep.c servo.c
-H_FILES :=  hardware.h i2c.h sweep.h servo.h
+ifeq ($(strip $(USE_CHECKSUMS)),y)
+CFLAGS += -DUSE_CHECKSUMS=1
+else
+CFLAGS += -DUSE_CHECKSUMS=0
+endif
+
+C_FILES := main.c i2c.c sweep.c servo.c smbus_pec.c
+H_FILES :=  hardware.h i2c.h sweep.h servo.h smbus_pec.h
 
 pwm: .config $(C_FILES) $(H_FILES)
 	${CC} -mmcu=${CPU} -o $@ ${C_FILES} ${CFLAGS}
