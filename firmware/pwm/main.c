@@ -28,7 +28,7 @@ uint8_t current_servo;
 void polled_i2c(void);
 
 /* Set the output to the given value */
-void set_p1out(uint8_t p1);
+inline void set_p1out(uint8_t p1);
 
 /**
 Function will initialise the MSP430 for the PWM board. This involves
@@ -109,7 +109,7 @@ interrupt (TIMERA0_VECTOR) isr_TACR0(void){
 	set_p1out(0xFE);
 }
 
-void set_p1out(uint8_t p1){
+inline void set_p1out(uint8_t p1){
 	if(P2IN & RAIL_MONITOR_PIN){ //if rail is high then change pin output
 		P1OUT = p1;
 	}
