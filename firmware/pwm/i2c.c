@@ -35,6 +35,12 @@ char new_i2c_data = 0;
 /* The number of bytes to be received */
 char i2c_data_number = 0;
 
+/*** Device Macros ***/
+/* Set SDA to an output */
+#define sda_output() do { USICTL0 |= USIOE; } while (0)
+/* Set SDA to an input */
+#define sda_input() do { USICTL0 &= ~USIOE; } while (0)
+
 /* Process an I2C command.
  * Returns the new state for the I2C state machine. */
 state_t smbus_parse(char command);
@@ -84,7 +90,7 @@ inline void isr_usi (void)
 		break;
 
 	case state_rx_address: // RX Address
-		USICTL0 &= ~USIOE;					// SDA = input
+		sda_input();
 		USICNT = (USICNT & 0xE0) + 0x08; //  (Keep previous setting, make sure counter is 0, then add 8)Bit counter = 8, RX address
 		USICTL1 &= ~USISTTIFG;   // Clear start flag
 		I2C_State = state_check_address;           // Go to next state: check address
@@ -94,23 +100,27 @@ inline void isr_usi (void)
 		/* Our Address? */
 		if ( (USISRL & 0xFE) == (ADDRESS << 1) )
 		{
-			USICTL0 |= USIOE;		// SDA = output ??? can it switch so fast
+			sda_output();
+
+			/* Send ACK */
 			USISRL = 0x00;			// Send Ack
-			I2C_State = state_rx_command;	// Go to next state: RX data
 			USICNT |= 0x01;			//  Bit counter = 1, send Ack bit
+
+			/* Jump to the next state */
+			I2C_State = state_rx_command;	// Go to next state: RX data
 		}
 		else
 			I2C_State = state_idle;     // Reset state machine
 		break;
 
 	case state_rx_command: // prep to Receive data byte 1
-		USICTL0 &= ~USIOE;	// SDA = input
+		sda_input();
 		USICNT |=  0x08;	// Bit counter = 8, RX data
 		I2C_State = state_check_command;// Go to next state: Test data
 		break;
 
 	case state_check_command:// Check Data & TX (N)Ack and understand command
-		USICTL0 |= USIOE;        // SDA = output
+		sda_output();
 		if (1){  // If data valid... ALWAYS VALID
 			I2C_State = smbus_parse(USISRL);  // Prep for Start condition;
 			USISRL = 0x00;         // Send Ack
@@ -122,18 +132,18 @@ inline void isr_usi (void)
 
 	case state_rx_data: //Write word , prepping to recieve data
 		if(new_i2c_data++ < i2c_data_number){ // Receive data byte
-			USICTL0 &= ~USIOE;       // SDA = input
+			sda_input();
 			USICNT |=  0x08;         // Bit counter = 8, RX data
 			I2C_State = state_check_data;          // Go to next state: Test data and (N)Ack
 		}else{ // Prep for Start condition
 			i2c_session_complete =1;
-			USICTL0 &= ~USIOE;       // SDA = input
+			sda_input();
 			I2C_State = state_idle;           // Reset state machine
 		}
 		break;
 		
 	case state_check_data: //store data
-		USICTL0 |= USIOE;        // SDA = output
+		sda_output();
 		i2c_data[new_i2c_data-1] = USISRL; //store data in aray
 		USISRL = 0x00;         // Send Ack
 		I2C_State = state_rx_data; 	//go back and set up for next bit if there is one
@@ -141,7 +151,7 @@ inline void isr_usi (void)
 		break;
 	
 	case state_prep_for_start: // Prep for Start condition
-		USICTL0 &= ~USIOE;       // SDA = input
+		sda_input();
 		I2C_State = state_idle;           // Reset state machine
 		break;
 	}
