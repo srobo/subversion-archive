@@ -1,3 +1,4 @@
+// LD_LIBRARY_PATH=/usr/local/lib xbd -s /dev/ttyS0 --init-baud 9600 -b 57600
 /*********************************************************************
  *
  *                Microchip USB C18 Firmware Version 1.0
@@ -257,8 +258,15 @@ _asm GOTO high_isr _endasm
 #pragma interrupt high_isr
 void high_isr (void)
 {
-	PORTD^=0b00010000;
-	PORTE&=0b11111110;
+	if (PORTDbits.RD0) // check for test mode
+	{
+		PORTE|=0b00000001;
+	}
+	else				// no so drop out because in cometition and theres no ping packet to reset the counter and its overflowed
+	{	
+		//PORTD^=0b00010000;
+		PORTE&=0b11111110;
+	}
 	INTCONbits.TMR0IF=0;
 }
 
@@ -290,7 +298,12 @@ void main(void)
 		    PORTD^=0b10000000;
 		   
 		}
-		
+
+		if (PORTDbits.RD0) // check for test mode
+		{
+			PORTE|=0b00000001;
+		}	
+
 		if(PORTAbits.RA4) USBTasks();         // USB Tasks
 	    //if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);
         i2cservice();
