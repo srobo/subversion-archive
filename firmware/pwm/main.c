@@ -12,7 +12,7 @@ CC0 is the period of each pulse and interrupts at 20ms.
 TODO-update all comments so they reflect what is happening
 TODO-change all times so they are not magic values
 TODO-Move all of i2c code out of interrupts, change them so they are polled
-TODO-Get setServoPWM to return success or failure */
+TODO-Get servo_set_pwm to return success or failure */
 
 #include "hardware.h"
 #include <stdint.h>
@@ -156,7 +156,7 @@ void polled_i2c(void)
 	{
 		number_of_data = available_i2c_data();
 		data = get_i2cData();
-		setServoPWM(data[0], (MIN_PULSE + 25*(uint16_t)data[1])); //takes values from 0-135
+		servo_set_pwm(data[0], (MIN_PULSE + 25*(uint16_t)data[1])); //takes values from 0-135
 	}	
 }
 

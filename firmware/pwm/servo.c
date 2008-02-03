@@ -7,7 +7,7 @@ void servo_init( void )
 	uint8_t i;
 
 	for(i=0; i<SERVO_NUMBER; i++)
-		setServoPWM(i, MIDDLE_PULSE);
+		servo_set_pwm(i, MIDDLE_PULSE);
 }
 
 uint16_t servo_get_pwm(uint8_t servo)
@@ -15,7 +15,7 @@ uint16_t servo_get_pwm(uint8_t servo)
 	return servo_pulse[servo];
 }
 
-void setServoPWM(uint8_t servo, uint16_t pulse_width)
+void servo_set_pwm(uint8_t servo, uint16_t pulse_width)
 {
 	if(servo < SERVO_NUMBER)
 	{

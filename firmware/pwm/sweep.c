@@ -33,11 +33,11 @@ void sweepServo(void)
 
 	delay_MS(50);
 	for( channel=0; channel < SERVO_NUMBER; channel++ )
-		setServoPWM(channel, (uint16_t)(2.3*TICKS_PER_MS));
+		servo_set_pwm(channel, (uint16_t)(2.3*TICKS_PER_MS));
 
 	delay_MS(50);
 	for( channel=0; channel < SERVO_NUMBER; channel++ )
-		setServoPWM(channel, (uint16_t)(0.7*TICKS_PER_MS));
+		servo_set_pwm(channel, (uint16_t)(0.7*TICKS_PER_MS));
 }
 #else
 void sweepServo(void)

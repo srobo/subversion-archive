@@ -22,6 +22,6 @@ unsigned int servo_get_pwm(unsigned char servo);
  * Arguments:
  *  -       servo: The servo number.
  *  - pulse_width: Must be in the range 2260 to MAX_PULSE (0.8ms to 2.2ms). */
-void setServoPWM(unsigned char servo, unsigned int pulse_width);
+void servo_set_pwm(unsigned char servo, unsigned int pulse_width);
 
 #endif /* __SERVO_H */
