@@ -38,25 +38,31 @@ in I2C mode, etc
 void initialise_PwmBoard(void)
 {
 	/**Initialising MSP430**/
-	WDTCTL = WDTCTL_INIT;	//Initializing watchdog timer
-	DCOCTL = CALDCO_INIT;	//Initializing clock source
-	BCSCTL1 = CALBC1_INIT;
+	/* Disable the watchdog timer */
+	WDTCTL = WDTPW | WDTHOLD;
 
-	P1OUT = P1OUT_INIT;		//Init output data of port1&2
-	P2OUT  = P2OUT_INIT;
+	/* Configure DCOCTL to be 12 MHz */
+	DCOCTL = CALDCO_12MHZ;
+	BCSCTL1 = CALBC1_12MHZ;
 
-	P1REN |= P1REN_INIT;	//Init something ???
+	P1OUT = 0xC0;
+	P2OUT = 0x00;
 
-	P1SEL  = P1SEL_INIT;	//Select port or module -function on port1
-	P2SEL  = P2SEL_INIT;	//Select port or module -function on port2d
+	/* Pull-ups */
+	P1REN |= 0;
 
-	P1DIR  = P1DIR_INIT;	//Init port direction register of port1
-	P2DIR  = P2DIR_INIT;	//Init port direction register of port2
+	/* P1.6 and P1.7 are I2C */
+	P1SEL = 0xC0;
+	/* All gpio on port 2 */
+	P2SEL = 0;
 
-	P1IES  = P1IES_INIT;	//init port interrupts
-	P2IES  = P2IES_INIT;
-	P1IE   = P1IE_INIT;
-	P2IE   = P2IE_INIT;
+	P1DIR  = 0x3f;
+	P2DIR  = 0x7f;
+
+	P1IES  = 0;
+	P2IES  = RAIL_MONITOR_PIN;
+	P1IE   = 0;
+	P2IE   = RAIL_MONITOR_PIN;
 	P2IFG = 0x00; //clear all flags that might have been set
 	
 	servo_init();
