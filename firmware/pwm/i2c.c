@@ -8,9 +8,6 @@ Block read protocol
 #include "hardware.h"
 #include "i2c.h"
 
-/* Process an I2C command */
-char smbus_parse(char command);
-
 typedef enum
 {
 	state_idle = 0,
@@ -38,6 +35,10 @@ char new_i2c_data = 0;
 
 /* The number of bytes to be received */
 char i2c_data_number = 0;
+
+/* Process an I2C command.
+ * Returns the new state for the I2C state machine. */
+state_t smbus_parse(char command);
 
 char available_i2c_data(void)
 {
@@ -152,8 +153,10 @@ inline void isr_usi (void)
 	USICTL1 &= ~USIIFG;                  // Clear pending flags
 }
 
-char smbus_parse(char command){
-	char state =6;
+state_t smbus_parse(char command)
+{
+	char state = state_check_data;
+
 	switch(command){
 		case COMMAND_IDENTIFY:
 			//send identifier back to master
