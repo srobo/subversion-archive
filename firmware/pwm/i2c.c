@@ -31,7 +31,7 @@ state_t I2C_State = state_idle;
 char i2c_session_complete = 0;
 
 /* The number of bytes that have currently been received */
-char new_i2c_data = 0;
+char data_pos = 0;
 
 /* The number of bytes to be received */
 char i2c_data_number = 0;
@@ -130,7 +130,7 @@ inline void isr_usi (void)
 		/* Receive data */
 	case state_rx_data:
 
-		if( new_i2c_data++ < i2c_data_number )
+		if( data_pos++ < i2c_data_number )
 		{ 
 			/* More data to receive */
 			sda_input();
@@ -146,7 +146,7 @@ inline void isr_usi (void)
 
 			servo_set_pwm( i2c_data[0],
 				       (MIN_PULSE + ((MAX_PULSE-MIN_PULSE)/255)*(uint16_t)i2c_data[1]));
-			new_i2c_data = 0;
+			data_pos = 0;
 
 			/* START condition will happen next */
 			sda_input();
@@ -158,7 +158,7 @@ inline void isr_usi (void)
 	case state_check_data:
 		sda_output();
 
-		i2c_data[new_i2c_data-1] = USISRL;
+		i2c_data[data_pos-1] = USISRL;
 
 		/* Send ACK */
 		USISRL = 0x00;
@@ -193,7 +193,7 @@ state_t smbus_parse(char command)
 		case COMMAND_SET:
 			/* 2 bytes to be received */
 			i2c_data_number = 2;
-			new_i2c_data = 0;
+			data_pos = 0;
 			i2c_session_complete = 0;
 
 			state = state_rx_data;
