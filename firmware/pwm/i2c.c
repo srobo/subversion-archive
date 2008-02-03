@@ -138,7 +138,7 @@ inline void isr_usi (void)
 		/* Receive data */
 	case state_rx_data:
 
-		if( data_pos++ < num_bytes )
+		if( data_pos < num_bytes )
 		{ 
 			/* More data to receive */
 			sda_input();
@@ -163,7 +163,8 @@ inline void isr_usi (void)
 	case state_check_data:
 		sda_output();
 
-		i2c_data[data_pos-1] = USISRL;
+		i2c_data[data_pos] = USISRL;
+		data_pos++;
 
 		/* Send ACK */
 		USISRL = 0x00;
