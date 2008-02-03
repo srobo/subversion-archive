@@ -125,17 +125,17 @@ void getdip(u8 *data);
 void setrails(u8 *data);
 void getrails(u8 *data);
 void sendser(u8 *data);
-void getusbbuf(u8 *data);
-void setusbbuf(u8 *data);
-void getsectorlo(u8 *data);
-void getsectorhi(u8 *data);
-void datagood(u8 *data);
+//void getusbbuf(u8 *data);
+//void setusbbuf(u8 *data);
+//void getsectorlo(u8 *data);
+//void getsectorhi(u8 *data);
+//void datagood(u8 *data);
 
 
 
 //#pragma romdata // this seems to do squat all!
 //						{bytes in, bytesout, function name}
- t_command commands[] = {{0, 1,identify}, //0
+ t_command commands[] = {{0, 4,identify}, //0
                         {1, 0,setled},
                         {0, 1,checkusb},//2
                         {0, 2,getv},
@@ -143,13 +143,16 @@ void datagood(u8 *data);
                         {0, 1,getdip},
                         {1, 0,setrails},//6
 	                    {0, 1,getrails},
-		                {0,32,getusbbuf},//8
-			            {32,0,setusbbuf},
-	                    {1,0,sendser},//10
-			            {0,2,getsectorlo},
-				        {0,2,getsectorhi},//12
-					    {32,0,setusbbuf},//old not really needed kept for 
-						{1, 0,datagood}};//14
+	                    {1,0,sendser}};//8
+							
+							
+//----------------------
+		                //{0,32,getusbbuf},//8
+			            //{32,0,setusbbuf},
+			            //{0,2,getsectorlo},
+				        //{0,2,getsectorhi},//10
+					    //{32,0,setusbbuf},//old not really needed kept for 
+						//{1, 0,datagood}
 
 #pragma udata
 
@@ -291,13 +294,13 @@ void main(void)
     {
 		    //PORTD|=0b01000000;
 	    
-	    if (alive++==8000)
+	    /*if (alive++==8000)
 	    {
 		    alive=0;
 		    //PORTDBits.RD7=!PORTDBits.RD7;
 		    PORTD^=0b10000000;
 		   
-		}
+		}*/
 
 		if (PORTDbits.RD0) // check for test mode
 		{
@@ -344,7 +347,7 @@ u8 rxbuf;
 			if(delim)
 			{
 				rxbuf ^= 0x20;
-				PORTD^=0b01000000;
+				//PORTD^=0b01000000;
 				delim =0;
 			}
 			if(rxbuf==0x7D)
@@ -365,7 +368,7 @@ u8 rxbuf;
 					    if(rxbuf+xbchecksum==0xff)
 					    {
 					    	place=TMR0L=TMR0H=0; // we have got the the end of the buffer so restart he timer
-					   		PORTD^=0b00100000;// debug lights
+					   		//PORTD^=0b00100000;// debug lights
 					   		PORTE|=0b1;
 					   	}
 					   	else 
@@ -740,7 +743,10 @@ void i2cservice(void)
 
 
 void identify(u8 *data){
-	data[0]='I'; // maby read from EE later?
+	data[0]='P'; // maby read from EE later?
+	data[1]='B'; 
+	data[2]=0; 
+	data[3]=1; 
 	return;
 	}	
 void setled(u8 *data){
@@ -783,20 +789,14 @@ void getrails(u8 *data){
 	data[0]= (PORTE&0x07)|((PORTB&0x18)<<1);
 	return;
 	}
-void getusbbuf(u8 *data)
-{
-}
-void setusbbuf(u8 *data)
-{
-}		
 
 void sendser(u8 *data){
-	PORTD|=0x00100000;
-	if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &data[0], 1);
-		
+	//PORTD|=0x00100000;
+	if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &data[0], 1);	
 	return;
 	}
-	
+
+/*	
 void getsectorlo(u8 *data)
 {
 	data[1]=(u8)((sectadd>>8)&0xff);
@@ -813,7 +813,7 @@ void datagood(u8 *data)
 {
 		usbflag=0;
 }
-
+*/
 
 
 
