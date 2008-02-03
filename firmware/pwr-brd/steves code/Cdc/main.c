@@ -143,7 +143,7 @@ void sendser(u8 *data);
                         {0, 1,getdip},
                         {1, 0,setrails},//6
 	                    {0, 1,getrails},
-	                    {1,0,sendser}};//8
+	                    {1,1,sendser}};//8
 							
 							
 //----------------------
@@ -792,7 +792,14 @@ void getrails(u8 *data){
 
 void sendser(u8 *data){
 	//PORTD|=0x00100000;
-	if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &data[0], 1);	
+	if(mUSBUSARTIsTxTrfReady()){
+		mUSBUSARTTxRam( &data[0], 1);	
+		data[0]=0; //return success
+		}
+	else{
+		data[0] = 1; // return failure
+	}
+
 	return;
 	}
 
