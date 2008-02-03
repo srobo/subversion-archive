@@ -23,10 +23,11 @@ typedef enum
 	SETLED,
 	GETV,
 	GETI,
-	GETDIP,
+	GETDIPS,
 	SETRAILS,
 	GETRAILS,
-	SENDSER
+	SENDSER,
+	ISUSB
 } com;
 bool err_enable = TRUE;
 
@@ -98,11 +99,13 @@ int main( int argc, char** argv )
 
 
 //------------------------------
-	if (argc<2){
+	if (argc<2){ // check at least 1 arg
 		printf("incorrect args\n");
 		printf("Usage: %s {w,l,v,i,r,s}\n");
 		return -1;
 	}
+
+	
 	switch( *argv[1]){
 	case 'w':
 		//printf("Read ID as %x\n", readbyte(fd, 0));
@@ -110,25 +113,48 @@ int main( int argc, char** argv )
 		return -1;
 		break;
 	case 'l':
-		printf("%d",setpins(fd,SETLED,*argv[2]));
+		if (argc!=3)
+		{
+			printf("l takes another argument for the value\n");
+			return -1;
+		}
+		printf("%d\n",setpins(fd,SETLED,atoi(argv[2])));
 		return 0;
 	case 'v':
-		printf("%d", readword(fd, GETV));	
+		printf("%d\n", readword(fd, GETV));	
 		return 0;
 	case 'i':
-		printf("%d", readword(fd, GETI));	
+		printf("%d\n", readword(fd, GETI));	
 		return 0;
 	case 's':
-		printf("%d", setpins(fd, SETRAILS,*argv[2]));	
+		if (argc!=3)
+		{
+			printf("l takes another argument for the value\n");
+			return -1;
+		}
+		printf("%d\n", setpins(fd, SETRAILS,atoi(argv[2])));	
 		return 0;
 	case 'r':
-		printf("%d", readword(fd, GETRAILS));	
+		printf("%d\n", readword(fd, GETRAILS));	
 		return 0;
 	case 'o':
-		printf("%d", setpins(fd,SENDSER,*argv[2]));
+		if (argc!=3)
+		{
+			printf("l takes another argument for the value\n");
+			return -1;
+		}
+		printf("%d\n", setpins(fd,SENDSER,*argv[2]));
 		return 0;
+	case 'd':
+		printf("%d\n", readbyte(fd, GETDIPS));
+		return 0;
+
+	case 'u':
+		printf("%d\n", readbyte(fd, ISUSB));
+		return 0;
+		
 	default:
-		printf("not a recognised command go thikn again");
+		printf("not a recognised command go think again\n");
 	}
 
 	/*
