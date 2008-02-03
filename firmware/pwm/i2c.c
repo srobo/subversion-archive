@@ -13,22 +13,31 @@ char smbus_parse(char command);
 
 typedef enum
 {
-  state_idle = 0, //wait for a start condition
-  state_rx_address,
-  state_check_address,
-  state_rx_command,
-  state_check_command,
-  state_rx_data,
-  state_check_data,
-  state_prep_for_start
+	state_idle = 0,
+	state_rx_address,
+	state_check_address,
+	state_rx_command,
+	state_check_command,
+	state_rx_data,
+	state_check_data,
+	state_prep_for_start
 }state_t;
 
-char i2c_data[32];		// i2c data, array can contain a maximum of 32 values to be sent or read as per SMBUS specification
+/* Buffer for I2C data */
+char i2c_data[32];
 char SLV_Addr = ADDRESS;
-state_t I2C_State = state_idle;		//i2c transmition states
-char i2c_session_complete = 0;		//set when transmission is complete, guess could be replaced by reading one of the states
-char new_i2c_data = 0;		// number of data already recieved
-char i2c_data_number = 0;	//number of data bytes to be recieved
+
+/* The I2C transmission state machine state */
+state_t I2C_State = state_idle;
+
+/* Whether a transmission is complete */
+char i2c_session_complete = 0;
+
+/* The number of bytes that have currently been received */
+char new_i2c_data = 0;
+
+/* The number of bytes to be received */
+char i2c_data_number = 0;
 
 char available_i2c_data(void)
 {
@@ -63,14 +72,15 @@ void enable_i2c(void)
 
 inline void isr_usi (void)
 {
-	if (USICTL1 & USISTTIFG)             // Start entry?
-	{
-		I2C_State = state_rx_address;                     // Enter 1st state on start
-	}
+	/* START Received */
+	if (USICTL1 & USISTTIFG)
+		/* Move into the state machine */
+		I2C_State = state_rx_address;
 
 	switch(I2C_State)
 	{
-	case state_idle: // Idle, will only be here after resetting state machine
+		/* Idly doing nothing */
+	case state_idle:
 		break;
 
 	case state_rx_address: // RX Address
