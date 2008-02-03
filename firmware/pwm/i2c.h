@@ -5,7 +5,10 @@ header file
 #ifndef I2C_HEADER
 #define I2C_HEADER
 
+/* The I2C Address - this is a 7-bit number */
 #define ADDRESS 0x1E
+
+/* The device identifier */
 #define IDENTIFIER 0x0001U
 
 /* I2C Commands */
