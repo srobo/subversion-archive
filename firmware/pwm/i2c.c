@@ -89,14 +89,20 @@ inline void isr_usi (void)
 	case state_idle:
 		break;
 
-	case state_rx_address: // RX Address
+		/* Receive the address */
+	case state_rx_address:
 		sda_input();
-		USICNT = (USICNT & 0xE0) + 0x08; //  (Keep previous setting, make sure counter is 0, then add 8)Bit counter = 8, RX address
-		USICTL1 &= ~USISTTIFG;   // Clear start flag
-		I2C_State = state_check_address;           // Go to next state: check address
+
+		USICNT = (USICNT & 0xE0) | 0x08;
+
+		/* Clear the START flag */
+		USICTL1 &= ~USISTTIFG;
+
+		I2C_State = state_check_address;
 		break;
 
-	case state_check_address: // Process Address and send Ack
+		/* Check the received address */
+	case state_check_address:
 		/* Our Address? */
 		if ( (USISRL & 0xFE) == (ADDRESS << 1) )
 		{
@@ -128,7 +134,7 @@ inline void isr_usi (void)
 		sda_output();
 
 		/* Process the command */
-		I2C_State = smbus_parse(USISRL);  // Prep for Start condition;
+		I2C_State = smbus_parse(USISRL);
 
 		/* Send ACK */
 		USISRL = 0x00;
@@ -145,7 +151,7 @@ inline void isr_usi (void)
 
 			USICNT |=  0x08;
 
-			I2C_State = state_check_data;          // Go to next state: Test data and (N)Ack
+			I2C_State = state_check_data;
 		}
 		else
 		{
