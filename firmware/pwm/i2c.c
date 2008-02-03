@@ -24,7 +24,7 @@ typedef enum
 }state_t;
 
 char i2c_data[32];		// i2c data, array can contain a maximum of 32 values to be sent or read as per SMBUS specification
-char SLV_Addr = ADDRESS;		// Address is 0x48, LSB  for R/W << CORECT 0x70??
+char SLV_Addr = ADDRESS;
 state_t I2C_State = state_idle;		//i2c transmition states
 char i2c_session_complete = 0;		//set when transmission is complete, guess could be replaced by reading one of the states
 char new_i2c_data = 0;		// number of data already recieved
