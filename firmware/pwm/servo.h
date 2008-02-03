@@ -16,7 +16,7 @@ extern uint16_t servo_pulse[SERVO_NUMBER];
 void servo_init( void );
 
 /* Get the current PWM value for a servo */
-unsigned int getServoPWM(unsigned char servo);
+unsigned int servo_get_pwm(unsigned char servo);
 
 /* Set the PWM value for a servo.
  * Arguments:

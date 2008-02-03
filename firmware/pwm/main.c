@@ -81,7 +81,7 @@ void init(void)
 	//TACCR0 interrupts after 20ms
 	TACCR0 = PERIOD;
 	//TACCR1 interrupts at end of pulse for servo 0
-	TACCR1 = getServoPWM(0);
+	TACCR1 = servo_get_pwm(0);
 
 	TACCTL0 = CCIE; //turn on interrupts for ccp module
 	TACCTL1 = CCIE; //turn on interrupts for ccp module
@@ -132,13 +132,13 @@ interrupt (TIMERA1_VECTOR) isr_TAIV(void)
 		if(current_servo<SERVO_NUMBER)
 		{
 			//get servo# pulse width, increment cc1 by its width
-			TACCR1 += getServoPWM(current_servo);
+			TACCR1 += servo_get_pwm(current_servo);
 			set_p1out(~(0x1<<current_servo)); //set servo# output high
 		} 
 		else
 		{
 			set_p1out(0xFF);
-			TACCR1 = getServoPWM(0); //reset CC1 to pulse Servo0
+			TACCR1 = servo_get_pwm(0); //reset CC1 to pulse Servo0
 		}
 		break;
 
