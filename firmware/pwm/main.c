@@ -30,14 +30,25 @@ void polled_i2c(void);
 /* Set the output to the given value */
 inline void set_p1out(uint8_t p1);
 
-/**
-Function will initialise the MSP430 for the PWM board. This involves
-initialising the main oscillator, settings ports for IO, putting the USI
-in I2C mode, etc
-**/
-void initialise_PwmBoard(void)
+/* Initialise everything. */
+void init(void);
+
+int main(void)
 {
-	/**Initialising MSP430**/
+	init();
+
+	while (1)
+	{
+		/* Process i2c if either a START, Counter=0 flag is set */
+		if( (USICTL1 & USIIFG) || (USICTL1 & USISTTIFG) )
+			polled_i2c();
+
+		sweepServo();
+	}
+}
+
+void init(void)
+{
 	/* Disable the watchdog timer */
 	WDTCTL = WDTPW | WDTHOLD;
 
@@ -84,34 +95,17 @@ void initialise_PwmBoard(void)
 	eint(); //enable interrupts
 }
 
-int main(void)
-{
-	initialise_PwmBoard();
-
-	while (1)
-	{
-		/* Process i2c if either a START, Counter=0 flag is set */
-		if( (USICTL1 & USIIFG) || (USICTL1 & USISTTIFG) )
-			polled_i2c();
-
-		sweepServo();
-	}
-}
-
-/**
-ISR for IO interrupt
-If a negative edge (rail = 0) then set P1 to be all low
-**/
+/* ISR for IO interrupt */
 interrupt (PORT2_VECTOR) isr_port2(void)
 {
+	/* The rail has dropped - set the outputs to be low. */
 	P1OUT = 0x00;
 	P2IFG = 0x00;
 }
 
-/**
-ISR for TACCR0. Is called at the end of the pulse period ~20ms, 
-it resets TIMERA, resets current_servo, and put servo0 pin high
-**/
+/* ISR for TACCR0. 
+ * Called at the end of the pulse period ~20ms,
+ * it resets TIMERA, resets current_servo, and put servo0 pin high. */
 interrupt (TIMERA0_VECTOR) isr_TACR0(void)
 {
 	current_servo = 0;
