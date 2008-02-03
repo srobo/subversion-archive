@@ -434,6 +434,8 @@ static void InitializeSystem(void)
     TRISC=0XFE;// make slug pin Out
     TRISD=0x0F;
     TRISE = 0;
+    PORTE = 0;
+    delay(25); // wait for power to settle intpo regs before releasing shutdownpin (hopefully cure mode B slug poewr up fault)
     PORTE = 0b110; // turn all power rails on
     //IN real life will be 111 but changted to accomodate prototype2 relay error
 
@@ -803,7 +805,7 @@ void sendser(u8 *data){
 	}
 
 void isusb(u8 *data){
-	data[0]=PORTA;
+	data[0]=(PORTA&0x10)>>4;
 	return;
 	}
 /*	
