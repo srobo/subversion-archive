@@ -31,10 +31,10 @@ state_t I2C_State = state_idle;
 char i2c_session_complete = 0;
 
 /* The number of bytes that have currently been received */
-char data_pos = 0;
+static uint8_t data_pos = 0;
 
 /* The number of bytes to be received */
-char i2c_data_number = 0;
+static uint8_t num_bytes = 0;
 
 /*** Device Macros ***/
 /* Set SDA to an output */
@@ -130,7 +130,7 @@ inline void isr_usi (void)
 		/* Receive data */
 	case state_rx_data:
 
-		if( data_pos++ < i2c_data_number )
+		if( data_pos++ < num_bytes )
 		{ 
 			/* More data to receive */
 			sda_input();
@@ -192,7 +192,7 @@ state_t smbus_parse(char command)
 			/* Get the position of a servo from the master */
 		case COMMAND_SET:
 			/* 2 bytes to be received */
-			i2c_data_number = 2;
+			num_bytes = 2;
 			data_pos = 0;
 			i2c_session_complete = 0;
 
