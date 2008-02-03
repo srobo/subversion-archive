@@ -10,6 +10,9 @@ Block read protocol
 #include "hardware.h"
 #include "i2c.h"
 
+/* Process an I2C command */
+char smbus_parse(char command);
+
 typedef enum
 {
   state_idle = 0, //wait for a start condition
@@ -29,26 +32,23 @@ char i2c_session_complete = 0;		//set when transmission is complete, guess could
 char new_i2c_data = 0;		// number of data already recieved
 char i2c_data_number = 0;	//number of data bytes to be recieved
 
-/**
-This function will return the number of available bytes of data. If called before an i2c session is complete it will return 0.
-**/
-char available_i2c_data(void){
-	if(i2c_session_complete){
+char available_i2c_data(void)
+{
+	if(i2c_session_complete)
 		return i2c_data_number;
-	}else{
-		return 0;
-	}
+
+	return 0;
 }
 
-/**
-Returns a pointer to the first byte of data
-**/
-char * get_i2cData(void){
+char * get_i2cData(void)
+{
 	new_i2c_data = 0; 
+
 	return i2c_data;
 }
 
-void initialise_i2c(void){
+void initialise_i2c(void)
+{
 	USICTL0 = USICTL0|USISWRST;
 	USICTL0 = USIPE6|USIPE7;// Port & USI mode setup
 //  USICTL1 = USII2C|USIIE|USISTTIE;     // Enable I2C mode & USI interrupts
@@ -57,23 +57,23 @@ void initialise_i2c(void){
 	USICNT |= USIIFGCC;		// Disable automatic clear control
 }
 
-void enable_i2c(void){
+void enable_i2c(void)
+{
 	USICTL0 &= ~USISWRST;                // Enable USI
 	USICTL1 &= ~USIIFG;                  // Clear pending flag
 }
 
-//******************************************************************************
-// USI interrupt service routine
-//******************************************************************************
-inline void isr_usi (void){
-  if (USICTL1 & USISTTIFG)             // Start entry?
-  {
-    I2C_State = state_rx_address;                     // Enter 1st state on start
-  }
+inline void isr_usi (void)
+{
+	if (USICTL1 & USISTTIFG)             // Start entry?
+	{
+		I2C_State = state_rx_address;                     // Enter 1st state on start
+	}
 
-  switch(I2C_State){
-    case state_idle: // Idle, will only be here after resetting state machine
-        break;
+	switch(I2C_State)
+	{
+	case state_idle: // Idle, will only be here after resetting state machine
+		break;
 
 	case state_rx_address: // RX Address
 		USICTL0 &= ~USIOE;					// SDA = input
@@ -94,7 +94,7 @@ inline void isr_usi (void){
 		}else{ //Not correct address, reset to idle
 			SLV_Addr = ADDRESS;         // Reset slave address
 			I2C_State = state_idle;     // Reset state machine
-			}
+		}
 		break;
 
 	case state_rx_command: // prep to Receive data byte 1
