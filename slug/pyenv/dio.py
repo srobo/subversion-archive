@@ -3,70 +3,57 @@ import c2py
 import logging
 
 DIOADDRESS = 0x20
+curdio = 0x0F #Bottom bits are inputs
+try:
+    c2py.writebyte(DIOADDRESS, curdio, 0)
+except c2py.I2CError:
+    print "Error initilising DIO"
 
 class DIOEvent(Event):
-    def __init__(self, bits):
-        self.bits = bits
+    def __init__(self, events):
+        Event.__init__(self, diopoll)
+        self.events = events
 
-def getbit(val,n):
-    if (1<<n)&val:
-        return 1
+def setdio(self, bit, value):
+    global curdio
+    if bit < 4 or bit > 7:
+        logging.error("Trying to set an invalid DIO pin.")
     else:
-        return 0
-
-class Dio:
-    def __init__(self):
-        self.curdio = 0x0F #Bottom bits are inputs
-        print "Writing to %x, %x" % (DIOADDRESS, self.curdio)
-        c2py.writebyte(DIOADDRESS, self.curdio, 0)
-
-    def setdio(self, bit, value):
-        if bit < 4 or bit > 7:
-            logging.error("Trying to set an invalid DIO pin.")
+        if value == 0:
+            curdio &= ~(1<<bit)
         else:
-            if value == 0:
-                self.curdio &= ~(1<<bit)
-            else:
-                self.curdio |= (1<<bit)
-            print "%x" % self.curdio
-            c2py.writebyte(DIOADDRESS, self.curdio, 0)
+            curdio |= (1<<bit)
+        c2py.writebyte(DIOADDRESS, curdio, 0)
 
-    def read(self):
-        v = [None,None,None]
-        pos = 0
+def read(self):
+    v = [None,None,None]
+    pos = 0
+    while True:
+        try:
+            v[pos] = c2py.readbyte(DIOADDRESS, 0) & 0xF
+            pos = (pos + 1)%3
 
-        while True:
-            try:
-                v[pos] = c2py.readbyte(DIOADDRESS, 0) & 0xF
-                pos = (pos + 1)%3
+            if v[0] == v[1] and v[0] == v[2] and v[1] == v[2]:
+                break
+        except c2py.I2CError:
+            print "Error on I2C fetching DIO"
 
-                if v[0] == v[1] and v[0] == v[2] and v[1] == v[2]:
-                    break
-            except c2py.I2CError:
-                print "Error on I2C"
-                pass
+    return v[0]
 
-        return v[0]
+def diopoll():
+    last_read = read()
+    yield None
 
-    def diopoll(self):
-        self.last_read = self.read()
-        print "diopoll init"
-        yield None
+    while 1:
+        v = read()
+        diff = last_read ^ v
+        last_read = v
+        if diff:
+            setbits = []
+            for x in range(0, 4):
+                if (diff & (1<<x)) != 0:
+                    setbits.append( x )
 
-        while 1:
-            v = self.read()
-            diff = self.last_read ^ v
-            self.last_read = v
-            if diff:
-                setbits = []
-                for x in range(0, 4):
-                    if (diff & (1<<x)) != 0:
-                        print getbit(v,x)
-                        setbits.append( (x,getbit(v,x)) )
-
-                yield DIOEvent(setbits)
-
-            else:
-                yield None
-
-
+            yield DIOEvent(setbits)
+        else:
+            yield None
