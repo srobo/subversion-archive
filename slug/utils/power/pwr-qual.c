@@ -144,8 +144,13 @@ int main( int argc, char** argv )
 		printf("%d\n", setpins(fd, SETRAILS,atoi(argv[2])));	
 		return 0;
 	case 'r':
+		printf("%d\n", readbyte(fd, GETRAILS));	
+		return 0;
+
+	case 'x':
 		printf("%d\n", readword(fd, GETRAILS));	
 		return 0;
+
 	case 'o':
 		if (argc!=3)
 		{
