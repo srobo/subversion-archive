@@ -28,6 +28,15 @@ typedef enum
 
 typedef uint16_t pwm_ratio_t;
 
+/* Configure the i2c device */
+int motor_i2c_conf( void );
+
+/* Enable use of the PEC */
+void i2c_pec_enable( int fd );
+
+/* Disable use of the PEC */
+void i2c_pec_disable( int fd );
+
 void motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
 {
 	uint16_t v = 0;
@@ -60,10 +69,15 @@ int main( int argc, char** argv )
 	uint8_t channel;
 	motor_state_t dir;
 	pwm_ratio_t pwm;
+	bool test = FALSE;
 
-	if( argc < 4 )
+	if( argc == 2 && strcmp( argv[1], "test" ) == 0 )
+		/* Run tests */
+		test = TRUE;
+	else if( argc < 4 )
 	{
 		printf("Usage: %s CHANNEL DIR PWM_VALUE\n"
+		       "Or: %s test\n"
 		       "Where:\n"
 		       "\t CHANNEL is the motor number (0 or 1).\n"
 		       "\t DIR is the motor direction:\n"
@@ -72,54 +86,82 @@ int main( int argc, char** argv )
 		       "\t\to = off\n"
 		       "\t\ts = brake\n"
 		       "\t PWM_VALUE is a member of [0,%u]\n"
-		       , argv[0], MOTOR_MAX );
+		       , argv[0], argv[0], MOTOR_MAX );
 		return 1;
 	}
 
-	channel = strtoul( argv[1], NULL, 10 );
-	switch( *argv[2] )
+	fd = motor_i2c_conf();
+
+	if( test )
 	{
-	case 'f':
-		dir = M_FORWARD;
-		break;
-	case 'b':
-		dir = M_BACKWARD;
-		break;
-	case 'o':
-		dir = M_OFF;
-		break;
-	case 's':
-		dir = M_BRAKE;
-		break;
-	default:
-		fprintf(stderr, "Invalid direction code - quitting\n");
-		return 2;
+
 	}
-	pwm = strtoul( argv[3], NULL, 10 );
+	else
+	{
+		channel = strtoul( argv[1], NULL, 10 );
+		switch( *argv[2] )
+		{
+		case 'f':
+			dir = M_FORWARD;
+			break;
+		case 'b':
+			dir = M_BACKWARD;
+			break;
+		case 'o':
+			dir = M_OFF;
+			break;
+		case 's':
+			dir = M_BRAKE;
+			break;
+		default:
+			fprintf(stderr, "Invalid direction code - quitting\n");
+			return 2;
+		}
+		pwm = strtoul( argv[3], NULL, 10 );
+
+		motor_set( fd, channel, dir, pwm );
+	}
+	
+	return 0;
+}
+
+int motor_i2c_conf( void )
+{
+	int fd;
 
 	fd = open( "/dev/i2c-0", O_RDWR );
 
 	if( fd == -1 )
 	{
 		fprintf( stderr, "Failed to open /dev/i2c-0: %m\n" );
-		return 1;
+		exit(1);
 	}
 
 	if( ioctl( fd, I2C_SLAVE, ADDRESS ) < 0 )
 	{
 		fprintf( stderr, "Failed to set slave address: %m\n" );
-		return 2;
+		exit(2);
 	}
 
-	if( ioctl( fd, I2C_PEC, 1) < 0)
-	{
-		fprintf( stderr, "Failed to enable PEC\n");
-		return 3;
-	}
+	i2c_pec_enable( fd );
 
-	/* motor_identify(fd); */
+	return fd;
+}
 
-	motor_set( fd, channel, dir, pwm );
-	
-	return 0;
+void i2c_pec_enable( int fd )
+{
+	if( ioctl( fd, I2C_PEC, 1) < 0) 
+	{ 
+		fprintf( stderr, "Failed to enable PEC\n"); 
+		exit(3);
+	} 
+}
+
+void i2c_pec_disable( int fd )
+{
+	if( ioctl( fd, I2C_PEC, 0) < 0) 
+	{ 
+		fprintf( stderr, "Failed to disable PEC\n"); 
+		exit(3);
+	} 
 }
