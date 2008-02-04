@@ -11,6 +11,13 @@ FORWARD = 1
 BACKWARD = 2
 BRAKE = 3
 
+def checkmotor():
+    try:
+        c2py.writeworddata( ADDRESS, MOTOR_CMD_CONF, 0, 0 )
+    except c2py.I2CError:
+        return False
+    return True
+
 def __set__( channel, speed ):
     
     speed = float(speed)
@@ -31,7 +38,7 @@ def __set__( channel, speed ):
     speed = abs(int(speed * 3.28))
 
     v = speed | (dir << 9) | (channel<<11)
-    c2py.writeworddata( ADDRESS, MOTOR_CMD_CONF, v, 0 )
+    c2py.writeworddata( ADDRESS, MOTOR_CMD_CONF, v, 1 )
 
 def setspeed(*args):
     if len(args) == 1:

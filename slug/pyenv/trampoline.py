@@ -1,8 +1,11 @@
 import types
-import robot
 from events import TimeoutEvent
 import time
 import logging
+try:
+    import robot
+except:
+    pass
 
 class Trampoline:
     def __init__(self):
@@ -113,5 +116,8 @@ class Trampoline:
                             break
                     
 if __name__ == "__main__":
+    import sys, os, os.path
+    sys.path.insert(0, os.path.join(os.curdir, "robot.zip"))
+    import robot
     t = Trampoline()
     t.schedule()

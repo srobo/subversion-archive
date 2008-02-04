@@ -1,9 +1,21 @@
-from motor import setspeed
-from dio import *
+from motor import checkmotor
+
+if checkmotor():
+    from motor import setspeed
+else:
+    setspeed = None
+
 from vis import *
 from pwm import setpos
+import logging
 
 vision = vispoll()
 vision.next()
-dio = diopoll()
-dio.next()
+
+from dio import *
+if checkdio():
+    dio = diopoll()
+    dio.next()
+else:
+    logging.error("DIO Failed")
+    dio = None

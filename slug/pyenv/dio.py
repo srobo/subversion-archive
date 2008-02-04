@@ -40,6 +40,13 @@ def read():
 
     return v[0]
 
+def checkdio():
+    try:
+        v = c2py.readbyte(DIOADDRESS, 0)
+    except c2py.I2CError:
+        return False
+    return True
+
 def diopoll():
     last_read = read()
     yield None
