@@ -774,6 +774,7 @@ void setled(u8 *data){
 void getv(u8 *data){
 	data[0]= (u8)(voltage&0x00FF);
 	data[1]= (u8)((voltage&0xFF00)>>8);
+	mputcharUSART('q');
 	return;
 	}
 void geti(u8 *data){
@@ -792,9 +793,9 @@ void setrails(u8 *data){
 	return;
 	}
 void getrails(u8 *data){
-	data[0]= (PORTE&0x07)|((PORTB&0x18)<<1);
+	data[0]=(PORTE&0x07)|((PORTB&0x18)<<1);
 	return;
-	}
+	} 
 
 void sendser(u8 *data){
 	//PORTD|=0x00100000;
