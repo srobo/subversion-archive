@@ -102,6 +102,15 @@ int main( int argc, char** argv )
 	if (argc<2){ // check at least 1 arg
 		printf("incorrect args\n");
 		printf("Usage: %s {w,l,v,i,r,s}\n");
+		printf("w - identify(currently unsupported locally)\n"
+		       "l - set led values, needs 2 args\n"
+		       "v - read voltage\n"
+		       "i - read current\n"
+		       "r - get rail values\n"
+		       "s - set rail values - be REALLY CAREFULL! ( needs 2 args)\n"
+		       "d - get dip switch values\n"
+		       "u - check for usb cabble plugged in\n"
+		       "o - send char out ( needst args)\n");
 		return -1;
 	}
 
