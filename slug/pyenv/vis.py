@@ -2,6 +2,7 @@ import select
 import os
 import time
 import subprocess
+import logging
 from events import Event
 
 class VISEvent(Event):
@@ -24,35 +25,40 @@ def vispoll():
             stdin=subprocess.PIPE)
     fifo = sp.stdout.fileno()
     command = sp.stdin
-    text = ""
 
     yield None #End of setup
 
     event = VISEvent()
 
     while True:
+        if sp.poll() != None:
+            logging.error("Camera failed")
+            while True:
+                yield None
+
         command.write("\n")
+        text = ""
         while True:
-            if select.select([self.fifo], [], [], 0) == ([], [], []):
-                #Nothing left to read
-                break
-            text += os.read(self.fifo, 1)
+            if select.select([fifo], [], [], 0) == ([], [], []):
+		if text[-6:] == "BLOBS\n":
+                    text = text[:-6]
+                    break
 
-        if len(text) > 0:
-            blocks = text.split("BLOBS\n")
+                if sp.poll() != None:
+                    logging.error("Camera failed")
+                    while True:
+                        yield None
+                    
+            text += os.read(fifo, 1)
 
-            if len(blocks) > 1:
-                text = blocks[-1]
-                lastfull = blocks[-2]
-
-                lines = lastfull.strip().split('\n')
-                event = VISEvent()
-                for line in lines:
-                    if line != "":
-                        info = line.split(",")
-                        event.addblob(info[0], info[1], info[2], info[3])
-
-                yield event
-
-        #Haven't reached the end of a frame yet, so don't raise the event
-        yield None
+        lines = text.strip().split('\n')
+     
+        if len(lines) == 0:
+            yield None
+        else:
+            event = VISEvent()
+            for line in lines:
+                if line != "":
+                    info = line.split(",")
+                    event.addblob(info[0], info[1], info[2], info[3])
+            yield event
