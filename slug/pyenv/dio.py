@@ -7,7 +7,7 @@ curdio = 0x0F #Bottom bits are inputs
 try:
     c2py.writebyte(DIOADDRESS, curdio, 0)
 except c2py.I2CError:
-    print "Error initilising DIO"
+    logging.error("Error initilising DIO")
 
 class DIOEvent(Event):
     def __init__(self, events):
@@ -25,7 +25,7 @@ def setdio(self, bit, value):
             curdio |= (1<<bit)
         c2py.writebyte(DIOADDRESS, curdio, 0)
 
-def read(self):
+def read():
     v = [None,None,None]
     pos = 0
     while True:
@@ -36,7 +36,7 @@ def read(self):
             if v[0] == v[1] and v[0] == v[2] and v[1] == v[2]:
                 break
         except c2py.I2CError:
-            print "Error on I2C fetching DIO"
+            logging.error("Error on I2C fetching DIO")
 
     return v[0]
 
