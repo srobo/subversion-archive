@@ -19,7 +19,7 @@ then
 	cd $TMPDIR
 
 	# Log all output to /mnt/user/robot-log.txt
-	exec $TMPDIR/run.py 2>&1 | unix2dos > /mnt/user/robot-log.txt
+	exec $TMPDIR/run.py
     fi
 else
     echo "Warning: No robot code found."
