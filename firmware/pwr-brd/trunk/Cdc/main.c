@@ -73,6 +73,8 @@
 int alive;
 long int startupdel;
 
+u8 debug[256];
+
 
 
 u8 data[32]; // size according to smbus spec 
@@ -286,7 +288,8 @@ void high_isr (void)
 void main(void)
 {
 	unsigned char spoof ='A';
-
+	unsigned char minicount=0;
+	unsigned char minidata=0;
 
 	
     InitializeSystem();
@@ -298,13 +301,29 @@ void main(void)
     {
 		    //PORTD|=0b01000000;
 	    
-	    /*if (alive++==8000)
+	    if (alive++==10)
 	    {
 		    alive=0;
-		    //PORTDBits.RD7=!PORTDBits.RD7;
-		    PORTD^=0b10000000;
-		   
-		}*/
+		    if(minicount==0) 
+		    	    minidata =0;
+		    	    
+		    //minidata &= 0xfc;
+		    minidata <<= 2;
+		    minidata |= PORTB&0x03;
+		    minicount++;
+		    //PORTD ^= 0b00100000;
+		    if(minicount>3){
+			    if(mUSBUSARTIsTxTrfReady()){
+					mUSBUSARTTxRam( &minidata,1);
+				
+				}else{
+					PORTD ^= 0b01000000;
+				}
+				//minidata =0;
+				minicount=0;
+				
+			}
+		}
 
 		if (PORTDbits.RD0) // check for test mode
 		{
@@ -505,6 +524,8 @@ static void InitializeSystem(void)
     TRISBbits.TRISB0=1; //Set to inputs for the SPI module
     TRISBbits.TRISB1=1;
 
+/*
+
     SSPSTATbits.CKE=1; //Enable SMBus specific inputs
     SSPSTATbits.SMP=1; //Slew rate control for 100khz operation
 
@@ -531,6 +552,9 @@ static void InitializeSystem(void)
     //	clear sm flags;....
     
     //SSPCON1bits.SSPOV; //Receive overflow indicator
+
+*/
+
 
     // -------current sence set up---------------------
 
