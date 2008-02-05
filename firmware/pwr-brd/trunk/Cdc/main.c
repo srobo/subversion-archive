@@ -53,6 +53,8 @@
 
 #define i2c_debug if (0)
 
+#define DEBUGSIZE 256
+
 #define GOOD 0
 #define BAD 1
 #define u8 unsigned char
@@ -73,7 +75,7 @@
 int alive;
 long int startupdel;
 
-u8 debug[256];
+u8 debug[DEBUGSIZE];
 
 
 
@@ -290,7 +292,9 @@ void main(void)
 	unsigned char spoof ='A';
 	unsigned char minicount=0;
 	unsigned char minidata=0;
-
+	unsigned char miniloc=0;
+	unsigned int bom=0;
+	unsigned char was=0;
 	
     InitializeSystem();
     
@@ -304,26 +308,53 @@ void main(void)
 	    if (alive++==10)
 	    {
 		    alive=0;
-		    if(minicount==0) 
-		    	    minidata =0;
-		    	    
-		    //minidata &= 0xfc;
+		    
+		    if (PORTBbits.RB1==1){
+			    bom=0; // reset whilst its 1
+			    }
+			else{
+				bom++;
+				}
+				
+				
+				
+			    
+			    if(bom>20000){
+				    PORTD ^= 0b10000000;
+				    bom=0;
+				    //explode
+				    was=miniloc-1;
+				    
+				    while(was!=miniloc){
+					    while(!(mUSBUSARTIsTxTrfReady()));
+					    miniloc = miniloc%DEBUGSIZE;
+					    mUSBUSARTTxRam( &minidata+miniloc,1);
+					    miniloc++;
+					    }
+				
+				
+				
+		    //minidata &= 0xfc; - a compiler bug ?
 		    minidata <<= 2;
 		    minidata |= PORTB&0x03;
 		    minicount++;
-		    //PORTD ^= 0b00100000;
+		    
 		    if(minicount>3){
-			    if(mUSBUSARTIsTxTrfReady()){
-					mUSBUSARTTxRam( &minidata,1);
-				
-				}else{
-					PORTD ^= 0b01000000;
-				}
-				//minidata =0;
 				minicount=0;
-				
+				debug[miniloc]=minidata;
+				miniloc = ((miniloc+1)%DEBUGSIZE);				
+				minidata =0;
+				}
 			}
-		}
+			
+			
+			
+		}// end if alive
+		
+		
+				    
+
+
 
 		if (PORTDbits.RD0) // check for test mode
 		{
