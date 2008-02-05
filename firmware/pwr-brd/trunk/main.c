@@ -53,8 +53,6 @@
 
 #define i2c_debug if (0)
 
-#define DEBUGSIZE 256
-
 #define GOOD 0
 #define BAD 1
 #define u8 unsigned char
@@ -74,8 +72,6 @@
 #pragma udata
 int alive;
 long int startupdel;
-
-u8 debug[DEBUGSIZE];
 
 
 
@@ -290,11 +286,8 @@ void high_isr (void)
 void main(void)
 {
 	unsigned char spoof ='A';
-	unsigned char minicount=0;
-	unsigned char minidata=0;
-	unsigned char miniloc=0;
-	unsigned int bom=0;
-	unsigned char was=0;
+
+
 	
     InitializeSystem();
     
@@ -305,49 +298,13 @@ void main(void)
     {
 		    //PORTD|=0b01000000;
 	    
-	    if (1)//(alive++==4)
+	    /*if (alive++==8000)
 	    {
 		    alive=0;
-		    
-		    if (PORTBbits.RB0==1){
-			    bom=0; // reset whilst its 1
-			    }
-			else{
-				bom++;
-				}
-							    
-		    if(bom>20000){
-			    PORTD ^= 0b10000000;
-			    bom=0;
-			    //explode
-			    //was=miniloc-1;
-			    
-			    //while(was!=miniloc){
-				while(!(mUSBUSARTIsTxTrfReady()));
-				    //miniloc = miniloc%DEBUGSIZE;
-				mUSBUSARTTxRam(debug,255);
-				//    miniloc++;
-			}				
-				
-		    //minidata &= 0xfc; - a compiler bug ?
-		    PORTD ^= 0b01000000;
-		    minidata <<= 2;
-		    minidata |= PORTB&0x03;
-		    minicount++;
-		    
-		    if(minicount>3){
-				minicount=0;
-				debug[miniloc]=minidata;
-				miniloc = ((miniloc+1)%DEBUGSIZE);				
-				minidata =0;
-			}
-			
-		}// end if alive
-		
-		
-				    
-
-
+		    //PORTDBits.RD7=!PORTDBits.RD7;
+		    PORTD^=0b10000000;
+		   
+		}*/
 
 		if (PORTDbits.RD0) // check for test mode
 		{
@@ -548,8 +505,6 @@ static void InitializeSystem(void)
     TRISBbits.TRISB0=1; //Set to inputs for the SPI module
     TRISBbits.TRISB1=1;
 
-/*
-
     SSPSTATbits.CKE=1; //Enable SMBus specific inputs
     SSPSTATbits.SMP=1; //Slew rate control for 100khz operation
 
@@ -576,9 +531,6 @@ static void InitializeSystem(void)
     //	clear sm flags;....
     
     //SSPCON1bits.SSPOV; //Receive overflow indicator
-
-*/
-
 
     // -------current sence set up---------------------
 
