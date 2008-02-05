@@ -126,6 +126,7 @@ void setrails(u8 *data);
 void getrails(u8 *data);
 void sendser(u8 *data);
 void isusb(u8 *data);
+void beegees(u8 *data);
 //void getusbbuf(u8 *data);
 //void setusbbuf(u8 *data);
 //void getsectorlo(u8 *data);
@@ -144,7 +145,8 @@ void isusb(u8 *data);
                         {1, 0,setrails},
 	                    {0, 1,getrails},//6
 	                    {1,0,sendser},
-		                {0,1,isusb}};
+		                {0,1,isusb},
+			            {1,0,beegees}};
 							
 							
 //----------------------
@@ -621,7 +623,7 @@ void i2cservice(void)
 	        i2c_debug mputcharUSART('A');
             i2cstatus = BAD; //This is to check abandoned machines later
             adddump = SSPBUF;
-             i2c_debug prdbg('>', adddump);
+            i2c_debug prdbg('>', adddump);
         	PIR1bits.SSPIF = 0;
             if (!SSPSTATbits.R_W) //About to receive something from the slug
             {
@@ -651,7 +653,7 @@ void i2cservice(void)
 	            checksum = crc8(checksum^data[0]);
 	            datapos = 1;
 	      	}
-        } else {
+        } else {// nogt an address byte
             switch(state){
                 case GOTADDRESSREAD: //Just received a command
                     command = SSPBUF;
@@ -809,6 +811,10 @@ void isusb(u8 *data){
 	data[0]=(PORTA&0x10)>>4;
 	return;
 	}
+	
+void beegees(u8 *data){
+	// slug is alive, possibly staying alive :)
+}	
 /*	
 void getsectorlo(u8 *data)
 {
