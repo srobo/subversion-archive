@@ -305,36 +305,32 @@ void main(void)
     {
 		    //PORTD|=0b01000000;
 	    
-	    if (alive++==10)
+	    if (1)//(alive++==4)
 	    {
 		    alive=0;
 		    
-		    if (PORTBbits.RB1==1){
+		    if (PORTBbits.RB0==1){
 			    bom=0; // reset whilst its 1
 			    }
 			else{
 				bom++;
 				}
-				
-				
-				
+							    
+		    if(bom>20000){
+			    PORTD ^= 0b10000000;
+			    bom=0;
+			    //explode
+			    //was=miniloc-1;
 			    
-			    if(bom>20000){
-				    PORTD ^= 0b10000000;
-				    bom=0;
-				    //explode
-				    was=miniloc-1;
-				    
-				    while(was!=miniloc){
-					    while(!(mUSBUSARTIsTxTrfReady()));
-					    miniloc = miniloc%DEBUGSIZE;
-					    mUSBUSARTTxRam( &minidata+miniloc,1);
-					    miniloc++;
-					    }
-				
-				
+			    //while(was!=miniloc){
+				while(!(mUSBUSARTIsTxTrfReady()));
+				    //miniloc = miniloc%DEBUGSIZE;
+				mUSBUSARTTxRam(debug,255);
+				//    miniloc++;
+			}				
 				
 		    //minidata &= 0xfc; - a compiler bug ?
+		    PORTD ^= 0b01000000;
 		    minidata <<= 2;
 		    minidata |= PORTB&0x03;
 		    minicount++;
@@ -344,10 +340,7 @@ void main(void)
 				debug[miniloc]=minidata;
 				miniloc = ((miniloc+1)%DEBUGSIZE);				
 				minidata =0;
-				}
 			}
-			
-			
 			
 		}// end if alive
 		
