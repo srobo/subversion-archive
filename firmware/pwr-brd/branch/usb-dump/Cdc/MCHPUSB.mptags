@@ -1,0 +1,530 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.5.4	//
+!_TAG_REVISION_NAME	MCHPTags	//
+!_TAG_REVISION_VERSION	6.0.1	//
+ABSTRACT_CONTROL_MODEL::0x02	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	71;"	d	line:71
+ABSTRACT_STATE::0x01	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	85;"	d	line:85
+ADD0::LATAbits.LATA0	H:\repo\project\Cdc\user\flash.h	1;"	d	line:1
+ADD10::LATCbits.LATC1	H:\repo\project\Cdc\user\flash.h	16;"	d	line:16
+ADD11::LATCbits.LATC2	H:\repo\project\Cdc\user\flash.h	17;"	d	line:17
+ADD12::LATBbits.LATB0	H:\repo\project\Cdc\user\flash.h	8;"	d	line:8
+ADD13::LATBbits.LATB1	H:\repo\project\Cdc\user\flash.h	9;"	d	line:9
+ADD14::LATBbits.LATB2	H:\repo\project\Cdc\user\flash.h	10;"	d	line:10
+ADD15::LATBbits.LATB3	H:\repo\project\Cdc\user\flash.h	11;"	d	line:11
+ADD1::LATAbits.LATA1	H:\repo\project\Cdc\user\flash.h	2;"	d	line:2
+ADD2::LATAbits.LATA2	H:\repo\project\Cdc\user\flash.h	3;"	d	line:3
+ADD3::LATAbits.LATA3	H:\repo\project\Cdc\user\flash.h	4;"	d	line:4
+ADD4::LATAbits.LATA4	H:\repo\project\Cdc\user\flash.h	5;"	d	line:5
+ADD5::LATAbits.LATA5	H:\repo\project\Cdc\user\flash.h	6;"	d	line:6
+ADD6::LATEbits.LATE0	H:\repo\project\Cdc\user\flash.h	30;"	d	line:30
+ADD7::LATEbits.LATE1	H:\repo\project\Cdc\user\flash.h	31;"	d	line:31
+ADD8::LATEbits.LATE2	H:\repo\project\Cdc\user\flash.h	32;"	d	line:32
+ADD9::LATCbits.LATC0	H:\repo\project\Cdc\user\flash.h	15;"	d	line:15
+ADDRESS_STATE::5	H:\repo\project\Cdc\system\usb\usbmmap.h	62;"	d	line:62
+ADR	H:\repo\project\Cdc\system\usb\usbmmap.h	123;"	m	line:123	struct:_BDT::<anonymous>
+ADRH	H:\repo\project\Cdc\system\usb\usbmmap.h	117;"	m	line:117	struct:_BDT::<anonymous>
+ADRL	H:\repo\project\Cdc\system\usb\usbmmap.h	116;"	m	line:116	struct:_BDT::<anonymous>
+ADR_PENDING_STATE::4	H:\repo\project\Cdc\system\usb\usbmmap.h	61;"	d	line:61
+ATTACHED_STATE::1	H:\repo\project\Cdc\system\usb\usbmmap.h	58;"	d	line:58
+BC8	H:\repo\project\Cdc\system\usb\usbmmap.h	84;"	m	line:84	struct:_BD_STAT::<anonymous>
+BC8	H:\repo\project\Cdc\system\usb\usbmmap.h	94;"	m	line:94	struct:_BD_STAT::<anonymous>
+BC9	H:\repo\project\Cdc\system\usb\usbmmap.h	85;"	m	line:85	struct:_BD_STAT::<anonymous>
+BC9	H:\repo\project\Cdc\system\usb\usbmmap.h	95;"	m	line:95	struct:_BD_STAT::<anonymous>
+BDT	H:\repo\project\Cdc\system\usb\usbmmap.h	125;"	t	line:125
+BD_STAT	H:\repo\project\Cdc\system\usb\usbmmap.h	108;"	t	line:108
+BOOL	H:\repo\project\Cdc\system\typedefs.h	150;"	t	line:150
+BSTALL	H:\repo\project\Cdc\system\usb\usbmmap.h	86;"	m	line:86	struct:_BD_STAT::<anonymous>
+BYTE	H:\repo\project\Cdc\system\typedefs.h	58;"	t	line:58
+Byte0	H:\repo\project\Cdc\system\typedefs.h	103;"	m	line:103	struct:_DWORD::<anonymous>
+Byte0	H:\repo\project\Cdc\system\typedefs.h	70;"	m	line:70	struct:_WORD::<anonymous>
+Byte1	H:\repo\project\Cdc\system\typedefs.h	104;"	m	line:104	struct:_DWORD::<anonymous>
+Byte1	H:\repo\project\Cdc\system\typedefs.h	71;"	m	line:71	struct:_WORD::<anonymous>
+Byte2	H:\repo\project\Cdc\system\typedefs.h	105;"	m	line:105	struct:_DWORD::<anonymous>
+Byte3	H:\repo\project\Cdc\system\typedefs.h	106;"	m	line:106	struct:_DWORD::<anonymous>
+CARRIER_CONTROL	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	284;"	m	line:284	struct:_CONTROL_SIGNAL_BITMAP::<anonymous>
+CDCInitEP	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	169;"	f	line:169	signature:(void)
+CDCInitEP	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	339;"	p	line:339	signature:(void)
+CDCTxService	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	448;"	f	line:448	signature:(void)
+CDCTxService	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	343;"	p	line:343	signature:(void)
+CDC_BULK_BD_IN::ep3Bi	H:\repo\project\Cdc\autofiles\usbcfg.h	76;"	d	line:76
+CDC_BULK_BD_OUT::ep3Bo	H:\repo\project\Cdc\autofiles\usbcfg.h	74;"	d	line:74
+CDC_BULK_IN_EP_SIZE::64	H:\repo\project\Cdc\autofiles\usbcfg.h	77;"	d	line:77
+CDC_BULK_OUT_EP_SIZE::64	H:\repo\project\Cdc\autofiles\usbcfg.h	75;"	d	line:75
+CDC_COMM_INTF_ID::0x00	H:\repo\project\Cdc\autofiles\usbcfg.h	67;"	d	line:67
+CDC_COMM_UEP::UEP2	H:\repo\project\Cdc\autofiles\usbcfg.h	68;"	d	line:68
+CDC_DATA_INTF_ID::0x01	H:\repo\project\Cdc\autofiles\usbcfg.h	72;"	d	line:72
+CDC_DATA_UEP::UEP3	H:\repo\project\Cdc\autofiles\usbcfg.h	73;"	d	line:73
+CDC_DEVICE::0x02	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	65;"	d	line:65
+CDC_H	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	37;"	d	line:37
+CDC_INT_BD_IN::ep2Bi	H:\repo\project\Cdc\autofiles\usbcfg.h	69;"	d	line:69
+CDC_INT_EP_SIZE::8	H:\repo\project\Cdc\autofiles\usbcfg.h	70;"	d	line:70
+CDC_TX_BUSY::1	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	108;"	d	line:108
+CDC_TX_BUSY_ZLP::2	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	109;"	d	line:109
+CDC_TX_COMPLETING::3	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	110;"	d	line:110
+CDC_TX_READY::0	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	107;"	d	line:107
+CFG01::romstruct\	H:\repo\project\Cdc\autofiles\usbdsc.h	54;"	d	line:54
+CLEAR_COMM_FEATURE::0x04	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	49;"	d	line:49
+COMMAND_CODE_RECEIVED	H:\repo\project\Cdc\user\user.c	221;"	e	line:221	enum:states	file:
+COMM_INTF::0x02	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	68;"	d	line:68
+CONFIGURED_STATE::6	H:\repo\project\Cdc\system\usb\usbmmap.h	63;"	d	line:63
+CONTROL_SIGNAL_BITMAP	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	286;"	t	line:286
+COUNTRY_SETTING::0x02	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	86;"	d	line:86
+CS_ENDPOINT::0x25	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	91;"	d	line:91
+CS_INTERFACE::0x24	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	90;"	d	line:90
+ClassReqHandler	H:\repo\project\Cdc\autofiles\usbdsc.c	263;"	v	line:263
+ClearArray	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	575;"	f	line:575	signature:(byte* startAdr,byte count)
+Cnt	H:\repo\project\Cdc\system\usb\usbmmap.h	115;"	m	line:115	struct:_BDT::<anonymous>
+CtrlTrfData	H:\repo\project\Cdc\system\usb\usbmmap.c	269;"	v	line:269
+DATA0::LATDbits.LATD0	H:\repo\project\Cdc\user\flash.h	21;"	d	line:21
+DATA1::LATDbits.LATD1	H:\repo\project\Cdc\user\flash.h	22;"	d	line:22
+DATA2::LATDbits.LATD2	H:\repo\project\Cdc\user\flash.h	23;"	d	line:23
+DATA3::LATDbits.LATD3	H:\repo\project\Cdc\user\flash.h	24;"	d	line:24
+DATA4::LATDbits.LATD4	H:\repo\project\Cdc\user\flash.h	25;"	d	line:25
+DATA5::LATDbits.LATD5	H:\repo\project\Cdc\user\flash.h	26;"	d	line:26
+DATA6::LATDbits.LATD6	H:\repo\project\Cdc\user\flash.h	27;"	d	line:27
+DATA7::LATDbits.LATD7	H:\repo\project\Cdc\user\flash.h	28;"	d	line:28
+DATA_INTF::0x0A	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	78;"	d	line:78
+DECODE_RECORD	H:\repo\project\Cdc\user\user.c	225;"	e	line:225	enum:states	file:
+DEFAULT_STATE::3	H:\repo\project\Cdc\system\usb\usbmmap.h	60;"	d	line:60
+DETACHED_STATE::0	H:\repo\project\Cdc\system\usb\usbmmap.h	57;"	d	line:57
+DSC_FN_ACM::0x02	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	96;"	d	line:96
+DSC_FN_CALL_MGT::0x01	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	95;"	d	line:95
+DSC_FN_COUNTRY_SELECTION::0x07	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	101;"	d	line:101
+DSC_FN_DLM::0x03	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	97;"	d	line:97
+DSC_FN_HEADER::0x00	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	94;"	d	line:94
+DSC_FN_RPT_CAPABILITIES::0x05	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	99;"	d	line:99
+DSC_FN_TELEPHONE_RINGER::0x04	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	98;"	d	line:98
+DSC_FN_TEL_OP_MODES::0x08	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	102;"	d	line:102
+DSC_FN_UNION::0x06	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	100;"	d	line:100
+DSC_FN_USB_TERMINAL::0x09	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	103;"	d	line:103
+DTE_PRESENT	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	283;"	m	line:283	struct:_CONTROL_SIGNAL_BITMAP::<anonymous>
+DTS	H:\repo\project\Cdc\system\usb\usbmmap.h	90;"	m	line:90	struct:_BD_STAT::<anonymous>
+DTSEN	H:\repo\project\Cdc\system\usb\usbmmap.h	87;"	m	line:87	struct:_BD_STAT::<anonymous>
+DWORD	H:\repo\project\Cdc\system\typedefs.h	117;"	t	line:117
+DecodeHex	H:\repo\project\Cdc\user\user.c	181;"	f	line:181	signature:(unsigned char *buffer)
+DecodeHex	H:\repo\project\Cdc\user\user.c	70;"	p	line:70	file:	signature:(unsigned char *buffer)
+DecodeHexChar::(n)(n<65?n-48:n-55)	H:\repo\project\Cdc\user\user.c	55;"	d	line:55	file:
+EP0_BUFF_SIZE::8	H:\repo\project\Cdc\autofiles\usbcfg.h	38;"	d	line:38
+ERASE_SECTOR_IF_NEEDED	H:\repo\project\Cdc\user\user.c	226;"	e	line:226	enum:states	file:
+EnterCommandMode	H:\repo\project\Cdc\user\flash.c	46;"	f	line:46
+EnterCommandMode	H:\repo\project\Cdc\user\flash.h	38;"	p	line:38	signature:( void )
+EraseSector	H:\repo\project\Cdc\user\flash.c	56;"	f	line:56	signature:(char sector)
+EraseSector	H:\repo\project\Cdc\user\flash.h	39;"	p	line:39	signature:(char sector)
+FAIL::FALSE	H:\repo\project\Cdc\system\typedefs.h	153;"	d	line:153
+FALSE	H:\repo\project\Cdc\system\typedefs.h	150;"	e	line:150	enum:_BOOL
+GET_COMM_FEATURE::0x03	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	48;"	d	line:48
+GET_ENCAPSULATED_RESPONSE::0x01	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	46;"	d	line:46
+GET_LINE_CODING::0x21	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	51;"	d	line:51
+GET_NEXT_RECORD	H:\repo\project\Cdc\user\user.c	230;"	e	line:230	enum:states	file:
+GET_RECORD	H:\repo\project\Cdc\user\user.c	224;"	e	line:224	enum:states	file:
+GIVEUP_RECEIVE	H:\repo\project\Cdc\user\user.c	233;"	e	line:233	enum:states	file:
+GetData	H:\repo\project\Cdc\user\flash.c	34;"	f	line:34
+GetData	H:\repo\project\Cdc\user\flash.h	36;"	p	line:36	signature:( void )
+GetDataAtAddress	H:\repo\project\Cdc\user\flash.c	136;"	f	line:136	signature:(char high, char low)
+GetDataAtAddress	H:\repo\project\Cdc\user\flash.h	42;"	p	line:42	signature:(char high, char low)
+GetManufacturerData	H:\repo\project\Cdc\user\flash.c	82;"	f	line:82
+GetManufacturerData	H:\repo\project\Cdc\user\flash.h	40;"	p	line:40	signature:( void )
+HighB	H:\repo\project\Cdc\system\typedefs.h	76;"	m	line:76	struct:_WORD::<anonymous>
+IDLE	H:\repo\project\Cdc\user\user.c	220;"	e	line:220	enum:states	file:
+INCDIS	H:\repo\project\Cdc\system\usb\usbmmap.h	88;"	m	line:88	struct:_BD_STAT::<anonymous>
+INCREMENT_BLOCK_NUMBER	H:\repo\project\Cdc\user\user.c	228;"	e	line:228	enum:states	file:
+INPUT_PIN::1	H:\repo\project\Cdc\io_cfg.h	44;"	d	line:44
+IO_CFG_H	H:\repo\project\Cdc\io_cfg.h	38;"	d	line:38
+InitializeSystem	H:\repo\project\Cdc\main.c	50;"	p	line:50	file:	signature:(void)
+InitializeUSART	H:\repo\project\Cdc\user\user.c	152;"	f	line:152	signature:(void)
+InitializeUSART	H:\repo\project\Cdc\user\user.c	69;"	p	line:69	file:	signature:(void)
+KEEP_NAKKING	H:\repo\project\Cdc\user\user.c	223;"	e	line:223	enum:states	file:
+KEN	H:\repo\project\Cdc\system\usb\usbmmap.h	89;"	m	line:89	struct:_BD_STAT::<anonymous>
+LINE_CODING	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	276;"	t	line:276
+LINE_CODING_LENGTH::0x07	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	261;"	d	line:261
+LONGTIMEOUT::30	H:\repo\project\Cdc\user\user.c	53;"	d	line:53	file:
+LOWER_LSB::(a)((a).v[0])	H:\repo\project\Cdc\system\typedefs.h	118;"	d	line:118
+LOWER_MSB::(a)((a).v[1])	H:\repo\project\Cdc\system\typedefs.h	119;"	d	line:119
+LSB::(a)((a).v[0])	H:\repo\project\Cdc\system\typedefs.h	83;"	d	line:83
+LowB	H:\repo\project\Cdc\system\typedefs.h	75;"	m	line:75	struct:_WORD::<anonymous>
+MAX_EP_NUMBER::3	H:\repo\project\Cdc\autofiles\usbcfg.h	79;"	d	line:79
+MAX_NUM_INT::1	H:\repo\project\Cdc\autofiles\usbcfg.h	39;"	d	line:39
+MODE_PP::_PPBM0	H:\repo\project\Cdc\autofiles\usbcfg.h	42;"	d	line:42
+MSB::(a)((a).v[1])	H:\repo\project\Cdc\system\typedefs.h	84;"	d	line:84
+MUID_CDC::3	H:\repo\project\Cdc\autofiles\usbcfg.h	58;"	d	line:58
+MUID_HID::2	H:\repo\project\Cdc\autofiles\usbcfg.h	57;"	d	line:57
+MUID_MSD::4	H:\repo\project\Cdc\autofiles\usbcfg.h	59;"	d	line:59
+MUID_NULL::0	H:\repo\project\Cdc\autofiles\usbcfg.h	55;"	d	line:55
+MUID_USB9::1	H:\repo\project\Cdc\autofiles\usbcfg.h	56;"	d	line:56
+MakeHex	H:\repo\project\Cdc\user\user.c	188;"	f	line:188	signature:(unsigned char *buffer, unsigned char data)
+MakeHex	H:\repo\project\Cdc\user\user.c	71;"	p	line:71	file:	signature:(unsigned char *buffer, unsigned char data)
+NETWORK_CONNECTION::0x00	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	59;"	d	line:59
+NO_PROTOCOL::0x00	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	81;"	d	line:81
+OE::LATBbits.LATB4	H:\repo\project\Cdc\user\flash.h	12;"	d	line:12
+OK::TRUE	H:\repo\project\Cdc\system\typedefs.h	152;"	d	line:152
+OUTPUT_PIN::0	H:\repo\project\Cdc\io_cfg.h	45;"	d	line:45
+PC_CONNECTED::LATCbits.LATB7	H:\repo\project\Cdc\user\flash.h	19;"	d	line:19
+PID	H:\repo\project\Cdc\system\usb\usbmmap.h	105;"	m	line:105	struct:_BD_STAT::<anonymous>
+PID0	H:\repo\project\Cdc\system\usb\usbmmap.h	96;"	m	line:96	struct:_BD_STAT::<anonymous>
+PID1	H:\repo\project\Cdc\system\usb\usbmmap.h	97;"	m	line:97	struct:_BD_STAT::<anonymous>
+PID2	H:\repo\project\Cdc\system\usb\usbmmap.h	98;"	m	line:98	struct:_BD_STAT::<anonymous>
+PID3	H:\repo\project\Cdc\system\usb\usbmmap.h	99;"	m	line:99	struct:_BD_STAT::<anonymous>
+POINTER	H:\repo\project\Cdc\system\typedefs.h	148;"	t	line:148
+POWERED_STATE::2	H:\repo\project\Cdc\system\usb\usbmmap.h	59;"	d	line:59
+ProcessIO	H:\repo\project\Cdc\user\user.c	210;"	f	line:210	signature:(void)
+ProcessIO	H:\repo\project\Cdc\user\user.h	42;"	p	line:42	signature:(void)
+ProgramData	H:\repo\project\Cdc\user\flash.c	99;"	f	line:99	signature:(char high, char low, char data)
+ProgramData	H:\repo\project\Cdc\user\flash.h	41;"	p	line:41	signature:(char high, char low, char data)
+PutData	H:\repo\project\Cdc\user\flash.c	21;"	f	line:21	signature:(char d)
+PutData	H:\repo\project\Cdc\user\flash.h	35;"	p	line:35	signature:(char d)
+RECEIVE_HEAD	H:\repo\project\Cdc\user\user.c	222;"	e	line:222	enum:states	file:
+RESPONSE_AVAILABLE::0x01	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	60;"	d	line:60
+RemoteWakeup	H:\repo\project\Cdc\system\usb\usbmmap.h	75;"	m	line:75	struct:_USB_DEVICE_STATUS::<anonymous>
+ResetCmd	H:\repo\project\Cdc\user\flash.c	41;"	f	line:41
+ResetCmd	H:\repo\project\Cdc\user\flash.h	37;"	p	line:37	signature:( void )
+SEND_ACK	H:\repo\project\Cdc\user\user.c	229;"	e	line:229	enum:states	file:
+SEND_BREAK::0x23	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	53;"	d	line:53
+SEND_ENCAPSULATED_COMMAND::0x00	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	45;"	d	line:45
+SEND_FINAL_ACK	H:\repo\project\Cdc\user\user.c	231;"	e	line:231	enum:states	file:
+SEND_NAK	H:\repo\project\Cdc\user\user.c	232;"	e	line:232	enum:states	file:
+SERIAL_STATE::0x20	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	61;"	d	line:61
+SET_COMM_FEATURE::0x02	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	47;"	d	line:47
+SET_CONTROL_LINE_STATE::0x22	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	52;"	d	line:52
+SET_LINE_CODING::0x20	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	50;"	d	line:50
+SetAddress	H:\repo\project\Cdc\user\flash.c	4;"	f	line:4	signature:(char high, char low)
+SetAddress	H:\repo\project\Cdc\user\flash.h	34;"	p	line:34	signature:(char high, char low)
+SetupPkt	H:\repo\project\Cdc\system\usb\usbmmap.c	268;"	v	line:268
+Stat	H:\repo\project\Cdc\system\usb\usbmmap.h	114;"	m	line:114	struct:_BDT::<anonymous>
+TENSTIMEOUT::3	H:\repo\project\Cdc\user\user.c	52;"	d	line:52	file:
+TRANSMIT_BUILD_RECORD	H:\repo\project\Cdc\user\user.c	235;"	e	line:235	enum:states	file:
+TRANSMIT_CHECK_ACK_OF_EOT	H:\repo\project\Cdc\user\user.c	239;"	e	line:239	enum:states	file:
+TRANSMIT_FINISHED	H:\repo\project\Cdc\user\user.c	238;"	e	line:238	enum:states	file:
+TRANSMIT_HEAD	H:\repo\project\Cdc\user\user.c	234;"	e	line:234	enum:states	file:
+TRANSMIT_RECORD	H:\repo\project\Cdc\user\user.c	236;"	e	line:236	enum:states	file:
+TRANSMIT_SENT	H:\repo\project\Cdc\user\user.c	237;"	e	line:237	enum:states	file:
+TRUE	H:\repo\project\Cdc\system\typedefs.h	150;"	e	line:150	enum:_BOOL
+TYPEDEFS_H	H:\repo\project\Cdc\system\typedefs.h	38;"	d	line:38
+UCFG_VAL::_PUEN|_TRINT|_FS|MODE_PP	H:\repo\project\Cdc\autofiles\usbcfg.h	43;"	d	line:43
+UOWN	H:\repo\project\Cdc\system\usb\usbmmap.h	101;"	m	line:101	struct:_BD_STAT::<anonymous>
+UOWN	H:\repo\project\Cdc\system\usb\usbmmap.h	91;"	m	line:91	struct:_BD_STAT::<anonymous>
+UPPER_LSB::(a)((a).v[2])	H:\repo\project\Cdc\system\typedefs.h	120;"	d	line:120
+UPPER_MSB::(a)((a).v[3])	H:\repo\project\Cdc\system\typedefs.h	121;"	d	line:121
+USART	H:\repo\project\Cdc\user\usart.h	2;"	d	line:2
+USART_IN_BUFFER_SIZE::127	H:\repo\project\Cdc\user\usart.h	4;"	d	line:4
+USART_SEND_BUFFER_SIZE::127	H:\repo\project\Cdc\user\usart.h	5;"	d	line:5
+USBCFG_H	H:\repo\project\Cdc\autofiles\usbcfg.h	35;"	d	line:35
+USBCheckBusStatus	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	76;"	f	line:76	signature:(void)
+USBCheckCDCRequest	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	88;"	f	line:88	signature:(void)
+USBCheckCDCRequest	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	338;"	p	line:338	signature:(void)
+USBCheckStdRequest	H:\repo\project\Cdc\system\usb\usb9\usb9.c	70;"	f	line:70	signature:(void)
+USBCtrlEPService	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	78;"	f	line:78	signature:(void)
+USBCtrlEPServiceComplete	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	382;"	f	line:382	signature:(void)
+USBCtrlTrfInHandler	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	221;"	f	line:221	signature:(void)
+USBCtrlTrfInHandler	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	54;"	p	line:54	file:	signature:(void)
+USBCtrlTrfOutHandler	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	176;"	f	line:176	signature:(void)
+USBCtrlTrfOutHandler	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	53;"	p	line:53	file:	signature:(void)
+USBCtrlTrfRxService	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	330;"	f	line:330	signature:(void)
+USBCtrlTrfSetupHandler	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	133;"	f	line:133	signature:(void)
+USBCtrlTrfSetupHandler	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	52;"	p	line:52	file:	signature:(void)
+USBCtrlTrfTxService	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	260;"	f	line:260	signature:(void)
+USBDSC_H	H:\repo\project\Cdc\autofiles\usbdsc.h	40;"	d	line:40
+USBDriverService	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	215;"	f	line:215	signature:(void)
+USBErrorHandler	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	524;"	f	line:524	signature:(void)
+USBErrorHandler	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	56;"	p	line:56	file:	signature:(void)
+USBMMAP_H	H:\repo\project\Cdc\system\usb\usbmmap.h	38;"	d	line:38
+USBModuleDisable	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	161;"	f	line:161	signature:(void)
+USBModuleDisable	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	48;"	p	line:48	file:	signature:(void)
+USBModuleEnable	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	135;"	f	line:135	signature:(void)
+USBModuleEnable	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	47;"	p	line:47	file:	signature:(void)
+USBPrepareForNextSetupTrf	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	490;"	f	line:490	signature:(void)
+USBProtocolResetHandler	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	53;"	p	line:53	file:	signature:(void)
+USBProtocolResetHandler	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	551;"	f	line:551	signature:(void)
+USBRemoteWakeup	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	404;"	f	line:404	signature:(void)
+USBSoftDetach	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	192;"	f	line:192	signature:(void)
+USBStallHandler	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	488;"	f	line:488	signature:(void)
+USBStallHandler	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	55;"	p	line:55	file:	signature:(void)
+USBStdFeatureReqHandler	H:\repo\project\Cdc\system\usb\usb9\usb9.c	275;"	f	line:275	signature:(void)
+USBStdFeatureReqHandler	H:\repo\project\Cdc\system\usb\usb9\usb9.c	50;"	p	line:50	file:	signature:(void)
+USBStdGetDscHandler	H:\repo\project\Cdc\system\usb\usb9\usb9.c	136;"	f	line:136	signature:(void)
+USBStdGetDscHandler	H:\repo\project\Cdc\system\usb\usb9\usb9.c	47;"	p	line:47	file:	signature:(void)
+USBStdGetStatusHandler	H:\repo\project\Cdc\system\usb\usb9\usb9.c	218;"	f	line:218	signature:(void)
+USBStdGetStatusHandler	H:\repo\project\Cdc\system\usb\usb9\usb9.c	49;"	p	line:49	file:	signature:(void)
+USBStdSetCfgHandler	H:\repo\project\Cdc\system\usb\usb9\usb9.c	180;"	f	line:180	signature:(void)
+USBStdSetCfgHandler	H:\repo\project\Cdc\system\usb\usb9\usb9.c	48;"	p	line:48	file:	signature:(void)
+USBSuspend	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	297;"	f	line:297	signature:(void)
+USBSuspend	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	50;"	p	line:50	file:	signature:(void)
+USBTasks	H:\repo\project\Cdc\main.c	51;"	p	line:51	file:	signature:(void)
+USBWakeFromSuspend	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	355;"	f	line:355	signature:(void)
+USBWakeFromSuspend	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	51;"	p	line:51	file:	signature:(void)
+USB_BUS_ATTACHED::1	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	82;"	d	line:82	file:
+USB_BUS_DETACHED::0	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	83;"	d	line:83	file:
+USB_CDC_ACM_FN_DSC	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	307;"	t	line:307
+USB_CDC_CALL_MGT_FN_DSC	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	327;"	t	line:327
+USB_CDC_HEADER_FN_DSC	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	298;"	t	line:298
+USB_CDC_UNION_FN_DSC	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	317;"	t	line:317
+USB_CD_Ptr	H:\repo\project\Cdc\autofiles\usbdsc.c	260;"	v	line:260
+USB_CONNECTED::LATCbits.LATB6	H:\repo\project\Cdc\user\flash.h	18;"	d	line:18
+USB_DEVICE_STATUS	H:\repo\project\Cdc\system\usb\usbmmap.h	78;"	t	line:78
+USB_H	H:\repo\project\Cdc\system\usb\usb.h	37;"	d	line:37
+USB_SD_Ptr	H:\repo\project\Cdc\autofiles\usbdsc.c	261;"	v	line:261
+USB_SOF_Handler	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	445;"	f	line:445	signature:(void)
+USB_SOF_Handler	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	54;"	p	line:54	file:	signature:(void)
+USB_USE_CDC	H:\repo\project\Cdc\autofiles\usbcfg.h	48;"	d	line:48
+USER_H	H:\repo\project\Cdc\user\user.h	38;"	d	line:38
+UserInit	H:\repo\project\Cdc\user\user.c	75;"	f	line:75	signature:(void)
+UserInit	H:\repo\project\Cdc\user\user.h	41;"	p	line:41	signature:(void)
+V25TER::0x01	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	74;"	d	line:74
+WE::LATBbits.LATB5	H:\repo\project\Cdc\user\flash.h	13;"	d	line:13
+WORD	H:\repo\project\Cdc\system\typedefs.h	82;"	t	line:82
+WRITE_DATA	H:\repo\project\Cdc\user\user.c	227;"	e	line:227	enum:states	file:
+Word0	H:\repo\project\Cdc\system\typedefs.h	110;"	m	line:110	struct:_DWORD::<anonymous>
+Word1	H:\repo\project\Cdc\system\typedefs.h	111;"	m	line:111	struct:_DWORD::<anonymous>
+XMODEM_ACK	H:\repo\project\Cdc\user\user.c	216;"	l	line:216	file:
+XMODEM_C	H:\repo\project\Cdc\user\user.c	218;"	l	line:218	file:
+XMODEM_CAN	H:\repo\project\Cdc\user\user.c	217;"	l	line:217	file:
+XMODEM_EOT	H:\repo\project\Cdc\user\user.c	215;"	l	line:215	file:
+XMODEM_NAK	H:\repo\project\Cdc\user\user.c	214;"	l	line:214	file:
+XMODEM_SOH	H:\repo\project\Cdc\user\user.c	213;"	l	line:213	file:
+X_ACK::0x06	H:\repo\project\Cdc\user\user.c	206;"	d	line:206	file:
+X_C::0x43	H:\repo\project\Cdc\user\user.c	208;"	d	line:208	file:
+X_CAN::0x18	H:\repo\project\Cdc\user\user.c	207;"	d	line:207	file:
+X_EOT::0x04	H:\repo\project\Cdc\user\user.c	205;"	d	line:205	file:
+X_NAK::0x15	H:\repo\project\Cdc\user\user.c	204;"	d	line:204	file:
+X_SOH::0x01	H:\repo\project\Cdc\user\user.c	203;"	d	line:203	file:
+_BDT	H:\repo\project\Cdc\system\usb\usbmmap.h	110;"	u	line:110
+_BD_STAT	H:\repo\project\Cdc\system\usb\usbmmap.h	80;"	u	line:80
+_BOOL	H:\repo\project\Cdc\system\typedefs.h	150;"	g	line:150
+_BSTALL::0x04	H:\repo\project\Cdc\system\usb\usbmmap.h	46;"	d	line:46
+_BYTE	H:\repo\project\Cdc\system\typedefs.h	44;"	u	line:44
+_CONTROL_SIGNAL_BITMAP	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	278;"	u	line:278
+_DAT0::0x00	H:\repo\project\Cdc\system\usb\usbmmap.h	50;"	d	line:50
+_DAT1::0x40	H:\repo\project\Cdc\system\usb\usbmmap.h	51;"	d	line:51
+_DTSEN::0x08	H:\repo\project\Cdc\system\usb\usbmmap.h	47;"	d	line:47
+_DTSMASK::0x40	H:\repo\project\Cdc\system\usb\usbmmap.h	52;"	d	line:52
+_DWORD	H:\repo\project\Cdc\system\typedefs.h	86;"	u	line:86
+_INCDIS::0x10	H:\repo\project\Cdc\system\usb\usbmmap.h	48;"	d	line:48
+_KEN::0x20	H:\repo\project\Cdc\system\usb\usbmmap.h	49;"	d	line:49
+_LINE_CODING	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	263;"	u	line:263
+_POINTER	H:\repo\project\Cdc\system\typedefs.h	125;"	u	line:125
+_RAM::0	H:\repo\project\Cdc\system\usb\usbmmap.h	66;"	d	line:66
+_ROM::1	H:\repo\project\Cdc\system\usb\usbmmap.h	67;"	d	line:67
+_UCPU::0x00	H:\repo\project\Cdc\system\usb\usbmmap.h	54;"	d	line:54
+_USB_CDC_ACM_FN_DSC	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	301;"	s	line:301
+_USB_CDC_CALL_MGT_FN_DSC	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	320;"	s	line:320
+_USB_CDC_HEADER_FN_DSC	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	292;"	s	line:292
+_USB_CDC_UNION_FN_DSC	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	310;"	s	line:310
+_USB_DEVICE_STATUS	H:\repo\project\Cdc\system\usb\usbmmap.h	70;"	u	line:70
+_USIE::0x80	H:\repo\project\Cdc\system\usb\usbmmap.h	53;"	d	line:53
+_WORD	H:\repo\project\Cdc\system\typedefs.h	60;"	u	line:60
+_byte	H:\repo\project\Cdc\system\typedefs.h	46;"	m	line:46	union:_BYTE
+_byte	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	267;"	m	line:267	struct:_LINE_CODING::<anonymous>
+_byte	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	280;"	m	line:280	union:_CONTROL_SIGNAL_BITMAP
+_byte	H:\repo\project\Cdc\system\usb\usbmmap.h	72;"	m	line:72	union:_USB_DEVICE_STATUS
+_byte	H:\repo\project\Cdc\system\usb\usbmmap.h	82;"	m	line:82	union:_BD_STAT
+_dword	H:\repo\project\Cdc\system\typedefs.h	88;"	m	line:88	union:_DWORD
+_reset	H:\repo\project\Cdc\main.c	57;"	f	line:57	signature:(void)
+_startup	H:\repo\project\Cdc\main.c	55;"	p	line:55	file:	signature:(void)
+_word	H:\repo\project\Cdc\system\typedefs.h	133;"	m	line:133	union:_POINTER
+_word	H:\repo\project\Cdc\system\typedefs.h	62;"	m	line:62	union:_WORD
+b0	H:\repo\project\Cdc\system\typedefs.h	49;"	m	line:49	struct:_BYTE::<anonymous>
+b1	H:\repo\project\Cdc\system\typedefs.h	50;"	m	line:50	struct:_BYTE::<anonymous>
+b2	H:\repo\project\Cdc\system\typedefs.h	51;"	m	line:51	struct:_BYTE::<anonymous>
+b3	H:\repo\project\Cdc\system\typedefs.h	52;"	m	line:52	struct:_BYTE::<anonymous>
+b4	H:\repo\project\Cdc\system\typedefs.h	53;"	m	line:53	struct:_BYTE::<anonymous>
+b5	H:\repo\project\Cdc\system\typedefs.h	54;"	m	line:54	struct:_BYTE::<anonymous>
+b6	H:\repo\project\Cdc\system\typedefs.h	55;"	m	line:55	struct:_BYTE::<anonymous>
+b7	H:\repo\project\Cdc\system\typedefs.h	56;"	m	line:56	struct:_BYTE::<anonymous>
+bCharFormat	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	272;"	m	line:272	struct:_LINE_CODING::<anonymous>
+bDataBits	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	274;"	m	line:274	struct:_LINE_CODING::<anonymous>
+bDataInterface	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	326;"	m	line:326	struct:_USB_CDC_CALL_MGT_FN_DSC
+bDscSubType	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	296;"	m	line:296	struct:_USB_CDC_HEADER_FN_DSC
+bDscSubType	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	305;"	m	line:305	struct:_USB_CDC_ACM_FN_DSC
+bDscSubType	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	314;"	m	line:314	struct:_USB_CDC_UNION_FN_DSC
+bDscSubType	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	324;"	m	line:324	struct:_USB_CDC_CALL_MGT_FN_DSC
+bDscType	H:\repo\project\Cdc\autofiles\usbdsc.c	247;"	m	line:247	file:
+bDscType	H:\repo\project\Cdc\autofiles\usbdsc.c	250;"	m	line:250	file:
+bDscType	H:\repo\project\Cdc\autofiles\usbdsc.c	255;"	m	line:255	file:
+bDscType	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	295;"	m	line:295	struct:_USB_CDC_HEADER_FN_DSC
+bDscType	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	304;"	m	line:304	struct:_USB_CDC_ACM_FN_DSC
+bDscType	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	313;"	m	line:313	struct:_USB_CDC_UNION_FN_DSC
+bDscType	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	323;"	m	line:323	struct:_USB_CDC_CALL_MGT_FN_DSC
+bFNLength	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	294;"	m	line:294	struct:_USB_CDC_HEADER_FN_DSC
+bFNLength	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	303;"	m	line:303	struct:_USB_CDC_ACM_FN_DSC
+bFNLength	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	312;"	m	line:312	struct:_USB_CDC_UNION_FN_DSC
+bFNLength	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	322;"	m	line:322	struct:_USB_CDC_CALL_MGT_FN_DSC
+bHigh	H:\repo\project\Cdc\system\typedefs.h	130;"	m	line:130	struct:_POINTER::<anonymous>
+bLength	H:\repo\project\Cdc\autofiles\usbdsc.c	247;"	m	line:247	file:
+bLength	H:\repo\project\Cdc\autofiles\usbdsc.c	250;"	m	line:250	file:
+bLength	H:\repo\project\Cdc\autofiles\usbdsc.c	255;"	m	line:255	file:
+bLow	H:\repo\project\Cdc\system\typedefs.h	129;"	m	line:129	struct:_POINTER::<anonymous>
+bMasterIntf	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	315;"	m	line:315	struct:_USB_CDC_UNION_FN_DSC
+bParityType	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	273;"	m	line:273	struct:_LINE_CODING::<anonymous>
+bRam	H:\repo\project\Cdc\system\typedefs.h	137;"	m	line:137	union:_POINTER
+bRom	H:\repo\project\Cdc\system\typedefs.h	142;"	m	line:142	union:_POINTER
+bSaveIntf0	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	316;"	m	line:316	struct:_USB_CDC_UNION_FN_DSC
+bcdCDC	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	297;"	m	line:297	struct:_USB_CDC_HEADER_FN_DSC
+bmCapabilities	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	306;"	m	line:306	struct:_USB_CDC_ACM_FN_DSC
+bmCapabilities	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	325;"	m	line:325	struct:_USB_CDC_CALL_MGT_FN_DSC
+byte	H:\repo\project\Cdc\system\typedefs.h	40;"	t	line:40
+byte0	H:\repo\project\Cdc\system\typedefs.h	65;"	m	line:65	struct:_WORD::<anonymous>
+byte0	H:\repo\project\Cdc\system\typedefs.h	91;"	m	line:91	struct:_DWORD::<anonymous>
+byte1	H:\repo\project\Cdc\system\typedefs.h	66;"	m	line:66	struct:_WORD::<anonymous>
+byte1	H:\repo\project\Cdc\system\typedefs.h	92;"	m	line:92	struct:_DWORD::<anonymous>
+byte2	H:\repo\project\Cdc\system\typedefs.h	93;"	m	line:93	struct:_DWORD::<anonymous>
+byte3	H:\repo\project\Cdc\system\typedefs.h	94;"	m	line:94	struct:_DWORD::<anonymous>
+byte_to_read	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	332;"	l	line:332
+byte_to_send	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	450;"	l	line:450
+byte_to_send	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	262;"	l	line:262
+cd01	H:\repo\project\Cdc\autofiles\usbdsc.h	55;"	v	line:55
+cdc_acm_fn_i01a00	H:\repo\project\Cdc\autofiles\usbdsc.h	58;"	v	line:58
+cdc_call_mgt_fn_i01a00	H:\repo\project\Cdc\autofiles\usbdsc.h	60;"	v	line:60
+cdc_data_rx	H:\repo\project\Cdc\system\usb\usbmmap.c	279;"	v	line:279
+cdc_data_tx	H:\repo\project\Cdc\system\usb\usbmmap.c	280;"	v	line:280
+cdc_header_fn_i01a00	H:\repo\project\Cdc\autofiles\usbdsc.h	57;"	v	line:57
+cdc_mem_type	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	52;"	v	line:52
+cdc_notice	H:\repo\project\Cdc\system\usb\usbmmap.c	278;"	v	line:278
+cdc_rx_len	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	46;"	v	line:46
+cdc_trf_state	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	48;"	v	line:48
+cdc_tx_len	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	51;"	v	line:51
+cdc_union_fn_i01a00	H:\repo\project\Cdc\autofiles\usbdsc.h	59;"	v	line:59
+control_signal_bitmap	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	55;"	v	line:55
+count	H:\repo\project\Cdc\user\user.c	248;"	l	line:248	file:
+ctrl_trf_mem	H:\repo\project\Cdc\system\usb\usbmmap.h	76;"	m	line:76	struct:_USB_DEVICE_STATUS::<anonymous>
+ctrl_trf_session_owner	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	45;"	v	line:45
+ctrl_trf_state	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	44;"	v	line:44
+cur_block	H:\repo\project\Cdc\user\user.c	249;"	l	line:249	file:
+cur_byte	H:\repo\project\Cdc\user\user.c	256;"	l	line:256
+curaddress_high	H:\repo\project\Cdc\user\user.c	243;"	l	line:243	file:
+curaddress_low	H:\repo\project\Cdc\user\user.c	244;"	l	line:244	file:
+delay_count	H:\repo\project\Cdc\system\usb\usbdrv\usbdrv.c	406;"	l	line:406	file:
+device_dsc	H:\repo\project\Cdc\autofiles\usbdsc.c	180;"	v	line:180
+devid	H:\repo\project\Cdc\user\flash.c	83;"	l	line:83
+dummy_encapsulated_cmd_response	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	64;"	v	line:64
+dummy_length::0x08	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	63;"	d	line:63	file:
+dump	H:\repo\project\Cdc\user\usart.c	13;"	v	line:13
+dwDTERate	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	271;"	m	line:271	struct:_LINE_CODING::<anonymous>
+dword	H:\repo\project\Cdc\system\typedefs.h	42;"	t	line:42
+ep02i_i01a00	H:\repo\project\Cdc\autofiles\usbdsc.h	61;"	v	line:61
+ep03i_i02a00	H:\repo\project\Cdc\autofiles\usbdsc.h	64;"	v	line:64
+ep03o_i02a00	H:\repo\project\Cdc\autofiles\usbdsc.h	63;"	v	line:63
+ep0Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	175;"	v	line:175
+ep0Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	174;"	v	line:174
+ep10Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	225;"	v	line:225
+ep10Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	224;"	v	line:224
+ep11Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	230;"	v	line:230
+ep11Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	229;"	v	line:229
+ep12Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	235;"	v	line:235
+ep12Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	234;"	v	line:234
+ep13Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	240;"	v	line:240
+ep13Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	239;"	v	line:239
+ep14Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	245;"	v	line:245
+ep14Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	244;"	v	line:244
+ep15Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	250;"	v	line:250
+ep15Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	249;"	v	line:249
+ep1Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	180;"	v	line:180
+ep1Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	179;"	v	line:179
+ep2Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	185;"	v	line:185
+ep2Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	184;"	v	line:184
+ep3Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	190;"	v	line:190
+ep3Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	189;"	v	line:189
+ep4Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	195;"	v	line:195
+ep4Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	194;"	v	line:194
+ep5Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	200;"	v	line:200
+ep5Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	199;"	v	line:199
+ep6Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	205;"	v	line:205
+ep6Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	204;"	v	line:204
+ep7Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	210;"	v	line:210
+ep7Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	209;"	v	line:209
+ep8Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	215;"	v	line:215
+ep8Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	214;"	v	line:214
+ep9Bi	H:\repo\project\Cdc\system\usb\usbmmap.c	220;"	v	line:220
+ep9Bo	H:\repo\project\Cdc\system\usb\usbmmap.c	219;"	v	line:219
+fill_size	H:\repo\project\Cdc\user\user.c	250;"	l	line:250
+flags	H:\repo\project\Cdc\user\user.c	242;"	l	line:242	file:
+flush_usart_send	H:\repo\project\Cdc\user\usart.c	44;"	f	line:44
+flush_usart_send	H:\repo\project\Cdc\user\usart.h	21;"	p	line:21	signature:( void )
+getsUSBUSART	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	239;"	f	line:239	signature:(char *buffer, byte len)
+getsUSBUSART	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	340;"	p	line:340	signature:(char *buffer, byte len)
+grab_size	H:\repo\project\Cdc\user\user.c	255;"	l	line:255
+i	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	135;"	l	line:135
+i	H:\repo\project\Cdc\user\usart.c	72;"	l	line:72
+i01a00	H:\repo\project\Cdc\autofiles\usbdsc.h	56;"	v	line:56
+i02a00	H:\repo\project\Cdc\autofiles\usbdsc.h	62;"	v	line:62
+in_char	H:\repo\project\Cdc\user\user.c	254;"	l	line:254
+index	H:\repo\project\Cdc\user\user.c	241;"	l	line:241	file:
+just_data	H:\repo\project\Cdc\user\user.c	61;"	v	line:61
+len	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	298;"	l	line:298
+len	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	379;"	l	line:379
+len	H:\repo\project\Cdc\user\usart.c	63;"	l	line:63
+lenavailable	H:\repo\project\Cdc\user\usart.c	94;"	l	line:94
+line_coding	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	54;"	v	line:54
+mCDCGetRxLength::cdc_rx_len	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	186;"	d	line:186
+mCDCUsartRxIsBusy::CDC_BULK_BD_OUT.Stat.UOWN	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	148;"	d	line:148
+mCDCUsartTxIsBusy::CDC_BULK_BD_IN.Stat.UOWN	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	167;"	d	line:167
+mUSARTIsTxTrfReady	H:\repo\project\Cdc\user\usart.h	15;"	p	line:15	signature:(void)
+mUSBUSARTIsTxTrfReady::(cdc_trf_state==CDC_TX_READY)	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	129;"	d	line:129
+mUSBUSARTTxRam::(pData,len)\	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	215;"	d	line:215
+mUSBUSARTTxRom::(pData,len)\	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	250;"	d	line:250
+manage_usart	H:\repo\project\Cdc\user\usart.c	15;"	f	line:15
+manage_usart	H:\repo\project\Cdc\user\usart.h	7;"	p	line:7	signature:( void )
+manid	H:\repo\project\Cdc\user\flash.c	83;"	l	line:83
+mgetsUSART	H:\repo\project\Cdc\user\usart.c	93;"	f	line:93	signature:(unsigned char *buffer, unsigned char len)
+mgetsUSART	H:\repo\project\Cdc\user\usart.h	13;"	p	line:13	signature:(unsigned char *buffer, unsigned char len)
+mputcharUSART	H:\repo\project\Cdc\user\usart.c	55;"	f	line:55	signature:(unsigned char data)
+mputcharUSART	H:\repo\project\Cdc\user\usart.h	9;"	p	line:9	signature:(unsigned char data)
+mputlenstringUSART	H:\repo\project\Cdc\user\usart.c	71;"	f	line:71	signature:(unsigned char *data, unsigned char len)
+mputlenstringUSART	H:\repo\project\Cdc\user\usart.h	17;"	p	line:17	signature:(unsigned char *data, unsigned char len)
+mputrstringUSART	H:\repo\project\Cdc\user\usart.c	62;"	f	line:62	signature:(const rom unsigned char *data)
+mputrstringUSART	H:\repo\project\Cdc\user\usart.h	11;"	p	line:11	signature:(const rom unsigned char *data)
+pCDCDst	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	50;"	v	line:50
+pCDCSrc	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	49;"	v	line:49
+pDst	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	48;"	v	line:48
+pFunc	H:\repo\project\Cdc\system\typedefs.h	123;"	t	line:123
+pSrc	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	47;"	v	line:47
+pos	H:\repo\project\Cdc\user\usart.c	95;"	l	line:95
+putrsUSBUSART	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	377;"	f	line:377	signature:(const rom char *data)
+putrsUSBUSART	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	341;"	p	line:341	signature:(const rom char *data)
+putsUSBUSART	H:\repo\project\Cdc\system\usb\class\cdc\cdc.c	296;"	f	line:296	signature:(char *data)
+putsUSBUSART	H:\repo\project\Cdc\system\usb\class\cdc\cdc.h	342;"	p	line:342	signature:(char *data)
+sd000	H:\repo\project\Cdc\autofiles\usbdsc.c	247;"	v	line:247
+sd001	H:\repo\project\Cdc\autofiles\usbdsc.c	250;"	v	line:250
+sd002	H:\repo\project\Cdc\autofiles\usbdsc.c	255;"	v	line:255
+sector_status	H:\repo\project\Cdc\user\user.c	62;"	v	line:62
+self_power::1	H:\repo\project\Cdc\io_cfg.h	56;"	d	line:56
+space_in_send_buffer	H:\repo\project\Cdc\user\usart.c	80;"	f	line:80	signature:(unsigned char len)
+space_in_send_buffer	H:\repo\project\Cdc\user\usart.h	19;"	p	line:19	signature:(unsigned char len)
+state	H:\repo\project\Cdc\user\user.c	239;"	l	line:239	file:
+states	H:\repo\project\Cdc\user\user.c	220;"	g	line:220	file:
+status	H:\repo\project\Cdc\user\flash.c	100;"	l	line:100
+string	H:\repo\project\Cdc\autofiles\usbdsc.c	247;"	m	line:247	file:
+string	H:\repo\project\Cdc\autofiles\usbdsc.c	250;"	m	line:250	file:
+string	H:\repo\project\Cdc\autofiles\usbdsc.c	255;"	m	line:255	file:
+target_address	H:\repo\project\Cdc\user\user.c	258;"	l	line:258
+timeout	H:\repo\project\Cdc\user\user.c	251;"	l	line:251	file:
+tmp	H:\repo\project\Cdc\user\user.c	182;"	l	line:182
+tmp	H:\repo\project\Cdc\user\user.c	189;"	l	line:189
+tmp	H:\repo\project\Cdc\user\user.c	259;"	l	line:259
+tmp_buffer	H:\repo\project\Cdc\user\user.c	252;"	l	line:252
+tmpaddress_high	H:\repo\project\Cdc\user\user.c	245;"	l	line:245	file:
+tmpaddress_low	H:\repo\project\Cdc\user\user.c	246;"	l	line:246	file:
+tris_usb_bus_sense::TRISAbits.TRISA1	H:\repo\project\Cdc\io_cfg.h	48;"	d	line:48
+usart_in_buffer	H:\repo\project\Cdc\user\usart.c	5;"	v	line:5
+usart_in_head	H:\repo\project\Cdc\user\usart.c	6;"	v	line:6
+usart_in_tail	H:\repo\project\Cdc\user\usart.c	8;"	v	line:8
+usart_send_buffer	H:\repo\project\Cdc\user\usart.c	9;"	v	line:9
+usart_send_head	H:\repo\project\Cdc\user\usart.c	10;"	v	line:10
+usart_send_tail	H:\repo\project\Cdc\user\usart.c	12;"	v	line:12
+usb_active_cfg	H:\repo\project\Cdc\system\usb\usbmmap.c	159;"	v	line:159
+usb_alt_intf	H:\repo\project\Cdc\system\usb\usbmmap.c	160;"	v	line:160
+usb_bus_sense::1	H:\repo\project\Cdc\io_cfg.h	53;"	d	line:53
+usb_bus_sense::PORTAbits.RA1	H:\repo\project\Cdc\io_cfg.h	51;"	d	line:51
+usb_device_state	H:\repo\project\Cdc\system\usb\usbmmap.c	157;"	v	line:157
+usb_stat	H:\repo\project\Cdc\system\usb\usbmmap.c	158;"	v	line:158
+v	H:\repo\project\Cdc\system\typedefs.h	115;"	m	line:115	struct:_DWORD::<anonymous>
+v	H:\repo\project\Cdc\system\typedefs.h	80;"	m	line:80	struct:_WORD::<anonymous>
+wCount	H:\repo\project\Cdc\system\usb\usbctrltrf\usbctrltrf.c	49;"	v	line:49
+wRam	H:\repo\project\Cdc\system\typedefs.h	139;"	m	line:139	union:_POINTER
+wRom	H:\repo\project\Cdc\system\typedefs.h	143;"	m	line:143	union:_POINTER
+word	H:\repo\project\Cdc\system\typedefs.h	41;"	t	line:41
+word0	H:\repo\project\Cdc\system\typedefs.h	98;"	m	line:98	struct:_DWORD::<anonymous>
+word1	H:\repo\project\Cdc\system\typedefs.h	99;"	m	line:99	struct:_DWORD::<anonymous>
+xmodem_buffer	H:\repo\project\Cdc\user\user.c	58;"	v	line:58
