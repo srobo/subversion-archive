@@ -93,8 +93,8 @@ void init(void)
 		| TAIE;		/*  */
 
 	current_servo = 0;
-	initialise_i2c();
-	enable_i2c();
+	i2c_init();
+	i2c_enable();
 	eint(); //enable interrupts
 }
 

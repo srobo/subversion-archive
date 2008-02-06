@@ -50,7 +50,7 @@ static uint8_t checksum;
 /* Set SDA to an input */
 #define sda_input() do { USICTL0 &= ~USIOE; } while (0)
 
-void initialise_i2c(void)
+void i2c_init(void)
 {
 	USICTL0 = USICTL0|USISWRST;
 	USICTL0 = USIPE6|USIPE7;// Port & USI mode setup
@@ -60,7 +60,7 @@ void initialise_i2c(void)
 	USICNT |= USIIFGCC;		// Disable automatic clear control
 }
 
-void enable_i2c(void)
+void i2c_enable(void)
 {
 	USICTL0 &= ~USISWRST;                // Enable USI
 	USICTL1 &= ~USIIFG;                  // Clear pending flag

@@ -24,10 +24,10 @@ enum
 	COMMAND_READ
 };
 
-void initialise_i2c(void);
+void i2c_init(void);
 
 /* Enable the i2c peripheral. */
-void enable_i2c(void);
+void i2c_enable(void);
 
 /* The ISR for the USI */
 void isr_usi (void);
