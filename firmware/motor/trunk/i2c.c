@@ -221,6 +221,8 @@ void i2c_init( void )
 
     /* Enable the receive and transmit interrupts */
     IE2 |=  UCB0RXIE | UCB0TXIE;
+
+    FLAG_OFF();
 }
 
 static void i2cw_motor_set( uint8_t *buf )
