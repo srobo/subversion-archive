@@ -65,10 +65,12 @@ const i2c_cmd_t cmds[] =
 {
 	/* Supplies the board identity */
 	{ 0, NULL, i2cr_identity },
-	/* Takes the outputs for the dio */
+
+	/* Get new digital output values from the master. */
 	{ 1, i2cw_dio_output, NULL },
-	/* Supplies the inputs from the dio */
-	{ 0, NULL, i2cr_adc_input }
+
+	/* Sends the ADC readings to the master. */
+	{ 0, NULL, i2cr_adc_input },
 };
 
 /* The current command */
