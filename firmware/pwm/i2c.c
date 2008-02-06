@@ -9,6 +9,7 @@ Block read protocol
 #include "i2c.h"
 #include "servo.h"
 #include "smbus_pec.h"
+#include "i2c-watchdog.h"
 
 typedef enum
 {
@@ -82,8 +83,20 @@ inline void isr_usi (void)
 {
 	/* START Received */
 	if (USICTL1 & USISTTIFG)
+	{
 		/* Move into the state machine */
 		I2C_State = state_rx_address;
+
+		i2c_watchdog_start();
+	}
+
+	if( USICTL1 & USISTP )
+	{
+		i2c_watchdog_stop();
+
+		/* Clear the STOP interrupt flag */
+		USICTL1 &= ~USISTP;
+	}
 
 	switch(I2C_State)
 	{

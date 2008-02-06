@@ -20,12 +20,10 @@ TODO-Get servo_set_pwm to return success or failure */
 #include <signal.h>
 #include "sweep.h"
 #include "servo.h"
+#include "i2c-watchdog.h"
 
 /* The current servo */
 uint8_t current_servo;
-
-/* The i2c handler */
-void polled_i2c(void);
 
 /* Set the output to the given value */
 inline void set_p1out(uint8_t p1);
@@ -40,8 +38,8 @@ int main(void)
 	while (1)
 	{
 		/* Process i2c if either a START, Counter=0 flag is set */
-		if( (USICTL1 & USIIFG) || (USICTL1 & USISTTIFG) )
-			polled_i2c();
+		if( USICTL1 & ( USIIFG | USISTTIFG | USISTP ) )
+			isr_usi ();
 
 		sweepServo();
 	}
@@ -111,6 +109,8 @@ interrupt (PORT2_VECTOR) isr_port2(void)
  * it resets TIMERA, resets current_servo, and put servo0 pin high. */
 interrupt (TIMERA0_VECTOR) isr_TACR0(void)
 {
+	i2c_watchdog_check();
+
 	current_servo = 0;
 	set_p1out(0xFE);
 }
@@ -148,11 +148,6 @@ interrupt (TIMERA1_VECTOR) isr_TAIV(void)
 	case  4: break;       // CCR2 is not present on the F2013
 	case 10: break;       // overflow, will occur when
 	}
-}
-
-void polled_i2c(void)
-{
-	isr_usi ();
 }
 
 interrupt (NOVECTOR) IntServiceRoutine(void)
