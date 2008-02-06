@@ -19,6 +19,7 @@
 #include "i2c.h"
 #include "motor.h"
 #include "smbus_pec.h"
+#include "timer-b.h"
 
 #define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x0201
@@ -165,6 +166,9 @@ interrupt (USCIAB0RX_VECTOR) usci_rx_isr( void )
 		at_start = TRUE;
 		FLAG();
 
+		/* Start the reset generator */
+		timer_b_start();
+
 		/* Clear the flag */
 		UCB0STAT &= ~UCSTTIFG;
 	}
@@ -174,6 +178,9 @@ interrupt (USCIAB0RX_VECTOR) usci_rx_isr( void )
 	{
 		UCB0STAT &= ~UCSTPIFG;
 		FLAG_OFF();
+
+		/* We don't need to reset things */
+		timer_b_stop();
 	}
 }
 
@@ -264,4 +271,9 @@ static uint8_t i2cr_motor_get0( uint8_t *buf )
 static uint8_t i2cr_motor_get1( uint8_t *buf )
 {
 	return i2cr_motor_get(buf, 1);
+}
+
+void i2c_reset( void )
+{
+	i2c_init();
 }

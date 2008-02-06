@@ -27,4 +27,7 @@ enum {
 
 void i2c_init( void );
 
+/* Reset the I2C device */
+void i2c_reset( void );
+
 #endif	/* __I2C_H */

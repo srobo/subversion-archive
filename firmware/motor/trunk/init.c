@@ -18,6 +18,7 @@
 #include "pwm.h"
 #include "motor.h"
 #include "i2c.h"
+#include "timer-b.h"
 #include <signal.h>
 
 /* Initialise the GPIO ports */
@@ -29,6 +30,7 @@ void init( void )
 	pwm_init();
 	motor_init();
 	i2c_init();
+	timer_b_init();
 
 	eint();
 }
