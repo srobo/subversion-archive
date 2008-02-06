@@ -61,6 +61,9 @@ void  i2cw_dio_output( uint8_t* buf);
 /* Write analogue input data to I2C bus */
 uint8_t  i2cr_adc_input( uint8_t* buf);
 
+/* Send the current digital output state to the master. */
+uint8_t i2cr_out_state( uint8_t* buf );
+
 const i2c_cmd_t cmds[] = 
 {
 	/* Supplies the board identity */
@@ -71,6 +74,9 @@ const i2c_cmd_t cmds[] =
 
 	/* Sends the ADC readings to the master. */
 	{ 0, NULL, i2cr_adc_input },
+
+	/* Send the current digital output status to the master. */
+	{ 0, NULL, i2cr_out_state }
 };
 
 /* The current command */
@@ -241,3 +247,10 @@ uint8_t  i2cr_adc_input( uint8_t* buf)
 
 	return 16;
 }
+
+uint8_t i2cr_out_state( uint8_t* buf )
+{
+	buf[0] = P1OUT;
+	return 1;
+}
+
