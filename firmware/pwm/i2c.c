@@ -52,12 +52,24 @@ static uint8_t checksum;
 
 void i2c_init(void)
 {
-	USICTL0 = USICTL0|USISWRST;
-	USICTL0 = USIPE6|USIPE7;// Port & USI mode setup
-//  USICTL1 = USII2C|USIIE|USISTTIE;     // Enable I2C mode & USI interrupts
-	USICTL1 = USII2C;		// Enable I2C mode
-	USICKCTL = USICKPL;		// Setup clock polarity
-	USICNT |= USIIFGCC;		// Disable automatic clear control
+	/* Hold the I2C device in reset */
+	USICTL0 |= USISWRST;
+
+	USICTL0 = USIPE6	/* USI SDO/SCL Port Enabled */
+		| USIPE7;	/* USI SDI/SDA Port Enabled */
+				/* USILSB = 0 - MSB First */
+				/* USIMST = 0 - Slave Mode */
+				/* USIGE = 0 - Output latch depends on shift clock */
+				/* USIOE = 0 - Output disabled */
+				/* USISWRST = 0 - Device out of reset mode */
+
+	USICTL1 = 		/* USICKPH = 0 - Data on first SCLK edge. */
+		USII2C;		/* I2C Mode */
+				/* USISTTIE = 0 - No interrupt on START */
+
+	USICKCTL = USICKPL;	/* Inactive Clock state is high */
+
+	USICNT |= USIIFGCC;	/* USIIFG not cleared automatically */
 }
 
 void i2c_enable(void)
