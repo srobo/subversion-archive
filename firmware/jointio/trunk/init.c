@@ -17,6 +17,7 @@
 #include "dio.h"
 #include "init.h"
 #include "i2c.h"
+#include "timer-b.h"
 #include <signal.h>
 
 /* Initialise the GPIO ports */
@@ -27,6 +28,7 @@ void init( void )
 	init_gpio();
 	i2c_init();
 	dio_init();
+	timer_b_init();
 	eint();
 
 }
