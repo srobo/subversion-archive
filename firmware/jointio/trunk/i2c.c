@@ -55,11 +55,11 @@ uint8_t byte_tx( uint8_t pos );
 /* Transmit (read) functions */
 static uint8_t i2cr_identity( uint8_t *buf );
 
-/* write dio data from i2c bus to port*/
+/* Write dio data from i2c bus to port*/
 void  i2cw_dio_output( uint8_t* buf);
 
-/* write dio input data to i2c bus*/
-uint8_t  i2cr_dio_input( uint8_t* buf);
+/* Write analogue input data to I2C bus */
+uint8_t  i2cr_adc_input( uint8_t* buf);
 
 const i2c_cmd_t cmds[] = 
 {
@@ -68,7 +68,7 @@ const i2c_cmd_t cmds[] =
 	/* Takes the outputs for the dio */
 	{ 1, i2cw_dio_output, NULL },
 	/* Supplies the inputs from the dio */
-	{ 0, NULL, i2cr_dio_input }
+	{ 0, NULL, i2cr_adc_input }
 };
 
 /* The current command */
@@ -226,7 +226,7 @@ void  i2cw_dio_output( uint8_t* buf)
 }
 
 /* write dio input data to i2c bus*/
-uint8_t  i2cr_dio_input( uint8_t* buf)
+uint8_t  i2cr_adc_input( uint8_t* buf)
 {	
 	uint8_t x;
 	
