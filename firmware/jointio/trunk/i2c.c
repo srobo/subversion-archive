@@ -24,6 +24,8 @@
 #define MODULE_IDENTITY 0x0201
 #define FIRMWARE_REV 0x0304
 
+#define IO_THRESHOLD 65535/2
+
 static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
 					MODULE_IDENTITY & 0xFF, 
 					(FIRMWARE_REV >> 8) & 0xFF,
@@ -64,6 +66,9 @@ uint8_t  i2cr_adc_input( uint8_t* buf);
 /* Send the current digital output state to the master. */
 uint8_t i2cr_out_state( uint8_t* buf );
 
+/* Send the inputs as bits to the master. */
+uint8_t i2cr_digi_input( uint8_t* buf );
+
 const i2c_cmd_t cmds[] = 
 {
 	/* Supplies the board identity */
@@ -76,7 +81,10 @@ const i2c_cmd_t cmds[] =
 	{ 0, NULL, i2cr_adc_input },
 
 	/* Send the current digital output status to the master. */
-	{ 0, NULL, i2cr_out_state }
+	{ 0, NULL, i2cr_out_state },
+
+	/* Sends the inputs as bits to the master. */
+	{ 0, NULL, i2cr_digi_input }
 };
 
 /* The current command */
@@ -254,3 +262,15 @@ uint8_t i2cr_out_state( uint8_t* buf )
 	return 1;
 }
 
+uint8_t i2cr_digi_input( uint8_t* buf )
+{
+	uint8_t i;
+
+	buf[0] = 0;
+
+	for(i=0; i<8; i++)
+		if( adc_buffer[i] > IO_THRESHOLD )
+			buf[0] |= (1<<i);
+
+	return 1;
+}
