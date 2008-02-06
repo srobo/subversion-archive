@@ -53,11 +53,30 @@ static void i2cw_motor_set( uint8_t *buf );
 /* Transmit (read) functions */
 static uint8_t i2cr_identity( uint8_t *buf );
 
+/* Send the motor 0 setting to the master */
+static uint8_t i2cr_motor_get0( uint8_t *buf );
+
+/* Send the motor 1 setting to the master */
+static uint8_t i2cr_motor_get1( uint8_t *buf );
+
 const i2c_cmd_t cmds[] = 
 {
+	/* Send the identity to the master */
 	{ 0, NULL, i2cr_identity },
-	{ 2, i2cw_motor_set, NULL }
+
+	/* Read the motor setting from the master */
+	{ 2, i2cw_motor_set, NULL },
+
+	/* Send the motor 1 setting to the master */
+	{ 0, NULL, i2cr_motor_get0 },
+
+	/* Send the motor 2 setting to the master */
+	{ 0, NULL, i2cr_motor_get1 },
 };
+
+/* Used by i2cr_motor_get0 and i2cr_motor_get1.
+   Fills the buffer with the info about motor. */
+static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor );
 
 /* The current command */
 static const i2c_cmd_t *cmd = NULL;
@@ -219,4 +238,30 @@ static uint8_t i2cr_identity( uint8_t *buf )
 		buf[i] = i2c_identity[i];
 
 	return 4;
+}
+
+static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor )
+{
+	motor_state_t state = motor_get_state(motor);
+	speed_t speed = motor_get_speed(motor);
+
+	/* Bits:
+	    8-0: Speed
+	   9-10: Direction */
+	buf[0] = speed & 0xff;
+	buf[1] = ((speed >> 8)&1);
+
+	buf[1] |= (state & 0x3) << 1;
+
+	return 2;
+}
+
+static uint8_t i2cr_motor_get0( uint8_t *buf )
+{
+	return i2cr_motor_get(buf, 0);
+}
+
+static uint8_t i2cr_motor_get1( uint8_t *buf )
+{
+	return i2cr_motor_get(buf, 1);
 }
