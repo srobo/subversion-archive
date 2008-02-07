@@ -241,6 +241,7 @@ _asm GOTO low_isr _endasm
 #pragma interruptlow low_isr
 void low_isr (void)
 {
+	PORTD^=0b01000000;
 //	PORTD|=0b01000000;
 	//INTCONbits.TMR0IF=0;
 }
@@ -265,16 +266,21 @@ _asm GOTO high_isr _endasm
 #pragma interrupt high_isr
 void high_isr (void)
 {
+  if(INTCONbits.TMR0IF){
 	if (PORTDbits.RD0) // check for test mode
 	{
 		PORTE|=0b00000001;
 	}
 	else				// no so drop out because in cometition and theres no ping packet to reset the counter and its overflowed
 	{	
-		//PORTD^=0b00010000;
+		PORTD^=0b10000000;
 		PORTE&=0b11111110;
 	}
 	INTCONbits.TMR0IF=0;
+  }else {
+    PORTD^=0b01000000;
+    PIR1bits.TMR1IF=0;
+  }
 }
 
 #pragma code
@@ -545,7 +551,10 @@ static void InitializeSystem(void)
 	//configure timer0
 	OpenTimer0(T0_16BIT& T0_SOURCE_INT&T0_PS_1_128&TIMER_INT_ON);
 	// 12mips, 128 prescale 16bit overflow = 1.43s ((((48000000)/4)/128)/(2^16) = 1.43...  
-	
+
+	OpenTimer1(TIMER_INT_ON&T1_16BIT_RW&T1_SOURCE_INT&T1_PS_1_8&T1_OSC1EN_OFF&T1_SYNC_EXT_OFF&T1_SOURCE_CCP);	
+
+
 	//T0CON =0b10000000;
 	//TMR0L=0;
 	//TMR0H=0;
@@ -553,10 +562,10 @@ static void InitializeSystem(void)
 	//configure interrupts
 
 	//INTCON=0b00100111;
-	INTCON=0b00100000;
+	INTCON=0b01100000;
 	INTCON2=0b00000100;
 	INTCON3=0;
-	PIE1=0;
+	PIE1=1;
 	PIE2=0;
 	IPR1=0;
 	IPR2=0;
