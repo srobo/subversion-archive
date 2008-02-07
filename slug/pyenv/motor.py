@@ -3,7 +3,12 @@ import c2py
 ADDRESS = 0x12
 
 # Command
+MOTOR_IDENT = 0x00
 MOTOR_CMD_CONF = 0x01
+MOTOR_GET0 = 0x02
+MOTOR_GET1 = 0x03
+
+MAXERR = 10
 
 # Directions
 OFF = 0
@@ -12,10 +17,16 @@ BACKWARD = 2
 BRAKE = 3
 
 def checkmotor():
-    try:
-        c2py.writeworddata( ADDRESS, MOTOR_CMD_CONF, 0, 0 )
-    except c2py.I2CError:
+    count = 0
+    while count < MAXERR:
+        try:
+            id = c2py.readworddata( ADDRESS, MOTOR_IDENT, 1 )
+        except c2py.I2CError:
+            count = count + 1
+    
+    if count == MAXERR:
         return False
+
     return True
 
 def __set__( channel, speed ):
@@ -38,7 +49,22 @@ def __set__( channel, speed ):
     speed = abs(int(speed * 3.28))
 
     v = speed | (dir << 9) | (channel<<11)
-    c2py.writeworddata( ADDRESS, MOTOR_CMD_CONF, v, 1 )
+    count = 0
+
+    while count < MAXERR:
+        c2py.writeworddata( ADDRESS, MOTOR_CMD_CONF, v, 1 )
+
+        cmd = (MOTOR_GET0, MOTOR_GET1)[channel]
+
+        n = c2py.readworddata( ADDRESS, cmd, 1)
+
+        if (n & 0x1FF) == speed and (n >> 9) == dir:
+            break
+
+        count = count + 1
+    
+    if count == MAXERR:
+        raise c2py.I2CError
 
 def setspeed(*args):
     if len(args) == 1:
