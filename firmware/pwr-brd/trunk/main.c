@@ -87,6 +87,7 @@ int bcount;
 int voltage = 0x5555;// local variables holding results of adc
 int current = 0xAAAA;
 
+unsigned char alive =0;
 unsigned long sectadd=0xabcdef12;
 unsigned char usbflag=0x00; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
 unsigned char i2cstatus = BAD;
@@ -788,6 +789,7 @@ void isusb(u8 *data){
 	}
 	
 void beegees(u8 *data){
+  alive=1;
 	// slug is alive, possibly staying alive :)
 }	
 /*	
