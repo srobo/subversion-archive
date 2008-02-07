@@ -146,7 +146,7 @@ class Root(controllers.RootController):
         return rev
 
     @expose()
-    def checkout(self, team, files=""):
+    def checkout(self, team, files="", simulator=False):
         """
         This function grabs a set of files and makes a zip available. Should be
         linked to directly.
@@ -230,24 +230,31 @@ class Root(controllers.RootController):
         #Clean up root dir
         shutil.rmtree(root)
 
-        #Create a second zip file placing the user zip in the system zip
-        syszfile = tempfile.mktemp()
-        syszip = zipfile.ZipFile(syszfile, "w")
-        add_dir_to_zip(SYSFILES, syszip)
-
-        syszip.write(zfile, ZIPNAME)
-        #Get rid of the temporary zipfile
-        os.unlink(zfile)
-        syszip.close() 
-
         #Set up headers for correctly serving a zipfile
         cherrypy.response.headers['Content-Type'] = \
                 "application/x-download"
         cherrypy.response.headers['Content-Disposition'] = \
                 'attachment; filename="' + ZIPNAME + '"'
+
         #Read the data in from the temporary zipfile
-        zipdata = open(syszfile, "rb").read()
-        os.unlink(syszfile)
+        zipdata = open(zfile, "rb").read()
+        os.unlink(zfile)
+
+        if not simulator:
+            #Create a second zip file placing the user zip in the system zip
+            syszfile = tempfile.mktemp()
+            syszip = zipfile.ZipFile(syszfile, "w")
+            add_dir_to_zip(SYSFILES, syszip)
+
+            syszip.write(zfile, ZIPNAME)
+            #Get rid of the temporary zipfile
+            os.unlink(zfile)
+            syszip.close() 
+
+            #Read the data in from the temporary zipfile
+            zipdata = open(syszfile, "rb").read()
+            os.unlink(syszfile)
+
         #Return the data
         return zipdata
 
