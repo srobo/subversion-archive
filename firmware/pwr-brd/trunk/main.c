@@ -652,13 +652,13 @@ void i2cservice(void)
 	switch(state){
 	case GOTADDRESSREAD: //Just received a command
 	  command = SSPBUF;
-	  PORTD^=0b01000000;
- 	  if(command>9){
-	    PORTD^=0b00100000;
-	  }
+	  //PORTD^=0b01000000;
+ 	  /* if(command>9){ */
+/* 	    PORTD^=0b00100000; */
+/* 	  } */
 	  PIR1bits.SSPIF = 0;
 	  checksum = crc8(checksum^command);
-	  if(command<10){
+ 	  if(command<10){
 	    datacount = 40;
 	  } else{
 	    datacount = commands[command].bytestoreadin;
