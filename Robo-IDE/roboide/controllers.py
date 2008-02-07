@@ -238,7 +238,6 @@ class Root(controllers.RootController):
 
         #Read the data in from the temporary zipfile
         zipdata = open(zfile, "rb").read()
-        os.unlink(zfile)
 
         if not simulator:
             #Create a second zip file placing the user zip in the system zip
@@ -248,12 +247,13 @@ class Root(controllers.RootController):
 
             syszip.write(zfile, ZIPNAME)
             #Get rid of the temporary zipfile
-            os.unlink(zfile)
             syszip.close() 
 
             #Read the data in from the temporary zipfile
             zipdata = open(syszfile, "rb").read()
             os.unlink(syszfile)
+
+        os.unlink(zfile)
 
         #Return the data
         return zipdata
