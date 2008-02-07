@@ -203,7 +203,6 @@ static PyObject* c2py_smbuswriteword_data( PyObject *self,
     }
     
     datablock.word = data;
-    fprintf(stdout, "Sending word %d\n", datablock.word);
 
     if(i2c_smbus_access(fd, I2C_SMBUS_WRITE, command, I2C_SMBUS_WORD_DATA, &datablock) < 0){
         PyErr_SetString(I2CError, "Error writing to bus");
@@ -240,6 +239,6 @@ static PyObject* c2py_smbusreadword_data( PyObject *self,
         return NULL;
     }
 
-    return Py_BuildValue("i", datablock.word && 0x0FFFF);
+    return Py_BuildValue("i", datablock.word & 0x0FFFF);
 }
 
