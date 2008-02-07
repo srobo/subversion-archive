@@ -114,8 +114,7 @@ void high_isr(void);
 
 void adcserv(void);
 
-void t1start(void);
-void t1stop(void);
+
 
 void identify(u8 *data);
 void setled(u8 *data);
@@ -138,13 +137,13 @@ void beegees(u8 *data);
 
 //#pragma romdata // this seems to do squat all!
 //						{bytes in, bytesout, function name}
- t_command commands[] = {{0, 4,identify}, //0
+ t_command commands[] = {{0, 2,identify}, //0
                         {1, 0,setled},
                         {0, 2,getv},//2
                         {0, 2,geti},
                         {0, 1,getdip},//4
                         {1, 0,setrails},
-	                    {0, 1,getrails},//6
+			 {0, 1,getrails},//6
 	                    {1,0,sendser},
 		                {0,1,isusb},
 			            {1,0,beegees}};
@@ -242,7 +241,6 @@ _asm GOTO low_isr _endasm
 #pragma interruptlow low_isr
 void low_isr (void)
 {
-	PORTD^=0b01000000;
 //	PORTD|=0b01000000;
 	//INTCONbits.TMR0IF=0;
 }
@@ -267,24 +265,16 @@ _asm GOTO high_isr _endasm
 #pragma interrupt high_isr
 void high_isr (void)
 {
-  if(INTCONbits.TMR0IF){
 	if (PORTDbits.RD0) // check for test mode
 	{
 		PORTE|=0b00000001;
 	}
 	else				// no so drop out because in cometition and theres no ping packet to reset the counter and its overflowed
 	{	
-		PORTD^=0b10000000;
+		//PORTD^=0b00010000;
 		PORTE&=0b11111110;
 	}
 	INTCONbits.TMR0IF=0;
-  }else if (PIR1bits.TMR1IF==1){
-    PORTD^=0b01000000;
-    t1stop();
-    PIR1bits.TMR1IF=0;
-  } else{
-    //error!
-  }
 }
 
 #pragma code
@@ -323,7 +313,7 @@ void main(void)
 
 		if(PORTAbits.RA4) USBTasks();         // USB Tasks
 	    //if(mUSBUSARTIsTxTrfReady()) mUSBUSARTTxRam( &spoof, 1);
-        i2cservice();
+		i2cservice();
         usartrxservice();
 		adcserv();  // this may need to be moved intot he slow alive loop as it caused problems in the past
         //ProcessIO();        // See user\user.c & .h
@@ -436,7 +426,7 @@ static void InitializeSystem(void)
 
     //rd0-3 switch
     //rd4-7 leds
-    //re0 - big power motor fet thing (relay)
+    //re0 - big power motor fet thing
     //e1 - fet control servo rail
    //re2 - fet slug rail
 
@@ -511,7 +501,7 @@ static void InitializeSystem(void)
 			ConvertADC();
 
     //----I2C setup ---------
-
+  
     TRISBbits.TRISB0=1; //Set to inputs for the SPI module
     TRISBbits.TRISB1=1;
 
@@ -541,6 +531,7 @@ static void InitializeSystem(void)
     //	clear sm flags;....
     
     //SSPCON1bits.SSPOV; //Receive overflow indicator
+    
 
     // -------current sence set up---------------------
 
@@ -555,10 +546,7 @@ static void InitializeSystem(void)
 	//configure timer0
 	OpenTimer0(T0_16BIT& T0_SOURCE_INT&T0_PS_1_128&TIMER_INT_ON);
 	// 12mips, 128 prescale 16bit overflow = 1.43s ((((48000000)/4)/128)/(2^16) = 1.43...  
-
-	OpenTimer1(TIMER_INT_ON&T1_16BIT_RW&T1_SOURCE_INT&T1_PS_1_8&T1_OSC1EN_OFF&T1_SYNC_EXT_OFF&T1_SOURCE_CCP);	
-
-
+	
 	//T0CON =0b10000000;
 	//TMR0L=0;
 	//TMR0H=0;
@@ -566,10 +554,10 @@ static void InitializeSystem(void)
 	//configure interrupts
 
 	//INTCON=0b00100111;
-	INTCON=0b01100000;
+	INTCON=0b00100000;
 	INTCON2=0b00000100;
 	INTCON3=0;
-	PIE1=1;
+	PIE1=0;
 	PIE2=0;
 	IPR1=0;
 	IPR2=0;
@@ -592,17 +580,6 @@ static void InitializeSystem(void)
 
 }//end InitializeSystem
 
-void t1start(void){
-  PORTD|=0b00100000;
-  TMR1H = 0;
-  TMR1L = 1;
-  T1CON |= 1;//TMR1ON;
-
-}
-void t1stop(void){
-  PORTD &= ~0b00100000;
-  T1CON &= ~1;//TMR1ON;
-}
 
 
 void i2cservice(void)
@@ -631,47 +608,42 @@ void i2cservice(void)
 	    
     if(SSPCON1bits.SSPOV) // check for buffer overflow and goto to wait
       {
-	mputcharUSART('.'); 
+	mputcharUSART('.');
 	tmpdata = SSPBUF;
 	SSPCON1bits.SSPOV = 0;
 	state = WAIT;
 	return;
       }
 		    
-		  
-    //mputcharUSART('X');
+		    
+	   
+       
     if(!SSPSTATbits.D_A) //It's an address byte
       {
-	t1start();
-	i2c_debug mputcharUSART('A');
-	i2cstatus = BAD; //This is to check abandoned machines later
 	adddump = SSPBUF;
-	i2c_debug prdbg('>', adddump);
 	PIR1bits.SSPIF = 0;
 	if (!SSPSTATbits.R_W) //About to receive something from the slug
 	  {
-	    mputcharUSART('N');
 	    datacount = 0;
 	    state = GOTADDRESSREAD;
 	    checksum = crc8(adddump);
 	    datapos = 0;
-	    //mputcharUSART('R');
 	  }
 	else //Being asked to send stuff to the slug
 	  {
-	    mputcharUSART('C');
+	    if(command>9){
+	      datacount = 40; // more than 32 theroretical max
+	    } else {
 	    datacount = commands[command].bytestoreadout;
+	    }
 	    checksum = crc8(checksum^(adddump));
-	           	
 	    //Clock stretching is currently in effect
 	    //Can have a bit of time to generate data, so do it now
-	    commands[command].docmd(data); //Data filled up ready to send to slug (Maybe)
-	           	
+	    if(command<10){       
+	       commands[command].docmd(data); //Data filled up ready to send to slug (Maybe)
+	     }
 	    state = GOTADDRESSWRITE;
-	        	
-	    //mputcharUSART('W');
 	    SSPBUF = data[0];
-	    i2c_debug prdbg('[', data[0]);
 	    SSPCON1bits.CKP = 1; //Disable the clock stretching
 	    checksum = crc8(checksum^data[0]);
 	    datapos = 1;
@@ -680,30 +652,28 @@ void i2cservice(void)
 	switch(state){
 	case GOTADDRESSREAD: //Just received a command
 	  command = SSPBUF;
+	  PORTD^=0b01000000;
+ 	  if(command>9){
+	    PORTD^=0b00100000;
+	  }
 	  PIR1bits.SSPIF = 0;
-	  //command = tmpdata;
-	  mputcharUSART('D');
-	  prdbg('=', command);
 	  checksum = crc8(checksum^command);
-	  datacount = commands[command].bytestoreadin;
-
+	  if(command<10){
+	    datacount = 40;
+	  } else{
+	    datacount = commands[command].bytestoreadin;
+	  }
 	  if(datacount == 0){ //Special case of pure commands (getdips etc)
 	    //Will call the function to generate data whilst the clock stretch
 	    //is in effect
-	    mputcharUSART('E');
 	    state = WAIT;
-	    t1stop();
-	    //break;
 	  }else
-	    state=GOTCOMMAND;
-                
+	    state=GOTCOMMAND;                
 	  break;
 
-	case GOTCOMMAND:              
-	  //Read in the data   
-	  //mputcharUSART('F');    
+	case GOTCOMMAND:
+	  //Read in the data
 	  tmpdata = SSPBUF;
-	  i2c_debug prdbg('<', tmpdata);
 	  PIR1bits.SSPIF = 0;
 	  data[datapos] = tmpdata; // start entering data at start of array
 	  checksum = crc8(checksum^data[datapos]);
@@ -713,63 +683,43 @@ void i2cservice(void)
 	  break;
 
 	case GOTDATA:
-	  mputcharUSART('G');
 	  tmpdata = SSPBUF;
-	  i2c_debug prdbg('?', tmpdata);
 	  PIR1bits.SSPIF = 0;
-	  if (tmpdata == checksum) 
+	  if ((tmpdata == checksum)&(command<10))
 	    //if (1) // temporary fix so no checksumm for testing
 	    {
 	      commands[command].docmd(data);
-	      i2cstatus = GOOD; 
 	    }
-	  else i2cstatus = BAD;
+	  else 
 	  state = WAIT;
-	  t1stop();
 	  break;
 	case GOTADDRESSWRITE:
-	  mputcharUSART('H');
-
-
 	  PIR1bits.SSPIF = 0;
 	  if (datapos<datacount)
 	    {
-	      mputcharUSART('P');
-	      //mputcharUSART('a'+datapos);
-	      //mputcharUSART('A' + data[datapos]);
 	      SSPBUF = data[datapos];
-	      i2c_debug prdbg(']', data[datapos]);
 	      SSPCON1bits.CKP = 1;
 	      checksum = crc8(checksum^data[datapos]);
 	      datapos++;
 	    }
 	  else
 	    {
-	      mputcharUSART('I');
-
 	      SSPBUF = checksum;
-	      i2c_debug prdbg('*', checksum);
 	      SSPCON1bits.CKP = 1;
 	      state = SENTCHECKSUM;
 	    }
 	  break;
 	case SENTCHECKSUM:
-	  mputcharUSART('J');
-	  i2cstatus = GOOD;
 	  PIR1bits.SSPIF = 0;
 	  break;
 	default:
 	  tmpdata = SSPBUF;
-	  i2c_debug 	prdbg('!', tmpdata);
-		            
-             		
 	}
-            
-	//mputcharUSART('O');
       }
   }
   return;
 }
+
 
 
 
@@ -815,9 +765,9 @@ void getdip(u8 *data){
 	}
 	
 void setrails(u8 *data){
-	PORTE= data[0]&0x07;
-	PORTB= (PORTB&(~0x18))|((data[0]>>1)&0x18);
-	return;
+  PORTE= data[0]&0x07;
+  PORTB= (PORTB&(~0x18))|((data[0]>>1)&0x18);
+  return;
 	}
 void getrails(u8 *data){
 	data[0]=(PORTE&0x07)|((PORTB&0x18)<<1);
