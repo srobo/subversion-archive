@@ -37,31 +37,11 @@ void i2c_pec_enable( int fd );
 /* Disable use of the PEC */
 void i2c_pec_disable( int fd );
 
-void motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
-{
-	uint16_t v = 0;
-	if( val>MOTOR_MAX )
-		val = MOTOR_MAX;
+/* Send the identify command */
+void motor_identify( int fd );
 
-	v = val;
-	v |= ((uint16_t)s) << 9;
-	v |= m?0x800:0;
-
-	if( i2c_smbus_write_word_data( fd, 1, v ) < 0 )
-		fprintf( stderr, "Failed to set motor: %m\n" );
-}
-
-void motor_identify( int fd )
-{
-	int id;
-
-	id = i2c_smbus_read_word_data( fd, 0 );
-
-	if( id < 0 )
-		fprintf( stderr, "Failed to read motor identity: %m\n" );
-	else
-		printf( "Identified as %X\n", id );
-}
+/* Send a command to configure a motor. */
+void motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val );
 
 int main( int argc, char** argv )
 {
@@ -164,4 +144,30 @@ void i2c_pec_disable( int fd )
 		fprintf( stderr, "Failed to disable PEC\n"); 
 		exit(3);
 	} 
+}
+
+void motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
+{
+	uint16_t v = 0;
+	if( val>MOTOR_MAX )
+		val = MOTOR_MAX;
+
+	v = val;
+	v |= ((uint16_t)s) << 9;
+	v |= m?0x800:0;
+
+	if( i2c_smbus_write_word_data( fd, 1, v ) < 0 )
+		fprintf( stderr, "Failed to set motor: %m\n" );
+}
+
+void motor_identify( int fd )
+{
+	int id;
+
+	id = i2c_smbus_read_word_data( fd, 0 );
+
+	if( id < 0 )
+		fprintf( stderr, "Failed to read motor identity: %m\n" );
+	else
+		printf( "Identified as %X\n", id );
 }
