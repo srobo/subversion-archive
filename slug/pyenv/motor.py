@@ -17,14 +17,9 @@ BACKWARD = 2
 BRAKE = 3
 
 def checkmotor():
-    count = 0
-    while count < MAXERR:
-        try:
-            id = c2py.readworddata( ADDRESS, MOTOR_IDENT, 1 )
-        except c2py.I2CError:
-            count = count + 1
-    
-    if count == MAXERR:
+    try:
+        id = c2py.readworddata( ADDRESS, MOTOR_GET0, 1 )
+    except c2py.I2CError:
         return False
 
     return True
