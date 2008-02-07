@@ -114,7 +114,8 @@ void high_isr(void);
 
 void adcserv(void);
 
-
+void t1start(void);
+void t1stop(void);
 
 void identify(u8 *data);
 void setled(u8 *data);
@@ -277,9 +278,12 @@ void high_isr (void)
 		PORTE&=0b11111110;
 	}
 	INTCONbits.TMR0IF=0;
-  }else {
+  }else if (PIR1bits.TMR1IF==1){
     PORTD^=0b01000000;
+    t1stop();
     PIR1bits.TMR1IF=0;
+  } else{
+    //error!
   }
 }
 
@@ -432,7 +436,7 @@ static void InitializeSystem(void)
 
     //rd0-3 switch
     //rd4-7 leds
-    //re0 - big power motor fet thing
+    //re0 - big power motor fet thing (relay)
     //e1 - fet control servo rail
    //re2 - fet slug rail
 
@@ -588,171 +592,183 @@ static void InitializeSystem(void)
 
 }//end InitializeSystem
 
+void t1start(void){
+  PORTD|=0b00100000;
+  TMR1H = 0;
+  TMR1L = 1;
+  T1CON |= 1;//TMR1ON;
+
+}
+void t1stop(void){
+  PORTD &= ~0b00100000;
+  T1CON &= ~1;//TMR1ON;
+}
 
 
 void i2cservice(void)
 {
-    static enum states {
-        WAIT,
-            GOTADDRESSREAD,
-            GOTADDRESSWRITE,
-            GOTCOMMAND,
-            GOTDATA,
-            SENTCHECKSUM
-    } state = WAIT;
+  static enum states {
+    WAIT,
+    GOTADDRESSREAD,
+    GOTADDRESSWRITE,
+    GOTCOMMAND,
+    GOTDATA,
+    SENTCHECKSUM
+  } state = WAIT;
 
-    static u8 adddump;
-    static u8 command;
+  static u8 adddump;
+  static u8 command;
    
-    static u8 datacount;
-    static u8 datapos;
-    static u8 checksum;
-    int i;
+  static u8 datacount;
+  static u8 datapos;
+  static u8 checksum;
+  int i;
     
 
-    u8 tmpdata;
+  u8 tmpdata;
 
-    if (PIR1bits.SSPIF){
+  if (PIR1bits.SSPIF){
 	    
-	    if(SSPCON1bits.SSPOV) // check for buffer overflow and goto to wait
-	    {
-		    mputcharUSART('.'); 
-		    tmpdata = SSPBUF;
-		    SSPCON1bits.SSPOV = 0;
-		    state = WAIT;
-		    return;
-		}
+    if(SSPCON1bits.SSPOV) // check for buffer overflow and goto to wait
+      {
+	mputcharUSART('.'); 
+	tmpdata = SSPBUF;
+	SSPCON1bits.SSPOV = 0;
+	state = WAIT;
+	return;
+      }
 		    
-		    
-	   
-	    
-	    //mputcharUSART('X');
-        if(!SSPSTATbits.D_A) //It's an address byte
-        {
-	        i2c_debug mputcharUSART('A');
-            i2cstatus = BAD; //This is to check abandoned machines later
-            adddump = SSPBUF;
-            i2c_debug prdbg('>', adddump);
-        	PIR1bits.SSPIF = 0;
-            if (!SSPSTATbits.R_W) //About to receive something from the slug
-            {
-	            mputcharUSART('N');
-	            datacount = 0;
-	            state = GOTADDRESSREAD;
-	            checksum = crc8(adddump);
-	            datapos = 0;
-	            //mputcharUSART('R');
-            }
-            else //Being asked to send stuff to the slug
-           	{
-	           	mputcharUSART('C');
-	           	datacount = commands[command].bytestoreadout;
-	           	checksum = crc8(checksum^(adddump));
+		  
+    //mputcharUSART('X');
+    if(!SSPSTATbits.D_A) //It's an address byte
+      {
+	t1start();
+	i2c_debug mputcharUSART('A');
+	i2cstatus = BAD; //This is to check abandoned machines later
+	adddump = SSPBUF;
+	i2c_debug prdbg('>', adddump);
+	PIR1bits.SSPIF = 0;
+	if (!SSPSTATbits.R_W) //About to receive something from the slug
+	  {
+	    mputcharUSART('N');
+	    datacount = 0;
+	    state = GOTADDRESSREAD;
+	    checksum = crc8(adddump);
+	    datapos = 0;
+	    //mputcharUSART('R');
+	  }
+	else //Being asked to send stuff to the slug
+	  {
+	    mputcharUSART('C');
+	    datacount = commands[command].bytestoreadout;
+	    checksum = crc8(checksum^(adddump));
 	           	
-	           	//Clock stretching is currently in effect
-	           	//Can have a bit of time to generate data, so do it now
-	           	commands[command].docmd(data); //Data filled up ready to send to slug (Maybe)
+	    //Clock stretching is currently in effect
+	    //Can have a bit of time to generate data, so do it now
+	    commands[command].docmd(data); //Data filled up ready to send to slug (Maybe)
 	           	
-	           	state = GOTADDRESSWRITE;
+	    state = GOTADDRESSWRITE;
 	        	
-	       		//mputcharUSART('W');
-	       		SSPBUF = data[0];
-	       		i2c_debug prdbg('[', data[0]);
-	            SSPCON1bits.CKP = 1; //Disable the clock stretching
-	            checksum = crc8(checksum^data[0]);
-	            datapos = 1;
-	      	}
-        } else {// nogt an address byte
-            switch(state){
-                case GOTADDRESSREAD: //Just received a command
-                    command = SSPBUF;
-        			PIR1bits.SSPIF = 0;
-                    //command = tmpdata;
-                    mputcharUSART('D');
-                    prdbg('=', command);
-                    checksum = crc8(checksum^command);
-                    datacount = commands[command].bytestoreadin;
+	    //mputcharUSART('W');
+	    SSPBUF = data[0];
+	    i2c_debug prdbg('[', data[0]);
+	    SSPCON1bits.CKP = 1; //Disable the clock stretching
+	    checksum = crc8(checksum^data[0]);
+	    datapos = 1;
+	  }
+      } else {// nogt an address byte
+	switch(state){
+	case GOTADDRESSREAD: //Just received a command
+	  command = SSPBUF;
+	  PIR1bits.SSPIF = 0;
+	  //command = tmpdata;
+	  mputcharUSART('D');
+	  prdbg('=', command);
+	  checksum = crc8(checksum^command);
+	  datacount = commands[command].bytestoreadin;
 
-                    if(datacount == 0){ //Special case of pure commands (getdips etc)
-	                    //Will call the function to generate data whilst the clock stretch
-	                    //is in effect
-	                    mputcharUSART('E');
-                        state = WAIT;
-                        //break;
-                    }else
-                    state=GOTCOMMAND;
+	  if(datacount == 0){ //Special case of pure commands (getdips etc)
+	    //Will call the function to generate data whilst the clock stretch
+	    //is in effect
+	    mputcharUSART('E');
+	    state = WAIT;
+	    t1stop();
+	    //break;
+	  }else
+	    state=GOTCOMMAND;
                 
-                    break;
+	  break;
 
-                case GOTCOMMAND:              
-                    //Read in the data   
-                    //mputcharUSART('F');    
-                    tmpdata = SSPBUF;
-                     i2c_debug prdbg('<', tmpdata);
-        			PIR1bits.SSPIF = 0;
-                    data[datapos] = tmpdata; // start entering data at start of array
-                    checksum = crc8(checksum^data[datapos]);
-                    datapos++;
-                    if(datapos == datacount)
-                        state = GOTDATA;
-                    break;
+	case GOTCOMMAND:              
+	  //Read in the data   
+	  //mputcharUSART('F');    
+	  tmpdata = SSPBUF;
+	  i2c_debug prdbg('<', tmpdata);
+	  PIR1bits.SSPIF = 0;
+	  data[datapos] = tmpdata; // start entering data at start of array
+	  checksum = crc8(checksum^data[datapos]);
+	  datapos++;
+	  if(datapos == datacount)
+	    state = GOTDATA;
+	  break;
 
-                case GOTDATA:
-                	mputcharUSART('G');
-                	tmpdata = SSPBUF;
-                	i2c_debug prdbg('?', tmpdata);
-        			PIR1bits.SSPIF = 0;
-                    if (tmpdata == checksum) 
-                    //if (1) // temporary fix so no checksumm for testing
-	                {
-                        commands[command].docmd(data);
-                        i2cstatus = GOOD; 
-                    }
-                    else i2cstatus = BAD;
-                    state = WAIT;
-                    break;
-             	case GOTADDRESSWRITE:
-             		mputcharUSART('H');
+	case GOTDATA:
+	  mputcharUSART('G');
+	  tmpdata = SSPBUF;
+	  i2c_debug prdbg('?', tmpdata);
+	  PIR1bits.SSPIF = 0;
+	  if (tmpdata == checksum) 
+	    //if (1) // temporary fix so no checksumm for testing
+	    {
+	      commands[command].docmd(data);
+	      i2cstatus = GOOD; 
+	    }
+	  else i2cstatus = BAD;
+	  state = WAIT;
+	  t1stop();
+	  break;
+	case GOTADDRESSWRITE:
+	  mputcharUSART('H');
 
 
-        			PIR1bits.SSPIF = 0;
-             		if (datapos<datacount)
-             		{
-	             		mputcharUSART('P');
-	             		//mputcharUSART('a'+datapos);
-	             		//mputcharUSART('A' + data[datapos]);
-	             		SSPBUF = data[datapos];
-	             		i2c_debug prdbg(']', data[datapos]);
-	             		SSPCON1bits.CKP = 1;
-	             		checksum = crc8(checksum^data[datapos]);
-	             		datapos++;
-	             	}
-	             	else
-	             	{
-		             	mputcharUSART('I');
+	  PIR1bits.SSPIF = 0;
+	  if (datapos<datacount)
+	    {
+	      mputcharUSART('P');
+	      //mputcharUSART('a'+datapos);
+	      //mputcharUSART('A' + data[datapos]);
+	      SSPBUF = data[datapos];
+	      i2c_debug prdbg(']', data[datapos]);
+	      SSPCON1bits.CKP = 1;
+	      checksum = crc8(checksum^data[datapos]);
+	      datapos++;
+	    }
+	  else
+	    {
+	      mputcharUSART('I');
 
-		             	SSPBUF = checksum;
-		             	i2c_debug prdbg('*', checksum);
-		             	SSPCON1bits.CKP = 1;
-		             	state = SENTCHECKSUM;
-		         	}
-             		break;
-             	case SENTCHECKSUM:
-             		mputcharUSART('J');
-             		i2cstatus = GOOD;
-             		PIR1bits.SSPIF = 0;
-             		break;
-             	default:
-             		tmpdata = SSPBUF;
-             	i2c_debug 	prdbg('!', tmpdata);
+	      SSPBUF = checksum;
+	      i2c_debug prdbg('*', checksum);
+	      SSPCON1bits.CKP = 1;
+	      state = SENTCHECKSUM;
+	    }
+	  break;
+	case SENTCHECKSUM:
+	  mputcharUSART('J');
+	  i2cstatus = GOOD;
+	  PIR1bits.SSPIF = 0;
+	  break;
+	default:
+	  tmpdata = SSPBUF;
+	  i2c_debug 	prdbg('!', tmpdata);
 		            
              		
-            }
+	}
             
-            //mputcharUSART('O');
-        }
-    }
-    return;
+	//mputcharUSART('O');
+      }
+  }
+  return;
 }
 
 
