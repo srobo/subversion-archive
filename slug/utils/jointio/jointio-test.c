@@ -72,24 +72,39 @@ int main( int argc, char** argv )
 
 	fd = jointio_i2c_conf();
 
-	/* Are we in test mode? */
-	if( argc == 2 && strcmp(argv[1],"test") == 0 )
-		jointio_test(fd);
-	else
+	if( argc < 2 )
 	{
-		uint16_t in[8];
-		uint8_t i;
-
-		if( ! jointio_get_inputs( fd, in ) )
-		{
-			printf( "Failed to grab inputs from jointio.\n" );
-			exit(3);
+		fprintf(stderr, "Usage: %s {output,input,digin}\n", argv[0]);
+		exit(1);
+	}
+	
+	if( strcmp( argv[1], "output" ) == 0 )
+	{
+		uint8_t val;
+		if( argc < 3 ) {
+			fprintf( stderr, "Usage: %s output VAL\n", argv[0] );
+			exit(2);
+		}
+		
+		val = (uint8_t)strtoul( argv[2], NULL, 10 );
+		jointio_set_outputs_retry( fd, val );
+	}
+	else if( strcmp( argv[1], "input" ) == 0 )
+	{
+		if( argc > 2 ) {
+			fprintf( stderr, "Usage: %s input\n", argv[0] );
+			exit(2);
 		}
 
-		printf("Read inputs as:\n");
-		for(i=0;i<8;i++)
-			printf("\t%u: %u\n", i, in[i]);
 	}
+	else if( strcmp( argv[1], "digin" ) == 0 )
+	{
+		if( argc > 2 ) {
+			fprintf( stderr, "Usage: %s digin\n", argv[0] );
+			exit(2);
+		}
+
+	}		
 
 	return 0;
 }
@@ -172,7 +187,10 @@ bool jointio_set_outputs( int fd, uint8_t val )
 	val &= 0x0f;
 
 	if( i2c_smbus_write_byte_data( fd, JOINTIO_OUTPUT, val ) < 0 )
+	{
+		printf("Failed: %m\n");
 		return FALSE;
+	}
 	else
 		return TRUE;
 }
@@ -264,6 +282,7 @@ bool jointio_read_outputs( int fd, uint8_t *val )
 		return FALSE;
 
 	*val = (uint8_t)r;
+	printf("Read %hhx\n", *val);
 
 	return TRUE;
 }
