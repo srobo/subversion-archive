@@ -54,6 +54,9 @@ void jointio_set_outputs_retry( int fd, uint8_t val );
    Fills in *v with the inputs - v is an 8 entry array. */
 bool jointio_get_inputs( int fd, uint16_t *v );
 
+/* Reads the input in digital form */
+bool jointio_get_digin( int fd, uint8_t *v );
+
 /* Dump data to the terminal */
 void dump_data( uint8_t *data, uint32_t len );
 
@@ -91,19 +94,42 @@ int main( int argc, char** argv )
 	}
 	else if( strcmp( argv[1], "input" ) == 0 )
 	{
+		uint16_t r[8];
+		uint16_t count;
+
 		if( argc > 2 ) {
 			fprintf( stderr, "Usage: %s input\n", argv[0] );
 			exit(2);
 		}
 
+		count = 0;
+		while( !jointio_get_inputs(fd, r ) && count < 1000)
+			count++;
+
+		if( count > 1000 )
+			printf("Error: Failed to read inputs - tried 1000 times\n");
+		else
+		{
+			uint8_t i;
+
+			for(i=0; i<8; i++)
+				printf("Input %i = %hu\n", i, r[i]);
+		}
 	}
 	else if( strcmp( argv[1], "digin" ) == 0 )
 	{
+		uint8_t in, i;
+
 		if( argc > 2 ) {
 			fprintf( stderr, "Usage: %s digin\n", argv[0] );
 			exit(2);
 		}
 
+		while(! jointio_get_digin( fd, &in ) );
+
+		for(i=0; i<8; i++)
+			printf("Input %i = %i\n", 
+			       i, (1<<i & in)?1:0);
 	}		
 
 	return 0;
@@ -205,18 +231,15 @@ bool jointio_get_inputs( int fd, uint16_t *v )
 	i2c_pec_disable( fd );
 
 	/* Write the command byte */
-	if( i2c_smbus_write_byte( fd, JOINTIO_INPUT ) < 0 ) {
-		fprintf( stderr, "Error: Failed to write JOINTIO_INPUT command: %m.\n" );
+	if( i2c_smbus_write_byte( fd, JOINTIO_INPUT ) < 0 )
 		return FALSE;
-	}
 
 	c = crc8(ADDRESS<<1);
 	c = crc8(c ^ JOINTIO_INPUT);
+	c = crc8(c ^ ((ADDRESS<<1)|1));
 
-	if( read( fd, buf, 17 ) < 17 ) {
-		fprintf(stderr, "Error: Read fewer bytes than required.\n");
+	if( read( fd, buf, 17 ) < 17 )
 		return FALSE;
-	}
 
 	for( i=0; i<8; i++ )
 	{
@@ -227,12 +250,13 @@ bool jointio_get_inputs( int fd, uint16_t *v )
 		c = crc8( c ^ buf[i*2+1] );
 	}
 
-	printf("Calculated: %x\n Received: %x\n", c, buf[16]);
-
 	/* Enable the PEC again */
 	i2c_pec_enable( fd );
 
-	return TRUE;
+	if( c != buf[16] )
+		return FALSE;
+	else
+		return TRUE;
 }
 
 void jointio_test( int fd )
@@ -306,4 +330,17 @@ void jointio_set_outputs_retry( int fd, uint8_t val )
 		}
 	}
 	while( d != val );
+}
+
+bool jointio_get_digin( int fd, uint8_t *v )
+{
+	int32_t r;
+	i2c_pec_enable(fd);
+
+	r = i2c_smbus_read_byte_data(fd, JOINTIO_INPUT_DIG);
+	if( r < 0 )
+		return FALSE;
+
+	*v = (uint8_t)r;
+	return TRUE;
 }
