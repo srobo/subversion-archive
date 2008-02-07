@@ -25,7 +25,7 @@
 #define MODULE_IDENTITY 0x0201
 #define FIRMWARE_REV 0x0304
 
-#define IO_THRESHOLD 65535/2
+#define IO_THRESHOLD 1024/2
 
 static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
 					MODULE_IDENTITY & 0xFF, 
@@ -245,7 +245,8 @@ static uint8_t i2cr_identity( uint8_t *buf )
 /* receive dio data from i2c bus*/
 void  i2cw_dio_output( uint8_t* buf)
 {
-	P1OUT = *buf;
+	P1OUT &= ~0x0f;
+	P1OUT |= *buf & 0x0f;
 }
 
 /* write dio input data to i2c bus*/
@@ -265,7 +266,7 @@ uint8_t  i2cr_adc_input( uint8_t* buf)
 
 uint8_t i2cr_out_state( uint8_t* buf )
 {
-	buf[0] = P1OUT;
+	buf[0] = P1OUT & 0x0f;
 	return 1;
 }
 
