@@ -37,7 +37,9 @@ typedef enum
 	M_OFF = 0,
 	M_FORWARD,
 	M_BACKWARD,
-	M_BRAKE
+	M_BRAKE,
+
+	M_INVALID
 } motor_state_t;
 
 #define MOTOR_MAX 328
@@ -57,7 +59,14 @@ void i2c_pec_disable( int fd );
 void motor_identify( int fd );
 
 /* Send a command to configure a motor. */
-void motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val );
+bool motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val );
+
+/* Read back a motor's settings.
+   Returns FALSE on error. */
+bool motor_read( int fd, uint8_t m, motor_state_t *s, pwm_ratio_t *val );
+
+/* Configure a motor, but read back and try again. */
+void motor_set_retry( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val );
 
 int main( int argc, char** argv )
 {
@@ -115,7 +124,7 @@ int main( int argc, char** argv )
 		}
 		pwm = strtoul( argv[3], NULL, 10 );
 
-		motor_set( fd, channel, dir, pwm );
+		motor_set_retry( fd, channel, dir, pwm );
 	}
 	
 	return 0;
@@ -125,7 +134,7 @@ int motor_i2c_conf( void )
 {
 	int fd;
 
-	fd = open( "/dev/i2c-0", O_RDWR );
+	fd = open( "/dev/i2c-1", O_RDWR );
 
 	if( fd == -1 )
 	{
@@ -162,7 +171,7 @@ void i2c_pec_disable( int fd )
 	} 
 }
 
-void motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
+bool motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
 {
 	uint16_t v = 0;
 	if( val>MOTOR_MAX )
@@ -173,7 +182,9 @@ void motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
 	v |= m?0x800:0;
 
 	if( i2c_smbus_write_word_data( fd, COMMAND_SET, v ) < 0 )
-		fprintf( stderr, "Failed to set motor: %m\n" );
+		return FALSE;
+
+	return TRUE;
 }
 
 void motor_identify( int fd )
@@ -188,3 +199,51 @@ void motor_identify( int fd )
 		printf( "Identified as %X\n", id );
 }
 
+bool motor_read( int fd, uint8_t m, motor_state_t *s, pwm_ratio_t *val )
+{
+	int32_t r;
+	uint16_t d;
+	uint8_t command;
+
+	if( m == 0 )
+		command = COMMAND_GET0;
+	else
+		command = COMMAND_GET1;
+
+	r = i2c_smbus_read_word_data( fd, command );
+	
+	if( r < 0 )
+		return FALSE;
+
+	d = (uint16_t)r;
+
+	/* Data returned. Bits:
+	    8-0: Speed
+	   9-10: Direction */
+
+	*val = d & 0x01ff;
+	*s = (d >> 9) & 3;
+
+	return TRUE;
+}
+
+void motor_set_retry( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
+{
+	motor_state_t r_s = M_INVALID;
+	pwm_ratio_t r_v;
+	uint32_t a_s=0, a_r=0, attempts = 0;
+
+	do
+	{
+		while( !motor_set( fd, m, s, val ) )
+			a_s++;
+
+		while( !motor_read( fd, m, &r_s, &r_v )	)
+			a_r++;
+
+		attempts++;
+	}
+	while( r_s != s && r_v != val );
+
+	printf("%u attempts. s=%u, r=%u\n", attempts, a_s, a_r);
+}
