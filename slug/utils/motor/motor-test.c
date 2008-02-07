@@ -11,6 +11,22 @@
 
 #define ADDRESS 0x12
 
+/* The I2C Commands */
+enum
+{
+	/* Get the board identity */
+	COMMAND_IDENTIFY,
+
+	/* Configure a motor */
+	COMMAND_SET,
+
+	/* Get motor 0 settings */
+	COMMAND_GET0,
+
+	/* Get motor 1 settings */
+	COMMAND_GET1
+};
+
 typedef enum
 {
 	FALSE = 0, TRUE
@@ -156,7 +172,7 @@ void motor_set( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
 	v |= ((uint16_t)s) << 9;
 	v |= m?0x800:0;
 
-	if( i2c_smbus_write_word_data( fd, 1, v ) < 0 )
+	if( i2c_smbus_write_word_data( fd, COMMAND_SET, v ) < 0 )
 		fprintf( stderr, "Failed to set motor: %m\n" );
 }
 
@@ -164,10 +180,11 @@ void motor_identify( int fd )
 {
 	int id;
 
-	id = i2c_smbus_read_word_data( fd, 0 );
+	id = i2c_smbus_read_word_data( fd, COMMAND_IDENTIFY );
 
 	if( id < 0 )
 		fprintf( stderr, "Failed to read motor identity: %m\n" );
 	else
 		printf( "Identified as %X\n", id );
 }
+
