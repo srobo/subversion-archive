@@ -36,6 +36,8 @@ static uint8_t pos = 0;
 static uint8_t buf[I2C_BUF_LEN];
 static uint8_t checksum;
 
+#define output_map(x) ((x & 0x3) | ((x&0x4)<<1) | ((x&0x80)>>1))
+
 typedef struct
 {
 	/* The receive size - 0 if receive not supported*/
@@ -245,8 +247,10 @@ static uint8_t i2cr_identity( uint8_t *buf )
 /* receive dio data from i2c bus*/
 void  i2cw_dio_output( uint8_t* buf)
 {
-	P1OUT &= ~0x0f;
-	P1OUT |= *buf & 0x0f;
+	uint8_t op = output_map( (*buf) );
+
+	P1OUT &= 0xf0;
+	P1OUT |= op & 0x0f;
 }
 
 /* write dio input data to i2c bus*/
@@ -266,7 +270,7 @@ uint8_t  i2cr_adc_input( uint8_t* buf)
 
 uint8_t i2cr_out_state( uint8_t* buf )
 {
-	buf[0] = P1OUT & 0x0f;
+	buf[0] = output_map((P1OUT & 0x0f));
 	return 1;
 }
 
