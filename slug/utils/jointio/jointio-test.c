@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include "smbus_pec.h"
 
 #define ADDRESS 0x14
 
@@ -17,10 +18,12 @@ enum
 	JOINTIO_IDENTIFY,
 	/* Set the outputs of the board */
 	JOINTIO_OUTPUT,
-	/* Read the board inputs */
+	/* Read the board inputs in analogue form */
 	JOINTIO_INPUT,
-
-	JOINTIO_TEST = 3
+	/* Read the current digital output setting from the board. */
+	JOINTIO_OUTPUT_READ,
+	/* Read the inputs in digital form */
+	JOINTIO_INPUT_DIG
 };
 
 typedef enum
@@ -39,23 +42,29 @@ uint32_t jointio_identify( int fd );
    Returns FALSE on failure. */
 bool jointio_set_outputs( int fd, uint8_t val );
 
-/* Structure for holding inputs */
-typedef struct
-{
-	uint8_t digital;
-	uint16_t an[16];
-} input_t;
+/* Read the state of the digital outputs.
+   Returns FALSE on failure. */
+bool jointio_read_outputs( int fd, uint8_t *val );
+
+/* Set the digital outputs without failure. */
+void jointio_set_outputs_retry( int fd, uint8_t val );
 
 /* Reads the inputs.
    Returns FALSE on failure.
-   Fills in *v with the inputs. */
-bool jointio_get_inputs( int fd, input_t *v );
+   Fills in *v with the inputs - v is an 8 entry array. */
+bool jointio_get_inputs( int fd, uint16_t *v );
 
 /* Dump data to the terminal */
 void dump_data( uint8_t *data, uint32_t len );
 
 /* Perform the tests */
 void jointio_test( int fd );
+
+/* Enable use of the PEC */
+void i2c_pec_enable( int fd );
+
+/* Disable use of the PEC */
+void i2c_pec_disable( int fd );
 
 int main( int argc, char** argv )
 {
@@ -68,9 +77,18 @@ int main( int argc, char** argv )
 		jointio_test(fd);
 	else
 	{
-		printf( "Test result: %x\n", (uint32_t)i2c_smbus_read_byte_data(fd, JOINTIO_TEST) );
+		uint16_t in[8];
+		uint8_t i;
 
-		/* printf( "Read identity as %8.8x\n", jointio_identify(fd) );  */
+		if( ! jointio_get_inputs( fd, in ) )
+		{
+			printf( "Failed to grab inputs from jointio.\n" );
+			exit(3);
+		}
+
+		printf("Read inputs as:\n");
+		for(i=0;i<8;i++)
+			printf("\t%u: %u\n", i, in[i]);
 	}
 
 	return 0;
@@ -80,7 +98,7 @@ int jointio_i2c_conf( void )
 {
 	int fd;
 
-	fd = open( "/dev/i2c-0", O_RDWR );
+	fd = open( "/dev/i2c-1", O_RDWR );
 
 	if( fd == -1 )
 	{
@@ -94,11 +112,7 @@ int jointio_i2c_conf( void )
 		exit(2);
 	}
 
-	if( ioctl( fd, I2C_PEC, 1) < 0) 
-	{ 
-		fprintf( stderr, "Failed to enable PEC\n"); 
-		exit(3);
-	} 
+	i2c_pec_enable( fd );
 
 	return fd;
 }
@@ -152,26 +166,55 @@ void dump_data( uint8_t *data, uint32_t len )
 
 bool jointio_set_outputs( int fd, uint8_t val )
 {
+	i2c_pec_enable(fd);
+
+	/* There are only 4 outputs */
+	val &= 0x0f;
+
 	if( i2c_smbus_write_byte_data( fd, JOINTIO_OUTPUT, val ) < 0 )
 		return FALSE;
 	else
 		return TRUE;
 }
 
-bool jointio_get_inputs( int fd, input_t *v )
+bool jointio_get_inputs( int fd, uint16_t *v )
 {
 	uint8_t buf[17];
+	uint8_t i;
+	uint8_t c = 0;
+
+	/* Disable PEC for this command */
+	i2c_pec_disable( fd );
 
 	/* Write the command byte */
-	if( i2c_smbus_write_quick( fd, JOINTIO_INPUT ) < 0 )
+	if( i2c_smbus_write_byte( fd, JOINTIO_INPUT ) < 0 ) {
+		fprintf( stderr, "Error: Failed to write JOINTIO_INPUT command: %m.\n" );
 		return FALSE;
+	}
 
-	if( read( fd, buf, 17 ) )
+	c = crc8(ADDRESS<<1);
+	c = crc8(c ^ JOINTIO_INPUT);
+
+	if( read( fd, buf, 17 ) < 17 ) {
+		fprintf(stderr, "Error: Read fewer bytes than required.\n");
+		return FALSE;
+	}
+
+	for( i=0; i<8; i++ )
 	{
-		
-	}	
+		v[i] = ( (uint16_t)buf[ i*2 ] ) << 8;
+		v[i] |= buf[i*2 + 1];
 
-	return FALSE;
+		c = crc8( c ^ buf[i*2] );
+		c = crc8( c ^ buf[i*2+1] );
+	}
+
+	printf("Calculated: %x\n Received: %x\n", c, buf[16]);
+
+	/* Enable the PEC again */
+	i2c_pec_enable( fd );
+
+	return TRUE;
 }
 
 void jointio_test( int fd )
@@ -183,23 +226,65 @@ void jointio_test( int fd )
 
 	for( i=0; i<10; i++ )
 	{
-		if( ! jointio_set_outputs( fd, 0 ) ) 
-		{
-			printf("Error: Failed to set output: %m\n");
-			exit(2);
-		}
+		jointio_set_outputs_retry( fd, 0 );
 
-		
-			
-		
 
-		if( ! jointio_set_outputs( fd, 1 ) )
-		{
-			printf("Error: Failed to set output: %m\n");
-			exit(2);
-
-		}
+		jointio_set_outputs_retry( fd, 1 );
 	}		
 
 	printf("Tests passed\n");		
+}
+
+void i2c_pec_enable( int fd )
+{
+	if( ioctl( fd, I2C_PEC, 1) < 0) 
+	{ 
+		fprintf( stderr, "Failed to enable PEC\n"); 
+		exit(3);
+	} 
+}
+
+void i2c_pec_disable( int fd )
+{
+	if( ioctl( fd, I2C_PEC, 0) < 0) 
+	{ 
+		fprintf( stderr, "Failed to disable PEC\n"); 
+		exit(3);
+	} 
+}
+
+bool jointio_read_outputs( int fd, uint8_t *val )
+{
+	int32_t r;
+
+	i2c_pec_enable(fd);
+	r = i2c_smbus_read_byte_data( fd, JOINTIO_OUTPUT_READ );
+
+	if( r < 0 )
+		return FALSE;
+
+	*val = (uint8_t)r;
+
+	return TRUE;
+}
+
+void jointio_set_outputs_retry( int fd, uint8_t val )
+{
+	uint8_t d = 0;
+
+	val &= 0x0f;
+	
+	do
+	{
+		while( !jointio_set_outputs(fd, val) )
+		{
+			printf("Wrote: %hhx\n", val);
+		}
+
+		while( !jointio_read_outputs(fd, &d) )
+		{
+			printf("Read: %hhx\n", d);
+		}
+	}
+	while( d != val );
 }
