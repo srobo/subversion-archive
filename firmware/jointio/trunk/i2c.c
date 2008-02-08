@@ -17,7 +17,6 @@
 #include "msp430/usci.h"
 #include <signal.h>
 #include "i2c.h"
-#include "motor.h"
 #include "smbus_pec.h"
 #include "timer-b.h"
 
@@ -227,16 +226,6 @@ void i2c_init( void )
 
 static void i2cw_motor_set( uint8_t *buf )
 {
-	uint8_t channel;
-	speed_t speed;
-	motor_state_t state;
-
-	channel = (buf[1]&0x08)?1:0;
-	speed = ((uint16_t)buf[0]) 
-		| ((uint16_t)(buf[1]&1) << 8);
-	state = (buf[1] >> 1) & 0x3;
-
-	motor_set( channel, speed, state );
 }
 
 static uint8_t i2cr_identity( uint8_t *buf )
@@ -251,16 +240,8 @@ static uint8_t i2cr_identity( uint8_t *buf )
 
 static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor )
 {
-	motor_state_t state = motor_get_state(motor);
-	speed_t speed = motor_get_speed(motor);
-
-	/* Bits:
-	    8-0: Speed
-	   9-10: Direction */
-	buf[0] = speed & 0xff;
-	buf[1] = ((speed >> 8)&1);
-
-	buf[1] |= (state & 0x3) << 1;
+	buf[0] = 0;
+	buf[1] = 2;
 
 	return 2;
 }

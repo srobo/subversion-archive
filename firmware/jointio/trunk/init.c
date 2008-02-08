@@ -15,8 +15,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "common.h"
 #include "init.h"
-#include "pwm.h"
-#include "motor.h"
 #include "i2c.h"
 #include "timer-b.h"
 #include <signal.h>
@@ -27,8 +25,6 @@ void init_gpio( void );
 void init( void )
 {
 	init_gpio();
-	pwm_init();
-	motor_init();
 	i2c_init();
 	timer_b_init();
 
