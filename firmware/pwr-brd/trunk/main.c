@@ -32,7 +32,7 @@
  *
  * Author               Date        Comment
  *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Rawin Rojvanit       11/19/04    Original.
+ * Rawin Rojvanit       11/1/04    Original.
  ********************************************************************/
 
 /** I N C L U D E S **********************************************************/
@@ -282,15 +282,15 @@ void high_isr (void)
       }
     INTCONbits.TMR0IF=0;
   }else if (PIR1bits.TMR1IF==1){
-    PORTD^=0b01000000;
+    //PORTD^=0b01000000;
     howalive++;
-    if((howalive>650)&(stayingalive==0)){ // 800 is 38 sec
+    if((howalive>800)&(stayingalive==0)){ // 800 is 38 sec
       //power cycle slug
       if(PORTDbits.RD1){
 	slugcyc();
       }
       howalive=0;
-      PORTD^=0b00100000;
+      //PORTD^=0b00100000;
     }
     //t1stop();
     PIR1bits.TMR1IF=0;
@@ -599,7 +599,9 @@ static void InitializeSystem(void)
     //taken out from steves - check this
     // UserInit();                     // See user.c & .h
 
-}//end InitializeSystem
+//end InitializeSystem
+}
+
 
 void slugcyc(void){
   PORTE &= ~0b100;   
@@ -831,6 +833,7 @@ void isusb(u8 *data){
 	
 void beegees(u8 *data){
   stayingalive=1;
+  //PORTD^=0x00100000;
 	// slug is alive, possibly staying alive :)
 }	
 /*	
