@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <stdint.h>
 #include "i2c-dev.h"
+#include "smbus_pec.h"
 
 static int fd;
 
@@ -31,6 +32,7 @@ static PyObject *I2CError;
 static PyMethodDef c2pyMethods[] = {
 	{"writebyte",c2py_smbuswritebyte,METH_VARARGS,"Write a byte to the SMBus"},
 	{"readbyte",c2py_smbusreadbyte,METH_VARARGS,"Read a byte from the SMBus"},
+    {"readblockdata",c2py_smbusreadblock_data,METH_VARARGS,"Read a block from the SMBus with a command"},
     {"readbytedata",c2py_smbusreadbyte_data,METH_VARARGS,"Read a byte from the SMBus with a command"},
     {"writebytedata",c2py_smbuswritebyte_data,METH_VARARGS,"Write a byte to the SMBus with a command"},
     {"readworddata",c2py_smbusreadword_data,METH_VARARGS,"Read a word from the SMBus with a command"},
@@ -178,6 +180,58 @@ static PyObject* c2py_smbusreadbyte_data( PyObject *self,
     }
 
     return Py_BuildValue("i", datablock.byte & 0x0FF);
+}
+
+static PyObject* c2py_smbusreadblock_data( PyObject *self, 
+				   PyObject *args )
+{
+    uint8_t address, command, nobytes;
+    uint8_t *buf, i=0, c=0;
+    union i2c_smbus_data datablock;
+
+	if (!PyArg_ParseTuple(args,"BBB", &address, &command, &nobytes)){
+	    return NULL;
+    }
+    
+    if(ioctl( fd, I2C_SLAVE, address)){
+        PyErr_SetString(I2CError, "Error setting I2C address.");
+        return NULL;
+    }
+
+    if( ioctl( fd, I2C_PEC, 0) < 0)
+    {
+        PyErr_SetString(I2CError, "Could not disable checksumming on i2c.\n");
+        return;
+    }
+    
+    if(i2c_smbus_write_byte(fd, command)){
+        PyErr_SetString(I2CError, "Error sending block command");
+        return NULL;
+    }
+
+	c = crc8(address<<1);
+	c = crc8(c ^ command);
+	c = crc8(c ^ ((address<<1)|1));
+
+    buf = malloc(nobytes+1);
+
+	if( read( fd, buf, nobytes+1 ) < nobytes+1 ){
+        PyErr_SetString(I2CError, "Error allocating I2C receive buffer.");
+        return NULL;
+    }
+
+	for( i=0; i<nobytes; i++ )
+		c = crc8( c ^ buf[i] );
+
+	if( c != buf[nobytes] ){
+        free(buf);
+        PyErr_SetString(I2CError, "Checksum error.");
+        return NULL;
+    }
+
+    retval = Py_BuildValue("is#", datablock.byte & 0x0FF, buf, nobytes-1);
+    free(buf);
+    return retval;
 }
 
 static PyObject* c2py_smbuswriteword_data( PyObject *self, 
