@@ -17,6 +17,8 @@
 #define __ADC_H
 #include <stdint.h>
 
+#define INPUT_THRESHOLD 1024/2
+
 void adc_init ( void );
 
 /* Perform the ADC samples */

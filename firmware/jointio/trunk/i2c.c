@@ -60,6 +60,9 @@ static uint8_t i2cr_output_get( uint8_t *buf );
 /* Send the inputs in analogue form to the master */
 static uint8_t i2cr_input_analogue( uint8_t *buf );
 
+/* Send the inputs in digital form to the master */
+static uint8_t i2cr_input_digital( uint8_t *buf );
+
 const i2c_cmd_t cmds[] = 
 {
 	/* Send the identity to the master */
@@ -73,6 +76,9 @@ const i2c_cmd_t cmds[] =
 
 	/* Send the output settings to the master */
 	{ 0, NULL, i2cr_output_get },
+
+	/* Send the inputs in digital form to the master */
+	{ 0, NULL, i2cr_input_digital }
 };
 
 /* The current command */
@@ -272,4 +278,18 @@ static uint8_t i2cr_input_analogue( uint8_t *buf )
 	}
 
 	return 16;
+}
+
+static uint8_t i2cr_input_digital( uint8_t *buf )
+{
+	uint8_t i,b;
+
+	b=0;
+	for(i=0; i<8; i++)
+		if( adc_buffer[i] > INPUT_THRESHOLD )
+			b |= 1<<i;
+
+	*buf = b;
+
+	return 1;
 }
