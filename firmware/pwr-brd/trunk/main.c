@@ -87,7 +87,8 @@ int bcount;
 int voltage = 0x5555;// local variables holding results of adc
 int current = 0xAAAA;
 
-unsigned char alive =0;
+unsigned char stayingalive =0;//flag set after mode b fault avoided
+unsigned int howalive=0;//counter untill reset slug
 unsigned long sectadd=0xabcdef12;
 unsigned char usbflag=0x00; // non zero means usb i2c bridge needs serviceing , maby use to give idea of direction etc. 
 unsigned char i2cstatus = BAD;
@@ -115,7 +116,10 @@ void high_isr(void);
 
 void adcserv(void);
 
+void t1start(void);
+void t1stop(void);
 
+void slugcyc(void);
 
 void identify(u8 *data);
 void setled(u8 *data);
@@ -138,13 +142,13 @@ void beegees(u8 *data);
 
 //#pragma romdata // this seems to do squat all!
 //						{bytes in, bytesout, function name}
- t_command commands[] = {{0, 2,identify}, //0
+ t_command commands[] = {{0, 4,identify}, //0
                         {1, 0,setled},
                         {0, 2,getv},//2
                         {0, 2,geti},
                         {0, 1,getdip},//4
                         {1, 0,setrails},
-			 {0, 1,getrails},//6
+	                    {0, 1,getrails},//6
 	                    {1,0,sendser},
 		                {0,1,isusb},
 			            {1,0,beegees}};
@@ -266,17 +270,44 @@ _asm GOTO high_isr _endasm
 #pragma interrupt high_isr
 void high_isr (void)
 {
-	if (PORTDbits.RD0) // check for test mode
-	{
-		PORTE|=0b00000001;
-	}
-	else				// no so drop out because in cometition and theres no ping packet to reset the counter and its overflowed
-	{	
-		//PORTD^=0b00010000;
-		PORTE&=0b11111110;
-	}
-	INTCONbits.TMR0IF=0;
+  if(INTCONbits.TMR0IF){
+    if (PORTDbits.RD0) // check for test mode
+      {
+	PORTE|=0b00000001;
+      }
+    else // no so drop out because in cometition and theres no ping packet to reset the counter and its overflowed
+      {	
+	//PORTD^=0b00010000;
+	PORTE&=0b11111110;
+      }
+    INTCONbits.TMR0IF=0;
+  }else if (PIR1bits.TMR1IF==1){
+    PORTD^=0b01000000;
+    howalive++;
+    if((howalive>650)&(stayingalive==0)){ // 800 is 38 sec
+      //power cycle slug
+      if(PORTDbits.RD1){
+	slugcyc();
+      }
+      howalive=0;
+      PORTD^=0b00100000;
+    }
+    //t1stop();
+    PIR1bits.TMR1IF=0;
+  } else{
+    //error!
+  }
 }
+
+
+/* beep 18 sec 
+mode b easily by 28 sec 
+clear by 23
+32 ssh
+42 ssh able easy
+52 til robot., zip
+*/
+
 
 #pragma code
 
@@ -427,7 +458,7 @@ static void InitializeSystem(void)
 
     //rd0-3 switch
     //rd4-7 leds
-    //re0 - big power motor fet thing
+    //re0 - big power motor fet thing (relay)
     //e1 - fet control servo rail
    //re2 - fet slug rail
 
@@ -439,23 +470,11 @@ static void InitializeSystem(void)
     TRISE = 0;
     PORTE = 0;
     delay(25); // wait for power to settle intpo regs before releasing shutdownpin (hopefully cure mode B slug poewr up fault)
+    PORTD =0;
     PORTE = 0b110; // turn all power rails on
     //IN real life will be 111 but changted to accomodate prototype2 relay error
 
-    
-    PORTD =0;
-  /*
-    PORTE = 0b000;
-    PORTE = 0b001;
-    PORTE = 0b010;
-    PORTE = 0b100;
-    PORTE = 0b010;
-    PORTE = 0b011;
-    PORTE = 0b011;
-    i and steve think issues from reading from porte eg porte|=0x32;
-    
-*/
-
+    //PORTE &= ~1;
     delay(25);
     PORTE = 0b111; 
     delay(25);
@@ -463,8 +482,6 @@ static void InitializeSystem(void)
     delay(5);
     PORTCbits.RC0=1; // never press the button, ever!! (dont hold down)
     delay(5); // JUST TO BE SURE NO POWER RAIL FLUCTUATION
-    
-    
     
     //init_usart();
 
@@ -547,7 +564,10 @@ static void InitializeSystem(void)
 	//configure timer0
 	OpenTimer0(T0_16BIT& T0_SOURCE_INT&T0_PS_1_128&TIMER_INT_ON);
 	// 12mips, 128 prescale 16bit overflow = 1.43s ((((48000000)/4)/128)/(2^16) = 1.43...  
-	
+
+	OpenTimer1(TIMER_INT_ON&T1_16BIT_RW&T1_SOURCE_INT&T1_PS_1_8&T1_OSC1EN_OFF&T1_SYNC_EXT_OFF&T1_SOURCE_CCP);	
+
+
 	//T0CON =0b10000000;
 	//TMR0L=0;
 	//TMR0H=0;
@@ -555,10 +575,10 @@ static void InitializeSystem(void)
 	//configure interrupts
 
 	//INTCON=0b00100111;
-	INTCON=0b00100000;
+	INTCON=0b01100000;
 	INTCON2=0b00000100;
 	INTCON3=0;
-	PIE1=0;
+	PIE1=1;
 	PIE2=0;
 	IPR1=0;
 	IPR2=0;
@@ -581,7 +601,28 @@ static void InitializeSystem(void)
 
 }//end InitializeSystem
 
+void slugcyc(void){
+  PORTE &= ~0b100;   
+  delay(25);
+  PORTE |= 0b100; 
+  delay(25);
+  PORTCbits.RC0=0;// blip slug
+  delay(5);
+  PORTCbits.RC0=1; // never press the button, ever!! (dont hold down)
+  delay(5); // JUST TO BE SURE NO POWER RAIL FLUCTUATION
+}
 
+/* void t1start(void){ */
+/*   //PORTD|=0b00100000; */
+/*   TMR1H = 0; */
+/*   TMR1L = 1; */
+/*   T1CON |= 1;//TMR1ON; */
+
+/* } */
+/* void t1stop(void){ */
+/*   PORTD &= ~0b00100000; */
+/*   T1CON &= ~1;//TMR1ON; */
+/* } */
 
 void i2cservice(void)
 {
@@ -659,7 +700,7 @@ void i2cservice(void)
 /* 	  } */
 	  PIR1bits.SSPIF = 0;
 	  checksum = crc8(checksum^command);
- 	  if(command<10){
+ 	  if(command>9){
 	    datacount = 40;
 	  } else{
 	    datacount = commands[command].bytestoreadin;
@@ -789,7 +830,7 @@ void isusb(u8 *data){
 	}
 	
 void beegees(u8 *data){
-  alive=1;
+  stayingalive=1;
 	// slug is alive, possibly staying alive :)
 }	
 /*	
