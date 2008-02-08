@@ -102,6 +102,7 @@ inline void isr_usi (void)
 	{
 		/* Idly doing nothing */
 	case state_idle:
+		sda_input();
 		break;
 
 		/* Receive the address */
@@ -137,7 +138,10 @@ inline void isr_usi (void)
 			I2C_State = state_rx_command;
 		}
 		else
+		{
+			sda_input();
 			I2C_State = state_idle;
+		}
 		break;
 
 		/* Prepare to receive first data byte */
@@ -225,6 +229,9 @@ inline void isr_usi (void)
 
 		I2C_State = state_idle;
 		break;
+
+	default:
+		I2C_State = state_idle;
 	}
 
 	USICTL1 &= ~USIIFG;
