@@ -1,3 +1,6 @@
+
+
+
 #include <stdio.h>
 #include <stdint.h>
 #include "i2c-dev.h"
@@ -27,7 +30,8 @@ typedef enum
 	SETRAILS,
 	GETRAILS,
 	SENDSER,
-	ISUSB
+	ISUSB,
+	BEEGEES,
 } com;
 bool err_enable = TRUE;
 
@@ -166,6 +170,16 @@ int main( int argc, char** argv )
 	case 'u':
 		printf("%d\n", readbyte(fd, ISUSB));
 		return 0;
+	case 'q':
+		printf("break everything?\n");
+		printf("%d\n", readbyte(fd, 93));
+		break;
+
+	case 'e':
+		printf("Ah Ah Ah Ah, stayin' alive!\n");
+		printf("%d\n",setpins(fd,BEEGEES,1));
+		//sends alive packet!
+		break;
 		
 	default:
 		printf("not a recognised command go think again\n");
