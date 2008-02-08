@@ -47,36 +47,27 @@ typedef struct
 	uint8_t (*tx) ( uint8_t* buf );
 } i2c_cmd_t;
 
-/* Receive (write) functions */
-static void i2cw_motor_set( uint8_t *buf );
-
 /* Transmit (read) functions */
 static uint8_t i2cr_identity( uint8_t *buf );
 
-/* Send the motor 0 setting to the master */
-static uint8_t i2cr_motor_get0( uint8_t *buf );
+/* Receive new settings for the board outputs from the master */
+static void i2cw_output_set( uint8_t *buf );
 
-/* Send the motor 1 setting to the master */
-static uint8_t i2cr_motor_get1( uint8_t *buf );
+/* Send the current outputs to the master */
+static uint8_t i2cr_output_get( uint8_t *buf );
 
 const i2c_cmd_t cmds[] = 
 {
 	/* Send the identity to the master */
 	{ 0, NULL, i2cr_identity },
 
-	/* Read the motor setting from the master */
-	{ 2, i2cw_motor_set, NULL },
+	/* Get the new settings for the board outputs from the master */
+	{ 1, i2cw_output_set, NULL },
 
-	/* Send the motor 1 setting to the master */
-	{ 0, NULL, i2cr_motor_get0 },
+	{0,NULL,NULL},
 
-	/* Send the motor 2 setting to the master */
-	{ 0, NULL, i2cr_motor_get1 },
+	{ 0, NULL, i2cr_output_get }
 };
-
-/* Used by i2cr_motor_get0 and i2cr_motor_get1.
-   Fills the buffer with the info about motor. */
-static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor );
 
 /* The current command */
 static const i2c_cmd_t *cmd = NULL;
@@ -224,10 +215,6 @@ void i2c_init( void )
     FLAG_OFF();
 }
 
-static void i2cw_motor_set( uint8_t *buf )
-{
-}
-
 static uint8_t i2cr_identity( uint8_t *buf )
 {
 	uint8_t i;
@@ -238,25 +225,32 @@ static uint8_t i2cr_identity( uint8_t *buf )
 	return 4;
 }
 
-static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor )
-{
-	buf[0] = 0;
-	buf[1] = 2;
-
-	return 2;
-}
-
-static uint8_t i2cr_motor_get0( uint8_t *buf )
-{
-	return i2cr_motor_get(buf, 0);
-}
-
-static uint8_t i2cr_motor_get1( uint8_t *buf )
-{
-	return i2cr_motor_get(buf, 1);
-}
-
 void i2c_reset( void )
 {
 	i2c_init();
+}
+
+static void i2cw_output_set( uint8_t *buf )
+{
+	uint8_t v;
+
+	v = (*buf) & 0x3;
+	v |= ((*buf) & 0x4)<<1;
+	v |= ((*buf) & 0x8)>>1;
+	v ^= 0xf;
+
+	P1OUT = (P1OUT & 0xf0) | v;
+}
+
+static uint8_t i2cr_output_get( uint8_t *buf )
+{
+	uint8_t b;
+
+	b = P1OUT & 0x3;
+	b |= (P1OUT & 0x4)<<1;
+	b |= (P1OUT & 0x8)>>1;
+	b ^= 0xf;
+	
+	buf[0] = b;
+	return 1;
 }
