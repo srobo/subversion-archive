@@ -27,6 +27,9 @@ static PyObject* c2py_smbuswriteword_data( PyObject *self,
 static PyObject* c2py_smbusreadword_data( PyObject *self, 
 			    PyObject *args );
 
+static PyObject* c2py_smbusreadblock_data( PyObject *self, 
+				   PyObject *args );
+
 static PyObject *I2CError;
 
 static PyMethodDef c2pyMethods[] = {
@@ -187,7 +190,7 @@ static PyObject* c2py_smbusreadblock_data( PyObject *self,
 {
     uint8_t address, command, nobytes;
     uint8_t *buf, i=0, c=0;
-    union i2c_smbus_data datablock;
+    PyObject *retval;
 
 	if (!PyArg_ParseTuple(args,"BBB", &address, &command, &nobytes)){
 	    return NULL;
@@ -204,7 +207,7 @@ static PyObject* c2py_smbusreadblock_data( PyObject *self,
         return;
     }
     
-    if(i2c_smbus_write_byte(fd, command)){
+    if(i2c_smbus_write_byte(fd, command) < 0){
         PyErr_SetString(I2CError, "Error sending block command");
         return NULL;
     }
@@ -215,8 +218,14 @@ static PyObject* c2py_smbusreadblock_data( PyObject *self,
 
     buf = malloc(nobytes+1);
 
-	if( read( fd, buf, nobytes+1 ) < nobytes+1 ){
+    if(buf == NULL){
         PyErr_SetString(I2CError, "Error allocating I2C receive buffer.");
+        return NULL;
+    }
+
+	if( read( fd, buf, nobytes+1 ) < nobytes+1 ){
+        free(buf);
+        PyErr_SetString(I2CError, "Error reading from I2C.");
         return NULL;
     }
 
@@ -224,12 +233,13 @@ static PyObject* c2py_smbusreadblock_data( PyObject *self,
 		c = crc8( c ^ buf[i] );
 
 	if( c != buf[nobytes] ){
+        printf("%2.2X %2.2X\n", c, buf[nobytes]);
         free(buf);
         PyErr_SetString(I2CError, "Checksum error.");
         return NULL;
     }
 
-    retval = Py_BuildValue("is#", datablock.byte & 0x0FF, buf, nobytes-1);
+    retval = Py_BuildValue("s#", buf, nobytes-1);
     free(buf);
     return retval;
 }
