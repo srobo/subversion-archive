@@ -19,6 +19,7 @@
 #include "i2c.h"
 #include "smbus_pec.h"
 #include "timer-b.h"
+#include "adc.h"
 
 #define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x0201
@@ -56,6 +57,9 @@ static void i2cw_output_set( uint8_t *buf );
 /* Send the current outputs to the master */
 static uint8_t i2cr_output_get( uint8_t *buf );
 
+/* Send the inputs in analogue form to the master */
+static uint8_t i2cr_input_analogue( uint8_t *buf );
+
 const i2c_cmd_t cmds[] = 
 {
 	/* Send the identity to the master */
@@ -64,9 +68,11 @@ const i2c_cmd_t cmds[] =
 	/* Get the new settings for the board outputs from the master */
 	{ 1, i2cw_output_set, NULL },
 
-	{0,NULL,NULL},
+	/* Send the inputs in analogue form to the master */
+	{ 0, NULL, i2cr_input_analogue },
 
-	{ 0, NULL, i2cr_output_get }
+	/* Send the output settings to the master */
+	{ 0, NULL, i2cr_output_get },
 };
 
 /* The current command */
@@ -253,4 +259,17 @@ static uint8_t i2cr_output_get( uint8_t *buf )
 	
 	buf[0] = b;
 	return 1;
+}
+
+static uint8_t i2cr_input_analogue( uint8_t *buf )
+{
+	uint8_t i;
+
+	for(i=0; i<8; i++)
+	{
+		buf[i*2] = (adc_buffer[i] >> 8) & 0xff;
+		buf[i*2+1] = adc_buffer[i] & 0xff;
+	}
+
+	return 16;
 }

@@ -28,8 +28,6 @@ void timer_b_init( void )
 /* FFF8 - TBIFG */
 interrupt (TIMERB1_VECTOR) timer_b_isr( void )
 {
-	uint16_t tmp = TBIV;
-
 	i2c_reset();
 	timer_b_stop();
 }
