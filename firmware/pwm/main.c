@@ -22,6 +22,17 @@ TODO-Get servo_set_pwm to return success or failure */
 #include "servo.h"
 #include "i2c-watchdog.h"
 
+#define USE_WATCHDOG 1
+
+/* ACLK, 512 counts */
+#define WATCHDOG_SETTINGS (WDTSSEL | WDTIS_2)
+
+#if (USE_WATCHDOG)
+#define watchdog_clear() do { WDTCTL = WATCHDOG_SETTINGS | WDTCNTCL | WDTPW; } while (0)
+#else
+#define watchdog_clear() do {}while(0)
+#endif
+
 /* The current servo */
 uint8_t current_servo;
 
@@ -93,6 +104,17 @@ void init(void)
 	current_servo = 0;
 	i2c_init();
 	i2c_enable();
+
+	if( USE_WATCHDOG )
+	{
+		/* Source ACLK from VLOCLK (12 KHz)*/
+		BCSCTL3 = (BCSCTL3 & ~LFXT1S_3) | LFXT1S_2;
+
+		/* Enable the WDT - Source clock from ACLK(VLOCLK) */
+		/* WDT needs resetting every 12KHz/512 = 43 ms */
+		WDTCTL = WDTPW | WATCHDOG_SETTINGS | WDTCNTCL;
+	}
+
 	eint(); //enable interrupts
 }
 
@@ -110,6 +132,7 @@ interrupt (PORT2_VECTOR) isr_port2(void)
 interrupt (TIMERA0_VECTOR) isr_TACR0(void)
 {
 	i2c_watchdog_check();
+	watchdog_clear();
 
 	current_servo = 0;
 	set_p1out(0xFE);
@@ -127,6 +150,8 @@ inline void set_p1out(uint8_t p1)
  * Will set the current servo pin low and set the next servo pin high. */
 interrupt (TIMERA1_VECTOR) isr_TAIV(void)
 { 
+	watchdog_clear();
+
 	switch( TAIV )
 	{
 	case  2: // CCR1
