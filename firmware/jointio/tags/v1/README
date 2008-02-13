@@ -1,0 +1,31 @@
+This is the firmware for the motor controllers.
+
+Builds with msp430-gcc 3.2.3, with binutils 2.16.
+
+Control states:
+ 
+With the fets arrange like so:
+
+ X T
+ Y U
+
+A B X Y T U
+0 0 1 0 0 1 Forward
+0 1 0 1 1 0 Backward
+1 0 0 1 0 1 Brake
+1 1 0 0 0 0 Off
+
+For the two different motors:
+
+0.A: P3.3
+0.B: P3.4
+
+1.A: P3.5
+1.B: P3.6
+
+Therefore the two bit words that need writing are:
+ Forward: 0
+ Backward: 1
+ Brake: 2
+ Off: 3
+ 
