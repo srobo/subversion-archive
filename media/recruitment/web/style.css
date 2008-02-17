@@ -13,10 +13,11 @@ body {background:#000;
 
 #outer
 	{position: absolute;
-	 top: 50%;
+	 top: 40%;
 	 left: 0px;
 	 width: 100%;
-	 height: 1px;}
+	 height: 1px;
+	}
 
 #inner
 	{margin-left: -250px;
@@ -29,7 +30,7 @@ body {background:#000;
 
 
 .bgtext
-		{font-size: 150px;
+		{font-size: 100px;
 		 position:absolute;
 		 top:50px;
 		 left:-110px;
@@ -47,40 +48,54 @@ body {background:#000;
 
 
 
-div#text1, div#text2, div#text3, div#text4, div#text5, div#text6, div#text7
+div#text1, div#text2, div#text3, div#text4, div#text5, div#text6, div#text7, div#img1
          {color:#222222;
 		  font-family:verdana, helvetica, sans serif;
 		  position:absolute;}
 
 div#text1 {font-size:29px;
 		top:0px;
-		left:-10px;}
+		left:-10px;
+		z-index:10;}
 
-div#text2 {font-size:60px;
+div#text2 {font-size:70px;
 		top:46px;
-		left:20px;}
+		left:-200px;
+		z-index:10;}
 
 div#text3 {font-size:35px;
-		top:60px;
-		left:400px;}
+		top:100px;
+		left:400px;
+		z-index:10;}
 
 div#text4 {font-size:50px;
-		top:200px;
-		left:45px;}
+		top:290px;
+		left:-70px;
+		z-index:10;}
 
 div#text5 {font-size:39px;
-		top:200px;
-		left:260px;}
+		top:250px;
+		left:350px;
+		z-index:10;}
 
 div#text6 {font-size:45px;
 		top:-25px;
-		left:300px;}
+		left:300px;
+		z-index:10;}
 
 div#text7 {font-size:28px;
-		top:354px;
-		left:330px;}
+		top:370px;
+		left:130px;
+		z-index:10;}
 
-
+div#img1 {font-size:28px;
+		top:120px;
+		left:60px;
+		z-index: 1;
+		text-align:centre;
+		width:250px;
+		height:250px;
+		overflow:hidden;}
 
 
 
