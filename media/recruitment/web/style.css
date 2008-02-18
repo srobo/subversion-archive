@@ -2,14 +2,7 @@
 
 
 body {background:#000;
-      margin:0;
-	  scrollbar-3dlight-color:#222;
-      scrollbar-arrow-color:#FFF;
-      scrollbar-base-color:#000;
-      scrollbar-darkshadow-color:#222;
-      scrollbar-face-color:#000;
-      scrollbar-highlight-color:#000;
-      scrollbar-shadow-color:#000}
+      margin:0;}
 
 #outer
 	{position: absolute;
@@ -25,7 +18,7 @@ body {background:#000;
 	 top: -150px;
 	 left: 50%;
 	 width: 700px;
-	 height: 300px}
+	 height: 400px}
 
 
 
@@ -153,7 +146,7 @@ div#content {position:absolute;
 			 top:-50px;
 			 left:-70px;
 			 width:635px;
-			 height: 400px;
+			 height: 500px;
 			 overflow: auto;
 			 font-family: verdana, helvetica, sans serif;
 			 font-size: 13px;
@@ -198,12 +191,12 @@ div#urltext {font-family:verdana, helvetica, sans serif;
 
 
 div#urltext, div#inner div#content a:link, div#inner div#content a:visited, div#inner a:hover, div#inner a:hover span
-   			 {color:#3250B0}
+   			 {color:#3BB9FF}
 
 div#content div#titlebar {border: 1px solid #222222;
 				background: #000;
 				font-weight: normal;
-				color:  #3250B0;}
+				color:  #3BB9FF;}
 
 div#content {margin-left:0;
 			padding-right:8px;}
@@ -212,8 +205,8 @@ div#content {margin-left:0;
 
 .titleblock {font-family:verdana, helvetica, sans serif;
 				font-size:12px;
-				color:#3250B0;
-				font-weight:;
+				color:#3BB9FF;
+				font-weight:bold;
 				margin-right:6px;
 				margin-top:10px;
 				margin-bottom:10px;
@@ -221,9 +214,29 @@ div#content {margin-left:0;
 				border:1px solid #222;
 				padding:4px}
 
-.titleblock span {color:#3250B0}
+.titleblock span {color:#3BB9FF}
 
 #urltext a:link {color:#444}
 #urltext a:visited {color:#444}
 #urltext a:hover {color:#444}
 #urltext a:active {color:#444}
+
+/* ---- chris edits: -----*/
+
+.thumb {
+	border: 2px solid #3BB9FF; 
+	width: 160px; 
+	overflow: hidden; 
+	text-align: center; 
+	float: left;
+	margin: 5px 20px 5px 20px;
+}
+img.thumbpic{
+	width: 150px; 
+	margin: 5px; 
+	display:inline;
+}
+a img{
+	border: 0px;
+	text-decoration: none;
+}
