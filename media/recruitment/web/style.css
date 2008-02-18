@@ -89,13 +89,14 @@ div#text7 {font-size:28px;
 		z-index:10;}
 
 div#img1 {font-size:28px;
-		top:120px;
-		left:60px;
+		top:20px;
+		left:-10px;
 		z-index: 1;
 		text-align:centre;
-		width:250px;
-		height:250px;
-		overflow:hidden;}
+		width:400px;
+		height:400px;
+		overflow:hidden;
+		background-image:URL("images/bgfill.png");}
 
 
 
@@ -128,8 +129,7 @@ div#img1 {font-size:28px;
 						width:}
 
 div#inner a:hover, div#inner2 a:hover
-				  {background: none;
-				   cursor:crosshair;}
+				  {background: none;}
 
 div#inner a span {display: none;}
 
