@@ -85,7 +85,7 @@ div#img1 {font-size:28px;
 		top:20px;
 		left:-10px;
 		z-index: 1;
-		text-align:centre;
+		text-align:center;
 		width:400px;
 		height:400px;
 		overflow:hidden;
@@ -152,7 +152,8 @@ div#content {position:absolute;
 			 font-size: 13px;
 			 color:white;
 			 text-align:justify;
-			 margin:3px;}
+			 margin:3px;
+			 }
 
 div#inner div#content a:hover {text-decoration:underline;}
 
@@ -170,7 +171,7 @@ div#close, div#top
 
 div#top {position:relative;
 		   left:573px;
-		   top:319px}
+		   top:419px}
 
 div#close {position:relative;
 		   left:573px;
@@ -199,7 +200,7 @@ div#content div#titlebar {border: 1px solid #222222;
 				color:  #3BB9FF;}
 
 div#content {margin-left:0;
-			padding-right:8px;}
+		padding-right:8px;}
 
 
 
@@ -212,7 +213,8 @@ div#content {margin-left:0;
 				margin-bottom:10px;
 				margin-left:2px;
 				border:1px solid #222;
-				padding:4px}
+				padding:4px;
+				clear: left;}
 
 .titleblock span {color:#3BB9FF}
 
@@ -239,4 +241,30 @@ img.thumbpic{
 a img{
 	border: 0px;
 	text-decoration: none;
+}
+div#content p.fix{
+	width: 100%;
+	height:auto;
+	margin:0px;
+	border:0px;
+	padding:0px;
+	overflow:visible;
+	display: block;
+	clear: left;
+		}
+.form{
+	width: 50%;
+	height: 20px;
+	background-color: #3BB9FF;
+	border: 0px;
+	font-size: 15px;
+	margin: 5px;
+}
+.button{
+	width: 25%;
+	height: 20px;
+	background-color: #FFFFFF;
+	border: 0px;
+	font-size: 15px;
+	margin: 5px;
 }
