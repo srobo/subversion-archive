@@ -94,32 +94,25 @@ div#img1 {font-size:28px;
 
 
  div#text1 a:hover span {top: -3px;
-						left: 0px;
-						width:}
+						left: 0px;}
 
  div#text2 a:hover span {top: -10px;
-						left: 0px;
-						width:}
+						left: 0px;}
 
  div#text3 a:hover span {top: -4px;
-						left: 0px;
-						width:}
+						left: 0px;}
 
  div#text4 a:hover span {top: 0px;
-						left: 0px;
-						width:}
+						left: 0px;}
 
  div#text5 a:hover span {top: 0px;
-						left: 0px;
-						width:}
+						left: 0px;}
 
  div#text6 a:hover span {top: -4px;
-						left: 0px;
-						width:}
+						left: 0px;}
 
  div#text7 a:hover span {top: -4px;
-						left: 0px;
-						width:}
+						left: 0px;}
 
 div#inner a:hover, div#inner2 a:hover
 				  {background: none;}
