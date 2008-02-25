@@ -279,7 +279,7 @@ a#index_SR_link:active, a#index_SR_link:hover, a#index_SR_link:visited:hover	{
 	text-align: right;
 	padding-right: 8px;
 	}
-#contact_tbl .text_in	{
+#contact_tbl .form	{
 	width: 401px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	margin-left: 1px;
@@ -288,6 +288,10 @@ a#index_SR_link:active, a#index_SR_link:hover, a#index_SR_link:visited:hover	{
 	width: 160px;
 	margin: 2px 0 0 3px;
 	line-height: 1.6em;
-	padding: 0;
+	padding: 1px;
+	height: auto;
 	font-family: Tahoma, sans-serif;
+	}
+#message	{
+	height: 130px;
 	}

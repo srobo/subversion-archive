@@ -55,7 +55,12 @@ Deep, version 1.5 created on 17/10/04 for OSWD.org ... DO NOT REMOVE this notice
 <body>
 <?php if($page_n == "index") { ?>
 <a href="http://www.studentrobotics.org" title="See our main site" id="index_SR_link"></a>
-<?php } //end if index ?>
+<?php } //end if index
+if($success == 1) { ?>
+<div class="titleblock" style="right: 30px; top: 10px; position: absolute; font-size: 16px;">
+Your email was sent successfully.
+</div>
+<?php } //end if success ?>
 <div id="outer">
 	<div id="inner">
 <?php if($page_n != "index") { ?>
