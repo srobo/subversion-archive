@@ -7,6 +7,9 @@ if (!empty($_GET))
 if (!empty($_POST))
 	extract($_POST, EXTR_OVERWRITE);
 
+if(isset($contact_join_submit))
+	$page	= "error";
+
 $page_n		= $page;
 $page_filename	= "$page.inc.htm";
 
