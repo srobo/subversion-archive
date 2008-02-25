@@ -65,7 +65,11 @@ Deep, version 1.5 created on 17/10/04 for OSWD.org ... DO NOT REMOVE this notice
 		<div id="content">
 <?php } //end if not index
 
-include $page_filename;
+if(is_readable($page_filename))
+	include $page_filename;
+else
+	echo "<div class=\"titleblock\">Unknown Page</div>\n<p class=\"fix\" >\nThis page does not exist yet."
+	." If you think it should please\n<a href=\"mailto:webmaster@studentrobotics.org?subject=$page%20page\" title=\"eMail them\">email</a>\nthe webmaster.</p>";
 
 if($page_n != "index") { ?>
 		</div><!-- end content -->
