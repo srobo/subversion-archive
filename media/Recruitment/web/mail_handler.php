@@ -32,5 +32,5 @@ $debug_info	.= "\$to=$to\n<br />\$subject=$subject\n<br />\$message=$message\n<b
 if(isset($error) || $debug)
 	include "index.php";
 else
-	header("Location: ?success=1");
+	header("Location: ./?success=1");
 ?>
