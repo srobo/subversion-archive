@@ -91,8 +91,8 @@
      height="1052.3622px"
      inkscape:window-width="1280"
      inkscape:window-height="975"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4" />
+     inkscape:window-x="0"
+     inkscape:window-y="22" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -462,18 +462,18 @@
     <text
        xml:space="preserve"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
-       x="-295.74524"
-       y="368.2048"
+       x="-294.38559"
+       y="351.8891"
        id="text12074"
        sodipodi:linespacing="125%"
        transform="matrix(0,-1,1,0,0,0)"><tspan
          sodipodi:role="line"
-         x="-295.74524"
-         y="368.2048"
-         id="tspan12078">Digital In</tspan></text>
+         x="-294.38559"
+         y="351.8891"
+         id="tspan12078">Analogue \ Digital In</tspan></text>
     <path
        id="path12082"
-       d="M 361.68155,389.22009 L 361.68155,342.56709"
+       d="M 361.64751,339.54753 L 361.64751,386.20053"
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.54330709, 3.54330709;stroke-dashoffset:0;stroke-opacity:1" />
     <path
        id="path12084"
