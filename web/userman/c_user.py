@@ -12,6 +12,7 @@ class user:
      - groups - Display a list of groups a user is in
      - auto - Create, set a random password, and email the new user
      - passwd - Set the user password
+     - rand_pass - Set the user password randomly.
      """
 
     def __init__(self, args):
@@ -115,7 +116,7 @@ Usage:
             print u
 
     def auto(self, args):
-        """Automate user creation: ***** INCOMPLETE ****
+        """Automate user creation:
   * Create the new user
   * Set a random password
   * Email them the new password
@@ -140,7 +141,7 @@ Usage:
         if not u.save():
             return False
 
-        mailer.email_pass( u, u.init_passwd, getpass.getpass("SMTP Password:") )
+        mailer.email_pass( u, u.init_passwd )
         print "User '%s' created and mailed." % (args[0])
         
     def passwd(self,args):
@@ -185,12 +186,20 @@ Usage:
         u.set_passwd( new = new_passwd )
 
         msg = """Hi %s,
-Your new student robotics password is %s
+Your student robotics password has been changed.  Your login details
+are now:
+
+  Username: %s
+  Password: %s
+
+You can change your password at:
+
+http://www.studentrobotics.org/passwd
 
 Thanks,
 
 The Student Robotics Team
-""" % (u.cname,new_passwd)
+""" % (u.cname,uname,new_passwd)
 
         mailer.email( mailer.fromaddr,
                       u.email,

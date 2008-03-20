@@ -19,9 +19,16 @@ def set_psource( fn ):
     global psource
     psource = fn
 
+the_pass = None
+def get_pass():
+    global the_pass
+    if the_pass == None:
+        the_pass = psource()
+    return the_pass
+
 def email( fromaddr, toaddr, subject, msg, smtp_pass = None ):
     if smtp_pass == None:
-        smtp_pass = psource()
+        smtp_pass = get_pass()
 
     msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s" % (fromaddr, toaddr, subject, msg)
 
