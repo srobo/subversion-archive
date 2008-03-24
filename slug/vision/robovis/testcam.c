@@ -12,8 +12,13 @@
 #define DEBUG 0
 #define ERROR 1
 
+//#define USEFILE
+#define FILENAME "out.jpg"
+
 //#define DEBUGMODE
 //#define DEBUGDISPLAY
+
+#define ADAPTIVESATTHRESH
 
 const unsigned char DEFAULTSATCUTOFF = 30;
 const unsigned int MINMASS = 200;
@@ -26,8 +31,13 @@ const unsigned char MINWHITEWIDTH = 2;
 const unsigned char SATBINS = 100;
 const unsigned int HUEBINS = 180;
 
-const unsigned int CAMWIDTH = 352;
-const unsigned int CAMHEIGHT = 288;
+const unsigned int CAMWIDTH = 320;
+const unsigned int CAMHEIGHT = 240;
+
+
+const unsigned int SATEDGE = 6;
+const unsigned int DILATE = 6;
+const unsigned int ERODE = 8;
 
 typedef struct peak {
     unsigned int start;
@@ -293,7 +303,9 @@ CvHistogram *allo_hist(unsigned char dimensions, int *bins, float **ranges){
 
 
 int main(int argc, char **argv){
+#ifndef USEFILE
     CvCapture *capture = NULL;
+#endif
     IplImage *frame = NULL, *hsv, *hue, *sat, *val,
              *satthresh, *huemask, *hue2mask, *comthresh, *tmpmask;
 #ifdef DEBUGDISPLAY
@@ -328,10 +340,15 @@ int main(int argc, char **argv){
     cvNamedWindow("filled", CV_WINDOW_AUTOSIZE);
 #endif
 
-    capture = get_camera();
     
     //Get a frame to find the image size
+#ifdef USEFILE
+    frame = cvLoadImage(FILENAME, CV_LOAD_IMAGE_COLOR);
+#else
+    capture = get_camera();
     frame = get_frame(capture);
+#endif
+
     framesize = cvGetSize(frame);
 #ifdef DEBUGMODE
     printf("Framesize %dx%d.\n", framesize.width, framesize.height);
@@ -357,10 +374,19 @@ int main(int argc, char **argv){
     huehist = allo_hist(1, huehistbins, h_ranges2);
 
     while (1){
+#ifndef USEFILE
+    #ifndef DEBUGDISPLAY
 	    wait_trigger();
+    #endif
+#endif
         
         srlog(DEBUG, "Grabbing frame");
+#ifdef USEFILE
+        frame = cvLoadImage(FILENAME, CV_LOAD_IMAGE_COLOR);
+#else
         frame = get_frame(capture);
+#endif
+
 #ifdef DEBUGDISPLAY
         cvShowImage("testcam", frame);
 #endif
@@ -380,10 +406,14 @@ int main(int argc, char **argv){
 #endif
         
         srlog(DEBUG, "Generating mask of > minsat pixels");
-        //huemask used temporarily
+#ifdef ADAPTIVESATTHRESH
+        cvAdaptiveThreshold(sat, satthresh, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY_INV, 5, SATEDGE);
+#else
         cvThreshold(sat, satthresh, minsat, 255, CV_THRESH_BINARY);
-        cvErode(satthresh, huemask, NULL, 2);
-        cvDilate(huemask, satthresh, NULL, 4);
+#endif
+        //huemask used temporarily
+        cvDilate(satthresh, huemask, NULL, DILATE);
+        cvErode(huemask, satthresh, NULL, ERODE);
 
 #ifdef DEBUGDISPLAY
         cvShowImage("satthresh", satthresh);
@@ -443,8 +473,10 @@ int main(int argc, char **argv){
                         curblob.mass = area;
                         curblob.colour = (tmppeak->end + tmppeak->start) / 2;
 
-                        fprintf(stdout, "%d,%d,%d,%d\n", curblob.centrex,
-                                                                    curblob.centrey,
+                        fprintf(stdout, "%d,%d,%d,%d,%d,%d\n",    outline.x,
+                                                                    outline.y,
+                                                                    outline.width,
+                                                                    outline.height,
                                                                     curblob.mass,
                                                                     curblob.colour);
 #ifdef DEBUGDISPLAY

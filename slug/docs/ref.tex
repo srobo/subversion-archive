@@ -40,14 +40,22 @@ def main(corner, colour, game):
 \end{verbatim}
 
 When the robot is started, this function will be called.
+\begin{description}
+\item[corner]This is a number from 0 to 3 that identifies the corner the robot
+starts in.  The number is the colour number of that corner.
+\item[colour]The colour of the tokens that the robot is looking for.
+\item[game]The game being played. 0 for collect any token, 1 for collecting
+only tokens of a specific colour.
+\end{description}
 \section{Yielding control and interrupts}
 Once the main function is called, the algorithm has control of the robot.  The
 algorithm must \texttt{yield} control of the robot once it has
 processed any incoming data, and configured any outputs accordingly.
 The \texttt{yield} command passes control of the robot over to the
-Student Robotics environment which will pass control back to the instruction
-after the \texttt{yield} statement.  When control is passed back to the
-algorithm the \texttt{event} variable is set to contain information
+Student Robotics environment. When an event occurs, the environment will pass
+control back to the algorithm at the instruction after the \texttt{yield}
+statement.  When control is passed back to the
+algorithm the \texttt{event} variable has been set to contain information
 about the event that just occurred.
 
 \subsection{Using \texttt{yield}}

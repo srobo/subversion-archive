@@ -12,7 +12,7 @@ class BGDownloader(threading.Thread):
 
     def run(self):
         logging.debug("Starting download")
-        theurl = 'ide.studentrobotics.org/checkout'
+        theurl = 'ide.studentrobotics.org/checkout?simulator=True&team=20'
         protocol = 'http://'
 
         try:

@@ -1,7 +1,7 @@
 CBFLAGS = `pkg-config --cflags blobslib`
 LDBFLAGS = `pkg-config --libs blobslib`
 CFLAGS ?= `pkg-config --cflags opencv` -Wall
-LDFLAGS ?= `pkg-config --libs opencv`
+LDFLAGS += `pkg-config --libs opencv`
 
 PY_CFLAGS ?= /usr/include/python2.4
 
@@ -18,6 +18,12 @@ dispcam: dispcam.cpp
 	$(CXX) -ggdb  -o dispcam $(CBFLAGS) dispcam.cpp $(LDBFLAGS)
 
 testcam: testcam.c
+	$(CC) -ggdb -o $@ $(CFLAGS) $< $(LDFLAGS)
+
+satthresh: satthresh.c
+	$(CC) -ggdb -o $@ $(CFLAGS) $< $(LDFLAGS)
+
+testhough: testhough.c
 	$(CC) -ggdb -o $@ $(CFLAGS) $< $(LDFLAGS)
 
 .PHONY: clean

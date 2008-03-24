@@ -99,9 +99,28 @@ class SourceLoader():
                     return
                 except:
                     logging.debug("Failed to import robot code")
+                    import traceback
+                    from StringIO import StringIO
+                    logging.debug(sys.exc_info()[0])
+                    logging.debug(sys.exc_info()[1])
+                    s = StringIO()
+                    traceback.print_exc(file=s)
+                    s.pos = 0
+                    logging.debug(s.read())
+
                     d = gtk.Dialog("Error", None, gtk.DIALOG_MODAL,
                             (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
                     l = gtk.Label("Could not import robot code from Student Robotics")
+                    l.show()
+                    d.vbox.pack_start(l, False, True, 0)
+                    l = gtk.Label(sys.exc_info()[0])
+                    l.show()
+                    d.vbox.pack_start(l, False, True, 0)
+                    l = gtk.Label(sys.exc_info()[1])
+                    l.show()
+                    d.vbox.pack_start(l, False, True, 0)
+                    s.pos = 0
+                    l = gtk.Label(s.read())
                     l.show()
                     d.vbox.pack_start(l, False, True, 0)
                     d.connect("response", lambda x, y: d.destroy())

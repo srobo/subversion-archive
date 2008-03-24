@@ -1,0 +1,4 @@
+export PATH=/home/stephen/ecssr/slug/init-br/build_armeb/staging_dir/bin:$PATH
+export CC="armeb-linux-gcc"
+export CFLAGS="-I /home/stephen/ecssr/slug/init-br/build_armeb/staging_dir/usr/local/include"
+export LDFLAGS="-L /home/stephen/ecssr/slug/init-br/build_armeb/staging_dir/usr/local/lib"
