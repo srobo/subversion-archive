@@ -40,6 +40,10 @@ echo "Writing filesystem..."
 dd if=rootfs.armeb.ext2 of=${dev}2
 echo "Resizing filesystem..."
 resize2fs ${dev}2
+echo "Setting maximum mount count to infinity and beyond"
+tune2fs -c 0 ${dev}2
+
+
 echo "Formatting user partition..."
 mkfs.vfat -F 32 ${dev}1
 
