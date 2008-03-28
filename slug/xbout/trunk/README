@@ -1,0 +1,10 @@
+xbout receives start/stop signals over the XBee radio link and outputs
+strings to stdout when they arrive.
+
+Events:
+ 1) Start events
+    "start: DATA"
+    Where DATA is an arbitrary string. (To be used to specify team colour etc)
+ 2) Stop event
+    "stop"
+
