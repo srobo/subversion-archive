@@ -4,12 +4,12 @@
 
 enum
 {
-	/* Ping command */
-	CMD_PING,		
 	/* Start */
 	CMD_START,
 	/* Stop */
 	CMD_STOP,
+	/* Ping command */
+	CMD_PING,		
 	/* Ping with response */
 	CMD_PING_RESP
 };
@@ -60,9 +60,6 @@ static void rx_frame( uint8_t *data, uint16_t len, xbee_conn_info_t *info )
 
 	switch( data[0] )
 	{
-	case CMD_PING:
-		break;
-
 	case CMD_START:
 	{
 		uint16_t pos;
@@ -76,6 +73,10 @@ static void rx_frame( uint8_t *data, uint16_t len, xbee_conn_info_t *info )
 
 	case CMD_STOP:
 		printf("STOP\n");
+		break;
+
+	case CMD_PING:
+		/* Ignore pings */
 		break;
 
 	case CMD_PING_RESP:
