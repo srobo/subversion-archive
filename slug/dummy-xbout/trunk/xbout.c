@@ -3,11 +3,9 @@
 
 int main( int argc, char** argv )
 {
+	printf( "start: game0 red\n" );
 	while(1)
-	{
-		printf( "start: \n" );
 		sleep(1);
-	}
 
 	return 0;
 }
