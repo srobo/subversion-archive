@@ -2,6 +2,8 @@ body
 {
  background-color: rgb(223,219,215);
  margin: 0;
+ font-family: sans;
+ color: rgb(13,31,97);
 }
 
 #header
@@ -9,13 +11,55 @@ body
  width: 100%;
  text-align: center;
 }
-#header img
-{
- vertical-align: middle;
+
+#header table {
+ width: 100%;
 }
 
-.page { display:none; }
+#logocell {
+ text-align: center;
+ width: 150px;
+}
+#logocell img
+{
+ padding: 10px;
+}
+
+.page, .title { display:none; }
 
 .realpage {
+ width: 100%;
+}
 
+#time {
+ font-size: 200%;
+ width: 6ex;
+ padding-right: 10px;
+ text-align: right;
+}
+
+#titlecell {
+ font-size: 200%;
+ text-align: center;
+}
+
+/* Styles of things within pages */
+.realpage {
+
+}
+
+.realpage table {
+ border-style: none;
+ border-spacing: 0;
+ width: 100%;
+}
+
+.realpage td, .realpage th {
+ border-style: solid;
+ border-width: 2px;
+ text-align: center;
+}
+
+.realpage table th {
+ font-weight: bold;
 }
