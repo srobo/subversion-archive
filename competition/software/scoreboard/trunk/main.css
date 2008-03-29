@@ -1,0 +1,21 @@
+body
+{
+ background-color: rgb(223,219,215);
+ margin: 0;
+}
+
+#header
+{
+ width: 100%;
+ text-align: center;
+}
+#header img
+{
+ vertical-align: middle;
+}
+
+.page { display:none; }
+
+.realpage {
+
+}
