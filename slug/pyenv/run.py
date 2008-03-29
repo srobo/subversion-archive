@@ -13,7 +13,7 @@ try:
     sys.path.insert(0, loc)
     print "%s added to python path." % loc
 
-    import dio, motor, pwm, vis, c2py
+    import dio, motor, pwm, vis, c2py, power
     print "Peripheral libraries imported"
     
     import robot
@@ -21,6 +21,9 @@ try:
 
     import trampoline
     print "Trampoline imported"
+
+    power.clearwatchdog()
+    print "Watchdog cleared"
     
     t = trampoline.Trampoline()
     print "Trampoline initialised"

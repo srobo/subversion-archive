@@ -13,7 +13,7 @@ CMD_SET_RAILS = 0x05
 CMD_GET_RAILS = 0x06
 CMD_SEND_CHAR = 0x07
 CMD_GET_USB = 0x08
-# 0x09 is reserved for alive packet
+CMD_DISABLE_WATCHDOG = 0x09
 
 def checkpower():
     try:
@@ -51,3 +51,6 @@ def getusbconnected():
         return True
     else:
         return False
+
+def clearwatchdog():
+    setbyte(ADDRESS, CMD_DISABLE_WATCHDOG, 1)
