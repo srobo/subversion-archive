@@ -1,4 +1,5 @@
 import c2py
+from repeat import *
 
 ADDRESS = 0x3f
 
@@ -14,81 +15,39 @@ CMD_SEND_CHAR = 0x07
 CMD_GET_USB = 0x08
 # 0x09 is reserved for alive packet
 
-MAXERR = 10
-
-def getbyte(cmd):
-    count = 0
-    while count < MAXERR:
-        try:
-            byte = c2py.readbytedata( ADDRESS, cmd, 1 )
-            break
-        except c2py.I2CError:
-            count = count + 1
-    
-    if count == MAXERR:
-        raise c2py.I2CError
-
-    return byte
-
-def setbyte(cmd, val):
-    count = 0
-    while count < MAXERR:
-        try:
-            c2py.writebytedata(ADDRESS, cmd, val, 1)
-            break
-        except c2py.I2CError:
-            count = count + 1
-
-    if count == MAXERR:
-        raise c2py.I2CError
-
-def getword(cmd):
-    count = 0
-    while count < MAXERR:
-        try:
-            val = c2py.readworddata(ADDRESS, cmd, 1)
-            break
-        except c2py.I2CError:
-            count = count + 1
-
-    if count == MAXERR:
-        raise c2py.I2CError
-    
-    return val
-
 def checkpower():
     try:
-        getfirmware()
+        getfirmware(ADDRESS)
         return True
     except c2py.I2CError:
         return False
 
 def getfirmware():
-    return getword(CMD_GET_FIRMWARE)
+    return getword(ADDRESS, CMD_GET_FIRMWARE)
 
 def setleds(v):
-    setbyte(CMD_WRITE_LEDS, v & 0x0F)
+    setbyte(ADDRESS, CMD_WRITE_LEDS, v & 0x0F)
 
 def getbattery():
-    return getword(CMD_GET_BATTERY) & 0x3FF
+    return getword(ADDRESS, CMD_GET_BATTERY) & 0x3FF
 
 def getcurrent():
-    return getword(CMD_GET_CURRENT) & 0x3FF
+    return getword(ADDRESS, CMD_GET_CURRENT) & 0x3FF
 
 def getswitches():
-    return getbyte(CMD_GET_SWITCHES)
+    return getbyte(ADDRESS, CMD_GET_SWITCHES)
 
 def setrails(val):
-    setbyte(CMD_SET_RAILS, val)
+    setbyte(ADDRESS, CMD_SET_RAILS, val)
 
 def getrails():
-    return getbyte(CMD_GET_RAILS)
+    return getbyte(ADDRESS, CMD_GET_RAILS)
 
 def sendchar(char):
-    setbyte(CMD_SEND_CHAR, char)
+    setbyte(ADDRESS, CMD_SEND_CHAR, char)
 
 def getusbconnected():
-    if getbyte(CMD_GET_USB) == 1:
+    if getbyte(ADDRESS, CMD_GET_USB) == 1:
         return True
     else:
         return False

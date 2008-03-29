@@ -12,10 +12,10 @@ import logging
 vision = vispoll()
 vision.next()
 
-from dio import *
-if checkdio():
-    dio = diopoll()
-    dio.next()
+from jointio import *
+if checkjointio():
+    io = iopoll()
+    io.next()
 else:
     logging.error("DIO Failed")
-    dio = None
+    io = None

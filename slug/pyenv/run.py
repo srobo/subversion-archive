@@ -3,7 +3,7 @@ import sys, logging, os, os.path
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s',
-                    stream = sys.stdout)
+                    #stream = sys.stdout)
 
 os.putenv("LD_LIBRARY_PATH", "/usr/local/lib")
 
