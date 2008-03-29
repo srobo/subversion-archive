@@ -1,23 +1,27 @@
 var slides = new Array();
-var slideData = new Array();
 var curslide;
 var sTimeout;
 
+// Starts everything off
 function startShow()
 {
 	// Grab all the slide divs
 	var divs = document.getElementsByTagName("div");
 
 	for (var i=0; i<divs.length; i++) {
-		if( divs[i].className == "page" )
-			slides.push( divs[i] );
+		if( divs[i].className == "page" ) {
+			var s = { div: divs[i] };
+			slides.push(s);
+		}
 	}
 
 	// Make all slides invisible and switch them to the right class
 	for( var i=0; i<slides.length; i++ ) {
-		slides[i].style.display = "none";
-		slides[i].className = "realpage";
-	}		
+		slides[i].div.style.display = "none";
+		slides[i].div.className = "realpage";
+
+		loadSlide(i);
+	}
 
 	curslide = 0;
 	showSlide(curslide);	
@@ -31,10 +35,10 @@ function showSlide( nSlide )
 {
 	// Hide the old
 	for(var i=0; i<slides.length; i++)
-		slides[i].style.display = "none";
+		slides[i].div.style.display = "none";
 
 	// Show the new
-	slides[nSlide].style.display = "";
+	slides[nSlide].div.style.display = "";
 
 	// Update the title
 	tcell = document.getElementById("titlecell");
@@ -45,15 +49,23 @@ function showSlide( nSlide )
 		// Skip the current slide
 		if( i==nSlide ) continue;
 		
-		try {
-			fname = slides[i].id + "Up";
-			if( slides[i].id != "" )
-				eval( fname + "();" );
-		} 
-		catch(err) {}
+		loadSlide(i);
 	}
 }
 
+// Call the update function for slide number n
+function loadSlide(n)
+{
+	try {
+		fname = slides[n].div.id + "Up";
+		if( slides[n].div.id != "" )
+			eval( fname + "(slides[" + n + "]);" );
+	}
+	catch(err) {}
+}
+
+
+// Advance onto the next slide
 function changeSlide()
 {
 	curslide = (curslide + 1) % slides.length;
@@ -62,11 +74,13 @@ function changeSlide()
 	startTimer();
 }
 
+// Start the timer to the next slide
 function startTimer()
 {
-	sTimeOut = setTimeout("changeSlide();", 15000);
+	sTimeOut = setTimeout("changeSlide();", 10000);
 }
 
+// Update the clock
 function updateTime()
 {
 	cell = document.getElementById("time");
@@ -88,18 +102,60 @@ function updateTime()
 // Find slide number n's title
 function slideTitle(n)
 {
-	children = slides[n].childNodes;
+	children = slides[n].div.childNodes;
 	for( var i=0; i < children.length; i++ ) {
 		if( children[i].className == "title" )
 			return children[i].innerHTML;
 	}
 }
 
-
 // *** Slide update functions ***
 function upcoming_matchesUp(slide)
 {
-	
+	d = MochiKit.Async.doSimpleXMLHttpRequest( "./info/upcoming.php" );
+	d.addCallback(upcoming_matches_cb,slide);
+	d.addErrback(upcoming_matches_err);
+}
+
+function upcoming_matches_cb(slide,res)
+{
+	var resList = MochiKit.Async.evalJSONRequest(res);
+
+	// Create the rows
+	rows = [];
+	for (var i in resList.matches) {
+		var match = resList.matches[i];
+		var r = [];
+
+		r.push( match.number );
+		r.push( match.time );
+		
+		for( var j = 0; j < 4; j++ )
+			r.push( match.teams[j] );
+		
+		rows.push(r);
+	}
+
+	var mt = document.getElementById("matchtable");
+
+	row_display = function(row) {
+		return TR(null, map(partial(TD, null), row));
+	}
+
+	var t = TABLE({"id":"matchtable"},
+		      THEAD(null,
+			    TR( null,
+				[ map(partial(TD,null), ["Match", "Time"]),
+				  TD( {"colspan":4},
+				      "Competitors" ) ] ) ),
+		      TBODY(null,
+			    map(row_display, rows)) );
+
+	MochiKit.DOM.swapDOM(mt, t);
+}
+
+function upcoming_matches_err()
+{
 }
 
 function scoresUp(slide)

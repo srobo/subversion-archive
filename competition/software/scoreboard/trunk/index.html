@@ -2,7 +2,8 @@
 <head>
 <title>Student Robotics Scoreboard</title>
 <link rel="stylesheet" type="text/css" href="main.css" />
-<script type="text/javascript"  src="main.js" />
+<script type="text/javascript" src="MochiKit/MochiKit.js" />
+<script type="text/javascript" src="main.js" />
 </head>
 <body onload="startShow()" >
 
@@ -18,39 +19,31 @@
 
 <div class="page" id="upcoming_matches">
 <span class="title">Upcoming Matches</span>
-<center>
-<table>
-<tr>
-  <th>Match</th>
-  <th>Time</th>
-  <th colspan="4">Competitors</th>
-</tr>
-
-<tr>
-  <td>1</td>
-  <td>10:30</td>
-  <td>3</td><td>5</td><td>6</td><td>9</td>
-</tr>
-
-<tr>
-  <td>2</td>
-  <td>10:40</td>
-  <td>1</td><td>8</td><td>2</td><td>9</td>
-</tr>
-
-<tr>
-  <td>3</td>
-  <td>10:40</td>
-  <td>1</td><td>8</td><td>2</td><td>9</td>
-</tr>
-
-</table>
+<center id="matchtable">
+Loading...
 </center>
 </div>
 
 <div class="page" id="scores">
 <span class="title">Current Scores</span>
 Page 2
+</div>
+
+<div class="page" id="schedule">
+<span class="title">Schedule</span>
+<center>
+<table>
+<tr><td>09:00</td><td>Doors open</td></tr>
+<tr><td>10:00</td><td>Check In</td></tr>
+<tr><td>10:15</td><td>Introduction</td></tr>
+<tr><td>10:30</td><td>Competition Start</td></tr>
+<tr><td>12:30</td><td>Lunch</td></tr>
+<tr><td>13:30</td><td>Competition resumes</td></tr>
+<tr><td>16:30</td><td>Prize Giving</td></tr>
+<tr><td>17:00</td><td>Finish</td></tr>
+</table>
+</center>
+
 </div>
 
 </body>
