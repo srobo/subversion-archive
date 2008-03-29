@@ -13,7 +13,7 @@ try:
     sys.path.insert(0, loc)
     print "%s added to python path." % loc
 
-    import dio, motor, pwm, vis, c2py, power
+    import jointio, motor, pwm, vis, c2py, power
     print "Peripheral libraries imported"
     
     import robot
