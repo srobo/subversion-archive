@@ -32,14 +32,14 @@ body
 }
 
 #time {
- font-size: 200%;
+ font-size: 180%;
  width: 6ex;
  padding-right: 10px;
  text-align: right;
 }
 
 #titlecell {
- font-size: 200%;
+ font-size: 180%;
  text-align: center;
 }
 
@@ -48,23 +48,52 @@ body
 
 }
 
-
 /* Upcoming Matches */
-
 #upcoming_matches table {
  border-style: none;
- border-spacing: 0;
- width: 100%;
+ border-spacing: 0px;
 }
 
-#upcoming_matches td, #upcoming_matches th {
- border-style: solid;
- border-width: 2px;
+.matchNum, .matchTeam {
+ border-style: none none dotted none;
+ border-color: rgb(136,122,109);
+ text-align: center;
+}
+.matchTime {
+ border-style: none double dotted none; 
+ border-color: red rgb(13,31,97) rgb(136,122,109) black;
+ font-weight: bold;
+}
+
+.matchTime, #matchTimeHeader {
+ padding-left: 0.5em;
+ padding-right: 0.5em;
+}
+
+#matchMatchHeader, #matchTeamsHeader, #matchTimeHeader
+{
+ font-weight: bold;
+ border-style: none none double none;
+}
+
+.matchTeam { width: 3em; }
+.matchNum { width: 5em; }
+
+/* Scores */
+#scores td {
  text-align: center;
 }
 
-#upcoming_matches table th {
+#scores tr > th {
  font-weight: bold;
+ border-style: none none double none;
+ padding-left: 1em;
+ padding-right: 1em;
+}
+
+.scorePosition, .scoreTeam, .scorePoints {
+ border-style: none none dotted none;
+ border-color: rgb(136,122,109);
 }
 
 /* Schedule slide */

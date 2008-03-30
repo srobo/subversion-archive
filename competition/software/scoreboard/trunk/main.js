@@ -19,9 +19,9 @@ function startShow()
 	for( var i=0; i<slides.length; i++ ) {
 		slides[i].div.style.display = "none";
 		slides[i].div.className = "realpage";
-
-		loadSlide(i);
 	}
+
+	loadSlide(0);
 
 	curslide = 0;
 	showSlide(curslide);	
@@ -44,13 +44,9 @@ function showSlide( nSlide )
 	tcell = document.getElementById("titlecell");
 	tcell.innerHTML = slideTitle( nSlide );
 
-	// Call all other slide update routines
-	for(var i=0; i<slides.length; i++) {
-		// Skip the current slide
-		if( i==nSlide ) continue;
-		
-		loadSlide(i);
-	}
+	// Update the next slide
+	var nextSlide = (nSlide + 1) % slides.length;
+	loadSlide( nextSlide );
 }
 
 // Call the update function for slide number n
@@ -77,7 +73,7 @@ function changeSlide()
 // Start the timer to the next slide
 function startTimer()
 {
-	sTimeOut = setTimeout("changeSlide();", 10000);
+	sTimeOut = setTimeout("changeSlide();", 3000);
 }
 
 // Update the clock
@@ -127,29 +123,24 @@ function upcoming_matches_cb(slide,res)
 		var match = resList.matches[i];
 		var r = [];
 
-		r.push( match.number );
-		r.push( match.time );
+		r.push( TD({"class":"matchNum"}, match.number) );
+		r.push( TD({"class":"matchTime"}, match.time) );
 		
 		for( var j = 0; j < 4; j++ )
-			r.push( match.teams[j] );
+			r.push( TD({"class":"matchTeam"}, match.teams[j]) );
 		
-		rows.push(r);
+		rows.push(TR(null, r));
 	}
 
 	var mt = document.getElementById("matchtable");
 
-	row_display = function(row) {
-		return TR(null, map(partial(TD, null), row));
-	}
-
 	var t = TABLE({"id":"matchtable"},
 		      THEAD(null,
-			    TR( null,
-				[ map(partial(TD,null), ["Match", "Time"]),
-				  TD( {"colspan":4},
-				      "Competitors" ) ] ) ),
-		      TBODY(null,
-			    map(row_display, rows)) );
+			    TR( {"class":"header"},
+				[ TH( {"id":"matchMatchHeader"}, "Match" ),
+				  TH( {"id":"matchTimeHeader"}, "Time" ),
+				  TH( {"colspan":4, "id":"matchTeamsHeader"},  "Teams" ) ] ) ),
+		      TBODY(null,rows ) );
 
 	MochiKit.DOM.swapDOM(mt, t);
 }
@@ -160,6 +151,42 @@ function upcoming_matches_err()
 
 function scoresUp(slide)
 {
-
+	d = MochiKit.Async.doSimpleXMLHttpRequest( "./info/scores.php" );
+	d.addCallback(scores_cb,slide);
+	d.addErrback(scores_err);
 }
 
+function scores_cb(slide,res)
+{
+	var resList = MochiKit.Async.evalJSONRequest(res);
+
+	// Create the rows
+	rows = [];
+	var position = 1;
+	for (var i in resList.scores) {
+		var score = resList.scores[i];
+		var r = [];
+
+		r.push( TD({"class":"scorePosition"}, position) );
+		r.push( TD({"class":"scoreTeam"}, score.team) );
+		r.push( TD({"class":"scorePoints"}, score.points) );
+		
+		rows.push(TR(null,r));
+
+		position++;
+	}
+
+	var mt = document.getElementById("scorestable");
+
+	var t = TABLE({"id":"matchtable"},
+		      THEAD(null,
+			    TR( {"class":"header"},
+				[ map(partial(TH,null), ["Position", "Team", "Score"]) ] ) ),
+		      TBODY(null, rows) );
+
+	MochiKit.DOM.swapDOM(mt, t);
+}
+
+function scores_err()
+{
+}
