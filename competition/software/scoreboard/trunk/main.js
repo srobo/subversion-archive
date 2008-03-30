@@ -4,7 +4,7 @@ var sTimeout;
 var paused = false;
 var n = 0;
 
-var DEBUG = true;
+var DEBUG = false;
 
 // Starts everything off
 function startShow()
@@ -92,7 +92,7 @@ function changeSlide()
 // Start the timer to the next slide
 function startTimer()
 {
-	sTimeOut = setTimeout("changeSlide();", 3000);
+	sTimeOut = setTimeout("changeSlide();", 15000);
 }
 
 // Update the clock
@@ -133,9 +133,10 @@ function pauseShow()
 	if( paused ) {
 		p.innerHTML = "Play";
 		clearTimeout(sTimeout);
-	}
-	else
+	} else {
 		p.innerHTML = "Pause";
+		startTimer();
+	}
 }
 
 function refreshSlide()
@@ -201,27 +202,71 @@ function scores_cb(slide,res)
 	var resList = MochiKit.Async.evalJSONRequest(res);
 
 	// Create the rows
-	rows = [];
-	var position = 1;
-	for (var i in resList.scores) {
-		var score = resList.scores[i];
+	var rows = [];
+	// Left column position
+	var lPos = 1;
+
+	var nPerCol, nCol = 0;
+
+	// Decide whether to move to two columns
+	if( resList.scores.length > 9 ) {
+		nCol = 2;
+		nPerCol = Math.floor(resList.scores.length/2);
+
+		if( nPerCol * 2 < resList.scores.length )
+			nPerCol++;
+
+		// Right column position
+		var rPos = nPerCol + 1;
+	} else {
+		nCol = 1;
+		nPerCol = resList.scores.length;
+	}
+		
+	for( var i=0; i < nPerCol; i++ ) {
+		var lscore = resList.scores[i];
 		var r = [];
 
-		r.push( TD({"class":"scorePosition"}, position) );
-		r.push( TD({"class":"scoreTeam"}, score.team) );
-		r.push( TD({"class":"scorePoints"}, score.points) );
-		
-		rows.push(TR(null,r));
+		r.push( TD({"class":"scorePosition"}, lPos) );
+		r.push( TD({"class":"scoreTeam"}, lscore.team) );
+		r.push( TD({"class":"scorePoints"}, lscore.points) );
 
-		position++;
+		if( nCol == 2 ) {
+			r.push( TD({"class":"empty"}," ") );
+
+			if( rPos - 1 < resList.scores.length ) {
+				var rscore = resList.scores[ rPos - 1 ];
+				r.push( TD({"class":"scorePosition"}, rPos) );
+				r.push( TD({"class":"scoreTeam"}, rscore.team) );
+				r.push( TD({"class":"scorePoints"}, rscore.points) );
+			} else {
+				r.push( TD({"class":"scorePosition"}, "") );
+				r.push( TD({"class":"scoreTeam"}, "") );
+				r.push( TD({"class":"scorePoints"}, "") );
+			}
+
+			rPos++;
+		}
+
+		lPos++;
+		rows.push(TR(null,r));
 	}
+
 
 	var mt = document.getElementById("scorestable");
 
+	var headers;
+	if( nCol == 1 )
+		headers = THEAD(null,
+				TR( {"class":"header"},
+				    [ map(partial(TH,null), ["Position", "Team", "Score"]) ] ) );
+	else
+		headers = THEAD(null,
+				TR( {"class":"header"},
+				    [ map(partial(TH,null), ["Position", "Team", "Score", "", "Position", "Team", "Score"]) ] ) );
+
 	var t = TABLE({"id":"scorestable"},
-		      THEAD(null,
-			    TR( {"class":"header"},
-				[ map(partial(TH,null), ["Position", "Team", "Score"]) ] ) ),
+		      headers,
 		      TBODY(null, rows) );
 
 	MochiKit.DOM.swapDOM(mt, t);

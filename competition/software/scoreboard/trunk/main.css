@@ -87,13 +87,17 @@ body
 #scores tr > th {
  font-weight: bold;
  border-style: none none double none;
- padding-left: 1em;
- padding-right: 1em;
+ padding-left: 0.25em;
+ padding-right: 0.25em;
 }
 
 .scorePosition, .scoreTeam, .scorePoints {
  border-style: none none dotted none;
  border-color: rgb(136,122,109);
+}
+
+#scores .empty {
+ width: 2.5em;
 }
 
 /* Schedule slide */
