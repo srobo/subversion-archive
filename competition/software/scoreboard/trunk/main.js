@@ -1,6 +1,10 @@
 var slides = new Array();
 var curslide;
 var sTimeout;
+var paused = false;
+var n = 0;
+
+var DEBUG = true;
 
 // Starts everything off
 function startShow()
@@ -28,6 +32,12 @@ function startShow()
 	startTimer();
 
 	updateTime();
+
+	if(DEBUG) {
+		document.getElementById("pause").style.display = "";
+		document.getElementById("refresh").style.display = "";
+	}
+
 }
 
 // Switch to new slide
@@ -52,18 +62,27 @@ function showSlide( nSlide )
 // Call the update function for slide number n
 function loadSlide(n)
 {
+	if( slides[n].div.id == "" )
+		return;
+
+	fname = slides[n].div.id + "Up";
+
+	// Test to see if there is an update function for this slide
 	try {
-		fname = slides[n].div.id + "Up";
-		if( slides[n].div.id != "" )
-			eval( fname + "(slides[" + n + "]);" );
-	}
-	catch(err) {}
+		f = eval( fname );
+	} catch(err) { return; }
+
+	// Call the update function
+	eval( fname + "(slides[" + n + "]);" );
 }
 
 
 // Advance onto the next slide
 function changeSlide()
 {
+	if( paused )
+		return;
+
 	curslide = (curslide + 1) % slides.length;
 
 	showSlide(curslide);
@@ -105,10 +124,30 @@ function slideTitle(n)
 	}
 }
 
+// Pause/Play the show
+function pauseShow()
+{
+	paused = !paused;
+
+	var p = document.getElementById("pause");
+	if( paused ) {
+		p.innerHTML = "Play";
+		clearTimeout(sTimeout);
+	}
+	else
+		p.innerHTML = "Pause";
+}
+
+function refreshSlide()
+{
+	loadSlide(curslide);
+}
+
 // *** Slide update functions ***
 function upcoming_matchesUp(slide)
 {
-	d = MochiKit.Async.doSimpleXMLHttpRequest( "./info/upcoming.php" );
+	d = MochiKit.Async.doSimpleXMLHttpRequest( "./info/upcoming.php?n=" + n );
+	n++;
 	d.addCallback(upcoming_matches_cb,slide);
 	d.addErrback(upcoming_matches_err);
 }
@@ -151,7 +190,8 @@ function upcoming_matches_err()
 
 function scoresUp(slide)
 {
-	d = MochiKit.Async.doSimpleXMLHttpRequest( "./info/scores.php" );
+	d = MochiKit.Async.doSimpleXMLHttpRequest( "./info/scores.php?n=" + n );
+	n++;
 	d.addCallback(scores_cb,slide);
 	d.addErrback(scores_err);
 }
@@ -178,7 +218,7 @@ function scores_cb(slide,res)
 
 	var mt = document.getElementById("scorestable");
 
-	var t = TABLE({"id":"matchtable"},
+	var t = TABLE({"id":"scorestable"},
 		      THEAD(null,
 			    TR( {"class":"header"},
 				[ map(partial(TH,null), ["Position", "Team", "Score"]) ] ) ),
