@@ -1,0 +1,65 @@
+#!/bin/bash
+
+function usage ()
+{
+    echo "Usage: create -t TEAM | CODE_DIR"
+    echo "Where CODE_DIR is a directory containing your robot code."
+    echo "TEAM is a team number"
+    exit
+}
+
+if (( $# < 1 ))
+then
+    usage
+fi
+
+if (( $# == 1 ))
+    then
+    CODE_DIR=$1
+
+    if [ ! -d ]
+    then
+	echo "$CODE_DIR is not a directory - quitting."
+	exit
+    fi
+else
+    if [[ $1 != "-t" ]]
+	then
+	usage
+    fi
+    checkout_dir=`mktemp -d`
+    TEAM=$2
+
+    echo -n "Checking out code... "
+    ( cd $checkout_dir ;
+	svn co -q http://studentrobotics.org/svn/$TEAM code ; )
+    echo "done."
+
+    CODE_DIR=${checkout_dir}/code
+fi
+
+echo -n "Creating zip file... "
+dist_dir=`mktemp -d`
+
+# Create the user zip file
+( cd $CODE_DIR ; 
+    zip -q $dist_dir/robot.zip * )
+
+# Copy all files for distribution across
+cp ../trunk/* $dist_dir/
+
+# Create the final zip
+outdir=`pwd`
+rm -f robot.zip
+( cd $dist_dir ;
+    zip -q $outdir/robot.zip * )
+
+rm -rf $dist_dir
+
+if [[ "$TEAM" != "" ]]
+    then
+    rm -rf $CODE_DIR
+fi
+
+echo "done."
+
