@@ -139,7 +139,7 @@ int jointio_i2c_conf( void )
 {
 	int fd;
 
-	fd = open( "/dev/i2c-1", O_RDWR );
+	fd = open( "/dev/i2c-0", O_RDWR );
 
 	if( fd == -1 )
 	{
