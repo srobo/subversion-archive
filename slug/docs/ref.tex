@@ -180,10 +180,10 @@ power.  $-100<n<100$. Negative values of n drive the motors backwards.
 
 \subsection{Controlling the PWM board}
 The Pulse Width Modulation board is used to control servo motors.  It is
-controlled with the \texttt{pwm} function that takes two arguments:
+controlled with the \texttt{setpos} function that takes two arguments:
 
 \begin{verbatim}
-pwm(n, m)
+setpos(n, m)
 \end{verbatim}
 
 This will set PWM board output $0<n<5$ to the position $0<m<100$.
