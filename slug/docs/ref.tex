@@ -74,7 +74,7 @@ The \texttt{yield} statement can be used to wait for an event to
 occur.  For example:
 
 \begin{verbatim}
-yield dio
+yield io
 \end{verbatim}
 
 Causes the algorithm to wait until a dio (digital IO) event is received.
@@ -84,7 +84,7 @@ The \texttt{yield} statement can be used to wait on a combination of events and
 a timeout, whichever occurs first:
 
 \begin{verbatim}
-yield dio, 5
+yield io, 5
 \end{verbatim}
 
 Causes the algorithm to wait until a dio event is received or 5 seconds,
@@ -115,28 +115,42 @@ The \texttt{event} variable will return true when compared to the
 event source that led to its creation:
 
 \begin{verbatim}
-yield dio, 5 #Wait until a dio event or 5 seconds passes
+yield io, 5 #Wait until a dio event or 5 seconds passes
 
-if event == dio:
-    pass #A dio event happened first (pass means do-nothing)
+if event == io:
+    pass #A io event happened first (pass means do-nothing)
 else:
     pass #A timeout is the only other option
 \end{verbatim}
 
-\subsection{Digital IO Events}
-Digital IO events are caused by a change in the digital inputs of the
-Joint IO board. After a dio event causes a \texttt{yield} statement to
+\subsection{IO Events}
+IO events are caused by a change in the digital inputs of the
+Joint IO board. After a io event causes a \texttt{yield} statement to
 return control of the robot to the control algorithm, the
-\texttt{event} variable will be set. The dio inputs that have changed
-are contained in a dictionary that can be accessed from \texttt{dio.pins}: 
+\texttt{event} variable will be set. The io inputs that have changed
+are contained in a dictionary that can be accessed from \texttt{event.pins}: 
 
 \begin{verbatim}
-yield dio, 5
+yield io, 5
 
-if event == dio:               #Is it a dio event?
+if event == io:                #Is it an io event?
     if 0 in event.pins:        #Has input 0 been changed?
         if event.pins[0] == 1: #Is input 0 now a 1?
             pass
+\end{verbatim}
+
+\subsubsection{Monitoring specific pins}
+Sometimes you will want to only wait for events on specific pins.  This can be
+done by using \texttt{setsensitive} and \texttt{removesensitive} functions:
+
+\begin{verbatim}
+
+removesensitive(2) #Ignore pin 2 for now
+yield io, 5
+
+#Do stuff!
+
+setsensitive(2) #Resume monitoring pin 2
 \end{verbatim}
 
 \subsection{Visual Events}
