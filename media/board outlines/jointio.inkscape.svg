@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -12,13 +12,20 @@
    height="1052.3622"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    version="1.0"
    sodipodi:docbase="C:\Documents and Settings\Work\My Documents\Student Robotics\svn\media\board outlines"
    sodipodi:docname="jointio.inkscape.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective83" />
     <marker
        inkscape:stockid="Arrow1Sstart"
        orient="auto"
@@ -83,16 +90,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.73548823"
-     inkscape:cx="630.13251"
-     inkscape:cy="515.43044"
+     inkscape:cx="511.88036"
+     inkscape:cy="685.17198"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      width="744.09449px"
      height="1052.3622px"
      inkscape:window-width="1280"
-     inkscape:window-height="975"
+     inkscape:window-height="723"
      inkscape:window-x="0"
-     inkscape:window-y="22" />
+     inkscape:window-y="27"
+     showgrid="false" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -259,7 +267,7 @@
          x="372.29138"
          y="153.1389"
          id="tspan14915"
-         style="font-size:28px">v 1.0 (check website for latest)</tspan></text>
+         style="font-size:28px">v 1.1 (check website for latest)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
@@ -549,5 +557,45 @@
          id="tspan13289"
          x="292.32281"
          y="492.19006">SBW</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="335.49142"
+       y="431.0062"
+       id="text2456"><tspan
+         sodipodi:role="line"
+         id="tspan2458"
+         x="335.49142"
+         y="431.0062">0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="390.89679"
+       y="431.00623"
+       id="text2460"><tspan
+         sodipodi:role="line"
+         id="tspan2462"
+         x="390.89679"
+         y="431.00623">7</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="443.58289"
+       y="431.00623"
+       id="text2464"><tspan
+         sodipodi:role="line"
+         id="tspan2466"
+         x="443.58289"
+         y="431.00623">0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="464.65735"
+       y="431.00623"
+       id="text2468"><tspan
+         sodipodi:role="line"
+         id="tspan2470"
+         x="464.65735"
+         y="431.00623">3</tspan></text>
   </g>
 </svg>
