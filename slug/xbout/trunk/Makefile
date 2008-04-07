@@ -1,8 +1,8 @@
-CFLAGS := -Wall -O3
-LDFLAGS := 
+CFLAGS := -Wall -O3 $(LIBXB_CFLAGS)
+LDFLAGS := $(LIBXB_LDFLAGS)
 
-CFLAGS += `pkg-config --cflags libxb`
-LDFLAGS += `pkg-config --libs libxb`
+#CFLAGS += `pkg-config --cflags libxb`
+#LDFLAGS += `pkg-config --libs libxb`
 
 xbout: xbout.c
 
