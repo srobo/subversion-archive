@@ -2,7 +2,7 @@
 # libxb
 ##############################
 
-LIBXB_REVISION := 17
+LIBXB_REVISION := 33
 LIBXB_SVN := https://libxb.svn.sourceforge.net/svnroot/libxb/pc/trunk
 LIBXB_SOURCE := $(DL_DIR)/libxb-$(LIBXB_REVISION)
 LIBXB_DIR := $(BUILD_DIR)/libxb-$(LIBXB_REVISION)
@@ -17,16 +17,24 @@ $(LIBXB_DIR)/.source: $(DL_DIR)/libxb-$(LIBXB_REVISION)/.exported
 	touch $(LIBXB_DIR)/.source
 
 $(LIBXB_DIR)/xbd/xbd: $(LIBXB_DIR)/.source
-# Set the pkg-config variables
-	PKG_CONFIG_ARGS="--define-variable=libdir=$(STAGING_DIR)/usr/local/lib \
-	--define-variable=includedir=$(STAGING_DIR)/usr/local/include" \
-	PKG_CONFIG_PATH=$(STAGING_DIR)/usr/local/lib/pkgconfig:$(STAGING_DIR)/lib/pkgconfig \
-	LDFLAGS="-L$(STAGING_DIR)/usr/lib" make CC=$(TARGET_CC) -C $(LIBXB_DIR)
+	( export PKG_CONFIG_LIBDIR=$(STAGING_DIR)/usr/local/lib/pkgconfig ; \
+	  export PKG_CONFIG_ARGS="--define-variable=prefix=$(STAGING_DIR)/usr/local" ; \
+	  LDFLAGS="-L$(STAGING_DIR)/usr/lib" $(MAKE) CC=$(TARGET_CC) -C $(LIBXB_DIR) ; )
 
 $(TARGET_DIR)/usr/bin/xbd: $(LIBXB_DIR)/xbd/xbd
 	cp $< $@
 
-libxb: glib $(TARGET_DIR)/usr/bin/xbd
+$(STAGING_DIR)/usr/local/lib/libxbee.so: $(LIBXB_DIR)/xbd/xbd
+	cp -P $(LIBXB_DIR)/libxbee/libxbee.so* $(STAGING_DIR)/usr/local/lib
+
+$(STAGING_DIR)/usr/local/include/libxb/xbee-conn.h: $(LIBXB_DIR)/xbd/xbd
+	mkdir -p $(STAGING_DIR)/usr/local/include/libxb
+	cp -P $(LIBXB_DIR)/common/*.h $(STAGING_DIR)/usr/local/include/libxb
+	cp -P $(LIBXB_DIR)/libxbee/*.h $(STAGING_DIR)/usr/local/include/libxb
+	cp $(LIBXB_DIR)/libxbee/libxb.pc $(STAGING_DIR)/usr/local/lib/pkgconfig
+
+libxb: glib $(TARGET_DIR)/usr/bin/xbd $(STAGING_DIR)/usr/local/lib/libxbee.so \
+	$(STAGING_DIR)/usr/local/include/libxb/xbee-conn.h
 
 libxb-clean:
 	$(MAKE) -C $(LIBXB_DIR) clean

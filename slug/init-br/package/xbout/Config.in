@@ -1,0 +1,7 @@
+config BR2_PACKAGE_XBOUT
+	bool "xbout"
+	default n
+	select BR2_PACKAGE_LIBXB
+	help
+		Builds xbout.
+
