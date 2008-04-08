@@ -201,4 +201,14 @@ setpos(n, m)
 \end{verbatim}
 
 This will set PWM board output $0<n<5$ to the position $0<m<100$.
+
+\subsection{Controlling the JointIO Board Outputs}
+The outputs of the JointIO board can be controlled using the \texttt{setoutput} function.  This takes two arguments:
+
+\begin{verbatim}
+setoutput(n, val)
+\end{verbatim}
+
+This will set output $0<n<4$ to the value val, which is either 0 or 1.  If value is 1 then the output will be 3.3V, otherwise it will be 0V.
+
 \end{document}
