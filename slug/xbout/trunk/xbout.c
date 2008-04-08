@@ -82,6 +82,8 @@ static void rx_frame( uint8_t *data, uint16_t len, xbee_conn_info_t *info )
 	case CMD_PING_RESP:
 		break;
 	}
+
+	fflush(stdout);
 }
 
 static void chan_set( uint8_t channel )
