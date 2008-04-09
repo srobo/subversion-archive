@@ -70,8 +70,16 @@ body
  padding-right: 0.5em;
 }
 
-#matchMatchHeader, #matchTeamsHeader, #matchTimeHeader
+#matchMatchHeader, #matchTimeHeader
 {
+ font-weight: bold;
+ border-style: none none double none;
+}
+#matchTeamsHeader
+{
+ font-weight: bold;
+}
+.colourHeader {
  font-weight: bold;
  border-style: none none double none;
 }

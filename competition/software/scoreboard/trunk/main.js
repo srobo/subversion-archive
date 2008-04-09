@@ -4,7 +4,7 @@ var sTimeout;
 var paused = false;
 var n = 0;
 
-var DEBUG = false;
+var DEBUG = true;
 
 // Starts everything off
 function startShow()
@@ -92,7 +92,7 @@ function changeSlide()
 // Start the timer to the next slide
 function startTimer()
 {
-	sTimeOut = setTimeout("changeSlide();", 15000);
+	sTimeOut = setTimeout("changeSlide();", 3000);
 }
 
 // Update the clock
@@ -175,12 +175,19 @@ function upcoming_matches_cb(slide,res)
 	var mt = document.getElementById("matchtable");
 
 	var t = TABLE({"id":"matchtable"},
-		      THEAD(null,
-			    TR( {"class":"header"},
-				[ TH( {"id":"matchMatchHeader"}, "Match" ),
-				  TH( {"id":"matchTimeHeader"}, "Time" ),
-				  TH( {"colspan":4, "id":"matchTeamsHeader"},  "Teams" ) ] ) ),
-		      TBODY(null,rows ) );
+		      THEAD( null,
+			    [ TR( {"class":"header"},
+				  [ TH( null, " " ),
+				    TH( null, " " ),
+				    TH( {"colspan":4, "id":"matchTeamsHeader"},  "Teams" ) ] ),
+			      TR( {"class":"header"},
+				  [ TH( {"id":"matchMatchHeader"}, "Match" ), 
+				    TH( {"id":"matchTimeHeader"}, "Time" ), 
+				    TH( {"class":"colourHeader"}, "Red" ), 
+				    TH( {"class":"colourHeader"}, "Green" ), 
+				    TH( {"class":"colourHeader"}, "Blue" ), 
+				    TH( {"class":"colourHeader"}, "Yellow" ) ] ) ] ),
+			    TBODY(null,rows ) );
 
 	MochiKit.DOM.swapDOM(mt, t);
 }

@@ -1,4 +1,14 @@
 <?
+include("pass.php");
+
+$db = @mysql_connect( $mysql_details["host"],
+		      $mysql_details["user"],
+		      $mysql_details["password"] );
+
+if( !$db ) die("Couldn't connect to mysql");
+
+if( !mysql_select_db("comp", $db) ) die ("Couldn't switch to use comp database");
+
 function outputMatches($matches)
 {
 ?>
@@ -26,29 +36,17 @@ foreach( $matches as $match ) {
 
 $matches = array();
 
-array_push( $matches, array( "number" => 1,
-			     "time" => "10:30",
-			     "teams" => array(1,2,3,4) ) );
+$q = "SELECT * FROM matches WHERE time > " . time() . " ORDER BY time ASC LIMIT 6 ;";
+$res = mysql_query( $q, $db );
+if( !$res ) die( "Couldn't list matches" );
 
-array_push( $matches, array( "number" => 2,
-			     "time" => "10:40",
-			     "teams" => array(3,4,5,6) ) );
+while( $match = mysql_fetch_assoc($res) ) {
+  $m = array( "number" => $match["number"],
+	      "time" => date( "H:i", $match["time"] ),
+	      "teams" => array( $match["red"], $match["green"], $match["blue"], $match["yellow"] ) );
+  array_push( $matches, $m );  
+ }
 
-array_push( $matches, array( "number" => 3,
-			     "time" => "10:50",
-			     "teams" => array(4,5,6,7) ) );
-
-array_push( $matches, array( "number" => 4,
-			     "time" => "11:00",
-			     "teams" => array(5,6,7,8) ) );
-
-array_push( $matches, array( "number" => 5,
-			     "time" => "11:10",
-			     "teams" => array(6,7,8,9) ) );
-
-array_push( $matches, array( "number" => 6,
-			     "time" => "11:20",
-			     "teams" => array(7,8,9,10) ) );
 
 outputMatches($matches);
 
