@@ -36,6 +36,18 @@ void on_b_stop_clicked( GtkButton *button,
 void spin_match_value_changed( GtkSpinButton *spinbutton,
 			       gpointer user_data );
 
+void spin_red_value_changed( GtkSpinButton *spinbutton,
+			     gpointer user_data );
+void spin_green_value_changed( GtkSpinButton *spinbutton,
+			       gpointer user_data );
+void spin_blue_value_changed( GtkSpinButton *spinbutton,
+			      gpointer user_data );
+void spin_yellow_value_changed( GtkSpinButton *spinbutton,
+				gpointer user_data );
+
+/* Update a player to a team */
+void set_player( uint16_t colour, uint16_t team );
+
 /* Transmits the ping signal */
 gboolean tx_ping( gpointer nothing );
 
@@ -68,6 +80,8 @@ GtkWidget *b_start = NULL,
 GtkWidget *spin_colours[4];
 
 xb_addr_t team_addresses[4];
+/* Whether there's a valid address */
+gboolean addr_valid[4];
 
 /* The current match */
 gint cur_match = 0;
@@ -164,7 +178,7 @@ gboolean tx_ping( gpointer nothing )
 	if( pinging ) {
 		uint8_t i;
 		for(i=0; i<4; i++) {
-			if( cur_match_info.teams[i] != 0 )
+			if( cur_match_info.teams[i] != 0 && addr_valid[i] )
 				comp_xbee_ping( &team_addresses[i] );
 		}
 
@@ -202,7 +216,7 @@ void change_state( state_t n )
 
 		/* Send START signals to everything */
 		for( i=0; i<4; i++ ) {
-			if( cur_match_info.teams[i] != 0 )
+			if( cur_match_info.teams[i] != 0 && addr_valid[i] )
 			{
 				/* Generate the START string */
 				char* s = NULL;
@@ -246,15 +260,38 @@ void update_match( void )
 		
 	for( i=0; i<4; i++ )
 		gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_colours[i]), (gdouble)cur_match_info.teams[i] );
-
-	/* Get the new team addresses */
-	for(i=0; i<4; i++)
-	{
-		uint16_t team = 0;
-		team = cur_match_info.teams[i];
-
-		if( team != 0 )
-			sr_team_get_addr( team, &team_addresses[i] );
-	}
 }
 
+void spin_red_value_changed( GtkSpinButton *spinbutton,
+				   gpointer user_data )
+{
+	set_player( RED, gtk_spin_button_get_value_as_int(spinbutton) );
+}
+
+void spin_green_value_changed( GtkSpinButton *spinbutton,
+				     gpointer user_data )
+{
+	set_player( GREEN, gtk_spin_button_get_value_as_int(spinbutton) );
+}
+
+void spin_blue_value_changed( GtkSpinButton *spinbutton,
+				    gpointer user_data )
+{
+	set_player( BLUE, gtk_spin_button_get_value_as_int(spinbutton) );
+}
+
+void spin_yellow_value_changed( GtkSpinButton *spinbutton,
+				      gpointer user_data )
+{
+	set_player( YELLOW, gtk_spin_button_get_value_as_int(spinbutton) );
+}
+
+void set_player( uint16_t colour, uint16_t team )
+{
+	cur_match_info.teams[colour] = team;
+
+	if( team != 0 )
+		addr_valid[colour] = sr_team_get_addr( team, &team_addresses[colour] );
+	else
+		addr_valid[colour] = FALSE;
+}

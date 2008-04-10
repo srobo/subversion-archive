@@ -31,12 +31,12 @@ void comp_xbee_ping( xb_addr_t* addr )
 	assert( addr != NULL );
 
 	xbee_conn_transmit( xbc, *addr, data, 1, 1 );
-/* 	printf("Pinging: "); */
-/* 	for(i=0; i<8; i++) { */
-/* 		printf("%2.2hhx", addr->addr[i]); */
-/* 		if( i < 7 ) printf(":"); */
-/* 	} */
-/* 	printf("\n"); */
+	printf("Pinging: ");
+	for(i=0; i<8; i++) {
+		printf("%2.2hhx", addr->addr[i]);
+		if( i < 7 ) printf(":");
+	}
+	printf("\n");
 }
 
 
