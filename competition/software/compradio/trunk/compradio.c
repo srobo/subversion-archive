@@ -77,6 +77,8 @@ int main( int argc, char** argv )
 	b_stop = glade_xml_get_widget(xml, "b_stop");
 	check_ping = glade_xml_get_widget(xml, "check_ping");
 
+	change_state( S_IDLE );
+
 	xbc = xbee_conn_new( "/tmp/xbee", NULL );
 	xbee_conn_register_callbacks( xbc, &xb_callbacks );
 
