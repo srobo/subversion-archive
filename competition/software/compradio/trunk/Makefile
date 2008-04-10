@@ -17,8 +17,8 @@ LDFLAGS += -L/usr/lib/mysql -lmysqlclient
 
 LDFLAGS += -Wl,--export-dynamic
 
-C_FILES := compradio.c comp-mysql.c
-H_FILES := comp-mysql.h comp-types.h
+C_FILES := compradio.c comp-mysql.c comp-xbee.c
+H_FILES := comp-mysql.h comp-types.h comp-xbee.h
 
 compradio: $(C_FILES) $(H_FILES) compradio.glade
 	$(CC) $(C_FILES) -o compradio $(CFLAGS) $(LDFLAGS)

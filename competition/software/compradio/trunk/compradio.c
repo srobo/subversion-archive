@@ -11,13 +11,7 @@
 
 #include "comp-types.h"
 #include "comp-mysql.h"
-
-enum {
-	RADIO_CMD_START,
-	RADIO_CMD_STOP,
-	RADIO_CMD_PING,
-	RADIO_CMD_PING_RESP
-};
+#include "comp-xbee.h"
 
 /* Window destruction */
 gboolean main_window_destroy( GtkObject *object,
@@ -42,14 +36,8 @@ void on_b_stop_clicked( GtkButton *button,
 void spin_match_value_changed( GtkSpinButton *spinbutton,
 			       gpointer user_data );
 
-const xb_conn_callbacks_t xb_callbacks = 
-{
-	.rx_frame = NULL,
-	.chan_set = NULL
-};
-
 /* Transmits the ping signal */
-gboolean tx_ping( XbeeConn *xbc );
+gboolean tx_ping( gpointer nothing );
 
 /* Whether we're currently pinging: */
 gboolean pinging = FALSE;
@@ -92,7 +80,6 @@ void update_match( void );
 int main( int argc, char** argv )
 {
 	GladeXML *xml;
-	XbeeConn *xbc;
 	gtk_init( &argc, &argv );
 
 	xml = glade_xml_new("compradio.glade", NULL, NULL);
@@ -110,12 +97,10 @@ int main( int argc, char** argv )
 
 	hbox1 = glade_xml_get_widget(xml, "hbox1");
 
-	xbc = xbee_conn_new( "/tmp/xbee", NULL );
-	if( xbc == NULL ) {
+	if( !comp_xbee_init() ) {
 		fprintf( stderr, "Error connecting to xbd\n" );
 		return 1;
 	}
-	xbee_conn_register_callbacks( xbc, &xb_callbacks );
 
 	sr_mysql_init();
 	change_state( S_IDLE );
@@ -124,7 +109,7 @@ int main( int argc, char** argv )
 	update_match();
 
 	/* The ping timeout */
-	g_timeout_add(100, (GSourceFunc)tx_ping, (gpointer)xbc);
+	g_timeout_add(100, (GSourceFunc)tx_ping, NULL);
 
 	gtk_main();
 
@@ -173,20 +158,16 @@ void on_b_stop_clicked( GtkButton *button,
 	change_state( S_IDLE );
 }
 
-gboolean tx_ping( XbeeConn *xbc )
+gboolean tx_ping( gpointer nothing )
 {
-	uint8_t data[] = { RADIO_CMD_PING };
-	xb_addr_t addr =
-		{
-			.type = XB_ADDR_64,
-			.addr = {0x00,0x13,0xA2,0x00,0x40,0x02,0x64,0x1E}
-		};
-
-	assert( xbc != NULL );
-
 	/* Channel 1 */
 	if( pinging ) {
-		xbee_conn_transmit( xbc, addr, data, 1, 1 );
+		uint8_t i;
+		for(i=0; i<4; i++) {
+			if( cur_match_info.teams[i] != 0 )
+				comp_xbee_ping( &team_addresses[i] );
+		}
+
 		printf("PING\n");
 	}
 
