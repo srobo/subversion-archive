@@ -16,5 +16,11 @@ gboolean comp_xbee_init( void );
 /* Ping a robot */
 void comp_xbee_ping( xb_addr_t* addr );
 
+/* Send a START command to a robot.
+   Arguments:
+    - addr: The radio address of the robot
+    - info: The string to send with the start signal
+ */
+void comp_xbee_start( xb_addr_t* addr, char* info );
 
 #endif	/* __COMP_XBEE_H */

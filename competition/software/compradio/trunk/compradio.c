@@ -176,9 +176,10 @@ gboolean tx_ping( gpointer nothing )
 
 void change_state( state_t n )
 {
+	state = n;
 	printf("Switching to: ");
 
-	switch( n )
+	switch( state )
 	{
 	case S_IDLE:
 		printf("S_IDLE\n");
@@ -195,13 +196,32 @@ void change_state( state_t n )
 		
 		break;
 
-	case S_STARTED:
+	case S_STARTED: {
+		uint8_t i;
 		printf("S_STARTED\n");
+
+		/* Send START signals to everything */
+		for( i=0; i<4; i++ ) {
+			if( cur_match_info.teams[i] != 0 )
+			{
+				/* Generate the START string */
+				char* s = NULL;
+
+				asprintf( &s,
+					  "corner=%u, colour=%u, game=%u",
+					  i, i, 0 );
+
+				comp_xbee_start( &team_addresses[i], s );
+				free(s);
+				s = NULL;
+			}
+		}
 
 		gtk_widget_set_sensitive( b_start, FALSE );
 		gtk_widget_set_sensitive( b_stop, TRUE );
 		
 		break;
+	}
 	}
 }
 
