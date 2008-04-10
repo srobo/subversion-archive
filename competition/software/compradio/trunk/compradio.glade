@@ -4,7 +4,7 @@
 <glade-interface>
   <widget class="GtkWindow" id="main_window">
     <property name="visible">True</property>
-    <property name="title" translatable="yes">window1</property>
+    <property name="title" translatable="yes">Student Robotics Radio Manager</property>
     <signal name="destroy" handler="main_window_destroy"/>
     <signal name="delete_event" handler="main_window_delete_event"/>
     <child>
@@ -30,10 +30,9 @@
                   <widget class="GtkSpinButton" id="spin_match">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="adjustment">1 0 100 1 10 10</property>
+                    <property name="adjustment">1 0 1000 1 10 10</property>
                     <property name="climb_rate">1</property>
                     <property name="numeric">True</property>
-                    <signal name="changed" handler="on_spin_match_changed"/>
                     <signal name="value_changed" handler="spin_match_value_changed"/>
                   </widget>
                   <packing>
@@ -198,9 +197,6 @@
           <widget class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
             <child>
-              <placeholder/>
-            </child>
-            <child>
               <widget class="GtkCheckButton" id="check_ping">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -213,7 +209,6 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -228,7 +223,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -243,11 +238,8 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">3</property>
+                <property name="position">2</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
             </child>
           </widget>
           <packing>

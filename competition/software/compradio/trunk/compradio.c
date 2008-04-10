@@ -75,12 +75,16 @@ GtkWidget *b_start = NULL,
 	*spin_red = NULL,
 	*spin_blue = NULL,
 	*spin_green = NULL,
-	*spin_yellow = NULL;
+	*spin_yellow = NULL,
+	*hbox1 = NULL;
 
 typedef struct {
 	uint16_t red, green, blue, yellow;
 	uint32_t time;
 } match_t;
+
+enum { RED, GREEN, BLUE, YELLOW };
+xb_addr_t team_addresses[4];
 
 /* The current match */
 gint cur_match = 0;
@@ -99,6 +103,12 @@ gboolean sr_match_info( uint16_t N, match_t* m );
 
 /* Update the match */
 void update_match( void );
+
+/* Get a team's XBee address */
+gboolean sr_team_get_addr( uint16_t number, xb_addr_t* addr );
+
+/* Convert a string into an xbee address */
+void strtoaddr( char* str, xb_addr_t* addr );
 
 /* The mysql handle */
 MYSQL *db = NULL;
@@ -121,6 +131,8 @@ int main( int argc, char** argv )
 	spin_blue = glade_xml_get_widget(xml, "spin_blue");
 	spin_green = glade_xml_get_widget(xml, "spin_green");
 	spin_yellow = glade_xml_get_widget(xml, "spin_yellow");
+
+	hbox1 = glade_xml_get_widget(xml, "hbox1");
 
 	xbc = xbee_conn_new( "/tmp/xbee", NULL );
 	if( xbc == NULL ) {
@@ -167,7 +179,8 @@ void on_check_ping_toggled( GtkToggleButton *tb,
 
 		pinging = TRUE;
 	} else {
-		change_state( S_IDLE );
+		if( state != S_IDLE )
+			change_state( S_IDLE );
 		pinging = FALSE;
 	}
 }
@@ -196,8 +209,10 @@ gboolean tx_ping( XbeeConn *xbc )
 	assert( xbc != NULL );
 
 	/* Channel 1 */
-	if( pinging )
+	if( pinging ) {
 		xbee_conn_transmit( xbc, addr, data, 1, 1 );
+		printf("PING\n");
+	}
 
 	return TRUE;
 }
@@ -249,11 +264,13 @@ gboolean sr_match_info( uint16_t N, match_t* m )
 		fprintf(stderr, "Failed to grab match %hhu info.", N );
 		return FALSE;
 	}
+	free(q);
       
 	res = mysql_store_result( db );
 
 	if( mysql_num_rows( res ) == 0 ) {
 		printf("Match %hhu not found\n", N);
+		mysql_free_result(res);
 		return FALSE;
 	}
 
@@ -276,7 +293,6 @@ gboolean sr_match_info( uint16_t N, match_t* m )
 		}
 	}
 	mysql_free_result(res);
-	free(q);
 	return TRUE;
 }
 
@@ -308,7 +324,10 @@ void spin_match_value_changed( GtkSpinButton *spinbutton,
 
 void update_match( void )
 {
+	uint8_t i;
+
 	printf("Updating to match %i\n", cur_match);
+	
 	if( !sr_match_info( cur_match, &cur_match_info ) ) {
 		cur_match_info.red = cur_match_info.green = cur_match_info.blue = cur_match_info.yellow = 0;
 		cur_match_info.time = 0;
@@ -318,4 +337,66 @@ void update_match( void )
 	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_green), (gdouble)cur_match_info.green );
 	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_yellow), (gdouble)cur_match_info.yellow );
 	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_blue), (gdouble)cur_match_info.blue );
+
+	/* Get the new team addresses */
+	for(i=0; i<4; i++)
+	{
+		uint16_t team = 0;
+		switch(i) {
+		case RED: team = cur_match_info.red; break;
+		case BLUE: team = cur_match_info.blue; break;
+		case GREEN: team = cur_match_info.green; break;
+		case YELLOW: team = cur_match_info.yellow; 
+		}
+			
+		if( team != 0 )
+			sr_team_get_addr( team, &team_addresses[i] );
+	}
+}
+
+gboolean sr_team_get_addr( uint16_t number, xb_addr_t* addr )
+{
+	char *q = NULL;
+	MYSQL_RES *res;
+	MYSQL_FIELD *fields;
+	MYSQL_ROW row;
+	unsigned int n_fields, i;
+	assert(addr != NULL);
+	addr->type = XB_ADDR_64;
+
+/* 	uint8_t addr[8]; */
+	asprintf(&q, "SELECT * FROM radios WHERE teamNumber = %hhu LIMIT 1;",
+		 number);
+	if( mysql_query( db, q ) != 0 ) {
+		fprintf(stderr, "Failed to get team %hhu radio address.", number );
+		return FALSE;
+	}
+	free(q);
+
+	res = mysql_store_result( db );
+
+	if( mysql_num_rows( res ) == 0 ) {
+		printf("WARNING: Team %hhu radio address not found\n", number);
+		mysql_free_result(res);
+		return FALSE;
+	}
+
+	n_fields = mysql_num_fields( res );
+	fields = mysql_fetch_fields( res );
+	while((row = mysql_fetch_row(res))) {
+		for(i=0; i<n_fields; i++) {
+			/* printf("%s = %s\n", fields[i].name, row[i]); */
+			if( strcmp(fields[i].name,"address") == 0 )
+				strtoaddr( row[i], addr );
+		}
+	}
+	mysql_free_result(res);
+	return TRUE;
+}
+
+void strtoaddr( char* str, xb_addr_t* addr )
+{
+	sscanf(str, "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",
+	       &addr->addr[0], &addr->addr[1], &addr->addr[2], &addr->addr[3],
+	       &addr->addr[4], &addr->addr[5], &addr->addr[6], &addr->addr[7] );
 }
