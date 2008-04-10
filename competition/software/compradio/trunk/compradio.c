@@ -72,12 +72,10 @@ GtkWidget *b_start = NULL,
 	*b_stop = NULL,
 	*check_ping = NULL,
 	*spin_match = NULL,
-	*spin_red = NULL,
-	*spin_blue = NULL,
-	*spin_green = NULL,
-	*spin_yellow = NULL,
 	*hbox1 = NULL;
 
+/* The spins for the different colours */
+GtkWidget *spin_colours[4];
 
 enum { RED, GREEN, BLUE, YELLOW };
 xb_addr_t team_addresses[4];
@@ -129,10 +127,10 @@ int main( int argc, char** argv )
 	check_ping = glade_xml_get_widget(xml, "check_ping");
 	spin_match = glade_xml_get_widget(xml, "spin_match");
 
-	spin_red = glade_xml_get_widget(xml, "spin_red");
-	spin_blue = glade_xml_get_widget(xml, "spin_blue");
-	spin_green = glade_xml_get_widget(xml, "spin_green");
-	spin_yellow = glade_xml_get_widget(xml, "spin_yellow");
+	spin_colours[RED] = glade_xml_get_widget(xml, "spin_red");
+	spin_colours[BLUE] = glade_xml_get_widget(xml, "spin_blue");
+	spin_colours[GREEN] = glade_xml_get_widget(xml, "spin_green");
+	spin_colours[YELLOW] = glade_xml_get_widget(xml, "spin_yellow");
 
 	hbox1 = glade_xml_get_widget(xml, "hbox1");
 
@@ -337,10 +335,8 @@ void update_match( void )
 		cur_match_info.time = 0;
 	}
 		
-	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_red), (gdouble)cur_match_info.teams[RED] );
-	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_green), (gdouble)cur_match_info.teams[GREEN] );
-	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_yellow), (gdouble)cur_match_info.teams[YELLOW] );
-	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_blue), (gdouble)cur_match_info.teams[BLUE] );
+	for( i=0; i<4; i++ )
+		gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_colours[i]), (gdouble)cur_match_info.teams[i] );
 
 	/* Get the new team addresses */
 	for(i=0; i<4; i++)
