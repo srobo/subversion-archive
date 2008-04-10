@@ -78,13 +78,15 @@ GtkWidget *b_start = NULL,
 	*spin_yellow = NULL,
 	*hbox1 = NULL;
 
-typedef struct {
-	uint16_t red, green, blue, yellow;
-	uint32_t time;
-} match_t;
 
 enum { RED, GREEN, BLUE, YELLOW };
 xb_addr_t team_addresses[4];
+
+typedef struct {
+	/* Arranged using RED, GREEN, BLUE and YELLOW */
+	uint16_t teams[4];
+	uint32_t time;
+} match_t;
 
 /* The current match */
 gint cur_match = 0;
@@ -257,7 +259,8 @@ gboolean sr_match_info( uint16_t N, match_t* m )
 	unsigned int n_fields, i;
 	assert( m != NULL );
 	m->time = 0;
-	m->red = m->green = m->blue = m->yellow = 0;
+	for(i=0; i<4; i++)
+		m->teams[i] = 0;
 
 	asprintf(&q, "SELECT * FROM matches WHERE number = %hu LIMIT 1;", N );
 	if( mysql_query( db, q ) != 0 ) {
@@ -283,13 +286,13 @@ gboolean sr_match_info( uint16_t N, match_t* m )
 			if( strcmp(fields[i].name,"time") == 0 )
 				m->time = strtoul(row[i], NULL, 10);
 			else if (strcmp(fields[i].name,"red")==0)
-				m->red = strtoul(row[i], NULL, 10);
+				m->teams[RED] = strtoul(row[i], NULL, 10);
 			else if (strcmp(fields[i].name,"blue")==0)
-				m->blue = strtoul(row[i], NULL, 10);
+				m->teams[BLUE] = strtoul(row[i], NULL, 10);
 			else if (strcmp(fields[i].name,"green")==0)
-				m->green = strtoul(row[i], NULL, 10);
+				m->teams[GREEN] = strtoul(row[i], NULL, 10);
 			else if (strcmp(fields[i].name,"yellow")==0)
-				m->yellow = strtoul(row[i], NULL, 10);
+				m->teams[YELLOW] = strtoul(row[i], NULL, 10);
 		}
 	}
 	mysql_free_result(res);
@@ -329,26 +332,22 @@ void update_match( void )
 	printf("Updating to match %i\n", cur_match);
 	
 	if( !sr_match_info( cur_match, &cur_match_info ) ) {
-		cur_match_info.red = cur_match_info.green = cur_match_info.blue = cur_match_info.yellow = 0;
+		for(i=0; i<4; i++)
+			cur_match_info.teams[i] = 0;
 		cur_match_info.time = 0;
 	}
 		
-	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_red), (gdouble)cur_match_info.red );
-	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_green), (gdouble)cur_match_info.green );
-	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_yellow), (gdouble)cur_match_info.yellow );
-	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_blue), (gdouble)cur_match_info.blue );
+	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_red), (gdouble)cur_match_info.teams[RED] );
+	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_green), (gdouble)cur_match_info.teams[GREEN] );
+	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_yellow), (gdouble)cur_match_info.teams[YELLOW] );
+	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_blue), (gdouble)cur_match_info.teams[BLUE] );
 
 	/* Get the new team addresses */
 	for(i=0; i<4; i++)
 	{
 		uint16_t team = 0;
-		switch(i) {
-		case RED: team = cur_match_info.red; break;
-		case BLUE: team = cur_match_info.blue; break;
-		case GREEN: team = cur_match_info.green; break;
-		case YELLOW: team = cur_match_info.yellow; 
-		}
-			
+		team = cur_match_info.teams[i];
+
 		if( team != 0 )
 			sr_team_get_addr( team, &team_addresses[i] );
 	}
