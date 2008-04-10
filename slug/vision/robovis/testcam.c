@@ -15,29 +15,20 @@
 //#define USEFILE
 #define FILENAME "out.jpg"
 
-//#define DEBUGMODE
-//#define DEBUGDISPLAY
+#define DEBUGMODE
+#define DEBUGDISPLAY
 
 #define ADAPTIVESATTHRESH
 
-const unsigned char DEFAULTSATCUTOFF = 30;
-const unsigned int MINMASS = 200;
+const unsigned int MINMASS = 300;
 const unsigned int MAXMASS = 2000;
-const unsigned char MINHUEWIDTH = 1;
-const unsigned char MINVAL = 50;
-const unsigned int DEFAULTSATPEAK = 150;
-const unsigned int MINSATPEAK = 15;
-const unsigned char MINWHITEWIDTH = 2;
-const unsigned char SATBINS = 100;
-const unsigned int HUEBINS = 180;
 
 const unsigned int CAMWIDTH = 320;
 const unsigned int CAMHEIGHT = 240;
 
-
 const unsigned int SATEDGE = 6;
-const unsigned int DILATE = 6;
-const unsigned int ERODE = 8;
+const unsigned int DILATE = 2;
+const unsigned int CUTOFF = 2;
 
 typedef struct peak {
     unsigned int start;

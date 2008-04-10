@@ -13,6 +13,8 @@
 #define ERROR 1
 
 //#define CAMERA
+//
+#define DISPLAY
 
 IplImage *allo_frame(CvSize framesize, unsigned char depth, unsigned char channels){
     IplImage *frame = cvCreateImage(framesize, depth, channels);
