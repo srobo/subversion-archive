@@ -17,6 +17,9 @@ catcam: catcam.cpp
 dispcam: dispcam.cpp
 	$(CXX) -ggdb  -o dispcam $(CBFLAGS) dispcam.cpp $(LDBFLAGS)
 
+getblobs: getblobs.c
+	$(CC) -ggdb -o $@ $(CFLAGS) $< $(LDFLAGS)
+
 testcam: testcam.c
 	$(CC) -ggdb -o $@ $(CFLAGS) $< $(LDFLAGS)
 
