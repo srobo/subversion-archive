@@ -15,8 +15,8 @@
 //#define USEFILE
 #define FILENAME "out.jpg"
 
-#define DEBUGMODE
-#define DEBUGDISPLAY
+//#define DEBUGMODE
+//#define DEBUGDISPLAY
 
 #define ADAPTIVESATTHRESH
 
@@ -138,15 +138,17 @@ int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minar
     count = cvCountNonZero( blobmask );
     if(count < minarea)
         return 0;
+#ifdef DEBUGMODE
     printf("%d\n", count);
+#endif
 
     avghue = cvScalarAll(colour*20+50);
 
-    printf("%d %d %d %d %f %d\n", outline.x,
+    printf("%d %d %d %d %d %d\n", outline.x,
                                 outline.y,
                                 outline.width,
                                 outline.height,
-                                area, colour);
+                                count, colour);
 
 #ifdef DEBUGDISPLAY
     cvAddS(out, avghue, out, blobmask);
@@ -169,9 +171,7 @@ int main(int argc, char **argv){
 #ifndef USEFILE
     CvCapture *capture = NULL;
 #endif
-#ifdef DEBUGDISPLAY
     IplImage *dsthsv, *dstrgb;
-#endif
     CvSize framesize;
     IplConvKernel *k;
     
@@ -242,6 +242,7 @@ int main(int argc, char **argv){
 
         cvThreshold(sat, sat, 20, 255, CV_THRESH_BINARY);
         cvAnd(sat, hue, hue, NULL);
+#ifdef DEBUGDISPLAY
 
         cvShowImage("hue", hue);
 
@@ -256,9 +257,12 @@ int main(int argc, char **argv){
 
         cvInRangeS(hue, cvScalarAll(18), cvScalarAll(22), val); //14 - 30
         cvShowImage("y", val);
+#endif
 
         for(i = 0; i<4; i++){
+#ifdef DEBUGMODE
             printf("Looking for %d %d\n", huebins[i][0], huebins[i][1]);
+#endif
             cvInRangeS(hue, cvScalarAll(huebins[i][0]),
                             cvScalarAll(huebins[i][1]),
                             satthresh);
