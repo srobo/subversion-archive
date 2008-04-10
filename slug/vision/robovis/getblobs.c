@@ -15,8 +15,8 @@
 //#define USEFILE
 #define FILENAME "out.jpg"
 
-#define DEBUGMODE
-#define DEBUGDISPLAY
+//#define DEBUGMODE
+//#define DEBUGDISPLAY
 
 #define ADAPTIVESATTHRESH
 
@@ -140,7 +140,7 @@ int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, IplImage *hue, int mi
                                 outline.height,
                                 area, colour);
 
-#ifdef DISPLAY
+#ifdef DEBUGDISPLAY
     cvAddS(out, avghue, out, blobmask);
 #endif
  
@@ -154,9 +154,7 @@ int main(int argc, char **argv){
 #endif
     IplImage *frame = NULL, *hsv, *hue, *sat, *val,
              *satthresh;
-#ifdef DEBUGDISPLAY
     IplImage *dsthsv, *dstrgb;
-#endif
     CvSize framesize;
     IplConvKernel *k;
     
@@ -223,6 +221,21 @@ int main(int argc, char **argv){
         srlog(DEBUG, "Splitting into H, S and V");
         cvSplit(hsv, hue, sat, val, NULL);
 
+        {
+            FILE *f = fopen("face.txt", "wt");
+            unsigned char *data;
+            CvSize size;
+            int x, y, step;
+            cvGetRawData(hue, &data, &step, &size);
+
+            for(y = 0; y < size.height; y++, data += step)
+                for(x = 0; x < size.width; x++){
+                    fprintf(f, "%d\n", data[y*step+x]);
+                }
+            fclose(f);
+        }
+
+
 #ifdef DEBUGDISPLAY
         cvShowImage("sat", sat);
 #endif
@@ -259,7 +272,7 @@ int main(int argc, char **argv){
 
         cvDilate(satthresh, satthresh, NULL, DILATE);
 
-#ifdef DISPLAY
+#ifdef DEBUGDISPLAY
         cvShowImage("satdil", satthresh);
 #endif
 
@@ -290,7 +303,7 @@ int main(int argc, char **argv){
 
 #ifdef DEBUGDISPLAY
         cvCvtColor(dsthsv, dstrgb, CV_HSV2RGB);        
-        srshow("filled", dstrgb);
+        srshow("filled", dsthsv);
 #endif
 
         cvReleaseMemStorage(&contour_storage);
