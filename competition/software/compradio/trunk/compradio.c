@@ -1,9 +1,14 @@
+/* Student Robotics - Competition radio management */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdint.h>
 #include <assert.h>
 #include <gtk/gtk.h>
+#include <stdlib.h>
+#include <string.h>
 #include <glade/glade.h>
 #include <xbee-conn.h>
+#include <mysql/mysql.h>
 
 enum {
 	RADIO_CMD_START,
@@ -31,6 +36,9 @@ void on_b_start_clicked( GtkButton *button,
 
 void on_b_stop_clicked( GtkButton *button,
 			gpointer user_data );
+
+void spin_match_value_changed( GtkSpinButton *spinbutton,
+			       gpointer user_data );
 
 const xb_conn_callbacks_t xb_callbacks = 
 {
@@ -62,7 +70,38 @@ void change_state( state_t n );
 
 GtkWidget *b_start = NULL,
 	*b_stop = NULL,
-	*check_ping = NULL;
+	*check_ping = NULL,
+	*spin_match = NULL,
+	*spin_red = NULL,
+	*spin_blue = NULL,
+	*spin_green = NULL,
+	*spin_yellow = NULL;
+
+typedef struct {
+	uint16_t red, green, blue, yellow;
+	uint32_t time;
+} match_t;
+
+/* The current match */
+gint cur_match = 0;
+/* The curent match info */
+match_t cur_match_info;
+
+/*** Mysql related things ***/
+/* Initialise the mysql connection */
+void sr_mysql_init( void );
+
+/* Get the teams playing in match N.
+   Fills in the struct pointed to by m.
+   Returns true if match exists.
+ */
+gboolean sr_match_info( uint16_t N, match_t* m );
+
+/* Update the match */
+void update_match( void );
+
+/* The mysql handle */
+MYSQL *db = NULL;
 
 int main( int argc, char** argv )
 {
@@ -76,11 +115,25 @@ int main( int argc, char** argv )
 	b_start = glade_xml_get_widget(xml, "b_start");
 	b_stop = glade_xml_get_widget(xml, "b_stop");
 	check_ping = glade_xml_get_widget(xml, "check_ping");
+	spin_match = glade_xml_get_widget(xml, "spin_match");
 
-	change_state( S_IDLE );
+	spin_red = glade_xml_get_widget(xml, "spin_red");
+	spin_blue = glade_xml_get_widget(xml, "spin_blue");
+	spin_green = glade_xml_get_widget(xml, "spin_green");
+	spin_yellow = glade_xml_get_widget(xml, "spin_yellow");
 
 	xbc = xbee_conn_new( "/tmp/xbee", NULL );
+	if( xbc == NULL ) {
+		fprintf( stderr, "Error connecting to xbd\n" );
+		return 1;
+	}
 	xbee_conn_register_callbacks( xbc, &xb_callbacks );
+
+	sr_mysql_init();
+	change_state( S_IDLE );
+
+	cur_match = 1;
+	update_match();
 
 	/* The ping timeout */
 	g_timeout_add(100, (GSourceFunc)tx_ping, (gpointer)xbc);
@@ -178,4 +231,91 @@ void change_state( state_t n )
 		
 		break;
 	}
+}
+
+gboolean sr_match_info( uint16_t N, match_t* m )
+{
+	char* q = NULL;
+	MYSQL_RES *res;
+	MYSQL_FIELD *fields;
+	MYSQL_ROW row;
+	unsigned int n_fields, i;
+	assert( m != NULL );
+	m->time = 0;
+	m->red = m->green = m->blue = m->yellow = 0;
+
+	asprintf(&q, "SELECT * FROM matches WHERE number = %hu LIMIT 1;", N );
+	if( mysql_query( db, q ) != 0 ) {
+		fprintf(stderr, "Failed to grab match %hhu info.", N );
+		return FALSE;
+	}
+      
+	res = mysql_store_result( db );
+
+	if( mysql_num_rows( res ) == 0 ) {
+		printf("Match %hhu not found\n", N);
+		return FALSE;
+	}
+
+	n_fields = mysql_num_fields( res );
+	fields = mysql_fetch_fields( res );
+	while((row = mysql_fetch_row(res))) {
+		for(i=0; i<n_fields; i++) {
+			/* printf("%s = %s\n", fields[i].name, row[i]); */
+
+			if( strcmp(fields[i].name,"time") == 0 )
+				m->time = strtoul(row[i], NULL, 10);
+			else if (strcmp(fields[i].name,"red")==0)
+				m->red = strtoul(row[i], NULL, 10);
+			else if (strcmp(fields[i].name,"blue")==0)
+				m->blue = strtoul(row[i], NULL, 10);
+			else if (strcmp(fields[i].name,"green")==0)
+				m->green = strtoul(row[i], NULL, 10);
+			else if (strcmp(fields[i].name,"yellow")==0)
+				m->yellow = strtoul(row[i], NULL, 10);
+		}
+	}
+	mysql_free_result(res);
+	free(q);
+	return TRUE;
+}
+
+void sr_mysql_init( void )
+{
+	db = mysql_init( NULL );
+	assert(db != NULL);
+
+	if( mysql_real_connect( db, 
+				"127.0.0.1", 
+				"comp",
+				"lemmings",
+				"comp",
+				8000,
+				NULL,
+				0 ) == NULL ) {
+		fprintf(stderr, "Couldn't connect to mysql: %s\n",
+			mysql_error(db));
+		exit(1);
+	}
+}
+
+void spin_match_value_changed( GtkSpinButton *spinbutton,
+			       gpointer user_data )
+{
+	cur_match = gtk_spin_button_get_value_as_int(spinbutton);
+	update_match();
+}
+
+void update_match( void )
+{
+	printf("Updating to match %i\n", cur_match);
+	if( !sr_match_info( cur_match, &cur_match_info ) ) {
+		cur_match_info.red = cur_match_info.green = cur_match_info.blue = cur_match_info.yellow = 0;
+		cur_match_info.time = 0;
+	}
+		
+	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_red), (gdouble)cur_match_info.red );
+	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_green), (gdouble)cur_match_info.green );
+	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_yellow), (gdouble)cur_match_info.yellow );
+	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_blue), (gdouble)cur_match_info.blue );
 }

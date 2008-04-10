@@ -11,6 +11,10 @@ LDFLAGS += -L$(LIBXB_DIR)/libxbee -lxbee
 CFLAGS += `pkg-config --cflags libglade-2.0`
 LDFLAGS += `pkg-config --libs libglade-2.0`
 
+# mysql C library:
+CFLAGS += -I/usr/include
+LDFLAGS += -L/usr/lib/mysql -lmysqlclient
+
 LDFLAGS += -Wl,--export-dynamic
 
 compradio: compradio.c compradio.glade
