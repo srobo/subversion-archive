@@ -17,8 +17,11 @@ LDFLAGS += -L/usr/lib/mysql -lmysqlclient
 
 LDFLAGS += -Wl,--export-dynamic
 
-compradio: compradio.c compradio.glade
-	$(CC) compradio.c -o compradio $(CFLAGS) $(LDFLAGS)
+C_FILES := compradio.c comp-mysql.c
+H_FILES := comp-mysql.h comp-types.h
+
+compradio: $(C_FILES) $(H_FILES) compradio.glade
+	$(CC) $(C_FILES) -o compradio $(CFLAGS) $(LDFLAGS)
 
 .PHONY: clean
 
