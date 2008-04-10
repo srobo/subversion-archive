@@ -20,7 +20,7 @@
 
 #define ADAPTIVESATTHRESH
 
-const unsigned int MINMASS = 300;
+const unsigned int MINMASS = 600;
 const unsigned int MAXMASS = 2000;
 
 const unsigned int CAMWIDTH = 320;
@@ -30,8 +30,13 @@ const unsigned int SATEDGE = 6;
 const unsigned int DILATE = 2;
 const unsigned int CUTOFF = 2;
 
-    IplImage *frame = NULL, *hsv, *hue, *sat, *val,
-             *satthresh;
+IplImage *frame = NULL, *hsv, *hue, *sat, *val,
+            *satthresh;
+
+unsigned int huebins[4][2] = {{7, 12},
+                              {67, 78},
+                              {40, 58},
+                              {18, 22}};
 
 /* Wait for a newline on stdin */
 void wait_trigger(void)
@@ -111,21 +116,17 @@ IplImage *allo_frame(CvSize framesize, unsigned char depth, unsigned char channe
     }
     return frame;
 }
-int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, IplImage *hue, int minarea){
-    static IplImage *blobmask = NULL; 
+int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minarea, IplImage *huemask){
+    static IplImage *blobmask = NULL;
     CvScalar avghue, white;
     float area;
     CvRect outline;
-    float colour = 0;
+    int count;
 
     if(blobmask == NULL)
         blobmask = allo_frame(framesize, IPL_DEPTH_8U, 1);
 
     white = cvScalar(255, 255, 255, 255);
-    
-    area = fabs(cvContourArea(cont, CV_WHOLE_SEQ));
-    if(area < minarea)
-        return 0;
     
     outline = cvBoundingRect(cont, 0);
     cvSetZero(blobmask);
@@ -133,11 +134,15 @@ int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, IplImage *hue, int mi
                 cvPoint(outline.x+outline.width, outline.y+outline.height),
                 white, CV_FILLED, 8, 0);
 
-    avghue = cvAvg(hue, blobmask);
+    cvAnd(huemask, blobmask, blobmask, NULL);
+    count = cvCountNonZero( blobmask );
+    if(count < minarea)
+        return 0;
+    printf("%d\n", count);
 
-    colour = avghue.val[0];
+    avghue = cvScalarAll(colour*20+50);
 
-    printf("%d %d %d %d %f %f\n", outline.x,
+    printf("%d %d %d %d %f %d\n", outline.x,
                                 outline.y,
                                 outline.width,
                                 outline.height,
@@ -171,16 +176,13 @@ int main(int argc, char **argv){
     IplConvKernel *k;
     
     CvMemStorage *contour_storage;
-    CvSeq *cont, *child;
-    int num_contours;
+    CvSeq *cont;
+    int num_contours, i;
     double area;
 
 #ifdef DEBUGDISPLAY
     //No idea what this returns on fail.
     cvNamedWindow("testcam", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("satthresh", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("sat", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("satdil", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("filled", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("hue", CV_WINDOW_AUTOSIZE);
     cvSetMouseCallback("hue", Foo, hue);
@@ -238,6 +240,9 @@ int main(int argc, char **argv){
         srlog(DEBUG, "Splitting into H, S and V");
         cvSplit(hsv, hue, sat, val, NULL);
 
+        cvThreshold(sat, sat, 20, 255, CV_THRESH_BINARY);
+        cvAnd(sat, hue, hue, NULL);
+
         cvShowImage("hue", hue);
 
         cvInRangeS(hue, cvScalarAll(7), cvScalarAll(12), val); //0 - 14
@@ -252,43 +257,24 @@ int main(int argc, char **argv){
         cvInRangeS(hue, cvScalarAll(18), cvScalarAll(22), val); //14 - 30
         cvShowImage("y", val);
 
+        for(i = 0; i<4; i++){
+            printf("Looking for %d %d\n", huebins[i][0], huebins[i][1]);
+            cvInRangeS(hue, cvScalarAll(huebins[i][0]),
+                            cvScalarAll(huebins[i][1]),
+                            satthresh);
 
-#ifdef DEBUGDISPLAY
-        cvShowImage("sat", sat);
-#endif
-        cvAdaptiveThreshold(sat, satthresh, 255,
-                CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY_INV, 5, SATEDGE);
+            num_contours = cvFindContours(satthresh, contour_storage, &cont,
+                        sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE,
+                        cvPoint(0,0));
 
-        cvShowImage("satthresh", satthresh);
-
-        cvSetZero(dsthsv);
-
-        cvDilate(satthresh, satthresh, NULL, DILATE);
-
-#ifdef DEBUGDISPLAY
-        cvShowImage("satdil", satthresh);
-#endif
-
-        srlog(DEBUG, "Finding contours");
-        num_contours = cvFindContours(satthresh, contour_storage, &cont,
-                    sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE,
-                    cvPoint(0,0));
-
-        srlog(DEBUG, "Looping through contours");
-        for(; cont; cont = cont->h_next){
-            unsigned char bigchild = 0;
-
-            area = fabs(cvContourArea(cont, CV_WHOLE_SEQ));
-            if(area < MINMASS)
-                continue;
-            
-            if(cont->v_next)
-                for(child = cont->v_next; child; child = child->h_next)
-                    if(add_blob(child, framesize, dsthsv, hue, MINMASS))
-                        bigchild = 1;
-
-            if(!bigchild)
-                add_blob(cont, framesize, dsthsv, hue, MINMASS);
+            srlog(DEBUG, "Looping through contours");
+            for(; cont; cont = cont->h_next){
+                area = fabs(cvContourArea(cont, CV_WHOLE_SEQ));
+                if(area < MINMASS)
+                    continue;
+                
+                add_blob(cont, framesize, dsthsv, i, MINMASS, satthresh);
+            }
         }
 
         fputs("BLOBS\n", stdout);
