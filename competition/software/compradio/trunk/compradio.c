@@ -45,6 +45,9 @@ void spin_blue_value_changed( GtkSpinButton *spinbutton,
 void spin_yellow_value_changed( GtkSpinButton *spinbutton,
 				gpointer user_data );
 
+void spin_duration_value_changed( GtkSpinButton *spinbutton,
+				  gpointer user_data );
+
 /* Update a player to a team */
 void set_player( uint16_t colour, uint16_t team );
 
@@ -89,7 +92,7 @@ gint cur_match = 0;
 /* The curent match info */
 match_t cur_match_info;
 /* The match duration (seconds) */
-uint16_t match_duration = 10;
+uint16_t match_duration = 0;
 
 /* The time the match started */
 GTimeVal match_start;
@@ -338,4 +341,10 @@ void set_player( uint16_t colour, uint16_t team )
 		addr_valid[colour] = sr_team_get_addr( team, &team_addresses[colour] );
 	else
 		addr_valid[colour] = FALSE;
+}
+
+void spin_duration_value_changed( GtkSpinButton *spinbutton,
+				  gpointer user_data )
+{
+	match_duration = gtk_spin_button_get_value_as_int(spinbutton);
 }

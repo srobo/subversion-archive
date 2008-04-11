@@ -50,42 +50,84 @@
             <property name="n_rows">2</property>
             <property name="n_columns">5</property>
             <child>
-              <widget class="GtkLabel" id="label2">
+              <widget class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
-                <property name="label" translatable="yes">Colour:</property>
+                <property name="label" translatable="yes">Teams:</property>
               </widget>
               <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="y_options"></property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkSpinButton" id="spin_yellow">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">1 0 100 1 10 10</property>
+                <property name="climb_rate">1</property>
+                <signal name="value_changed" handler="spin_yellow_value_changed"/>
+              </widget>
+              <packing>
+                <property name="left_attach">4</property>
+                <property name="right_attach">5</property>
                 <property name="x_options">GTK_FILL</property>
                 <property name="y_options"></property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label3">
+              <widget class="GtkSpinButton" id="spin_green">
                 <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">Red</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">1 0 100 1 10 10</property>
+                <property name="climb_rate">1</property>
+                <signal name="value_changed" handler="spin_green_value_changed"/>
               </widget>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
                 <property name="x_options">GTK_FILL</property>
                 <property name="y_options"></property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label4">
+              <widget class="GtkSpinButton" id="spin_blue">
                 <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">Blue</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">1 0 100 1 10 10</property>
+                <property name="climb_rate">1</property>
+                <signal name="value_changed" handler="spin_blue_value_changed"/>
               </widget>
               <packing>
                 <property name="left_attach">2</property>
                 <property name="right_attach">3</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options"></property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkSpinButton" id="spin_red">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">1 0 100 1 10 10</property>
+                <property name="climb_rate">1</property>
+                <signal name="value_changed" handler="spin_red_value_changed"/>
+              </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options"></property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label6">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Yellow</property>
+              </widget>
+              <packing>
+                <property name="left_attach">4</property>
+                <property name="right_attach">5</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
                 <property name="x_options">GTK_FILL</property>
@@ -108,14 +150,14 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label6">
+              <widget class="GtkLabel" id="label4">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
-                <property name="label" translatable="yes">Yellow</property>
+                <property name="label" translatable="yes">Blue</property>
               </widget>
               <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
                 <property name="x_options">GTK_FILL</property>
@@ -123,72 +165,30 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkSpinButton" id="spin_red">
+              <widget class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="adjustment">1 0 100 1 10 10</property>
-                <property name="climb_rate">1</property>
-                <signal name="value_changed" handler="spin_red_value_changed"/>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Red</property>
               </widget>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
                 <property name="x_options">GTK_FILL</property>
                 <property name="y_options"></property>
               </packing>
             </child>
             <child>
-              <widget class="GtkSpinButton" id="spin_blue">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="adjustment">1 0 100 1 10 10</property>
-                <property name="climb_rate">1</property>
-                <signal name="value_changed" handler="spin_blue_value_changed"/>
-              </widget>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="right_attach">3</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options"></property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkSpinButton" id="spin_green">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="adjustment">1 0 100 1 10 10</property>
-                <property name="climb_rate">1</property>
-                <signal name="value_changed" handler="spin_green_value_changed"/>
-              </widget>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options"></property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkSpinButton" id="spin_yellow">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="adjustment">1 0 100 1 10 10</property>
-                <property name="climb_rate">1</property>
-                <signal name="value_changed" handler="spin_yellow_value_changed"/>
-              </widget>
-              <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options"></property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="label1">
+              <widget class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
-                <property name="label" translatable="yes">Teams:</property>
+                <property name="label" translatable="yes">Colour:</property>
               </widget>
               <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
                 <property name="y_options"></property>
               </packing>
             </child>
@@ -283,7 +283,6 @@
         <child>
           <widget class="GtkLabel" id="countdown">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">label</property>
           </widget>
           <packing>
             <property name="position">4</property>
