@@ -74,7 +74,8 @@ GtkWidget *b_start = NULL,
 	*b_stop = NULL,
 	*check_ping = NULL,
 	*spin_match = NULL,
-	*hbox1 = NULL;
+	*hbox1 = NULL,
+	*countdown = NULL;
 
 /* The spins for the different colours */
 GtkWidget *spin_colours[4];
@@ -87,6 +88,11 @@ gboolean addr_valid[4];
 gint cur_match = 0;
 /* The curent match info */
 match_t cur_match_info;
+/* The match duration (seconds) */
+uint16_t match_duration = 10;
+
+/* The time the match started */
+GTimeVal match_start;
 
 /* Update the match */
 void update_match( void );
@@ -94,6 +100,7 @@ void update_match( void );
 int main( int argc, char** argv )
 {
 	GladeXML *xml;
+	uint8_t i;
 	gtk_init( &argc, &argv );
 
 	xml = glade_xml_new("compradio.glade", NULL, NULL);
@@ -103,6 +110,7 @@ int main( int argc, char** argv )
 	b_stop = glade_xml_get_widget(xml, "b_stop");
 	check_ping = glade_xml_get_widget(xml, "check_ping");
 	spin_match = glade_xml_get_widget(xml, "spin_match");
+	countdown = glade_xml_get_widget(xml, "countdown");
 
 	spin_colours[RED] = glade_xml_get_widget(xml, "spin_red");
 	spin_colours[BLUE] = glade_xml_get_widget(xml, "spin_blue");
@@ -121,6 +129,9 @@ int main( int argc, char** argv )
 
 	cur_match = 1;
 	update_match();
+	for(i=0; i<4; i++) {
+		set_player( i, cur_match_info.teams[i] );
+	}
 
 	/* The ping timeout */
 	g_timeout_add(100, (GSourceFunc)tx_ping, NULL);
@@ -178,11 +189,41 @@ gboolean tx_ping( gpointer nothing )
 	if( pinging ) {
 		uint8_t i;
 		for(i=0; i<4; i++) {
-			if( cur_match_info.teams[i] != 0 && addr_valid[i] )
+			if( cur_match_info.teams[i] != 0 && addr_valid[i] ) {
 				comp_xbee_ping( &team_addresses[i] );
+				printf("PING\n");
+			}
 		}
+	}
 
-		printf("PING\n");
+	/* Do the match timing stuff */
+	if( match_duration != 0 && state == S_STARTED ) {
+		GTimeVal since, now;
+		char* label = NULL;
+
+		g_get_current_time( &now );
+
+		/* Calculate the time since the match began */
+		since.tv_sec = now.tv_sec - match_start.tv_sec;
+
+		if( now.tv_usec >= match_start.tv_usec )
+			since.tv_usec = now.tv_usec - match_start.tv_usec;
+		else {
+			since.tv_sec--;
+			since.tv_usec = 1000000 - (match_start.tv_usec - now.tv_usec);
+		}		
+
+		/* Update the label */
+		asprintf( &label, "%lu.%1.1lu", since.tv_sec, (since.tv_usec/100000) );
+		gtk_label_set_text( GTK_LABEL(countdown), label );
+		free( label );
+		label = NULL;
+		
+		/* Stop the match if necessary */
+		if( since.tv_sec >= match_duration ) {
+			change_state( S_IDLE );
+		}		
+
 	}
 
 	return TRUE;
@@ -233,6 +274,9 @@ void change_state( state_t n )
 
 		gtk_widget_set_sensitive( b_start, FALSE );
 		gtk_widget_set_sensitive( b_stop, TRUE );
+
+		/* Store the time of start */
+		g_get_current_time( &match_start );
 		
 		break;
 	}
