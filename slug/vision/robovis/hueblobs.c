@@ -31,12 +31,12 @@ const unsigned int DILATE = 2;
 const unsigned int CUTOFF = 2;
 
 IplImage *frame = NULL, *hsv, *hue, *sat, *val,
-            *satthresh;
+            *satthresh, *huethresh, *huemasked;
 
-unsigned int huebins[4][2] = {{7, 12},
-                              {67, 78},
-                              {40, 58},
-                              {18, 22}};
+unsigned int huebins[4][4] = {{7, 12, 190, 255},
+                              {35, 45, 120, 140},
+                              {35, 45, 80, 93},
+                              {12, 20, 190, 200}};
 
 /* Wait for a newline on stdin */
 void wait_trigger(void)
@@ -158,13 +158,22 @@ int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minar
 
 }
 
+void Goo(int event, int x, int y, int flags, void* param){
+    unsigned char *data;
+    CvSize size;
+    int step, c;
+    cvGetRawData(sat, &data, &step, &size);
+    c = data[y*step+x];
+    printf("Sat %d,%d - %d\n", x, y, c);
+}
+
 void Foo(int event, int x, int y, int flags, void* param){
     unsigned char *data;
     CvSize size;
     int step, c;
     cvGetRawData(hue, &data, &step, &size);
     c = data[y*step+x];
-    printf("%d,%d - %d\n", x, y, c);
+    printf("Hue %d,%d - %d\n", x, y, c);
 }
 
 int main(int argc, char **argv){
@@ -184,9 +193,11 @@ int main(int argc, char **argv){
     //No idea what this returns on fail.
     cvNamedWindow("testcam", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("filled", CV_WINDOW_AUTOSIZE);
+    cvNamedWindow("sat", CV_WINDOW_AUTOSIZE);
+    cvSetMouseCallback("sat", Goo, sat);
     cvNamedWindow("hue", CV_WINDOW_AUTOSIZE);
     cvSetMouseCallback("hue", Foo, hue);
-    cvNamedWindow("r", CV_WINDOW_AUTOSIZE);
+     cvNamedWindow("r", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("g", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("b", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("y", CV_WINDOW_AUTOSIZE);
@@ -207,6 +218,8 @@ int main(int argc, char **argv){
     
     srlog(DEBUG, "Allocating scratchpads");
     hsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
+    huemasked = allo_frame(framesize, IPL_DEPTH_8U, 1);
+    huethresh = allo_frame(framesize, IPL_DEPTH_8U, 1);
     hue = allo_frame(framesize, IPL_DEPTH_8U, 1);
     sat = allo_frame(framesize, IPL_DEPTH_8U, 1);
     val = allo_frame(framesize, IPL_DEPTH_8U, 1);
@@ -239,10 +252,11 @@ int main(int argc, char **argv){
 
         srlog(DEBUG, "Splitting into H, S and V");
         cvSplit(hsv, hue, sat, val, NULL);
-
-        cvThreshold(sat, sat, 20, 255, CV_THRESH_BINARY);
-        cvAnd(sat, hue, hue, NULL);
 #ifdef DEBUGDISPLAY
+        cvShowImage("sat", sat);
+#endif
+
+        #ifdef DEBUGDISPLAY
 
         cvShowImage("hue", hue);
 
@@ -263,11 +277,17 @@ int main(int argc, char **argv){
 #ifdef DEBUGMODE
             printf("Looking for %d %d\n", huebins[i][0], huebins[i][1]);
 #endif
-            cvInRangeS(hue, cvScalarAll(huebins[i][0]),
-                            cvScalarAll(huebins[i][1]),
+            cvInRangeS(sat, cvScalarAll(huebins[i][2]),
+                            cvScalarAll(huebins[i][3]),
                             satthresh);
 
-            num_contours = cvFindContours(satthresh, contour_storage, &cont,
+            cvAnd(satthresh, hue, huethresh, NULL);
+
+            cvInRangeS(huethresh, cvScalarAll(huebins[i][0]),
+                            cvScalarAll(huebins[i][1]),
+                            huemasked);
+
+            num_contours = cvFindContours(huemasked, contour_storage, &cont,
                         sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE,
                         cvPoint(0,0));
 
@@ -277,7 +297,7 @@ int main(int argc, char **argv){
                 if(area < MINMASS)
                     continue;
                 
-                add_blob(cont, framesize, dsthsv, i, MINMASS, satthresh);
+                add_blob(cont, framesize, dsthsv, i, MINMASS, huemasked);
             }
         }
 
