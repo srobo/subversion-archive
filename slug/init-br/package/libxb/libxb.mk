@@ -19,7 +19,7 @@ $(LIBXB_DIR)/.source: $(DL_DIR)/libxb-$(LIBXB_REVISION)/.exported
 $(LIBXB_DIR)/xbd/xbd: $(LIBXB_DIR)/.source
 	( export PKG_CONFIG_LIBDIR=$(STAGING_DIR)/usr/local/lib/pkgconfig ; \
 	  export PKG_CONFIG_ARGS="--define-variable=prefix=$(STAGING_DIR)/usr/local" ; \
-	  LDFLAGS="-L$(STAGING_DIR)/usr/lib" $(MAKE) CC=$(TARGET_CC) -C $(LIBXB_DIR) ; )
+	CFLAGS="-g" LDFLAGS="-L$(STAGING_DIR)/usr/lib" $(MAKE) CC=$(TARGET_CC) -C $(LIBXB_DIR) ; )
 
 $(TARGET_DIR)/usr/bin/xbd: $(LIBXB_DIR)/xbd/xbd
 	cp $< $@

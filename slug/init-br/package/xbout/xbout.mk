@@ -2,7 +2,7 @@
 # xbout
 ##############################
 
-XBOUT_REVISION := 1334
+XBOUT_REVISION := 1339
 XBOUT_SVN := http://svn.studentrobotics.org/slug/xbout/trunk
 XBOUT_SOURCE := $(DL_DIR)/xbout-$(XBOUT_REVISION)
 XBOUT_DIR := $(BUILD_DIR)/xbout-$(XBOUT_REVISION)
@@ -19,7 +19,7 @@ $(XBOUT_DIR)/xbout: $(XBOUT_DIR)/.source
 	( export PKG_CONFIG_LIBDIR=$(STAGING_DIR)/usr/local/lib/pkgconfig ; \
 	  export PKG_CONFIG_ARGS="--define-variable=prefix=$(STAGING_DIR)/usr/local" ; \
 	  echo `pkg-config $$PKG_CONFIG_ARGS --cflags libxb` ; \
-	  LDFLAGS="-L$(STAGING_DIR)/usr/lib" $(MAKE) CC=$(TARGET_CC) -C $(XBOUT_DIR) ; )
+	 CFLAGS="-g" LDFLAGS="-L$(STAGING_DIR)/usr/lib" $(MAKE) CC=$(TARGET_CC) -C $(XBOUT_DIR) ; )
 
 xbout: libxb $(XBOUT_DIR)/xbout
 
