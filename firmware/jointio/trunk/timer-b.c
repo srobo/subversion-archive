@@ -6,7 +6,7 @@
 #define MC 0x30
 #define MC_UP 0x10
 
-#define timer_b_dis() do { TBCTL &= ~MC; } while(0)
+#define timer_b_dis() do { TBCTL &= ~MC_UPDOWN; } while(0)
 #define timer_b_en() do { TBCTL |= MC_UP; } while(0)
 
 void timer_b_init( void )
@@ -30,6 +30,7 @@ interrupt (TIMERB1_VECTOR) timer_b_isr( void )
 {
 	i2c_reset();
 	timer_b_stop();
+	TBCTL &= ~TBIFG;
 }
 
 /* FFFA - TBCCR0 CCIFG */
