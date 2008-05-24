@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# display simulator, modelling the commands of the STV8105, farnell part no 1498855
+
+# datasheet: http://www.farnell.com/datasheets/102961.pdf
+
 import math
 import cairo
 
@@ -17,11 +21,16 @@ class Display:
         self.ctx = cairo.Context(self.surface)
 
         
-
+    def interface(self,dnc,data=None,caddr=None,cdata=None):
+        if dnc:
+            self.data(data)
+        else:
+            self.command(caddr,cdata)
+            
 
     def data(self,data):
         val = (data&0x0f)/15.0
-        print val
+        #print val
         self.ctx.set_source_rgb(val, val, val)
         self.ctx.set_line_width(0.01)
 
