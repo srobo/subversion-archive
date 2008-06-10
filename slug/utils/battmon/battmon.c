@@ -19,13 +19,7 @@ uint16_t readword(int fd, uint8_t cmd);
 int main (int argc, char **argv)
 {
 
-  if (argc < 1)
-    {
-      fprintf (stderr, "Incorrect number of arguments! \n");
-      exit (0);
-    }
-  else
-    fprintf (stdout, "Initialising to address: %x\n", ADDRESS);
+
 
   int fd = 0;
 
@@ -38,6 +32,7 @@ int main (int argc, char **argv)
     }
 
   /* Set the slave address of type I2C_SLAVE */
+  fprintf (stdout, "Initialising to address: %x\n", ADDRESS);
   if (ioctl(fd, I2C_SLAVE, ADDRESS) < 0)
     {
       fprintf (stderr, "Failed to set slave address: %m\n");
