@@ -22,15 +22,6 @@ int main (int argc, char **argv)
   int fd = 0;
 
   int len; 			/* Defines the number of seconds to execute for */
-  
-/*   if (argc < 2) */
-/*     { */
-/*       fprintf (stderr, "Incorrect number of arguments:\n\n"); */
-/*       fprintf (stderr, "./battmon <number of seconds to execute>\n"); */
-/*       exit (0); */
-/*     } */
-/*   else */
-/*     len = atoi (argv[1]); */
 
   /* Attempt to open I2C device (/dev/i2c-0) */
   fd = open ("/dev/i2c-0", O_RDWR);
@@ -81,12 +72,13 @@ int main (int argc, char **argv)
   /* Begin Current and Voltage Reading */
   while (1)
     {
-      fprintf (stderr, "Current iteration: %d\n", i);
       
       /* Read current and voltage from I2C */
       voltage = readword (fd, GETV, write_file);
       current = readword (fd, GETI, write_file);      
-      
+     
+      fprintf (stderr, "Current iteration: %d - Voltage: %d, Current: %d\n", i, voltage, current);
+ 
       /* Get the current time */
       gettimeofday (&tp, tpz);
       currenttime = tp.tv_sec;
