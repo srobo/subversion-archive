@@ -23,14 +23,14 @@ int main (int argc, char **argv)
 
   int len; 			/* Defines the number of seconds to execute for */
   
-  if (argc < 2)
-    {
-      fprintf (stderr, "Incorrect number of arguments:\n\n");
-      fprintf (stderr, "./battmon <number of seconds to execute>\n");
-      exit (0);
-    }
-  else
-    len = atoi (argv[1]);
+/*   if (argc < 2) */
+/*     { */
+/*       fprintf (stderr, "Incorrect number of arguments:\n\n"); */
+/*       fprintf (stderr, "./battmon <number of seconds to execute>\n"); */
+/*       exit (0); */
+/*     } */
+/*   else */
+/*     len = atoi (argv[1]); */
 
   /* Attempt to open I2C device (/dev/i2c-0) */
   fd = open ("/dev/i2c-0", O_RDWR);
@@ -120,6 +120,7 @@ uint16_t readword(int fd, uint8_t cmd, FILE *write_file)
 	  while (i<5 && tmp < 1)
 	    {
 	      fprintf (stderr, "Error Reading from I2C Bus: %d\n", cmd);
+	      sleep (3);
 	      tmp = i2c_smbus_read_word_data(fd, cmd);
 	      i++;
 	    }
