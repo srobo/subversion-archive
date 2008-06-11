@@ -1,6 +1,6 @@
 all: battmon
 
-pwr-qual: battmon.c
+battmon: battmon.c
 
 .PHONY: clean
 
