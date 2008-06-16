@@ -8,8 +8,8 @@ include 'Head.inc.php';
 foreach($ide_sect as $row)
 {
 ?>
-			<h3 id="ide_sect_<?php echo $row['id']; ?>" onclick="showHide('ide_sect_<?php echo $row['id']; ?>_details')">
-				<span><?php echo $row['title']; ?></span>
+			<h3 id="ide_sect_<?php echo $row['id']; ?>" onclick="showHide('ide_sect_<?php echo $row['id']; ?>_details')" title="Click to expand section">
+				<span><a href="<?php echo $row['link']; ?>" title="Click to view this section of the site"><?php echo $row['title']; ?></a></span>
 			</h3>
 			<div class="task_attr_container">
 				<div class="rs"><strong>Description</strong>:

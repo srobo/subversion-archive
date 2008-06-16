@@ -8,7 +8,7 @@ include 'Head.inc.php';
 foreach($task_list as $row)
 {
 ?>
-			<h3 id="task_<?php echo $row['id']; ?>" onclick="showHide('task_<?php echo $row['id']; ?>_details')">
+			<h3 id="task_<?php echo $row['id']; ?>" onclick="showHide('task_<?php echo $row['id']; ?>_details')" title="Click to expand task">
 				<span><?php echo $row['id']; ?> - <?php echo $row['title']; ?></span>
 			</h3>
 			<div class="task_attr_container">
