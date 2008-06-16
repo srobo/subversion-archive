@@ -47,7 +47,7 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 	#left_side	{ background: #FFF; margin-bottom: 10px; width: 560px; padding-bottom: 2px; }
 		#left_side h3	{ background: #FFF url('images/hbg.gif') repeat-x; height: 30px; padding: 5px 0 0 0px; margin: 0; font: bold 1.2em Arial, Sans-Serif; }
 		#left_side h3 span	{ background: url('images/h-art.gif') no-repeat left; padding: 1px 10px 0 23px; line-height: 22px; margin: 0; }
-		#left_side strong	{ margin: 0 5px; }
+		#left_side strong	{ margin: 0 1px 0 5px; }
 		#left_side img	{ float: left; padding: 0 10px 5px 0; }
 		#left_side blockquote	{ padding-left: 10px; border-left: 2px solid #DA4040; margin: 10px 0 10px 25px; }
 		.date	{ border-top: 1px dotted #ccc; padding: 5px 0; margin: 10px 0 25px 0; text-align: right; }
