@@ -7,8 +7,7 @@ $ide_sect[0]['description']	= "Solder a wire across the sense resistor.";
 $ide_sect[0]['related_docs_help']	= "";
 $ide_sect[0]['teams_comments']	= "";
 $ide_sect[0]['mentor_comments']	= "";
-$ide_sect[0]['signoff_mentor']	= "";
-$ide_sect[0]['deadline']	= "2008-06-07";
+$ide_sect[0]['category']	= "Electronics";
 
 $ide_sect[1]['id']	= 2;
 $ide_sect[1]['title']	= "Wire Up Boards";
@@ -16,8 +15,7 @@ $ide_sect[1]['description']	= "Connect up with RJ11 cables.";
 $ide_sect[1]['related_docs_help']	= "";
 $ide_sect[1]['teams_comments']	= "";
 $ide_sect[1]['mentor_comments']	= "";
-$ide_sect[1]['signoff_mentor']	= "";
-$ide_sect[1]['deadline']	= "2008-06-09";
+$ide_sect[1]['category']	= "Electronics";
 
 $ide_sect[2]['id']	= 12;
 $ide_sect[2]['title']	= "Order Motors";

@@ -4,7 +4,6 @@ include 'task_list.inc.php';
 include 'Head.inc.php';
 
 ?>
-	<div id="main">
 <div class="graph">
 	<div class="container" style="border: solid grey; border-width: 0 1px 1px;">
 		<div class="back"></div>
@@ -26,7 +25,6 @@ foreach($task_list as $row)
 }	//end foreach ?>
 	</div><!-- end second container -->
 </div><!-- end graph div -->
-	</div><!-- end main -->
 <?php
 include 'Foot.inc.php';
 ?>

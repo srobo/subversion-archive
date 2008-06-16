@@ -1,7 +1,6 @@
 <?php
 include 'Head.inc.php';
 ?>
-	<div id="main">
 	<form method="post" action="" id="contact" onsubmit="return Validate_On_Contact_Submit('contact')">
 		<table id="contact_tbl">
 			<tr>
@@ -45,7 +44,6 @@ include 'Head.inc.php';
 			</tr>
 		</table>
 	</form>
-	</div><!-- end main -->
 <?php
 include 'Foot.inc.php';
 ?>
