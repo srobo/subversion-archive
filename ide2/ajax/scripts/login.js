@@ -5,16 +5,21 @@ window.addEvent('domready', function() {
 	var navigate = $('navigate');
 	var top = $('top-spacer');
 
-	$('trigger').addEvent('click', function() {
-		morph.start({
-			width: '300px',
-			display: 'block'
-		}).chain(function(){
-			// executes immediately after completion of above effect
-			this.start({
-				width: '0px'
-			});
-		});
-	});
+	var scene2 = function(){
+			morph.start.delay(2000, this, {
+				width: '0px'});
+			};
+	var scene3 = function(){
+			morph.start({
+				display: 'none'});
+			};
+
+	var scene1 = function(){ 
+			morph.start({
+				width: '200px',
+				display: 'block'}).chain(scene2).chain(scene3);
+			};
+
+	$('trigger').addEvent('click', scene1);
 });
 
