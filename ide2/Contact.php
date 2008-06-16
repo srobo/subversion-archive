@@ -12,7 +12,7 @@ include 'Head.inc.php';
 				<? if($team_number != 0) { ?></td>
 			</tr><tr>
 				<th>
-					<label for="to">To:</label>
+					<label for="to">To</label>
 				</th>
 				<td>
 					<input type="radio" name="to" value="mentor" id="_mentor" checked="checked" />

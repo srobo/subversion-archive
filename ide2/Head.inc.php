@@ -25,9 +25,9 @@ if(user_is_mentor($username))
 	$button_val	= "Task Completed";
 	$school	= "Somewhere College";	//look it up in the db
 	$team_number	= rand(1, 20);	//look it up in the db
+	$mentor_name	= $mentor_list[($team_number % count($mentor_list))];	//look it up in the db
 }
 
-$mentor_name	= $mentor_list[($team_number % count($mentor_list))];
 
 $page_arr	= explode("/", $_SERVER['PHP_SELF']);	//prep for page titles
 $this_page	= $page_arr[count($page_arr)-1];

@@ -16,6 +16,9 @@ img	{ border: 0; }
 hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0; margin: 10px 0; }
 
 
+.center	{ text-align: center; }
+.f_left	{ float: left; }
+.f_right	{ float: right; }
 .content	{ margin: 0px auto; width: 808px; }
 .overdue	{ font: 0.9em bold; color: red; }
 .today_tomprrow	{ color: green; }
@@ -60,10 +63,10 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 		#left_side .task_attr_tbl .R	{ width: 150px; }
 		#left_side .task_attr_tbl th	{ width: 87px; padding: 0 5px; text-align: right; vertical-align: top; }
 	/* Contact.php */
-	#contact	{ background-color: white; }
-	#contact_tbl	{ width: 590px; border: none; }
+	#contact	{ background-color: #F6F6F6;  margin-bottom: 7px;}
+	#contact_tbl	{ width: 590px; border: none; margin-bottom: 7px; }
 	#contact_tbl th	{ width: 125px; line-height: 1.6em; vertical-align: top; text-align: right; padding-right: 8px; }
-	#contact_tbl .text_in	{ width: 401px; font-family: Verdana, Arial, Helvetica, sans-serif; margin-left: 1px; }
+	#contact_tbl .text_in	{ width: 401px; font-family: Verdana, Arial, Helvetica, sans-serif; margin-left: 1px; background-color: white; }
 	#contact_reset, #contact_submit	{ width: 238px; margin: 2px 0 0 3px; line-height: 1.6em; padding: 0; font-family: Tahoma, sans-serif; }
 
 /* Bar Charts */
