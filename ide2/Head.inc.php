@@ -1,3 +1,34 @@
+<?php
+/* file contains info in an array that mimics the db output */
+include 'task_list.inc.php';
+
+function user_is_mentor($username)
+{
+	global $mentor_list;
+	return in_array($username, $mentor_list);
+}
+
+if(isset($_POST['username']))
+	$username	= $_POST['username'];
+elseif(isset($_GET['username']))
+	$username	= $_GET['username'];
+else
+	$username	= "Test Student";
+
+if(user_is_mentor($username))
+{
+	$button_val	= "Sign Off Task";
+	$button_val2	= "Task Incomplete";
+	$school	= "SR";
+	$team_number	= 0;
+} else {
+	$button_val	= "Task Completed";
+	$school	= "Somewhere College";	//look it up in the db
+	$team_number	= rand(1, 20);	//look it up in the db
+}
+
+$mentor_name	= $mentor_list[($team_number % count($mentor_list))];
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>

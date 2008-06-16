@@ -33,38 +33,6 @@ function wiki2html($wikitext)
 	return $out;
 }
 
-function user_is_mentor($username)
-{
-	global $mentor_list;
-	return in_array($username, $mentor_list);
-}
-
-
-if(isset($_POST['username']))
-	$username	= $_POST['username'];
-elseif(isset($_GET['username']))
-	$username	= $_GET['username'];
-else
-	$username	= "Test Student";
-
-
-if(user_is_mentor($username))
-{
-	$button_val	= "Sign Off Task";
-	$button_val2	= "Task Incomplete";
-	$school	= "SR";
-	$team_number	= 0;
-}
-else
-{
-	$button_val	= "Task Completed";
-	$school	= "Somewhere College";	//look it up in the db
-	$team_number	= 9;	//look it up in the db
-}
-
-
-/* file contains info in an array that mimics the db output */
-include 'task_list.inc.php';
 include 'Head.inc.php';
 
 ?>

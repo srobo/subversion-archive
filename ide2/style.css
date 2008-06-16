@@ -60,6 +60,7 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 		#left_side .task_attr_tbl .R	{ width: 150px; }
 		#left_side .task_attr_tbl th	{ width: 87px; padding: 0 5px; text-align: right; vertical-align: top; }
 	/* Contact.php */
+	#contact	{ background-color: white; }
 	#contact_tbl	{ width: 590px; border: none; }
 	#contact_tbl th	{ width: 125px; line-height: 1.6em; vertical-align: top; text-align: right; padding-right: 8px; }
 	#contact_tbl .text_in	{ width: 401px; font-family: Verdana, Arial, Helvetica, sans-serif; margin-left: 1px; }
