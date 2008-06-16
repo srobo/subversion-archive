@@ -1,163 +1,191 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<title>Student Robotics IDE</title>
-	<meta http-equiv="Content-Language" content="English" />
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta name="author" content="David Herreman (www.free-css-templates.com)" />
-	<meta name="description" content="Free Css Template" />
-	<meta name="keywords" content="free,css,template" />	
-	<meta name="Robots" content="index,follow" />
-	<meta name="Generator" content="sNews 1.5" />
-	<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
-	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="rss/" />
-</head>
-<body>
-	
-<div class="content">
-	<div id="top">
-				<div id="icons">
-					<a href="/index.html" title="Home page"><img src="images/home.gif" alt="Home" /></a>
-					<a href="/contact/" title="Contact us"><img src="images/contact.gif" alt="Contact" /></a>
-					<a href="/sitemap/" title="Sitemap"><img src="images/sitemap.gif" alt="Sitemap" /></a>
-				</div>
-				<h1></h1>
-				<h2></h2>
-	</div>
-	<!-- end of the Top part -->
-</div>			
+<?php
+/*
+$dbhost = 'mysql2.ecs.soton.ac.uk';
+$dbuser = 'cc1206';
 
-<div id="prec">
-	<div id="wrap">
-			<div id="pic">
-				<div id="slogan">
-					<h1>Student Robotics Integrated Development Environment</h1>
-					<h2>View up-coming tasks and check on your team's progress!</h2>
-					<form name="login"><input type="text" value="Username" name="user" class="login" onFocus="this.value='';" /><br />
-					<input type="password" value="Password" name="pass" class="login" onFocus="this.value='';" /></form> <br />
-					300 Days Till Competition...
-					
-				</div>
-			</div>
-			<div id="menu">
-						<ul>	
-							<li><a href="http://www.free-css-templates.com" title="home">IDE HOME</a></li>
-							<li><a href="#" title="Articles">FORUMS</a></li>
-							<li><a href="#" title="Gallery">CHECK LIST</a></li>
-							<li><a href="#" title="Affiliates">DOCUMENTATION</a></li>
-							<li><a href="#" title="Articles">SIMULATOR</a></li>
-							<li><a href="#" title="Abous us">MESSAGES</a></li>
-							<li><a href="#" title="Contact">CONTACT</a></li>
-						
-						</ul>
-			</div>
-	</div>
-</div>
+$conn = mysql_connect($dbhost, $dbuser, $dbpass) or die ('Error connecting to mysql');
+$query = "SELECT * FROM cc1206.tids";
+$dbname = 'cc1206';
+$result = mysql_query($query);
 
-<div class="content">
-	<div id="ad">
-		<img src="icon/go-first.png" alt="Go To Start" />
-		<img src="icon/go-previous.png" alt="Go To Previous" />
-		<img src="icon/go-home.png" alt="Go Home" />
-		<img src="icon/go-next.png" alt="Go To Next" />
-		<img src="icon/go-last.png" alt="Go To End" />		
-	</div>
-	
+mysql_close($conn);
+*/
+
+function wiki2html($wikitext)
+{
+	if(!isset($wikitext) || $wikitext == "")
+		return FALSE;
+
+	$inter_text	= $wikitext;
+	while(strpos($inter_text,"[[") && strpos($inter_text,"]]"))
+	{
+		$link	= str_replace(array("[[", "]]"), "", substr($inter_text, strpos($inter_text, "[["), (strpos($inter_text, "]]")-strpos($inter_text, "[["))));
+		if(strpos($link, "|"))
+			list($href, $title)	= explode("|", $link);
+		else
+			$href	= $title	= $link;
+		$inter_text	= str_replace("[[$link]]", "<a href=\"$href\">$title</a>", $inter_text);
+	}
+
+	if(strpos($inter_text,"\n*") || strpos($inter_text,"*") === 0)
+		$out	= "\n<ul>".str_replace("*", "\n	<li>", str_replace("\n*", "</li>\n	<li>", $inter_text))."</li>\n</ul>\n";
+
+	return $out;
+}
+
+function user_is_mentor($username)
+{
+	return in_array($username, array("Peter", "Chris", "Steve", "Rob"));
+}
+
+
+if(isset($_POST['username']))
+	$username	= $_POST['username'];
+elseif(isset($_GET['username']))
+	$username	= $_GET['username'];
+else
+	$username	= "Test Student";
+
+
+if(user_is_mentor($username))
+{
+	$button_val	= "Sign Off Task";
+	$button_val2	= "Task Incomplete";
+	$school	= "SR";
+	$team_number	= 0;
+}
+else
+{
+	$button_val	= "Task Completed";
+	$school	= "Somewhere College";	//look it up in the db
+	$team_number	= 9;	//look it up in the db
+}
+
+
+/* file contains info in an array that mimics the db output */
+include 'task_list.inc.php';
+include 'Head.inc.php';
+
+?>
 	<div id="main">
 		<div id="right_side">
-			<h3>Toolbox</h3>
-			<ul>	
-							<li><a href="#" title="Articles">Unfinished Tasks (78)</a></li>
-							<li><a href="#" title="Gallery">Finished Tasks (10) </a></li>
-							<li><a href="#" title="Affiliates">Unchecked Tasks (2)</a></li>
-							<li><a href="#" title="Articles">Reminders (2)</a></li>
-							<li><a href="#" title="Abous us">New Tasks (2)</a></li>
-							<li><a href="#" title="Contact">Unread Messages (1)</a></li>
-						
-			</ul>
-			
-			<h3>Help</h3>
-			<p>
-			<ol>
-				<li> Read through the checklist </li>
-				<li> Complete the task </li>
-				<li> When you think your done, click 'I'm Done'</li>
-				<li> Ask a mentor to confirm you've done the task </li>
-				<li> Your mentor will then sign off the task </li>
-				<li> Move on to the next task </li>
-			</ol>
-			</p>
-			
-			<h3>Recent Activity</h3>
-			<ul>	
-							<li><a href="#" title="#">Flamming ducks wrote 'hello world' script</a></li>
-							<li><a href="#" title="#">Taunton incinerated their boards</a></li>
-							<li><a href="#" title="#">Team 7 finished the chasis</a></li>
-							<li><a href="#" title="#">Team 5 passed the wiring test</a></li>
-						
-			</ul>
-		</div>
-		
-		<div id="left_side">
-			<h3><span>#12 - Order Motors</span></h3>
-			<p>
-			<strong>Task: </strong> Decide upon the specification of the motors you will need for your robot and order them from your chosen manufacturer.
-			<br /><strong>Category: </strong> Mechanical
-			<br /><strong>Deadline: </strong> Week 2
-			<br /><strong>Completed by: </strong> 10 Teams 
-			<div class="rs"><strong>Design considerations</strong>:
-					<ul>
-						<li>Torque - How much do you need?</li>
-						<li>Wheel size - How big?</li>
-						<li>Wheel speed - What is the target speed?</li>
-						<li>Voltage - Is it compatible with the Motor Board?</li>
-						<li>Power - Is it suitable for the battery?</li>
-					</ul>
-			</div><br />
-			<div class="rs"><strong>Relevent Documentation/Help</strong>:		
-					<ul>
-						<li>Torque - What is it?</li>
-						<li>The Motor Controller Board</li>
-						<li>Maplins - featured component</li>
-						<li>Farnell - featured component</li>
-						<li>RS - featured component</li>
-					</ul>	
-			</div>
-			</p>
-			<strong>Team Comments</strong>
-			<blockquote>
-			<p>We've got the best motors!!</p>			
-			</blockquote>
-			<strong>Mentor Comments</strong>
-			<blockquote>
-			<p>Expensive but should do the job!</p>			
-			</blockquote>
-			<form name="signoff"><input type="button" value="I'm Done!" class="signoff"><input type="button" value="Sign Off" class="signoff"></form>
-			<div class="date">Signed off by <a href="chris.html">Chris</a> . 05 Jan 2007 . 10:37</div>
-			<!- New Task ->
-			<h3><span>#14 - Build Chasis</span></h3>
-			<p>
-			<strong>Task: </strong> Fabricate the chasis from chosen material and ...
-			<br /><strong>Category: </strong> Mechanical
-			&nbsp;&nbsp;&nbsp; <strong>Deadline: </strong> Week 7
-			&nbsp;&nbsp;&nbsp; <strong>Completed by: </strong> 10 Teams 			
-			</p>
-			<!- New Task ->
-			<h3><span>#13 - Test Electronics</span></h3>
-			<p>
-			<strong>Task: </strong> Run TestMotor.py and ensure test sequence is obser..
-			<br /> <strong>Category: </strong> Electronics
-			&nbsp;&nbsp;&nbsp; <strong>Deadline: </strong> Week 16
-			&nbsp;&nbsp;&nbsp; <strong>Completed by: </strong> 3 Teams 			
-			</p>
-		</div>
-		
-	</div>
-	<div id="footer">
-	<div class="right">Student Robotics - <a href="/rss/">RSS Feed</a><br />Design: <a href="http://www.free-css-templates.com">David Herreman</a></div>
-	<a href="http://validator.w3.org/check?uri=referer" title="Validate">XHTML</a> - <a href="http://jigsaw.w3.org/css-validator/check/referer" title="Validate">CSS</a>
-	</div>
-</div>
+			<h3>User Details</h3>
+			<table id="user_info">
+			<tr><th>Username:</th><td><?php echo $username; ?></td></tr>
+			<tr><th>Team Number:</th><td><?php echo $team_number; ?></td></tr>
+			<tr><th>School:</th><td><?php echo $school; ?></td></tr>
+			<tr><th>User Status:</th><td><?php echo (user_is_mentor($username) ? "Mentor" : "Student"); ?></td></tr>
+			</table>
 
-</body>
-</html>
+			<h3>Toolbox</h3>
+			<ul>
+				<li><a href="#" title="Articles">Unfinished Tasks (78)</a></li>
+				<li><a href="#" title="Gallery">Finished Tasks (10) </a></li>
+				<li><a href="#" title="Affiliates">Unchecked Tasks (2)</a></li>
+				<li><a href="#" title="Articles">Reminders (2)</a></li>
+				<li><a href="#" title="Abous us">New Tasks (2)</a></li>
+				<li><a href="#" title="Contact">Unread Messages (1)</a></li>
+			</ul>
+
+			<h3>Help</h3>
+			<ol>
+				<li>Read through the checklist</li>
+				<li>Complete the task</li>
+				<li>When you think you're done, click 'Task Completed'</li>
+				<li>Ask a mentor to confirm you've done the task</li>
+				<li>Your mentor will then sign off the task</li>
+				<li>Move on to the next task</li>
+			</ol>
+
+			<h3>Recent Activity</h3>
+			<ul>
+				<li><a href="#" title="#">Flamming ducks wrote 'hello world' script</a></li>
+				<li><a href="#" title="#">Taunton incinerated their boards</a></li>
+				<li><a href="#" title="#">Team 7 finished the chasis</a></li>
+				<li><a href="#" title="#">Team 5 passed the wiring test</a></li>
+			</ul>
+		</div><!-- end right_side -->
+
+		<div id="left_side">
+<?php
+//echo mysql_num_rows($result);
+//while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+foreach($task_list as $row)
+{
+?>
+			<h3 id="task_<?php echo $row['id']; ?>" onclick="showHide('task_<?php echo $row['id']; ?>_details')">
+				<span><?php echo $row['id']; ?> - <?php echo $row['title']; ?></span>
+			</h3>
+			<div class="task_attr_container">
+			<table class="task_attr_tbl">
+				<tr><th>Task:</th><td colspan="3"><?php echo $row['description']; ?></td></tr>
+				<tr><th>Deadline:</th><td class="L"><?php $deadline	= strtotime($row['deadline']);
+					$date	= date("D j M Y", $deadline);
+					echo $date;
+					if($row['completed'] == 0)
+					{
+						$overdue	= floor((time()-$deadline)/(24*60*60));
+						if($overdue < -1 && $overdue > -5)
+							$overdue_comment	= ", Due in ".abs($overdue)." Day".($overdue == -1 ? "": "s");
+						elseif($overdue == -1 || $overdue == 0)
+							$overdue_comment	= ", <span class=\"today_tomprrow\">Due ".($overdue == 0 ? "Today" : "Tomorrow")."</span>";
+						elseif($overdue > 0)
+							$overdue_comment	= ", <span class=\"overdue\">Overdue by $overdue day".($overdue == 1 ? "": "s")."</span>";
+						else
+							$overdue_comment	= "";
+						echo $overdue_comment;
+					} ?></td>
+				<th>Category:</th><td class="R"><?php echo $row['category']; ?></td></tr>
+				<tr><th><?php if($row['completed'] == 0)
+					{ ?>Incomplete!</th><td class="L">
+				<?php }
+					elseif($row['signoff_date'] != 0)
+					{ ?>Signed Off:</th><td class="L">
+						<?php echo date("D j M Y", $row['signoff_date'])." by ".$row['signoff_mentor'];
+					} else { ?>Completed:</th><td class="L">
+						<?php echo date("D j M Y", $row['completed']);
+					} ?></td>
+					<th>Completed by:</th><td class="R"><?php echo $teams_completed[$row['id']]." Team".($teams_completed[$row['id']] == 1 ? "": "s"); ?></td></tr>
+				</table>
+
+				<div id="task_<?php echo $row['id']; ?>_details" style="display: none;">
+
+					<div class="rs"><strong>Design considerations</strong>:
+<?php echo wiki2html($row['design_consider']); ?>
+					</div>
+					<div class="rs"><strong>Relevent Documentation/Help</strong>:
+<?php echo wiki2html($row['related_docs_help']); ?>
+					</div>
+					<strong>Team Comments</strong>
+					<span style="float: right;"><a href="edit.htm" title="Edit the comments">Edit</a></span>
+					<blockquote>
+					<p><?php echo $row['teams_comments']; ?></p>
+					</blockquote>
+					<strong>Mentor Comments</strong>
+					<span style="float: right;"><a href="edit.htm" title="Edit the comments">Edit</a></span>
+					<blockquote>
+					<p><?php echo $row['mentor_comments']; ?></p>
+					</blockquote>
+<?php if($row['completed'] == 0 || user_is_mentor($username)) { ?>
+					<form id="signoff_task_<?php echo $row['id']; ?>" action="" method="get">
+						<p>
+							<input type="hidden" name="task" value="<?php echo $row['id']; ?>" />
+<?php if(($row['signoff_date'] == 0 && user_is_mentor($username)) || $row['completed'] == 0) { ?>
+							<input type="submit" value="<?php echo $button_val; ?>" name="signoff" class="signoff" />
+<?php }	//if task incomplete or (mentor and not signed off) - completion
+	if($row['completed'] != 0 && user_is_mentor($username)) { ?>
+							<input type="submit" value="<?php echo $button_val2; ?>" name="reject" class="signoff" />
+<?php } //if task complete and mentor - rejection ?>
+						</p>
+					</form>
+<?php } //if task incomplete or mentor - completion ?>
+				</div>
+			</div>
+			<!-- New Task -->
+<?php }	//end foreach ?>
+		</div><!-- end left_side -->
+
+	</div><!-- end main -->
+<?php
+include 'Foot.inc.php';
+?>
