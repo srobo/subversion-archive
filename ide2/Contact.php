@@ -2,20 +2,17 @@
 include 'Head.inc.php';
 ?>
 	<div id="main">
-		<div id="left_side">
 	<form method="post" action="" id="contact" onreset="load('contact', 1)" onsubmit="return Validate_On_Contact_Submit('contact')">
 		<table id="contact_tbl">
 			<tr>
 				<td colspan="2" class="center">
 				<span class="f_right">All fields are required</span>
 
-				<h4>Ask for help from the SR Mentor Netwrok</h4>
+				<h4>Ask for help from your mentor (<?php echo $mentor_name; ?>) or the SR Mentor Netwrok</h4>
 				</td>
-
 			</tr><tr>
 				<th>
 					<label for="subject">Subject</label>
-
 				</th>
 				<td>
 					<input id="subject" name="subject" class="text_in" type="text" value="" />
@@ -38,7 +35,6 @@ include 'Head.inc.php';
 			</tr>
 		</table>
 	</form>
-		</div><!-- end left_side -->
 	</div><!-- end main -->
 <?php
 include 'Foot.inc.php';

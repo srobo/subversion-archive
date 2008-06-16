@@ -72,4 +72,6 @@ $teams_completed[12]	= 3;
 $teams_completed[14]	= 1;
 $teams_completed[9]	= 9;
 
+$mentor_list	= array("Peter", "Chris", "Steve", "Rob");
+
 ?>

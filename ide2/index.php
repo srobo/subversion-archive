@@ -35,7 +35,8 @@ function wiki2html($wikitext)
 
 function user_is_mentor($username)
 {
-	return in_array($username, array("Peter", "Chris", "Steve", "Rob"));
+	global $mentor_list;
+	return in_array($username, $mentor_list);
 }
 
 
