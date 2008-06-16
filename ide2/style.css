@@ -45,12 +45,6 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 		#left_side h3	{ background: #FFF url('images/hbg.gif') repeat-x; height: 30px; padding: 5px 0 0 0px; margin: 0; font: bold 1.2em Arial, Sans-Serif; }
 		#left_side h3 span	{ background: url('images/h-art.gif') no-repeat left; padding: 1px 10px 0 23px; line-height: 22px; margin: 0; }
 		#left_side strong	{ margin: 0 5px; }
-		#left_side .task_attr_container	{ color: #454545; padding: 0 5px; margin: 0 0 5px ; text-align: justify; }
-		#left_side .task_attr_tbl	{ border: 0; border-collapse: collapse; margin: 0; padding: 0; }
-		#left_side .task_attr_tbl td	{ vertical-align: top; }
-		#left_side .task_attr_tbl .L	{ width: 200px; }
-		#left_side .task_attr_tbl .R	{ width: 150px; }
-		#left_side .task_attr_tbl th	{ width: 87px; padding: 0 5px; text-align: right; vertical-align: top; }
 		#left_side img	{ float: left; padding: 0 10px 5px 0; }
 		#left_side blockquote	{ padding-left: 10px; border-left: 2px solid #DA4040; margin: 10px 0 10px 25px; }
 		.date	{ border-top: 1px dotted #ccc; padding: 5px 0; margin: 10px 0 25px 0; text-align: right; }
@@ -58,6 +52,18 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 		#left_side ul	{ list-style-position: inside; margin-left: 2px; }
 		#left_side ul li	{ list-style-type: square; margin-left: 15px; ; }
 		#left_side ul ul li	{ list-style: none; margin-left: 10px; list-style-type: lower-alpha; list-style-position: inside; }
+		/* Checklist.php */
+		#left_side .task_attr_container	{ color: #454545; padding: 0 5px; margin: 0 0 5px ; text-align: justify; }
+		#left_side .task_attr_tbl	{ border: 0; border-collapse: collapse; margin: 0; padding: 0; }
+		#left_side .task_attr_tbl td	{ vertical-align: top; }
+		#left_side .task_attr_tbl .L	{ width: 200px; }
+		#left_side .task_attr_tbl .R	{ width: 150px; }
+		#left_side .task_attr_tbl th	{ width: 87px; padding: 0 5px; text-align: right; vertical-align: top; }
+		/* Contact.php */
+		#contact_tbl	{ width: 590px; border: none; }
+		#contact_tbl th	{ width: 125px; line-height: 1.6em; vertical-align: top; text-align: right; padding-right: 8px; }
+		#contact_tbl .text_in	{ width: 401px; font-family: Verdana, Arial, Helvetica, sans-serif; margin-left: 1px; }
+		#contact_reset, #contact_submit	{ width: 238px; margin: 2px 0 0 3px; line-height: 1.6em; padding: 0; font-family: Tahoma, sans-serif; }
 
 /* Bar Charts */
 .graph	{ margin: 20px 10px; text-align: center; }
