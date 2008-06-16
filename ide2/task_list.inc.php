@@ -1,6 +1,32 @@
 <?php
 $task_list	= array();
 
+$ide_sect[0]['id']	= 1;
+$ide_sect[0]['title']	= "Fix Power Board Resistor";
+$ide_sect[0]['description']	= "Solder a wire across the sense resistor.";
+$ide_sect[0]['related_docs_help']	= "";
+$ide_sect[0]['teams_comments']	= "";
+$ide_sect[0]['mentor_comments']	= "";
+$ide_sect[0]['signoff_mentor']	= "";
+$ide_sect[0]['deadline']	= "2008-06-07";
+
+$ide_sect[1]['id']	= 2;
+$ide_sect[1]['title']	= "Wire Up Boards";
+$ide_sect[1]['description']	= "Connect up with RJ11 cables.";
+$ide_sect[1]['related_docs_help']	= "";
+$ide_sect[1]['teams_comments']	= "";
+$ide_sect[1]['mentor_comments']	= "";
+$ide_sect[1]['signoff_mentor']	= "";
+$ide_sect[1]['deadline']	= "2008-06-09";
+
+$ide_sect[2]['id']	= 12;
+$ide_sect[2]['title']	= "Order Motors";
+$ide_sect[2]['description']	= " Decide upon the specification of the motors you will need for your robot and order them from your chosen manufacturer.";
+$ide_sect[2]['related_docs_help']	= "*[[http://en.wikipedia.org/wiki/Torque|Torque]] - What is it?\n*The Motor Controller Board\n*[[http://www.maplin.co.uk/|Maplins]] - featured component\n*[[http://uk.farnell.com/|Farnell]] - featured component\n*[[http://uk.rs-online.com/web/|RS]] - featured component";
+$ide_sect[2]['teams_comments']	= "We've got the best motors!!";
+$ide_sect[2]['mentor_comments']	= "Expensive but should do the job!";
+$ide_sect[2]['category']	= "Mechanical";
+
 $task_list[0]['id']	= 1;
 $task_list[0]['title']	= "Fix Power Board Resistor";
 $task_list[0]['description']	= "Solder a wire across the sense resistor.";

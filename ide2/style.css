@@ -44,7 +44,7 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 		#right_side ol li	{ line-height: 18px; background: #F6F6F6; list-style: decimal; padding-left: 2px; }
 			#user_info	{ border: 0; border-collapse: collapse; margin: 0; padding: 0; }
 			#user_info th	{ width: 85px; padding: 0 5px; text-align: right; }
-	#left_side	{ background: #FFF; margin-bottom: 10px; width: 560px; ; }
+	#left_side	{ background: #FFF; margin-bottom: 10px; width: 560px; padding-bottom: 2px; }
 		#left_side h3	{ background: #FFF url('images/hbg.gif') repeat-x; height: 30px; padding: 5px 0 0 0px; margin: 0; font: bold 1.2em Arial, Sans-Serif; }
 		#left_side h3 span	{ background: url('images/h-art.gif') no-repeat left; padding: 1px 10px 0 23px; line-height: 22px; margin: 0; }
 		#left_side strong	{ margin: 0 5px; }
@@ -55,7 +55,7 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 		#left_side ul	{ list-style-position: inside; margin-left: 2px; }
 		#left_side ul li	{ list-style-type: square; margin-left: 15px; ; }
 		#left_side ul ul li	{ list-style: none; margin-left: 10px; list-style-type: lower-alpha; list-style-position: inside; }
-		/* Checklist.php */
+		/* index.php, Checklist.php */
 		#left_side .task_attr_container	{ color: #454545; padding: 0 5px; margin: 0 0 5px ; text-align: justify; }
 		#left_side .task_attr_tbl	{ border: 0; border-collapse: collapse; margin: 0; padding: 0; }
 		#left_side .task_attr_tbl td	{ vertical-align: top; }

@@ -1,12 +1,46 @@
 <?php
-/* file contains info in an array that mimics the db output */
-include 'task_list.inc.php';
+/*
+$dbhost = 'mysql2.ecs.soton.ac.uk';
+$dbuser = 'cc1206';
+
+$conn = mysql_connect($dbhost, $dbuser, $dbpass) or die ('Error connecting to mysql');
+$query = "SELECT * FROM cc1206.tids";
+$dbname = 'cc1206';
+$result = mysql_query($query);
+
+mysql_close($conn);
+*/
+
+function wiki2html($wikitext)
+{
+	if(!isset($wikitext) || $wikitext == "")
+		return FALSE;
+
+	$inter_text	= $wikitext;
+	while(strpos($inter_text,"[[") && strpos($inter_text,"]]"))
+	{
+		$link	= str_replace(array("[[", "]]"), "", substr($inter_text, strpos($inter_text, "[["), (strpos($inter_text, "]]")-strpos($inter_text, "[["))));
+		if(strpos($link, "|"))
+			list($href, $title)	= explode("|", $link);
+		else
+			$href	= $title	= $link;
+		$inter_text	= str_replace("[[$link]]", "<a href=\"$href\">$title</a>", $inter_text);
+	}
+
+	if(strpos($inter_text,"\n*") || strpos($inter_text,"*") === 0)
+		$inter_text	= "\n<ul>".str_replace("*", "\n	<li>", str_replace("\n*", "</li>\n	<li>", $inter_text))."</li>\n</ul>\n";
+
+	return $inter_text;
+}
 
 function user_is_mentor($username)
 {
 	global $mentor_list;
 	return in_array($username, $mentor_list);
 }
+
+/* file contains info in an array that mimics the db output */
+include 'task_list.inc.php';
 
 if(isset($_POST['username']))
 	$username	= $_POST['username'];
@@ -27,7 +61,6 @@ if(user_is_mentor($username))
 	$team_number	= rand(1, 20);	//look it up in the db
 	$mentor_name	= $mentor_list[($team_number % count($mentor_list))];	//look it up in the db
 }
-
 
 $page_arr	= explode("/", $_SERVER['PHP_SELF']);	//prep for page titles
 $this_page	= $page_arr[count($page_arr)-1];
@@ -52,7 +85,7 @@ if($page_n == "index")
 
 <div id="prec">
 	<ul id="top_menu">
-		<li><a href="#" title="home">IDE HOME</a></li>
+		<li><a href="./" title="home">IDE HOME</a></li>
 		<li><a href="#" title="Articles">FORUMS</a></li>
 		<li><a href="Checklist.php" title="Task Checklist">CHECK LIST</a></li>
 		<li><a href="Graphs.php" title="Progress Graphs">PROGRESS GRAPHS</a></li>
