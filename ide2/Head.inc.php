@@ -28,11 +28,17 @@ if(user_is_mentor($username))
 }
 
 $mentor_name	= $mentor_list[($team_number % count($mentor_list))];
+
+$page_arr	= explode("/", $_SERVER['PHP_SELF']);	//prep for page titles
+$this_page	= $page_arr[count($page_arr)-1];
+$page_n		= substr($this_page, 0, strlen($this_page)-4);	//remove .php
+if($page_n == "index")
+	$page_n		= "Home";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Student Progress Tracker</title>
+	<title>Student Progress Tracker | <?php echo $page_n; ?></title>
 	<meta http-equiv="Content-Language" content="English" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link rel="stylesheet" type="text/css" href="style.css" media="screen" />

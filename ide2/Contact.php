@@ -2,7 +2,7 @@
 include 'Head.inc.php';
 ?>
 	<div id="main">
-	<form method="post" action="" id="contact" onreset="load('contact', 1)" onsubmit="return Validate_On_Contact_Submit('contact')">
+	<form method="post" action="" id="contact" onsubmit="return Validate_On_Contact_Submit('contact')">
 		<table id="contact_tbl">
 			<tr>
 				<td colspan="2" class="center">
@@ -15,8 +15,10 @@ include 'Head.inc.php';
 					<label for="to">To:</label>
 				</th>
 				<td>
-					<input type="radio" name="to" value="mentor" id="_mentor" /><label for="_mentor">Your Mentor (<?php echo $mentor_name; ?>)</label>
-					<input type="radio" name="to" value="team" id="_team" /><label for="_team">The SR Team</label>
+					<input type="radio" name="to" value="mentor" id="_mentor" checked="checked" />
+					<label for="_mentor">Your Mentor (<?php echo $mentor_name; ?>)</label>
+					<input type="radio" name="to" value="team" id="_team" />
+					<label for="_team">The SR Team</label>
 				<?php } else { ?><input type="hidden" name="to" value="team"><?php } ?></td>
 			</tr><tr>
 				<th>
