@@ -20,10 +20,42 @@ $ide_sect[1]['mentor_comments']	= "Please provide feedback here.";
 $ide_sect[2]['id']	= 3;
 $ide_sect[2]['title']	= "Documentation";
 $ide_sect[2]['link']	= "Documentation.php";
-$ide_sect[2]['description']	= " Contains up-to-date links to both our documentation and external information we think you'll find useful.";
+$ide_sect[2]['description']	= "Contains up-to-date links to both our documentation and external information we think you'll find useful.";
 $ide_sect[2]['related_docs_help']	= "*[[http://en.wikipedia.org/wiki/Torque|Torque]] - What is it?\n*The Motor Controller Board\n*[[http://www.maplin.co.uk/|Maplins]] - featured component\n*[[http://uk.farnell.com/|Farnell]] - featured component\n*[[http://uk.rs-online.com/web/|RS]] - featured component";
 $ide_sect[2]['teams_comments']	= "Please provide feedback here.";
 $ide_sect[2]['mentor_comments']	= "Please provide feedback here.";
+
+$ide_sect[3]['id']	= 4;
+$ide_sect[3]['title']	= "Simulator";
+$ide_sect[3]['link']	= "Simulator.php";
+$ide_sect[3]['description']	= "Simulate your robot code in a fully featured simulator.";
+$ide_sect[3]['related_docs_help']	= "";
+$ide_sect[3]['teams_comments']	= "Please provide feedback here.";
+$ide_sect[3]['mentor_comments']	= "Please provide feedback here.";
+
+$ide_sect[4]['id']	= 5;
+$ide_sect[4]['title']	= "Forums";
+$ide_sect[4]['link']	= "Forums.php";
+$ide_sect[4]['description']	= "Talk to other students taking part in Student Robotics as well as people from the SR team.";
+$ide_sect[4]['related_docs_help']	= "";
+$ide_sect[4]['teams_comments']	= "Please provide feedback here.";
+$ide_sect[4]['mentor_comments']	= "Please provide feedback here.";
+
+$ide_sect[5]['id']	= 6;
+$ide_sect[5]['title']	= "Messages";
+$ide_sect[5]['link']	= "Messages.php";
+$ide_sect[5]['description']	= "Messages from the Student Robotics Team.";
+$ide_sect[5]['related_docs_help']	= "";
+$ide_sect[5]['teams_comments']	= "Please provide feedback here.";
+$ide_sect[5]['mentor_comments']	= "Please provide feedback here.";
+
+$ide_sect[6]['id']	= 7;
+$ide_sect[6]['title']	= "Contact";
+$ide_sect[6]['link']	= "Contact.php";
+$ide_sect[6]['description']	= "Send an email to your mentor or the SR team.";
+$ide_sect[6]['related_docs_help']	= "";
+$ide_sect[6]['teams_comments']	= "Please provide feedback here.";
+$ide_sect[6]['mentor_comments']	= "Please provide feedback here.";
 
 $task_list	= array();
 

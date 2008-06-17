@@ -86,13 +86,9 @@ if($page_n == "index")
 <div id="prec">
 	<ul id="top_menu">
 		<li><a href="./" title="home">IDE HOME</a></li>
-		<li><a href="#" title="Articles">FORUMS</a></li>
-		<li><a href="Checklist.php" title="Task Checklist">CHECK LIST</a></li>
-		<li><a href="Graphs.php" title="Progress Graphs">PROGRESS GRAPHS</a></li>
-		<li><a href="#" title="Affiliates">DOCUMENTATION</a></li>
-		<li><a href="#" title="Articles">SIMULATOR</a></li>
-		<li><a href="#" title="Abous us">MESSAGES</a></li>
-		<li><a href="Contact.php" title="Contact your mentor or the team">CONTACT</a></li>
+<?php foreach($ide_sect as $row) { ?>
+		<li><a href="<?php echo $row['link']; ?>" title="<?php echo $row['description']; ?>"><?php echo strtoupper($row['title']); ?></a></li>
+<?php } ?>
 	</ul>
 </div>
 <div class="content">

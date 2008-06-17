@@ -29,8 +29,8 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 /* Second part */
 #prec	{ margin: 0 auto; padding: 0; background: #F6F6F6; border-bottom: 1px solid #DCDCDC; overflow: hidden; margin-bottom: 15px; width: 808px; }
 
-	#top_menu	{ padding: 10px 0; margin: 0; background: inherit; }
-	#top_menu a	{ padding-left: 25px; font: 1.2em Arial, Sans-Serif; text-decoration: none; background: #F6F6F6; }
+	#top_menu	{ padding: 10px 3px; margin: 0; background: inherit; }
+	#top_menu a	{ padding-left: 6px; padding-right: 6px; font: 1.2em Arial, Sans-Serif; text-decoration: none; background: #F6F6F6; }
 	#top_menu li	{ line-height: 26px; background: #F6F6F6; list-style: none; display: inline; }
 
 /* main area */
