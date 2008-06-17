@@ -102,9 +102,12 @@ if($page_n == "index")
 			<h3>User Details</h3>
 			<table id="user_info">
 			<tr><th>Username:</th><td><?php echo $username; ?></td></tr>
+			<tr><th>User Status:</th><td><?php echo (user_is_mentor($username) ? "Mentor" : "Student"); ?></td></tr>
 			<tr><th>Team Number:</th><td><?php echo $team_number; ?></td></tr>
 			<tr><th>School:</th><td><?php echo $school; ?></td></tr>
-			<tr><th>User Status:</th><td><?php echo (user_is_mentor($username) ? "Mentor" : "Student"); ?></td></tr>
+			<?php if($team_number) { ?>
+			<tr><th>Team Mentor:</th><td><?php echo $mentor_name; ?></td></tr>
+			<?php } ?>
 			</table>
 
 			<h3>Toolbox</h3>
