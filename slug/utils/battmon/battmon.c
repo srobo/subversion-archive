@@ -21,8 +21,6 @@ int main (int argc, char **argv)
 
   int fd = 0;
 
-  int len; 			/* Defines the number of seconds to execute for */
-
   /* Attempt to open I2C device (/dev/i2c-0) */
   fd = open ("/dev/i2c-0", O_RDWR);
   if (fd == -1)
@@ -47,7 +45,6 @@ int main (int argc, char **argv)
     }
 
   struct timeval tp;		/* Timeval pointer - containing data since epoch */
-  void *tpz; 			/* Unspecified Pointer - behaviour undefined by time.h */
   long int epoch = 0;		/* Used to define starting epoch */
   long int currenttime = 0;		/* Used to define the current time */
 
@@ -66,7 +63,7 @@ int main (int argc, char **argv)
     }
 
   /* Set the epoch value */
-  gettimeofday (&tp, tpz);
+  gettimeofday (&tp, NULL);
   epoch = tp.tv_sec;  
 
   /* Begin Current and Voltage Reading */
@@ -80,12 +77,12 @@ int main (int argc, char **argv)
       fprintf (stderr, "Current iteration: %d - Voltage: %d, Current: %d\n", i, voltage, current);
  
       /* Get the current time */
-      gettimeofday (&tp, tpz);
+      gettimeofday (&tp, NULL);
       currenttime = tp.tv_sec;
 
       /* Output the current time relative to epoch */
-      fprintf (write_file, "%u, %u, %d\n", voltage, current, (currenttime - epoch));
-      sleep (1);
+      fprintf (write_file, "%u, %u, %lu\n", voltage, current, (currenttime - epoch));
+      sleep(1);
       i++;
     }
 
@@ -107,6 +104,7 @@ uint16_t readword(int fd, uint8_t cmd, FILE *write_file)
   while (tmp < 1)
     {
       tmp = i2c_smbus_read_word_data( fd, cmd );
+
       if (tmp < 1)
 	{
 	  while (i<5 && tmp < 1)
