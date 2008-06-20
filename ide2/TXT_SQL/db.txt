@@ -1,9 +1,14 @@
-0|title|description|design_consider|related_docs_help|teams_comments|mentor_comments|signoff_mentor|signoff_date|completed|category|deadline[#]1|Fix Power Board Resistor|Solder a wire across the sense resistor.|||||||0|Electronics|2008-06-07|[#]2|Wire Up Boards|Connect up with RJ11 cables.||||||0|0|Electronics|2008-06-09|[#]12|Order Motors|Decide upon the specification of the motors you will need for your robot and order them from your chosen manufacturer.|*Torque - How much do you need?
+0¬title¬description¬design_consider¬related_docs_help¬teams_comments¬mentor_comments¬signoff_mentor¬signoff_date¬completed¬category¬deadline[#]
+1¬Fix Power Board Resistor¬Solder a wire across the sense resistor.¬¬¬¬¬¬¬0¬Electronics¬2008-06-07¬[#]
+2¬Wire Up Boards¬Connect up with RJ11 cables.¬¬¬¬¬¬0¬0¬Electronics¬2008-06-09¬[#]
+12¬Order Motors¬Decide upon the specification of the motors you will need for your robot and order them from your chosen manufacturer.¬*Torque - How much do you need?
 *Wheel size - How big?
 *Wheel speed - What is the target speed?
 *Voltage - Is it compatible with the Motor Board?
-*Power - Is it suitable for the battery?|*[[http://en.wikipedia.org/wiki/Torque Torque]] - What is it?
+*Power - Is it suitable for the battery?¬*[[http://en.wikipedia.org/wiki/Torque|Torque]] - What is it?
 *The Motor Controller Board
-*[[http://www.maplin.co.uk/ Maplins]] - featured component
-*[[http://uk.farnell.com/ Farnell]] - featured component
-*[[http://uk.rs-online.com/web/ RS]] - featured component|We've got the best motors!!|Expensive but should do the job!|Chris|1212882854|1212881854|Mechanical|2008-06-13|[#]14|Build Chasis|Fabricate the chasis from chosen material and ...||||||0|1212881854|Mechanical|2008-07-11|[#]9|Test Electronics|Run TestMotor.py and ensure test sequence is obser..||||||0|0|Electronics|2008-07-11|
+*[[http://www.maplin.co.uk/|Maplins]] - featured component
+*[[http://uk.farnell.com/|Farnell]] - featured component
+*[[http://uk.rs-online.com/web/|RS]] - featured component¬We've got the best motors!!¬Expensive but should do the job!¬Chris¬1212882854¬1212881854¬Mechanical¬2008-06-13¬[#]
+14¬Build Chasis¬Fabricate the chasis from chosen material and ...¬¬¬¬¬¬0¬1212881854¬Mechanical¬2008-07-11¬[#]
+9¬Test Electronics¬Run TestMotor.py and ensure test sequence is obser..¬¬¬¬¬¬0¬0¬Electronics¬2008-07-11¬
