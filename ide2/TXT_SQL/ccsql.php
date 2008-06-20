@@ -19,10 +19,10 @@ function ccsql_open($filename)
 
 	if($contents != FALSE)
 	{
-		$lines = explode('[#]', $contents);
+		$lines = explode("[#]\n", $contents);
 		foreach($lines as $row)
 		{
-			array_push($db, explode('|',$row));
+			array_push($db, explode('¬',$row));
 		}
 		return $db;
 	} else
@@ -125,7 +125,7 @@ function ccsql_print($db)
 			{
 				echo "<td>".substr($element,0,40)."</td>";
 			}
-			echo "</tr>";
+			echo "</tr>\n";
 		}
 	}
 	echo "</table>";
@@ -154,18 +154,18 @@ function ccsql_save($db, $filename)
 			$contents .= $db[$count][0];
 			for($subcount = 1; $subcount < count($db[$count]); $subcount++)
 			{
-				$contents .= "|".$db[$count][$subcount];
+				$contents .= "¬".$db[$count][$subcount];
 			}
-		$contents .= '[#]';
+		$contents .= "[#]\n";
 		}
 
-		//print last line to file(without [#])
+		//print last line to file(without [#]\n)
 
 		$subcount = 1;
 		$contents .= $db[$count][0];
 		for($subcount = 1; $subcount < count($db[$count]); $subcount++)
 		{
-			$contents .= "|".$db[$count][$subcount];
+			$contents .= "¬".$db[$count][$subcount];
 		}
 	}
 
