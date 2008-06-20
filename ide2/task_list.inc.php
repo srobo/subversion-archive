@@ -1,4 +1,55 @@
 <?php
+$checklist_toolbox	= array();
+
+$checklist_toolbox[0]['num']	= 6;
+$checklist_toolbox[0]['title']	= "Unfinished Tasks";
+$checklist_toolbox[0]['link']	= "unfinished";
+$checklist_toolbox[0]['description']	= "This checklist allows easy progress tracking throught the year.";
+$checklist_toolbox[0]['related_docs_help']	= "";
+$checklist_toolbox[0]['teams_comments']	= "Please provide feedback here.";
+$checklist_toolbox[0]['mentor_comments']	= "Please provide feedback here.";
+
+$checklist_toolbox[1]['num']	= 9;
+$checklist_toolbox[1]['title']	= "Finished Tasks";
+$checklist_toolbox[1]['link']	= "finished";
+$checklist_toolbox[1]['description']	= "Show progress information in an easily accessible form.";
+$checklist_toolbox[1]['related_docs_help']	= "";
+$checklist_toolbox[1]['teams_comments']	= "Please provide feedback here.";
+$checklist_toolbox[1]['mentor_comments']	= "Please provide feedback here.";
+
+$checklist_toolbox[2]['num']	= 3;
+$checklist_toolbox[2]['title']	= "Unchecked Tasks";
+$checklist_toolbox[2]['link']	= "unchecked";
+$checklist_toolbox[2]['description']	= "Contains up-to-date links to both our documentation and external information we think you'll find useful.";
+$checklist_toolbox[2]['related_docs_help']	= "*[[http://en.wikipedia.org/wiki/Torque|Torque]] - What is it?\n*The Motor Controller Board\n*[[http://www.maplin.co.uk/|Maplins]] - featured component\n*[[http://uk.farnell.com/|Farnell]] - featured component\n*[[http://uk.rs-online.com/web/|RS]] - featured component";
+$checklist_toolbox[2]['teams_comments']	= "Please provide feedback here.";
+$checklist_toolbox[2]['mentor_comments']	= "Please provide feedback here.";
+
+$checklist_toolbox[3]['num']	= 4;
+$checklist_toolbox[3]['title']	= "Reminders";
+$checklist_toolbox[3]['link']	= "reminders";
+$checklist_toolbox[3]['description']	= "Simulate your robot code in a fully featured simulator.";
+$checklist_toolbox[3]['related_docs_help']	= "";
+$checklist_toolbox[3]['teams_comments']	= "Please provide feedback here.";
+$checklist_toolbox[3]['mentor_comments']	= "Please provide feedback here.";
+
+$checklist_toolbox[4]['num']	= 5;
+$checklist_toolbox[4]['title']	= "New Tasks";
+$checklist_toolbox[4]['link']	= "new";
+$checklist_toolbox[4]['description']	= "Talk to other students taking part in Student Robotics as well as people from the SR team.";
+$checklist_toolbox[4]['related_docs_help']	= "";
+$checklist_toolbox[4]['teams_comments']	= "Please provide feedback here.";
+$checklist_toolbox[4]['mentor_comments']	= "Please provide feedback here.";
+
+$checklist_toolbox[5]['num']	= 6;
+$checklist_toolbox[5]['title']	= "Unread Messages";
+$checklist_toolbox[5]['link']	= "unread";
+$checklist_toolbox[5]['description']	= "Messages from the Student Robotics Team.";
+$checklist_toolbox[5]['related_docs_help']	= "";
+$checklist_toolbox[5]['teams_comments']	= "Please provide feedback here.";
+$checklist_toolbox[5]['mentor_comments']	= "Please provide feedback here.";
+
+
 $ide_sect	= array();
 
 $ide_sect[0]['id']	= 1;

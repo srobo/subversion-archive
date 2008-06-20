@@ -20,7 +20,7 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 .f_left	{ float: left; }
 .f_right	{ float: right; }
 .content	{ margin: 0px auto; width: 808px; }
-.overdue	{ font: 0.9em bold; color: red; }
+.overdue	{ font-size: 0.9em; font-weight: bold; color: red; }
 .today_tomprrow	{ color: green; }
 
 /* Top part */
