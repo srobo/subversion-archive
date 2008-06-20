@@ -123,7 +123,7 @@ function ccsql_print($db)
 			echo "<tr>";
 			foreach($row as $element)
 			{
-				echo "<td>".substr($element,0,30)."</td>";
+				echo "<td>".substr($element,0,40)."</td>";
 			}
 			echo "</tr>";
 		}

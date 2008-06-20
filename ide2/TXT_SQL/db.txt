@@ -1,1 +1,9 @@
-0|surname|forename|title|phone|age|job[#]1|Blogs|Sam|Mr|0800 123 456|45|Sales[#]2|Smith|Mike|Mr|0800 333 456|30|Sales[#]3|Blogs|Charles|Mr|0800 444 456|26|Accounts[#]4|Blogs|Jane|Miss|0800 555 456|19|Admin[#]5|Smith|James|Mr|0800 333 456|30|Sales[#]6|Blogs|John|Mr|0800 444 456|26|Accounts[#]7|Blogs|Jenny|Mrs|0800 555 456|19|Admin
+0|title|description|design_consider|related_docs_help|teams_comments|mentor_comments|signoff_mentor|signoff_date|completed|category|deadline[#]1|Fix Power Board Resistor|Solder a wire across the sense resistor.|||||||0|Electronics|2008-06-07|[#]2|Wire Up Boards|Connect up with RJ11 cables.||||||0|0|Electronics|2008-06-09|[#]12|Order Motors|Decide upon the specification of the motors you will need for your robot and order them from your chosen manufacturer.|*Torque - How much do you need?
+*Wheel size - How big?
+*Wheel speed - What is the target speed?
+*Voltage - Is it compatible with the Motor Board?
+*Power - Is it suitable for the battery?|*[[http://en.wikipedia.org/wiki/Torque Torque]] - What is it?
+*The Motor Controller Board
+*[[http://www.maplin.co.uk/ Maplins]] - featured component
+*[[http://uk.farnell.com/ Farnell]] - featured component
+*[[http://uk.rs-online.com/web/ RS]] - featured component|We've got the best motors!!|Expensive but should do the job!|Chris|1212882854|1212881854|Mechanical|2008-06-13|[#]14|Build Chasis|Fabricate the chasis from chosen material and ...||||||0|1212881854|Mechanical|2008-07-11|[#]9|Test Electronics|Run TestMotor.py and ensure test sequence is obser..||||||0|0|Electronics|2008-07-11|
