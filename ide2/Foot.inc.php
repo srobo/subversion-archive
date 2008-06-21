@@ -8,3 +8,5 @@
 </div>
 </body>
 </html>
+<?php if(isset($debug) && $debug)
+	echo $debug_info; ?>

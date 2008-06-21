@@ -32,32 +32,30 @@ function user_is_mentor($username)
 /* make a MySQL query from a search type */
 function make_MySQL_query($search)
 {
-	if($search != "all")
+	global $debug_info;
+	$where	= "WHERE ";
+	switch($search)	//do the WHERE's
 	{
-		$where	= "WHERE ";
-		switch($search)	//do the WHERE's
-		{
-			case "unfinished":
-				$where	.= "completed=0";
-				break;
-			case "unchecked":
-				$where	.= " && signoff_date=0";
-			case "finished":
-				$where	.= "completed>0$where";
-				break;
-			case "new":
-				$where	.= "new";
-				break;
-			case "reminders":
-				$where	.= "reminders";
-				break;
-			case "unread":
-				$where	.= "unread";
-				break;
-			default:
-				$where	= "";
-				return;
-		}
+		case "unfinished":
+			$where	.= "completed=0";
+			break;
+		case "unchecked":
+			$where	.= " && signoff_date=0";
+		case "finished":
+			$where	.= "completed>0$where";
+			break;
+		case "new":
+			$where	.= "new";
+			break;
+		case "reminders":
+			$where	.= "reminders";
+			break;
+		case "unread":
+			$where	.= "unread";
+			break;
+		default:
+			$where	= "";
+			return;
 	}
 	$order	= "ORDER BY ";
 	switch($search)	//do the ORDER BY's & tables
@@ -83,8 +81,11 @@ function make_MySQL_query($search)
 			break;
 		default:
 			$order	= "";
+			$table	= "task_list";
 			break;
 	}
-	return "SELECT * FROM $table $where $order LIMIT 20";
+	$out	= "SELECT * FROM $table $where $order LIMIT 20";
+	$debug_info	.= "\n<br />\$out = '$out'\n<br />";
+	return $out;
 }
 ?>

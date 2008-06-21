@@ -3,12 +3,18 @@ include_once 'functions.inc.php';
 
 $_search_type	= isset($_GET['search']) ? $_GET['search'] : "all";
 
-$result = mysql_query(make_MySQL_query($_search_type));
+$query	= make_MySQL_query($_search_type);
+
+$result = mysql_query($query);
+
+$debug_info	.= "\n<br />\$query = '$query'\n<br />";
+
+echo $debug_info;
 
 //echo mysql_num_rows($result);
-//while($row = mysql_fetch_array($result, MYSQL_ASSOC))
-foreach($task_list as $row)
+while($row = mysql_fetch_array($result, MYSQL_ASSOC))
 {
+//foreach($task_list as $row)
 ?>
 			<h3 id="task_<?php echo $row['id']; ?>" onclick="showHide('task_<?php echo $row['id']; ?>_details')" title="Click to expand task">
 				<span><?php echo $row['id']; ?> - <?php echo $row['title']; ?></span>
@@ -79,5 +85,5 @@ foreach($task_list as $row)
 				</div>
 			</div>
 			<!-- New Task -->
-<?php }	//end foreach 
+<?php }	//end foreach
 ?>

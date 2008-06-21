@@ -1,4 +1,5 @@
 <?php
+$debug_info	= "";
 
 if($_SERVER['SERVER_NAME'] == 'linuxproj.ecs.soton.ac.uk')
 {
@@ -12,8 +13,8 @@ if($_SERVER['SERVER_NAME'] == 'linuxproj.ecs.soton.ac.uk')
 	header("location: http://linuxproj.ecs.soton.ac.uk".$_SERVER['SCRIPT_NAME']);
 
 /* file contains info in an array that mimics the db output */
-include 'functions.inc.php';
-include 'task_list.inc.php';
+include_once 'functions.inc.php';
+include_once 'task_list.inc.php';
 
 if(isset($_POST['username']))
 	$username	= $_POST['username'];
@@ -40,7 +41,7 @@ $this_page	= $page_arr[count($page_arr)-1];
 $page_n		= substr($this_page, 0, strlen($this_page)-4);	//remove .php
 if($page_n == "index")
 	$page_n		= "Home";
-	
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
