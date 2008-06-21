@@ -5,7 +5,7 @@ include 'Head.inc.php';
 
 ?>
 <div class="graph">
-	<div class="container" style="border: solid grey; border-width: 0 1px 1px;">
+	<div class="container rear_cont">
 		<div class="back"></div>
 		<div class="back"></div>
 		<div class="back"></div>

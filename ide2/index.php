@@ -1,5 +1,4 @@
 <?php
-$external_scripts	= "script.js";
 $right_side	= TRUE;
 
 include 'Head.inc.php';

@@ -72,10 +72,11 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 
 /* Bar Charts */
 .graph	{ padding: 5px 5px 25px; text-align: center; background-color: white; }
-.back	{ width: 100%; border: solid grey; border-width: 1px 0 0; background-color: white; position: relative; height: 49px; }
+.back	{ width: 100%; background-color: white; border-color: grey; border-width: 1px 0 0; border-style: solid; position: relative; height: 49px; }
 .bar	{ width: 40px; background-color: red; position: absolute; bottom: 0px; }
 .bar_t	{ width: 40px; position: absolute; bottom: -20px; }
 .container	{ position: relative; }
+.rear_cont	{ border-style: solid; border-color: grey; border-width: 0 1px 1px; }
 
 /* The footer */
 #footer	{ clear: both; border-top: 1px solid #DCDCDC; margin: 0 0 3em 0; color: #777; background: #DFDBD7; }

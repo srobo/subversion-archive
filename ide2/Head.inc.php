@@ -1,15 +1,14 @@
 <?php
-/*
-$dbhost = 'mysql2.ecs.soton.ac.uk';
-$dbuser = 'cc1206';
+$dbhost = 'linuxproj.ecs.soton.ac.uk';
+$dbuser = 'pjcl106';
+$dbpass = 'sr_cheese';
 
 $conn = mysql_connect($dbhost, $dbuser, $dbpass) or die ('Error connecting to mysql');
-$query = "SELECT * FROM cc1206.tids";
-$dbname = 'cc1206';
+$query = "SELECT * FROM pjcl106.ide2";
+$dbname = 'db_pjcl106';
 $result = mysql_query($query);
 
 mysql_close($conn);
-*/
 
 function wiki2html($wikitext)
 {
@@ -37,6 +36,60 @@ function user_is_mentor($username)
 {
 	global $mentor_list;
 	return in_array($username, $mentor_list);
+}
+
+function make_MySQL_query($search)
+{
+	global $MySQL_table;
+
+	$where	= $order	= "";
+
+	switch($search)	//do the WHERE's
+	{
+		case "unfinished":
+			$where	= "completed=0";
+			break;
+		case "unchecked":
+			$where	= " && signoff_date=0";
+		case "finished":
+			$where	= "completed>0$where";
+			break;
+		case "new":
+			$where	= "new";
+			break;
+		case "reminders":
+			$where	= "reminders";
+			break;
+		case "unread":
+			$where	= "unread";
+			break;
+		default:
+			break;
+	}
+	switch($search)	//do the ORDER BY's & tables
+	{
+		case "unfinished":
+		case "finished":
+		case "unchecked":
+			$order	= "deadline";
+			$table	= $MySQL_checklist_table;
+			break;
+		case "new":
+			$order	= "new";
+			$table	= $MySQL_news_table;
+			break;
+		case "reminders":
+			$order	= "reminders";
+			$table	= $MySQL_news_table;
+			break;
+		case "unread":
+			$order	= "unread";
+			$table	= $MySQL_news_table;
+			break;
+		default:
+			break;
+	}
+	return "SELECT * FROM $table WHERE $where ORDER BY $order LIMIT 20";
 }
 
 /* file contains info in an array that mimics the db output */
@@ -68,8 +121,6 @@ $page_n		= substr($this_page, 0, strlen($this_page)-4);	//remove .php
 if($page_n == "index")
 	$page_n		= "Home";
 	
-if(!isset($external_scripts))
-	$external_scripts	= "";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -79,7 +130,9 @@ if(!isset($external_scripts))
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
 	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="rss/" />
-	<?php foreach(explode(", ", $external_scripts) as $script) { ?>
+	<script type="text/javascript" src="script.js"></script>
+	<?php if(isset($external_scripts))
+		foreach(explode(", ", $external_scripts) as $script) { ?>
 	<script type="text/javascript" src="<?php echo $script; ?>"></script>
 	<?php } ?>
 </head>
@@ -98,7 +151,6 @@ if(!isset($external_scripts))
 </div>
 <div class="content">
 	<div id="main">
-<?php if(isset($right_side) && $right_side) { ?>
 		<div id="right_side">
 			<h3>User Details</h3>
 			<table id="user_info">
@@ -147,4 +199,3 @@ if(!isset($external_scripts))
 		</div><!-- end right_side -->
 
 		<div id="left_side">
-<?php } ?>
