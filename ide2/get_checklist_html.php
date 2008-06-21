@@ -3,16 +3,14 @@ include_once 'functions.inc.php';
 
 $_search_type	= isset($_GET['search']) ? $_GET['search'] : "all";
 
-$query	= make_MySQL_query($_search_type);
-
-$result = mysql_query($query);
-
-$debug_info	.= "\n<br />\$query = '$query'\n<br />";
-
-echo $debug_info;
+$result	= mysql_query(make_MySQL_query($_search_type));
 
 //echo mysql_num_rows($result);
-while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+
+if(!$result)
+	echo mysql_error();
+else
+while($row = mysql_fetch_assoc($result))
 {
 //foreach($task_list as $row)
 ?>
@@ -85,5 +83,4 @@ while($row = mysql_fetch_array($result, MYSQL_ASSOC))
 				</div>
 			</div>
 			<!-- New Task -->
-<?php }	//end foreach
-?>
+<?php }	//end foreach ?>

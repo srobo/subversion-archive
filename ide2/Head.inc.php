@@ -1,26 +1,28 @@
 <?php
 $debug_info	= "";
 
-if($_SERVER['SERVER_NAME'] == 'linuxproj.ecs.soton.ac.uk')
+if($_SERVER['SERVER_NAME'] == $good_server)
 {
-	$dbhost = 'localhost';
-	$dbuser = 'pjcl106';
-	$dbpass = 'sr_cheese';
-	$dbname = 'db_pjcl106';
-
-	$conn = mysql_connect($dbhost, $dbuser, $dbpass) or die ('Error connecting to mysql');
+	$conn	= mysql_connect($db_host, $db_user, $db_pass) or die ('Error connecting to mysql');
+	mysql_select_db($db_name);
 } else
 	header("location: http://linuxproj.ecs.soton.ac.uk".$_SERVER['SCRIPT_NAME']);
 
-/* file contains info in an array that mimics the db output */
-include_once 'functions.inc.php';
-include_once 'task_list.inc.php';
+include_once 'functions.inc.php';	//functions file
+include_once 'config.inc.php';	//config file
+include_once 'task_list.inc.php';	//file contains info in an array that mimics the db output
 
-if(isset($_POST['username']))
-	$username	= $_POST['username'];
-elseif(isset($_GET['username']))
-	$username	= $_GET['username'];
-else
+
+if(!empty($_COOKIE))
+	extract($_COOKIE, EXTR_OVERWRITE);
+
+if(!empty($_GET))				//recover all passed info
+	extract($_GET, EXTR_OVERWRITE);
+
+if(!empty($_POST))
+	extract($_POST, EXTR_OVERWRITE);
+
+if(!isset($username))
 	$username	= "Test Student";
 
 if(user_is_mentor($username))

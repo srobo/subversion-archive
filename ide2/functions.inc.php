@@ -53,9 +53,10 @@ function make_MySQL_query($search)
 		case "unread":
 			$where	.= "unread";
 			break;
+		case "all":
 		default:
 			$where	= "";
-			return;
+			break;
 	}
 	$order	= "ORDER BY ";
 	switch($search)	//do the ORDER BY's & tables
@@ -80,12 +81,10 @@ function make_MySQL_query($search)
 			$table	= $MySQL_news_table;
 			break;
 		default:
-			$order	= "";
-			$table	= "task_list";
-			break;
+			return;
 	}
-	$out	= "SELECT * FROM $table $where $order LIMIT 20";
-	$debug_info	.= "\n<br />\$out = '$out'\n<br />";
-	return $out;
+	$query	= "SELECT * FROM $table $where $order LIMIT 20";
+	$debug_info	.= "\n<br />\$query = '$query'\n<br />";
+	return $query;
 }
 ?>
