@@ -67,6 +67,9 @@ $this_page	= $page_arr[count($page_arr)-1];
 $page_n		= substr($this_page, 0, strlen($this_page)-4);	//remove .php
 if($page_n == "index")
 	$page_n		= "Home";
+	
+if(!isset($external_scripts))
+	$external_scripts	= "";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -95,7 +98,7 @@ if($page_n == "index")
 </div>
 <div class="content">
 	<div id="main">
-<?php if($right_side) { ?>
+<?php if(isset($right_side) && $right_side) { ?>
 		<div id="right_side">
 			<h3>User Details</h3>
 			<table id="user_info">

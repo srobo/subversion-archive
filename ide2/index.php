@@ -1,4 +1,5 @@
 <?php
+$external_scripts	= "script.js";
 $right_side	= TRUE;
 
 include 'Head.inc.php';
@@ -15,10 +16,10 @@ foreach($ide_sect as $row)
 				<div class="rs"><strong>Description</strong>:
 <?php echo wiki2html($row['description']); ?>
 				</div>
-				<div class="rs"><strong>Relevent Documentation/Help</strong>:
-<?php echo wiki2html($row['related_docs_help']); ?>
-				</div>
 				<div id="ide_sect_<?php echo $row['id']; ?>_details" style="display: none;">
+					<div class="rs"><strong>Relevent Documentation/Help</strong>:
+<?php echo wiki2html($row['related_docs_help']); ?>
+					</div>
 					<strong>Team Comments</strong>
 					<span style="float: right;"><a href="edit.htm" title="Edit the comments">Edit</a></span>
 					<blockquote>

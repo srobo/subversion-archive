@@ -1,4 +1,4 @@
-<?php if($right_side) { ?>
+<?php if(isset($right_side) && $right_side) { ?>
 		</div><!-- end left_side -->
 <?php } ?>
 	</div><!-- end main -->
