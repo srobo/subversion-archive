@@ -44,7 +44,8 @@ body{
 	float:left;
 	background:#F6F6F6;
 	overflow:hidden;
-	display:none;	
+	display:none;
+	opacity:0.4;	
 }
 #main{
 	background-color:#FFFFFF;
