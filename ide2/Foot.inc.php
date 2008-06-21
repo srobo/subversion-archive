@@ -1,3 +1,4 @@
+<?php 	mysql_close($conn); ?>
 		</div><!-- end left_side -->
 	</div><!-- end main -->
 	<div id="footer">

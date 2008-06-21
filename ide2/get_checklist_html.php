@@ -1,7 +1,9 @@
 <?php
-include_once 'task_list.inc.php';
+include_once 'functions.inc.php';
 
-$_search_type	= $_GET['search'];
+$_search_type	= isset($_GET['search']) ? $_GET['search'] : "all";
+
+$result = mysql_query(make_MySQL_query($_search_type));
 
 //echo mysql_num_rows($result);
 //while($row = mysql_fetch_array($result, MYSQL_ASSOC))

@@ -1,98 +1,18 @@
 <?php
-$dbhost = 'linuxproj.ecs.soton.ac.uk';
-$dbuser = 'pjcl106';
-$dbpass = 'sr_cheese';
 
-$conn = mysql_connect($dbhost, $dbuser, $dbpass) or die ('Error connecting to mysql');
-$query = "SELECT * FROM pjcl106.ide2";
-$dbname = 'db_pjcl106';
-$result = mysql_query($query);
-
-mysql_close($conn);
-
-function wiki2html($wikitext)
+if($_SERVER['SERVER_NAME'] == 'linuxproj.ecs.soton.ac.uk')
 {
-	if(!isset($wikitext) || $wikitext == "")
-		return FALSE;
+	$dbhost = 'localhost';
+	$dbuser = 'pjcl106';
+	$dbpass = 'sr_cheese';
+	$dbname = 'db_pjcl106';
 
-	$inter_text	= $wikitext;
-	while(strpos($inter_text,"[[") && strpos($inter_text,"]]"))
-	{
-		$link	= str_replace(array("[[", "]]"), "", substr($inter_text, strpos($inter_text, "[["), (strpos($inter_text, "]]")-strpos($inter_text, "[["))));
-		if(strpos($link, "|"))
-			list($href, $title)	= explode("|", $link);
-		else
-			$href	= $title	= $link;
-		$inter_text	= str_replace("[[$link]]", "<a href=\"$href\">$title</a>", $inter_text);
-	}
-
-	if(strpos($inter_text,"\n*") || strpos($inter_text,"*") === 0)
-		$inter_text	= "\n<ul>".str_replace("*", "\n	<li>", str_replace("\n*", "</li>\n	<li>", $inter_text))."</li>\n</ul>\n";
-
-	return $inter_text;
-}
-
-function user_is_mentor($username)
-{
-	global $mentor_list;
-	return in_array($username, $mentor_list);
-}
-
-function make_MySQL_query($search)
-{
-	global $MySQL_table;
-
-	$where	= $order	= "";
-
-	switch($search)	//do the WHERE's
-	{
-		case "unfinished":
-			$where	= "completed=0";
-			break;
-		case "unchecked":
-			$where	= " && signoff_date=0";
-		case "finished":
-			$where	= "completed>0$where";
-			break;
-		case "new":
-			$where	= "new";
-			break;
-		case "reminders":
-			$where	= "reminders";
-			break;
-		case "unread":
-			$where	= "unread";
-			break;
-		default:
-			break;
-	}
-	switch($search)	//do the ORDER BY's & tables
-	{
-		case "unfinished":
-		case "finished":
-		case "unchecked":
-			$order	= "deadline";
-			$table	= $MySQL_checklist_table;
-			break;
-		case "new":
-			$order	= "new";
-			$table	= $MySQL_news_table;
-			break;
-		case "reminders":
-			$order	= "reminders";
-			$table	= $MySQL_news_table;
-			break;
-		case "unread":
-			$order	= "unread";
-			$table	= $MySQL_news_table;
-			break;
-		default:
-			break;
-	}
-	return "SELECT * FROM $table WHERE $where ORDER BY $order LIMIT 20";
-}
+	$conn = mysql_connect($dbhost, $dbuser, $dbpass) or die ('Error connecting to mysql');
+} else
+	header("location: http://linuxproj.ecs.soton.ac.uk".$_SERVER['SCRIPT_NAME']);
 
 /* file contains info in an array that mimics the db output */
+include 'functions.inc.php';
 include 'task_list.inc.php';
 
 if(isset($_POST['username']))

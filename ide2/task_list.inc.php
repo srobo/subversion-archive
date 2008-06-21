@@ -138,7 +138,7 @@ $task_list[1]['deadline']	= "2008-06-09";
 
 $task_list[2]['id']	= 12;
 $task_list[2]['title']	= "Order Motors";
-$task_list[2]['description']	= " Decide upon the specification of the motors you will need for your robot and order them from your chosen manufacturer.";
+$task_list[2]['description']	= "Decide upon the specification of the motors you will need for your robot and order them from your chosen manufacturer.";
 $task_list[2]['design_consider']	= "*Torque - How much do you need?\n*Wheel size - How big?\n*Wheel speed - What is the target speed?\n*Voltage - Is it compatible with the Motor Board?\n*Power - Is it suitable for the battery?";
 $task_list[2]['related_docs_help']	= "*[[http://en.wikipedia.org/wiki/Torque|Torque]] - What is it?\n*The Motor Controller Board\n*[[http://www.maplin.co.uk/|Maplins]] - featured component\n*[[http://uk.farnell.com/|Farnell]] - featured component\n*[[http://uk.rs-online.com/web/|RS]] - featured component";
 $task_list[2]['teams_comments']	= "We've got the best motors!!";
@@ -151,7 +151,7 @@ $task_list[2]['deadline']	= "2008-06-13";
 
 $task_list[3]['id']	= 14;
 $task_list[3]['title']	= "Build Chasis";
-$task_list[3]['description']	= "Fabricate the chasis from chosen material and ...";
+$task_list[3]['description']	= "Fabricate the chassis from chosen material and ...";
 $task_list[3]['design_consider']	= "";
 $task_list[3]['related_docs_help']	= "";
 $task_list[3]['teams_comments']	= "";
