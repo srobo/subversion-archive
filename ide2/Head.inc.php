@@ -1,17 +1,16 @@
 <?php
 $debug_info	= "";
 
+include_once 'functions.inc.php';	//functions file
+include_once 'config.inc.php';	//config file
+include_once 'task_list.inc.php';	//file contains info in an array that mimics the db output
+
 if($_SERVER['SERVER_NAME'] == $good_server)
 {
 	$conn	= mysql_connect($db_host, $db_user, $db_pass) or die ('Error connecting to mysql');
 	mysql_select_db($db_name);
 } else
 	header("location: http://linuxproj.ecs.soton.ac.uk".$_SERVER['SCRIPT_NAME']);
-
-include_once 'functions.inc.php';	//functions file
-include_once 'config.inc.php';	//config file
-include_once 'task_list.inc.php';	//file contains info in an array that mimics the db output
-
 
 if(!empty($_COOKIE))
 	extract($_COOKIE, EXTR_OVERWRITE);
