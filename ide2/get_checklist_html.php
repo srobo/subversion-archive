@@ -14,8 +14,8 @@ while($row = mysql_fetch_assoc($result))
 {
 //foreach($task_list as $row)
 ?>
-			<h3 id="task_<?php echo $row['id']; ?>" onclick="showHide('task_<?php echo $row['id']; ?>_details')" title="Click to expand task">
-				<span><?php echo $row['id']; ?> - <?php echo $row['title']; ?></span>
+			<h3 id="task_<?php echo $row['task_id']; ?>" onclick="showHide('task_<?php echo $row['task_id']; ?>_details')" title="Click to expand task">
+				<span><?php echo $row['task_id']; ?> - <?php echo $row['title']; ?></span>
 			</h3>
 			<div class="task_attr_container">
 			<table class="task_attr_tbl">
@@ -46,10 +46,10 @@ while($row = mysql_fetch_assoc($result))
 					} else { ?>Completed:</th><td class="L">
 						<?php echo date("D j M Y", $row['completed']);
 					} ?></td>
-					<th>Completed by:</th><td class="R"><?php echo $teams_completed[$row['id']]." Team".($teams_completed[$row['id']] == 1 ? "": "s"); ?></td></tr>
+					<th>Completed by:</th><td class="R"><?php echo $teams_completed[$row['task_id']]." Team".($teams_completed[$row['task_id']] == 1 ? "": "s"); ?></td></tr>
 				</table>
 
-				<div id="task_<?php echo $row['id']; ?>_details" style="display: none;">
+				<div id="task_<?php echo $row['task_id']; ?>_details" style="display: none;">
 
 					<div class="rs"><strong>Design considerations</strong>:
 <?php echo wiki2html($row['design_consider']); ?>
@@ -68,9 +68,9 @@ while($row = mysql_fetch_assoc($result))
 					<p><?php echo $row['mentor_comments']; ?></p>
 					</blockquote>
 <?php if($row['completed'] == 0 || user_is_mentor($username)) { ?>
-					<form id="signoff_task_<?php echo $row['id']; ?>" action="" method="get">
+					<form id="signoff_task_<?php echo $row['task_id']; ?>" action="" method="get">
 						<p>
-							<input type="hidden" name="task" value="<?php echo $row['id']; ?>" />
+							<input type="hidden" name="task" value="<?php echo $row['task_id']; ?>" />
 <?php if(($row['signoff_date'] == 0 && user_is_mentor($username)) || $row['completed'] == 0) { ?>
 							<input type="submit" value="<?php echo $button_val; ?>" name="signoff" class="signoff" />
 <?php }	//if task incomplete or (mentor and not signed off) - completion

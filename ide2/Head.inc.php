@@ -33,7 +33,7 @@ if(user_is_mentor($username))
 } else {
 	$button_val	= "Task Completed";
 	$school	= "Somewhere College";	//look it up in the db
-	$team_number	= rand(1, 20);	//look it up in the db
+	$team_number	= 4;//rand(1, 20);	//look it up in the db
 	$mentor_name	= $mentor_list[($team_number % count($mentor_list))];	//look it up in the db
 }
 

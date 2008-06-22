@@ -1,7 +1,7 @@
 <?php
 include 'Head.inc.php';
 ?>
-	<form method="post" action="" id="contact" onsubmit="return Validate_On_Contact_Submit('contact')">
+	<form method="post" action="mail_handler.php" id="contact" onsubmit="return Validate_On_Contact_Submit('contact')">
 		<table id="contact_tbl">
 			<tr>
 				<td colspan="2" class="center">
@@ -30,13 +30,11 @@ include 'Head.inc.php';
 				<th>
 					<label for="message">Message</label>
 				</th>
-
 				<td>
 					<textarea id="message" name="message" class="text_in" rows="6" cols="51"></textarea>
 				</td>
 			</tr><tr>
 				<td colspan="2" class="center">
-					<input type="hidden" name="from_user" value="<?php echo $username; ?>" />
 					<input type="hidden" name="debug" value="<?php echo $debug; ?>" />
 					<input id="contact_reset" type="reset" value="Reset" />
 					<input id="contact_submit" name="contact_submit" type="submit" value="Send" />

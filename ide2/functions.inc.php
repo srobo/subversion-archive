@@ -32,7 +32,7 @@ function user_is_mentor($username)
 /* make a MySQL query from a search type */
 function make_MySQL_query($search)
 {
-	global $debug_info;
+	global $debug_info, $team_number;
 	$where	= "WHERE ";
 	switch($search)	//do the WHERE's
 	{
@@ -66,7 +66,8 @@ function make_MySQL_query($search)
 		case "finished":
 		case "unchecked":
 			$order	.= "deadline";
-			$table	= "task_list";
+			$table	= "task_list, tracker";
+			$where	.= ($where == "" ? "WHERE" : " &&")." task_list_id = task_id && team_id=$team_number";
 			break;
 		case "new":
 			$order	.= "new";
