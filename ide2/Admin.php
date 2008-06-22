@@ -79,7 +79,7 @@ if(isset($edit_id))
 					<td>
 						<select name="edit_id" id="edit_id" onchange="get_new_task('admin_form', this.value)">
 	<option value="New">New</option><?php
-	$result	= mysql_query("SELECT task_list_id FROM task_list WHERE 1");
+	$result	= mysql_query("SELECT task_list_id, title FROM task_list WHERE 1 ORDER BY task_list_id");
 	if(!$result)
 		echo mysql_error();
 	else
@@ -90,7 +90,7 @@ if(isset($edit_id))
 				$selected	= " selected=\"selected\"";
 			else
 				$selected	= "";
-			echo "\n	<option value=\"".$row_2['task_list_id']."\"$selected>".$row_2['task_list_id']."</option>";
+			echo "\n	<option value=\"".$row_2['task_list_id']."\"$selected>".$row_2['task_list_id']." - ".$row_2['title']."</option>";
 		}
 	}
 ?>

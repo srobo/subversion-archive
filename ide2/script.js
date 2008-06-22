@@ -74,7 +74,6 @@ function GetXmlHttpObject()
 function send_ajax(addr, search_string, userfunc)
 {
 	xmlHttp	= GetXmlHttpObject();
-	DEST	= folder_id;
 
 	if(xmlHttp == null)
 	{

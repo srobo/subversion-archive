@@ -1,5 +1,5 @@
 <?php
-$deadline	= date("Y-j-d");
+$deadline	= date("j.n.Y");
 $related_docs_help	= $title	= $design_consider	= $description	= "";
 
 include_once 'functions.inc.php';	//functions file
@@ -27,10 +27,10 @@ list($day, $month, $year)	= split("[./-]",date("j.n.Y", strtotime($deadline)));
 ?>
 FORM.title.value	= "<?php echo $title; ?>";
 FORM.description.value	= "<?php echo $description; ?>";
-FORM.design_consider.value	= "<?php echo $design_consider; ?>";
-FORM.related_docs_help.value	= "<?php echo $related_docs_help; ?>";
-FORM_category	= "<?php echo $related_docs_help; ?>";
-FORM_day	= "<?php echo $day; ?>";
-FORM_month	= "<?php echo $month; ?>";
-FORM_year	= "<?php echo $year; ?>";
+FORM.design_consider.value	= "<?php echo str_replace(array("\n", "\r", '\n\n'), '\n', $design_consider); ?>";
+FORM.related_docs_help.value	= "<?php echo str_replace(array("\n", "\r", '\n\n'), '\n', $related_docs_help); ?>";
+FORM.category.value	= "<?php echo $category; ?>";
+FORM._day.value	= "<?php echo $day; ?>";
+FORM._month.value	= "<?php echo $month; ?>";
+FORM._year.value	= "<?php echo $year; ?>";
 <?php 	mysql_close($conn); ?>

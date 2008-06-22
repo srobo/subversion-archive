@@ -134,9 +134,7 @@ function get_new_task(form_name, id)
 			eval(xmlHttp.responseText);
 		};
 
-
-	send_ajax("admin_helper.php", "edit_id="+id, change_form)
-
+	send_ajax("Admin_ajax_helper.php", "edit_id="+id, change_form);
 
 	return;
 }
