@@ -1,5 +1,6 @@
 <?php
 $external_scripts	= "Admin.js";
+$onload	= "page_load()";
 include 'Head.inc.php';
 
 $logged_in	= TRUE;
@@ -23,7 +24,7 @@ if(isset($edit_id))
 			extract($row, EXTR_OVERWRITE);
 	}
 }
-	if(isset($success)) print_success($success); ?>
+	if(isset($success)) echo print_success($success); ?>
 	<form id="admin_form" action="admin_handler.php" method="post" onsubmit="return Validate_On_Admin_Submit('admin_form')">
 		<div class="admin_form_head">
 	<?php	if($debug)	echo "<input type=\"hidden\" name=\"debug\" value=\"$debug\" />";
@@ -45,8 +46,12 @@ if(isset($edit_id))
 					?>
 						<script type="text/javascript">
 							<!--
-							// fix number of days for the $month/$year that you start with\n"
-							ChangeOptionDays(document.admin_form, '_'); // Note: The 2nd arg must match the first in the call to genDateSelector above.\n"
+							// fix number of days for the $month/$year that you start with
+							// Note: The 2nd arg must match the first in the call to genDateSelector above.
+							function page_load()
+							{
+								ChangeOptionDays(document.admin_form, '_');
+							}
 							// -->
 						</script>
 					</td>

@@ -59,7 +59,7 @@ if($page_n == "index")
 	<script type="text/javascript" src="<?php echo $script; ?>"></script>
 	<?php } ?>
 </head>
-<body>
+<body<?php if(isset($onload)) echo "onload=\"$onload\""; ?>>
 <div class="content">
 	<div id="top"></div>
 </div>

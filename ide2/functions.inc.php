@@ -97,12 +97,14 @@ function print_success($success)
 	$out	= "\n			<span class=\"f_right\" id=\"success\">Your ";
 
 	if($success != 1)
-		$suc	.= " <span style=\"color: blue;\">not</span>";
+		$not	= " <span style=\"color: blue;\">not</span>";
+	else
+		$not	= "";
 
 	if($page_n == "Admin")
-		$out	.= "changes were$suc saved";
+		$out	.= "changes were$not saved";
 	else
-		$out	.= "email was$suc sent";
+		$out	.= "email was$not sent";
 
 	$out	.= " successfully.</span>";
 	return $out;

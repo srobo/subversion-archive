@@ -5,16 +5,11 @@ if (!empty($_GET))
 if (!empty($_POST))
 	extract($_POST, EXTR_OVERWRITE);
 
-if($debug)	//debug stuff
-{
-	if(!isset($username) || $username == "") $username = "president";
-}
+$error	= $debug_info	= "";
 $logged_in	= FALSE;	//just in case
 
 include "functions.inc.php";	//contains my general functions - the file system gallery ones are now separate
 include "config.inc.php";			//these files are now included in all the cathsoc pages since I'm using lots of functions
-
-$debug_info .= "\$new_name=$new_name\n<br />\$name=$name\n<br />\$type=$type\n<br />\$content=$content\n<br />\n";
 
 if($description == "" || $description ==  " " || !isset($description))
 {
@@ -49,37 +44,47 @@ if(isset($edit_id) && $edit_id != "New")	//if we're editing
 {
 	$result	= mysql_query("SELECT * FROM task_list WHERE task_list_id=$edit_id");	//check it really exists
 	if(!$result)
-		echo mysql_error();
-	else
 	{
+		$debug_info .= "\n<br />mysql_error() = '".mysql_error()."'";
+		$mysql_query	= "";
+		echo mysql_error();
+	} else {
 		$row = mysql_fetch_assoc($result);
 		$mysql_query	= "UPDATE task_list SET title='$title', description='$description', design_consider='$design_consider',"
 						." related_docs_help='$related_docs_help', category='$category', deadline='$deadline' WHERE task_list_id=$edit_id";
 	}
 }
 
-if(!isset($edit_id) || (isset($row) && $row['task_list_id'] != $edit_id))	//we're making a new one
+if(!isset($edit_id) || $edit_id == "New" || (isset($row) && $row['task_list_id'] != $edit_id))	//we're making a new one
 {
 	$mysql_query	= "INSERT INTO task_list (title, description, design_consider, related_docs_help, deadline, category)"
 					." VALUES ('$title', '$description', '$design_consider', '$related_docs_help', '$deadline', '$category')";
 }
 
-$debug_info .= "\$mysql_query=$mysql_query\n<br />\n";
+$result	= mysql_query($mysql_query);	//check it really exists
+if(!$result)
+{
+	$debug_info .= "\n<br />mysql_error() = '".mysql_error()."'";
+	echo mysql_error();
+}
+
+$debug_info .= "\$mysql_query='$mysql_query'\n<br />\n";
 
 }	//end if bad content
 
-if($debug)
+if(isset($debug) && $debug)
 {
-	echo "POST";
+	echo "\n<br />POST";
 	foreach($_POST as $key => $val)
 		echo "<br />$key	= $val\n";
-	echo "GET";
+	echo "\n<br />GET";
 	foreach($_GET as $key => $val)
 		echo "<br />$key	= $val\n";
+	echo "\n<br />\$debug_info:\n<br />$debug_info";
 }
 
-<?php 	mysql_close($conn); ?>
-if((isset($error) && $error != "") || $debug)
+mysql_close($conn);
+if((isset($error) && $error != "") || (isset($debug) && $debug))
 	include "handler.php";
 else
 	header("Location: Admin.php?success=1");
