@@ -77,6 +77,7 @@ function ChangeOptionDays(formObj, prefix)
 		DaysObject.selectedIndex = DaySelIdx;
 }
 
+// Validate the Admin form before submission to check for errors
 function Validate_On_Admin_Submit(form_name)
 {
 	var out	= "form_name = "+form_name;
@@ -110,4 +111,32 @@ function Validate_On_Admin_Submit(form_name)
 	}
 	FORM.contact_submit.disabled	= "true";	//make sure they don't hit send twice
 	return true;
+}
+
+// use an ajax request to change the selected task, or if no ajax use php
+function get_new_task(form_name, id)
+{
+	var out	= "form_name = "+form_name;
+	var FORM	= document.forms[form_name];
+//	alert(out);
+
+	if(id == "New")
+	{
+		FORM.title.value	= "";
+		FORM.description.value	= "";
+		FORM.design_consider.value	= "";
+		FORM.related_docs_help.value	= "";
+		return;
+	}
+
+	var change_form	= function() {
+		if(xmlHttp.readyState == 4)
+			eval(xmlHttp.responseText);
+		};
+
+
+	send_ajax("admin_helper.php", "edit_id="+id, change_form)
+
+
+	return;
 }

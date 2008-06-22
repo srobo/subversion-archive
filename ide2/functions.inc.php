@@ -108,30 +108,6 @@ function print_success($success)
 	return $out;
 }
 
-/* This function generates a Time selector */
-function genTimeSelector($end)
-{
-	global $debug_info;
-	echo "\n				<select name=\"${end}hour\">";
-
-	for($i = 0; $i <= 23; $i++)
-		echo "\n					<option value=\"$i\"" . ($i == 19 ? " selected=\"selected\"" : "") . ">$i</option>";
-
-	echo "\n				</select>\n				:\n				<select name=\"${end}minute\" >";
-
-	for($i = 0; $i <= 56; $i++)
-	{
-		if($i % 5 == 0)
-		{
-				$debug_info .= "\$i=$i\n<br />\n";
-
-			echo "\n					<option value=\"$i\">".($i<10?"0":"")."$i</option>";
-		}
-	}
-
-	echo "\n				</select>\n";
-}
-
 /* This function generates a date selector. from MRBS, with tweaks by me */
 function genDateSelector($prefix, $day, $month, $year)
 {

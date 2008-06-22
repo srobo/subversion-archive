@@ -89,7 +89,7 @@ textarea	{ font-family: Verdana, Arial, Helvetica, sans-serif; background-color:
 
 /* Admin.php */
 #admin_form	{ margin: 0 10px; }
-#admin_form .text_in	{ margin: 0 4px; }
+#admin_form .text_in	{ margin: 0 4px; width: 95%; }
 #left_side .admin_head	{ height: 2.5em; vertical-align: middle; margin: 0 4px; }
 #left_side .admin_form_head	{ margin-top: 4px; height: 2.6em; }
 #left_side .admin_form_head h3	{ background-image: none; }

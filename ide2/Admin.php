@@ -18,7 +18,7 @@ if(isset($edit_id))
 		echo mysql_error();
 	else
 	{
-		$row = mysql_fetch_assoc($result);
+		$row	= mysql_fetch_assoc($result);
 		if(!empty($row))
 			extract($row, EXTR_OVERWRITE);
 	}
@@ -29,23 +29,24 @@ if(isset($edit_id))
 	<?php	if($debug)	echo "<input type=\"hidden\" name=\"debug\" value=\"$debug\" />";
 			if(isset($edit_id))	echo "<input type=\"hidden\" name=\"edit_id\" value=\"$edit_id\" />"; ?>
 			<h3>Edit or Add a task.</h3>
-			<span class="f_right"><input type="submit" value="Save" /><input type="reset" value="Reset" /></span>
+			<span class="f_right"><input type="submit" value="Save" />
+			<br /><input type="reset" value="Reset" /></span>
 		</div>
 		<div class="admin_form">
 			<table>
 				<tr>
 					<th>Deadline:</th>
-					<td><?php
-					list($day, $month, $year) = split("[./-]",date("j.n.Y", strtotime($deadline)));
+					<td colspan="3"><?php
+					list($day, $month, $year)	= split("[./-]",date("j.n.Y", strtotime($deadline)));
 
 					$debug_info .= "\$day=$day,	\$month=$month,	\$year=$year\n<br />\n";
 
-					genDateSelector("", $day, $month, $year);
+					genDateSelector("_", $day, $month, $year);
 					?>
 						<script type="text/javascript">
 							<!--
 							// fix number of days for the $month/$year that you start with\n"
-							ChangeOptionDays(document.admin_form, ''); // Note: The 2nd arg must match the first in the call to genDateSelector above.\n"
+							ChangeOptionDays(document.admin_form, '_'); // Note: The 2nd arg must match the first in the call to genDateSelector above.\n"
 							// -->
 						</script>
 					</td>
@@ -53,7 +54,7 @@ if(isset($edit_id))
 					<th>
 						<label for="title">Title:</label>
 					</th>
-					<td >
+					<td colspan="3">
 						<input name="title" id="title" value="<?php echo $title; ?>" />
 					</td>
 				</tr><tr>
@@ -62,8 +63,37 @@ if(isset($edit_id))
 					</th>
 					<td>
 						<select name="category" id="category">
-							<option value="Electronics">Electronics</option>
-							<option value="Mechanical">Mechanical</option>
+<?php foreach(array("Electronics", "Mechanical") as $cat)
+{
+			if($cat == $category)
+				$selected	= " selected=\"selected\"";
+			else
+				$selected	= "";
+	echo "\n	<option value=\"$cat\"$selected>$cat</option>";
+}
+?>						</select>
+					</td>
+					<th>
+						<label for="edit_id">Task ID:</label>
+					</th>
+					<td>
+						<select name="edit_id" id="edit_id" onchange="get_new_task('admin_form', this.value)">
+	<option value="New">New</option><?php
+	$result	= mysql_query("SELECT task_list_id FROM task_list WHERE 1");
+	if(!$result)
+		echo mysql_error();
+	else
+	{
+		while($row_2	= mysql_fetch_assoc($result))
+		{
+			if($row_2['task_list_id'] == $edit_id)
+				$selected	= " selected=\"selected\"";
+			else
+				$selected	= "";
+			echo "\n	<option value=\"".$row_2['task_list_id']."\"$selected>".$row_2['task_list_id']."</option>";
+		}
+	}
+?>
 						</select>
 					</td>
 				</tr>

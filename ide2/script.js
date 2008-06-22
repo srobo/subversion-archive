@@ -45,3 +45,44 @@ function Validate_On_Contact_Submit(form_name)
 	FORM.contact_submit.disabled	= "true";	//make sure they don't hit send twice
 	return true;
 }
+
+//ajax bits follow
+function GetXmlHttpObject()
+{
+	var xmlHttp	= null;
+	try
+	{
+		// Firefox, Opera 8.0+, Safari
+		xmlHttp=new XMLHttpRequest();
+	}
+	catch(e)
+	{
+		// Internet Explorer
+		try
+		{
+			xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch(e)
+		{
+			xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+	return xmlHttp;
+}
+
+//sends an ajax request to address 'addr', using search_string, then evalutaes the function 'userfunc', which can be defined when calling this function
+function send_ajax(addr, search_string, userfunc)
+{
+	xmlHttp	= GetXmlHttpObject();
+	DEST	= folder_id;
+
+	if(xmlHttp == null)
+	{
+		alert("Your browser does not support AJAX!");
+		window.location	+= (window.location.search == '' ? "?" : "&") + "ajax=0&"+search_string;
+	}
+
+	xmlHttp.onreadystatechange	= userfunc;
+	xmlHttp.open("GET", addr + "?" + search_string, true);
+	xmlHttp.send(null);
+}
