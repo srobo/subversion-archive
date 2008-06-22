@@ -14,7 +14,7 @@ h3	{ padding: 4px 0; margin: 0; }
 ul	{ margin: 0; padding : 0; list-style: none; }
 img	{ border: 0; }
 hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0; margin: 10px 0; }
-
+textarea	{ font-family: Verdana, Arial, Helvetica, sans-serif; background-color: white; border: 1px solid gray; }
 
 .center	{ text-align: center; }
 .f_left	{ float: left; }
@@ -67,7 +67,7 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 	#contact	{ background-color: #F6F6F6;  margin-bottom: 7px;}
 	#contact_tbl	{ width: 590px; border: none; margin-bottom: 7px; }
 	#contact_tbl th	{ width: 125px; line-height: 1.6em; vertical-align: top; text-align: right; padding-right: 8px; }
-	#contact_tbl .text_in	{ width: 401px; font-family: Verdana, Arial, Helvetica, sans-serif; margin-left: 1px; background-color: white; }
+	#contact_tbl .text_in	{ width: 401px; margin-left: 1px; }
 	#contact_reset, #contact_submit	{ width: 238px; margin: 2px 0 0 3px; line-height: 1.6em; padding: 0; font-family: Tahoma, sans-serif; }
 
 /* Bar Charts */
@@ -86,3 +86,22 @@ hr	{ height: 1px; border-style: none; color: #d0d0d0; background-color: #C0C0C0;
 /* Custom Styles */
 .login	{ width: 200px; height: 20px; border: 0px; margin: 5px; padding: 2px; color: #0d1f61; }
 .signoff	{ width: 200px; height: 30px; border: 0px; margin: 5px; padding: 2px; color: #fff; background: #253571; font-weight: bold; font-size: 15px; }
+
+/* Admin.php */
+#admin_form	{ margin: 0 10px; }
+#admin_form .text_in	{ margin: 0 4px; }
+#left_side .admin_head	{ height: 2.5em; vertical-align: middle; margin: 0 4px; }
+#left_side .admin_form_head	{ margin-top: 4px; height: 2.6em; }
+#left_side .admin_form_head h3	{ background-image: none; }
+#left_side .admin_form	{ margin-top: 4px; }
+#left_side .admin_form h4	{ margin-bottom: 0.2em; }
+#left_side .admin_form table	{ margin-bottom: 4px; }
+#left_side .admin_form table th	{ width: 60px; font-size: 0.9em; text-align: right; padding-right: 10px; }
+#left_side .admin_form table td input	{ width: 230px; }
+
+#left_side .admin_div	{ margin-top: 1em; }
+
+.f_right input	{ text-align: center; width: 150px; font-size: 0.8em; margin-right: 12px; }
+#success_cell	{ height: 1px; }
+#success	{ margin-right: 50px; font-weight: bold; color: green; border: 1px solid red; padding: 3px 5px; }
+#welcome	{ margin: 0.6em 0; }

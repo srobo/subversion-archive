@@ -88,4 +88,81 @@ function make_MySQL_query($search)
 	$debug_info	.= "\n<br />\$query = '$query'\n<br />";
 	return $query;
 }
+
+/* This function prints the success item on the admin page */
+function print_success($success)
+{
+	global $page_n;
+
+	$out	= "\n			<span class=\"f_right\" id=\"success\">Your ";
+
+	if($success != 1)
+		$suc	.= " <span style=\"color: blue;\">not</span>";
+
+	if($page_n == "Admin")
+		$out	.= "changes were$suc saved";
+	else
+		$out	.= "email was$suc sent";
+
+	$out	.= " successfully.</span>";
+	return $out;
+}
+
+/* This function generates a Time selector */
+function genTimeSelector($end)
+{
+	global $debug_info;
+	echo "\n				<select name=\"${end}hour\">";
+
+	for($i = 0; $i <= 23; $i++)
+		echo "\n					<option value=\"$i\"" . ($i == 19 ? " selected=\"selected\"" : "") . ">$i</option>";
+
+	echo "\n				</select>\n				:\n				<select name=\"${end}minute\" >";
+
+	for($i = 0; $i <= 56; $i++)
+	{
+		if($i % 5 == 0)
+		{
+				$debug_info .= "\$i=$i\n<br />\n";
+
+			echo "\n					<option value=\"$i\">".($i<10?"0":"")."$i</option>";
+		}
+	}
+
+	echo "\n				</select>\n";
+}
+
+/* This function generates a date selector. from MRBS, with tweaks by me */
+function genDateSelector($prefix, $day, $month, $year)
+{
+	if($day == 0)	$day	= date("d");	//if the current date isn't supplied
+	if($month == 0)	$month	= date("m");
+	if($year == 0)	$year	= date("Y");
+
+	echo "\n				<select name=\"${prefix}day\">";
+
+	for($i = 1; $i <= 31; $i++)
+		echo "\n					<option value=\"$i\"" . ($i == $day ? " selected=\"selected\"" : "") . ">$i</option>";
+
+	echo "\n				</select>\n				<select name=\"${prefix}month\" onchange=\"ChangeOptionDays(this.form,'$prefix')\">";
+
+	for($i = 1; $i <= 12; $i++)
+	{
+		$m = strftime("%b", mktime(0, 0, 0, $i, 1, $year));
+
+		print "\n					<option value=\"$i\"" . ($i == $month ? " selected=\"selected\"" : "") . ">$m</option>";
+	}
+
+	echo "\n				</select>\n				<select name=\"${prefix}year\" onchange=\"ChangeOptionDays(this.form,'$prefix')\">";
+
+	$min = $year;
+	$max = $year + 1;
+
+	for($i = $min; $i <= $max; $i++)
+		print "\n					<option value=\"$i\"" . ($i == $year ? " selected=\"selected\"" : "") . ">$i</option>";
+
+	echo "\n				</select>\n";
+}
+
+
 ?>

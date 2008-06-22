@@ -1,5 +1,6 @@
 <?php
 $debug_info	= "";
+$debug	= 0;
 
 include_once 'functions.inc.php';	//functions file
 include_once 'config.inc.php';	//config file
@@ -7,8 +8,8 @@ include_once 'task_list.inc.php';	//file contains info in an array that mimics t
 
 if($_SERVER['SERVER_NAME'] == $good_server)
 {
-	$conn	= mysql_connect($db_host, $db_user, $db_pass) or die ('Error connecting to mysql');
-	mysql_select_db($db_name);
+	$conn	= mysql_connect($db_host, $db_user, $db_pass) or die ("Error connecting to mysql");
+	mysql_select_db($db_name) or die ("Error: database $db_name does not exsist");
 } else
 	header("location: http://linuxproj.ecs.soton.ac.uk".$_SERVER['SCRIPT_NAME']);
 
