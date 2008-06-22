@@ -60,7 +60,7 @@ while($row = mysql_fetch_assoc($result))
 					<strong>Team Comments</strong>
 					<span style="float: right;"><a href="edit.htm" title="Edit the comments">Edit</a></span>
 					<blockquote>
-					<p><?php echo $row['teams_comments']; ?></p>
+					<p><?php echo $row['team_comments']; ?></p>
 					</blockquote>
 					<strong>Mentor Comments</strong>
 					<span style="float: right;"><a href="edit.htm" title="Edit the comments">Edit</a></span>
