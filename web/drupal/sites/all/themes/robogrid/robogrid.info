@@ -1,0 +1,5 @@
+name = RoboGrid
+description = Tableless layout with a blue colour scheme, including StudentRobotics' signature grid and logo designs.
+version = 0.1
+core = 6.x
+engine = phptemplate
