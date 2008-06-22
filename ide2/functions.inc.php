@@ -32,59 +32,56 @@ function user_is_mentor($username)
 /* make a MySQL query from a search type */
 function make_MySQL_query($search)
 {
-	global $debug_info, $team_number;
+	global $debug_info, $team_number, $pg;
 	$where	= "WHERE ";
+	$order	= "ORDER BY ";
 	switch($search)	//do the WHERE's
 	{
+		case "all":
+			$where	.= "1";
+			$order	.= "deadline";
+			$table	= "task_list";
+			break;
 		case "unfinished":
 			$where	.= "completed=0";
+			$order	.= "deadline";
+			$table	= "task_list, tracker";
 			break;
 		case "unchecked":
-			$where	.= " && signoff_date=0";
-		case "finished":
-			$where	.= "completed>0$where";
-			break;
-		case "new":
-			$where	.= "new";
-			break;
-		case "reminders":
-			$where	.= "reminders";
-			break;
-		case "unread":
-			$where	.= "unread";
-			break;
-		case "all":
-		default:
-			$where	= "";
-			break;
-	}
-	$order	= "ORDER BY ";
-	switch($search)	//do the ORDER BY's & tables
-	{
-		case "all":
-		case "unfinished":
-		case "finished":
-		case "unchecked":
+			$where	.= "completed>0 && signoff_date=0";
 			$order	.= "deadline";
 			$table	= "task_list, tracker";
 			$where	.= ($where == "" ? "WHERE" : " &&")." task_list_id = task_id && team_id=$team_number";
 			break;
+		case "finished":
+			$where	.= ($where == "" ? "WHERE" : " &&")." task_list_id = task_id && team_id=$team_number";
+			$where	.= "completed>0";
+			$order	.= "deadline";
+			$table	= "task_list, tracker";
+			break;
 		case "new":
+			$where	.= "new";
 			$order	.= "new";
 			$table	= $MySQL_news_table;
 			break;
 		case "reminders":
+			$where	.= "reminders";
 			$order	.= "reminders";
 			$table	= $MySQL_news_table;
 			break;
 		case "unread":
+			$where	.= "unread";
 			$order	.= "unread";
 			$table	= $MySQL_news_table;
 			break;
 		default:
 			return;
 	}
-	$query	= "SELECT * FROM $table $where $order LIMIT 20";
+	
+	$low	= 20*$pg;
+	$high	= 20*($pg+1);
+	
+	$query	= "SELECT * FROM $table $where $order LIMIT $low, $high";
 	$debug_info	.= "\n<br />\$query = '$query'\n<br />";
 	return $query;
 }

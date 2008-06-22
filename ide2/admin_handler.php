@@ -36,6 +36,12 @@ if($description == "" || $description ==  " " || !isset($description))
 $conn	= mysql_connect($db_host, $db_user, $db_pass) or die ("Error connecting to mysql");
 mysql_select_db($db_name) or die ("Error: database $db_name does not exsist");
 
+if($_month < 10)
+	$_month	= "0$_month";
+
+if($_day < 10)
+	$_day	= "0$_day";
+
 $deadline	= "$_year-$_month-$_day";
 
 $debug_info .= "\$deadline=$deadline\n<br />\$description=$description\n<br />\$title=$title\n<br />\$related_docs_help=$related_docs_help\n<br />\$design_consider=$design_consider\n<br />\n";
