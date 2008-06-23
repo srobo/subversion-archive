@@ -30,7 +30,7 @@ function user_is_mentor($username)
 }
 
 /* make a MySQL query from a search type */
-function make_MySQL_query($search)
+function make_MySQL_query($search, $select)
 {
 	global $debug_info, $team_number, $pg;
 	$where	= "WHERE ";
@@ -43,19 +43,17 @@ function make_MySQL_query($search)
 			$table	= "task_list";
 			break;
 		case "unfinished":
-			$where	.= "completed=0";
+			$where	.= "task_id != task_list_id && team_id=$team_number";
 			$order	.= "deadline";
 			$table	= "task_list, tracker";
 			break;
 		case "unchecked":
-			$where	.= "completed>0 && signoff_date=0";
+			$where	.= "completed>0 && signoff_date=0 && task_id=task_list_id && team_id=$team_number";
 			$order	.= "deadline";
 			$table	= "task_list, tracker";
-			$where	.= ($where == "" ? "WHERE" : " &&")." task_list_id = task_id && team_id=$team_number";
 			break;
 		case "finished":
-			$where	.= ($where == "" ? "WHERE" : " &&")." task_list_id = task_id && team_id=$team_number";
-			$where	.= "completed>0";
+			$where	.= "completed>0 && task_id=task_list_id && team_id=$team_number";
 			$order	.= "deadline";
 			$table	= "task_list, tracker";
 			break;
@@ -79,9 +77,9 @@ function make_MySQL_query($search)
 	}
 	
 	$low	= 20*$pg;
-	$high	= 20*($pg+1);
+	$high	= 20+$low;
 	
-	$query	= "SELECT * FROM $table $where $order LIMIT $low, $high";
+	$query	= "SELECT $select FROM $table $where $order LIMIT $low, $high";
 	$debug_info	.= "\n<br />\$query = '$query'\n<br />";
 	return $query;
 }

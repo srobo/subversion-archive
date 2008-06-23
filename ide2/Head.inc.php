@@ -90,13 +90,21 @@ if($page_n == "index")
 			<ul>
 			<?php foreach($checklist_toolbox as $tool_item)
 			{
-				if($page_n == "Checklist")
+				$res	= mysql_query(make_MySQL_query($tool_item['link'], "task_id"));
+				if(!$res)
+				{
+					$debug_info .= "\n<br />mysql_error()	= '".mysql_error()."'";
+					//echo mysql_error();
+					$num_completed	= $tool_item['num'];
+				} else
+					$num_completed	= mysql_num_rows($res);
+			
+				if(($page_n == "Checklist" || (isset($debug) && $debug)) && $debug < 2)
 					$tool_item_link	= "javascript:get_checklist('".$tool_item['link']."');";
 				else
-					$tool_item_link	= "Checklist.php?search=".$tool_item['link'];
-				$tool_item_num	= $tool_item['num'];//temporary - no db as yet: SELECT id FROM db WHERE ($search) then count rows
+					$tool_item_link	= "Checklist.php?search=".$tool_item['link'].(isset($debug) ? "&debug=$debug" : "");
 			?>
-				<li><a href="<?php echo $tool_item_link; ?>" title="<?php echo $tool_item['description']; ?>"><?php echo $tool_item['title']." ($tool_item_num)"; ?></a></li>
+				<li><a href="<?php echo $tool_item_link; ?>" title="<?php echo $tool_item['description']; ?>"><?php echo $tool_item['title']." ($num_completed)"; ?></a></li>
 			<?php } ?>
 			</ul>
 
