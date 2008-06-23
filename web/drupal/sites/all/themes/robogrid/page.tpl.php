@@ -16,28 +16,49 @@
 
 <div id="outer">
     <div id="banner">
-        <a href="#" id="trigger">Click</a>
+        <a href="" id="trigger">Click</a>
         <?php if ($logo) { ?><a href="<?php print $front_page ?>" title="<?php print t('Home') ?>"><img src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics";  ?>" /></a><?php } ?>
     </div>
     <div id="top">
-         <div id="top-spacer">
-                        <h1>Student Robotics Integrated Development Environment\
-</h1>
-                        <h2>View up-coming tasks and check on your team\'s progr\
-ess!</h2>
-                        <form id="login">
-                                SR Username <input type="text" value="Username"\
- name="user" class="login" onFocus="this.value='';" />
-                                <br />
-                                SR Password <input type="password" value="Passw\
-ord" name="pass" class="login" onFocus="this.value='';" />
-                                <input type="submit" value="Login" name="submit\
-" />
-                        </form>
-                </div>
+        <div id="navigate">
+            <?php // this list will not exist in the future because the menu will be generated from drupal ?>
+            <ul>
+            <li><a href="http://www.free-css-templates.com" title="home">IDE HOME</a></li>
+            <li><a href="#" title="Articles">FORUMS</a></li>
+            <li><a href="#" title="Gallery">CHECK LIST</a></li>
+            <li><a href="#" title="Affiliates">DOCUMENTATION</a></li>
+            <li><a href="#" title="Articles">SIMULATOR</a></li>
+            <li><a href="#" title="Abous us">MESSAGES</a></li>
+            <li><a href="#" title="Contact">CONTACT</a></li>
+            </ul>
+        </div>
+    <div id="top-spacer">
+            <form id="login">
+                SR Username <input type="text" value="Username" name="user" class="login" onFocus="this.value='';" />
+                SR Password <input type="password" value="Password" name="pass" class="login" onFocus="this.value='';" />
+                <input type="submit" value="Login" name="submit" />
+            </form>
+        </div>
+    </div>
+
+    <div id="main">
+        <div id="content">
+        </div>
+        <div id="rightcol">
+        </div>
+    </div>
+    <div id="footer">
+        <div class="right">Student Robotics - <a href="/rss/">RSS Feed</a>
+        <br />Design: <a href="http://www.free-css-templates.com">David Herreman</a>
+        </div>
     </div>
 
 </div>
+
+
+<hr />
+Faces from now on...
+
 
 <table border="0" cellpadding="0" cellspacing="0" id="header">
   <tr>

@@ -16,7 +16,7 @@ body{
 
 #outer{
 	margin:0 auto;
-	width:800px;
+	width:808px;
 }
 
 #banner{
@@ -31,24 +31,39 @@ body{
 	margin-top:-1px;	
 	background-color: #0f2473;
 	color:#FFFFFF;
-	height:200px;
+/*	height:200px; */
 	overflow:hidden;	
 }
 #top-spacer{
-	text-align:right;
-	padding:10px;
+	text-align: right;
+	padding: 5px;
 	background-color: #0f2473;
 }
 #navigate{
 	padding:10px 10px 10px 5px;	
 	width:10px;
-	height:200px;
+/*	height:200px; */
 	float:left;
 	background:#F6F6F6;
 	overflow:hidden;
 	display:none;
 	opacity:0.4;	
 }
+
+form#login
+{
+	vertical-align: middle;
+}
+
+form#login input
+{
+	vertical-align: middle;
+	padding: 2px;
+	margin: 2px;
+	background-color: #dfdbd7;
+	width: 10em;
+}
+
 #main{
 	background-color:#FFFFFF;
 	height:400px;
