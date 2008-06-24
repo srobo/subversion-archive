@@ -72,6 +72,7 @@
 
 	<div id="footer">
 		Site contents copyright &copy; <?php if($site_name) print $site_name; else print "Student Robotics"; ?>.
+		<br />
 		<a href="/rss/" title="Subscribe to the site RSS feed">RSS</a> -
 		<a href="http://validator.w3.org/check/referer" title="Valid XHTHML">XHTML</a> -
 		<a href="http://jigsaw.w3.org/css-validator/check/referer" title="Valid CSS">CSS</a>
