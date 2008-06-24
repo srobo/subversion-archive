@@ -35,9 +35,8 @@
 	<div id="main">
 		<div id="content">
 			<div id="sidebar-left">
-					<?php if (isset($primary_links)) { ?><?php print theme('links', $primary_links, array('class' => 'links', 'id' => 'pri-menu')) ?><?php } ?>
-					<?php print $search_box ?>
-				<?php if ($left) print $left ?>
+			    <?php print $search_box ?>
+			    <?php if ($left) print $left ?>
 			</div><!-- end sidebar-left -->
 			<?php if ($mission) { ?><div id="mission"><?php print $mission ?></div><?php } ?>
 			<?php print $breadcrumb ?>
