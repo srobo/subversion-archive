@@ -15,7 +15,7 @@
 
 	<div id="banner">
 		<!-- <a href="" id="trigger">Click</a> -->
-		<?php if ($logo) { ?><img src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics";	?>" /><?php } ?>
+		<?php if ($logo) { ?><img src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics"; ?>" /><?php } ?>
 		<?php /* if ($logo) { ?><a href="<?php print $front_page ?>" title="<?php print t('Home') ?>"><img src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics";	?>" /></a><?php } ?>
 		<?php if ($site_slogan) { ?><div class='site-slogan'><?php print $site_slogan ?></div><?php } */?>
 	</div><!-- end banner -->
@@ -71,8 +71,10 @@
 	</div><!-- end main -->
 
 	<div id="footer">
-		Site contents copyright &copy; Student Robotics.
-		Student Robotics - <a href="/rss/">RSS Feed</a>
+		Site contents copyright &copy; <?php if($site_name) print $site_name; else print "Student Robotics"; ?>.
+		<a href="/rss/" title="Subscribe to the site RSS feed">RSS</a> -
+		<a href="http://validator.w3.org/check/referer" title="Valid XHTHML">XHTML</a> -
+		<a href="http://jigsaw.w3.org/css-validator/check/referer" title="Valid CSS">CSS</a>
 		<?php print $footer_message ?>
 		<?php print $footer ?>
 	</div><!-- end footer -->
