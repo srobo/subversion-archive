@@ -88,6 +88,26 @@ a:hover {
 
 /* LOGIN */
 
+#user-login-form {
+	width: 100%;
+	padding: 0.5em 0;
+	vertical-align: middle;
+	text-align: right;
+	color: #FFFFFF;
+}
+#block-user-0 h2,
+#user-login-form div div.item-list {
+	display: none;
+}
+#user-login-form label,
+#user-login-form input,
+#edit-name-wrapper,
+#edit-pass-wrapper {
+	margin-right: 0.6em;
+	display: inline;
+}
+
+/* I think this can all be deleted
 form#login {
 	vertical-align: middle;
 }
@@ -124,11 +144,7 @@ form#login input {
 #block-user-0 h2 {
 	display: none;
 }
-#user-login-form {
-	width: 100%;
-	vertical-align: middle;
-	color: #FFFFFF;
-}
+*/
 
 
 /* MAIN */
