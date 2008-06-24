@@ -165,9 +165,15 @@ form#login input {
 /* FOOTER */
 
 #footer {
-	width: 100%;
-	background-color: #dfdbd7;
+	font-family : Verdana, Geneva, Arial;
+	color : #fff;
+	font-size : 0.8em;
+	font-weight : normal;
+	border-top : 1px solid #ffffff;
+	padding : 8px 0;
+	background : #636363 url(/images/media/footer.png) 50%;
 }
+
 .right {
 	text-align: right;
 }

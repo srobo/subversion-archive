@@ -71,13 +71,10 @@
 	</div><!-- end main -->
 
 	<div id="footer">
-		<div class="right">
-			Student Robotics - <a href="/rss/">RSS Feed</a>
-			<br />
-			Design: <a href="http://www.free-css-templates.com">David Herreman</a>
-			<?php print $footer_message ?>
-			<?php print $footer ?>
-		</div>
+		Site contents copyright &copy; Student Robotics.
+		Student Robotics - <a href="/rss/">RSS Feed</a>
+		<?php print $footer_message ?>
+		<?php print $footer ?>
 	</div><!-- end footer -->
 </div><!-- end outer -->
 
