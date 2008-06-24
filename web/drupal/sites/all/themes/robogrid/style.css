@@ -19,7 +19,7 @@ body{
 	width:808px;
 }
 
-#banner{
+#banner {
 /*	height:115px; */
 	background-color: #253571;
         color: #FFFFFF;
@@ -27,19 +27,19 @@ body{
 	background-repeat: no-repeat;
 */
 }
-#top{
+#top {
 	margin-top:-1px;	
-	background-color: #0f2473;
+	background-color: #253571;
 	color:#FFFFFF;
 /*	height:200px; */
 	overflow:hidden;	
 }
-#top-spacer{
+#header {
 	text-align: right;
 	padding: 5px;
-	background-color: #0f2473;
+	background-color: #253571;
 }
-#navigate{
+#navigate {
 	padding:10px 10px 10px 5px;	
 	width:10px;
 /*	height:200px; */
@@ -70,8 +70,8 @@ form#login input
 }
 /*	classes		*/
 .login { 
-	width: 200px; 
-	height: 20px; 
+/*	width: 200px; 
+	height: 20px; */
 	border: 0px; 
 	margin: 5px; 
 	padding: 2px; 
@@ -90,19 +90,20 @@ form#login input
 	background: #F6F6F6 url(images/lm-li.gif) no-repeat left;  
 }
 /*	login styles		*/
-#top-spacer h1{
+#header h1{
 	font: bold 1.4em Arial, Sans-Serif; 
 	color: #FFF; 
 	letter-spacing: 1px; 
 	margin:0 	
 }
-#top-spacer h2{
+#header h2{
 	font:  1.0em Arial, Sans-Serif; 
 	color: #FFF; 
 	letter-spacing: 0px; 
 	margin:0; 
 	padding: 10px 0
 }
+
 /*	Headings		*/
 h1 {	
 	font: bold 1.8em Arial, Sans-Serif; 
@@ -126,4 +127,11 @@ a:hover {
 	color: #DA3B3B;
 	background: inherit; 
 	text-decoration: underline
+}
+
+/* Primary Menu */
+
+#sidebar-left {
+        float: left;
+        
 }

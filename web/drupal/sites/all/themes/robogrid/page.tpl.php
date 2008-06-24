@@ -18,6 +18,7 @@
     <div id="banner">
         <a href="" id="trigger">Click</a>
         <?php if ($logo) { ?><a href="<?php print $front_page ?>" title="<?php print t('Home') ?>"><img src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics";  ?>" /></a><?php } ?>
+        <?php if ($site_slogan) { ?><div class='site-slogan'><?php print $site_slogan ?></div><?php } ?>
     </div>
     <div id="top">
         <div id="navigate">
@@ -32,79 +33,50 @@
             <li><a href="#" title="Contact">CONTACT</a></li>
             </ul>
         </div>
-    <div id="top-spacer">
-            <form id="login">
-                SR Username <input type="text" value="Username" name="user" class="login" onFocus="this.value='';" />
-                SR Password <input type="password" value="Password" name="pass" class="login" onFocus="this.value='';" />
-                <input type="submit" value="Login" name="submit" />
-            </form>
-        </div>
+    <div id="header">
+        <?php print $header ?>
+        <form id="login">
+            SR Username <input type="text" value="Username" name="user" class="login" onFocus="this.value='';" />
+            SR Password <input type="password" value="Password" name="pass" class="login" onFocus="this.value='';" />
+            <input type="submit" value="Login" name="submit" />
+        </form>
     </div>
 
     <div id="main">
         <div id="content">
+            <div id="sidebar-left">
+                <div id="menu">
+                    <?php if (isset($secondary_links)) { ?><?php print theme('links', $secondary_links, array('class' => 'links', 'id' => 'subnavlist')) ?><?php } ?>
+                    <?php if (isset($primary_links)) { ?><?php print theme('links', $primary_links, array('class' => 'links', 'id' => 'navlist')) ?><?php } ?>
+                    <?php print $search_box ?>
+                </div>
+                <?php if ($left) print $left ?>
+            </div>
+            <?php if ($mission) { ?><div id="mission"><?php print $mission ?></div><?php } ?>
+            <?php print $breadcrumb ?>
+            <h1 class="title"><?php print $title ?></h1>
+            <div class="tabs"><?php print $tabs ?></div>
+            <?php if ($show_messages) { print $messages; } ?>
+            <?php print $help ?>
+            <?php print $content; ?>
+            <?php print $feed_icons; ?>
         </div>
-        <div id="rightcol">
+        <div id="sidebar-right">
+            <?php if ($right) print $right ?>
         </div>
     </div>
     <div id="footer">
-        <div class="right">Student Robotics - <a href="/rss/">RSS Feed</a>
-        <br />Design: <a href="http://www.free-css-templates.com">David Herreman</a>
+        <div class="right">
+            Student Robotics - <a href="/rss/">RSS Feed</a>
+            <br />
+            Design: <a href="http://www.free-css-templates.com">David Herreman</a>
+            <?php print $footer_message ?>
+            <?php print $footer ?>
         </div>
     </div>
 
 </div>
 
-
-<hr />
-Faces from now on...
-
-
-<table border="0" cellpadding="0" cellspacing="0" id="header">
-  <tr>
-    <td id="logo">
-      
-      
-      <?php if ($site_slogan) { ?><div class='site-slogan'><?php print $site_slogan ?></div><?php } ?>
-    </td>
-    <td id="menu">
-      <?php if (isset($secondary_links)) { ?><?php print theme('links', $secondary_links, array('class' => 'links', 'id' => 'subnavlist')) ?><?php } ?>
-      <?php if (isset($primary_links)) { ?><?php print theme('links', $primary_links, array('class' => 'links', 'id' => 'navlist')) ?><?php } ?>
-      <?php print $search_box ?>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2"><div><?php print $header ?></div></td>
-  </tr>
-</table>
-
-<table border="0" cellpadding="0" cellspacing="0" id="content">
-  <tr>
-    <?php if ($left) { ?><td id="sidebar-left">
-      <?php print $left ?>
-    </td><?php } ?>
-    <td valign="top">
-      <?php if ($mission) { ?><div id="mission"><?php print $mission ?></div><?php } ?>
-      <div id="main">
-        <?php print $breadcrumb ?>
-        <h1 class="title"><?php print $title ?></h1>
-        <div class="tabs"><?php print $tabs ?></div>
-        <?php if ($show_messages) { print $messages; } ?>
-        <?php print $help ?>
-        <?php print $content; ?>
-        <?php print $feed_icons; ?>
-      </div>
-    </td>
-    <?php if ($right) { ?><td id="sidebar-right">
-      <?php print $right ?>
-    </td><?php } ?>
-  </tr>
-</table>
-
-<div id="footer">
-  <?php print $footer_message ?>
-  <?php print $footer ?>
-</div>
 <?php print $closure ?>
 </body>
 </html>
