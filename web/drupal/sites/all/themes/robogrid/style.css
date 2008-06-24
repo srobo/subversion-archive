@@ -15,6 +15,7 @@ This document is arranged into section for ease of use:
 	Content - content formatting
 */
 
+
 /* OVERALL */
 
 body,div,ul,ol,li,pre,blockquote,img,form,a {
@@ -46,14 +47,18 @@ h3 {
 	margin:  0;
 }
 a {
-	color: #DA3B3B;
+	color: #253571;
 	background: inherit;
 }
 a:hover {
-	color: #DA3B3B;
+	color: red;
 	background: inherit;
 	text-decoration: underline;
 }
+ul, ol {
+	list-style-position: inside;
+}
+
 
 /* TOP */
 
@@ -92,6 +97,7 @@ a:hover {
 	text-decoration: none;
 }
 
+
 /* LOGIN */
 
 #user-login-form {
@@ -113,17 +119,17 @@ a:hover {
 	font-weight: normal;
 	vertical-align: middle;
 }
-
 #edit-name,
 #edit-pass {
 	border: none;
 }
 
+
 /* MAIN */
 
 #main {
 	background-color:#FFFFFF;
-	padding: 7px;
+	padding: 0 0.5em 1em 0.5em;
 }
 .breadcrumb {
 	background-color: lime; /* debug line: to be changed */
@@ -135,7 +141,8 @@ a:hover {
 	background-color: red; /* debug line: to be changed */
 }
 
-/* NAVIGATE */
+
+/* NAVIGATE MENU */
 
 #navigate ul li {
 	line-height: 26px;
@@ -149,6 +156,7 @@ a:hover {
 	background: #F6F6F6 url('images/lm-li.gif') no-repeat left;
 }
 
+
 /* PRIMARY MENU */
 
 #sidebar-left {
@@ -156,15 +164,25 @@ a:hover {
 	background-color: aqua; /* debug line: to be changed */
 	margin: 0 1em 1em 0;
 }
-#menu {
-	background-color: green;
+#pri-menu {
+	font-size: 1.2em;
+	display: block;
+	padding: 0.5em;
+	background-color: #DFDBD8;
+	border-style: none solid solid solid;
+	border-color: #253571;
 }
+#pri-menu a {
+	text-decoration: none;
+}
+
 
 /* RIGHT SIDEBAR */
 
 #sidebar-right {
 	float: right;
 }
+
 
 /* FOOTER */
 
@@ -178,10 +196,18 @@ a:hover {
 	padding : 8px 0;
 	background : #253571 url('images/footer.png') 50%;
 }
+#footer a {
+	color: #FFFFFF;
+	background-image: none;
+}
+#footer a:hover {
+	color: red;
+}
 
 .right {
 	text-align: right;
 }
+
 
 /* CONTENT */
 

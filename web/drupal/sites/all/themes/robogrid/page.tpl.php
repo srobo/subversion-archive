@@ -34,10 +34,8 @@
 	<div id="main">
 		<div id="content">
 			<div id="sidebar-left">
-				<div id="menu">
-					<?php if (isset($primary_links)) { ?><?php print theme('links', $primary_links, array('class' => 'links', 'id' => 'navlist')) ?><?php } ?>
+					<?php if (isset($primary_links)) { ?><?php print theme('links', $primary_links, array('class' => 'links', 'id' => 'pri-menu')) ?><?php } ?>
 					<?php print $search_box ?>
-				</div>
 				<?php if ($left) print $left ?>
 			</div><!-- end sidebar-left -->
 			<?php if ($mission) { ?><div id="mission"><?php print $mission ?></div><?php } ?>
@@ -57,9 +55,9 @@
 	<div id="footer">
 		Site contents copyright &copy; <?php if($site_name) print $site_name; else print "Student Robotics"; ?>.
 		<br />
-		<a href="/rss/" title="Subscribe to the site RSS feed">RSS</a> -
-		<a href="http://validator.w3.org/check/referer" title="Valid XHTHML">XHTML</a> -
-		<a href="http://jigsaw.w3.org/css-validator/check/referer" title="Valid CSS">CSS</a>
+		<a href="/rss/" title="Subscribe to the site RSS feed">RSS Feed</a> -
+		<a href="http://validator.w3.org/check/referer" title="Valid XHTHML">Valid XHTML</a> -
+		<a href="http://jigsaw.w3.org/css-validator/check/referer" title="Valid CSS">Valid CSS</a>
 		<?php print $footer_message ?>
 		<?php print $footer ?>
 	</div><!-- end footer -->
