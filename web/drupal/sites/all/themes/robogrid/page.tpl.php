@@ -19,6 +19,7 @@
 		<?php /* if ($logo) { ?><a href="<?php print $front_page ?>" title="<?php print t('Home') ?>"><img src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics";	?>" /></a><?php } ?>
 		<?php if ($site_slogan) { ?><div class='site-slogan'><?php print $site_slogan ?></div><?php } */?>
 	</div><!-- end banner -->
+
 	<div id="top">
 		<?php if(isset($header) && $header) { ?>
 		<div id="header">
@@ -61,6 +62,7 @@
 		<?php print $footer_message ?>
 		<?php print $footer ?>
 	</div><!-- end footer -->
+
 </div><!-- end outer -->
 
 <?php print $closure ?>
