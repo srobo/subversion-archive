@@ -1,11 +1,11 @@
 /*
 	StyleSheet based on design by David Herreman
-	http://www.free-css-templates.com		
+	http: //www.free-css-templates.com		
 */
 
 div,ul,ol,li,pre,blockquote{
-	margin:0;
-	padding:0;
+	margin: 0;
+	padding: 0;
 }
 body{
 	background: #DFDBD7;
@@ -15,24 +15,24 @@ body{
 }
 
 #outer{
-	margin:0 auto;
-	width:808px;
+	margin: 0 auto;
+/*	width: 808px;*/
 }
 
 #banner {
-/*	height:115px; */
-	background-color: #253571;
-        color: #FFFFFF;
-/*	background-image: url('images/sr_logo.png');
+	height: 94px;
+	background-color: #DFDBD8;
+		color: #FFFFFF;
+	background-image: url('images/sr_swoosh.jpg');
+	background-position: right;
 	background-repeat: no-repeat;
-*/
 }
 #top {
-	margin-top:-1px;	
+	margin-top: -1px;	
 	background-color: #253571;
-	color:#FFFFFF;
-/*	height:200px; */
-	overflow:hidden;	
+	color: #FFFFFF;
+/*	height: 200px; */
+	overflow: hidden;	
 }
 #header {
 	text-align: right;
@@ -40,14 +40,14 @@ body{
 	background-color: #253571;
 }
 #navigate {
-	padding:10px 10px 10px 5px;	
-	width:10px;
-/*	height:200px; */
-	float:left;
-	background:#F6F6F6;
-	overflow:hidden;
-	display:none;
-	opacity:0.4;	
+	padding: 10px 10px 10px 5px;	
+	width: 10px;
+/*	height: 200px; */
+	float: left;
+	background: #F6F6F6;
+	overflow: hidden;
+	display: none;
+	opacity: 0.4;	
 }
 
 form#login
@@ -65,8 +65,8 @@ form#login input
 }
 
 #main{
-	background-color:#FFFFFF;
-	height:400px;
+	background-color: #FFFFFF;
+/*	height: 400px;*/
 }
 /*	classes		*/
 .login { 
@@ -94,13 +94,13 @@ form#login input
 	font: bold 1.4em Arial, Sans-Serif; 
 	color: #FFF; 
 	letter-spacing: 1px; 
-	margin:0 	
+	margin: 0 	
 }
 #header h2{
 	font:  1.0em Arial, Sans-Serif; 
 	color: #FFF; 
 	letter-spacing: 0px; 
-	margin:0; 
+	margin: 0; 
 	padding: 10px 0
 }
 
@@ -123,7 +123,7 @@ a {
 	color: #DA3B3B; 
 	background: inherit; 
 }
-a:hover { 
+a: hover { 
 	color: #DA3B3B;
 	background: inherit; 
 	text-decoration: underline
@@ -132,6 +132,6 @@ a:hover {
 /* Primary Menu */
 
 #sidebar-left {
-        float: left;
-        
+		float: left;
+		
 }
