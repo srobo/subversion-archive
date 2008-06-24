@@ -105,6 +105,12 @@ a:hover {
 #edit-pass-wrapper {
 	margin-right: 0.6em;
 	display: inline;
+	font-weight: normal;
+}
+
+#edit-name,
+#edit-pass {
+	border: none;
 }
 
 /* I think this can all be deleted
