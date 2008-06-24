@@ -135,6 +135,7 @@ form#login input {
 
 #main {
 	background-color:#FFFFFF;
+	padding: 7px;
 }
 .breadcrumb {
 	background-color: lime; /* debug line: to be changed */
@@ -189,6 +190,7 @@ form#login input {
 	font-size : 0.8em;
 	font-weight : normal;
 	border-top : 1px solid #ffffff;
+	text-align: center;
 	padding : 8px 0;
 	background : #253571 url('images/footer.png') 50%;
 }
