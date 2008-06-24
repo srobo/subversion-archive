@@ -214,13 +214,14 @@ ul, ol {
 #pri-menu {
 	font-size: 1.2em;
 	display: block;
-	padding: 0.5em 0.5em 0.3em 0.5em;
+	padding: 0.5em 0.6em 0.3em 0.6em;
 	background-color: #DFDBD8;
 	border-style: none solid solid solid;
 	border-color: #253571;
 }
 #pri-menu li {
 	display: block;
+	list-style-position: outside;
 	padding-bottom: 0.2em;
 }
 #pri-menu a {
