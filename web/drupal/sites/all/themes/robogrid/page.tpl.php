@@ -20,27 +20,8 @@
 		<?php if ($site_slogan) { ?><div class='site-slogan'><?php print $site_slogan ?></div><?php } */?>
 	</div><!-- end banner -->
 	<div id="top">
-		<div id="navigate">
-			<?php // this list will not exist in the future because the menu will be generated from drupal ?>
-			<ul>
-			<li><a href="http://www.free-css-templates.com" title="home">IDE HOME</a></li>
-			<li><a href="#" title="Articles">FORUMS</a></li>
-			<li><a href="#" title="Gallery">CHECK LIST</a></li>
-			<li><a href="#" title="Affiliates">DOCUMENTATION</a></li>
-			<li><a href="#" title="Articles">SIMULATOR</a></li>
-			<li><a href="#" title="Abous us">MESSAGES</a></li>
-			<li><a href="#" title="Contact">CONTACT</a></li>
-			</ul>
-		</div><!-- end navigate -->
 		<div id="header">
 			<?php print $header ?>
-			<!-- <form id="login" action="" method="post">
-			    <p>
-					<label for="login_user">SR Username</label> <input type="text" value="Username" name="user" id="login_user" class="login" onfocus="this.value='';" />
-					<label for="login_pass">SR Password</label> <input type="password" value="Password" name="pass" id="login_pass" class="login" onfocus="this.value='';" />
-					<input type="submit" value="Login" name="submit" id="login_sbumit" />
-				</p>
-			</form> -->
 		</div><!-- end header -->
         <div id="navigation-menu">
             <?php if (isset($secondary_links)) { ?><?php print theme('links', $secondary_links, array('class' => 'links', 'id' => 'subnavlist')) ?><?php } ?>

@@ -3,7 +3,6 @@
 	http: //www.free-css-templates.com
 	Heavily edited by Student Robotics
 
-
 This document is arranged into section for ease of use:
 	Overall - general and site-wide style
 	Top - the header section of the website
@@ -30,37 +29,37 @@ body {
 #outer {
 	margin: 0 2%;
 }
-h1 {	
-	font: bold 1.8em Arial, Sans-Serif; 
-	padding: 8px 0 4px 0; 
-	margin: 0; 
-	letter-spacing: -1px; 
+h1 {
+	font: bold 1.8em Arial, Sans-Serif;
+	padding: 8px 0 4px 0;
+	margin: 0;
+	letter-spacing: -1px;
 }
-h2 { 	
-	font: bold 1.6em Arial, Sans-Serif; 
-	letter-spacing: -1px; 
+h2 {
+	font: bold 1.6em Arial, Sans-Serif;
+	letter-spacing: -1px;
 }
-h3 { 	
-	padding: 4px 0; 
-	margin:  0; 
+h3 {
+	padding: 4px 0;
+	margin:  0;
 }
-a { 
-	color: #DA3B3B; 
-	background: inherit; 
-}
-a:hover { 
+a {
 	color: #DA3B3B;
-	background: inherit; 
+	background: inherit;
+}
+a:hover {
+	color: #DA3B3B;
+	background: inherit;
 	text-decoration: underline;
 }
 
 /* TOP */
 
 #top {
-	margin-top: -1px;	
+	margin-top: -1px;
 	background-color: #253571;
 	color: #FFFFFF;
-	overflow: hidden;	
+	overflow: hidden;
 }
 #banner {
 	height: 94px;
@@ -73,15 +72,22 @@ a:hover {
 	text-align: right;
 	background-color: #253571;
 }
-#navigate {
-	padding: 10px 10px 10px 5px;
-	width: 10px;
-/*	height: 200px; 
-	opacity: 0.4;*/
-	float: left;
-	background: #F6F6F6;
-	overflow: hidden;
-	display: none;
+#navigation-menu {
+}
+#navigation-menu ul {
+	padding: 7px;
+	margin: 0;
+}
+#navigation-menu ul li {
+	display: inline;
+	font-size: 1.35em;
+}
+#navigation-menu ul li a {
+	color: white;
+}
+#navigation-menu ul li a:hover {
+	color: red;
+	text-decoration: none;
 }
 
 /* LOGIN */
@@ -89,7 +95,6 @@ a:hover {
 #user-login-form {
 	width: 100%;
 	padding: 0.5em 0;
-	vertical-align: middle;
 	text-align: right;
 	color: #FFFFFF;
 }
