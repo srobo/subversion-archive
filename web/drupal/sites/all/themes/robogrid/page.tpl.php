@@ -9,10 +9,7 @@
 	<?php print $styles ?>
 	<?php print $scripts ?>
 </head>
-
 <body>
-
-<div>
 
 <div id="outer">
 	<div id="banner">
@@ -20,7 +17,7 @@
 		<?php if ($logo) { ?><img src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics";	?>" /><?php } ?>
 		<?php /* if ($logo) { ?><a href="<?php print $front_page ?>" title="<?php print t('Home') ?>"><img src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics";	?>" /></a><?php } ?>
 		<?php if ($site_slogan) { ?><div class='site-slogan'><?php print $site_slogan ?></div><?php } */?>
-	</div>
+	</div><!-- end banner -->
 	<div id="top">
 		<div id="navigate">
 			<?php // this list will not exist in the future because the menu will be generated from drupal ?>
@@ -33,50 +30,52 @@
 			<li><a href="#" title="Abous us">MESSAGES</a></li>
 			<li><a href="#" title="Contact">CONTACT</a></li>
 			</ul>
-		</div>
-	<div id="header">
-		<?php print $header ?>
-		<form id="login">
-			<label for="login_user">SR Username</label> <input type="text" value="Username" name="user" id="login_user" class="login" onFocus="this.value='';" />
-			<label for="login_pass">SR Password</label> <input type="password" value="Password" name="pass" id="login_pass" class="login" onFocus="this.value='';" />
-			<input type="submit" value="Login" name="submit" id="login_sbumit" />
-		</form>
-	</div>
+		</div><!-- end navigate -->
+		<div id="header">
+			<?php print $header ?>
+			<form id="login" action="" method="post">
+				<p>
+					<label for="login_user">SR Username</label> <input type="text" value="Username" name="user" id="login_user" class="login" onfocus="this.value='';" />
+					<label for="login_pass">SR Password</label> <input type="password" value="Password" name="pass" id="login_pass" class="login" onfocus="this.value='';" />
+					<input type="submit" value="Login" name="submit" id="login_sbumit" />
+				</p>
+			</form>
+		</div><!-- end header -->
 
-	<div id="main">
-		<div id="content">
-			<div id="sidebar-left">
-				<div id="menu">
-					<?php if (isset($secondary_links)) { ?><?php print theme('links', $secondary_links, array('class' => 'links', 'id' => 'subnavlist')) ?><?php } ?>
-					<?php if (isset($primary_links)) { ?><?php print theme('links', $primary_links, array('class' => 'links', 'id' => 'navlist')) ?><?php } ?>
-					<?php print $search_box ?>
-				</div>
-				<?php if ($left) print $left ?>
+		<div id="main">
+			<div id="content">
+				<div id="sidebar-left">
+					<div id="menu">
+						<?php if (isset($secondary_links)) { ?><?php print theme('links', $secondary_links, array('class' => 'links', 'id' => 'subnavlist')) ?><?php } ?>
+						<?php if (isset($primary_links)) { ?><?php print theme('links', $primary_links, array('class' => 'links', 'id' => 'navlist')) ?><?php } ?>
+						<?php print $search_box ?>
+					</div>
+					<?php if ($left) print $left ?>
+				</div><!-- end sidebar-left -->
+				<?php if ($mission) { ?><div id="mission"><?php print $mission ?></div><?php } ?>
+				<?php print $breadcrumb ?>
+				<h1 class="title"><?php print $title ?></h1>
+				<div class="tabs"><?php print $tabs ?></div>
+				<?php if ($show_messages) { print $messages; } ?>
+				<?php print $help ?>
+				<?php print $content; ?>
+				<?php print $feed_icons; ?>
+			</div><!-- end content -->
+			<div id="sidebar-right">
+				<?php if ($right) print $right ?>
+			</div><!-- end sidebar-right -->
+		</div><!-- end main -->
+		<div id="footer">
+			<div class="right">
+				Student Robotics - <a href="/rss/">RSS Feed</a>
+				<br />
+				Design: <a href="http://www.free-css-templates.com">David Herreman</a>
+				<?php print $footer_message ?>
+				<?php print $footer ?>
 			</div>
-			<?php if ($mission) { ?><div id="mission"><?php print $mission ?></div><?php } ?>
-			<?php print $breadcrumb ?>
-			<h1 class="title"><?php print $title ?></h1>
-			<div class="tabs"><?php print $tabs ?></div>
-			<?php if ($show_messages) { print $messages; } ?>
-			<?php print $help ?>
-			<?php print $content; ?>
-			<?php print $feed_icons; ?>
-		</div>
-		<div id="sidebar-right">
-			<?php if ($right) print $right ?>
-		</div>
-	</div>
-	<div id="footer">
-		<div class="right">
-			Student Robotics - <a href="/rss/">RSS Feed</a>
-			<br />
-			Design: <a href="http://www.free-css-templates.com">David Herreman</a>
-			<?php print $footer_message ?>
-			<?php print $footer ?>
-		</div>
-	</div>
-
-</div>
+		</div><!-- end footer -->
+	</div><!-- end top -->
+</div><!-- end outer -->
 
 <?php print $closure ?>
 </body>
