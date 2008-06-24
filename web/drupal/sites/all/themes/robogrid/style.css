@@ -30,9 +30,13 @@ html {
 body {
 	font: .74em Arial, sans-serif;
 	line-height: 1.5em;
+	color: #000000;
 }
 #outer {
 	margin: 0 2%;
+}
+h1, h2, h3 {
+	color: #404040;
 }
 h1 {
 	font: bold 1.8em Arial, Sans-Serif;
@@ -48,7 +52,7 @@ h3 {
 	padding: 4px 0;
 	margin:  0;
 }
-a {
+a, a:active {
 	color: #253571;
 	background: inherit;
 }
@@ -143,13 +147,17 @@ ul, ol {
 
 #main {
 	float: left;
+	width: 100%;
 	background-color:#FFFFFF;
-	padding: 0 0.5em 1em 0.5em;
+	padding-bottom: 1em;
 	border-style: solid none none none;
 	border-color: #253571;
 }
+#content {
+	padding: 0 0.5em;
+}
 .breadcrumb {
-	background-color: lime; /* debug line: to be changed */
+	/* background-color: lime; */
 }
 .messages {
 	background-color: pink; /* debug line: to be changed */
@@ -201,19 +209,19 @@ ul, ol {
 #sidebar-left {
         float: left;
 	background-color: aqua; /* debug line: to be changed */
-	margin: 0 1em 1em 0;
+	margin: 0 1.5em 1.5em 0;
 }
 #pri-menu {
 	font-size: 1.2em;
 	display: block;
-	padding: 0.5em 0.5em 0 0.5em;
+	padding: 0.5em 0.5em 0.3em 0.5em;
 	background-color: #DFDBD8;
 	border-style: none solid solid solid;
 	border-color: #253571;
 }
 #pri-menu li {
 	display: block;
-	padding-bottom: 0.5em;
+	padding-bottom: 0.2em;
 }
 #pri-menu a {
 	text-decoration: none;
@@ -251,13 +259,4 @@ ul, ol {
 
 .right {
 	text-align: right;
-}
-
-
-/* CONTENT */
-
-#content {
-
-}
-.tabs {
 }
