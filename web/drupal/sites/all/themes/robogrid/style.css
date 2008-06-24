@@ -7,7 +7,7 @@ This document is arranged into section for ease of use:
 	Overall - general and site-wide style
 	Top - the header section of the website
 	Login - formatting of login boxes
-	Services menu - logged in service menu
+	Secondary menu - logged in service menu
 	Main - main body of website
 	Navigate - navigate menu
 	Old Navigate - DEPRICATED
@@ -119,25 +119,25 @@ ul, ol {
 }
 
 
-/* SERVICES MENU */
+/* SECONDARY MENU */
 
-#block-menu-menu-services h2 {
+#block-menu-secondary-links h2 {
 	display: none;
 }
-#block-menu-menu-services ul {
+#block-menu-secondary-links ul {
 	padding: 7px;
 	margin: 0;
 	text-align: right;
 }
-#block-menu-menu-services ul li {
+#block-menu-secondary-links ul li {
 	display: inline;
 	font-size: 1.35em;
 }
-#block-menu-menu-services ul li a {
+#block-menu-secondary-links ul li a {
 	color: white;
 	text-decoration: none;
 }
-#block-menu-menu-services ul li a:hover {
+#block-menu-secondary-links ul li a:hover {
 	color: red;
 	text-decoration: none;
 }
