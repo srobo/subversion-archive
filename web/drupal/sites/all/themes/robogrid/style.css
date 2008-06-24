@@ -1,12 +1,25 @@
 /*
 	StyleSheet based on design by David Herreman
 	http: //www.free-css-templates.com
+	Heavily edited by Student Robotics
+
+
+This document is arranged into section for ease of use:
+	Overall - general and site-wide style
+	Top - the header section of the website
+	Login - formatting of login boxes
+	Main - main body of website
+	Navigate - logged in context menu
+	Primary menu - main menu, publicly available
+	Right sidebar - not currently in use
+	Footer - credits
+	Content - content formatting
 */
 
 
 /* OVERALL */
 
-div,ul,ol,li,pre,blockquote,img,form,a {
+body,div,ul,ol,li,pre,blockquote,img,form,a {
 	margin: 0;
 	padding: 0;
 }
@@ -14,12 +27,9 @@ body {
 	background-color: #636363;
 	font: .74em Arial, sans-serif;
 	line-height: 1.5em;
-	margin: 0 auto;
-	margin: 0;
-	padding: 0.5em;
 }
 #outer {
-	margin: 0 12px;
+	margin: 0 2%;
 }
 h1 {	
 	font: bold 1.8em Arial, Sans-Serif; 
@@ -107,17 +117,23 @@ form#login input {
 	background-color: #dfdbd7;
 	width: 10em;
 }
-
-/*	classes		*/
 .login, #login .form-text {
 	border: 0px;
 	color: #0d1f61;
+}
+#block-user-0 h2{
+	display: none;
+}
+#user-login-form {
+	width: 100%;
+	vertical-align: middle;
+	color: #FFFFFF;
 }
 
 
 /* MAIN */
 
-#main{
+#main {
 	background-color:#FFFFFF;
 }
 .breadcrumb {
