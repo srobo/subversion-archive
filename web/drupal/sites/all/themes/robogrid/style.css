@@ -3,7 +3,10 @@
 	http: //www.free-css-templates.com
 */
 
-div,ul,ol,li,pre,blockquote {
+
+/* OVERALL */
+
+div,ul,ol,li,pre,blockquote,img,form,a {
 	margin: 0;
 	padding: 0;
 }
@@ -12,12 +15,45 @@ body {
 	font: .74em Arial, sans-serif;
 	line-height: 1.5em;
 	margin: 0 auto;
+	margin: 0;
+	padding: 0.5em;
 }
-
 #outer {
 	margin: 0 12px;
 }
+h1 {	
+	font: bold 1.8em Arial, Sans-Serif; 
+	padding: 8px 0 4px 0; 
+	margin: 0; 
+	letter-spacing: -1px; 
+}
+h2 { 	
+	font: bold 1.6em Arial, Sans-Serif; 
+	letter-spacing: -1px; 
+}
+h3 { 	
+	padding: 4px 0; 
+	margin:  0; 
+}
+a { 
+	color: #DA3B3B; 
+	background: inherit; 
+}
+a:hover { 
+	color: #DA3B3B;
+	background: inherit; 
+	text-decoration: underline;
+}
 
+
+/* TOP */
+
+#top {
+	margin-top: -1px;	
+	background-color: #253571;
+	color: #FFFFFF;
+	overflow: hidden;	
+}
 #banner {
 	height: 94px;
 	background-color: #DFDBD8;
@@ -25,33 +61,28 @@ body {
 	background-position: right;
 	background-repeat: no-repeat;
 }
-#top {
-	margin-top: -1px;
-	background-color: #253571;
-	overflow: hidden;
-}
 #header {
 	text-align: right;
-	padding: 5px;
 	background-color: #253571;
 }
 #navigate {
-	padding: 10px 10px 10px 5px;
-	width: 10px;
-/*	height: 200px; */
-	float: left;
-	background: #F6F6F6;
-	overflow: hidden;
-	display: none;
-	opacity: 0.4;
+	padding:10px 10px 10px 5px;	
+	width:10px;
+	float:left;
+	background:#F6F6F6;
+	overflow:hidden;
+	display:none;
+	opacity:0.4;
 }
+
+
+/* LOGIN */
 
 form#login {
 	vertical-align: middle;
 }
-
 form#login p {
-	color: #FFF;
+	color: #FFFFFF;
 	margin: 0;
 }
 form#login input {
@@ -61,21 +92,29 @@ form#login input {
 	background-color: #dfdbd7;
 	width: 10em;
 }
-
-#main {
-	background-color: #FFFFFF;
-/*	height: 400px;*/
-}
-/*	classes		*/
-.login {
-/*	width: 200px;
-	height: 20px; */
+.login { 
 	border: 0px;
 	margin: 5px;
 	padding: 2px;
 	color: #0d1f61;
 }
-/*	navigate styles		*/
+
+
+/* MAIN */
+
+#main{
+	background-color:#FFFFFF;
+}
+.breadcrumb {
+	background-color: lime; /* debug line: to be changed */
+}
+.messages status {
+	background-color: pink /* debug line: to be changed */
+}
+
+
+/* NAVIGATE */
+
 #navigate ul li {
 	line-height: 26px;
 	background: #F6F6F6 url(images/li-line.gif) no-repeat bottom left;
@@ -87,49 +126,39 @@ form#login input {
 	text-decoration: none;
 	background: #F6F6F6 url(images/lm-li.gif) no-repeat left;
 }
-/*	login styles		*/
-#header h1 {
-	font: bold 1.4em Arial, Sans-Serif;
-	color: #FFF;
-	letter-spacing: 1px;
-	margin: 0
-}
-#header h2 {
-	font:  1.0em Arial, Sans-Serif;
-	color: #FFF;
-	letter-spacing: 0px;
-	margin: 0;
-	padding: 10px 0
-}
 
-/*	Headings		*/
-h1 {
-	font: bold 1.8em Arial, Sans-Serif;
-	padding: 8px 0 4px 0;
-	margin: 0;
-	letter-spacing: -1px;
-}
-h2 {
-	font: bold 1.6em Arial, Sans-Serif;
-	letter-spacing: -1px;
-}
-h3 {
-	padding: 4px 0;
-	margin:  0;
-}
-a {
-	color: #DA3B3B;
-	background: inherit;
-}
-a: hover {
-	color: #DA3B3B;
-	background: inherit;
-	text-decoration: underline
-}
 
-/* Primary Menu */
+/* PRIMARY MENU */
 
 #sidebar-left {
-		float: left;
+        float: left;
+	background-color: aqua; /* debug line: to be changed */
+	margin: 0 1em 1em 0;
+}
+#menu {
+	background-color: green;
+}
 
+
+/* RIGHT SIDEBAR */
+
+#sidebar-right {
+	float: right;
+}
+
+
+/* FOOTER */
+
+#footer {
+	width: 100%;
+	background-color: #dfdbd7;
+}
+.right {
+	text-align: right;
+}
+
+
+/* CONTENT */
+
+.tabs {
 }
