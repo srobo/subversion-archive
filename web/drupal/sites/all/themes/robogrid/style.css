@@ -151,14 +151,14 @@ form#login input {
 
 #navigate ul li {
 	line-height: 26px;
-	background: #F6F6F6 url(images/li-line.gif) no-repeat bottom left;
+	background: #F6F6F6 url('images/li-line.gif') no-repeat bottom left;
 	list-style: none;
 }
 #navigate a {
 	padding-left: 25px;
 	font:  0.9em Arial, Sans-Serif;
 	text-decoration: none;
-	background: #F6F6F6 url(images/lm-li.gif) no-repeat left;
+	background: #F6F6F6 url('images/lm-li.gif') no-repeat left;
 }
 
 
@@ -190,7 +190,7 @@ form#login input {
 	font-weight : normal;
 	border-top : 1px solid #ffffff;
 	padding : 8px 0;
-	background : #636363 url(/images/media/footer.png) 50%;
+	background : #253571 url('images/footer.png') 50%;
 }
 
 .right {
