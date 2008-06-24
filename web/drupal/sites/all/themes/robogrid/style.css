@@ -139,8 +139,11 @@ form#login input {
 .breadcrumb {
 	background-color: lime; /* debug line: to be changed */
 }
-.messages status {
-	background-color: pink /* debug line: to be changed */
+.messages {
+	background-color: pink; /* debug line: to be changed */
+}
+.status {
+	background-color: red; /* debug line: to be changed */
 }
 
 
