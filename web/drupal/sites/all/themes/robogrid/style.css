@@ -16,7 +16,6 @@ This document is arranged into section for ease of use:
 	Content - content formatting
 */
 
-
 /* OVERALL */
 
 body,div,ul,ol,li,pre,blockquote,img,form,a {
@@ -54,7 +53,6 @@ a:hover {
 	background: inherit; 
 	text-decoration: underline;
 }
-
 
 /* TOP */
 
@@ -114,46 +112,6 @@ a:hover {
 	border: none;
 }
 
-/* I think this can all be deleted
-form#login {
-	vertical-align: middle;
-}
-#header form#login h2 {
-	display: none;
-}
-#header form#login div {
-	display: inline;
-	margin: 0;
-}
-#header form#login div.item-list {
-	display: none;
-}
-#header form#login label {
-	color: #FFF;
-	font-weight: normal;
-	display: inline;
-}
-form#login p {
-	color: #FFFFFF;
-	margin: 0;
-}
-form#login input {
-	vertical-align: middle;
-	padding: 2px;
-	margin: 2px;
-	background-color: #dfdbd7;
-	width: 10em;
-}
-.login, #login .form-text {
-	border: 0px;
-	color: #0d1f61;
-}
-#block-user-0 h2 {
-	display: none;
-}
-*/
-
-
 /* MAIN */
 
 #main {
@@ -170,7 +128,6 @@ form#login input {
 	background-color: red; /* debug line: to be changed */
 }
 
-
 /* NAVIGATE */
 
 #navigate ul li {
@@ -185,7 +142,6 @@ form#login input {
 	background: #F6F6F6 url('images/lm-li.gif') no-repeat left;
 }
 
-
 /* PRIMARY MENU */
 
 #sidebar-left {
@@ -197,13 +153,11 @@ form#login input {
 	background-color: green;
 }
 
-
 /* RIGHT SIDEBAR */
 
 #sidebar-right {
 	float: right;
 }
-
 
 /* FOOTER */
 
