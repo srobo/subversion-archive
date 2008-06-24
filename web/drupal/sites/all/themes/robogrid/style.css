@@ -21,8 +21,10 @@ body,div,ul,ol,li,pre,blockquote,img,form,a {
 	margin: 0;
 	padding: 0;
 }
-body {
+html {
 	background-color: #636363;
+}
+body {
 	font: .74em Arial, sans-serif;
 	line-height: 1.5em;
 }
@@ -57,7 +59,7 @@ a:hover {
 
 #top {
 	margin-top: -1px;
-	background-color: #253571;
+	background: #253571 url(images/footer.png) repeat scroll 50% 50%;
 	color: #FFFFFF;
 	overflow: hidden;
 }
@@ -70,7 +72,6 @@ a:hover {
 }
 #header {
 	text-align: right;
-	background-color: #253571;
 }
 #navigation-menu {
 }
@@ -84,6 +85,7 @@ a:hover {
 }
 #navigation-menu ul li a {
 	color: white;
+	text-decoration: none;
 }
 #navigation-menu ul li a:hover {
 	color: red;

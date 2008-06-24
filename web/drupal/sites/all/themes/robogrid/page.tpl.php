@@ -20,12 +20,15 @@
 		<?php if ($site_slogan) { ?><div class='site-slogan'><?php print $site_slogan ?></div><?php } */?>
 	</div><!-- end banner -->
 	<div id="top">
+		<?php if(isset($header) && $header) { ?>
 		<div id="header">
-			<?php print $header ?>
+			<?php print $header; ?>
 		</div><!-- end header -->
+		<?php } else { ?>
         <div id="navigation-menu">
             <?php if (isset($secondary_links)) { ?><?php print theme('links', $secondary_links, array('class' => 'links', 'id' => 'subnavlist')) ?><?php } ?>
         </div><!-- end navigation-menu -->
+		<?php } ?>
 	</div><!-- end top -->
 
 	<div id="main">
