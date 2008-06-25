@@ -283,7 +283,7 @@ ul, ol {
 #block-menu-primary-links ul li {
 	display: list-item;
 	list-style-position: inside;
-	list-style-image: url('images/pri-menu_arrow2.png');
+	list-style-image: url('images/pri-menu_arrow-dark.png');
 	list-style-type: none;
 	vertical-align: middle;
 	padding-top: 0.2em;
