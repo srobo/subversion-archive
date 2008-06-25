@@ -250,10 +250,11 @@ ul, ol {
 	border-color: #253571;
 }
 #block-menu-primary-links ul li {
-	display: block;
-	list-style-position: outside;
-	list-style-image: none;
+	display: list-item;
+	list-style-position: inside;
+	list-style-image: url('images/pri-menu_arrow.png');
 	list-style-type: none;
+	vertical-align: middle;
 	padding-bottom: 0.2em;
 }
 #block-menu-primary-links a {
