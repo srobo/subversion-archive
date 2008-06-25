@@ -267,12 +267,16 @@ ul, ol {
         width: 13px;
 	height: 13px;
 	background-image: url('images/pri-menu_bl.png');
+	background-repeat: no-repeat;
+	background-position: bottom left;
 }
 #sidebar-left-brcorner {
 	margin-left: auto;
         width: 13px;
 	height: 13px;
 	background-image: url('images/pri-menu_br.png');
+	background-repeat: no-repeat;
+	background-position: bottom right;
 }
 #block-menu-primary-links h2 {
 	display: none;
