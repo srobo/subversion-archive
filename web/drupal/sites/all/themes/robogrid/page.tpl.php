@@ -14,16 +14,34 @@ $switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "swit
 <?php print $head ?>
 <?php print $styles ?>
 <?php print $scripts ?>
+<script type="text/javascript">
+/* find out what browser they are running, if its too crap then don't do some parts of the js */
+function bad_browser()
+{
+//	if (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion < 7)
+//		return true;
+
+	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent))
+	{ //test for MSIE x.x;
+		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+		if (ieversion<7)
+			return true;
+	}
+}
+
+function LOGO()
+{
+	if(bad_browser())
+		document.getElementById('banner-logo').src	= document.getElementById('banner-logo').src.replace('.png', '.gif');
+}
+</script>
 </head>
-<body>
+<body onload="LOGO()">
 
 <div id="outer">
 
 	<div id="banner">
-		<!-- <a href="" id="trigger">Click</a> -->
-		<?php if ($logo) { ?><img src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics"; ?>" /><?php } ?>
-		<?php /* if ($logo) { ?><a href="<?php print $front_page ?>" title="<?php print t('Home') ?>"><img src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics";	?>" /></a><?php } ?>
-		<?php if ($site_slogan) { ?><div class='site-slogan'><?php print $site_slogan ?></div><?php } */?>
+		<?php if ($logo) { ?><img id="banner-logo" src="<?php print $logo ?>" alt="<?php if($site_name) print $site_name; else print "Student Robotics"; ?>" /><?php } ?>
 	</div><!-- end banner -->
 
 	<div id="top">
