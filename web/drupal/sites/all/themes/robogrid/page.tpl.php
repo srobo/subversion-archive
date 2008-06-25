@@ -64,9 +64,6 @@ $switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "swit
 				}
 				echo "\n</ul>";
 			}
-
-			include "array_display.php";
-				array_display($secondary_links, "secondary_links");
 			?>
 		</div>
 		<?php } ?>
