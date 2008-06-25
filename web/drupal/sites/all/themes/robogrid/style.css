@@ -296,6 +296,9 @@ ul, ol {
 #block-menu-primary-links a {
 	text-decoration: none;
 }
+#sidebar-left h2 {
+	margin: 0 0.5em;
+}
 
 
 /* RIGHT SIDEBAR */
