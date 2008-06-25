@@ -222,9 +222,11 @@ ul, ol {
 	border-style: none solid solid solid;
 	border-color: #253571;
 }
-#block-menu-primary-links li {
+#block-menu-primary-links ul li {
 	display: block;
 	list-style-position: outside;
+	list-style-image: none;
+	list-style-type: none;
 	padding-bottom: 0.2em;
 }
 #block-menu-primary-links a {
