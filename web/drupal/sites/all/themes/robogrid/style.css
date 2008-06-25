@@ -64,6 +64,12 @@ a:hover {
 ul, ol {
 	list-style-position: inside;
 }
+.left {
+        float: left;
+}
+.right {
+        float: right;
+}
 
 
 /* TOP */
@@ -235,8 +241,36 @@ ul, ol {
 
 #sidebar-left {
         float: left;
-	background-color: aqua; /* debug line: to be changed */
+	background-color: #DFDBD8;
 	margin: 0 1.5em 1.5em 0;
+/*	border-style: none solid solid solid;
+	border-color: #253571;
+	border-width: 3px;
+*/
+        background-image: url('images/pri-menu_dot.png');
+	background-repeat: repeat-y;
+	background-position: top right;
+}
+#sidebar-left-inner {
+        background-image: url('images/pri-menu_dot.png');
+	background-repeat: repeat-y;
+	background-position: top left;
+}
+#sidebar-left-bottom {
+        height: 13px;
+        background-image: url('images/pri-menu_dot.png');
+	background-repeat: repeat-x;
+	background-position: bottom left;
+}
+#sidebar-left-blcorner {
+        width: 13px;
+	height: 13px;
+	background-image: url('images/pri-menu_bl.png');
+}
+#sidebar-left-brcorner {
+        width: 13px;
+	height: 13px;
+	background-image: url('images/pri-menu_br.png');
 }
 #block-menu-primary-links h2 {
 	display: none;
@@ -244,18 +278,15 @@ ul, ol {
 #block-menu-primary-links ul {
 	font-size: 1.2em;
 	display: block;
-	padding: 0.5em 0.6em 0.3em 0.6em;
-	background-color: #DFDBD8;
-	border-style: none solid solid solid;
-	border-color: #253571;
+	padding: 0.5em 0.6em 0 0.6em;
 }
 #block-menu-primary-links ul li {
 	display: list-item;
 	list-style-position: inside;
-	list-style-image: url('images/pri-menu_arrow.png');
+	list-style-image: url('images/pri-menu_arrow2.png');
 	list-style-type: none;
 	vertical-align: middle;
-	padding-bottom: 0.2em;
+	padding-top: 0.2em;
 }
 #block-menu-primary-links a {
 	text-decoration: none;
