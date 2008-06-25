@@ -56,13 +56,13 @@ $switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "swit
 				$count_s_l	= count($secondary_links);
 				foreach($secondary_links as $row)
 				{
-					$image	= "images/".$row['title'].".png";
+					$image	= "sites/all/themes/robogrid/images/".$row['title'].".png";
 					if(!file_exists($image))
-						$image	= "images/UnknownFile.png";
+						$image	= "sites/all/themes/robogrid/images/UnknownFile.png";
 
-					echo "\n	<li".($i < $count_s_l ? "" : " class=\"last\"")."><div><a title=\"".$row['attributes']['title']."\" href=\"".$row['href']."\">"
+					echo "\n	<li".($i < $count_s_l ? "" : " class=\"last\"")."><span><a title=\"".$row['attributes']['title']."\" href=\"".$row['href']."\">"
 					."<img src=\"$image\" title=\"".$row['attributes']['title']."\" alt=\"".$row['title']." page image\" /><br />"
-					.$row['title']."</a></div></li>";
+					.$row['title']."</a></span></li>";
 					$i++;
 				}
 				echo "\n</ul>";

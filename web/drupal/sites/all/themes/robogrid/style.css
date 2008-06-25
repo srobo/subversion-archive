@@ -148,8 +148,8 @@ ul, ol {
 	width: 128px;
 	height: 128px;
 }
-#switchboard div {
-	display: inline;
+#switchboard span {
+	display: block;
 	width: 150px;
 	height: 150px;
 }
