@@ -142,6 +142,33 @@ ul, ol {
 	text-decoration: none;
 }
 
+/* SWITCHBOARD MENU */
+
+#switchboard img {
+	width: 128px;
+	height: 128px;
+}
+#switchboard div {
+	display: inline;
+	width: 150px;
+	height: 150px;
+}
+#switchboard ul {
+	padding: 7px;
+	margin: 0;
+	text-align: center;
+}
+#switchboard ul li {
+	display: inline;
+	font-size: 1.35em;
+}
+#switchboard ul li a {
+	text-decoration: none;
+}
+#switchboard ul li a:hover {
+	color: red;
+}
+
 
 /* MAIN */
 

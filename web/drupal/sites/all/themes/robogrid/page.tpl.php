@@ -56,9 +56,13 @@ $switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "swit
 				$count_s_l	= count($secondary_links);
 				foreach($secondary_links as $row)
 				{
-					echo "\n	<li".($i < $count_s_l ? "" : " class=\"last\"")."><a title=\"".$row['attributes']['title']."\" href=\"".$row['href']."\">"
-					."<img src=\"images/".$row['title'].".png\" title=\"".$row['attributes']['title']."\" alt=\"".$row['title']." page image\" />"
-					.$row['title']."</a></li>";
+					$image	= "images/".$row['title'].".png";
+					if(!file_exists($image))
+						$image	= "images/UnknownFile.png";
+
+					echo "\n	<li".($i < $count_s_l ? "" : " class=\"last\"")."><div><a title=\"".$row['attributes']['title']."\" href=\"".$row['href']."\">"
+					."<img src=\"$image\" title=\"".$row['attributes']['title']."\" alt=\"".$row['title']." page image\" /><br />"
+					.$row['title']."</a></div></li>";
 					$i++;
 				}
 				echo "\n</ul>";
