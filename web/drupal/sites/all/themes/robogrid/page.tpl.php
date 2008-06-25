@@ -18,9 +18,6 @@ $switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "swit
 /* find out what browser they are running, if its too crap then don't do some parts of the js */
 function bad_browser()
 {
-//	if (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion < 7)
-//		return true;
-
 	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent))
 	{ //test for MSIE x.x;
 		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
