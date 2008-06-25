@@ -50,7 +50,24 @@ $switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "swit
 		</div><!-- end sidebar-right -->
 		<?php } else { ?>
 		<div id="switchboard">
-            <?php if (isset($secondary_links)) { ?><?php print theme('links', $secondary_links, array('class' => 'links', 'id' => 'subnavlist')) ?><?php } ?>
+		<?php if (isset($secondary_links))
+			{
+				echo "\n<ul>";
+				$i	= 1;
+				$count_s_l	= count($secondary_links);
+				foreach($secondary_links as $row)
+				{
+					echo "\n	<li".($i < $count_s_l ? "" : " class=\"last\"")."><a title=\"".$row['attributes']['title']."\" href=\"".$row['href']."\">"
+					."<img src=\"images/".$row['title'].".png\" title=\"".$row['attributes']['title']."\" alt=\"".$row['title']." page image\" />"
+					.$row['title']."</a></li>";
+					$i++;
+				}
+				echo "\n</ul>";
+			}
+
+			include "array_display.php";
+				array_display($secondary_links, "secondary_links");
+			?>
 		</div>
 		<?php } ?>
 	</div><!-- end main -->
