@@ -62,7 +62,7 @@ function LOGO()
                                     print $left ?>
 				    <div id="sidebar-left-bottom">
 				        <div id="sidebar-left-blcorner" class="left"></div>
-				        <div id="sidebar-left-brcorner" class="right"></div>
+				        <div id="sidebar-left-brcorner"></div>
 				    </div> <!-- sidebar-left-bottom end -->
                                 <?php } ?>
 			    </div> <!-- sidebar-left-inner end -->

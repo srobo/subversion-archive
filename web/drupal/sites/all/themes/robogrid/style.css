@@ -257,6 +257,7 @@ ul, ol {
 	background-position: top left;
 }
 #sidebar-left-bottom {
+	text-align: right;
         height: 13px;
         background-image: url('images/pri-menu_dot.png');
 	background-repeat: repeat-x;
@@ -268,6 +269,7 @@ ul, ol {
 	background-image: url('images/pri-menu_bl.png');
 }
 #sidebar-left-brcorner {
+	margin-left: auto;
         width: 13px;
 	height: 13px;
 	background-image: url('images/pri-menu_br.png');
