@@ -1,7 +1,12 @@
 <?php
 // $Id: page.tpl.php,v 1.28 2008/01/24 09:42:52 goba Exp $
+
+// $switchboard used as a flag to enable different themeing when visiting the Switchboard page
 $switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "switchboard") === FALSE) ? TRUE : FALSE);
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php print $language->language ?>" xml:lang="<?php print $language->language ?>" dir="<?php print $language->dir ?>">
 
 <head>
@@ -30,8 +35,8 @@ $switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "swit
 	</div><!-- end top -->
 
 	<div id="main">
-		<?php if(!$switchboard) { ?>
 		<div id="content">
+		<?php if(!$switchboard) { ?>
 			<div id="sidebar-left">
 			    <?php print $search_box ?>
 			    <?php if ($left) print $left ?>
@@ -42,12 +47,6 @@ $switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "swit
 			<div class="tabs"><?php print $tabs ?></div>
 			<?php if ($show_messages) { print $messages; } ?>
 			<?php print $help ?>
-			<?php print $content; ?>
-			<?php print $feed_icons; ?>
-		</div><!-- end content -->
-		<div id="sidebar-right">
-			<?php if ($right) print $right ?>
-		</div><!-- end sidebar-right -->
 		<?php } else { ?>
 		<div id="switchboard">
 		<?php if (isset($secondary_links))
@@ -66,7 +65,13 @@ $switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "swit
 			}
 			?>
 		</div>
-		<?php } ?>
+		<?php } // end switchboard case ?>
+			<?php print $content; ?>
+			<?php print $feed_icons; ?>
+		</div><!-- end content -->
+		<div id="sidebar-right">
+			<?php if ($right) print $right ?>
+		</div><!-- end sidebar-right -->
 	</div><!-- end main -->
 
 	<div id="footer">
