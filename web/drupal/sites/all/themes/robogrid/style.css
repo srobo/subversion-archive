@@ -288,6 +288,9 @@ ul, ol {
 	vertical-align: middle;
 	padding-top: 0.2em;
 }
+#block-menu-primary-links ul li:hover {
+	list-style-image: url('images/pri-menu_arrow.png');
+}
 #block-menu-primary-links a {
 	text-decoration: none;
 }
