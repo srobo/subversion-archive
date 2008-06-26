@@ -17,4 +17,15 @@ function print_switchboard($links)
 	}
 	echo "\n</ul>";
 }
+
+if(!isset($secondary_links))
+	$secondary_links	= menu_secondary_links();
+if( isset($secondary_links) )
+{
+//	print theme('links', $secondary_links, array('class' => 'links', 'id' => 'subnavlist')); for debug
+
+	print_switchboard($secondary_links);
+} else {
+	echo "Switchboard error: secondary_links not set: '$secondary_links'";
+}
 ?>

@@ -75,7 +75,7 @@ function LOGO()
 		<?php if (isset($secondary_links))
 			{
 				include "print_switchboard.inc.php";
-				print_switchboard($secondary_links);
+			//	print_switchboard($secondary_links);
 			}
 			?>
 		</div>
