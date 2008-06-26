@@ -83,9 +83,9 @@ function LOGO()
 					if(!file_exists($image))
 						$image	= "sites/all/themes/robogrid/images/UnknownFile.png";
 
-					echo "\n	<li".($i < $count_s_l ? "" : " class=\"last\"")."><span><a title=\"".$row['attributes']['title']."\" href=\"".$row['href']."\">"
-					."<img src=\"$image\" title=\"".$row['attributes']['title']."\" alt=\"".$row['title']." page image\" /><br />"
-					.$row['title']."</a></span></li>";
+					echo "\n	<li".($i < $count_s_l ? "" : " class=\"last\"")."><a title=\"".$row['attributes']['title']."\" href=\"".$row['href']."\">"
+					."<img src=\"$image\" title=\"".$row['attributes']['title']."\" alt=\"".$row['title']." page image\" /><p>"
+					.$row['title']."</p></a></li>";
 					$i++;
 				}
 				echo "\n</ul>";

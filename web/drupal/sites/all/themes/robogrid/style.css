@@ -150,22 +150,24 @@ ul, ol {
 
 /* SWITCHBOARD MENU */
 
+#switchboard {
+	width: 800px;
+	margin: 0 auto;
+}
 #switchboard img {
 	width: 128px;
 	height: 128px;
 }
-#switchboard span {
-	display: block;
-	width: 150px;
-	height: 150px;
-}
 #switchboard ul {
 	padding: 7px;
 	margin: 0;
-	text-align: center;
 }
 #switchboard ul li {
-	display: inline;
+	text-align: center;
+	display: block;
+	width: 150px;
+	height: 150px;
+	float: left;
 	font-size: 1.35em;
 }
 #switchboard ul li a {
