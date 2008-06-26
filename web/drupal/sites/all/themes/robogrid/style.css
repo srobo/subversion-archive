@@ -155,8 +155,8 @@ ul, ol {
 	margin: 0 auto;
 }
 #switchboard img {
-	width: 128px;
-	height: 128px;
+	width: 112px;
+	height: 112px;
 }
 #switchboard ul {
 	padding: 7px;
@@ -165,10 +165,13 @@ ul, ol {
 #switchboard ul li {
 	text-align: center;
 	display: block;
-	width: 150px;
-	height: 150px;
+	height: 140px;
+	width: 130px;
 	float: left;
 	font-size: 1.35em;
+}
+#switchboard ul li p {
+	margin: 1px 0;
 }
 #switchboard ul li a {
 	text-decoration: none;
