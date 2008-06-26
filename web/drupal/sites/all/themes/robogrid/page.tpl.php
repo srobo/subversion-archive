@@ -1,9 +1,5 @@
 <?php
 // $Id: page.tpl.php,v 1.28 2008/01/24 09:42:52 goba Exp $
-
-// $switchboard used as a flag to enable different themeing when visiting the Switchboard page
-$switchboard	= ((stripos($header, "login") === FALSE) && !(stripos($title, "switchboard") === FALSE) ? TRUE : FALSE);
-
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -51,7 +47,6 @@ function LOGO()
 
 	<div id="main">
 		<div id="content">
-		<?php if(!$switchboard) { ?>
 			<div id="sidebar-left">
                             <div id="sidebar-left-inner">
 			        <?php print $search_box ?>
@@ -70,11 +65,6 @@ function LOGO()
 			<div class="tabs"><?php print $tabs ?></div>
 			<?php if ($show_messages) { print $messages; } ?>
 			<?php print $help ?>
-		<?php } else {
-				echo "page template";
-				include "print_switchboard.inc.php";
-			//	print_switchboard($secondary_links);
-			} // end switchboard case ?>
 			<?php print $content; ?>
 			<?php print $feed_icons; ?>
 		</div><!-- end content -->
