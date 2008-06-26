@@ -70,16 +70,11 @@ function LOGO()
 			<div class="tabs"><?php print $tabs ?></div>
 			<?php if ($show_messages) { print $messages; } ?>
 			<?php print $help ?>
-		<?php } else { ?>
-		<div id="switchboard">
-		<?php if (isset($secondary_links))
-			{
+		<?php } else {
+				echo "page template";
 				include "print_switchboard.inc.php";
 			//	print_switchboard($secondary_links);
-			}
-			?>
-		</div>
-		<?php } // end switchboard case ?>
+			} // end switchboard case ?>
 			<?php print $content; ?>
 			<?php print $feed_icons; ?>
 		</div><!-- end content -->
