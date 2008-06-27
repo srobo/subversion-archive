@@ -292,18 +292,23 @@ ul, ol {
 	padding: 0.5em 0.6em 0 0.6em;
 }
 #block-menu-primary-links ul li {
-	display: list-item;
-	list-style-position: inside;
-	list-style-image: url('images/pri-menu_arrow-dark.png');
+	display: block;
 	list-style-type: none;
+	list-style-image: none;
+	list-style-position: outside;
+	background-image: url('images/pri-menu_arrow-dark.png');
+	background-repeat: no-repeat;
+	background-position: center left;
 	vertical-align: middle;
 	padding-top: 0.2em;
+	padding-left: 20px;
 }
 #block-menu-primary-links ul li:hover {
-	list-style-image: url('images/pri-menu_arrow.png');
+	background-image: url('images/pri-menu_arrow.png');
 }
 #block-menu-primary-links a {
 	text-decoration: none;
+	background-image: none;
 }
 #sidebar-left h2 {
 	margin: 0 0.5em;
