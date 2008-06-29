@@ -47,18 +47,15 @@ function LOGO()
 
 	<div id="main">
 		<div id="content">
+                    <?php if ($left) { ?>
 			<div id="sidebar-left">
-                            <div id="sidebar-left-inner">
+                            <div id="sidebar-left-inner0"><div id="sidebar-left-inner1"><div id="sidebar-left-inner2">
 			        <?php print $search_box ?>
-                                <?php if ($left) {
-                                    print $left ?>
-				    <div id="sidebar-left-bottom">
-				        <div id="sidebar-left-blcorner" class="left"></div>
-				        <div id="sidebar-left-brcorner"></div>
-				    </div> <!-- sidebar-left-bottom end -->
-                                <?php } ?>
-			    </div> <!-- sidebar-left-inner end -->
+                                <?php print $left ?>
+                                <div id="sidebar-left-blcorner"></div>
+			    </div></div></div> <!-- sidebar-left-inner end -->
 			</div> <!-- sidebar-left end -->
+                    <?php } ?>
 			<?php if ($mission) { ?><div id="mission"><?php print $mission ?></div><?php } ?>
 			<?php print $breadcrumb ?>
 			<h1 class="title"><?php print $title ?></h1>

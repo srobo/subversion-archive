@@ -248,40 +248,36 @@ ul, ol {
         float: left;
 	background-color: #DFDBD8;
 	margin: 0 1.5em 1.5em 0;
-/*	border-style: none solid solid solid;
-	border-color: #253571;
-	border-width: 3px;
-*/
+	/* border right */
         background-image: url('images/pri-menu_dot.png');
 	background-repeat: repeat-y;
 	background-position: top right;
 }
-#sidebar-left-inner {
+#sidebar-left-inner0 {
+        /* border left */
         background-image: url('images/pri-menu_dot.png');
 	background-repeat: repeat-y;
 	background-position: top left;
 }
-#sidebar-left-bottom {
-	text-align: right;
-        height: 13px;
+#sidebar-left-inner1 {
+        /* border-bottom */
         background-image: url('images/pri-menu_dot.png');
 	background-repeat: repeat-x;
 	background-position: bottom left;
 }
+#sidebar-left-inner2 {
+        /* border bottom right corner */
+        background-image: url('images/pri-menu_br.png');
+	background-repeat: no-repeat;
+	background-position: bottom right;
+}
 #sidebar-left-blcorner {
+        /* border bottom left corner */
         width: 13px;
 	height: 13px;
 	background-image: url('images/pri-menu_bl.png');
 	background-repeat: no-repeat;
 	background-position: bottom left;
-}
-#sidebar-left-brcorner {
-	margin-left: auto;
-        width: 13px;
-	height: 13px;
-	background-image: url('images/pri-menu_br.png');
-	background-repeat: no-repeat;
-	background-position: bottom right;
 }
 #block-menu-primary-links h2 {
 	display: none;
