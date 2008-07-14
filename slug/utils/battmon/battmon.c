@@ -45,8 +45,8 @@ int main (int argc, char **argv)
     }
 
   struct timeval tp;		/* Timeval pointer - containing data since epoch */
-  long int epoch = 0;		/* Used to define starting epoch */
-  long int currenttime = 0;		/* Used to define the current time */
+  float epoch = 0;		/* Used to define starting epoch */
+  float currenttime = 0;		/* Used to define the current time */
 
   uint16_t current;		/* The relative 16bit Current Value */
   uint16_t voltage;		/* The relative 16bit Voltage Value */
@@ -64,7 +64,7 @@ int main (int argc, char **argv)
 
   /* Set the epoch value */
   gettimeofday (&tp, NULL);
-  epoch = tp.tv_sec;  
+  epoch = tp.tv_sec + (tp.tv_usec / 1e6);  
 
   /* Begin Current and Voltage Reading */
   while (1)
@@ -74,14 +74,16 @@ int main (int argc, char **argv)
       voltage = readword (fd, GETV, write_file);
       current = readword (fd, GETI, write_file);      
      
-      fprintf (stderr, "Current iteration: %d - Voltage: %d, Current: %d\n", i, voltage, current);
- 
       /* Get the current time */
       gettimeofday (&tp, NULL);
-      currenttime = tp.tv_sec;
+      currenttime = tp.tv_sec + (tp.tv_usec / 1e6);
+      
+      /* Output the values to stdout */
+      fprintf (stdout, "Time: %f - Voltage: %d, Current: %d\n", currenttime - epoch, voltage, current);
+
 
       /* Output the current time relative to epoch */
-      fprintf (write_file, "%u, %u, %lu\n", voltage, current, (currenttime - epoch));
+      fprintf (write_file, "%u, %u, %f\n", voltage, current, (currenttime - epoch));
       sleep(1);
       i++;
     }
