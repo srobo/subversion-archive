@@ -31,9 +31,10 @@ body {
 	font: .74em Arial, sans-serif;
 	line-height: 1.5em;
 	color: #000000;
+	text-align:center;
 }
 #outer {
-	margin: 0 2%;
+	width:700px;
 }
 h1, h2, h3 {
 	color: #253571;
