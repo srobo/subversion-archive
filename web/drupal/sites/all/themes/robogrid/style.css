@@ -398,7 +398,7 @@ ul, ol {
 /*static gallery */
 .static-gallery{
 	clear: left;
-	width: 100%;
+	width: 500px;
 	border: 10px solid #F2F2F2;
 	background:white;	
 	overflow:hidden;
