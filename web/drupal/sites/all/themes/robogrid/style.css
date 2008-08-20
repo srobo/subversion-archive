@@ -36,7 +36,7 @@ body {
 	margin: 0 2%;
 }
 h1, h2, h3 {
-	color: #404040;
+	color: #253571;
 }
 h1 {
 	font: bold 1.8em Arial, Sans-Serif;
@@ -203,7 +203,9 @@ ul, ol {
 .status {
 	background-color: red; /* debug line: to be changed */
 }
-
+.node {
+	margin: 0px 20px 0px 150px;
+}
 
 /* NAVIGATE MENU (across the top bar, in place of the login) */
 
@@ -225,22 +227,6 @@ ul, ol {
 	color: red;
 	text-decoration: none;
 }
-
-
-/* OLD NAVIGATE MENU (Chris' animated one) */
-
-#navigate ul li {
-	line-height: 26px;
-	background: #F6F6F6 url('images/li-line.gif') no-repeat bottom left;
-	list-style: none;
-}
-#navigate a {
-	padding-left: 25px;
-	font:  0.9em Arial, Sans-Serif;
-	text-decoration: none;
-	background: #F6F6F6 url('images/lm-li.gif') no-repeat left;
-}
-
 
 /* PRIMARY MENU */
 
@@ -342,4 +328,69 @@ ul, ol {
 
 .right {
 	text-align: right;
+}
+
+/* Gallery */
+#imagegallery{
+	background:#F2F2F2;
+	clear:left;
+	padding:10px;
+	width:500px;
+	height:450px;
+	overflow: hidden;
+}
+
+#items{
+	float: left;
+	width: 75px;
+	height: 100%;
+	border: 1px solid #DFDFDF;
+	background:white;
+}
+#items .item {
+	float: left;
+	padding:5px;
+	position: relative;
+	width: 52px;
+	height:52px;
+	margin: 5px;
+	background-color: #fff;
+	cursor: pointer;
+	border: 1px solid white;
+}
+#items .item:hover{border: 1px solid #ddd;}
+#items .item img {
+	width:50px;
+	max-height:35px;
+}
+
+#large{
+	border: 1px solid #DFDFDF;
+	width: 420px;
+	height: 100%;
+	margin-left:0px;
+	background-color: #fff;
+	text-align:center;
+	font-family:Arial, Times, san-serif;
+	font-size:12px;
+	overflow:hidden;
+}
+#large .info{
+	font-size: 1.2em;
+	text-align: center;
+	font-weight: bold;
+	padding:5px;
+	color:#253571;
+}
+#items  p{display:none;}
+#large .item {
+	margin-top:10px;
+	margin-bottom:10px;
+	border-width: 1px;
+	cursor: default;
+	text-align:center;
+}
+#large .item img{
+	max-width:400px;
+	max-height: 400px;
 }
