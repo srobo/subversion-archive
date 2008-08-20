@@ -29,5 +29,7 @@ window.addEvent('domready', function()
 		}
 		isFirst++;
 	});
+	drop.removeEvents();
+	drop.empty();
 	first.inject(drop);
 });
