@@ -19,7 +19,13 @@ window.addEvent('domready', function()
 	 
 	});
 	
-	var first = $('first');
+	var first = 0;
+	$$('.item').each(function(item)
+	{
+		if(first == 0)
+		{	
+			first = item;
+		}
+	}
 	first.inject(drop);
-
 });

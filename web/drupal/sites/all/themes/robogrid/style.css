@@ -347,7 +347,7 @@ ul, ol {
 	border: 1px solid #DFDFDF;
 	background:white;
 }
-#items .item, #first {
+#items .item, {
 	float: left;
 	padding:5px;
 	position: relative;
