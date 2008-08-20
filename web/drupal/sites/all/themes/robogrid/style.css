@@ -420,3 +420,15 @@ ul, ol {
 	background: #F2F2F2;
 	display: block;
 }
+/* picture format */
+.right-just-image{
+	width:120px;
+	border: 1px solid #F2F2F2;
+	padding: 5px;
+	text-align: center;
+	display: block;
+	float: right;
+}
+.right-just-image img{
+	width:100px;
+}
