@@ -422,13 +422,13 @@ ul, ol {
 }
 /* picture format */
 .right-just-img{
-	width:120px;
+	width:210px;
 	border: 1px solid #F2F2F2;
 	padding: 5px;
 	text-align: center;
 	display: block;
 	float: right;
 }
-img .thumb{
-	width:100px;
+.right-just-img img{
+	width:200px;
 }
