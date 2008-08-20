@@ -16,9 +16,13 @@ window.addEvent('domready', function()
 			drop.empty();
 			var a = item.clone();
 			a.inject(drop);
-			dropFx.start('7389AE').chain(dropFx.start.pass('ffffff', dropFx));
+			dropFx.start('253571').chain(dropFx.start.pass('ffffff', dropFx));
 			
 		});
 	 
 	});
+	
+	var first = $('first');
+	first.inject(drop);
+	dropFx.start('253571').chain(dropFx.start.pass('ffffff', dropFx));
 });
