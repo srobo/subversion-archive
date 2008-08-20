@@ -20,9 +20,14 @@ window.addEvent('domready', function()
 	});
 	
 	var first;
+	var isFirst = 0;
 	$$('.item').each(function(item)
 	{
-		first = item.clone();
+		if(isFirst == 0)
+		{
+			first = item.clone();		
+		}
+		isFirst++;
 	});
 	first.inject(drop);
 });
