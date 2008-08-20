@@ -413,6 +413,9 @@ ul, ol {
 	background-color: #fff;
 	border: 1px solid #F2F2F2;
 }
+.static-gal-image img{
+	height: 100px;
+}
 .static-gal-image p{
 	background: #F2F2F2;
 	display: block;
