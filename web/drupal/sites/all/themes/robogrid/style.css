@@ -34,7 +34,8 @@ body {
 	text-align:center;
 }
 #outer {
-	width:700px;
+	width:900px;
+	display: block;
 }
 h1, h2, h3 {
 	color: #253571;
