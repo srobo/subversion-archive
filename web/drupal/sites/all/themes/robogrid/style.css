@@ -395,3 +395,25 @@ ul, ol {
 	max-width:400px;
 	max-height: 400px;
 }
+/*static gallery */
+.static-gallery{
+	clear: left;
+	width: 500px;
+	border: 10px solid #F2F2F2;
+	background:white;	
+	overflow:hidden;
+	text-align:center;
+	display:block;
+}
+.static-gal-image{
+	display: block;
+	padding:5px;
+	position: relative;
+	margin: 5px;
+	background-color: #fff;
+	border: 1px solid #F2F2F2;
+}
+.static-gal-image p{
+	background: #F2F2F2;
+	display: block;
+}
