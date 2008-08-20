@@ -23,6 +23,6 @@ window.addEvent('domready', function()
 	$$('.item').each(function(item)
 	{
 		first = item.clone();
-	}
+	});
 	first.inject(drop);
 });
