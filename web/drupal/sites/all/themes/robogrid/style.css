@@ -429,6 +429,6 @@ ul, ol {
 	display: block;
 	float: right;
 }
-.right-just-image img{
-	width:50px;
+img .thumb{
+	width:100px;
 }
