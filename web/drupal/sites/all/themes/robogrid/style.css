@@ -238,6 +238,7 @@ ul, ol {
         background-image: url('images/pri-menu_dot.png');
 	background-repeat: repeat-y;
 	background-position: top right;
+	width: 200px;
 }
 #sidebar-left-inner0 {
         /* border left */
@@ -333,11 +334,11 @@ ul, ol {
 /* Gallery */
 #imagegallery{
 	background:#F2F2F2;
-	clear:left;
 	padding:10px;
 	width:500px;
 	height:450px;
 	overflow: hidden;
+	clear: left;
 }
 
 #items{
