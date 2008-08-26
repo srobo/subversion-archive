@@ -436,3 +436,26 @@ ul, ol {
 .right-just-img img{
 	width:200px;
 }
+/* Publically visible Documentation page formatting */
+#docs
+{
+	width: 500px; 
+	border: 10px solid #F2F2F2; 
+	display:block; 
+	overflow: hidden; 
+	padding:0px;  
+	margin:0px; 
+	text-align:center;
+}
+.doc-title
+{
+	display: block; 
+	border: 2px solid #F2F2F2; 
+	margin:2px; 
+	padding:0px; 
+	text-align:left;
+}
+.doc-title a, .doc-title b, .doc-title i
+{
+	margin-left:10px;
+}
