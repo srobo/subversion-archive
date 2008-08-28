@@ -207,7 +207,7 @@ ul, ol {
 .status {
 	background-color: red; /* debug line: to be changed */
 }
-.node {
+.node, #switchboard {
 	margin: 0px 20px 0px 220px;
 }
 

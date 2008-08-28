@@ -10,8 +10,8 @@ if(!function_exists('print_switchboard'))
 		{
 			$image	= "../sites/all/themes/robogrid/images/".$row['title'].".png";
 			
-			if(!file_exists($image))
-				$image	= "../sites/all/themes/robogrid/images/UnknownFile.png";
+			//if(!file_exists($image))
+			//	$image	= "../sites/all/themes/robogrid/images/UnknownFile.png";
 
 			echo "\n		<li".($i < $count_s_l ? "" : " class=\"last\"")."><a title=\"".$row['attributes']['title']."\" href=\"".$row['href']."\">"
 			."<img src=\"$image\" title=\"".$row['attributes']['title']."\" alt=\"".$row['title']." page image\" /><p>"
