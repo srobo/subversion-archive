@@ -9,7 +9,7 @@ if(!function_exists('print_switchboard'))
 		foreach($links as $row)
 		{
 			$image	= 
-"../sites/all/themes/robogrid/images/".$row['title'].".svg";
+"images/".$row['title'].".svg";
 			if(!file_exists($image))
 				$image	= "sites/all/themes/robogrid/images/UnknownFile.png";
 
