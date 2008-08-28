@@ -8,7 +8,7 @@ if(!function_exists('print_switchboard'))
 		$count_s_l	= count($links);
 		foreach($links as $row)
 		{
-			$image	= "sites/all/themes/robogrid/images/".$row['title'].".svg";
+			$image	= "/sites/all/themes/robogrid/images/".$row['title'].".svg";
 			if(!file_exists($image))
 				$image	= "sites/all/themes/robogrid/images/UnknownFile.png";
 
