@@ -17,13 +17,16 @@
 #include "motor.h"
 #include "pwm.h"
 #include "i2c.h"
-#include "init.h"
+#include "timer-b.h"
+#include <signal.h>
 
 static int i = 0;
 
-void UNEXPECTED()
-{
-}
+/* Initialise the GPIO ports */
+void init_gpio( void );
+
+/* Initialise everything */
+void init( void );
 
 int main( void )
 {
@@ -38,4 +41,37 @@ int main( void )
 	motor_set( 1, 0, M_OFF );
 
 	while(1);
+}
+
+void init( void )
+{
+	init_gpio();
+	pwm_init();
+	motor_init();
+	i2c_init();
+	timer_b_init();
+
+	eint();
+}
+
+void init_gpio( void )
+{
+	/* Set all to outputs */
+	P1DIR = P2DIR = P3DIR = P4DIR = 0xFF;
+
+	/* Configure all as IO initially */
+	P1SEL = P3SEL = P4SEL = 0;
+
+	/* Timer outputs */
+	P1SEL |= 0x0C;
+
+	/* Crystal inputs */
+	P2SEL |= 0xC0;
+
+	/* Use the I2C pins */
+	P3SEL |= 6;
+
+	/* Debug light off */
+	FLAG_OFF();
+
 }
