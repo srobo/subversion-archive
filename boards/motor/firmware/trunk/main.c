@@ -52,8 +52,8 @@ int main( void )
 void init( void )
 {
 	init_gpio();
-/* 	pwm_init(); */
-/* 	motor_init(); */
+	pwm_init();
+	motor_init();
 //	timer_b_init();
 	flash_init();
 	i2c_flash_init();
