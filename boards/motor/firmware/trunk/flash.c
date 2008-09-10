@@ -22,6 +22,7 @@
 #define flash_busy() ( FCTL3 & BUSY )
 
 #define flash_write_mode() do { FCTL1 = FCTL1_VAL | FWKEY | WRT; } while (0)
+#define flash_write_mode_off() do { FCTL1 = FCTL1_VAL | FWKEY; } while (0)
 
 /* Get a pointer to the segment that x is in */
 #define mem_segment(x) ( (uint16_t*)(((uint16_t)x) & 0xfe00 ) )
@@ -159,6 +160,8 @@ void flash_switchover( void )
 
 	if( !firmware_received )
 		return;
+
+	flash_write_mode_off();
 
 	/* Disable interrupts */
 	dint();
