@@ -90,12 +90,7 @@ void flash_erase_segment( uint16_t *addr )
 	/* Initiate the erase with a dummy write */
 	*addr = 0xffff;
 
-	while( flash_busy() );
-
 	flash_lock();
-
-	if( *addr != 0xffff )
-		while(1);
 
 	last_erased = mem_segment(addr);
 }
@@ -127,7 +122,7 @@ void flash_rx_chunk( uint16_t c_addr, const uint16_t *fw)
 			next_chunk = 0;
 		}
 		else
-			next_chunk = IVT + cpos + (CHUNK_SIZE/2);
+			next_chunk = c + CHUNK_SIZE/2;
 	}
 	else if( c == next_chunk )
 	{
@@ -139,7 +134,7 @@ void flash_rx_chunk( uint16_t c_addr, const uint16_t *fw)
 
 void flash_switchover( void )
 {
-//	uint8_t i;
+	uint8_t i;
 
 	if( !firmware_received )
 		return;
@@ -149,13 +144,8 @@ void flash_switchover( void )
 	/* Disable interrupts */
 	dint();
 
-	flash_write_chunk( ivt_buf, IVT );
-	flash_write_chunk( ivt_buf + 8, IVT + 8 );
-	flash_write_chunk( ivt_buf + 16, IVT + 16 );
-	flash_write_chunk( ivt_buf + 24, IVT + 24 );
-
-	if( IVT[31] != ivt_buf[31] )
-		while(1);
+	for( i=0; i<32; i += (CHUNK_SIZE/2) )
+		flash_write_chunk( ivt_buf + i, IVT + i );
 
 	/* Finished loading new firmware! */
 	/* Jump to the reset vector! */
