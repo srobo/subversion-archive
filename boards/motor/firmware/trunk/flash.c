@@ -52,6 +52,7 @@ void flash_write_chunk( const uint16_t *source, uint16_t *dest )
 	for( i=0; i<(CHUNK_SIZE/2); i++ )
 		*(dest + i) = *(source + i);
 
+	flash_write_mode_off();
 	flash_lock();
 }
 
