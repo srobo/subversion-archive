@@ -2,6 +2,13 @@
 #include "flash.h"
 #include "common.h"
 
+bool i2c_flash_received;
+
+void i2c_flash_init( void )
+{
+	i2c_flash_received = FALSE;
+}
+
 /* Transmits the firmware version to the master. */
 uint8_t i2c_flashr_fw_ver( uint8_t* buf )
 {
@@ -35,10 +42,6 @@ uint8_t i2c_flashr_fw_next( uint8_t* buf )
 	buf[0] = ((uint16_t)next_chunk) & 0xff;
 	buf[1] = ( ((uint16_t)next_chunk) >> 8 ) & 0xff;
 
-	if( (uint16_t)next_chunk == 0x4000 ) {
-		nop();
-	}
-
 	return 2;
 }
 
@@ -58,5 +61,5 @@ uint8_t i2c_flashr_crc( uint8_t* buf )
 void i2c_flashw_confirm( uint8_t* buf )
 {
 	/* TODO: Do the CRC */
-	flash_switchover();
+	i2c_flash_received = TRUE;
 }

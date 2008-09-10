@@ -38,9 +38,27 @@ static uint16_t *other_area;
 static uint16_t *this_area;
 
 /* Buffer for the interrupt vector table */
-static uint16_t ivt_buf[32];
+static uint16_t ivt_buf[32] = {0,1,2,3,4,5,6,7,8,9,0xa,0xb,0xc,0xd,0xe,0xf,
+			       0,1,2,3,4,5,6,7,8,9,0xa,0xb,0xc,0xd,0xe,0xf };
 
 bool firmware_received;
+
+void flash_write_chunk( const uint16_t *source, uint16_t *dest )
+{
+	uint8_t i;
+
+	/* Check that the section has been erased */
+	if( last_erased < mem_segment( dest ) )
+		flash_erase_segment( dest );
+
+	flash_unlock();
+	flash_write_mode();
+	/* Now write it */
+	for( i=0; i<(CHUNK_SIZE/2); i++ )
+		*(dest + i) = *(source + i);
+
+	flash_lock();
+}
 
 void flash_init( void )
 {
@@ -120,16 +138,7 @@ void flash_rx_chunk( uint16_t c_addr, const uint16_t *fw)
 	}
 	else if( c == next_chunk )
 	{
-		/* Check that the section has been erased */
-		if( last_erased < mem_segment( c ) )
-			flash_erase_segment( c );
-
-		flash_unlock();
-		flash_write_mode();
-		/* Now write it */
-		for( i=0; i<(CHUNK_SIZE/2); i++ )
-			*(c + i) = *(fw + i);
-		flash_lock();
+		flash_write_chunk( fw, c );
 
 		next_chunk += CHUNK_SIZE/2;
 	}
@@ -146,7 +155,7 @@ uint16_t flash_chunk_n( uint16_t n )
 
 void flash_switchover( void )
 {
-	uint8_t i;
+//	uint8_t i;
 
 	if( !firmware_received )
 		return;
@@ -154,20 +163,10 @@ void flash_switchover( void )
 	/* Disable interrupts */
 	dint();
 
-	/* Erase the last segment */
-	flash_erase_segment( mem_segment(IVT) );
-
-	flash_unlock();
-	flash_write_mode();
-
-	/* Now write the IVT */
-	for( i=0; i<32; i++ )
-		*(IVT + i) = *(ivt_buf + i);
-
-	flash_lock();
-	nop();
-	nop();
-	nop();
+	flash_write_chunk( ivt_buf, IVT );
+	flash_write_chunk( ivt_buf + 8, IVT + 8 );
+	flash_write_chunk( ivt_buf + 16, IVT + 16 );
+	flash_write_chunk( ivt_buf + 24, IVT + 24 );
 
 	if( IVT[31] != ivt_buf[31] )
 		while(1);

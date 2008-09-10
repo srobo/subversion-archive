@@ -16,6 +16,9 @@
 #ifndef __I2C_FLASH
 #define __I2C_FLASH
 #include <stdint.h>
+#include "common.h"
+
+void i2c_flash_init( void );
 
 /* Transmits the firmware version to the master. */
 uint8_t i2c_flashr_fw_ver( uint8_t* buf );
@@ -34,5 +37,8 @@ uint8_t i2c_flashr_crc( uint8_t* buf );
    firmware has been received. 
    4-byte password expected. */
 void i2c_flashw_confirm( uint8_t* buf );
+
+/* When the firmware has been received and verified, this becomes TRUE */
+extern bool i2c_flash_received;
 
 #endif	/* __I2C_FLASH */

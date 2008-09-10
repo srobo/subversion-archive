@@ -19,6 +19,7 @@
 #include "i2c.h"
 #include "timer-b.h"
 #include "flash.h"
+#include "i2c-flash.h"
 #include <signal.h>
 
 static int i = 0;
@@ -41,7 +42,11 @@ int main( void )
 	motor_set( 0, 0, M_OFF );
 	motor_set( 1, 0, M_OFF );
 
-	while(1);
+	while(1) {
+		if( i2c_flash_received ) {
+				flash_switchover();
+		}
+	}
 }
 
 void init( void )
@@ -49,9 +54,10 @@ void init( void )
 	init_gpio();
 	pwm_init();
 	motor_init();
-	i2c_init();
 //	timer_b_init();
 	flash_init();
+	i2c_flash_init();
+	i2c_init();
 
 	eint();
 }
