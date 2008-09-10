@@ -39,6 +39,6 @@ uint8_t i2c_flashr_crc( uint8_t* buf );
 void i2c_flashw_confirm( uint8_t* buf );
 
 /* When the firmware has been received and verified, this becomes TRUE */
-extern bool i2c_flash_received;
+extern volatile bool i2c_flash_received;
 
 #endif	/* __I2C_FLASH */

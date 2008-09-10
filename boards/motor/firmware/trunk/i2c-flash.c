@@ -2,7 +2,7 @@
 #include "flash.h"
 #include "common.h"
 
-bool i2c_flash_received;
+volatile bool i2c_flash_received;
 
 void i2c_flash_init( void )
 {
