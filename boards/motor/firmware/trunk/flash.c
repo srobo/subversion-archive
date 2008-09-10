@@ -33,14 +33,8 @@ uint16_t *next_chunk;
 /* Pointer to the last area to be erased */
 static uint16_t *last_erased;
 
-/* Pointer into the other area */
-static uint16_t *other_area;
-/* Pointer into this area */
-static uint16_t *this_area;
-
 /* Buffer for the interrupt vector table */
-static uint16_t ivt_buf[32] = {0,1,2,3,4,5,6,7,8,9,0xa,0xb,0xc,0xd,0xe,0xf,
-			       0,1,2,3,4,5,6,7,8,9,0xa,0xb,0xc,0xd,0xe,0xf };
+static uint16_t ivt_buf[32];
 
 bool firmware_received;
 
@@ -63,6 +57,9 @@ void flash_write_chunk( const uint16_t *source, uint16_t *dest )
 
 void flash_init( void )
 {
+	/* Pointer into the other area */
+	uint16_t *other_area;
+
 	FCTL1 = FCTL1_VAL | FWKEY;
 	FCTL2 = FCTL2_VAL | FWKEY;
 
@@ -70,15 +67,9 @@ void flash_init( void )
 
 	/* Calculate which area we need to write to */
 	if( (uint16_t)mem_segment( flash_init ) >= AREA_1 )
-	{
 		other_area = (uint16_t*)AREA_0;
-		this_area = (uint16_t*)AREA_1;
-	}
 	else
-	{
 		other_area = (uint16_t*)AREA_1;
-		this_area = (uint16_t*)AREA_0;
-	}
 
 	/* Nothing's been written yet */
 	next_chunk = other_area;
@@ -143,15 +134,6 @@ void flash_rx_chunk( uint16_t c_addr, const uint16_t *fw)
 
 		next_chunk += CHUNK_SIZE/2;
 	}
-}
-
-uint16_t flash_chunk_n( uint16_t n )
-{
-	/* Is the chunk in the IVT? */
-	if( n >= N_CHUNKS )
-		return (uint16_t)(IVT + ((CHUNK_SIZE/2) * (n - N_CHUNKS)));
-
-	return (uint16_t)(this_area + ((CHUNK_SIZE/2) * n));
 }
 
 void flash_switchover( void )

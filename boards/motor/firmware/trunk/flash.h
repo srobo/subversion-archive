@@ -32,9 +32,6 @@ void flash_rx_chunk( uint16_t c_addr, const uint16_t *fw);
 /* Erase a segment starting at addr */
 void flash_erase_segment( uint16_t *addr );
 
-/* Get the address of chunk number N of the currently executing firmware */
-uint16_t flash_chunk_n( uint16_t n );
-
 /* Switch over to the new firmware */
 void flash_switchover( void );
 
