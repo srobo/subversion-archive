@@ -25,12 +25,14 @@ typedef enum
 	FALSE = 0, TRUE
 } bool;
 
-/* These should be migrated to msp430 libc */
+/* These constants have only recently been added to the mspgcc libc */
+#ifndef UCSSEL_UCLKI
 #define UCSSEL_UCLKI UCSSEL_0
 #define UCSSEL_ACLK UCSSEL_1
 #define UCSSEL_SMCLK UCSSEL_2
+#endif
 
-/* As should these */
+/* These constants have yet to be added */
 #define UCMODE_SPI_3PIN UCMODE_0
 #define UCMODE_SPI_4PIN_STE1 UCMODE_1
 #define UCMODE_SPI_4PIN_STE0 UCMODE_2
