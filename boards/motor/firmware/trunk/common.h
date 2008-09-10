@@ -13,6 +13,8 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
+#ifndef __COMMON_H
+#define __COMMON_H
 #include <msp430x22x4.h>
 #include <stddef.h>
 
@@ -37,3 +39,5 @@ typedef enum
 #define UCMODE_SPI_4PIN_STE1 UCMODE_1
 #define UCMODE_SPI_4PIN_STE0 UCMODE_2
 #define UCMODE_I2C UCMODE_3
+
+#endif	/* __COMMON_H */
