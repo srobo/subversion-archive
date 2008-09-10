@@ -50,7 +50,7 @@ void init( void )
 	pwm_init();
 	motor_init();
 	i2c_init();
-	timer_b_init();
+//	timer_b_init();
 	flash_init();
 
 	eint();
