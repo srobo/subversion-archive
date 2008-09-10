@@ -40,4 +40,12 @@ try:
 except pkg_resources.DistributionNotFound:
     pass
 
+# Verify that the required config options are present:
+req = ["ldap.anonuser", "ldap.anonpass"]
+
+for opt in req:
+    if config.get( opt ) == None:
+        print "Missing config option '%s', so quitting." % opt
+        sys.exit(-1)
+
 start_server(Root())

@@ -24,8 +24,8 @@ def getteams():
         """
         This is the standard anonymous login.
         """
-        password = config.get("anonpassword")
-        return ("uid=anon,ou=users,o=sr",password)
+        password = config.get("ldap.anonpass")
+        return (config.get("ldap.anonuser"),password)
     
     sr.set_userinfo(ldap_login)
     
