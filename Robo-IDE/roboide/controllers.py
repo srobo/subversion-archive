@@ -42,8 +42,6 @@ class Client:
         if not team in user.getteams():
             raise RuntimeError("User can not access team %d" % team)
 
-        team = int(team)
-
         self.__dict__["REPO"] = user.get_svnrepo( team )
 
     def is_url(self, url):
@@ -135,7 +133,7 @@ class Root(controllers.RootController):
             A zip file as a downloadable file with appropriate HTTP headers
             sent.
         """
-        client = Client(team)
+        client = Client(int(team))
         files = files.split(",")
         rev = self.get_revision("HEAD")
 
@@ -246,7 +244,7 @@ class Root(controllers.RootController):
         TODO: Cope with revision other than head.
         """
         curtime = time.time()
-        client = Client(team)
+        client = Client(int(team))
         
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
 
@@ -292,7 +290,7 @@ class Root(controllers.RootController):
 
     @expose("json")
     def gethistory(self, team, file):
-        c = Client(team)
+        c = Client(int(team))
 
         try:
             log = c.log(c.REPO+file)
@@ -324,7 +322,7 @@ class Root(controllers.RootController):
         #Default data
         r = {}
         l = {}
-        client = Client(team)
+        client = Client(int(team))
 
         if files != "":
             files = files.split(",")
@@ -364,7 +362,7 @@ class Root(controllers.RootController):
         """
         if files != "":
             files = files.split(",")
-            client = Client(team)
+            client = Client(int(team))
 
             #This is called to get a log message for the deletion
             def cb():
@@ -402,7 +400,7 @@ class Root(controllers.RootController):
                     changed_paths is a list of dicts:
                         action, path
         """
-        client = Client(team)
+        client = Client(int(team))
         log = client.log(client.REPO, discover_changed_paths=True)
 
         return dict(log=[{"author":x["author"], \
@@ -422,7 +420,7 @@ class Root(controllers.RootController):
 
         TODO: Usernames.
         """
-        client = Client(team)
+        client = Client(int(team))
         reload = "false"
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness
@@ -522,8 +520,7 @@ class Root(controllers.RootController):
                           children : [list as above]
                           name : name of file}, ...]}
         """    
-
-        client = Client(team)
+        client = Client(int(team))
         
         #This returns a flat list of files
         #This is sorted, so a directory is defined before the files in it
