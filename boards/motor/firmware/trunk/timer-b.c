@@ -20,7 +20,7 @@ void timer_b_init( void )
 		/* TBCLR = 0 - Don't reset the timer */
 		| TBIE;		/* Interrupt enabled */
 
-	TBCCR0 = 1000;
+	TBCCR0 = 16000;
 
 	timer_b_dis();
 }
@@ -41,12 +41,12 @@ interrupt (TIMERB0_VECTOR) timer_b_isr2( void )
 /* Start the timer */
 void timer_b_start( void )
 {
-/* 	TBR = 0; */
-/* 	timer_b_en(); */
+	TBR = 0;
+	timer_b_en();
 }
 
 /* Stop the timer */
 void timer_b_stop( void )
 {
-/* 	timer_b_dis(); */
+	timer_b_dis();
 }
