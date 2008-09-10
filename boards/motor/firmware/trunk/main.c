@@ -62,16 +62,9 @@ void init_gpio( void )
 	/* Configure all as IO initially */
 	P1SEL = P3SEL = P4SEL = 0;
 
-	/* Timer outputs */
-	P1SEL |= 0x0C;
-
 	/* Crystal inputs */
 	P2SEL |= 0xC0;
 
-	/* Use the I2C pins */
-	P3SEL |= 6;
-
 	/* Debug light off */
 	FLAG_OFF();
-
 }

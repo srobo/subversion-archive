@@ -51,7 +51,6 @@ void pwm_init( void )
 	TACCTL0 &= ~CAP;
 	TACCTL0 &= ~CCIE;
 
-
 	/*** Configure TACCTLs ***/
 	/* Compare mode */
 	TACCTL1 = CCIS_3 | OUTMOD_SET_RESET;
@@ -60,6 +59,9 @@ void pwm_init( void )
 	TACCR0 = PWM_MAX;
 	TACCR1 = 0;
 	TACCR2 = 0;
+
+	/* Enable the outputs */
+	P1SEL |= 0x0C;
 
 	/* Up/down mode - enables the timer*/
 	TACTL &= ~MC_3;

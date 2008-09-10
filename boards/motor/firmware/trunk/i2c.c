@@ -216,6 +216,9 @@ void i2c_init( void )
     /* Clear the interrupt flags */
     IFG2 &= ~( UCB0TXIFG | UCB0RXIFG );
 
+    /* Let the peripheral use the pins */
+    P3SEL |= 6;
+
     /* Release from reset */
     UCB0CTL1 &= ~UCSWRST;
 
