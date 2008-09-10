@@ -17,8 +17,12 @@ log = logging.getLogger("roboide.controllers")
 ZIPNAME = "robot.zip"
 SYSFILES = "/srv/sysfiles"
 
+def get_curuser():
+    """Returns the user we're currently acting as"""
+    return cherrypy.request.headers["X-Forwarded-User"]
+
 def getteams():
-    username = cherrypy.request.headers["X-Forwarded-User"]
+    username = get_curuser()
 
     def ldap_login():
         """
@@ -49,7 +53,7 @@ class Client:
         Create a pysvn client and use it
         """
         def get_login(realm, username, may_save):
-            user = cherrypy.request.headers["X-Forwarded-User"]
+            user = get_curuser()
             return True, user, "", False
 
         c = pysvn.Client()
