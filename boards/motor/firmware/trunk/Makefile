@@ -3,9 +3,10 @@ CC := msp430-gcc
 CFLAGS := -g -mmcu=${ARCH} -Wall
 LDFLAGS :=
 
-H_FILES = common.h i2c.h motor.h pwm.h smbus_pec.h timer-b.h
-
-C_FILES = main.c i2c.c motor.c pwm.c smbus_pec.c timer-b.c
+H_FILES = common.h i2c.h motor.h pwm.h smbus_pec.h timer-b.h flash.h \
+	i2c-flash.h
+C_FILES = main.c i2c.c motor.c pwm.c smbus_pec.c timer-b.c flash.c \
+	i2c-flash.c
 
 world: motor-bottom motor-top
 

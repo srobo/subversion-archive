@@ -1,4 +1,4 @@
-/*   Copyright (C) 2007 Robert Spanton
+/*   Copyright (C) 2008 Robert Spanton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -13,36 +13,26 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
-#ifndef __I2C_H
-#define __I2C_H
+#ifndef __I2C_FLASH
+#define __I2C_FLASH
+#include <stdint.h>
 
-#define I2C_ADDRESS 0x12
+/* Transmits the firmware version to the master. */
+uint8_t i2c_flashr_fw_ver( uint8_t* buf );
 
-/* The commands */
-enum {
-	/* Identify the device */
-	M_IDENTIFY,
-	/* Set the motor power/direction */
-	M_CONF,
+/* Receives a chunk of firmware from the master.
+   20 bytes expected. */
+void i2c_flashw_fw_chunk( uint8_t* buf );
 
-	/* Send the motor 1 setting to the master */
-	M_GET0,
-	/* Send the motor 2 setting to the master */
-	M_GET1,
+/* Transmits the address of the next required chunk to the master  */
+uint8_t i2c_flashr_fw_next( uint8_t* buf );
 
-	/* Firmware version */
-	M_FIRMWARE_VER,
-	/* Firmware chunk reception, and next-address transmission */
-	M_FIRMWARE_CHUNK,
-	/* Firmware CRC transmission and confirmation */
-	M_FIRMWARE_CRC,
+/* Transmits the firmware CRC to the master */
+uint8_t i2c_flashr_crc( uint8_t* buf );
 
-	M_LAST_COMMAND
-};
+/* Receives confirmation from the master that all 
+   firmware has been received. 
+   4-byte password expected. */
+void i2c_flashw_confirm( uint8_t* buf );
 
-void i2c_init( void );
-
-/* Reset the I2C device */
-void i2c_reset( void );
-
-#endif	/* __I2C_H */
+#endif	/* __I2C_FLASH */

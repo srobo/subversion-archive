@@ -18,6 +18,7 @@
 #include "pwm.h"
 #include "i2c.h"
 #include "timer-b.h"
+#include "flash.h"
 #include <signal.h>
 
 static int i = 0;
@@ -50,6 +51,7 @@ void init( void )
 	motor_init();
 	i2c_init();
 	timer_b_init();
+	flash_init();
 
 	eint();
 }
