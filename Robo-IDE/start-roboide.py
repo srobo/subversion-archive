@@ -41,7 +41,7 @@ except pkg_resources.DistributionNotFound:
     pass
 
 # Verify that the required config options are present:
-req = ["ldap.anonuser", "ldap.anonpass"]
+req = ["ldap.anonuser", "ldap.anonpass", "user.header"]
 
 for opt in req:
     if config.get( opt ) == None:

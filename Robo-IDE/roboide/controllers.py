@@ -11,36 +11,12 @@ import zipfile
 import random
 from os.path import join
 from cherrypy.lib.cptools import serveFile
-import sr
+import user
+
 log = logging.getLogger("roboide.controllers")
 
 ZIPNAME = "robot.zip"
 SYSFILES = "/srv/sysfiles"
-
-def get_curuser():
-    """Returns the user we're currently acting as"""
-    return cherrypy.request.headers["X-Forwarded-User"]
-
-def getteams():
-    username = get_curuser()
-
-    def ldap_login():
-        """
-        This is the standard anonymous login.
-        """
-        password = config.get("ldap.anonpass")
-        return (config.get("ldap.anonuser"),password)
-    
-    sr.set_userinfo(ldap_login)
-    
-    if username in sr.users.list():
-        user = sr.user(username)
-        groups = user.groups()
-        return [group[4:] for group in groups \
-                                    if "team" in group]
-    else:
-        return RuntimeError("Could not find user")
-
 
 class Client:
     """
@@ -63,13 +39,12 @@ class Client:
         
         #Using self.__dict__[] to avoid calling setattr in recursive death
         self.__dict__["client"] = c
-        if not team in getteams():
+        if not team in user.getteams():
             raise RuntimeError("User can not access team %d" % team)
 
         team = int(team)
 
-        self.__dict__["REPO"] = \
-        "http://studentrobotics.org/isvn2/%d/" % team
+        self.__dict__["REPO"] = user.get_svnrepo( team )
 
     def is_url(self, url):
         """Override the default is_url which just tells you if the url looks
@@ -121,7 +96,7 @@ class Root(controllers.RootController):
 
     @expose("json")
     def teams(self):
-        return {"teams" : getteams()}
+        return {"teams" : user.getteams()}
 
     @expose()
     def index(self):
