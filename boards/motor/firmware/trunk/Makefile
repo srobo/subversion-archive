@@ -1,6 +1,6 @@
 ARCH=msp430x2234
 CC := msp430-gcc
-CFLAGS := -g -mmcu=${ARCH} -Wall
+CFLAGS := -g -mmcu=${ARCH} -Wall -O3
 LDFLAGS :=
 
 H_FILES = common.h i2c.h motor.h pwm.h smbus_pec.h timer-b.h flash.h \
