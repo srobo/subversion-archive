@@ -1,7 +1,6 @@
 body {
 	margin: 0;
 	padding: 0;
-
 	color:#000000;
 	font-family:Arial,sans-serif;
 	font-size:0.74em;
@@ -9,9 +8,7 @@ body {
 	font-style:normal;
 	font-variant:normal;
 	font-weight:normal;
-	line-height:1.5em;
-	text-align:center;
-}
+}	
 
 #top {
 	background-color:#253571;
@@ -35,47 +32,133 @@ body {
 #topleft {
 	float: left;
 }
-
 #top ul {
      display: inline;
 }
 
 #top ul li {
 	display: inline;
-	margin: 0 5px 0 5px;
+	background-color:#253571;
 }
-
+#top ul li a {
+	text-decoration: none;
+	font-weight: bold;
+	padding: 5px;
+	background-color: #253571;
+	color: #ffffff;	
+	margin-right: 20px;
+}
+#top ul li a:hover {
+	background-color:#ffffff;
+	color:#253571;
+}
 #tabs {
-      width: 100%;
-      font-size: 1.35em;
-      display: block;
-      background-color: #dfdbd7;
+	padding:0;
+	width: 100%;
+	background-color:#253571;
+	text-align:left;
+	overflow:auto;
 }
 
 #tabs ul {
-      display: inline;
+	white-space:nowrap;
+	list-style-type:none;
+	padding: 0;
+	margin: 0.5em;
+	font-size: 1.2em;
 }
 
-#tabs ul li {
-      display: inline;
-
-      border-style: solid;
-      border-width: 1px;
-}
-
-#status {
-	padding-top: 1em;
-	text-align: center;
-}
-
-#status span {
-	background-color: yellow;
+#tabs ul li{
 	display: inline;
+}
+#tabs li a{
+	padding: 0.2em 1em 0.2em 1em;
+	margin-right: 0.2em;
+	font-weight: bold;
+	text-decoration: none;
+	border: 1px solid #ffffff;
+	background-color: #DFDBD8;
+	color: #253571;
+}
+#tabs li a:hover { 
+	background-color: #253571;
+	color:#ffffff;
+	
+}
 
-	width: 50%;
+#status{	
+	margin-left: auto;	
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	background-color: yellow;	
+	width:60%;
+	padding: 7px 10px 7px 10px;
+	display: block;
+	font-size: 1.2em;
+	text-align: center;
 }
 
 #page {
       width: 100%;
-      border-style: solid;
+      border-style: none;
+	float: left;
 }
+
+#filemenu {
+	margin-bottom: 5px;
+	padding:5px 0 5px 0;
+	width: 100%;
+	background-color:#DFDBD8;
+	overflow:auto;
+
+}
+
+#filemenu ul {
+	white-space:nowrap;
+	list-style-type:none;
+	padding: 0;
+	margin: 0;
+}
+
+#filemenu ul li{
+	display: inline;
+}
+#filemenu li button{
+	padding: 0.2em 1em;
+	margin-right: 0.2em;
+	float: left;
+	font-weight: bold;
+	text-decoration: none;
+}
+#filemenu li div.filename {
+	color: #000000;
+	float:left;
+	padding-top: 5px;
+	margin-right: 0.2em; 
+	font-family: Courier New;
+	font-size: 1.2em;
+	min-width: 300px;
+	overflow:hidden;
+	text-align:center;	
+}
+#filemenu select {
+	margin-right: 0.2em;	
+	float:right;
+}
+#codebox {
+	width:100%;
+	margin:0px;
+	padding:0px;
+	border:0px;
+
+
+}
+
+
+
+
+
+
+
+
