@@ -1,0 +1,81 @@
+body {
+	margin: 0;
+	padding: 0;
+
+	color:#000000;
+	font-family:Arial,sans-serif;
+	font-size:0.74em;
+	font-size-adjust:none;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height:1.5em;
+	text-align:center;
+}
+
+#top {
+	background-color:#253571;
+	color:#FFFFFF;
+	/* TODO: Internet explorer thing? */
+	margin-top:-1px;
+	overflow:hidden;
+	width:100%;
+	font-size: 1.35em;
+}
+
+#topright, #topleft {
+	display: block;
+	height: 1.5em;
+}
+
+#topright {
+	float: right;
+}
+
+#topleft {
+	float: left;
+}
+
+#top ul {
+     display: inline;
+}
+
+#top ul li {
+	display: inline;
+	margin: 0 5px 0 5px;
+}
+
+#tabs {
+      width: 100%;
+      font-size: 1.35em;
+      display: block;
+      background-color: #dfdbd7;
+}
+
+#tabs ul {
+      display: inline;
+}
+
+#tabs ul li {
+      display: inline;
+
+      border-style: solid;
+      border-width: 1px;
+}
+
+#status {
+	padding-top: 1em;
+	text-align: center;
+}
+
+#status span {
+	background-color: yellow;
+	display: inline;
+
+	width: 50%;
+}
+
+#page {
+      width: 100%;
+      border-style: solid;
+}
