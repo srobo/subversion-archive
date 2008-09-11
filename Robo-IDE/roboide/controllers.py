@@ -524,18 +524,25 @@ class Root(controllers.RootController):
         
         #This returns a flat list of files
         #This is sorted, so a directory is defined before the files in it
-        files = client.ls(client.REPO, recurse=True)
+        files = client.list(client.REPO, recurse=True)
         
         #Start off with a directory to represent the root of the path
-        head = dict(name="HEAD",path="",kind="FOLDER",children={})
+        head = dict(name="HEAD",path="/",kind="FOLDER",children={})
 
         #Go through each file, creating appropriate directories and files
         #In a tree structure based around dictionaries
-        for details in files:
-            filename = details["name"][len(client.REPO):] #Strip off the repo URL
+        for details in [x[0] for x in files]:
+            filename = details["repos_path"]
+
+            # For some reason, pysvn returns "//" on the front of the paths
+            if filename[0:2] == "//":
+                filename = filename[1:] 
+
             basename = os.path.basename(filename)  #/etc/bla - returns bla
+
             top = head  #for each file recurse from the head. TODO: slow?
-            for path in filename.split("/"):
+
+            for path in [x for x in filename.split("/") if len(x) > 0]:
                 #Go through each section of the path, trying to go down into
                 #directories. If they don't exist, create them
                 try:
@@ -551,7 +558,6 @@ class Root(controllers.RootController):
                                               path=filename,
                                               kind=kind,
                                               children={})
-                                                
 
         def dicttolist(tree):
             """Recursively change a dict containing values into a list of those
