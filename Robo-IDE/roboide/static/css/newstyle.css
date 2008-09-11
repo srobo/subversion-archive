@@ -8,7 +8,7 @@ body {
 	font-style:normal;
 	font-variant:normal;
 	font-weight:normal;
-}	
+}
 
 #top {
 	background-color:#253571;
@@ -30,7 +30,7 @@ body {
 }
 
 #topleft {
-	float: left;
+           float: left;
 }
 #top ul {
      display: inline;
@@ -99,11 +99,11 @@ body {
 	text-align: center;
 }
 
-#page {
-      width: 100%;
-      border-style: none;
-	float: left;
-}
+/* #page { */
+/*       width: 100%; */
+/*       border-style: none; */
+/* 	float: left; */
+/* } */
 
 #filemenu {
 	margin-bottom: 5px;
@@ -151,14 +151,103 @@ body {
 	margin:0px;
 	padding:0px;
 	border:0px;
-
-
+	height: 30em;
 }
 
+#page {
+      width: 100%;
+}
 
+#projpage { 
+  width: 100%;
+  display: none;
+}
 
+#edit-mode { /* display:none; */ }
 
+#proj-sidebar { 
+  float:left;
+  width: 24em;
+  border-style: none solid none none;
+  border-color: #dfdbd7;
+  border-width: 1px;
+  margin-left: 1em;
+}
 
+#proj-options { 
+  text-align: center;
+}
 
+#proj-options div { 
+  text-align: left;
+}
 
+#proj-revselect { 
+  border-style: solid none solid none;
+}
 
+#proj-fileops ul { 
+  margin: 0;
+  padding: 0.5em 0 0 2em;
+}
+
+#proj-fileops li { 
+  list-style-type: none;
+}
+
+#proj-fileops li a { 
+  text-decoration: none;
+  color: black;
+  display: block;
+}
+
+#proj-fileops li a:hover { 
+  background-color: #253571;
+  color: #ffffff;
+}
+
+#proj-filelist { 
+  margin-left: 26em;
+}
+
+#proj-filelist li { 
+  list-style-type: none;
+}
+
+#proj-filelist ul { 
+  margin: 0;
+  padding: 0;
+}
+
+#proj-filelist > ul { 
+  padding-top: 1em;
+  padding-left: 2em; 
+}
+
+.flist-l li a { padding-left: 1em; }
+
+.flist-l div div { margin-left: 0.5em; }
+
+#proj-filelist ul li a { 
+  display: block;
+  text-decoration: none;
+}
+
+/* The vertical bar along the side of each directory */
+#proj-filelist ul li a div { 
+  border-style: none none none solid;
+  border-width: 1px;
+  border-color: #dfdbd7;
+  padding-left: 1em;
+}
+
+#proj-filelist ul li a:hover { 
+  background-color: #dfdbd7;
+}
+
+#proj-filelist a.selected { 
+  background-color: #253571;
+  color: #ffffff;
+}
+
+#clearboth { clear: both; }

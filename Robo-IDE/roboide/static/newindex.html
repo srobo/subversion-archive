@@ -27,7 +27,7 @@
 
 <ul id="topleft">
 <li><a href="#logout">Logout</a></li>
-<li>Team: <select><option>1</option></select></li>
+<li>Team: <select id=""><option>1</option></select></li>
 </ul>
 
 <ul id="topright">
@@ -51,6 +51,7 @@
 </div>
 
 <div id="page">
+
 	<div id="edit-mode">
 		<div id="filemenu">
 			<ul>
@@ -67,7 +68,66 @@
 		</div>
 		<textarea id="codebox">Python</textarea>
 	</div>
+
+<div id="projpage">
+
+<div id="proj-sidebar">
+
+  <div id="proj-options">
+    <div>Project: <select><option>Select a project</option></select></div>
+      <button>New Project</button>
+      <button>Archive Project</button>
+      <button>Copy Project</button>
+      <button>Check Code</button>
+      <button>Export Project</button>
+  </div>
+
+  <div id="proj-revselect">
+    Date: TODO!<br/>
+    Revision: TODO!
+  </div>
+
+  <div id="proj-fileops">
+    Selection operations:
+    <ul>
+      <li><a href="#">New File</a></li>
+      <li><a href="#">New Directory</a></li>
+      <li><a href="#">Move (including rename)</a></li>
+      <li><a href="#">Copy</a></li>
+      <li><a href="#">Delete</a></li>
+      <li><a href="#">Undelete</a></li>
+      <li><a href="#">View Log</a></li>
+    </ul>
+  </div>
 </div>
+
+<div id="proj-filelist">
+  Ctrl+Click to Select<br/>
+  Click to Open<br/>
+
+  <ul>
+    <li><a href="#">robot.py</a></li>
+    <li><a href="#">mybeard/</a>
+
+      <ul class="flist-l">
+	<li><a href="#"><div>__init__.py</div></a></li>
+	<li><a href="#" class="selected"><div>eyes.py</div></a></li>
+	<li><a href="#"><div>bees/</div></a>
+
+	  <ul class="flist-l">
+	    <li><a href="#"><div><div>bee.py</div></div></a></li>
+	    <li><a href="#"><div><div>__init__.py</div></div></a></li>
+	  </ul>
+	</li>
+      </ul>
+    </li>
+    <li><a href="#">feedback.py</a></li>
+  </ul>
+</div>
+
+
+</div>
+
 </div>
 
 </body>
