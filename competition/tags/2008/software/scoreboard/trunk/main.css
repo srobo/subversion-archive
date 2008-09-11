@@ -1,0 +1,123 @@
+body
+{
+ background-color: rgb(223,219,215);
+ margin: 0;
+ font-family: sans;
+ color: rgb(13,31,97);
+}
+
+#header
+{
+ width: 100%;
+ text-align: center;
+}
+
+#header table {
+ width: 100%;
+}
+
+#logocell {
+ text-align: center;
+ width: 150px;
+}
+#logocell img
+{
+ padding: 10px;
+}
+
+.page, .title { display:none; }
+
+.realpage {
+ width: 100%;
+}
+
+#time {
+ font-size: 180%;
+ width: 6ex;
+ padding-right: 10px;
+ text-align: right;
+}
+
+#titlecell {
+ font-size: 180%;
+ text-align: center;
+}
+
+/* Styles of things within pages */
+.realpage {
+
+}
+
+/* Upcoming Matches */
+#upcoming_matches table {
+ border-style: none;
+ border-spacing: 0px;
+}
+
+.matchNum, .matchTeam {
+ border-style: none none dotted none;
+ border-color: rgb(136,122,109);
+ text-align: center;
+}
+.matchTime {
+ border-style: none double dotted none; 
+ border-color: red rgb(13,31,97) rgb(136,122,109) black;
+ font-weight: bold;
+}
+
+.matchTime, #matchTimeHeader {
+ padding-left: 0.5em;
+ padding-right: 0.5em;
+}
+
+#matchMatchHeader, #matchTimeHeader
+{
+ font-weight: bold;
+ border-style: none none double none;
+}
+#matchTeamsHeader
+{
+ font-weight: bold;
+}
+.colourHeader {
+ font-weight: bold;
+ border-style: none none double none;
+}
+
+.matchTeam { width: 3em; }
+.matchNum { width: 5em; }
+
+/* Scores */
+#scores td {
+ text-align: center;
+}
+
+#scores tr > th {
+ font-weight: bold;
+ border-style: none none double none;
+ padding-left: 0.25em;
+ padding-right: 0.25em;
+}
+
+.scorePosition, .scoreTeam, .scorePoints {
+ border-style: none none dotted none;
+ border-color: rgb(136,122,109);
+}
+
+#scores .empty {
+ width: 2.5em;
+}
+
+/* Schedule slide */
+#schedule td:first-child {
+ font-weight:bold;
+ text-align: right;
+ padding-right: 1em;
+}
+#schedule table {
+width:*;
+}
+#schedule table td {
+ text-align: left;
+ border: none;
+}

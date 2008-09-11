@@ -1,0 +1,30 @@
+\section {Game Rules}
+\label{game-rules}
+
+\begin{enumerate}
+\item There will be a maximum of 4 robots in a match.
+\item A match lasts 180 seconds.
+\item Matches are started and stopped by the Student Robotics radio system\footnote{The Student Robotics radio system is supplied as part of the kit.  It is part of the power board, and is used for safety cut-off, start-match and stop-match signals.  Start-match signals are accompanied by data indicating the type of game that is being played.}.
+\item The goal of the game is to collect as many of a particular token colour as possible and place them in the team zone.  The token colour required will be specified electronically at the beginning of a match.
+\item There are two types of game:
+  \renewcommand{\labelenumii}{\arabic{enumii}.}
+  \begin{enumerate}
+  \item All teams collecting the same token colour.
+  \item Each team collecting a unique colour. 
+  \end{enumerate}
+The game type will be specified through the Student Robotics radio system to the robot at the beginning of the match.
+
+The arena will be populated with (approximately) randomly dispersed tokens.  The number of tokens in the arena will be supplied to the robot over the radio system at the start of the match.  In game type 2, there will be equal numbers of each colour token in the arena.
+
+\item A token is in a zone if the token is within or touching the zone border.
+\item A token is considered to be valid if it is of the team's allocated colour for the match and in the team zone.  (Note: In game type 1, all teams participating in a match are allocated the same colour).
+\item At the end of the match, the teams will be awarded:
+  \begin{itemize}
+  \item 2 points for every valid token in the team zone.
+  \item An extra bonus point for every valid token in the bonus zone.
+  \item -1 point for every token of the wrong colour in the team zone.
+  \item 2 points if the team robot is within the team zone (within or touching the zone border) - provided that the robot left the zone during the match.
+  \end{itemize}
+\item A robot will start the match touching the bonus zone barrier of the team's designated zone.
+\item The team with the most points at the end of the match wins the match.
+\end{enumerate}

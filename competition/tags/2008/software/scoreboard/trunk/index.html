@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>Student Robotics Scoreboard</title>
+<link rel="stylesheet" type="text/css" href="main.css" />
+<script type="text/javascript" src="MochiKit/MochiKit.js" />
+<script type="text/javascript" src="main.js" />
+</head>
+<body onload="startShow()" >
+
+<div id="header">
+<table>
+<tr>
+<td id="logocell"><img src="./sr.png" /></td>
+<td id="titlecell">Face</td>
+<td id="time"></td>
+</tr>
+</table>
+</div>
+
+<div class="page" id="upcoming_matches">
+<span class="title">Upcoming Matches</span>
+<center>
+<div id="matchtable">Loading...</div>
+</center>
+</div>
+
+<div class="page" id="scores">
+<span class="title">Current Scores</span>
+<center>
+<div id="scorestable">Loading...</div>
+</center>
+</div>
+
+<div class="page" id="schedule">
+<span class="title">Schedule</span>
+<center>
+<table>
+<tr><td>09:00</td><td>Doors open</td></tr>
+<tr><td>10:00</td><td>Check In</td></tr>
+<tr><td>10:15</td><td>Introduction</td></tr>
+<tr><td>10:30</td><td>Competition start</td></tr>
+<tr><td>12:30</td><td>Lunch</td></tr>
+<tr><td>13:30</td><td>Competition resumes</td></tr>
+<tr><td>16:30</td><td>Prize Giving</td></tr>
+<tr><td>17:00</td><td>Finish</td></tr>
+</table>
+</center>
+
+</div>
+
+<div style="position: absolute; bottom: 1em; right: 1em;">
+  <a style="display:none;" id="pause" href="#" onclick="pauseShow()" >Pause</a>
+</div>
+
+<div style="position: absolute; left: 1em; bottom: 1em;">
+  <a style="display:none;" id="refresh" href="#" onclick="refreshSlide()" >Refresh</a>
+</div>
+
+</body>
+</html>
