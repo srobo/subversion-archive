@@ -10,6 +10,10 @@ files : comma seperated list of open files*/
 
 team = 0; /*The current team number*/
 
+LEVEL_OK = 0;
+LEVEL_WARN = 1;
+LEVEL_ERROR = 2;
+
 function polled()
 {
 	/*Polling makes sure we're up to date with others changes.
@@ -732,4 +736,48 @@ function setStatus(str)
 {
 	MochiKit.DOM.getElement("status_block").innerHTML = str;
 
+}
+
+// **** Status Bar ****
+
+// Hide the status bar
+function status_hide() {
+    p = MochiKit.DOM.getElement("status-span");
+    p.style.display = "none";
+
+    s = MochiKit.DOM.getElement("status");
+    s.className = "";
+}
+
+// Show the status bar with the given message
+function status_show( message, level ) {
+    s = MochiKit.DOM.getElement("status");
+
+    switch(level) {
+    case LEVEL_OK:
+	s.className = "ok";
+	break;
+    case LEVEL_WARN:
+	s.className = "warn";
+	message = "<strong>Warning:</strong> " + message;
+	break;
+    default:
+    case LEVEL_ERROR:
+	s.className = "error";
+	message = "<strong>Error:</strong> " + message;
+	break;
+    }
+
+    p = MochiKit.DOM.getElement("status-span");
+    p.innerHTML = message;
+
+    p.style.display = "";
+
+    // Give it a shake if it's not OK
+    if( level > LEVEL_OK )
+	MochiKit.Visual.shake(s);
+}
+
+function status_click() {
+    status_hide();
 }

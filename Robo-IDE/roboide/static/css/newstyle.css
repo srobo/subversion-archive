@@ -90,13 +90,18 @@ body {
 	margin-right: auto;
 	margin-top: 5px;
 	margin-bottom: 5px;
-	background-color: yellow;	
 	width:60%;
 	padding: 7px 10px 7px 10px;
 	display: block;
 	font-size: 1.2em;
 	text-align: center;
+  height: 1em;
 }
+
+#status.ok { background-color: #98ff4f; }
+#status.warn { background-color: #ffff31; }
+#status.error { background-color: #ff5e5e; }
+
 
 #filemenu {
 	margin-bottom: 5px;
