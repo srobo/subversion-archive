@@ -166,7 +166,7 @@ body {
 
 #proj-sidebar { 
   float:left;
-  width: 24em;
+  width: 18em;
   border-style: none solid none none;
   border-color: #dfdbd7;
   border-width: 1px;
@@ -206,7 +206,13 @@ body {
 }
 
 #proj-filelist { 
-  margin-left: 26em;
+  margin-left: 20em;
+}
+
+#proj-name { 
+  font-size: 3em;
+  font-weight: bold;
+  text-align: center;
 }
 
 #proj-filelist li { 
