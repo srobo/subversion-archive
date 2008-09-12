@@ -231,6 +231,7 @@ body {
 #proj-filelist ul li a { 
   display: block;
   text-decoration: none;
+  margin-right: 1em;
 }
 
 /* The vertical bar along the side of each directory */
