@@ -246,7 +246,11 @@ body {
   background-color: #dfdbd7;
 }
 
-#proj-filelist a.selected { 
+#proj-filelist ul li a:visited { 
+  color: black;
+}
+
+#proj-filelist a.selected, #proj-filelist a.selected:visited  { 
   background-color: #253571;
   color: #ffffff;
 }
