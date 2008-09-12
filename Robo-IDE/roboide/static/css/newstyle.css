@@ -231,6 +231,7 @@ body {
   display: block;
   text-decoration: none;
   margin-right: 1em;
+  color: black;
 }
 
 /* The vertical bar along the side of each directory */
