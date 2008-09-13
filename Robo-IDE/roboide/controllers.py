@@ -533,6 +533,9 @@ class Root(controllers.RootController):
         """    
         client = Client(int(team))
         
+        if rootpath == "":
+            rootpath = "/"
+
         if rootpath[0] != "/":
             rootpath = "/%s" % rootpath
 
