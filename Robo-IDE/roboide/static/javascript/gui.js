@@ -954,8 +954,6 @@ function projpage_flist_nested_divs( level, inner ) {
 
 // Returns a DOM object for the given node 
 function projpage_flist_dir( node, level ) {
-    logDebug( "node: " + node.name );
-
     // Assemble the link with divs in it
     var link = MochiKit.DOM.A( { "href" : "#" },
 				projpage_flist_nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
