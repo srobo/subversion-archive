@@ -98,6 +98,7 @@ body {
   	height: 1em;
 }
 
+#status.info{ background-color: #98ff4f; }
 #status.ok { background-color: #98ff4f; }
 #status.warn { background-color: #ffff31; }
 #status.error { background-color: #ff5e5e; }

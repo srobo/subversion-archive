@@ -12,9 +12,10 @@ team = 0; /*The current team number*/
 
 project = "lollypop";
 
-LEVEL_OK = 0;
-LEVEL_WARN = 1;
-LEVEL_ERROR = 2;
+LEVEL_INFO = 0;
+LEVEL_OK = 1;
+LEVEL_WARN = 2;
+LEVEL_ERROR = 3;
 
 // Make logging statements easier!
 // Messages sent to these go to the firebug console
@@ -744,6 +745,9 @@ function status_rich_show( obj, level ) {
     MochiKit.DOM.replaceChildNodes( "status", o );
 
     switch(level) {
+    case LEVEL_INFO:
+	s.className = "info";
+	break;
     case LEVEL_OK:
 	s.className = "ok";
 	break;
