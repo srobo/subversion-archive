@@ -822,7 +822,7 @@ function tabChange(num) {
 				break;
 		}
 }
-MochiKit.DOM.addLoadEvent(tabChange(0));
+//MochiKit.DOM.addLoadEvent(tabChange(0));
 
 function gotLogin(foo) {
 	alert("success");
