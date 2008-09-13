@@ -824,10 +824,6 @@ function tabChange(num) {
 }
 //MochiKit.DOM.addLoadEvent(tabChange(0));
 
-function gotLogin(foo) {
-	alert("success");
-}
-
 function startLogin(username, password) {
 	var d = MochiKit.Async.loadJSONDoc("./verifylogin", {"usr" : username, "pwd" : password});
 
@@ -838,6 +834,11 @@ function startLogin(username, password) {
 		  MochiKit.DOM.getElement("login-feedback").innerHTML = "Incorrect Username / Password";
 	    }
 	};
+
+	var failMetadata = function (meta) {
+		  MochiKit.DOM.getElement("login-feedback").innerHTML = "Could Not Contact Server";		
+	};
+	d.addCallbacks(gotMetadata, failMetadata);
 }
 
 //class defines a single Tab within the Tab Bar
