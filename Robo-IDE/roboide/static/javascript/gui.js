@@ -748,16 +748,35 @@ function setStatus(str)
 
 // Hide the status bar
 function status_hide() {
-    p = MochiKit.DOM.getElement("status-span");
-    p.style.display = "none";
+    MochiKit.Style.setStyle( "status-span", {"display":"none"} );
 
     s = MochiKit.DOM.getElement("status");
     s.className = "";
 }
 
-// Show the status bar with the given message
-function status_show( message, level ) {
+// Show the status bar with the given message, and prepend "warning" or "error"
+function status_msg( message, level ) {
+    switch(level) {
+    case LEVEL_WARN:
+	message = [ MochiKit.DOM.createDOM( "STRONG", null, "Warning: " ),
+		    message ];
+	break;
+    case LEVEL_ERROR:
+	message = [ MochiKit.DOM.createDOM( "STRONG", null, "Error: " ), 
+		    message ];
+	break;
+    }
+
+    status_rich_show( message, level );
+}
+
+// Replace the status bar's content with the given DOM object
+function status_rich_show( obj, level ) {
     s = MochiKit.DOM.getElement("status");
+
+    o = MochiKit.DOM.createDOM( "SPAN", { "id" : "status-span",
+					  "display" : "" }, obj );
+    MochiKit.DOM.replaceChildNodes( "status", o );
 
     switch(level) {
     case LEVEL_OK:
@@ -765,19 +784,12 @@ function status_show( message, level ) {
 	break;
     case LEVEL_WARN:
 	s.className = "warn";
-	message = "<strong>Warning:</strong> " + message;
 	break;
     default:
     case LEVEL_ERROR:
 	s.className = "error";
-	message = "<strong>Error:</strong> " + message;
 	break;
     }
-
-    p = MochiKit.DOM.getElement("status-span");
-    p.innerHTML = message;
-
-    p.style.display = "";
 
     // Give it a shake if it's not OK
     if( level > LEVEL_OK )
@@ -785,8 +797,22 @@ function status_show( message, level ) {
 }
 
 function status_click() {
-    //status_hide();
-	status_show("message", LEVEL_OK);
+    status_hide();
+}
+
+// Display a status message with a button
+// Args:
+//    message: The message to display
+//      level: The log level of the message (LOG_OK etc)
+//      btext: The button text
+//      bfunc: The function to call when the button is clicked.
+function status_button( message, level, btext, bfunc ) {
+    b = MochiKit.DOM.createDOM( "A", { "href" : "#" }, btext );
+    MochiKit.Signal.connect( b, "onclick", bfunc );
+
+    m = [ message, " -- ", b ]
+
+    status_msg( m, level );
 }
 
 // ****Login Screen****
@@ -801,8 +827,8 @@ function tabChange(num) {
 				break;
 			case 1:
 				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
-				MochiKit.Style.setStyle('projpage', {'display':'block'});
 				MochiKit.Style.setStyle('grey-out', {'display':'none'});
+		    		projpage_show();
 				break;
 			case 2:
 				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
@@ -840,3 +866,27 @@ function startLogin(username, password) {
 		});
 }
 
+// ***** The Project Page *****
+function projpage_show() {
+    MochiKit.Style.setStyle('projpage', {'display':''});
+    projpage_flist();
+}
+
+function projpage_flist() {
+
+    var d = MochiKit.Async.loadJSONDoc("./filelist", {team : 1});
+
+    d.addCallback(projpage_flist_received);
+
+    d.addErrback(function (){
+	status_button( "Error getting the file list", LEVEL_ERROR,
+		       "retry", projpage_flist );
+    });
+}
+
+function projpage_flist_received(nodes) {
+    log( "filelist received" );
+    
+    
+    
+}
