@@ -18,7 +18,7 @@
 	<!-- This will produce the greyed out background for login/filename prompts -->
 	<div id="popup">	
 		<strong>Student Robotics IDE Login:</strong>
-		<em>You must be logged in to use the IDE</em>
+		<em id="login-feedback">You must be logged in to use the IDE</em>
 		<form name="login" class="login" method="POST" action="" onSubmit="startLogin()">
 			<input type="text" name="username"  value="username"/>	
 			<input type="password" name="password" />
@@ -50,7 +50,7 @@
   </ul>
 </div>
 
-<div id="status" onclick="status_click();">
+<div id="status" >
   <span id="status-span"></span>
 </div>
 
