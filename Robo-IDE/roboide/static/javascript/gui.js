@@ -10,6 +10,8 @@ files : comma seperated list of open files*/
 
 team = 0; /*The current team number*/
 
+project = "lollypop";
+
 LEVEL_OK = 0;
 LEVEL_WARN = 1;
 LEVEL_ERROR = 2;
@@ -876,25 +878,39 @@ function startLogin(username, password) {
 		  alert("Logged Out");
 	    }
 	};
-	
-	d.addCallback(gotFileList);
-	d.addErrback(function (){
-		alert("Error connecting to studentrobotics.org. Please refresh.");
-		});
 }
 
 // ***** The Project Page *****
 function projpage_show() {
-    MochiKit.Style.setStyle('projpage', {'display':''});
-    projpage_flist();
+    projpage_rpane_hide();
+
+    if (project == "")
+	status_msg( "Please select a project", LEVEL_INFO )
+    else {
+	projpage_flist();
+    }
+
+    MochiKit.Style.setStyle('projpage', {'display':'block'});
+}
+
+function projpage_rpane_hide() {
+    map_1( MochiKit.Style.setStyle,
+	   {'display':'none'},
+	   ["proj-rpane-header", "proj-filelist"] );
+}
+
+function projpage_rpane_show() {
+    map_1( MochiKit.Style.setStyle, 
+	   {'display':''},
+	   ["proj-rpane-header", "proj-filelist"] );
 }
 
 // Request and update the project file listing
 function projpage_flist() {
+    var d = MochiKit.Async.loadJSONDoc("./filelist", {team : 1,
+	rootpath : project});
 
-    var d = MochiKit.Async.loadJSONDoc("./filelist", {team : 1});
-
-    d.addCallback(projpage_flist_received);
+    d.addCallback( projpage_flist_received );
 
     d.addErrback(function (){
 	status_button( "Error getting the file list", LEVEL_ERROR,
@@ -906,10 +922,13 @@ function projpage_flist_received(nodes) {
     log( "filelist received" );
 
     MochiKit.DOM.swapDOM( "proj-filelist",
-			  MochiKit.DOM.UL( { "id" : "proj-filelist" },
-					   map_1( projpage_flist_dir, 0, nodes["tree"]["children"] ) ) );
+			  MochiKit.DOM.UL( { "id" : "proj-filelist",
+					     "style" : "display:none" },
+					   map_1( projpage_flist_dir, 0, nodes["tree"] ) ) );
 
-    return 0;
+    MochiKit.DOM.getElement( "proj-name" ).innerHTML = "Project " + project;
+
+    projpage_rpane_show();
 }
 
 function map_1( func, arg, arr ) {

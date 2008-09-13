@@ -515,24 +515,32 @@ class Root(controllers.RootController):
             client.mkdir(client.REPO + path, "New Directory: " + path)
 
     @expose("json")
-    def filelist(self, team):
+    def filelist(self, team, rootpath="/"):
         """
         Returns a directory tree of the current repository.
         inputs: None
         returns: A tree as a list of files/directory objects:
-            {children : [{path : filepath
-                          kind : FOLDER or FILE
-                          children : [list as above]
-                          name : name of file}, ...]}
+            { tree : [{path : filepath
+                       kind : FOLDER or FILE
+                       children : [list as above]
+                       name : name of file}, ...]}
         """    
         client = Client(int(team))
         
+        if rootpath[0] != "/":
+            rootpath = "/%s" % rootpath
+
         #This returns a flat list of files
         #This is sorted, so a directory is defined before the files in it
-        files = client.list(client.REPO, recurse=True)
+        try:
+            files = client.list(client.REPO + rootpath, recurse=True)
+        except pysvn.ClientError:
+            return { "error" : "Error accessing repository" }
         
         #Start off with a directory to represent the root of the path
-        head = dict(name="/",path="/",kind="FOLDER",children={})
+        tree = dict( name = os.path.basename(rootpath),
+                     path = rootpath,
+                     children={} )
 
         #Go through each file, creating appropriate directories and files
         #In a tree structure based around dictionaries
@@ -545,24 +553,24 @@ class Root(controllers.RootController):
 
             basename = os.path.basename(filename)  #/etc/bla - returns bla
 
-            top = head  #for each file recurse from the head. TODO: slow?
+            short_fname = filename[len(rootpath):]
+            top = tree
 
-            for path in [x for x in filename.split("/") if len(x) > 0]:
+            for path in [x for x in short_fname.split("/") if len(x) > 0]:
                 #Go through each section of the path, trying to go down into
                 #directories. If they don't exist, create them
-                try:
-                    top = top["children"][path]
-                except KeyError:
-                    #This happens if the node doesn't exist. If so, create it
+
+                if not top["children"].has_key( path ):
                     if details["kind"] == pysvn.node_kind.file:
                         kind = "FILE"
                     else:
                         kind = "FOLDER"
 
-                    top["children"][path] = dict(name=basename,
-                                              path=filename,
-                                              kind=kind,
-                                              children={})
+                    top["children"][path] = dict( name = basename,
+                                                  path = filename,
+                                                  kind = kind,
+                                                  children = {} )
+                top = top["children"][path]
 
         def dicttolist(tree):
             """Recursively change a dict containing values into a list of those
@@ -587,7 +595,24 @@ class Root(controllers.RootController):
                     pass
             return tree
         
-        return dict(children=[dicttolist(head)])
+        tree = dicttolist(tree)["children"]
+        return dict(tree=tree)
+
+    @expose("json")
+    def projlist(self, team):
+        """Returns a list of projects"""
+        client = Client(int(team))
+
+        dirs = client.list( client.REPO, recurse = False)
+        projects = []
+
+        for details in [x[0] for x in dirs]:
+            name = os.path.basename( details["repos_path"] )
+            if name != "":
+                projects.append(name)
+
+        return dict( projects = projects )
+
 
 	expose("json")
 	def verifylogin(self, user):

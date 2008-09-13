@@ -39,7 +39,7 @@
   color: #ffffff;
 }
 
-#proj-filelist { 
+#proj-rpane { 
   margin-left: 20em;
 }
 
@@ -67,7 +67,7 @@
 
 .flist-l div div { margin-left: 0.5em; }
 
-#proj-filelist ul li a { 
+#proj-filelist li a { 
   display: block;
   text-decoration: none;
   margin-right: 1em;
@@ -75,18 +75,18 @@
 }
 
 /* The vertical bar along the side of each directory */
-#proj-filelist ul li a div { 
+#proj-filelist li a div { 
   border-style: none none none solid;
   border-width: 1px;
   border-color: #dfdbd7;
   padding-left: 1em;
 }
 
-#proj-filelist ul li a:hover { 
+#proj-filelist li a:hover { 
   background-color: #dfdbd7;
 }
 
-#proj-filelist ul li a:visited { 
+#proj-filelist li a:visited { 
   color: black;
 }
 
