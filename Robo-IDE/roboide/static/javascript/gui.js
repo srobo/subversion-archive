@@ -10,7 +10,7 @@ files : comma seperated list of open files*/
 
 team = 0; /*The current team number*/
 
-project = "lollypop";
+project = "";
 
 LEVEL_INFO = 0;
 LEVEL_OK = 1;
