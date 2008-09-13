@@ -113,38 +113,6 @@ MochiKit.DOM.addLoadEvent( function() {
 		});
 });
 
-function chooseteam(results) {
-	if (results["teams"].length == 0) {
-		alert("No teams registered.");
-		return;
-	}
-
-	if (results["teams"].length == 1){
-		loadteamdata(results["teams"][0]);
-		return;
-	}
-
-	teams = results["teams"].join(", ")	//was '\n', but that doesn't work well in IE, also this gives a smaller box overall
-
-	while (1) {
-		var n = prompt("Please choose a team number from the following:\n" + teams);
-		if (n == null)	//so that the cancel button works, not sure how this will impact the team selection yet.
-			return;
-		else {
-			for (x in results["teams"])
-			{
-				if(results["teams"][x] == n)
-				{
-					loadteamdata(n);
-					return;
-				}
-			}
-			alert("Invalid team.");
-		}
-	}
-
-}
-
 function loadteamdata(t) {
 	team = t;
 	//Grab a file list
@@ -860,7 +828,6 @@ function gotLogin(foo) {
 }
 
 function startLogin(username, password) {
-	
 	var d = MochiKit.Async.loadJSONDoc("./verifylogin", {"usr" : username, "pwd" : password});
 
 	var gotMetadata = function (meta) {
