@@ -753,7 +753,7 @@ function setStatus(str)
 function status_hide() {
     MochiKit.Style.setStyle( "status-span", {"display":"none"} );
 
-    s = MochiKit.DOM.getElement("status");
+    var s = MochiKit.DOM.getElement("status");
     s.className = "";
 }
 
@@ -775,10 +775,10 @@ function status_msg( message, level ) {
 
 // Replace the status bar's content with the given DOM object
 function status_rich_show( obj, level ) {
-    s = MochiKit.DOM.getElement("status");
+    var s = MochiKit.DOM.getElement("status");
 
-    o = MochiKit.DOM.createDOM( "SPAN", { "id" : "status-span",
-					  "display" : "" }, obj );
+    var o = MochiKit.DOM.createDOM( "SPAN", { "id" : "status-span",
+					      "display" : "" }, obj );
     MochiKit.DOM.replaceChildNodes( "status", o );
 
     switch(level) {
@@ -824,10 +824,10 @@ function status_click() {
 //      btext: The button text
 //      bfunc: The function to call when the button is clicked.
 function status_button( message, level, btext, bfunc ) {
-    b = MochiKit.DOM.createDOM( "A", { "href" : "#" }, btext );
+    var b = MochiKit.DOM.createDOM( "A", { "href" : "#" }, btext );
     MochiKit.Signal.connect( b, "onclick", bfunc );
 
-    m = [ message, " -- ", b ]
+    var m = [ message, " -- ", b ]
 
     return status_msg( m, level );
 }
