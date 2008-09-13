@@ -1012,8 +1012,6 @@ function projpage_flist_onclick(ev) {
 		MochiKit.DOM.toggleElementClass( "selected", ev.src() );
 }
 
-//Tab related scripts
-
 //class defines a single Tab within the Tab Bar
 function Tab(ttl, fname, Tbar) {
 	this.title = ttl;
@@ -1021,12 +1019,12 @@ function Tab(ttl, fname, Tbar) {
 	this.status = 1;		//modified/foreground/background
 
 	this.draw = function(Tbar) {		
-		var myLink = MochiKit.DOM.A({"href" : this.filename });
+		var myLink = MochiKit.DOM.A({"href" : "#"});
 		myLink.innerHTML = this.title;
 		var myList = MochiKit.DOM.LI(null, "");
-
 		MochiKit.DOM.appendChildNodes(myList, myLink);		
 		MochiKit.DOM.appendChildNodes(Tbar, myList);
+		MochiKit.Signal.connect(myList, 'onclick', function() { alert("click") });
 		return myList;
 	}
 	
@@ -1038,7 +1036,7 @@ function Tab(ttl, fname, Tbar) {
 }
 
 //Tab manager instigates creation  and deletion of tabs
-function TabManager() {
+tab_manager =  new function() {
 	this.NoOfTabs = 0;
 	this.TabList = new Array();
 	this.TabBar = MochiKit.DOM.getElement("tab-list");
@@ -1061,4 +1059,11 @@ function TabManager() {
 			}
 		}
 	}
-}
+	
+	this.closeAll = function() {
+		for (i = 0; i < this.TabList.length; i++) {
+			this.TabList[i].close();
+		}	
+		this.init();
+	}
+}();
