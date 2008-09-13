@@ -102,6 +102,23 @@ MochiKit.DOM.addLoadEvent( function() {
 
 	cur_path = "";
 
+	//populate tabs
+	//Projects Tab
+	tab_manager.addTab({'isPerm' : true, 
+						'label' : 'Projects', 
+						'onClick' : function(){tabChange(1)} });
+	//Login Tab
+	tab_manager.addTab({'isPerm' : true, 
+						'label' : 'Login', 
+						'onClick' : function(){tabChange(2)} });
+	//+New Tab
+	tab_manager.addTab({'isPerm' : true, 
+						'label' : '+ New +', 
+						'onClick' : function(){
+							tab_manager.addTab({'isPerm' : false, 
+							'label' : 'new.py', 
+							'onClick' : null})}
+						 });
 	//Initialise the editarea component.
 // 	editAreaLoader.init({
 // 		id : "codebox",
@@ -842,7 +859,7 @@ function startLogin(username, password) {
 }
 
 //class defines a single Tab within the Tab Bar
-function Tab(Tbar, args = {'isPerm' : false})
+function Tab(Tbar, args){
 	this.properties = args;
 
 	//{'label' : string, 		the text visible in the tab
