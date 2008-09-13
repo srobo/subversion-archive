@@ -111,14 +111,6 @@ MochiKit.DOM.addLoadEvent( function() {
 		allow_resize : "no",
 		replace_tab_by_spaces : 4
 		});
-
-	//Show the blank tab
-	showtab("", true);
-
-	var d = MochiKit.Async.loadJSONDoc("./teams");
-	d.addCallback(chooseteam);
-	d.addErrback("Error connecting to studentrobotics.org. Please refresh.");
-
 });
 
 function chooseteam(results) {
