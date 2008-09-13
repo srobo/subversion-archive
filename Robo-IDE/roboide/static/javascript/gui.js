@@ -108,6 +108,7 @@ MochiKit.DOM.addLoadEvent( function() {
 	var d = MochiKit.Async.loadJSONDoc("./teams");
 	d.addCallback(chooseteam);
 	d.addErrback("Error connecting to studentrobotics.org. Please refresh.");
+
 });
 
 function chooseteam(results) {
@@ -779,5 +780,58 @@ function status_show( message, level ) {
 }
 
 function status_click() {
-    status_hide();
+    //status_hide();
+	status_show("message", LEVEL_OK);
 }
+
+// ****Login Screen****
+
+function tabChange(num) {
+
+		switch(num) {
+			case 0:
+				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
+				MochiKit.Style.setStyle('projpage', {'display':'none'});
+				MochiKit.Style.setStyle('grey-out', {'display':'none'});
+				break;
+			case 1:
+				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
+				MochiKit.Style.setStyle('projpage', {'display':'block'});
+				MochiKit.Style.setStyle('grey-out', {'display':'none'});
+				break;
+			case 2:
+				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
+				MochiKit.Style.setStyle('projpage', {'display':'none'});
+				MochiKit.Style.setStyle('grey-out', {'display':'block'});
+				break;
+			case 3:
+				MochiKit.Style.setStyle('edit-mode', {'display':'block'});
+				MochiKit.Style.setStyle('projpage', {'display':'none'});
+				MochiKit.Style.setStyle('grey-out', {'display':'none'});
+				break;
+		}
+}
+MochiKit.DOM.addLoadEvent(tabChange(0));
+
+function gotLogin(foo) {
+	alert("success");
+}
+
+function startLogin(username, password) {
+	
+	var d = MochiKit.Async.loadJSONDoc("./verifylogin", {"usr" : username, "pwd" : password});
+
+	var gotMetadata = function (meta) {
+	    if (MochiKit.Async.VALID == 1) {
+		  alert("Logged In");
+	    } else {
+		  alert("Logged Out");
+	    }
+	};
+	
+	d.addCallback(gotFileList);
+	d.addErrback(function (){
+		alert("Error connecting to studentrobotics.org. Please refresh.");
+		});
+}
+

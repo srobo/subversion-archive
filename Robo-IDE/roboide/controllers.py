@@ -91,10 +91,15 @@ class Feed(FeedController):
 class Root(controllers.RootController):
 
     #feed = Feed()
-
+ #   verifylogin = login.verifylogin(self, {"team" : 1})
     @expose("json")
     def teams(self):
         return {"teams" : user.getteams()}
+
+#chris edits
+    @expose("json")
+    def verifylogin(self, usr="",pwd=""):
+        return {"login" : 1, "usr=" : usr, "pwd=" : pwd, "valid" : 1}
 
     @expose()
     def index(self):

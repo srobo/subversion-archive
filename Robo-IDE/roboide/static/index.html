@@ -2,16 +2,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<! -- Style Sheets -->
 <link rel="stylesheet" href="./static/css/newstyle.css" type="text/css"/>
+<link rel="stylesheet" href="./static/css/editmode.css" type="text/css"/>
+<link rel="stylesheet" href="./static/css/projpage.css" type="text/css"/>
+<! -- Javascript Source Files -->
 <script type="text/javascript">MochiKit = {__export__: false};</script>
 <script src="./static/javascript/edit_area/edit_area_loader.js" type="text/javascript"></script>
 <script src="./static/javascript/MochiKit.js" type="text/javascript"></script>
-
 <script src="./static/javascript/gui.js" type="text/javascript"></script>
-
 <title>Robotics IDE</title>
 </head>
 <body>
+<div id="grey-out">
+	<!-- This will produce the greyed out background for login/filename prompts -->
+	<div id="popup">	
+		<strong>Student Robotics IDE Login:</strong>
+		<em>You must be logged in to use the IDE</em>
+		<form name="login" class="login" method="POST" action="" onSubmit="startLogin()">
+			<input type="text" name="username"  value="username"/>	
+			<input type="password" name="password" />
+			<a href="#" onClick="startLogin(document.login.username.value, document.login.password.value)" class="button" >Log In</a>
+			<br /><a href="#" onClick="tabChange(1)" >&raquo; Forgotten password</a>
+		</form>
+	</div>	
+</div>
 <div id="top">
 
 <ul id="topleft">
@@ -28,15 +43,15 @@
 
 <div id="tabs">
   <ul>
-    <li><a href="#">Projects</a></li>
-    <li><a href="#">bees.py</a></li>
-    <li><a href="#">mangos.py</a></li>
+    <li><a href="#" onClick="tabChange(1)">Projects</a></li>
+    <li><a href="#" onClick="tabChange(2)">Login Tab</a></li>
+    <li><a href="#" onClick="tabChange(3)">Edit Mode</a></li>
     <li><a href="#">robot.py</a></li>
   </ul>
 </div>
 
 <div id="status" onclick="status_click();">
-  <span id="status-span"></span>
+  <span id="status-span">status</span>
 </div>
 
 <div id="page">
@@ -44,7 +59,7 @@
 	<div id="edit-mode">
 		<div id="filemenu">
 			<ul>
-				<li><button>Save</button></li>
+				<li><button id="savefile">Save</button></li>
 				<li><button>Check Syntax</button></li>
 				<li><div class="filename">Competition/linefollower.py</li>
 				<li class= "file-history">
@@ -118,6 +133,14 @@
 </div>
 
 </div>
+<script type="text/javascript" >
+function myLoadFunction()
+{
+    MochiKit.Visual.roundElement('popup', {corners: "all"});
+};
 
+MochiKit.DOM.addLoadEvent(myLoadFunction);
+</script>
 </body>
+
 </html>
