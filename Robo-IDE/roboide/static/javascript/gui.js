@@ -19,6 +19,9 @@ LEVEL_ERROR = 2;
 log = MochiKit.Logging.log
 logDebug = MochiKit.Logging.logDebug
 
+// Number that's incremented every time a new status message is displayed
+status_num = 0;
+
 function polled()
 {
 	/*Polling makes sure we're up to date with others changes.
@@ -767,7 +770,7 @@ function status_msg( message, level ) {
 	break;
     }
 
-    status_rich_show( message, level );
+    return status_rich_show( message, level );
 }
 
 // Replace the status bar's content with the given DOM object
@@ -794,6 +797,20 @@ function status_rich_show( obj, level ) {
     // Give it a shake if it's not OK
     if( level > LEVEL_OK )
 	MochiKit.Visual.shake(s);
+
+    status_num ++;
+    var close_f = function() {
+	status_close(status_num);
+	return 1;
+    }
+
+    return { "close": close_f };
+}
+
+// Hide the status if message id is still displayed
+function status_close(id) {
+    if( status_num == id )
+	status_hide();
 }
 
 function status_click() {
@@ -812,7 +829,7 @@ function status_button( message, level, btext, bfunc ) {
 
     m = [ message, " -- ", b ]
 
-    status_msg( m, level );
+    return status_msg( m, level );
 }
 
 // ****Login Screen****
