@@ -765,10 +765,7 @@ function status_rich_show( obj, level ) {
 	MochiKit.Visual.shake(s);
 
     status_num ++;
-    var close_f = function() {
-	status_close(status_num);
-	return 1;
-    }
+    var close_f = MochiKit.Base.partial( status_close, status_num );
 
     return { "close": close_f };
 }
