@@ -872,6 +872,7 @@ function projpage_show() {
     projpage_flist();
 }
 
+// Request and update the project file listing
 function projpage_flist() {
 
     var d = MochiKit.Async.loadJSONDoc("./filelist", {team : 1});
@@ -886,7 +887,50 @@ function projpage_flist() {
 
 function projpage_flist_received(nodes) {
     log( "filelist received" );
-    
-    
-    
+
+    MochiKit.DOM.swapDOM( "proj-filelist",
+			  MochiKit.DOM.UL( { "id" : "proj-filelist" },
+					   map_1( projpage_flist_dir, 0, nodes["tree"]["children"] ) ) );
+
+    return 0;
 }
+
+function map_1( func, arg, arr ) {
+    
+    var a = function( item ) {
+	return func( item, arg );
+    }
+
+    return MochiKit.Base.map( a, arr );
+}
+
+// Produce an object consisted of "level" levels of nested divs
+// the final div contains the DOM object inner 
+function projpage_flist_nested_divs( level, inner ) {
+    if (level == 0)
+	return inner;
+
+    if (level > 1)
+	return MochiKit.DOM.DIV( null, projpage_flist_nested_divs( level-1, inner ) );
+    
+    return MochiKit.DOM.DIV( null, inner );
+}
+
+// Returns a DOM object for the given node 
+function projpage_flist_dir( node, level ) {
+    logDebug( "node: " + node.name );
+
+    // Assemble the link with divs in it
+    var link = MochiKit.DOM.A( { "href" : "#" },
+				projpage_flist_nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
+
+    if( node.kind == "FILE" ) {
+	var n = MochiKit.DOM.LI( null, link );
+	return n;
+    } else
+	var n = MochiKit.DOM.LI( null, [ link, 
+	    				 MochiKit.DOM.UL( { "class" : "flist-l" }, 
+					 map_1( projpage_flist_dir, level + 1, node["children"] ) ) ] );
+    return n;
+}
+

@@ -532,7 +532,7 @@ class Root(controllers.RootController):
         files = client.list(client.REPO, recurse=True)
         
         #Start off with a directory to represent the root of the path
-        head = dict(name="HEAD",path="/",kind="FOLDER",children={})
+        head = dict(name="/",path="/",kind="FOLDER",children={})
 
         #Go through each file, creating appropriate directories and files
         #In a tree structure based around dictionaries
@@ -588,3 +588,7 @@ class Root(controllers.RootController):
             return tree
         
         return dict(children=[dicttolist(head)])
+
+	expose("json")
+	def verifylogin(self, user):
+		return {login : 1}
