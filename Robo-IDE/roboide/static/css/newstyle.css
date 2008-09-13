@@ -106,12 +106,9 @@ body {
       width: 100%;
 }
 
-#projpage { 
-  width: 100%;
+#projpage, #edit-mode { 
   display: none;
 }
-
-#edit-mode {  display:block;  }
 
 /* CSS for edit-mode should be place in css/editmode.css */
 /* CSS for file-mode should be place in css/filemode.css */
