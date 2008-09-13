@@ -864,10 +864,9 @@ function Tab(ttl, fname, Tbar) {
 }
 
 //Tab manager instigates creation  and deletion of tabs
-tab_manager =  new function() {
+var tab_manager = new function () {
 	this.NoOfTabs = 0;
 	this.TabList = new Array();
-	this.TabBar = MochiKit.DOM.getElement("tab-list");
 
 	this.init = function() {
 		this.TabList = new Array();
@@ -875,7 +874,9 @@ tab_manager =  new function() {
 	}
 	
 	this.addTab = function(title, filename) {
-		this.TabList[this.TabList.length] = new Tab(title, filename, this.TabBar)		
+		this.TabList[this.TabList.length] = new Tab(title, 
+							    filename, 
+							    MochiKit.DOM.getElement("tab-list"));
 	}
 
 	this.closeTab = function(tname) {
