@@ -14,6 +14,11 @@ LEVEL_OK = 0;
 LEVEL_WARN = 1;
 LEVEL_ERROR = 2;
 
+// Make logging statements easier!
+// Messages sent to these go to the firebug console
+log = MochiKit.Logging.log
+logDebug = MochiKit.Logging.logDebug
+
 function polled()
 {
 	/*Polling makes sure we're up to date with others changes.
