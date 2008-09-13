@@ -621,8 +621,3 @@ class Root(controllers.RootController):
                 projects.append(name)
 
         return dict( projects = projects )
-
-
-	expose("json")
-	def verifylogin(self, user):
-		return {login : 1}
