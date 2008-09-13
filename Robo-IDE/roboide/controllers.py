@@ -17,6 +17,9 @@ log = logging.getLogger("roboide.controllers")
 
 ZIPNAME = "robot.zip"
 SYSFILES = "/srv/sysfiles"
+USERNAME = "face"		# hardcoded for dev purposes only
+PASSWORD = "face"		#
+
 
 class Client:
     """
@@ -99,7 +102,10 @@ class Root(controllers.RootController):
 #chris edits
     @expose("json")
     def verifylogin(self, usr="",pwd=""):
-        return {"login" : 1, "usr=" : usr, "pwd=" : pwd, "valid" : 1}
+		if (usr == USERNAME) and (pwd == PASSWORD): 
+			return {"login" : 1}
+		else:
+			return {"login" : 0}
 
     @expose()
     def index(self):
