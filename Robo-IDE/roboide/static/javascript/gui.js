@@ -923,6 +923,7 @@ function projpage_flist_dir( node, level ) {
     // Assemble the link with divs in it
     var link = MochiKit.DOM.A( { "href" : "#" },
 				projpage_flist_nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
+    MochiKit.Signal.connect( link, "onclick", projpage_flist_onclick );
 
     if( node.kind == "FILE" ) {
 	var n = MochiKit.DOM.LI( null, link );
@@ -934,3 +935,13 @@ function projpage_flist_dir( node, level ) {
     return n;
 }
 
+// The onclick event for the filelist items
+function projpage_flist_onclick(ev) {
+    // Prevent the browser doing something when someone clicks on this
+    ev.preventDefault();
+    ev.stopPropagation();
+ 
+    mods = ev.modifier();
+    if( mods["ctrl"] )
+	MochiKit.DOM.toggleElementClass( "selected", ev.src() );
+}
