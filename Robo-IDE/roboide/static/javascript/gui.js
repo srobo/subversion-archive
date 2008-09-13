@@ -831,10 +831,10 @@ function startLogin(username, password) {
 	var d = MochiKit.Async.loadJSONDoc("./verifylogin", {"usr" : username, "pwd" : password});
 
 	var gotMetadata = function (meta) {
-	    if (MochiKit.Async.VALID == 1) {
-		  alert("Logged In");
+	    if (meta.login == 1) {
+		  tabChange(1);
 	    } else {
-		  alert("Logged Out");
+		  MochiKit.DOM.getElement("login-feedback").innerHTML = "Incorrect Username / Password";
 	    }
 	};
 }
