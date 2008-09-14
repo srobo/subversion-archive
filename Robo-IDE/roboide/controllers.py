@@ -616,7 +616,7 @@ class Root(controllers.RootController):
 
         for details in [x[0] for x in dirs]:
             name = os.path.basename( details["repos_path"] )
-            if name != "":
+            if name != "" and details["kind"] == pysvn.node_kind.dir:
                 projects.append(name)
 
         return dict( projects = projects )
