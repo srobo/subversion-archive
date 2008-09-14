@@ -103,16 +103,17 @@ MochiKit.DOM.addLoadEvent( function() {
 	//populate tabs
 	//Projects Tab
 	tab_manager.addTab({'isPerm' : true, 
-						'label' : 'Projects', 
-						'onClick' : function(){
-										projpage.show();
-										MochiKit.Style.setStyle('edit-mode', {'display':'none'});
-										} });
+			    'label' : 'Projects', 
+			    'onClick' : function() {
+				    projpage.show();
+				    MochiKit.Style.setStyle('edit-mode', {'display':'none'});
+			    } });
 
 	//+New Tab
 	tab_manager.addTab({'isPerm' : true, 
-						'label' : '+ New +', 
-						'onClick' : openNewTab});
+			    'label' : '+ New +', 
+			    'onClick' : openNewTab});
+
 	//Open project Tab
 	tab_manager.changeTab("Projects");
 	//Initialise the editarea component.
