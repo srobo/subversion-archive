@@ -98,6 +98,7 @@ MochiKit.DOM.addLoadEvent( function() {
 						 "system" : true};
 
 	cur_path = "";
+	projpage = new ProjPage();
 
 	//populate tabs
 	//Projects Tab
