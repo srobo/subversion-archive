@@ -17,11 +17,6 @@ LEVEL_OK = 1;
 LEVEL_WARN = 2;
 LEVEL_ERROR = 3;
 
-// Make logging statements easier!
-// Messages sent to these go to the firebug console
-log = MochiKit.Logging.log
-logDebug = MochiKit.Logging.logDebug
-
 // Number that's incremented every time a new status message is displayed
 status_num = 0;
 
