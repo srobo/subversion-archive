@@ -183,8 +183,10 @@ ProjFileList.prototype._nested_divs = function( level, inner ) {
 // Returns a DOM object for the given node 
 ProjFileList.prototype._dir = function( node, level ) {
 	// Assemble the link with divs in it
-	var link = MochiKit.DOM.A( { "href" : "#" },
-		this._nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
+	var link = MochiKit.DOM.A( { "href" : "#",
+				     "ide_path" : node.path,
+				     "ide_kind" : node.kind },
+				   this._nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
 	MochiKit.Signal.connect( link, "onclick", bind( this._onclick, this ) );
 	
 	if( node.kind == "FILE" ) {
@@ -206,5 +208,22 @@ ProjFileList.prototype._onclick = function(ev) {
 	mods = ev.modifier();
 	if( mods["ctrl"] )
 		MochiKit.DOM.toggleElementClass( "selected", ev.src() );
+	else {
+		src = ev.src();
+		kind = getNodeAttribute( src, "ide_kind" );
+		path = getNodeAttribute( src, "ide_path" );
+
+		if( kind == "FOLDER" ) {
+			// Get a handler on its children
+			dir_contents = getFirstElementByTagAndClassName( "UL", null, src.parentNode ); 
+
+			display = "";
+			if( getStyle( dir_contents, "display" ) != "none" )
+				display = "none";
+
+			setStyle( dir_contents, {"display" : display} );
+		}
+
+	}
 }
 
