@@ -1,103 +1,102 @@
 // ***** The Project Page *****
 var proj_ps_prompt = null;
 
-var projpage = new function() {
+function ProjPage() {
 	this._initted = false;
+}
 
-	// Initialise the project page -- but don't show it
-	this._init = function() {
-		if( this._initted )
-			return;
-		
-		MochiKit.Signal.connect( "project-select", "onchange", this._list_changed );
-		this._initted = true;
-	}
+// Initialise the project page -- but don't show it
+ProjPage.prototype._init = function() {
+	if( this._initted )
+		return;
+	
+	MochiKit.Signal.connect( "project-select", "onchange", this._list_changed );
+	this._initted = true;
+}
 
-	this.show = function() {
-		this._init();
-
-		// Hide the right-hand whilst the file list is loading
-		this.rpane_hide();
-
-		// If we have a project setup
-		if (project != "")
-			projpage_flist();
-
-		// Load/refresh the projects list
-		this._populate_list();
-
-		MochiKit.Style.setStyle('projects-page', {'display':'block'});
-	}
-
-	this.hide = function() {
-		MochiKit.Style.setStyle('projects-page', {'display':'none'});
-	}
-
-	// Change project
-	this.change_project = function(proj) {
-		project = proj;
-
+ProjPage.prototype.show = function() {
+	this._init();
+	
+	// Hide the right-hand whilst the file list is loading
+	this.rpane_hide();
+	
+	// If we have a project setup
+	if (project != "")
 		projpage_flist();
-	}
+	
+	// Load/refresh the projects list
+	this._populate_list();
+	
+	MochiKit.Style.setStyle('projects-page', {'display':'block'});
+}
 
-	// Retrieves a list of projects and populates the project selection list
-	this._populate_list = function() {
-		var d = MochiKit.Async.loadJSONDoc("./projlist", {team : team});
+ProjPage.prototype.hide = function() {
+	MochiKit.Style.setStyle('projects-page', {'display':'none'});
+}
+
+// Change project
+ProjPage.prototype.change_project = function(proj) {
+	project = proj;
+	
+	projpage_flist();
+}
+
+// Retrieves a list of projects and populates the project selection list
+ProjPage.prototype._populate_list = function() {
+	var d = MochiKit.Async.loadJSONDoc("./projlist", {team : team});
+	
+	d.addCallback( function(resp) {
+		var items = [];
 		
-		d.addCallback( function(resp) {
-			var items = [];
-
-			if( project == "" )
-				items.unshift( MochiKit.DOM.OPTION( { "id" : "projlist-tmpitem" }, "Select a project." ) );
-
-			for( var p in resp["projects"] ) {
-				var pname = resp["projects"][p];
-				var props = {};
-
-				if( pname == project )
-					props["selected"] = "selected";
-				items[items.length] = ( MochiKit.DOM.OPTION( props, resp["projects"][p] ) );
-			}
+		if( project == "" )
+			items.unshift( MochiKit.DOM.OPTION( { "id" : "projlist-tmpitem" }, "Select a project." ) );
+		
+		for( var p in resp["projects"] ) {
+			var pname = resp["projects"][p];
+			var props = {};
 			
-			MochiKit.DOM.replaceChildNodes( "project-select", items );
-			
-			if( project == "" )
-				proj_ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
-		} );
+			if( pname == project )
+				props["selected"] = "selected";
+			items[items.length] = ( MochiKit.DOM.OPTION( props, resp["projects"][p] ) );
+		}
+		
+		MochiKit.DOM.replaceChildNodes( "project-select", items );
+		
+		if( project == "" )
+			proj_ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
+	} );
+	
+	d.addErrback( function() {
+		status_button( "Error retrieving the project list", LEVEL_ERROR,
+			       "retry", this._populate_list );
+	} );
+}
 
-		d.addErrback( function() {
-			status_button( "Error retrieving the project list", LEVEL_ERROR,
-				       "retry", this._populate_list );
-		} );
-	}
+ProjPage.prototype._list_changed = function(ev) {
+	proj_ps_prompt.close();
+	
+	var src = ev.src();
+	
+	// Remove the "select a project" item from the list
+	var tmp = MochiKit.DOM.getElement( "projlist-tmpitem" );
+	if( tmp != null && src != tmp )
+		MochiKit.DOM.removeElement( tmp );
+	
+	projpage.change_project(ev.src().value);
+}
 
-	this._list_changed = function(ev) {
-		proj_ps_prompt.close();
+// ***** Project Page Right Hand pane *****
+ProjPage.prototype.rpane_hide = function() {
+	map_1( MochiKit.Style.setStyle,
+	       {'display':'none'},
+	       ["proj-rpane-header", "proj-filelist"] );
+}
 
-		var src = ev.src();
-
-		// Remove the "select a project" item from the list
-		var tmp = MochiKit.DOM.getElement( "projlist-tmpitem" );
-		if( tmp != null && src != tmp )
-			MochiKit.DOM.removeElement( tmp );
-
-		projpage.change_project(ev.src().value);
-	}
-
-	// ***** Project Page Right Hand pane *****
-	this.rpane_hide = function() {
-		map_1( MochiKit.Style.setStyle,
-		       {'display':'none'},
-		       ["proj-rpane-header", "proj-filelist"] );
-	}
-
-	this.rpane_show = function() {
-		map_1( MochiKit.Style.setStyle, 
-		       {'display':''},
-		       ["proj-rpane-header", "proj-filelist"] );
-	}
-
-} ();
+ProjPage.prototype.rpane_show = function() {
+	map_1( MochiKit.Style.setStyle, 
+	       {'display':''},
+	       ["proj-rpane-header", "proj-filelist"] );
+}
 
 // ***** Project Page File Listing *****
 // Request and update the project file listing

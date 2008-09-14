@@ -25,6 +25,8 @@ logDebug = MochiKit.Logging.logDebug
 // Number that's incremented every time a new status message is displayed
 status_num = 0;
 
+var projpage;
+
 function polled()
 {
 	/*Polling makes sure we're up to date with others changes.
