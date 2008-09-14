@@ -142,8 +142,8 @@ function ProjFileList() {
 
 // Request and update the project file listing
 ProjFileList.prototype.update = function() {
-	var d = MochiKit.Async.loadJSONDoc("./filelist", {team : 1,
-		rootpath : project});
+	var d = MochiKit.Async.loadJSONDoc("./filelist", {team : team,
+							  rootpath : project});
 	
 	d.addCallback( bind( this._received, this ) );
 	
@@ -153,6 +153,7 @@ ProjFileList.prototype.update = function() {
 	}, this ) );
 }
 
+// Handler for receiving the file list 
 ProjFileList.prototype._received = function(nodes) {
 	log( "filelist received" );
 	
