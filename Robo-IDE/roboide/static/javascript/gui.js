@@ -17,6 +17,8 @@ LEVEL_OK = 1;
 LEVEL_WARN = 2;
 LEVEL_ERROR = 3;
 
+TABLIST = new Array();
+
 // Number that's incremented every time a new status message is displayed
 status_num = 0;
 
@@ -102,30 +104,28 @@ MochiKit.DOM.addLoadEvent( function() {
 
 	//populate tabs
 	//Projects Tab
-	tab_manager.addTab({'isPerm' : true, 
-			    'label' : 'Projects', 
-			    'onClick' : function() {
-				    projpage.show();
-				    MochiKit.Style.setStyle('edit-mode', {'display':'none'});
-			    } });
+	TABLIST.push(new Tab($("tab-list"), {'isPerm' : true, 
+										'label' : 'Projects', 
+										'onclick' : function(){
+														projpage.show();
+														MochiKit.Style.setStyle('edit-mode', {'display':'none'});
+													} }));	
+
 
 	//+New Tab
-	tab_manager.addTab({'isPerm' : true, 
-			    'label' : '+ New +', 
-			    'onClick' : openNewTab});
+	TABLIST.push(new Tab($("tab-list"), {'isPerm' : true, 
+										'label' : '+ New +', 
+										'onclick' : bind("openNewTab", self)}));
 
-	//Open project Tab
-	tab_manager.changeTab("Projects");
-	//Initialise the editarea component.
-// 	editAreaLoader.init({
-// 		id : "codebox",
-// 		syntax : "python",
-// 		language : "en",
-// 		start_highlight : true,
-// 		allow_toggle : false,
-// 		allow_resize : "no",
-// 		replace_tab_by_spaces : 4
-// 		});
+ 	editAreaLoader.init({
+ 		id : "codebox",
+ 		syntax : "python",
+ 		language : "en",
+ 		start_highlight : true,
+ 		allow_toggle : false,
+ 		allow_resize : "no",
+ 		replace_tab_by_spaces : 4
+ 		});
 });
 
 function loadteamdata(t) {
