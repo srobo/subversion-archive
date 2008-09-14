@@ -81,7 +81,10 @@ var tab_manager = new function () {
 	this.changeTab = function(tab){
 		if(tab == "Projects") { 
 			MochiKit.Style.setStyle('edit-mode', {'display':'none'});
-			projpage.show()
+			projpage.show();}
+		else{
+			MochiKit.Style.setStyle('edit-mode', {'display':'block'});
+			projpage.hide();}
 		for (i = 0; i < this.TabList.length; i++) {						
 			if(this.TabList[i].properties.label == tab) {
 				this.TabList[i].hasFocus(true);
