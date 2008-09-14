@@ -70,6 +70,13 @@ body {
 #tabs ul li{
 	display: inline;
 }
+
+#tabs li a.focus{
+	background-color:#ffffff;
+}
+#tabs li a.nofocus{
+	background-color:#DFDBD8;
+}
 #tabs li a{
 	padding: 0.2em 1em 0.2em 1em;
 	margin-right: 0.2em;
@@ -81,9 +88,9 @@ body {
 }
 #tabs li a:hover { 
 	background-color: #253571;
-	color:#ffffff;
-	
+	color:#ffffff;	
 }
+
 
 #status{	
 	margin-left: auto;	
