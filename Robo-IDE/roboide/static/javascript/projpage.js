@@ -1,8 +1,26 @@
 // The project page
 function ProjPage() {
+	// Whether _init has run
 	this._initted = false;
+	// The prompt 
 	this._ps_prompt = null;
+
 	this.flist = null;
+
+	// Member functions (declared below)
+	// Public:
+	//  - show: Show and activate the projects page
+	//  - hide: Hide the project page
+	//  - change_project: Change to the named project
+	//  - 
+	// Private:
+	//  - _init: Initialises members of the project page
+	//  - _populate_list: Retries the list of projects from the server
+	//                    and populates it
+	//  - _list_changed: Event handler for when the project list selection is 
+	//                   changed 
+	//  - _rpane_show: Show the right-hand pane
+	//  - _rpane_hide: Hide the right-hand pane
 }
 
 // Initialise the project page -- but don't show it
@@ -20,7 +38,7 @@ ProjPage.prototype.show = function() {
 	this._init();
 	
 	// Hide the right-hand whilst the file list is loading
-	this.rpane_hide();
+	this._rpane_hide();
 	
 	// If we have a project setup
 	if (project != "")
@@ -89,13 +107,13 @@ ProjPage.prototype._list_changed = function(ev) {
 }
 
 // ***** Project Page Right Hand pane *****
-ProjPage.prototype.rpane_hide = function() {
+ProjPage.prototype._rpane_hide = function() {
 	map_1( MochiKit.Style.setStyle,
 	       {'display':'none'},
 	       ["proj-rpane-header", "proj-filelist"] );
 }
 
-ProjPage.prototype.rpane_show = function() {
+ProjPage.prototype._rpane_show = function() {
 	map_1( MochiKit.Style.setStyle, 
 	       {'display':''},
 	       ["proj-rpane-header", "proj-filelist"] );
@@ -112,7 +130,14 @@ function map_1( func, arg, arr ) {
 
 // Project page file list
 function ProjFileList() {
-	
+	// Member functions:
+	// Public:
+	//  - update: Update the file list
+	// Private:
+	//  - _received: handler for receiving the file list
+	//  - _nested_divs: Returns N nested divs.
+	//  - _dir: Returns the DOM object for a directory entry
+	//  - _onclick: The onclick handler for a line in the listing
 }
 
 // Request and update the project file listing
@@ -138,7 +163,7 @@ ProjFileList.prototype._received = function(nodes) {
 	
 	MochiKit.DOM.getElement( "proj-name" ).innerHTML = "Project " + project;
 	
-	projpage.rpane_show();
+	projpage._rpane_show();
 }
 
 
