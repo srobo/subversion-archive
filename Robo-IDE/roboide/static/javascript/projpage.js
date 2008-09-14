@@ -1,8 +1,8 @@
-// ***** The Project Page *****
-var proj_ps_prompt = null;
-
+// The project page
 function ProjPage() {
 	this._initted = false;
+
+	this._ps_prompt = null;
 }
 
 // Initialise the project page -- but don't show it
@@ -45,7 +45,7 @@ ProjPage.prototype.change_project = function(proj) {
 ProjPage.prototype._populate_list = function() {
 	var d = MochiKit.Async.loadJSONDoc("./projlist", {team : team});
 	
-	d.addCallback( function(resp) {
+	d.addCallback( bind( function(resp) {
 		var items = [];
 		
 		if( project == "" )
@@ -63,17 +63,18 @@ ProjPage.prototype._populate_list = function() {
 		MochiKit.DOM.replaceChildNodes( "project-select", items );
 		
 		if( project == "" )
-			proj_ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
-	} );
+			this._ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
+	}, this ) );
 	
-	d.addErrback( function() {
+	d.addErrback( bind( function() {
 		status_button( "Error retrieving the project list", LEVEL_ERROR,
 			       "retry", bind( this._populate_list, this) );
-	} );
+	}, this ) );
 }
 
 ProjPage.prototype._list_changed = function(ev) {
-	proj_ps_prompt.close();
+	if( this._ps_prompt != null )
+		this._ps_prompt.close();
 	
 	var src = ev.src();
 	
@@ -106,10 +107,10 @@ ProjPage.prototype._flist = function() {
 	
 	d.addCallback( bind( this._flist_received, this ) );
 	
-	d.addErrback(function (){
+	d.addErrback( bind( function (){
 		status_button( "Error getting the file list", LEVEL_ERROR,
 			       "retry", bind( this._flist, this ) );
-	});
+	}, this ) );
 }
 
 ProjPage.prototype._flist_received = function(nodes) {
