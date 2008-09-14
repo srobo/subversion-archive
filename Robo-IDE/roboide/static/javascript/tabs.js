@@ -30,9 +30,7 @@ function Tab(Tbar, args){
 		var myList = MochiKit.DOM.LI(null, "");
 		MochiKit.DOM.appendChildNodes(myList, this.linkHandle);		
 		MochiKit.DOM.appendChildNodes(Tbar, myList);
-		MochiKit.Signal.connect(myList, 'onclick', this.properties.onClick);
-		
-		MochiKit.Do		
+		MochiKit.Signal.connect(myList, 'onclick', this.properties.onClick);	
 
 		return myList;
 	}
@@ -81,7 +79,10 @@ var tab_manager = new function () {
 	}
 	
 	this.changeTab = function(tab){
-		for (i = 0; i < this.TabList.length; i++) {
+		if(tab == "Projects") { 
+			MochiKit.Style.setStyle('edit-mode', {'display':'none'});
+			projpage.show()
+		for (i = 0; i < this.TabList.length; i++) {						
 			if(this.TabList[i].properties.label == tab) {
 				this.TabList[i].hasFocus(true);
 			}
