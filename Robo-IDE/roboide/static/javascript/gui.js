@@ -812,32 +812,35 @@ function status_button( message, level, btext, bfunc ) {
 
 // ****Login Screen****
 
+TAB_NONE = 0;
+TAB_PROJECTS = 1;
+TAB_LOGIN = 2;
+TAB_EDIT = 3;
 function tabChange(num) {
 
 		switch(num) {
-			case 0:
+			case TAB_NONE:
 				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
 				projpage.hide();
 				MochiKit.Style.setStyle('grey-out', {'display':'none'});
 				break;
-			case 1:
+			case TAB_PROJECTS:
 				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
 				MochiKit.Style.setStyle('grey-out', {'display':'none'});
 		    		projpage.show();
 				break;
-			case 2:
+			case TAB_LOGIN:
 				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
 				projpage.hide();
 				MochiKit.Style.setStyle('grey-out', {'display':'block'});
 				break;
-			case 3:
+			case TAB_EDIT:
 				MochiKit.Style.setStyle('edit-mode', {'display':'block'});
 				projpage.hide();
 				MochiKit.Style.setStyle('grey-out', {'display':'none'});
 				break;
 		}
 }
-//MochiKit.DOM.addLoadEvent(tabChange(0));
 
 function startLogin(username, password) {
 	var d = MochiKit.Async.loadJSONDoc("./verifylogin", {"usr" : username, "pwd" : password});
