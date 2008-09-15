@@ -7,3 +7,5 @@ __connection__ = hub
 # class YourDataClass(SQLObject):
 #     pass
 
+class TeamNames(SQLObject):
+    name = StringCol()

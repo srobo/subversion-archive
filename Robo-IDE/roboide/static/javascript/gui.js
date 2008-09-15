@@ -22,7 +22,10 @@ TABLIST = new Array();
 // Number that's incremented every time a new status message is displayed
 status_num = 0;
 
+// The project page
 var projpage;
+// The user
+var user;
 
 function polled()
 {
@@ -78,32 +81,27 @@ function pollAction(result)
 MochiKit.DOM.addLoadEvent( function() {
 	//On page load - this replaces a onload action of the body tag
 	//Hook up the save file button
-	//MochiKit.Signal.connect('savefile','onclick', saveFile);
 	MochiKit.Signal.connect(window, 'onbeforeunload', beforeunload);
 
-	//Create an emptyish tab
-	open_files[""] = {"revision" : "0",
-					  "name" : "New",
-					  "tabdata" : "",
-					  "dirty" : false,
-					  "editedfilename" : "",
-					  "changed" : false,
-					  "system" : true};
-
-	//Create a tab for the Log
-	open_files["Log"] = {"revision" : "0",
-						 "name" : "Log",
-						 "tabdata" : "",
-						 "dirty" : false,
-						 "editedfilename" : "",
-						 "changed" : false,
-						 "system" : true};
-
 	cur_path = "";
-	projpage = new ProjPage();
 
-
+	user = new User();
+	var d = user.load_info();
+	// Wait for the user information to come back
+	d.addCallback( start_interface );
+	d.addErrback( function() { window.alert("Failed to get user info: TODO: replace this message mechanism"); } );
 });
+
+function start_interface() {
+	// Got the user information
+	teamlist_update();
+
+	projpage = new ProjPage();
+}
+
+function teamlist_update() {
+	
+}
 
 function beforeunload(e) {
 	savecurrenttab();
@@ -323,3 +321,36 @@ function startLogin(username, password) {
 	d.addCallbacks(gotMetadata, failMetadata);
 }
 
+// The user 
+function User() {
+	// List of team numbers
+	this.teams = null;
+	// Dictionary of team names (team number => name) 
+	this.team_names = null;
+
+	this._info_deferred = null;
+
+	this.load_info = function() {
+		// Return a deferred that fires when the data's ready
+		var retd = new Deferred();
+		var d = loadJSONDoc("./userinfo");
+		
+		d.addCallback( bind( this._got_info, this ) );
+
+		// Pass on the failure -- our caller is more qualified to handle it  
+		d.addErrback( bind( retd.errback, retd ) );
+
+		this._info_deferred = retd;
+		return this._info_deferred;
+	}
+
+	this._got_info = function( info ) {
+		this.team_names = info["teams"];
+
+		this.teams = [];
+		for( var team_num in info["teams"] )
+			this.teams.push( parseInt(team_num, 10) );
+
+ 		this._info_deferred.callback(null);
+	}
+};

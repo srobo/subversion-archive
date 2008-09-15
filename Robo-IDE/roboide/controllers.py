@@ -1,6 +1,6 @@
 from turbogears import controllers, expose, config
 from turbogears.feed import FeedController
-import cherrypy
+import cherrypy, model
 import logging
 import pysvn
 import time, datetime
@@ -96,8 +96,16 @@ class Root(controllers.RootController):
     #feed = Feed()
 
     @expose("json")
-    def teams(self):
-        return {"teams" : user.getteams()}
+    def userinfo(self):
+        """Returns a variety of information about the user
+        outputs:
+          - teams: dict mapping team numbers to team names."""
+        teams = {}
+        for team in user.getteams():
+            teams[team] = model.TeamNames.get(team).name
+
+        return {"teams" : teams}
+
 
     @expose("json")
     def verifylogin(self, usr="",pwd=""):
