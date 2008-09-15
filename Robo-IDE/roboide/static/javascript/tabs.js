@@ -40,7 +40,7 @@ function Tab(Tbar, args){
 		//make tab content visible (if editable)
 		editAreaLoader.show(this.textbox.id);
 		//display filepath
-		$("tab-filename").innerHTML = this.properties.project+" :: "+this.properties.filepath;
+		$("tab-filename").innerHTML = this.properties.project+" :: "+this.properties.fpath;
 		//connect up tab specific events
 		MochiKit.Signal.connect($("close-edit-area"), 'onclick', this, 'close');
 		MochiKit.Signal.connect($("check-syntax"), 'onclick', this, 'checkSyntax');
@@ -54,9 +54,9 @@ function Tab(Tbar, args){
 		//make tab content invisible (if editable)
 		editAreaLoader.hide(this.textbox.id);
 		//clear tab-specific events		
-		disconnectAll($("close-edit-area"));
-		disconnectAll($("check-syntax"));
-		disconnectAll($("savefile"));
+		disconnectAllTo($("close-edit-area"));
+		disconnectAllTo($("check-syntax"));
+		disconnectAllTo($("savefile"));
 		//change tab color
 		MochiKit.DOM.setElementClass(this.tabHandle.getElementsByTagName("a")[0], "nofocus")
 		this.properties.focus	=  false;
