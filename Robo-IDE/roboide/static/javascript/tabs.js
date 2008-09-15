@@ -3,27 +3,30 @@ function openNewTab(){
 	var newTabName = 'New'+Math.round((Math.random()*100))+'.py';
 	TABLIST.push(new Tab($("tab-list"), {'isPerm' : false, 
 										'label' : newTabName, 
-										'onclick' : null}))
+										'onclick' : null,
+										'fpath' : "",
+										'project' : ""}))
 }
 
 
 //class defines a single Tab within the Tab Bar
 function Tab(Tbar, args){
 	this.properties = args;
-	this.tabHandle = null;
-	this.properties.focus = true;
-	this.textbox = null;
+	this.tabHandle = null;		
+	this.properties.focus = true;	
+	this.textbox = null;		
 
-	//{'label' : string, 				the text visible in the tab
-	// 'project' : project name			the project to which the file in tab belongs
+	//{'label' : string, 			the text visible in the tab
+	// 'fpath' : string,			full filepath + filename 
+	// 'project' : project name,		the project to which the file in tab belongs
 	// 'onclick' : function object, 	the function called when tab is clicked
-	// 'isPerm' : bool					if true, tab cannot be removed - i.e. Project tab must always be visible
+	// 'isPerm' : bool,					if true, tab cannot be removed - i.e. Project tab must always be visible
 	// 'focus' : bool}					if true, tab is on top	
 
 	this.gainFocus = function() {
 		//make tab content visible (if editable)
 		if(!this.properties.isPerm) { 
-			setStyle($("frame_"+this.textbox.id), {'display' : 'inline'});
+			editAreaLoader.show(this.textbox.id);
 			setStyle($("edit-mode"), {'display' : 'block' });	//make sure we are in edit mode
 		}
 		//make tab content visible (if editable)
@@ -36,7 +39,7 @@ function Tab(Tbar, args){
 	this.loseFocus = function() {
 		//make tab content invisible (if editable)
 		if(!this.properties.isPerm) { 
-			setStyle($("frame_"+this.textbox.id), {'display' : 'none'});
+			editAreaLoader.hide(this.textbox.id);
 		}
 		MochiKit.DOM.setElementClass(this.tabHandle.getElementsByTagName("a")[0], "nofocus")
 		this.properties.focus	=  false;
@@ -71,6 +74,47 @@ function Tab(Tbar, args){
 	// Following line necessary to remove inline style attributes added by Visual effects
 	this.removeStyle = function() { (this.tabHandle.getElementsByTagName("a")[0]).removeAttribute("style"); }
 
+	this.checkSyntax = function() {
+		status_msg("Checking syntax...", LEVEL_WARN);
+	}
+
+	this.saveTab = function(){
+		if(this.properties.project == "" || this.properties.fpath == "") {
+			//we have a new file
+			//call to save file
+			this.properties.project = window.prompt("project name:");
+			this.properties.fpath = window.prompt("file path:")
+		}
+		status_msg("file saved:\n"+this.properties.project+"\n"+this.properties.fpath, LEVEL_OK);
+	}
+
+	this.close = function() {
+		//confirm close
+		if(!window.confirm("Confirm Close Tab"))
+			{ return; }
+		//check file for modification		
+		if(1){
+			//file has been modified	
+			//warn user about close 
+			if(!window.confirm("File Modified! Close without save?")) 
+			{ return; }		//user cancels close
+			else{
+				//do save routine
+				this.saveTab();
+			}
+		}
+		//close 
+		MochiKit.DOM.removeElement(this.tabHandle);			
+		editAreaLoader.delete_instance(this.textbox.id);
+		MochiKit.DOM.removeElement(this.textbox);
+		//clear all events
+		disconnectAll($("close-edit-area"));
+		disconnectAll($("check-syntax"));
+		disconnectAll($("savefile"));
+		//remove obsolete DOM objects
+		disconnectAll(this.textbox);
+
+	}
 		
 	this.open = function(Tbar) {	
 		var linkHandle = MochiKit.DOM.A({"href" : "#", "class" : "focus"}); 	
@@ -97,7 +141,7 @@ function Tab(Tbar, args){
 			eaId = (new Date()).getTime();
 			this.textbox = MochiKit.DOM.TEXTAREA({'id' : eaId});
 			// add code
-			this.textbox.value = "import * string";
+			this.textbox.value = "";	//clear text box
 			MochiKit.DOM.appendChildNodes($("edit-mode"), this.textbox);
 			//initialize new instance of editArea			
 			editAreaLoader.init({
@@ -112,6 +156,11 @@ function Tab(Tbar, args){
 				min_width:600,
 				min_height:400
 	 		});
+
+			//connect up file menu callbacks			
+			MochiKit.Signal.connect($("close-edit-area"), 'onclick', this, 'close');
+			MochiKit.Signal.connect($("check-syntax"), 'onclick', this, 'checkSyntax');
+			MochiKit.Signal.connect($("save-file"), 'onclick', this, 'saveTab');
 			//get focus on the new tab
 			this.hideAllButThis();
 			this.flash();
@@ -120,10 +169,7 @@ function Tab(Tbar, args){
 	}
 	
 	this.open(Tbar);	
-
-	this.close = function() {
-		MochiKit.DOM.removeElement(this.tabHandle);
-	}
 	
 }
+
 

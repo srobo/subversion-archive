@@ -78,7 +78,7 @@ function pollAction(result)
 MochiKit.DOM.addLoadEvent( function() {
 	//On page load - this replaces a onload action of the body tag
 	//Hook up the save file button
-	MochiKit.Signal.connect('savefile','onclick', saveFile);
+	//MochiKit.Signal.connect('savefile','onclick', saveFile);
 	MochiKit.Signal.connect(window, 'onbeforeunload', beforeunload);
 
 	//Create an emptyish tab

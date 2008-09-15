@@ -175,4 +175,7 @@ a.button:hover{
 	background-color: #ffffff;
 
 }
-#edit-mode { 	text-align: center;}
+#edit-mode { 	
+	text-align: center;
+	display: none;
+}
