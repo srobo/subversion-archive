@@ -117,15 +117,6 @@ MochiKit.DOM.addLoadEvent( function() {
 										'label' : '+ New +', 
 										'onclick' : bind("openNewTab", self)}));
 
- 	editAreaLoader.init({
- 		id : "codebox",
- 		syntax : "python",
- 		language : "en",
- 		start_highlight : true,
- 		allow_toggle : false,
- 		allow_resize : "no",
- 		replace_tab_by_spaces : 4
- 		});
 });
 
 function loadteamdata(t) {
