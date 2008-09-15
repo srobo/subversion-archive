@@ -129,82 +129,6 @@ function beforeunload(e) {
 	}
 }
 
-function updatefilelist() {
-	/*Called to update the file list
-		inputs: None
-		returns: None, but adds a callback to gotFileList
-*/
-	var d = MochiKit.Async.loadJSONDoc("./filelist", {team : team});
-	d.addCallback(gotFileList);
-	d.addErrback(function (){
-		alert("Error connecting to studentrobotics.org. Please refresh.");
-		});
-
-}
-
-function gotFileList(nodes){
-	/*List of files to display returned. Build up a DOM model of
-	  the file list for the file tree, then connect signals to the
-	  directory checkboxes
-		inputs: A dictionary with keys as dirnames and values as
-		lists of files (or directories) in that dir. Subdirs are in
-		turn dictionaries.
-		returns: Nothing*/
-
-	MochiKit.DOM.replaceChildNodes("filelist", buildFileList(nodes["children"]));
-
-	//Get all the checkboxes next to directory names
-	var checkboxes = MochiKit.DOM.getElementsByTagAndClassName("input",
-			"dir_check");
-
-	//Go through each of the checkboxes, hooking up a signal.
-	//click_dir gets passed an object containing all sorts of info
-	//about the click
-	MochiKit.Iter.forEach(MochiKit.Iter.iter(checkboxes),
-			function (a) {
-				MochiKit.Signal.connect(a, "onclick", click_dir);
-			});
-}
-
-function buildFileList(nodes){
-	/*Builds up a DOM of a tree of files.
-		inputs: A tree of directories and files
-		returns: A DOM tree*/
-	//Create an unlinked list and fill it with entries
-	return MochiKit.DOM.UL({"class" : "links"},
-			MochiKit.Base.map(buildFileListEntry, nodes));
-}
-
-function buildFileListEntry(node){
-	/*Create an entry in an unordered list to display a file.
-		inputs: a dictionary describing a file or directory
-		returns: a DOM object to show that file or directory*/
-
-	if (node.kind == "FILE"){
-		var contents = MochiKit.DOM.DIV({"class" : "list_row",
-										 "id" : "lr" + node.path},
-				MochiKit.DOM.SPAN({"class" : "list_box"},
-					MochiKit.DOM.INPUT({"class" : "file_check",
-										"type" : "checkbox",
-										"name" : node.path})),
-				MochiKit.DOM.SPAN({"class" : "list_label"},
-					MochiKit.DOM.A({"href" : "javascript:loadFile('" + node.path
-						+ "')"}, node.name)));
-	}else{
-		//As for a file, but without the anchor and with a sub list!
-		//The sublist is a UL element created by buildFileList
-		//mmm... recursion...
-		var contents = new Array(MochiKit.DOM.DIV({"class" : "list_row"},
-				MochiKit.DOM.SPAN({"class" : "list_box"},
-					MochiKit.DOM.INPUT({"class" : "dir_check",
-										"type" : "checkbox",
-										"name" : node.path})),
-				MochiKit.DOM.SPAN({"class" : "list_label"}, node.name)), buildFileList(node.children));
-
-	}
-	return MochiKit.DOM.LI({"class" : "list_row"}, contents);
-}
-
 function Left(str, n){
 	/*Get the left n characters of a string
 		inputs: str - String of data
@@ -654,51 +578,6 @@ function gotFile(result) {
 	getLog(result["path"]);
 	//Load the current script up
 	showtab(result["path"]);
-}
-
-//FILE HISTORY DISPLAY AND PICKING
-function getLog(file) {
-	if(file == "")
-		return;
-	var args = {"file" : file, "team" : team};
-	var d = MochiKit.Async.loadJSONDoc("./gethistory", args);
-	d.addCallback(gotLog);
-	d.addErrback(function (){
-		alert("Error connecting to studentrobotics.org. Please refresh.");
-		});
-
-}
-
-function returnSelect(data, currev) {
-	return MochiKit.DOM.createDOM("OPTION",
-			(data["rev"] == currev) ? {"value" : data["rev"],"selected" : "selected"} : {"value" : data["rev"]},
-			"Rev: " + data["rev"] + ", Author: " + data["author"] + ", Date: " +
-	data["date"]);
-}
-
-function gotLog(result) {
-	fortab = result["path"];
-
-	rs = function(a) {
-			return returnSelect(a, open_files[fortab]["revision"]);
-		 };
-
-	historyselect = MochiKit.DOM.createDOM("SELECT", {'id':'logselect'},
-		MochiKit.Base.map(rs, result["history"]));
-	open_files[fortab]["history"] = historyselect;
-	MochiKit.DOM.replaceChildNodes("file_log", historyselect);
-}
-
-function loadHistory() {
-	loadFile(cur_path, document.getElementById('logselect').value);	//MochiKit.DOM.getNodeAttribute("logselect", "value"));
-}
-
-//MISC
-
-function setStatus(str)
-{
-	MochiKit.DOM.getElement("status_block").innerHTML = str;
-
 }
 
 // **** Status Bar ****
