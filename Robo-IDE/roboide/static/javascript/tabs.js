@@ -51,6 +51,17 @@ function Tab(Tbar, args){
 			else{ TABLIST[i].loseFocus(); }
 		}	
 	}
+
+	this.flash = function() {
+		Highlight(this.tabHandle.getElementsByTagName("a")[0], 
+				{ 'startcolor' : '#ffff31',
+				  'endcolor' : this.tabHandle.getElementsByTagName("a")[0].style.backgroundColor,
+				'afterFinish' : bind("removeStyle", this)
+				});
+	}
+	// Following line necessary to remove inline style attributes added by Visual effects
+	this.removeStyle = function() { (this.tabHandle.getElementsByTagName("a")[0]).removeAttribute("style"); }
+
 		
 	this.open = function(Tbar) {	
 		var linkHandle = MochiKit.DOM.A({"href" : "#", "class" : "focus"}); 	
@@ -92,6 +103,7 @@ function Tab(Tbar, args){
 	 		});
 			//get focus on the new tab
 			this.hideAllButThis();
+			this.flash();
 		}
 		return this;
 	}
@@ -102,14 +114,5 @@ function Tab(Tbar, args){
 		MochiKit.DOM.removeElement(this.tabHandle);
 	}
 	
-	this.flash = function() {
-		Highlight(this.tabHandle.getElementsByTagName("a")[0], 
-				{ 'startcolor' : '#ffff31',
-				  'endcolor' : this.tabHandle.getElementsByTagName("a")[0].style.backgroundColor,
-				'afterFinish' : bind("removeStyle", this)
-				});
-	}
-	// Following line necessary to remove inline style attributes added by Visual effects
-	this.removeStyle = function() { (this.tabHandle.getElementsByTagName("a")[0]).removeAttribute("style"); }
 }
 

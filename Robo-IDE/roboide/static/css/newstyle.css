@@ -71,21 +71,17 @@ body {
 	display: inline;
 }
 
-#tabs li a.focus{
-	background-color:#ffffff;
-}
-#tabs li a.nofocus{
-	background-color:#DFDBD8;
-}
-#tabs li a{
+#tabs li a {
 	padding: 0.2em 1em 0.2em 1em;
 	margin-right: 0.2em;
 	font-weight: bold;
 	text-decoration: none;
 	border: 1px solid #ffffff;
-	background-color: #DFDBD8;
 	color: #253571;
 }
+#tabs li a.focus { 	background-color: #ffffff; }
+#tabs li a.nofocus { background-color: #DFDBD8; }
+
 #tabs li a:hover { 
 	background-color: #253571;
 	color:#ffffff;	
@@ -114,7 +110,7 @@ body {
       width: 100%;
 }
 
-#projpage, #edit-mode { 
+#projpage { 
   display: none;
 }
 
@@ -179,3 +175,4 @@ a.button:hover{
 	background-color: #ffffff;
 
 }
+#edit-mode { z-index: 100; }
