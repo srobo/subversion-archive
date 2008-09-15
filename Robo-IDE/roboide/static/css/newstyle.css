@@ -111,7 +111,7 @@ body {
       width: 100%;
 }
 
-#projpage { 
+#projects-page, #edit-mode { 
   display: none;
 }
 
