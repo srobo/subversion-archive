@@ -102,20 +102,6 @@ MochiKit.DOM.addLoadEvent( function() {
 	cur_path = "";
 	projpage = new ProjPage();
 
-	//populate tabs
-	//Projects Tab
-	TABLIST.push(new Tab($("tab-list"), {'isPerm' : true, 
-										'label' : 'Projects', 
-										'onclick' : function(){
-														projpage.show();
-														MochiKit.Style.setStyle('edit-mode', {'display':'none'});
-													} }));	
-
-
-	//+New Tab
-	TABLIST.push(new Tab($("tab-list"), {'isPerm' : true, 
-										'label' : '+ New +', 
-										'onclick' : bind("openNewTab", self)}));
 
 });
 

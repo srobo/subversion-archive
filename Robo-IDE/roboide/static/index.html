@@ -44,6 +44,12 @@
 
 <div id="tabs">
   <ul id="tab-list">
+	<li>
+		<a class="nofocus" onClick="hideAllTabs(); setStyle($('edit-mode'), {'display' : 'none'}); projpage.show();">Projects</a>
+	</li>
+	<li>
+		<a class="nofocus" onClick="openNewTab()" >+ New +</a>
+	</li>
   </ul>
 </div>
 
@@ -59,7 +65,7 @@
 				<li><button id="save-file" >Save</button></li>
 				<li><button id="check-syntax">Check Syntax</button></li>
 				<li><button id="close-edit-area">Close</button></li>
-				<li><div class="filename">Competition/linefollower.py</li>
+				<li><div id="tab-filename">Competition/linefollower.py</li>
 				<li class= "file-history">
 				<select name="history">
 					<option name="v1">Rev:1; Author: Chriseee; Log: Stuff</option>

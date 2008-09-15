@@ -8,6 +8,21 @@ function openNewTab(){
 										'project' : ""}))
 }
 
+function switchToEdit() { 
+	if( getStyle($("edit-mode"), "display") == "none" )
+	{
+		projpage.hide();
+		setStyle($("edit-mode"), {"display" : "block"});
+	}
+}
+
+function hideAllTabs() {
+	for(var i = 0; i < TABLIST.length; i++) {
+		if(TABLIST[i].properties.focus) {
+			TABLIST[i].loseFocus();
+		}
+	}
+}
 
 //class defines a single Tab within the Tab Bar
 function Tab(Tbar, args){
@@ -19,18 +34,17 @@ function Tab(Tbar, args){
 	//{'label' : string, 			the text visible in the tab
 	// 'fpath' : string,			full filepath + filename 
 	// 'project' : project name,		the project to which the file in tab belongs
-	// 'onclick' : function object, 	the function called when tab is clicked
-	// 'isPerm' : bool,					if true, tab cannot be removed - i.e. Project tab must always be visible
-	// 'focus' : bool}					if true, tab is on top	
+	// 'focus' : bool}					if true, tab has focus	
 
 	this.gainFocus = function() {
 		//make tab content visible (if editable)
-		if(!this.properties.isPerm) { 
-			editAreaLoader.show(this.textbox.id);
-			setStyle($("edit-mode"), {'display' : 'block' });	//make sure we are in edit mode
-		}
-		//make tab content visible (if editable)
-	
+		editAreaLoader.show(this.textbox.id);
+		//display filepath
+		$("tab-filename").innerHTML = this.properties.project+" :: "+this.properties.filepath;
+		//connect up tab specific events
+		MochiKit.Signal.connect($("close-edit-area"), 'onclick', this, 'close');
+		MochiKit.Signal.connect($("check-syntax"), 'onclick', this, 'checkSyntax');
+		MochiKit.Signal.connect($("save-file"), 'onclick', this, 'saveTab');		
 		//change tab color
 		MochiKit.DOM.setElementClass(this.tabHandle.getElementsByTagName("a")[0], "focus")
 		this.properties.focus	=  true;
@@ -38,30 +52,32 @@ function Tab(Tbar, args){
 
 	this.loseFocus = function() {
 		//make tab content invisible (if editable)
-		if(!this.properties.isPerm) { 
-			editAreaLoader.hide(this.textbox.id);
-		}
+		editAreaLoader.hide(this.textbox.id);
+		//clear tab-specific events		
+		disconnectAll($("close-edit-area"));
+		disconnectAll($("check-syntax"));
+		disconnectAll($("savefile"));
+		//change tab color
 		MochiKit.DOM.setElementClass(this.tabHandle.getElementsByTagName("a")[0], "nofocus")
 		this.properties.focus	=  false;
 	}
 
-	this.hideAllButThis = function() {
-		for(var i = 0; i< TABLIST.length; i++) {
-			if(!TABLIST[i].properties.isPerm){
-				if(TABLIST[i].textbox.id != this.textbox.id) {TABLIST[i].loseFocus();}
-				else{ TABLIST[i].gainFocus(); }
+ 	this.hideAllButThis = function() {
+		//if already have focus, just switch to edit mode
+		if(this.properties.focus) {
+			switchToEdit();
+			return;
+		}
+		//find current tab with focus
+		var i = 0;
+		while(i < TABLIST.length) {
+			if( TABLIST[i].properties.focus ) {
+			TABLIST[i].loseFocus();
 			}
-			else{ TABLIST[i].loseFocus(); }
-		}	
-		
-		if(!this.properties.isPerm){ 
-			setStyle($("edit-mode"), {'display' : 'block' });	//make sure we are in edit mode
-			projpage.hide();
+			i++;
 		}
-		else{ 
-			setStyle($("edit-mode"), {'display' : 'none' }); 	//make sure we aren't in edit mode
-			projpage.show();
-		}
+		switchToEdit();
+		this.gainFocus();
 	}
 
 	this.flash = function() {
@@ -117,54 +133,42 @@ function Tab(Tbar, args){
 	}
 		
 	this.open = function(Tbar) {	
-		var linkHandle = MochiKit.DOM.A({"href" : "#", "class" : "focus"}); 	
+		this.properties.focus = false;
+		var linkHandle = MochiKit.DOM.A("class", "nofocus"); 	
 		linkHandle.innerHTML = this.properties.label;
 		this.tabHandle = MochiKit.DOM.LI(null, "");
 		MochiKit.DOM.appendChildNodes(this.tabHandle, linkHandle);		
 		MochiKit.DOM.appendChildNodes(Tbar, this.tabHandle);
-		
-		//if onclick event supplied, add to tab
-		if(this.properties.onclick) {
-			MochiKit.Signal.connect(this.tabHandle, 'onclick', this.properties.onclick);	
-		}
-		//else add default (editable tab)
-		else {
-			//default action is to gain focus of selected tab
-			MochiKit.Signal.connect(this.tabHandle, 'onclick', this, 'hideAllButThis');
-		}
-		//now open a new edit area (if is editable tab)
-		if(this.properties.isPerm != true) {
-			//hide project page and show editarea
-			projpage.hide()
-			setStyle($("edit-mode"), {'display' : 'block' });
-			//unique id for codebox div
-			eaId = (new Date()).getTime();
-			this.textbox = MochiKit.DOM.TEXTAREA({'id' : eaId});
-			// add code
-			this.textbox.value = "";	//clear text box
-			MochiKit.DOM.appendChildNodes($("edit-mode"), this.textbox);
-			//initialize new instance of editArea			
-			editAreaLoader.init({
-		 		id : eaId,
-		 		syntax : "python",
-		 		language : "en",
-		 		start_highlight : true,
-		 		allow_toggle : false,
-		 		allow_resize : "no",
-				display : 'onload',
-		 		replace_tab_by_spaces : 4,
-				min_width:600,
-				min_height:400
-	 		});
 
-			//connect up file menu callbacks			
-			MochiKit.Signal.connect($("close-edit-area"), 'onclick', this, 'close');
-			MochiKit.Signal.connect($("check-syntax"), 'onclick', this, 'checkSyntax');
-			MochiKit.Signal.connect($("save-file"), 'onclick', this, 'saveTab');
-			//get focus on the new tab
-			this.hideAllButThis();
-			this.flash();
-		}
+		//default action is to gain focus of selected tab
+		MochiKit.Signal.connect(this.tabHandle, 'onclick', this, 'hideAllButThis');
+
+		//now open a new edit area (if is editable tab)
+
+		//unique id for codebox div
+		eaId = (new Date()).getTime();
+		this.textbox = MochiKit.DOM.TEXTAREA({'id' : eaId});
+		// add code
+		this.textbox.value = "";	//clear text box
+		MochiKit.DOM.appendChildNodes($("edit-mode"), this.textbox);
+		//initialize new instance of editArea			
+		editAreaLoader.init({
+	 		id : eaId,
+	 		syntax : "python",
+	 		language : "en",
+	 		start_highlight : true,
+	 		allow_toggle : false,
+	 		allow_resize : "no",
+			display : 'onload',
+	 		replace_tab_by_spaces : 4,
+			min_width:600,
+			min_height:400
+ 		});
+
+		//get focus on the new tab
+		this.hideAllButThis();
+		this.flash();
+
 		return this;
 	}
 	

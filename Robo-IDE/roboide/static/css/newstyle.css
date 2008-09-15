@@ -69,6 +69,7 @@ body {
 
 #tabs ul li{
 	display: inline;
+	cursor: hand;
 }
 
 #tabs li a {
