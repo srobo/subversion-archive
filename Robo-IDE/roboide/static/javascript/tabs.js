@@ -50,6 +50,15 @@ function Tab(Tbar, args){
 			}
 			else{ TABLIST[i].loseFocus(); }
 		}	
+		
+		if(!this.properties.isPerm){ 
+			setStyle($("edit-mode"), {'display' : 'block' });	//make sure we are in edit mode
+			projpage.hide();
+		}
+		else{ 
+			setStyle($("edit-mode"), {'display' : 'none' }); 	//make sure we aren't in edit mode
+			projpage.show();
+		}
 	}
 
 	this.flash = function() {
