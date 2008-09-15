@@ -15,7 +15,13 @@ function switchToEdit() {
 		setStyle($("edit-mode"), {"display" : "block"});
 	}
 }
-
+function switchToProj() { 
+	if( getStyle($("projects-page"), "display") == "none" )
+	{
+		setStyle($("edit-mode"), {"display" : "none"});
+		projpage.show();
+	}
+}
 function hideAllTabs() {
 	for(var i = 0; i < TABLIST.length; i++) {
 		if(TABLIST[i].properties.focus) {
@@ -29,7 +35,7 @@ function Tab(Tbar, args){
 	this.properties = args;
 	this.tabHandle = null;		
 	this.properties.focus = true;	
-	this.textbox = null;		
+	this.textbox = null;	
 
 	//{'label' : string, 			the text visible in the tab
 	// 'fpath' : string,			full filepath + filename 
@@ -41,6 +47,10 @@ function Tab(Tbar, args){
 		editAreaLoader.show(this.textbox.id);
 		//display filepath
 		$("tab-filename").innerHTML = this.properties.project+" :: "+this.properties.fpath;
+		//clear previously connected events	
+		disconnectAll($("close-edit-area"));
+		disconnectAll($("check-syntax"));
+		disconnectAll($("save-file"));
 		//connect up tab specific events
 		MochiKit.Signal.connect($("close-edit-area"), 'onclick', this, 'close');
 		MochiKit.Signal.connect($("check-syntax"), 'onclick', this, 'checkSyntax');
@@ -53,10 +63,6 @@ function Tab(Tbar, args){
 	this.loseFocus = function() {
 		//make tab content invisible (if editable)
 		editAreaLoader.hide(this.textbox.id);
-		//clear tab-specific events		
-		disconnectAllTo($("close-edit-area"));
-		disconnectAllTo($("check-syntax"));
-		disconnectAllTo($("savefile"));
 		//change tab color
 		MochiKit.DOM.setElementClass(this.tabHandle.getElementsByTagName("a")[0], "nofocus")
 		this.properties.focus	=  false;
@@ -99,37 +105,42 @@ function Tab(Tbar, args){
 			//we have a new file
 			//call to save file
 			this.properties.project = window.prompt("project name:");
-			this.properties.fpath = window.prompt("file path:")
+			this.properties.fpath = window.prompt("file path:");
 		}
 		status_msg("file saved:\n"+this.properties.project+"\n"+this.properties.fpath, LEVEL_OK);
 	}
 
 	this.close = function() {
-		//confirm close
-		if(!window.confirm("Confirm Close Tab"))
-			{ return; }
 		//check file for modification		
 		if(1){
 			//file has been modified	
 			//warn user about close 
-			if(!window.confirm("File Modified! Close without save?")) 
-			{ return; }		//user cancels close
-			else{
-				//do save routine
+			if(window.confirm("File Modified! Do you want to save?")) { 
 				this.saveTab();
 			}
 		}
 		//close 
+		//remove from global list
+		var i = 0;	
+		while(i < TABLIST.length) {
+			if( TABLIST[i].textbox.id == this.textbox.id ) {
+				TABLIST.splice(i, 1);
+			}
+			i++;
+		}
+		//garbage collection
 		MochiKit.DOM.removeElement(this.tabHandle);			
 		editAreaLoader.delete_instance(this.textbox.id);
 		MochiKit.DOM.removeElement(this.textbox);
 		//clear all events
 		disconnectAll($("close-edit-area"));
 		disconnectAll($("check-syntax"));
-		disconnectAll($("savefile"));
-		//remove obsolete DOM objects
-		disconnectAll(this.textbox);
-
+		disconnectAll($("save-file"));		
+		//self destruct 
+		delete this;
+		//display another tab ... or project menu
+		if(TABLIST.length > 0) { TABLIST[0].hideAllButThis(); }
+		else { switchToProj(); }
 	}
 		
 	this.open = function(Tbar) {	
