@@ -99,7 +99,9 @@ function Tab(Tbar, args){
 		 		allow_toggle : false,
 		 		allow_resize : "no",
 				display : 'onload',
-		 		replace_tab_by_spaces : 4
+		 		replace_tab_by_spaces : 4,
+				min_width:600,
+				min_height:400
 	 		});
 			//get focus on the new tab
 			this.hideAllButThis();
