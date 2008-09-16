@@ -22,7 +22,7 @@ TABLIST = new Array();
 status_num = 0;
 
 // The project page
-var projpage;
+var projpage = null;
 // The user
 var user;
 // The team selector
@@ -51,9 +51,13 @@ function load_team_info() {
 	team_selector.load(load_project_pane);
 }
 
-// 2) executed after team information has been acquired 
+// 2) executed after team information has been acquired/changed
 function load_project_pane() {
-	projpage = new ProjPage();
+	if( projpage != null )
+		projpage.destroy();
+	else
+		projpage = new ProjPage();
+
 	projpage.show();
 }
 
@@ -374,7 +378,6 @@ function pollAction(result)
 function TeamSelector() {
 	this._onSelected = null;
 	this._prompt = null;
-	this._change_count = 0;
 
 	this.load = function(onSelect) {
 		var teambox = [];
@@ -451,10 +454,6 @@ function TeamSelector() {
 	}
 	
 	this._selected = function(ev) {
-		this._change_count ++;
-		if( this._change_count > 1 )
-			window.alert( "WARNING: Changing team currently doesn't fully work... TODO!" );
-
 		if( this._prompt != null ) {
 			this._prompt.close();
 			this._prompt = null;

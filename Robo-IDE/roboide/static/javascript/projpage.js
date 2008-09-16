@@ -7,6 +7,10 @@ function ProjPage() {
 	// The projects
 	this._projects = null;
 
+	// The signals that we've set up for this object
+	// signals that are for DOM objects that weren't created in this instance
+	this._connections = [];
+
 	this.flist = null;
 	this.project = "";
 
@@ -15,7 +19,6 @@ function ProjPage() {
 	//  - show: Show and activate the projects page
 	//  - hide: Hide the project page
 	//  - change_project: Change to the named project
-	//  - 
 	// Private:
 	//  - _init: Initialises members of the project page
 	//  - _populate_list: Retries the list of projects from the server
@@ -33,13 +36,28 @@ ProjPage.prototype._init = function() {
 	if( this._initted )
 		return;
 
-	MochiKit.Signal.connect( "project-select", "onchange", bind(this._list_changed, this) );
+	this._connections.push( connect( "project-select", "onchange", bind(this._list_changed, this) ) );
 
 	this.flist = new ProjFileList();
 	this._initted = true;
 }
 
+ProjPage.prototype.destroy = function() {
+	logDebug( "ProjPage.destroy()" );
+	if( !this._initted )
+		return;
+	this._initted = false;
+	this.project = "";
+	this._ps_prompt = null;
+	this.flist = null;
+
+	// Disconnect all signals to static things
+	map( disconnect, this._connections );
+	this._connections = []
+}
+
 ProjPage.prototype.show = function() {
+	logDebug( "Projpage.show: Current project is \"" + this.project + "\"" );
 	this._init();
 	
 	// Hide the right-hand whilst the file list is loading
@@ -48,10 +66,6 @@ ProjPage.prototype.show = function() {
 	// Load/refresh the projects list
 	this._populate_list();
 
-	// If we have a project setup
-	if (this.project != "")
-		this.flist.update( this.project );
-	
 	MochiKit.Style.setStyle('projects-page', {'display':'block'});
 }
 
@@ -61,6 +75,10 @@ ProjPage.prototype.hide = function() {
 
 // Change project
 ProjPage.prototype.change_project = function(proj) {
+	if( !this._project_exists(proj) ) {
+		logDebug( "Change requested to non-existent project \"" + proj + "\"" );
+		return;
+	}
 	logDebug("Changing project to " + proj);
 	this.project = proj;
 	
@@ -79,10 +97,16 @@ ProjPage.prototype._populate_list = function() {
 	}, this ) );
 }
 
+// Called once we've received the project list
 ProjPage.prototype._got_list = function(resp) {
 	var items = [];
 	this._projects = resp["projects"];
-		
+
+	if( this._projects.length == 1 ) {
+		this.project = this._projects[0];
+		this.change_project( this.project );
+	}
+
 	if( !this._project_exists(this.project) ) {
 		var dp = user.get_setting( "project.last" );
 
@@ -90,10 +114,16 @@ ProjPage.prototype._got_list = function(resp) {
 		    && this._project_exists( dp ) )
 			this.change_project( dp );
 		else {
+			this.project = "";
 			this._ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
-			items.unshift( MochiKit.DOM.OPTION( { "id" : "projlist-tmpitem" }, "Select a project." ) );
+			items.unshift( MochiKit.DOM.OPTION( { "id" : "projlist-tmpitem", "selected" : "selected" }, "Select a project." ) );
 		}
 	}
+
+	if( this._project_exists(this.project) )
+		logDebug( "_got_list: Using project " + this.project );
+	else
+		logDebug( "No default project found -- requesting selection" );
 		
 	for( var p in resp["projects"] ) {
 		var pname = resp["projects"][p];
