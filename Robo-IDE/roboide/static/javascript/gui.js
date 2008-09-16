@@ -21,6 +21,8 @@ TABLIST = new Array();
 // Number that's incremented every time a new status message is displayed
 status_num = 0;
 
+// The tab bar
+var tabbar = null;
 // The project page
 var projpage = null;
 // The user
@@ -45,6 +47,10 @@ addLoadEvent( function() {
 
 // 1) executed after the onload function
 function load_team_info() {
+	if( tabbar == null )
+		tabbar = new TabBar();
+	tabbar.init();
+
 	// Got the user information -- now get team information
 	team_selector = new TeamSelector();
 

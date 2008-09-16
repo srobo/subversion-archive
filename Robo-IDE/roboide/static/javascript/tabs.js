@@ -1,3 +1,31 @@
+function TabBar() {
+	
+}
+
+TabBar.prototype.init = function() {
+	var items = [];
+	var t;
+
+	// Projects tab
+	t = A( null, "Projects" );
+	addElementClass( t, "nofocus" );
+	connect( t, "onclick",
+		 function() {
+			 hideAllTabs();
+			 switchToProj();
+		 } );
+	items.push( LI( null, t ) );
+
+	// New file tab
+	t = A( null, "+ New + " );
+	addElementClass( t, "nofocus" );
+	connect( t, "onclick", openNewTab );
+	items.push( LI( null, t ) );
+
+
+	replaceChildNodes( $("tab-list"), items );
+}
+
 //event handler for new file
 function openNewTab(){
 	var newTabName = 'New'+Math.round((Math.random()*100))+'.py';
