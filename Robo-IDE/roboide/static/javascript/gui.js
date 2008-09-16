@@ -432,7 +432,7 @@ function TeamSelector() {
 		var olist = [];
 
 		for( t in user.teams ) {
-			var props = {};
+			var props = { "value" : user.teams[t]};
 			if( user.teams[t] == team )
 				props["selected"] = "selected";
 			

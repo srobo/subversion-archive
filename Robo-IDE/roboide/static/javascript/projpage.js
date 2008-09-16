@@ -127,7 +127,7 @@ ProjPage.prototype._got_list = function(resp) {
 		
 	for( var p in resp["projects"] ) {
 		var pname = resp["projects"][p];
-		var props = {};
+		var props = { "value" : resp["projects"][p] };
 			
 		if( pname == this.project )
 			props["selected"] = "selected";
@@ -146,11 +146,14 @@ ProjPage.prototype._list_changed = function(ev) {
 	var src = ev.src();
 	
 	// Remove the "select a project" item from the list
-	var tmp = MochiKit.DOM.getElement( "projlist-tmpitem" );
+	var tmp = $("projlist-tmpitem");
 	if( tmp != null && src != tmp )
-		MochiKit.DOM.removeElement( tmp );
+		removeElement( tmp );
 	
-	projpage.change_project(ev.src().value);
+	if( src != tmp ) {
+		var proj = src.value;
+		projpage.change_project(proj);
+	}
 }
 
 // ***** Project Page Right Hand pane *****
