@@ -52,11 +52,11 @@ function Tab(Tbar, args){
 		disconnectAll($("check-syntax"));
 		disconnectAll($("save-file"));
 		//connect up tab specific events
-		MochiKit.Signal.connect($("close-edit-area"), 'onclick', this, 'close');
-		MochiKit.Signal.connect($("check-syntax"), 'onclick', this, 'checkSyntax');
-		MochiKit.Signal.connect($("save-file"), 'onclick', this, 'saveTab');		
+		connect($("close-edit-area"), 'onclick', this, 'close');
+		connect($("check-syntax"), 'onclick', this, 'checkSyntax');
+		connect($("save-file"), 'onclick', this, 'saveTab');		
 		//change tab color
-		MochiKit.DOM.setElementClass(this.tabHandle.getElementsByTagName("a")[0], "focus")
+		setElementClass(this.tabHandle.getElementsByTagName("a")[0], "focus")
 		this.properties.focus	=  true;
 	}
 
@@ -64,7 +64,7 @@ function Tab(Tbar, args){
 		//make tab content invisible (if editable)
 		editAreaLoader.hide(this.textbox.id);
 		//change tab color
-		MochiKit.DOM.setElementClass(this.tabHandle.getElementsByTagName("a")[0], "nofocus")
+		setElementClass(this.tabHandle.getElementsByTagName("a")[0], "nofocus")
 		this.properties.focus	=  false;
 	}
 
@@ -129,9 +129,9 @@ function Tab(Tbar, args){
 			i++;
 		}
 		//garbage collection
-		MochiKit.DOM.removeElement(this.tabHandle);			
+		removeElement(this.tabHandle);			
 		editAreaLoader.delete_instance(this.textbox.id);
-		MochiKit.DOM.removeElement(this.textbox);
+		removeElement(this.textbox);
 		//clear all events
 		disconnectAll($("close-edit-area"));
 		disconnectAll($("check-syntax"));
@@ -145,23 +145,23 @@ function Tab(Tbar, args){
 		
 	this.open = function(Tbar) {	
 		this.properties.focus = false;
-		var linkHandle = MochiKit.DOM.A("class", "nofocus"); 	
+		var linkHandle = A("class", "nofocus"); 	
 		linkHandle.innerHTML = this.properties.label;
-		this.tabHandle = MochiKit.DOM.LI(null, "");
-		MochiKit.DOM.appendChildNodes(this.tabHandle, linkHandle);		
-		MochiKit.DOM.appendChildNodes(Tbar, this.tabHandle);
+		this.tabHandle = LI(null, "");
+		appendChildNodes(this.tabHandle, linkHandle);		
+		appendChildNodes(Tbar, this.tabHandle);
 
 		//default action is to gain focus of selected tab
-		MochiKit.Signal.connect(this.tabHandle, 'onclick', this, 'hideAllButThis');
+		connect(this.tabHandle, 'onclick', this, 'hideAllButThis');
 
 		//now open a new edit area (if is editable tab)
 
 		//unique id for codebox div
 		eaId = (new Date()).getTime();
-		this.textbox = MochiKit.DOM.TEXTAREA({'id' : eaId});
+		this.textbox = TEXTAREA({'id' : eaId});
 		// add code
 		this.textbox.value = "";	//clear text box
-		MochiKit.DOM.appendChildNodes($("edit-mode"), this.textbox);
+		appendChildNodes($("edit-mode"), this.textbox);
 		//initialize new instance of editArea			
 		editAreaLoader.init({
 	 		id : eaId,

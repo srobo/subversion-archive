@@ -66,11 +66,11 @@ ProjPage.prototype.show = function() {
 	// Load/refresh the projects list
 	this._populate_list();
 
-	MochiKit.Style.setStyle('projects-page', {'display':'block'});
+	setStyle('projects-page', {'display':'block'});
 }
 
 ProjPage.prototype.hide = function() {
-	MochiKit.Style.setStyle('projects-page', {'display':'none'});
+	setStyle('projects-page', {'display':'none'});
 }
 
 // Change project
@@ -87,7 +87,7 @@ ProjPage.prototype.change_project = function(proj) {
 
 // Retrieves a list of projects and populates the project selection list
 ProjPage.prototype._populate_list = function() {
-	var d = MochiKit.Async.loadJSONDoc("./projlist", {team : team});
+	var d = loadJSONDoc("./projlist", {team : team});
 	
 	d.addCallback( bind( this._got_list, this ) );
 	
@@ -116,7 +116,8 @@ ProjPage.prototype._got_list = function(resp) {
 		else {
 			this.project = "";
 			this._ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
-			items.unshift( MochiKit.DOM.OPTION( { "id" : "projlist-tmpitem", "selected" : "selected" }, "Select a project." ) );
+			items.unshift( OPTION( { "id" : "projlist-tmpitem", 
+						 "selected" : "selected" }, "Select a project." ) );
 		}
 	}
 
@@ -131,10 +132,10 @@ ProjPage.prototype._got_list = function(resp) {
 			
 		if( pname == this.project )
 			props["selected"] = "selected";
-		items[items.length] = ( MochiKit.DOM.OPTION( props, resp["projects"][p] ) );
+		items[items.length] = ( OPTION( props, resp["projects"][p] ) );
 	}
 
-	MochiKit.DOM.replaceChildNodes( "project-select", items );
+	replaceChildNodes( "project-select", items );
 }
 
 ProjPage.prototype._list_changed = function(ev) {
@@ -158,13 +159,13 @@ ProjPage.prototype._list_changed = function(ev) {
 
 // ***** Project Page Right Hand pane *****
 ProjPage.prototype._rpane_hide = function() {
-	map_1( MochiKit.Style.setStyle,
+	map_1( setStyle,
 	       {'display':'none'},
 	       ["proj-rpane-header", "proj-filelist"] );
 }
 
 ProjPage.prototype._rpane_show = function() {
-	map_1( MochiKit.Style.setStyle, 
+	map_1( setStyle, 
 	       {'display':''},
 	       ["proj-rpane-header", "proj-filelist"] );
 }
@@ -184,7 +185,7 @@ function map_1( func, arg, arr ) {
 		return func( item, arg );
 	}
 	
-	return MochiKit.Base.map( a, arr );
+	return map( a, arr );
 }
 
 // Project page file list
@@ -202,8 +203,8 @@ function ProjFileList() {
 
 // Request and update the project file listing
 ProjFileList.prototype.update = function( pname ) {
-	var d = MochiKit.Async.loadJSONDoc("./filelist", {team : team,
-							  rootpath : pname});
+	var d = loadJSONDoc("./filelist", {team : team,
+					   rootpath : pname});
 	this._project = pname;
 	
 	d.addCallback( bind( this._received, this ) );
@@ -218,12 +219,12 @@ ProjFileList.prototype.update = function( pname ) {
 ProjFileList.prototype._received = function(nodes) {
 	log( "filelist received" );
 	
-	MochiKit.DOM.swapDOM( "proj-filelist",
-			      MochiKit.DOM.UL( { "id" : "proj-filelist",
-						 "style" : "display:none" },
-					       map_1( bind(this._dir, this), 0, nodes["tree"] ) ) );
+	swapDOM( "proj-filelist",
+		 UL( { "id" : "proj-filelist",
+		       "style" : "display:none" },
+		     map_1( bind(this._dir, this), 0, nodes["tree"] ) ) );
 	
-	MochiKit.DOM.getElement( "proj-name" ).innerHTML = "Project " + this._project;
+	getElement( "proj-name" ).innerHTML = "Project " + this._project;
 	
 	projpage._rpane_show();
 }
@@ -236,26 +237,26 @@ ProjFileList.prototype._nested_divs = function( level, inner ) {
 		return inner;
 	
 	if (level > 1)
-		return MochiKit.DOM.DIV( null, this._nested_divs( level-1, inner ) );
+		return DIV( null, this._nested_divs( level-1, inner ) );
 	
-	return MochiKit.DOM.DIV( null, inner );
+	return DIV( null, inner );
 }
 
 // Returns a DOM object for the given node 
 ProjFileList.prototype._dir = function( node, level ) {
 	// Assemble the link with divs in it
-	var link = MochiKit.DOM.A( { "href" : "#",
-				     "ide_path" : node.path,
-				     "ide_kind" : node.kind },
-				   this._nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
-	MochiKit.Signal.connect( link, "onclick", bind( this._onclick, this ) );
+	var link = A( { "href" : "#",
+			"ide_path" : node.path,
+			"ide_kind" : node.kind },
+		this._nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
+	connect( link, "onclick", bind( this._onclick, this ) );
 	
 	if( node.kind == "FILE" ) {
-		var n = MochiKit.DOM.LI( null, link );
+		var n = LI( null, link );
 		return n;
 	} else
-		var n = MochiKit.DOM.LI( null, [ link, 
-	    		MochiKit.DOM.UL( { "class" : "flist-l" }, 
+		var n = LI( null, [ link, 
+	    		UL( { "class" : "flist-l" }, 
 			map_1( bind(this._dir, this), level + 1, node["children"] ) ) ] );
 	return n;
 }
@@ -268,7 +269,7 @@ ProjFileList.prototype._onclick = function(ev) {
 	
 	mods = ev.modifier();
 	if( mods["ctrl"] )
-		MochiKit.DOM.toggleElementClass( "selected", ev.src() );
+		toggleElementClass( "selected", ev.src() );
 	else {
 		src = ev.src();
 		kind = getNodeAttribute( src, "ide_kind" );

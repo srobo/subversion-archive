@@ -11,8 +11,8 @@ Browser.prototype._receiveTree = function(nodes) {
 }
 
 Browser.prototype.getFileTree = function() {
-	var d = MochiKit.Async.loadJSONDoc("./filelist", {team : team,
-							  rootpath : project});
+	var d = loadJSONDoc("./filelist", { team : team,
+					    rootpath : project});
 	
 	var obj = this;
 	d.addCallback( bind(this._receiveTree, this));	

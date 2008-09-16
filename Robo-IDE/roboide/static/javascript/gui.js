@@ -29,10 +29,10 @@ var user;
 var team_selector;
 
 // onload function
-MochiKit.DOM.addLoadEvent( function() {
+addLoadEvent( function() {
 	//On page load - this replaces a onload action of the body tag
 	//Hook up the save file button
-	MochiKit.Signal.connect(window, 'onbeforeunload', beforeunload);
+	connect(window, 'onbeforeunload', beforeunload);
 
 	cur_path = "";
 
@@ -111,7 +111,7 @@ function saveFile(e) {
 			(open_files[cur_path].editedfilename != cur_path)){
 
 		//Disable the button
-		MochiKit.DOM.getElement("savefile").disabled = true;
+		getElement("savefile").disabled = true;
 
 		//TODO:Cope with saving as a new file name!
 		//Could have:
@@ -123,13 +123,13 @@ function saveFile(e) {
 		var keys = ["file", "rev", "message", "code", "team"];
 		var values = [open_files[cur_path].editedfilename, //File
 					  open_files[cur_path].revision, //rev
-					  MochiKit.DOM.getElement("message").value, //message
+					  getElement("message").value, //message
 					  open_files[cur_path].tabdata, //Code
 					  team]; //Team
-		var content = MochiKit.Base.queryString(keys, values);
+		var content = queryString(keys, values);
 
 		//Using doXHR (New in MochiKit 1.4) to do a post request
-		var d = MochiKit.Async.doXHR("./savefile",
+		var d = doXHR("./savefile",
 						   {"method" : "POST",
 							"mimeType" : "application/x-www-form-urlencoded",
 							"sendContent" : content,
@@ -149,9 +149,9 @@ function saveFile(e) {
 
 // Hide the status bar
 function status_hide() {
-    MochiKit.Style.setStyle( "status-span", {"display":"none"} );
+    setStyle( "status-span", {"display":"none"} );
 
-    var s = MochiKit.DOM.getElement("status");
+    var s = getElement("status");
     s.className = "";
 }
 
@@ -159,11 +159,11 @@ function status_hide() {
 function status_msg( message, level ) {
     switch(level) {
     case LEVEL_WARN:
-	message = [ MochiKit.DOM.createDOM( "STRONG", null, "Warning: " ),
+	message = [ createDOM( "STRONG", null, "Warning: " ),
 		    message ];
 	break;
     case LEVEL_ERROR:
-	message = [ MochiKit.DOM.createDOM( "STRONG", null, "Error: " ), 
+	message = [ createDOM( "STRONG", null, "Error: " ), 
 		    message ];
 	break;
     }
@@ -173,11 +173,11 @@ function status_msg( message, level ) {
 
 // Replace the status bar's content with the given DOM object
 function status_rich_show( obj, level ) {
-    var s = MochiKit.DOM.getElement("status");
+    var s = getElement("status");
 
-    var o = MochiKit.DOM.createDOM( "SPAN", { "id" : "status-span",
+    var o = createDOM( "SPAN", { "id" : "status-span",
 					      "display" : "" }, obj );
-    MochiKit.DOM.replaceChildNodes( "status", o );
+    replaceChildNodes( "status", o );
 
     switch(level) {
     case LEVEL_INFO:
@@ -197,10 +197,10 @@ function status_rich_show( obj, level ) {
 
     // Give it a shake if it's not OK
     if( level > LEVEL_OK )
-	MochiKit.Visual.shake(s);
+	shake(s);
 
     status_num ++;
-    var close_f = MochiKit.Base.partial( status_close, status_num );
+    var close_f = partial( status_close, status_num );
 
     return { "close": close_f };
 }
@@ -222,8 +222,8 @@ function status_click() {
 //      btext: The button text
 //      bfunc: The function to call when the button is clicked.
 function status_button( message, level, btext, bfunc ) {
-    var b = MochiKit.DOM.createDOM( "A", { "href" : "#" }, btext );
-    MochiKit.Signal.connect( b, "onclick", bfunc );
+    var b = createDOM( "A", { "href" : "#" }, btext );
+    connect( b, "onclick", bfunc );
 
     var m = [ message, " -- ", b ]
 
@@ -240,41 +240,41 @@ function tabChange(num) {
 
 		switch(num) {
 			case TAB_NONE:
-				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
+				setStyle('edit-mode', {'display':'none'});
 				projpage.hide();
-				MochiKit.Style.setStyle('grey-out', {'display':'none'});
+				setStyle('grey-out', {'display':'none'});
 				break;
 			case TAB_PROJECTS:
-				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
-				MochiKit.Style.setStyle('grey-out', {'display':'none'});
+				setStyle('edit-mode', {'display':'none'});
+				setStyle('grey-out', {'display':'none'});
 		    		projpage.show();
 				break;
 			case TAB_LOGIN:
-				MochiKit.Style.setStyle('edit-mode', {'display':'none'});
+				setStyle('edit-mode', {'display':'none'});
 				projpage.hide();
-				MochiKit.Style.setStyle('grey-out', {'display':'block'});
+				setStyle('grey-out', {'display':'block'});
 				break;
 			case TAB_EDIT:
-				MochiKit.Style.setStyle('edit-mode', {'display':'block'});
+				setStyle('edit-mode', {'display':'block'});
 				projpage.hide();
-				MochiKit.Style.setStyle('grey-out', {'display':'none'});
+				setStyle('grey-out', {'display':'none'});
 				break;
 		}
 }
 
 function startLogin(username, password) {
-	var d = MochiKit.Async.loadJSONDoc("./verifylogin", {"usr" : username, "pwd" : password});
+	var d = loadJSONDoc("./verifylogin", {"usr" : username, "pwd" : password});
 
 	var gotMetadata = function (meta) {
 	    if (meta.login == 1) {
 		  tabChange(1);
 	    } else {
-		  MochiKit.DOM.getElement("login-feedback").innerHTML = "Incorrect Username / Password";
+		  getElement("login-feedback").innerHTML = "Incorrect Username / Password";
 	    }
 	};
 
 	var failMetadata = function (meta) {
-		  MochiKit.DOM.getElement("login-feedback").innerHTML = "Could Not Contact Server";		
+		  getElement("login-feedback").innerHTML = "Could Not Contact Server";		
 	};
 	d.addCallbacks(gotMetadata, failMetadata);
 }
@@ -332,7 +332,7 @@ function polled()
 	  inputs: None
 	  returns: Nothing, but callback created*/
 	poll_data["team"] = team;
-	var j = MochiKit.Async.loadJSONDoc("./polldata", poll_data );
+	var j = loadJSONDoc("./polldata", poll_data );
 	j.addCallback(pollAction);
 	j.addErrback(function (){
 		alert("Error connecting to studentrobotics.org. Please refresh.");
@@ -356,14 +356,14 @@ function pollAction(result)
 			if(open_files[file].revision < result["files"][file]["rev"]){
 				open_files[file].changed = true;
 				var lr = "lr" + file;
-				MochiKit.Visual.Highlight(lr, {'startcolor' : '#ffff99'});
+				Highlight(lr, {'startcolor' : '#ffff99'});
 			}
 	}
 
 	if(result["log"].length != undefined){
 		if(result["log"][0]["rev"] > poll_data["logrev"]){
-			rows = MochiKit.Base.map(buildLogTableEntry, result["log"]);
-			MochiKit.DOM.insertSiblingNodesAfter("fltablehead", rows);
+			rows = map(buildLogTableEntry, result["log"]);
+			insertSiblingNodesAfter("fltablehead", rows);
 			poll_data["logrev"] = result["log"][0]["rev"];
 		}
 	}
