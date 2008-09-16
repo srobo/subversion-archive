@@ -104,7 +104,14 @@ class Root(controllers.RootController):
         for team in user.getteams():
             teams[team] = model.TeamNames.get(team).name
 
-        return {"teams" : teams}
+        # Get the setting values
+        svals = model.SettingValues.select( model.SettingValues.q.uname == user.get_curuser() )
+        settings = {}
+        for sval in svals.lazyIter():
+            sname = model.Settings.get(sval.id).name
+            settings[sname] = sval.value
+
+        return {"teams" : teams, "settings": settings}
 
 
     @expose("json")
