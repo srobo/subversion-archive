@@ -8,7 +8,8 @@ POLL_TIME = 2000; //In ms.
 poll_data = {}; /*The data to be shipped with the poll.
 files : comma seperated list of open files*/
 
-team = 1; /*The current team number*/
+// Initialise to an invalid team number
+team = 0; /*The current team number*/
 
 project = "";
 
@@ -26,7 +27,10 @@ status_num = 0;
 var projpage;
 // The user
 var user;
+// The team selector
+var team_selector;
 
+// onload function
 MochiKit.DOM.addLoadEvent( function() {
 	//On page load - this replaces a onload action of the body tag
 	//Hook up the save file button
@@ -37,19 +41,22 @@ MochiKit.DOM.addLoadEvent( function() {
 	user = new User();
 	var d = user.load_info();
 	// Wait for the user information to come back
-	d.addCallback( start_interface );
+	d.addCallback( load_team_info );
 	d.addErrback( function() { window.alert("Failed to get user info: TODO: replace this message mechanism"); } );
 });
 
-function start_interface() {
-	// Got the user information
-	teamlist_update();
+// 1) executed after the onload function
+function load_team_info() {
+	// Got the user information -- now get team information
+	team_selector = new TeamSelector();
 
-	projpage = new ProjPage();
+	team_selector.load(load_project_pane);
 }
 
-function teamlist_update() {
-	
+// 2) executed after team information has been acquired 
+function load_project_pane() {
+	projpage = new ProjPage();
+	projpage.show();
 }
 
 function beforeunload(e) {
@@ -364,4 +371,119 @@ function pollAction(result)
 	generatetablist();
 	//Setup the next poll in POLL_TIME ms
 	setTimeout( "polled()", POLL_TIME );
+}
+
+function TeamSelector() {
+	this._onSelected = null;
+	this._prompt = null;
+	this._change_count = 0;
+
+	this.load = function(onSelect) {
+		var teambox = [];
+
+		if( user.teams.length == 1 )
+			team = user.teams[0];
+		else
+		{
+			var olist = [];
+
+			if( !this._team_exists(team) ) {
+				// Work out what team we should be in 
+				var team_last = user.get_setting("team.last");
+				if( team_last != undefined 
+				    && this._team_exists( team_last ) ) {
+					team = team_last;
+				} 
+			}
+
+			olist = this._build_options();
+
+			if( !this._team_exists(team) ) {
+				// Add a "please select a team" option
+				olist.unshift( OPTION( { "id" : "teamlist-tmpitem",
+							 "selected" : "selected" },
+						       "Please select a team." ) );
+
+				this._prompt = status_msg( "Please select a team", LEVEL_INFO );
+			}				
+
+			var tsel = SELECT( null, olist );
+			
+			connect( tsel, "onchange", bind( this._selected, this ) );
+			teambox.push( "Team:" );
+			teambox.push( tsel );
+		}
+
+		// Span to hold the team name
+		var tname = SPAN( { "id" : "teamname" }, null );
+		teambox.push( tname );
+
+		replaceChildNodes( $("teaminfo"), teambox );
+		this._update_name();
+
+		this._onSelected = onSelect;
+
+		if( this._team_exists(team) )
+			this._onSelected();
+	}
+
+	this._build_options = function() {
+		var olist = [];
+
+		for( t in user.teams ) {
+			var props = {};
+			if( user.teams[t] == team )
+				props["selected"] = "selected";
+			
+			olist.push( OPTION(null, user.teams[t]) );
+		}
+
+		return olist;
+	}
+
+	// Returns true if the given team number exists for this user
+	this._team_exists = function(team) {
+		if( team == 0 )
+			return false;
+		
+		for( i in user.teams )
+			if( user.teams[i] == team )
+				return true;
+		return false;
+	}
+	
+	this._selected = function(ev) {
+		this._change_count ++;
+		if( this._change_count > 1 )
+			window.alert( "WARNING: Changing team currently doesn't fully work... TODO!" );
+
+		if( this._prompt != null ) {
+			this._prompt.close();
+			this._prompt = null;
+		}
+
+		var src = ev.src();
+
+		// Remove the "please select a team" item from the list
+		var tmpitem = $("teamlist-tmpitem");
+		if( tmpitem != null && src != tmpitem )
+			removeElement( tmpitem );
+		
+		team = parseInt(src.value, 10);
+		this._update_name();
+
+		this._onSelected();
+	}
+
+	this._update_name = function() {
+		var name = "";
+		if( this._team_exists(team) ) {
+			name = user.team_names[ team ];
+			
+			if( user.teams.length == 1 )
+				name = "Team " + team + ": " + name
+		}
+
+		replaceChildNodes( $("teamname"), " " + name );
+	}
 }
