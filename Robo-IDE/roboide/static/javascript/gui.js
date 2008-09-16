@@ -147,12 +147,19 @@ function saveFile(e) {
 
 // **** Status Bar ****
 
+function status_clearclass() {
+	var classes = ["info", "ok", "warn", "error"];
+	var s = $("status");
+	
+	map( partial( removeElementClass, s ), classes );
+}
+
 // Hide the status bar
 function status_hide() {
     setStyle( "status-span", {"display":"none"} );
 
     var s = getElement("status");
-    s.className = "";
+	status_clearclass();
 }
 
 // Show the status bar with the given message, and prepend "warning" or "error"
@@ -179,19 +186,20 @@ function status_rich_show( obj, level ) {
 					      "display" : "" }, obj );
     replaceChildNodes( "status", o );
 
+	status_clearclass();
     switch(level) {
     case LEVEL_INFO:
-	s.className = "info";
+	    addElementClass( s, "info" );
 	break;
     case LEVEL_OK:
-	s.className = "ok";
+	    addElementClass( s, "ok" );
 	break;
     case LEVEL_WARN:
-	s.className = "warn";
+	    addElementClass( s, "warn" );
 	break;
     default:
     case LEVEL_ERROR:
-	s.className = "error";
+	    addElementClass( s, "error ");
 	break;
     }
 
