@@ -82,9 +82,18 @@ ProjPage.prototype._populate_list = function() {
 ProjPage.prototype._got_list = function(resp) {
 	var items = [];
 	this._projects = resp["projects"];
+		
+	if( !this._project_exists(this.project) ) {
+		var dp = user.get_setting( "project.last" );
 
-	if( this.project == "" )
-		items.unshift( MochiKit.DOM.OPTION( { "id" : "projlist-tmpitem" }, "Select a project." ) );
+		if( dp != undefined
+		    && this._project_exists( dp ) )
+			this.change_project( dp );
+		else {
+			this._ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
+			items.unshift( MochiKit.DOM.OPTION( { "id" : "projlist-tmpitem" }, "Select a project." ) );
+		}
+	}
 		
 	for( var p in resp["projects"] ) {
 		var pname = resp["projects"][p];
@@ -94,20 +103,8 @@ ProjPage.prototype._got_list = function(resp) {
 			props["selected"] = "selected";
 		items[items.length] = ( MochiKit.DOM.OPTION( props, resp["projects"][p] ) );
 	}
-		
+
 	MochiKit.DOM.replaceChildNodes( "project-select", items );
-		
-	if (this.project == "") {
-		var dp = user.get_setting( "project.last" );
-
-		logDebug( "Defaulting to project " + dp );
-
-		if( dp != undefined
-		    && this._project_exists( dp ) )
-			this.change_project( dp );
-		else
-			this._ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
-	}
 }
 
 ProjPage.prototype._list_changed = function(ev) {
