@@ -8,6 +8,7 @@ function ProjPage() {
 	this._projects = null;
 
 	this.flist = null;
+	this.project = "";
 
 	// Member functions (declared below)
 	// Public:
@@ -48,8 +49,8 @@ ProjPage.prototype.show = function() {
 	this._populate_list();
 
 	// If we have a project setup
-	if (project != "")
-		this.flist.update();
+	if (this.project != "")
+		this.flist.update( this.project );
 	
 	MochiKit.Style.setStyle('projects-page', {'display':'block'});
 }
@@ -61,9 +62,9 @@ ProjPage.prototype.hide = function() {
 // Change project
 ProjPage.prototype.change_project = function(proj) {
 	logDebug("Changing project to " + proj);
-	project = proj;
+	this.project = proj;
 	
-	this.flist.update();
+	this.flist.update( this.project );
 }
 
 // Retrieves a list of projects and populates the project selection list
@@ -82,21 +83,21 @@ ProjPage.prototype._got_list = function(resp) {
 	var items = [];
 	this._projects = resp["projects"];
 
-	if( project == "" )
+	if( this.project == "" )
 		items.unshift( MochiKit.DOM.OPTION( { "id" : "projlist-tmpitem" }, "Select a project." ) );
 		
 	for( var p in resp["projects"] ) {
 		var pname = resp["projects"][p];
 		var props = {};
 			
-		if( pname == project )
+		if( pname == this.project )
 			props["selected"] = "selected";
 		items[items.length] = ( MochiKit.DOM.OPTION( props, resp["projects"][p] ) );
 	}
 		
 	MochiKit.DOM.replaceChildNodes( "project-select", items );
 		
-	if (project == "") {
+	if (this.project == "") {
 		var dp = user.get_setting( "project.last" );
 
 		logDebug( "Defaulting to project " + dp );
@@ -158,9 +159,10 @@ function map_1( func, arg, arr ) {
 
 // Project page file list
 function ProjFileList() {
+	this._project = "";
 	// Member functions:
 	// Public:
-	//  - update: Update the file list
+	//  - update: Update the file list to the given project
 	// Private:
 	//  - _received: handler for receiving the file list
 	//  - _nested_divs: Returns N nested divs.
@@ -169,14 +171,15 @@ function ProjFileList() {
 }
 
 // Request and update the project file listing
-ProjFileList.prototype.update = function() {
+ProjFileList.prototype.update = function( pname ) {
 	var d = MochiKit.Async.loadJSONDoc("./filelist", {team : team,
-							  rootpath : project});
+							  rootpath : pname});
+	this._project = pname;
 	
 	d.addCallback( bind( this._received, this ) );
 	
 	d.addErrback( bind( function (){
-		status_button( "Error getting the file list", LEVEL_ERROR,
+		status_button( "Error getting the project file list", LEVEL_ERROR,
 			       "retry", bind( this.update, this ) );
 	}, this ) );
 }
@@ -190,7 +193,7 @@ ProjFileList.prototype._received = function(nodes) {
 						 "style" : "display:none" },
 					       map_1( bind(this._dir, this), 0, nodes["tree"] ) ) );
 	
-	MochiKit.DOM.getElement( "proj-name" ).innerHTML = "Project " + project;
+	MochiKit.DOM.getElement( "proj-name" ).innerHTML = "Project " + this._project;
 	
 	projpage._rpane_show();
 }

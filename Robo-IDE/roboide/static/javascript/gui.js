@@ -11,8 +11,6 @@ files : comma seperated list of open files*/
 // Initialise to an invalid team number
 team = 0; /*The current team number*/
 
-project = "";
-
 LEVEL_INFO = 0;
 LEVEL_OK = 1;
 LEVEL_WARN = 2;
