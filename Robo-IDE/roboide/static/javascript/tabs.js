@@ -2,10 +2,10 @@
 function openNewTab(){
 	var newTabName = 'New'+Math.round((Math.random()*100))+'.py';
 	TABLIST.push(new Tab($("tab-list"), {'isPerm' : false, 
-										'label' : newTabName, 
-										'onclick' : null,
-										'fpath' : "",
-										'project' : ""}))
+					     'label' : newTabName, 
+					     'onclick' : null,
+					     'fpath' : "",
+					     'project' : ""}))
 }
 
 function switchToEdit() { 
