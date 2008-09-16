@@ -124,7 +124,7 @@ body {
 	background-color:#C7C7C7;
 	z-index: 10;
 	position:absolute;
-	display:block;
+	display:none;
 }
 
 #popup {

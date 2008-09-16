@@ -20,6 +20,33 @@
 	border: 3px solid #ffffff;
 	float: left;
 }
+
+#right-pane ul, #left-pane ul{
+	background-color: #EEEEEE;
+	list-style-type: none;
+	margin-left: 0px;
+	padding-left: 0px;
+	margin-top: 0px;
+}
+#right-pane li {
+	padding:1px 0 1px 5px;
+	border-bottom: 1px dashed #DFDBD8;
+}
+#left-pane ul{
+	background-color: #EEEEEE;
+	list-style-type: none;
+	margin-left: 0px;
+	padding-left: 15px;
+	margin-top: 0px;
+	cursor: pointer;
+}
+#left-pane li {
+	padding:1px 0 1px 5px;
+	border-bottom: 1px dashed #DFDBD8;	
+}
+#left-pane li:hover{
+	background-color: #ffffff;
+}
 #curr-file-path {
 	display: block;
 	font-size: 1.2em;
@@ -38,7 +65,7 @@
 	width: 250px;
 	float: left;	
 }
-#save-new-file {
+#save-new-file, #cancel-new-file {
 	display: block;
 	font-size: 1em;
 	font-weight: bold;
@@ -46,4 +73,12 @@
 	margin: 10px;
 	float: left;	
 }
-
+#new-commit-msg {
+	display:block;
+	width: 526px;
+	height: 50px;
+	background-color: #DFDBD8;
+	margin:10px;
+	border: 3px solid #ffffff;
+	float: left;	
+}
