@@ -6,12 +6,15 @@
 <link rel="stylesheet" href="./static/css/newstyle.css" type="text/css"/>
 <link rel="stylesheet" href="./static/css/editmode.css" type="text/css"/>
 <link rel="stylesheet" href="./static/css/projpage.css" type="text/css"/>
+<link rel="stylesheet" href="./static/css/browser.css" type="text/css"/>
 <! -- Javascript Source Files -->
 <script src="./static/javascript/edit_area/edit_area_loader.js" type="text/javascript"></script>
 <script src="./static/javascript/MochiKit.js" type="text/javascript"></script>
 <script src="./static/javascript/gui.js" type="text/javascript"></script>
 <script src="./static/javascript/projpage.js" type="text/javascript"></script>
 <script src="./static/javascript/tabs.js" type="text/javascript"></script>
+<script src="./static/javascript/browser.js" type="text/javascript"></script>
+
 <title>Robotics IDE</title>
 </head>
 <body>
@@ -27,19 +30,32 @@
 			<br /><a href="#" onClick="tabChange(1)" >&raquo; Forgotten password</a>
 		</form>
 	</div>	
+	<div id="file-browser">
+		<div style="clear: both">&nbsp</div>
+		<span id="selected-dir">Please Select A Folder...</span>
+		<div id="left-pane">
+		</div>
+		<div id="right-pane">
+		</div>
+		<span id="curr-file-path">[team no]/[project name]/file.py</span>
+		<input type="text" id="new-file-name" value="new.py" />
+		<button id="save-new-file">Save</button>
+		<div style="clear: both">&nbsp</div>
+	</div>
 </div>
+
+
+
 <div id="top">
+	<ul id="topleft">
+		<li><a href="#logout">Logout</a></li>
+		<li>Team: <select id=""><option>1</option></select> The Rotating Toasters</li>
+	</ul>
 
-<ul id="topleft">
-<li><a href="#logout">Logout</a></li>
-<li>Team: <select id=""><option>1</option></select> The Rotating Toasters</li>
-</ul>
-
-<ul id="topright">
-<li><a href="#">Forums</a></li>
-<li><a href="#">Switchboard</a></li>
-</ul>
-
+	<ul id="topright">
+		<li><a href="#">Forums</a></li>
+		<li><a href="#">Switchboard</a></li>
+	</ul>
 </div>
 
 <div id="tabs">

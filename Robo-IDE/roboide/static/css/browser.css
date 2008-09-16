@@ -1,0 +1,49 @@
+#file-browser {
+	background-color: #253571;
+	padding: 10px;
+	width: 600px;
+}
+#selected-dir {
+	display: block;
+	color: #ffffff;
+	font-size: 1.6em;
+	font-weight: bold;
+}
+#left-pane, #right-pane{
+	display:block;
+	width: 250px;
+	height: 200px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	background-color: #DFDBD8;
+	margin:10px;
+	border: 3px solid #ffffff;
+	float: left;
+}
+#curr-file-path {
+	display: block;
+	font-size: 1.2em;
+	color: #ffffff;
+	margin: 10px;
+	float: left;
+	width: 500px;
+	overflow: visible;
+}
+#new-file-name {
+	display: block;
+	font-size: 1em;
+	font-weight: bold;
+	color: #000000;
+	margin: 10px;
+	width: 250px;
+	float: left;	
+}
+#save-new-file {
+	display: block;
+	font-size: 1em;
+	font-weight: bold;
+	color: #000000;
+	margin: 10px;
+	float: left;	
+}
+

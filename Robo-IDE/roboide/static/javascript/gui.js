@@ -8,7 +8,7 @@ POLL_TIME = 2000; //In ms.
 poll_data = {}; /*The data to be shipped with the poll.
 files : comma seperated list of open files*/
 
-team = 0; /*The current team number*/
+team = 1; /*The current team number*/
 
 project = "";
 
