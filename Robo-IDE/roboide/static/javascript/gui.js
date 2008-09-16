@@ -411,7 +411,7 @@ function TeamSelector() {
 			var tsel = SELECT( null, olist );
 			
 			connect( tsel, "onchange", bind( this._selected, this ) );
-			teambox.push( "Team:" );
+			teambox.push( "Team: " );
 			teambox.push( tsel );
 		}
 
