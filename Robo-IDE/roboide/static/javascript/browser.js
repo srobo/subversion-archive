@@ -89,7 +89,7 @@ function shrink_commit_msg() {
 
 function click_save_file(override) {
 	var commitMsg = $("new-commit-msg").innerHTML;
-	if( (commitMsg == "Commit message" || commitMsg == "") && override)
+	if( ((commitMsg == "Commit message") || (commitMsg == "")) && !override)
 	{
 		status_button("No commit message added", LEVEL_WARN, "ignore", function() {click_save_file(true)});
 	}
