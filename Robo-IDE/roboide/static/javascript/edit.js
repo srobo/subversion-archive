@@ -16,8 +16,6 @@ function EditPage() {
 	//               TODO: Can we get EditTab to do this for us?
 	//  - _file_get_etab: Given a file path, returns the tab for it.
 	//                    If the file isn't currently open, return null.
-	//  - _tab_close: Handler for when a tab is closed
-	//                TODO: Remove the tab from the list
 	//  - _tab_switch: Handler for the onswitch event of the tab bar.
 	//		   TODO: Make this remove the tab from our list.
 	//  - _is_edit: Returns try if the given tab is an edit tab
@@ -118,11 +116,7 @@ function EditPage() {
 	// Create a new tab that's one of ours
 	// Doesn't load the tab
 	this._new_etab = function(path) {
-		var tab = new Tab( path );
-		connect( tab, "onclose", bind( this._tab_close, this ) );
-		tabbar.add_tab( tab );
-
-		var etab = new EditTab(tab);
+		var etab = new EditTab(path);
 		etab.path = path;
 		etab.contents = "TODO: Do the contents stuff";
 
@@ -138,10 +132,6 @@ function EditPage() {
 				return this._open_files[i];
 		}
 		return null;
-	}
-
-	this._tab_close = function( tab ) {
-		
 	}
 
 	this._tab_switch = function( fromtab, totab ) {
@@ -167,9 +157,9 @@ function EditPage() {
 
 // Represents a tab that's being edited
 // Managed by EditPage -- do not instantiate outside of EditPage
-function EditTab(tab) {
+function EditTab(path) {
 	// The path
-	this.path;
+	this.path = path;
 
 	//The commit message
 	this.commitMsg;
@@ -181,7 +171,7 @@ function EditTab(tab) {
 	this.contents;
 
 	// The tab representing us
-	this.tab = tab;
+	this.tab = null;
 
 	// true if tab has been modified
 	this.dirty = true;	//TODO
@@ -193,6 +183,10 @@ function EditTab(tab) {
 	this._signals = [];
 
 	this._init = function() {
+		this.tab = new Tab( this.path );
+		connect( this.tab, "onclose", bind(this._close, this) );
+		tabbar.add_tab( this.tab );
+
 		// Mark the tab as a edit tab
 		this.tab.__edit = true;
 
@@ -232,6 +226,7 @@ function EditTab(tab) {
 			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", function(){ obj.dirty = false; obj._close()});
 		}
 		else{
+			signal( this, "onclose" );
 			status_msg( this.path+" Closed", LEVEL_OK );
 		}
 	}
