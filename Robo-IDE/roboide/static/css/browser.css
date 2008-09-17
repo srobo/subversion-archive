@@ -1,7 +1,11 @@
 #file-browser {
 	background-color: #253571;
-	padding: 10px;
+	padding: auto;
+	margin: auto;
 	width: 600px;
+	opacity: 0;
+	display: none;
+	text-align: left;
 }
 #selected-dir {
 	display: block;

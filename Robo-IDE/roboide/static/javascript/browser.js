@@ -1,12 +1,22 @@
-function Browser() {
-	this.currFile = "";
-	this.currFolder = "";
+function Browser(team, rootpath, cback) {
+	this.newFilePath = "";
+	this.commitMsg = "";
 	this.fileTree = null;
-	this.folderList = new Array();
-	this.rightDOM = null;
-	this.getFileTree();
+	this.callback = cback;
+	this._init(team, rootpath);
 }
 
+Browser.prototype._init = function(team, rootpath) {
+	//make visible
+	display_file_browser();
+	//get file listings
+	this._getFileTree(team, rootpath);
+	//set up event handlers 
+	disconnectAll($("save-new-file"));
+	disconnectAll($("cancel-new-file"));
+	connect($("save-new-file"), 'onclick', bind(this.clickSaveFile, this, false));
+	connect($("cancel-new-file"), 'onclick', bind(this.clickCancelSave, this));
+}
 
 Browser.prototype._receiveTree = function(nodes) {
 	this.fileTree = nodes.tree;
@@ -19,14 +29,40 @@ Browser.prototype._receiveTree = function(nodes) {
 	processTree($("left-pane-list"), this.fileTree, "");
 }
 
-Browser.prototype.getFileTree = function() {
-	var d = loadJSONDoc("./filelist", { team : 1,
-					    rootpath : ""});
+Browser.prototype._errorReceiveTree = function() {
+	status_button("Cannot retreive file listing", LEVEL_ERROR, "retry", bind(this._init, this));
+}
+Browser.prototype._getFileTree = function(tm, rpath) {
+	var d = loadJSONDoc("./filelist", { team : tm,
+					    rootpath : rpath});
 
 	d.addCallback( bind(this._receiveTree, this));	
-	d.addErrback( function() { alert("Error getting the file list"); });
+	d.addErrback( bind(this._errorReceiveTree, this));
 
 }
+
+//when user clicks save
+Browser.prototype.clickSaveFile = function(override) {
+	this.commitMsg = $("new-commit-msg").value;
+	logDebug(this.commitMsg);
+	this.newFilePath = $("selected-dir").innerHTML + $("new-file-name").getAttribute("value").toString();
+
+	if( ((this.commitMsg == "Commit message") || (this.commitMsg == "")) && !override)
+	{
+		status_button("No commit message added", LEVEL_WARN, "ignore", bind(this.clickSaveFile, this, true));
+	}
+	else {
+		this.callback();
+	}	
+}
+
+//cancel save operation
+Browser.prototype.clickCancelSave = function() {
+	this.commitMsg = "";
+	this.newFilePath = "";
+	fade($("file-browser"), {'from' : 1.0, 'to' : 0.0});
+}
+
 //Recursive function to conver filetree into valid DOM tree
 function processTree(parentDOM, tree, pathSoFar) {
 	for (var i = 0; i < tree.length; i++) {
@@ -46,12 +82,11 @@ function processTree(parentDOM, tree, pathSoFar) {
 			newLeaf.setAttribute('fileswithin', filesWithin);
 			newLeaf.innerHTML = tree[i].name;
 			//create new list for child folder
-			var newBranch = UL(null, "");
-			var newParentDOM = appendChildNodes(parentDOM, newLeaf);
-			appendChildNodes(newParentDOM, newBranch);
-			newParentDOM = newParentDOM.getElementsByTagName("UL")[0];
+			var newBranch = LI(null, "");
+			appendChildNodes(newBranch, UL(null, ""));
+			appendChildNodes(parentDOM, newLeaf);
 			//recursive call, with newly created branch
-			processTree(newParentDOM, tree[i].children, newPathSoFar);
+			appendChildNodes(parentDOM, processTree(newBranch.childNodes[1], tree[i].children, newPathSoFar));
 		}
 	}
 	return parentDOM;
@@ -74,26 +109,25 @@ function selectFolder(path, files) {
 	$("curr-file-path").innerHTML = "New Filename: "+path + "/" + $("new-file-name").getAttribute("value").toString();
 }
 
+function display_file_browser() {
+	showElement($("file-browser"))
+	fade($("file-browser"), {'from' : 0.0, 'to' : 1.0});
+}
+function hide_file_browser() {
+	fade($("file-browser"), {'from' : 1.0, 'to' : 0});
+	hideElement($("file-browser"))
+}
+//when commit message box has focus:
 function enlarge_commit_msg() {
 	if($("new-commit-msg").innerHTML == "Commit message") { $("new-commit-msg").innerHTML = "";}
 	Morph($("right-pane"), {"style": {"height" : "100px" }});
 	Morph($("left-pane"), {"style": {"height" : "100px" }});
 	Morph($("new-commit-msg"), {"style": {"height" : "150px" }});
 }	
-
+//when commit message box looses focus:
 function shrink_commit_msg() {
 	Morph($("right-pane"), {"style": {"height" : "200px" }});
 	Morph($("left-pane"), {"style": {"height" : "200px" }});
 	Morph($("new-commit-msg"), {"style": {"height" : "50px" }});
 }	
 
-function click_save_file(override) {
-	var commitMsg = $("new-commit-msg").innerHTML;
-	if( ((commitMsg == "Commit message") || (commitMsg == "")) && !override)
-	{
-		status_button("No commit message added", LEVEL_WARN, "ignore", function() {click_save_file(true)});
-	}
-	else {
-		status_msg("File '"+$("new-file-name").getAttribute("value").toString()+"' saved successfully", LEVEL_OK); 
-	}
-}
