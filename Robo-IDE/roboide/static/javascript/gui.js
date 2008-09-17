@@ -73,7 +73,8 @@ function load_project_pane() {
 		
 		// The "new" tab button
 		var ntab = new Tab( "+ New + " );
-		connect( ntab, "onfocus", function() { status_msg( "New file (TODO)", LEVEL_WARN ); } );
+		ntab.can_focus = false;
+		connect( ntab, "onclick", function() { status_msg( "New file (TODO)", LEVEL_WARN ); } );
 		tabbar.add_tab( ntab );
 	}
 

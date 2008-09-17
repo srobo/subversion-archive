@@ -2,6 +2,11 @@
 function Tab(label) {
 	this.label = label;
 
+	// Whether this tab can be focussed
+	// Setting this to false prevents focus being shifted to the tab,
+	// and clicking on it will only trigger the "onclick" signal.
+	this.can_focus = true;
+
 	// The list item that we are
 	this._li = null;
 	// The link
@@ -74,6 +79,10 @@ function TabBar() {
 	}
 	
 	this.switch_to = function( tab ) {
+		// Don't do anything if the tab can't focus
+		if( !tab.can_focus )
+			return;
+
 		if( tab != this._curtab ) {
 			if( this._curtab != null )
 				this._curtab.lost_focus();
@@ -84,6 +93,10 @@ function TabBar() {
 
 	// Force the tab to be unfocussed and then focussed
 	this.force_refresh = function( tab ) {
+		// Don't do anything if the tab can't focus
+		if( !tab.can_focus )
+			return;
+
 		if( tab == this._curtab )
 			tab.lost_focus();
 
