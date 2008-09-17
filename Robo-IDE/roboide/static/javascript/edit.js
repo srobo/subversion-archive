@@ -1,6 +1,33 @@
 // The class for the EditPage
 function EditPage() {
 
+	// Member functions:
+	// Public functions:
+	//  - edit_file: Open the given file path.
+	//  - new_file: Create a new edit tab with no filename.
+
+	// Private functions:
+	//  - _init: Initialises the edit page (called on instantiation)
+	//  - _init_ea: Initialises the editarea
+	//  - _show: Show the edit page.
+	//           Triggers initialisation of the editarea if necessary
+	//  - _hide: Hide the edit page.
+	//  - _new_etab: Creates a new instance of an EditTab and wire it up to a Tab
+	//               TODO: Can we get EditTab to do this for us?
+	//  - _file_get_etab: Given a file path, returns the tab for it.
+	//                    If the file isn't currently open, return null.
+	//  - _tab_close: Handler for when a tab is closed
+	//                TODO: Remove the tab from the list
+	//  - _tab_switch: Handler for the onswitch event of the tab bar.
+	//		   TODO: Make this remove the tab from our list.
+	//  - _etab_focus: Handler for the change in focus between two edit tabs.
+	//                 Disconnect event handlers etc.
+	//  - _connect_etab: Connect the given edit tab's handlers up to the edit 
+	//                   page's control events.
+	//  - _disconnect_etab: Disconnect the given edit tab's handlers from the 
+	//                      edit page
+	//  - _is_edit: Returns try if the given tab is an edit tab
+
 	// Private properties:
 	// Dict of open files.  Keys are paths, values are EditTab instances.
 	this._open_files = {};	
