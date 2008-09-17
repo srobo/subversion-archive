@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="./static/css/editmode.css" type="text/css"/>
 <link rel="stylesheet" href="./static/css/projpage.css" type="text/css"/>
 <link rel="stylesheet" href="./static/css/browser.css" type="text/css"/>
+<link rel="stylesheet" href="./static/css/log.css" type="text/css"/>
 <! -- Javascript Source Files -->
 <script src="./static/javascript/edit_area/edit_area_loader.js" type="text/javascript"></script>
 <script src="./static/javascript/MochiKit.js" type="text/javascript"></script>
@@ -70,7 +71,7 @@
 				</li>
 			</ul>
 		</div>
-		<!-- <textarea id="codebox">Python</textarea> -->
+		<!-- File Browser  -->
 		<div id="file-browser">
 			<div style="clear: both">&nbsp</div>
 			<span id="selected-dir">Please Select A Folder...</span>
@@ -85,10 +86,40 @@
 			<button id="save-new-file" >Save File</button><button id="cancel-new-file" >Cancel</button>
 			<div style="clear: both">&nbsp</div>
 		</div>
-
-
 	</div>
 
+	<div id="log-mode">
+		<!-- Log Viewer -->
+		<div id="logmenu">
+			<ul>
+				<li><button id="revert" title="Click to revert to the selected revision">Revert</button></li>
+				<li><button id="older">&lt;&lt;< Older</button></li>
+				<li><button id="newer">Newer &gt;&gt;</button></li>
+				<li><div style="float: left">Selected Revision: r12333</div></li>
+				<li class= "log-user">
+				<select name="users">
+					<option name="v1">--Revisions By User--</option>
+					<option name="v2">ccross</option>
+					<option name="v3">rspanton</option>
+				</select>
+				</li>
+			</ul>
+		</div>
+		<div id="logs">
+			<em> Displaying 14 revisions between 2008-09-00 -> 2008-09-01 by user &lt;Any&gt;</em>
+			<ul id="log-list"><form>
+				<li>
+					<input type="radio" name="log" />r1768 | ccross | 2008-09-17 18:20:18 +0100 (Wed, 17 Sep 2008) | 3 lines
+					<br /><div class="commit-msg">This is a commit message</span>
+				</li>
+				<li>
+					<input type="radio" name="log" />r1767 | rspanton | 2008-09-17 16:22:24 +0100 (Wed, 17 Sep 2008) | 59 lines
+					<br /><div class="commit-msg">This is a <br />longer commit message</span>
+				</li>
+			</form>
+			</ul>
+		</div>
+	</div><!-- end log viewer -->
 <div id="projects-page">
 
 <div id="proj-sidebar">
