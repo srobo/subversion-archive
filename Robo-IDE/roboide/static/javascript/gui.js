@@ -21,12 +21,19 @@ status_num = 0;
 
 // The tab bar
 var tabbar = null;
+
 // The project page
 var projpage = null;
+
 // The project tab
 var projtab = null;
+
+// The edit page
+var editpage = null;
+
 // The user
 var user;
+
 // The team selector
 var team_selector;
 
@@ -69,10 +76,15 @@ function load_project_pane() {
 		connect( projtab, "onblur", bind( projpage.hide, projpage ) );
 		tabbar.add_tab( projtab );
 		
+	}
+
+	if( editpage == null ) {
+		editpage = new EditPage();
+
 		// The "new" tab button
 		var ntab = new Tab( "+ New + " );
 		ntab.can_focus = false;
-		connect( ntab, "onclick", function() { status_msg( "New file (TODO)", LEVEL_WARN ); } );
+		connect( ntab, "onclick", bind(editpage.new_file, editpage) );
 		tabbar.add_tab( ntab );
 	}
 

@@ -288,8 +288,9 @@ ProjFileList.prototype._onclick = function(ev) {
 				display = "none";
 
 			setStyle( dir_contents, {"display" : display} );
+		} else {
+			editpage.edit_file( path );
 		}
-
 	}
 }
 
