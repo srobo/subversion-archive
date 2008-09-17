@@ -16,8 +16,6 @@ LEVEL_OK = 1;
 LEVEL_WARN = 2;
 LEVEL_ERROR = 3;
 
-TABLIST = new Array();
-
 // Number that's incremented every time a new status message is displayed
 status_num = 0;
 
@@ -260,43 +258,12 @@ function status_button( message, level, btext, bfunc ) {
 }
 
 // ****Login Screen****
-
-TAB_NONE = 0;
-TAB_PROJECTS = 1;
-TAB_LOGIN = 2;
-TAB_EDIT = 3;
-function tabChange(num) {
-
-		switch(num) {
-			case TAB_NONE:
-				setStyle('edit-mode', {'display':'none'});
-				projpage.hide();
-				setStyle('grey-out', {'display':'none'});
-				break;
-			case TAB_PROJECTS:
-				setStyle('edit-mode', {'display':'none'});
-				setStyle('grey-out', {'display':'none'});
-		    		projpage.show();
-				break;
-			case TAB_LOGIN:
-				setStyle('edit-mode', {'display':'none'});
-				projpage.hide();
-				setStyle('grey-out', {'display':'block'});
-				break;
-			case TAB_EDIT:
-				setStyle('edit-mode', {'display':'block'});
-				projpage.hide();
-				setStyle('grey-out', {'display':'none'});
-				break;
-		}
-}
-
 function startLogin(username, password) {
 	var d = loadJSONDoc("./verifylogin", {"usr" : username, "pwd" : password});
 
 	var gotMetadata = function (meta) {
 	    if (meta.login == 1) {
-		  tabChange(1);
+		    tabbar.switch_to( projtab );
 	    } else {
 		  getElement("login-feedback").innerHTML = "Incorrect Username / Password";
 	    }
