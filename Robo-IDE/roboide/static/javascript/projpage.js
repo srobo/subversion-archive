@@ -61,7 +61,9 @@ ProjPage.prototype.show = function() {
 	this._init();
 	
 	// Hide the right-hand whilst the file list is loading
-	this._rpane_hide();
+	// HACK -- will split the ProjPage show/hide functions from the 
+	// loading path shortly.
+//	this._rpane_hide();
 	
 	// Load/refresh the projects list
 	this._populate_list();
@@ -70,6 +72,7 @@ ProjPage.prototype.show = function() {
 }
 
 ProjPage.prototype.hide = function() {
+	logDebug( "Hiding the projects page" );
 	setStyle('projects-page', {'display':'none'});
 }
 
@@ -83,6 +86,7 @@ ProjPage.prototype.change_project = function(proj) {
 	this.project = proj;
 	
 	this.flist.update( this.project );
+	signal( this, "onchange" );
 }
 
 // Retrieves a list of projects and populates the project selection list

@@ -25,6 +25,8 @@ status_num = 0;
 var tabbar = null;
 // The project page
 var projpage = null;
+// The project tab
+var projtab = null;
 // The user
 var user;
 // The team selector
@@ -47,14 +49,11 @@ addLoadEvent( function() {
 
 // 1) executed after the onload function
 function load_team_info() {
-	if( tabbar == null )
-		tabbar = new TabBar();
-	tabbar.init();
-
 	// Got the user information -- now get team information
 	team_selector = new TeamSelector();
 
-	team_selector.load(load_project_pane);
+	connect( team_selector, "onselect", load_project_pane );
+	team_selector.load();
 }
 
 // 2) executed after team information has been acquired/changed
@@ -64,7 +63,22 @@ function load_project_pane() {
 	else
 		projpage = new ProjPage();
 
-	projpage.show();
+	if( tabbar == null ) {
+		tabbar = new TabBar();
+
+		projtab = new Tab( "Projects" );
+		connect( projtab, "onfocus", bind( projpage.show, projpage ) );
+		connect( projtab, "onblur", bind( projpage.hide, projpage ) );
+		tabbar.add_tab( projtab );
+		
+		// The "new" tab button
+		var ntab = new Tab( "+ New + " );
+		connect( ntab, "onfocus", function() { status_msg( "New file (TODO)", LEVEL_WARN ); } );
+		tabbar.add_tab( ntab );
+	}
+
+	// We must force the switch here, as we may already be on that tab
+	tabbar.force_refresh( projtab );
 }
 
 function beforeunload(e) {
@@ -390,10 +404,9 @@ function pollAction(result)
 }
 
 function TeamSelector() {
-	this._onSelected = null;
 	this._prompt = null;
 
-	this.load = function(onSelect) {
+	this.load = function() {
 		var teambox = [];
 
 		if( user.teams.length == 1 )
@@ -436,10 +449,8 @@ function TeamSelector() {
 		replaceChildNodes( $("teaminfo"), teambox );
 		this._update_name();
 
-		this._onSelected = onSelect;
-
 		if( this._team_exists(team) )
-			this._onSelected();
+			signal( this, "onselect" );
 	}
 
 	this._build_options = function() {
@@ -481,9 +492,10 @@ function TeamSelector() {
 			removeElement( tmpitem );
 		
 		team = parseInt(src.value, 10);
+		logDebug( "team changed to " + team );
 		this._update_name();
 
-		this._onSelected();
+		signal( this, "onselect" );
 	}
 
 	this._update_name = function() {

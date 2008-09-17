@@ -1,35 +1,107 @@
+// Tab: A single tab.
+function Tab(label) {
+	this.label = label;
+
+	// The list item that we are
+	this._li = null;
+	// The link
+	this._a = null;
+
+	// Whether we have focus
+	this._focus = false;
+
+	this._init = function() {
+		this._a = A( {"class": "nofocus"}, this.label );
+		this._li = LI(null, this._a );
+
+		appendChildNodes($("tab-list"), this._li);
+
+		connect(this._li, 'onclick', bind(this._onclick,this) );
+	}
+
+	this._onclick = function() {
+		signal( this, "onclick", this );
+	}
+
+	// Called to tell the tab it has focus
+	this.got_focus = function() {
+		removeElementClass( this._a, "nofocus" );
+		addElementClass( this._a, "focus" );
+
+		if( !this._focus ) {
+			logDebug( "tab \"" + this.label + "\" focussed" );
+			signal( this, "onfocus", this );
+		}
+
+		this._focus = true;
+	}
+
+	// Called to tell the tab it no longer has focus
+	this.lost_focus = function() {
+		addElementClass( this._a, "nofocus" );
+
+		if( this._focus ) {
+			logDebug( "tab \"" + this.label + "\" blurred" );
+			signal( this, "onblur", this );
+		}
+
+		this._focus = false;
+	}
+
+	this.close = function() {
+		signal( this, "onclose", this );
+
+		disconnectAll(this);
+		removeElement( this._li );
+	}
+
+	this._init();
+}
+
+
+// TabBar: Managers tabs
+// Calls show and hide functions as appropriate
 function TabBar() {
+	this.tabs = [];
+
+	// Current tab with focus
+	this._curtab = null;
+
+	// Member functions
+	this.add_tab = function( tab ) {
+		this.tabs.push( tab );
+		connect( tab, "onclick", bind( this._onclick, this ) );
+	}
 	
+	this.switch_to = function( tab ) {
+		if( tab != this._curtab ) {
+			if( this._curtab != null )
+				this._curtab.lost_focus();
+			tab.got_focus();
+			this._curtab = tab;
+		}
+	}
+
+	// Force the tab to be unfocussed and then focussed
+	this.force_refresh = function( tab ) {
+		if( tab == this._curtab )
+			tab.lost_focus();
+
+		tab.got_focus();
+		this._curtab = tab;
+	}
+
+	// Handler for tab onclick events
+	this._onclick = function( tab ) {
+		this.switch_to( tab );
+	}
 }
 
-TabBar.prototype.init = function() {
-	var items = [];
-	var t;
-
-	// Projects tab
-	t = A( null, "Projects" );
-	addElementClass( t, "nofocus" );
-	connect( t, "onclick",
-		 function() {
-			 hideAllTabs();
-			 switchToProj();
-		 } );
-	items.push( LI( null, t ) );
-
-	// New file tab
-	t = A( null, "+ New + " );
-	addElementClass( t, "nofocus" );
-	connect( t, "onclick", openNewTab );
-	items.push( LI( null, t ) );
-
-
-	replaceChildNodes( $("tab-list"), items );
-}
 
 //event handler for new file
 function openNewTab(){
 	var newTabName = 'New'+Math.round((Math.random()*100))+'.py';
-	TABLIST.push(new Tab($("tab-list"), {'isPerm' : false, 
+	TABLIST.push(new EditTab($("tab-list"), {'isPerm' : false, 
 					     'label' : newTabName, 
 					     'onclick' : null,
 					     'fpath' : "",
@@ -43,32 +115,44 @@ function switchToEdit() {
 		setStyle($("edit-mode"), {"display" : "block"});
 	}
 }
-function switchToProj() { 
-	if( getStyle($("projects-page"), "display") == "none" )
-	{
-		setStyle($("edit-mode"), {"display" : "none"});
-		projpage.show();
-	}
-}
-function hideAllTabs() {
-	for(var i = 0; i < TABLIST.length; i++) {
-		if(TABLIST[i].properties.focus) {
-			TABLIST[i].loseFocus();
-		}
-	}
+
+function newEditTab( fname ) {
+	var t = new EditTab($("tab-list"), { "isPerm" : false,
+					       "label" : fname,
+					       "onclick" : function() { 
+						       window.alert( fname );
+					       } 
+					     } );
+	TABLIST.push(t);
+	return t;
 }
 
-//class defines a single Tab within the Tab Bar
-function Tab(Tbar, args){
+// an edit tab
+function EditTab(Tbar, args){
 	this.properties = args;
 	this.tabHandle = null;		
 	this.properties.focus = true;	
 	this.textbox = null;	
 
+	// Functions for hiding and showing
+	this.show = null;
+	this.hide = null;
+
 	//{'label' : string, 			the text visible in the tab
 	// 'fpath' : string,			full filepath + filename 
 	// 'project' : project name,		the project to which the file in tab belongs
 	// 'focus' : bool}					if true, tab has focus	
+
+	// Member functions
+	//  - gainFocus - switch to edit page, change editarea contents, change tab class
+	//  - loseFocus - hide edit area, change tab class
+	//  - hideAllButThis - call loseFocus on all tabs. Then switch to edit page and call gainFocus
+	//  - flash - Visually flash the tab
+	//  - removeStyle - Removes visual effects inline style
+	//  - checkSyntax - Checks the syntax of the current file
+	//  - saveTab - Save the the current file
+	//  - close -  Close the file, after checking for mods.  Then close the tab.
+	//  - open - open a tab
 
 	this.gainFocus = function() {
 		//make tab content visible (if editable)
@@ -168,7 +252,7 @@ function Tab(Tbar, args){
 		delete this;
 		//display another tab ... or project menu
 		if(TABLIST.length > 0) { TABLIST[0].hideAllButThis(); }
-		else { switchToProj(); }
+		else { tabbar.switch_to( projtab ) }
 	}
 		
 	this.open = function(Tbar) {	
