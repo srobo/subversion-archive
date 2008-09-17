@@ -20,12 +20,6 @@ function EditPage() {
 	//                TODO: Remove the tab from the list
 	//  - _tab_switch: Handler for the onswitch event of the tab bar.
 	//		   TODO: Make this remove the tab from our list.
-	//  - _etab_focus: Handler for the change in focus between two edit tabs.
-	//                 Disconnect event handlers etc.
-	//  - _connect_etab: Connect the given edit tab's handlers up to the edit 
-	//                   page's control events.
-	//  - _disconnect_etab: Disconnect the given edit tab's handlers from the 
-	//                      edit page
 	//  - _is_edit: Returns try if the given tab is an edit tab
 
 	// Private properties:
@@ -158,34 +152,6 @@ function EditPage() {
 
 		if( !this._is_edit( fromtab ) )
 			this._show();
-
-		this._etab_focus( totab.__etab );
-	}
-
-	// Called (not by TabBar) when the file that's being edited is changed  
-	this._etab_focus = function( etab ) {
-		// Disconnect signal handlers from old tab
-		this._disconnect_etab();
-		// Connect signal handler to the new tab
-		this._connect_etab(etab);
-	}
-
-	// Connect the buttons etc on the page to the given EditTab
-	this._connect_etab = function( etab ) {
-		//display filepath
-		replaceChildNodes( $("tab-filename"), etab.project + "::" + etab.path );
-
-		// Connect up the buttons (TODO)
-		connect($("close-edit-area"), 'onclick', bind(etab._close, etab));
-		connect($("check-syntax"), 'onclick', bind(etab._check_syntax, etab));
-		connect($("save-file"), 'onclick', bind(etab._save, etab));
-	}
-
-	// Disconnect the buttons etc on the page
-	this._disconnect_etab = function() {
-		disconnectAll($("close-edit-area"));
-		disconnectAll($("check-syntax"));
-		disconnectAll($("save-file"));		
 	}
 
 	// Return true if the given tab is an edit tab
@@ -223,12 +189,18 @@ function EditTab(tab) {
 	//true if file is new (unsaved)
 	this.isNew = true;	//TODO
 
+	// All our current signal connection idents
+	this._signals = [];
+
 	this._init = function() {
 		// Mark the tab as a edit tab
 		this.tab.__edit = true;
 
 		// Link ourselves to the tab so the EditPage can find us
 		this.tab.__etab = this;
+
+		connect( this.tab, "onfocus", bind( this._onfocus, this ) );
+		connect( this.tab, "onblur", bind( this._onblur, this ) );
 	}
 
 	this._check_syntax = function() {
@@ -262,6 +234,32 @@ function EditTab(tab) {
 		else{
 			status_msg( this.path+" Closed", LEVEL_OK );
 		}
+	}
+
+	// Handler for when the tab receives focus
+	this._onfocus = function() {
+		// Close handler
+		this._signals.push( connect( $("close-edit-area"),
+					     "onclick",
+					     bind( this._close, this ) ) );
+		// Check syntax handler
+		this._signals.push( connect( $("check-syntax"),
+					     "onclick",
+					     bind( this._check_syntax, this ) ) );
+		// Save handler
+		this._signals.push( connect( $("save-file"),
+					     "onclick",
+					     bind( this._save, this ) ) );
+
+		//display filepath
+		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );
+	}
+
+	// Handler for when the tab loses focus
+	this._onblur = function() {
+		// Disconnect all the connected signal
+		map( disconnect, this._signals );
+		this._signals = [];
 	}
 
 	this._init();
