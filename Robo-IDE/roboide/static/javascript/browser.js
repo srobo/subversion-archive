@@ -64,6 +64,7 @@ Browser.prototype.clickSaveFile = function(override) {
 
 //cancel save operation
 Browser.prototype.clickCancelSave = function() {
+	status_hide();
 	this.commitMsg = "";
 	this.newFilePath = "";
 	fade($("file-browser"), {'from' : 1.0, 'to' : 0.0});

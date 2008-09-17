@@ -245,7 +245,7 @@ function EditTab(tab) {
 	this._save = function() {
 		//if new file	-- TODO
 		if(this.dirty) {
-			status_msg( "Enter a filename for new file", LEVEL_WARN );
+			status_msg( "Enter a filename for new file", LEVEL_OK );
 			var fileBrowser = new Browser(team, "", bind(this._receive_new_fname, this));	
 		}
 		else {
