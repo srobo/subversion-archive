@@ -52,7 +52,13 @@ Browser.prototype.clickSaveFile = function(override) {
 		status_button("No commit message added", LEVEL_WARN, "ignore", bind(this.clickSaveFile, this, true));
 	}
 	else {
-		this.callback();
+		//execute callback function
+		this.callback(this.newFilePath, this.commitMsg);
+		//remove events
+		disconnectAll($("save-new-file"));
+		disconnectAll($("cancel-new-file"));
+		//hide browser
+		hide_file_browser();
 	}	
 }
 
@@ -80,7 +86,7 @@ function processTree(parentDOM, tree, pathSoFar) {
 					}
 			}
 			newLeaf.setAttribute('fileswithin', filesWithin);
-			newLeaf.innerHTML = tree[i].name;
+			newLeaf.innerHTML = tree[i].name+"/";
 			//create new list for child folder
 			var newBranch = LI(null, "");
 			appendChildNodes(newBranch, UL(null, ""));
@@ -92,6 +98,7 @@ function processTree(parentDOM, tree, pathSoFar) {
 	return parentDOM;
 }
 
+//when user selects a folder in right hand pane
 function selectFolder(path, files) {
 	//update selected directory
 	$("selected-dir").innerHTML = "Save Directory: "+path;
@@ -119,6 +126,7 @@ function hide_file_browser() {
 }
 //when commit message box has focus:
 function enlarge_commit_msg() {
+	//delete deafult text on focus
 	if($("new-commit-msg").innerHTML == "Commit message") { $("new-commit-msg").innerHTML = "";}
 	Morph($("right-pane"), {"style": {"height" : "100px" }});
 	Morph($("left-pane"), {"style": {"height" : "100px" }});

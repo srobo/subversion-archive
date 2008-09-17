@@ -178,6 +178,9 @@ function EditTab(tab) {
 	// The path
 	this.path;
 
+	//The commit message
+	this.commitMsg;
+
 	// The project (TODO)
 	this.project = "TODO";
 
@@ -186,6 +189,12 @@ function EditTab(tab) {
 
 	// The tab representing us
 	this.tab = tab;
+
+	// true if tab has been modified
+	this.dirty = true;	//TODO
+
+	//true if file is new (unsaved)
+	this.isNew = true;	//TODO
 
 	this._init = function() {
 		// Mark the tab as a edit tab
@@ -198,13 +207,34 @@ function EditTab(tab) {
 	this._check_syntax = function() {
 		status_msg( "Check syntax of " + this.path, LEVEL_WARN );
 	}
+
+	this._receive_new_fname = function(fpath, commitMsg) {
+		this.path = fpath;
+		this.commitMsg = commitMsg;
+		this.dirty = false;
+		this._save();
+	}
 	
 	this._save = function() {
-		status_msg( "Save " + this.path, LEVEL_WARN );
+		//if new file	-- TODO
+		if(this.dirty) {
+			status_msg( "Enter a filename for new file", LEVEL_WARN );
+			var fileBrowser = new Browser(team, "", bind(this._receive_new_fname, this));	
+		}
+		else {
+			//TODO - call to actual save function
+			status_msg( this.path +" Saved OK", LEVEL_OK );
+		}
 	}
 
 	this._close = function() {
-		status_msg( "Close " + this.path, LEVEL_WARN );
+		var obj = this;
+		if(this.dirty == true) {
+			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", function(){ obj.dirty = false; obj._close()});
+		}
+		else{
+			status_msg( this.path+" Closed", LEVEL_OK );
+		}
 	}
 
 	this._init();
