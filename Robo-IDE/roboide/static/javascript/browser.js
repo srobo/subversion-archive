@@ -20,7 +20,7 @@ Browser.prototype._receiveTree = function(nodes) {
 	this.fileTree = nodes.tree;
 	//default to root directory
 	this.currFolder = this.fileTree[0].path;
-	$("selected-dir").innerHTML = this.currFolder;
+	$("selected-dir").innerHTML = "Save Directory: "+this.currFolder;
 	//populate left pane
 	$("browser-status").innerHTML = "Please Select a directory";
 	replaceChildNodes($("left-pane-list"), null);
