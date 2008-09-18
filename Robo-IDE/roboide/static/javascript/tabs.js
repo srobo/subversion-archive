@@ -24,7 +24,10 @@ function Tab(label) {
 		connect(this._li, 'onclick', bind(this._onclick,this) );
 	}
 
-	this._onclick = function() {
+	this._onclick = function(ev) {
+		ev.preventDefault();
+		ev.stopPropagation();
+
 		signal( this, "onclick", this );
 	}
 
