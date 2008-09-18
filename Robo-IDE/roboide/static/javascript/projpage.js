@@ -2,14 +2,15 @@
 function ProjPage() {
 	// Whether _init has run
 	this._initted = false;
-	// The prompt 
-	this._ps_prompt = null;
-	// The projects
-	this._projects = null;
 
 	// The signals that we've set up for this object
 	// signals that are for DOM objects that weren't created in this instance
 	this._connections = [];
+
+	// The project list -- a ProjList instance
+	this._list = null;
+	// The project selector -- a ProjSelect instance
+	this._selector = null;
 
 	this.flist = null;
 	this.project = "";
@@ -21,14 +22,11 @@ function ProjPage() {
 	//  - change_project: Change to the named project
 	// Private:
 	//  - _init: Initialises members of the project page
-	//  - _populate_list: Retries the list of projects from the server
-	//                    and populates it
-	//  - _got_list: Handler for when the project list has been received 
-	//  - _list_changed: Event handler for when the project list selection is 
-	//                   changed 
 	//  - _rpane_show: Show the right-hand pane
 	//  - _rpane_hide: Hide the right-hand pane
 	//  - _project_exists: Returns true if the given project name exists
+	//  - _on_proj_change: Handler for when the selected project changes
+	//                     Hides/shows the right-hand pane as necessary
 }
 
 // Initialise the project page -- but don't show it
@@ -36,9 +34,25 @@ ProjPage.prototype._init = function() {
 	if( this._initted )
 		return;
 
-	this._connections.push( connect( "project-select", "onchange", bind(this._list_changed, this) ) );
+	// Hide the right-hand whilst we're loading
+	this._rpane_hide();
+
+	// The list of projects
+	this._list = new ProjList();
+
+	// The selection box for selecting a project
+	this._selector = new ProjSelect(this._list, $("project-select"));
+	connect( this._selector, "onchange", bind( this._on_proj_change, this ) );
 
 	this.flist = new ProjFileList();
+	// Update the file list when the project changes
+	connect( this._selector, "onchange", bind( this.flist.update, this.flist ) );
+
+	// We have to synthesize the first "onchange" event from the ProjSelect,
+	// as these things weren't connected to it when it happened
+	this._on_proj_change( this._selector.project );
+	this.flist.update( this._selector.project );
+
 	this._initted = true;
 }
 
@@ -48,7 +62,6 @@ ProjPage.prototype.destroy = function() {
 		return;
 	this._initted = false;
 	this.project = "";
-	this._ps_prompt = null;
 	this.flist = null;
 
 	// Disconnect all signals to static things
@@ -60,14 +73,6 @@ ProjPage.prototype.show = function() {
 	logDebug( "Projpage.show: Current project is \"" + this.project + "\"" );
 	this._init();
 	
-	// Hide the right-hand whilst the file list is loading
-	// HACK -- will split the ProjPage show/hide functions from the 
-	// loading path shortly.
-//	this._rpane_hide();
-	
-	// Load/refresh the projects list
-	this._populate_list();
-
 	setStyle('projects-page', {'display':'block'});
 }
 
@@ -76,111 +81,25 @@ ProjPage.prototype.hide = function() {
 	setStyle('projects-page', {'display':'none'});
 }
 
-// Change project
-ProjPage.prototype.change_project = function(proj) {
-	if( !this._project_exists(proj) ) {
-		logDebug( "Change requested to non-existent project \"" + proj + "\"" );
-		return;
-	}
-	logDebug("Changing project to " + proj);
+ProjPage.prototype._on_proj_change = function(proj) {
+	logDebug( "ProjPage._on_proj_change(\"" + proj + "\")" );
 	this.project = proj;
-	
-	this.flist.update( this.project );
-	signal( this, "onchange" );
-}
 
-// Retrieves a list of projects and populates the project selection list
-ProjPage.prototype._populate_list = function() {
-	var d = loadJSONDoc("./projlist", {team : team});
-	
-	d.addCallback( bind( this._got_list, this ) );
-	
-	d.addErrback( bind( function() {
-		status_button( "Error retrieving the project list", LEVEL_ERROR,
-			       "retry", bind( this._populate_list, this) );
-	}, this ) );
-}
-
-// Called once we've received the project list
-ProjPage.prototype._got_list = function(resp) {
-	var items = [];
-	this._projects = resp["projects"];
-
-	if( this._projects.length == 1 ) {
-		this.project = this._projects[0];
-		this.change_project( this.project );
-	}
-
-	if( !this._project_exists(this.project) ) {
-		var dp = user.get_setting( "project.last" );
-
-		if( dp != undefined
-		    && this._project_exists( dp ) )
-			this.change_project( dp );
-		else {
-			this.project = "";
-			this._ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
-			items.unshift( OPTION( { "id" : "projlist-tmpitem", 
-						 "selected" : "selected" }, "Select a project." ) );
-		}
-	}
-
-	if( this._project_exists(this.project) )
-		logDebug( "_got_list: Using project " + this.project );
-	else
-		logDebug( "No default project found -- requesting selection" );
-		
-	for( var p in resp["projects"] ) {
-		var pname = resp["projects"][p];
-		var props = { "value" : resp["projects"][p] };
-			
-		if( pname == this.project )
-			props["selected"] = "selected";
-		items[items.length] = ( OPTION( props, resp["projects"][p] ) );
-	}
-
-	replaceChildNodes( "project-select", items );
-}
-
-ProjPage.prototype._list_changed = function(ev) {
-	if( this._ps_prompt != null ) {
-		this._ps_prompt.close();
-		this._ps_prompt = null;
-	}
-	
-	var src = ev.src();
-	
-	// Remove the "select a project" item from the list
-	var tmp = $("projlist-tmpitem");
-	if( tmp != null && src != tmp )
-		removeElement( tmp );
-	
-	if( src != tmp ) {
-		var proj = src.value;
-		projpage.change_project(proj);
+	if( proj == "" )
+		this._rpane_hide();
+	else {
+		$("proj-name").innerHTML = "Project " + this.project;
+		this._rpane_show();
 	}
 }
 
 // ***** Project Page Right Hand pane *****
 ProjPage.prototype._rpane_hide = function() {
-	map_1( setStyle,
-	       {'display':'none'},
-	       ["proj-rpane-header", "proj-filelist"] );
+	setStyle( "proj-rpane", {'display':'none'} );
 }
 
 ProjPage.prototype._rpane_show = function() {
-	map_1( setStyle, 
-	       {'display':''},
-	       ["proj-rpane-header", "proj-filelist"] );
-}
-
-ProjPage.prototype._project_exists = function(pname) {
-	for( i in this._projects ) {
-		if( this._projects[i] == pname ) {
-			return true;
-		}
-	}
-	return false;
+	setStyle( "proj-rpane", {'display':''} );
 }
 
 // ***** Project Page File Listing *****
@@ -203,20 +122,45 @@ function ProjFileList() {
 	//  - _nested_divs: Returns N nested divs.
 	//  - _dir: Returns the DOM object for a directory entry
 	//  - _onclick: The onclick handler for a line in the listing
+	//  - _hide: Hide the filelist
+	//  - _show: Show the filelist
 }
 
 // Request and update the project file listing
 ProjFileList.prototype.update = function( pname ) {
+	if( pname == "" ) {
+		// No project selected.
+		this._hide();
+		return;
+	}
+
+	if( pname != this._project ) {
+		// Hide the list whilst we're loading it
+		swapDOM( "proj-filelist",
+			 DIV( {"id": "proj-filelist", 
+			       "class" : "loading"}, 
+			      "Loading project file listing..." ) );
+	}
+
+	this._project = pname;
+
 	var d = loadJSONDoc("./filelist", {team : team,
 					   rootpath : pname});
-	this._project = pname;
 	
 	d.addCallback( bind( this._received, this ) );
 	
 	d.addErrback( bind( function (){
-		status_button( "Error getting the project file list", LEVEL_ERROR,
+		status_button( "Error retrieving the project file listing", LEVEL_ERROR,
 			       "retry", bind( this.update, this ) );
 	}, this ) );
+}
+
+ProjFileList.prototype._hide = function() {
+	setStyle( "proj-filelist", {"display":"none"} );
+}
+
+ProjFileList.prototype._show = function() {
+	setStyle( "proj-filelist", {"display":""} );
 }
 
 // Handler for receiving the file list 
@@ -228,9 +172,7 @@ ProjFileList.prototype._received = function(nodes) {
 		       "style" : "display:none" },
 		     map_1( bind(this._dir, this), 0, nodes["tree"] ) ) );
 	
-	getElement( "proj-name" ).innerHTML = "Project " + this._project;
-	
-	projpage._rpane_show();
+	this._show();
 }
 
 
@@ -292,5 +234,169 @@ ProjFileList.prototype._onclick = function(ev) {
 			editpage.edit_file( path );
 		}
 	}
+}
+
+// Object that grabs the project list
+// Signals:
+//  - onchange: when the projects list changes
+function ProjList() {
+	// Array of project names (strings)
+	this.projects = [];
+	// Whether we've loaded
+	this.loaded = false;
+
+	// Member functions:
+	// Public:
+	//  - project_exists(pname): Returns true if the given project exists.
+	// Private:
+	//  - _init
+	//  - _grab_list: Grab the project list and update.
+	//  - _got_list: Handler for the project list response.
+
+	this._init();
+}
+
+ProjList.prototype._init = function() {
+	this._grab_list();
+}
+
+ProjList.prototype._grab_list = function() {
+	var d = loadJSONDoc("./projlist", {team : team});
+	
+	d.addCallback( bind( this._got_list, this ) );
+	
+	d.addErrback( bind( function() {
+		status_button( "Error retrieving the project list", LEVEL_ERROR,
+			       "retry", bind( this._grab_list, this) );
+	}, this ) );
+}
+
+ProjList.prototype._got_list = function(resp) {
+ 	this.projects = resp["projects"];
+ 	this.loaded = true;
+
+	signal( this, "onchange" );
+}
+
+ProjList.prototype.project_exists = function(pname) {
+	for( i in this.projects )
+		if( this.projects[i] == pname )
+			return true;
+	return false;
+}
+
+// The project selector.
+// Arguments:
+//  - plist: The project list (ProjList)
+//  - elem: The DOM object for the select box.
+function ProjSelect(plist, elem) {
+	this._elem = elem;
+	this._plist = plist;
+
+	// Project selection prompt
+	this._ps_prompt = null;
+
+	// The project that's selected
+	// Empty string means none selected
+	this.project = "";
+
+	// Signals:
+	//  - onchange: when the project selection changes.
+	//              Handler passed the name of the new project.
+
+	// Member functions:
+	// Public:
+
+	// Private:
+	//  - _init: Initialisation.
+	//  - _onchange: Handler for the select box onchange event.
+	//  - _plist_onchange: Handler for when the list of projects changes.
+
+	this._init();
+}
+
+ProjSelect.prototype._init = function() {
+	connect( this._elem, "onchange", bind( this._onchange, this ) );
+	connect( this._plist, "onchange", bind( this._plist_onchange, this ) );
+
+	// If the list is already loaded when we're called, force update
+	if( this._plist.loaded )
+		this._plist_onchange();
+}
+
+// Called when the project list changes
+ProjSelect.prototype._plist_onchange = function() {
+	logDebug( "ProjSelect._plist_onchange" );
+	var startproj = this.project;
+	var items = [];
+
+	// Find the default project to be selected
+	if( this.project == "" 
+	    || !this._plist.project_exists( this.project ) ) {
+		this.project = "";
+
+		var dp = this._get_default();
+		if( dp == null ) {
+			// Add "Please select..."
+			this._ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
+			items.unshift( OPTION( { "id" : "projlist-tmpitem",
+						 "selected" : "selected" }, "Select a project." ) );
+		} else
+			this.project = dp;
+	}
+
+	// Rebuild the select box options
+	for( var p in this._plist.projects ) {
+		var pname = this._plist.projects[p];
+		var props = { "value" : pname };
+			
+		if( pname == this.project )
+			props["selected"] = "selected";
+		items[items.length] = ( OPTION( props, pname ) );
+	}
+
+	replaceChildNodes( this._elem, items );
+
+	logDebug( "ProjList._plist_onchange: Now on project " + this.project );
+
+	if( startproj != this.project )
+		signal( this, "onchange", this.project );
+}
+
+// Handler for the onchange event of the select element
+ProjSelect.prototype._onchange = function(ev) {
+	if( this._ps_prompt != null ) {
+		this._ps_prompt.close();
+		this._ps_prompt = null;
+	}
+
+	var src = ev.src();
+
+	// Remove the "select a project" item from the list
+	var tmp = $("projlist-tmpitem");
+	if( tmp != null && src != tmp )
+		removeElement( tmp );
+	
+	if( src != tmp ) {
+		var proj = src.value;
+
+		if( proj != this.project ) {
+			this.project = proj;
+			signal( this, "onchange", this.project );
+		}
+	}
+}
+
+ProjSelect.prototype._get_default = function() {
+	if( this._plist.projects.length == 1 )
+		return this._plist.projects[0];
+
+	var dp = user.get_setting( "project.last" );
+
+	if( dp != undefined
+	    && this._plist.project_exists( dp ) )
+		return dp;
+
+	return null;		
 }
 

@@ -97,4 +97,11 @@
   color: #ffffff;
 }
 
+/* The "loading" DIV displayed whilst the filelist is loading  */
+#proj-filelist.loading { 
+  font-weight: bold;
+  padding-left: 2em;
+  padding-top: 2em;
+}
+
 #clearboth { clear: both; }
