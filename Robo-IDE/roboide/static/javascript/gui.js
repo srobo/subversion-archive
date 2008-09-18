@@ -37,6 +37,10 @@ var user;
 // The team selector
 var team_selector;
 
+// The initial onchange event ident connected to the tabbar
+// Gets disconnected as soon as a team is selected
+var tabchange_ident = null;
+
 // onload function
 addLoadEvent( function() {
 	//On page load - this replaces a onload action of the body tag
@@ -48,48 +52,47 @@ addLoadEvent( function() {
 	user = new User();
 	var d = user.load_info();
 	// Wait for the user information to come back
-	d.addCallback( load_team_info );
+	d.addCallback( load_select_team );
 	d.addErrback( function() { window.alert("Failed to get user info: TODO: replace this message mechanism"); } );
 });
 
-// 1) executed after the onload function
-function load_team_info() {
+// 1) executed after the user's information has been acquired
+function load_select_team() {
 	// Got the user information -- now get team information
 	team_selector = new TeamSelector();
 
-	connect( team_selector, "onchange", load_project_pane );
+	projpage = new ProjPage();
+	connect( team_selector, "onchange", bind(projpage.set_team, projpage) );
+	tabchange_ident = connect( team_selector, "onchange", load_gui );
+		
+	// Triggers the signals from the team selector
 	team_selector.load();
 }
 
-// 2) executed after team information has been acquired/changed
-function load_project_pane() {
-	if( projpage != null )
-		projpage.destroy();
-	else
-		projpage = new ProjPage();
+// 2) Executed once we have team
+function load_gui() {
+	logDebug( "load_gui" );
+	// We don't want this function to be called again
+	disconnect( tabchange_ident );
 
-	if( tabbar == null ) {
-		tabbar = new TabBar();
+	tabbar = new TabBar();
 
-		projtab = new Tab( "Projects" );
-		connect( projtab, "onfocus", bind( projpage.show, projpage ) );
-		connect( projtab, "onblur", bind( projpage.hide, projpage ) );
-		tabbar.add_tab( projtab );
-		
-	}
+	// Projects tab
+	projtab = new Tab( "Projects" );
+	connect( projtab, "onfocus", bind( projpage.show, projpage ) );
+	connect( projtab, "onblur", bind( projpage.hide, projpage ) );
+	tabbar.add_tab( projtab );
 
-	if( editpage == null ) {
-		editpage = new EditPage();
+	// Edit page
+	editpage = new EditPage();
 
-		// The "new" tab button
-		var ntab = new Tab( "+ New + " );
-		ntab.can_focus = false;
-		connect( ntab, "onclick", bind(editpage.new_file, editpage) );
-		tabbar.add_tab( ntab );
-	}
+	// The "new" tab button
+	var ntab = new Tab( "+ New + " );
+	ntab.can_focus = false;
+	connect( ntab, "onclick", bind(editpage.new_file, editpage) );
+	tabbar.add_tab( ntab );
 
-	// We must force the switch here, as we may already be on that tab
-	tabbar.force_refresh( projtab );
+	tabbar.switch_to( projtab );
 }
 
 function beforeunload(e) {
@@ -401,6 +404,7 @@ function TeamSelector() {
 				if( team_last != undefined 
 				    && this._team_exists( team_last ) ) {
 					team = team_last;
+					logDebug( "Defaulting to team " + team );
 				} 
 			}
 
@@ -430,7 +434,7 @@ function TeamSelector() {
 		this._update_name();
 
 		if( this._team_exists(team) )
-			signal( this, "onchange" );
+			signal( this, "onchange", team );
 	}
 
 	this._build_options = function() {
@@ -438,10 +442,11 @@ function TeamSelector() {
 
 		for( t in user.teams ) {
 			var props = { "value" : user.teams[t]};
+
 			if( user.teams[t] == team )
 				props["selected"] = "selected";
 			
-			olist.push( OPTION(null, user.teams[t]) );
+			olist.push( OPTION(props, user.teams[t]) );
 		}
 
 		return olist;
@@ -475,7 +480,7 @@ function TeamSelector() {
 		logDebug( "team changed to " + team );
 		this._update_name();
 
-		signal( this, "onchange" );
+		signal( this, "onchange", team );
 	}
 
 	this._update_name = function() {

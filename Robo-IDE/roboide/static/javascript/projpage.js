@@ -56,19 +56,6 @@ ProjPage.prototype._init = function() {
 	this._initted = true;
 }
 
-ProjPage.prototype.destroy = function() {
-	logDebug( "ProjPage.destroy()" );
-	if( !this._initted )
-		return;
-	this._initted = false;
-	this.project = "";
-	this.flist = null;
-
-	// Disconnect all signals to static things
-	map( disconnect, this._connections );
-	this._connections = []
-}
-
 ProjPage.prototype.show = function() {
 	logDebug( "Projpage.show: Current project is \"" + this.project + "\"" );
 	this._init();
@@ -81,8 +68,8 @@ ProjPage.prototype.hide = function() {
 	setStyle('projects-page', {'display':'none'});
 }
 
-ProjPage.prototype._on_proj_change = function(proj) {
-	logDebug( "ProjPage._on_proj_change(\"" + proj + "\")" );
+ProjPage.prototype._on_proj_change = function(proj, team) {
+	logDebug( "ProjPage._on_proj_change(\"" + proj + "\", " + team + ")" );
 	this.project = proj;
 
 	if( proj == "" )
@@ -91,6 +78,19 @@ ProjPage.prototype._on_proj_change = function(proj) {
 		$("proj-name").innerHTML = "Project " + this.project;
 		this._rpane_show();
 	}
+}
+
+ProjPage.prototype.set_team = function(team) {
+	logDebug( "ProjPage.set_team( " + team + " )" );
+	if( team == null || team == 0 )
+		return;
+
+	this._init();
+
+	// Start the chain of updates
+ 	this._list.update(team);
+	// The selector and filelist are connected to onchange on the list,
+	// so they will update when it's updated
 }
 
 // ***** Project Page Right Hand pane *****
@@ -114,9 +114,10 @@ function map_1( func, arg, arr ) {
 // Project page file list
 function ProjFileList() {
 	this._project = "";
+	this._team = null;
 	// Member functions:
 	// Public:
-	//  - update: Update the file list to the given project
+	//  - update: Update the file list to the given project and team
 	// Private:
 	//  - _received: handler for receiving the file list
 	//  - _nested_divs: Returns N nested divs.
@@ -127,14 +128,15 @@ function ProjFileList() {
 }
 
 // Request and update the project file listing
-ProjFileList.prototype.update = function( pname ) {
+ProjFileList.prototype.update = function( pname, team ) {
+	logDebug( "ProjFileList.update( \"" + pname + "\", " + team + " )" );
 	if( pname == "" ) {
 		// No project selected.
 		this._hide();
 		return;
 	}
 
-	if( pname != this._project ) {
+	if( pname != this._project || team != this._team ) {
 		// Hide the list whilst we're loading it
 		swapDOM( "proj-filelist",
 			 DIV( {"id": "proj-filelist", 
@@ -143,8 +145,9 @@ ProjFileList.prototype.update = function( pname ) {
 	}
 
 	this._project = pname;
+	this._team = team;
 
-	var d = loadJSONDoc("./filelist", {team : team,
+	var d = loadJSONDoc("./filelist", {team : this._team,
 					   rootpath : pname});
 	
 	d.addCallback( bind( this._received, this ) );
@@ -238,12 +241,15 @@ ProjFileList.prototype._onclick = function(ev) {
 
 // Object that grabs the project list
 // Signals:
-//  - onchange: when the projects list changes
+//  - onchange: when the projects list changes.
+//              First argument is the team number
 function ProjList() {
 	// Array of project names (strings)
 	this.projects = [];
 	// Whether we've loaded
 	this.loaded = false;
+	// The team
+	this._team = null;
 
 	// Member functions:
 	// Public:
@@ -252,15 +258,17 @@ function ProjList() {
 	//  - _init
 	//  - _grab_list: Grab the project list and update.
 	//  - _got_list: Handler for the project list response.
-
-	this._init();
 }
 
-ProjList.prototype._init = function() {
-	this._grab_list();
+// Update the list to the given team
+ProjList.prototype.update = function(team) {
+	this._grab_list(team);
 }
 
-ProjList.prototype._grab_list = function() {
+ProjList.prototype._grab_list = function(team) {
+	this.loaded = false;
+	this._team = team;
+
 	var d = loadJSONDoc("./projlist", {team : team});
 	
 	d.addCallback( bind( this._got_list, this ) );
@@ -275,7 +283,7 @@ ProjList.prototype._got_list = function(resp) {
  	this.projects = resp["projects"];
  	this.loaded = true;
 
-	signal( this, "onchange" );
+	signal( this, "onchange", this._team );
 }
 
 ProjList.prototype.project_exists = function(pname) {
@@ -299,6 +307,9 @@ function ProjSelect(plist, elem) {
 	// The project that's selected
 	// Empty string means none selected
 	this.project = "";
+
+	// The team that we're currently listing
+	this._team = null;
 
 	// Signals:
 	//  - onchange: when the project selection changes.
@@ -325,14 +336,16 @@ ProjSelect.prototype._init = function() {
 }
 
 // Called when the project list changes
-ProjSelect.prototype._plist_onchange = function() {
+ProjSelect.prototype._plist_onchange = function(team) {
 	logDebug( "ProjSelect._plist_onchange" );
 	var startproj = this.project;
+	var startteam = this._team;
 	var items = [];
 
 	// Find the default project to be selected
 	if( this.project == "" 
-	    || !this._plist.project_exists( this.project ) ) {
+	    || !this._plist.project_exists( this.project )
+	    || team != this._team ) {
 		this.project = "";
 
 		var dp = this._get_default();
@@ -344,6 +357,7 @@ ProjSelect.prototype._plist_onchange = function() {
 		} else
 			this.project = dp;
 	}
+	this._team = team;
 
 	// Rebuild the select box options
 	for( var p in this._plist.projects ) {
@@ -357,10 +371,11 @@ ProjSelect.prototype._plist_onchange = function() {
 
 	replaceChildNodes( this._elem, items );
 
-	logDebug( "ProjList._plist_onchange: Now on project " + this.project );
+	logDebug( "ProjList._plist_onchange: Now on project " + this._team + "." + this.project );
 
-	if( startproj != this.project )
-		signal( this, "onchange", this.project );
+	if( startproj != this.project 
+	    || startteam != this._team )
+		signal( this, "onchange", this.project, this._team );
 }
 
 // Handler for the onchange event of the select element
@@ -382,7 +397,7 @@ ProjSelect.prototype._onchange = function(ev) {
 
 		if( proj != this.project ) {
 			this.project = proj;
-			signal( this, "onchange", this.project );
+			signal( this, "onchange", this.project, this._team );
 		}
 	}
 }
