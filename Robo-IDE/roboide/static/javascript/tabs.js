@@ -88,6 +88,7 @@ function TabBar() {
 	this.add_tab = function( tab ) {
 		this.tabs.push( tab );
 		connect( tab, "onclick", bind( this._onclick, this ) );
+		connect( tab, "onclose", bind( this._onclose, this ) );
 	}
 	
 	this.switch_to = function( tab ) {
@@ -123,5 +124,41 @@ function TabBar() {
 	// Handler for tab onclick events
 	this._onclick = function( tab ) {
 		this.switch_to( tab );
+	}
+
+	// Handler for closing a tab
+	this._onclose = function( tab ) {
+		var index = 0;
+
+		for( var i in this.tabs ) {
+			if( this.tabs[i] == tab ) {
+				index = i;
+				this.tabs.splice( i, 1 );
+				break;
+			}
+		}
+
+		index--;
+		if( index < 0 ) index = 0;
+		
+		// Try tabs to the left:
+		for( var i = index; i >= 0; i-- )
+			if( this.tabs[i].can_focus ) {
+				index = i;
+				break;
+			}
+
+		// Try tabs to the right:
+		for( var i = index; i < this.tabs.length; i++ ) {
+			if( this.tabs[i].can_focus ) {
+				index = i;
+				break;
+			}
+		}
+
+		if( this.tabs[i].can_focus ) {
+			logDebug( "Switching to tab index " + index );
+			this.switch_to( this.tabs[index] );
+		}
 	}
 }

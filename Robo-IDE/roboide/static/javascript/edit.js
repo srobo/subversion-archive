@@ -120,6 +120,8 @@ function EditPage() {
 		etab.path = path;
 		etab.contents = "TODO: Do the contents stuff";
 
+		connect( etab, "onclose", bind( this._on_tab_close, this ) );
+
 		this._open_files[path] = etab;
 		return etab;
 	}
@@ -128,10 +130,21 @@ function EditPage() {
 	// returns null if not open
 	this._file_get_etab = function( path ) {
 		for( var i in this._open_files ) {
-			if( i == path )
+			if( i == path && this._open_files[i] !== null )
 				return this._open_files[i];
 		}
 		return null;
+	}
+
+	// Handler for when the tab has been closed
+	this._on_tab_close = function( etab ) {
+		// Remove tab from our list
+		for( var i in this._open_files ) {
+			if( this._open_files[i] === etab ) {
+				this._open_files[i] = null;
+				break;
+			}
+		}
 	}
 
 	this._tab_switch = function( fromtab, totab ) {
@@ -184,7 +197,6 @@ function EditTab(path) {
 
 	this._init = function() {
 		this.tab = new Tab( this.path );
-		connect( this.tab, "onclose", bind(this._close, this) );
 		tabbar.add_tab( this.tab );
 
 		// Mark the tab as a edit tab
@@ -226,7 +238,9 @@ function EditTab(path) {
 			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", function(){ obj.dirty = false; obj._close()});
 		}
 		else{
-			signal( this, "onclose" );
+			signal( this, "onclose", this );
+			this.tab.close();
+			disconnectAll(this);
 			status_msg( this.path+" Closed", LEVEL_OK );
 		}
 	}
