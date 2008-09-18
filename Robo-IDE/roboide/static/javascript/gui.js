@@ -57,7 +57,7 @@ function load_team_info() {
 	// Got the user information -- now get team information
 	team_selector = new TeamSelector();
 
-	connect( team_selector, "onselect", load_project_pane );
+	connect( team_selector, "onchange", load_project_pane );
 	team_selector.load();
 }
 
@@ -430,7 +430,7 @@ function TeamSelector() {
 		this._update_name();
 
 		if( this._team_exists(team) )
-			signal( this, "onselect" );
+			signal( this, "onchange" );
 	}
 
 	this._build_options = function() {
@@ -475,7 +475,7 @@ function TeamSelector() {
 		logDebug( "team changed to " + team );
 		this._update_name();
 
-		signal( this, "onselect" );
+		signal( this, "onchange" );
 	}
 
 	this._update_name = function() {
