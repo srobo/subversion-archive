@@ -11,9 +11,7 @@ Browser.prototype._init = function(team, rootpath) {
 	display_file_browser();
 	//get file listings
 	this._getFileTree(team, rootpath);
-	//set up event handlers 
-	disconnectAll($("save-new-file"));
-	disconnectAll($("cancel-new-file"));
+	//set up event handlers
 	connect($("save-new-file"), 'onclick', bind(this.clickSaveFile, this, false));
 	connect($("cancel-new-file"), 'onclick', bind(this.clickCancelSave, this));
 }
@@ -24,14 +22,15 @@ Browser.prototype._receiveTree = function(nodes) {
 	this.currFolder = this.fileTree[0].path;
 	$("selected-dir").innerHTML = this.currFolder;
 	//populate left pane
-	$("curr-file-path").innerHTML = this.currFolder+"/";
-	replaceChildNodes($("left-pane-list"), null)
+	$("browser-status").innerHTML = "Please Select a directory";
+	replaceChildNodes($("left-pane-list"), null);
 	processTree($("left-pane-list"), this.fileTree, "");
 }
 
 Browser.prototype._errorReceiveTree = function() {
-	status_button("Cannot retreive file listing", LEVEL_ERROR, "retry", bind(this._init, this));
+	$("browser-status").innerHTML = "ERROR :: Unable to retrieve file list";
 }
+
 Browser.prototype._getFileTree = function(tm, rpath) {
 	var d = loadJSONDoc("./filelist", { team : tm,
 					    rootpath : rpath});
@@ -44,19 +43,20 @@ Browser.prototype._getFileTree = function(tm, rpath) {
 //when user clicks save
 Browser.prototype.clickSaveFile = function(override) {
 	this.commitMsg = $("new-commit-msg").value;
-	logDebug(this.commitMsg);
-	this.newFilePath = $("selected-dir").innerHTML + $("new-file-name").getAttribute("value").toString();
+	this.newFilePath = $("selected-dir").innerHTML +"/"+$("new-file-name").value;
+	logDebug("Commit Message: "+this.commitMsg);
+	logDebug("New File Name & Path: "+this.newFilePath);
 
 	if( ((this.commitMsg == "Commit message") || (this.commitMsg == "")) && !override)
 	{
-		status_button("No commit message added", LEVEL_WARN, "ignore", bind(this.clickSaveFile, this, true));
+			$("browser-status").innerHTML = "No commit message added - click to ignore";
+			connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
 	}
 	else {
 		//execute callback function
 		this.callback(this.newFilePath, this.commitMsg);
 		//remove events
-		disconnectAll($("save-new-file"));
-		disconnectAll($("cancel-new-file"));
+		disconnectAll($("browser-status"));
 		//hide browser
 		hide_file_browser();
 	}	
@@ -67,7 +67,7 @@ Browser.prototype.clickCancelSave = function() {
 	status_hide();
 	this.commitMsg = "";
 	this.newFilePath = "";
-	fade($("file-browser"), {'from' : 1.0, 'to' : 0.0});
+	hide_file_browser();
 }
 
 //Recursive function to conver filetree into valid DOM tree
@@ -101,6 +101,7 @@ function processTree(parentDOM, tree, pathSoFar) {
 
 //when user selects a folder in right hand pane
 function selectFolder(path, files) {
+	logDebug("Folder selected :"+path);
 	//update selected directory
 	$("selected-dir").innerHTML = "Save Directory: "+path;
 	var fileList = files.split("/");
@@ -114,16 +115,26 @@ function selectFolder(path, files) {
 		appendChildNodes($("right-pane-list"), li);
 	}
 	//update current new file name
-	$("curr-file-path").innerHTML = "New Filename: "+path + "/" + $("new-file-name").getAttribute("value").toString();
+	$("browser-status").innerHTML = "Please choose a file name:";
 }
 
 function display_file_browser() {
-	showElement($("file-browser"))
-	fade($("file-browser"), {'from' : 0.0, 'to' : 1.0});
+	logDebug("showing debug");
+	showElement($("file-browser"));
+	showElement($("grey-out"));
+	//clear previous events
+	disconnectAll($("save-new-file"));
+	disconnectAll($("cancel-new-file"));
+	//fade($("file-browser"), {'from' : 0.0, 'to' : 1.0});
 }
 function hide_file_browser() {
-	fade($("file-browser"), {'from' : 1.0, 'to' : 0});
-	hideElement($("file-browser"))
+	logDebug("Hiding File Browser");
+	disconnectAll($("save-new-file"));
+	disconnectAll($("cancel-new-file"));
+	disconnectAll($("browser-status"));
+	//fade($("file-browser"), {'from' : 1.0, 'to' : 0});
+	hideElement($("file-browser"));
+	hideElement($("grey-out"));
 }
 //when commit message box has focus:
 function enlarge_commit_msg() {

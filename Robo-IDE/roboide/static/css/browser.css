@@ -1,9 +1,8 @@
 #file-browser {
 	background-color: #253571;
 	padding: auto;
-	margin: auto;
+	margin: 150px auto 0 auto;
 	width: 600px;
-	opacity: 0;
 	display: none;
 	text-align: left;
 }
@@ -51,7 +50,7 @@
 #left-pane li:hover{
 	background-color: #ffffff;
 }
-#curr-file-path {
+#browser-status {
 	display: block;
 	font-size: 1.2em;
 	color: #ffffff;

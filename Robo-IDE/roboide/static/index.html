@@ -32,6 +32,21 @@
 			<br /><a href="#" onClick="tabChange(1)" >&raquo; Forgotten password</a>
 		</form>
 	</div>	
+	<!-- File Browser  -->
+	<div id="file-browser">
+		<div style="clear: both">&nbsp</div>
+		<span id="selected-dir">Please Select A Folder...</span>
+		<div id="left-pane"><ul id="left-pane-list" > </ul>
+		</div>
+		<div id="right-pane">
+			<ul id="right-pane-list"> </ul>
+		</div>
+		<textarea id="new-commit-msg" onfocus="enlarge_commit_msg()" onblur="shrink_commit_msg()">Commit message</textarea>
+		<span id="browser-status">New Filename: </span>
+		<input type="text" id="new-file-name" value="new.py" ></input>
+		<button id="save-new-file" >Save File</button><button id="cancel-new-file" >Cancel</button>
+		<div style="clear: both">&nbsp</div>
+	</div>
 </div>
 
 <div id="top">
@@ -71,21 +86,7 @@
 				</li>
 			</ul>
 		</div>
-		<!-- File Browser  -->
-		<div id="file-browser">
-			<div style="clear: both">&nbsp</div>
-			<span id="selected-dir">Please Select A Folder...</span>
-			<div id="left-pane"><ul id="left-pane-list" > </ul>
-			</div>
-			<div id="right-pane">
-				<ul id="right-pane-list"> </ul>
-			</div>
-			<textarea id="new-commit-msg" onfocus="enlarge_commit_msg()" onblur="shrink_commit_msg()">Commit message</textarea>
-			<span id="curr-file-path">New Filename: </span>
-			<input type="text" id="new-file-name" value="new.py" />
-			<button id="save-new-file" >Save File</button><button id="cancel-new-file" >Cancel</button>
-			<div style="clear: both">&nbsp</div>
-		</div>
+
 	</div>
 
 	<div id="log-mode">
