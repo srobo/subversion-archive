@@ -104,4 +104,9 @@
   padding-top: 2em;
 }
 
+.proj-filelist-dir-collapse { 
+  font-style: italic;
+  color: rgb(100,100,100);
+}
+
 #clearboth { clear: both; }

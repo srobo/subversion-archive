@@ -217,26 +217,75 @@ ProjFileList.prototype._onclick = function(ev) {
 	ev.stopPropagation();
 	
 	mods = ev.modifier();
-	if( mods["ctrl"] )
+
+	src = ev.src();
+	kind = getNodeAttribute( src, "ide_kind" );
+	path = getNodeAttribute( src, "ide_path" );
+
+	if( mods["ctrl"] ) {
 		toggleElementClass( "selected", ev.src() );
-	else {
-		src = ev.src();
-		kind = getNodeAttribute( src, "ide_kind" );
-		path = getNodeAttribute( src, "ide_path" );
 
 		if( kind == "FOLDER" ) {
-			// Get a handler on its children
-			dir_contents = getFirstElementByTagAndClassName( "UL", null, src.parentNode ); 
+			// Select it's contents too
+			
+		} else {
+			// Check that it's parent isn't already selected
+		}
 
-			display = "";
-			if( getStyle( dir_contents, "display" ) != "none" )
-				display = "none";
+	}
+	else {
+		if( kind == "FOLDER" ) {
+			this._toggle_dir( src );
 
-			setStyle( dir_contents, {"display" : display} );
 		} else {
 			editpage.edit_file( this._team, this._project, path );
 		}
 	}
+}
+
+ProjFileList.prototype._toggle_dir = function(src) {
+	// Get a handler on its children
+	var dir_contents = getFirstElementByTagAndClassName( "UL", null, src.parentNode ); 
+
+	display = "";
+	if( getStyle( dir_contents, "display" ) != "none" ) {
+		display = "none";
+
+		var nc = this._ul_get_num_children( dir_contents );
+
+		var c = " child";
+		if( nc != 1 )
+			c = c + "ren";
+
+		var div = this._get_innerdiv( src );
+		appendChildNodes( div, 
+				  SPAN({"class":"proj-filelist-dir-collapse"},
+				       " [ " + nc + c + " hidden ]"));
+
+	} else {
+		removeElement( getFirstElementByTagAndClassName( "SPAN", null, src ) );
+	}
+
+	setStyle( dir_contents, {"display" : display} );
+}
+
+// Returns the innermost DIV within in given element
+// Assumes that there's only one DIV per level
+ProjFileList.prototype._get_innerdiv = function(elem) {
+	var d = getFirstElementByTagAndClassName( "DIV", null, elem );
+	if ( d == null )
+		return elem;
+	else
+		return this._get_innerdiv( d );
+}
+
+ProjFileList.prototype._ul_get_num_children = function(ul) {
+	var count = 0;
+	for( var i in ul.childNodes ) {
+		if( ul.childNodes[i].tagName == "LI" )
+			count++;
+	}
+	return count;
 }
 
 // Object that grabs the project list
