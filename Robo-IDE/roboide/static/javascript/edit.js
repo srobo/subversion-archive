@@ -3,7 +3,7 @@ function EditPage() {
 
 	// Member functions:
 	// Public functions:
-	//  - edit_file: Open the given file path.
+	//  - edit_file: Open the given team, project and file path.
 	//  - new_file: Create a new edit tab with no filename.
 
 	// Private functions:
@@ -93,11 +93,13 @@ function EditPage() {
 
 	// Open the given file and switch to the tab
 	// or if the file is already open, just switch to the tab
-	this.edit_file = function( path ) {
+	this.edit_file = function( team, project, path ) {
+		// TODO: We don't support files of the same path being open in
+		// different teams at the moment.
 		var etab = this._file_get_etab( path );
 
 		if( etab == null ) {
-			etab = this._new_etab( path );
+			etab = this._new_etab( team, project, path );
 			// TODO: Load file contents
 		}
 
@@ -108,16 +110,17 @@ function EditPage() {
 	this.new_file = function() {
 		this._new_count ++;
 		var fname = "New File " + this._new_count;
-		var etab = this._new_etab( fname );
+		var etab = this._new_etab( team, null, fname );
 
 		tabbar.switch_to( etab.tab );
 	}
 
 	// Create a new tab that's one of ours
 	// Doesn't load the tab
-	this._new_etab = function(path) {
+	this._new_etab = function(team, project, path) {
 		var etab = new EditTab(path);
 		etab.path = path;
+		etab.project = project;
 		etab.contents = "TODO: Do the contents stuff";
 
 		connect( etab, "onclose", bind( this._on_tab_close, this ) );
@@ -171,14 +174,15 @@ function EditPage() {
 // Represents a tab that's being edited
 // Managed by EditPage -- do not instantiate outside of EditPage
 function EditTab(path) {
+	// The team
+	this.team = null;
+	// The project (TODO)
+	this.project = null;
 	// The path
 	this.path = path;
 
 	//The commit message
 	this.commitMsg;
-
-	// The project (TODO)
-	this.project = "TODO";
 
 	// The current contents
 	this.contents;

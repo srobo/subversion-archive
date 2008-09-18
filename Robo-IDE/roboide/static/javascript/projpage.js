@@ -234,7 +234,7 @@ ProjFileList.prototype._onclick = function(ev) {
 
 			setStyle( dir_contents, {"display" : display} );
 		} else {
-			editpage.edit_file( path );
+			editpage.edit_file( this._team, this._project, path );
 		}
 	}
 }
