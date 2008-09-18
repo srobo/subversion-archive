@@ -241,7 +241,6 @@ function EditTab(path) {
 			signal( this, "onclose", this );
 			this.tab.close();
 			disconnectAll(this);
-			status_msg( this.path+" Closed", LEVEL_OK );
 		}
 	}
 
