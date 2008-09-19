@@ -16,6 +16,7 @@
 <script src="./static/javascript/tabs.js" type="text/javascript"></script>
 <script src="./static/javascript/browser.js" type="text/javascript"></script>
 <script src="./static/javascript/edit.js" type="text/javascript"></script>
+<script src="./static/javascript/log.js" type="text/javascript"></script>
 <title>Robotics IDE</title>
 </head>
 <body>
@@ -98,7 +99,7 @@
 				<li><button id="newer">Newer &gt;&gt;</button></li>
 				<li><div style="float: left">Selected Revision: r12333</div></li>
 				<li class= "log-user">
-				<select name="users">
+				<select id="svn-users">
 					<option name="v1">--Revisions By User--</option>
 					<option name="v2">ccross</option>
 					<option name="v3">rspanton</option>
@@ -107,8 +108,8 @@
 			</ul>
 		</div>
 		<div id="logs">
-			<em> Displaying 14 revisions between 2008-09-00 -> 2008-09-01 by user &lt;Any&gt;</em>
-			<ul id="log-list"><form>
+			<em id="log-summary"> Displaying 14 revisions between 2008-09-00 -> 2008-09-01 by user &lt;Any&gt;</em>
+			<ul id="log-list">
 				<li>
 					<input type="radio" name="log" />r1768 | ccross | 2008-09-17 18:20:18 +0100 (Wed, 17 Sep 2008) | 3 lines
 					<br /><div class="commit-msg">This is a commit message</span>
@@ -117,7 +118,6 @@
 					<input type="radio" name="log" />r1767 | rspanton | 2008-09-17 16:22:24 +0100 (Wed, 17 Sep 2008) | 59 lines
 					<br /><div class="commit-msg">This is a <br />longer commit message</span>
 				</li>
-			</form>
 			</ul>
 		</div>
 	</div><!-- end log viewer -->

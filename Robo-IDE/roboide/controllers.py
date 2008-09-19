@@ -324,9 +324,12 @@ class Root(controllers.RootController):
             return dict(path=file,history=[])
 		
         result = []
-        for x in log:
-            if(x['author'] == user) or (user == None):
-                result.append(x)
+        if user != None:
+    	    for x in log:
+                if(x['author'] == user) or (user == None):
+    	            result.append(x)
+        else:
+            result = log[:]
 
         return dict(  path=file,\
 	                  history=[{"author":x["author"], \
