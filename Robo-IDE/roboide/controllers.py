@@ -324,10 +324,7 @@ class Root(controllers.RootController):
             return dict(path=file,history=[])
 		
         result = []
-        cb = pysvn.Client()
-        log = cb.log("file:///home/chris/srobo/tmp-svn/robosvn/candy/fudge/bar.py")  
-        result = []
-        for x in log[:]:
+        for x in log:
             if(x['author'] == user) or (user == None):
                 result.append(x)
 
