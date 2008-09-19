@@ -314,7 +314,7 @@ class Root(controllers.RootController):
                 name=os.path.basename(file))
 
     @expose("json")
-    def gethistory(self, team, file):
+    def gethistory(self, team, file, user = None):
         c = Client(int(team))
 
         try:
@@ -322,13 +322,21 @@ class Root(controllers.RootController):
         except:
             logging.debug("Log failed for %s" % c.REPO+file)
             return dict(path=file,history=[])
+		
+        result = []
+        cb = pysvn.Client()
+        log = cb.log("file:///home/chris/srobo/tmp-svn/robosvn/candy/fudge/bar.py")  
+        result = []
+        for x in log[:]:
+            if(x['author'] == user) or (user == None):
+                result.append(x)
 
         return dict(  path=file,\
-                      history=[{"author":x["author"], \
-                      "date":time.strftime("%H:%M:%S %d/%m/%Y", \
-                      time.localtime(x["date"])), \
-                      "message":x["message"], "rev":x["revision"].number} \
-                      for x in log])
+	                  history=[{"author":x["author"], \
+	                  "date":time.strftime("%H:%M:%S %d/%m/%Y", \
+	                  time.localtime(x["date"])), \
+	                  "message":x["message"], "rev":x["revision"].number} \
+	                  for x in result])
 
     def checkoutintotmpdir(self, client, revision, base):
         tmpdir = tempfile.mkdtemp()
