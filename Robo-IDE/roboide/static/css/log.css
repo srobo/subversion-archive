@@ -33,6 +33,9 @@
 #logmenu li.log-user{
 	float: right;
 }
+#logmenu li.log-user #svn-users {
+    width: 200px;
+}
 #log-list  {
 	display:block;
 	background-color:#DFDBD8;

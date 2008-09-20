@@ -314,15 +314,26 @@ class Root(controllers.RootController):
                 name=os.path.basename(file))
 
     @expose("json")
-    def gethistory(self, team, file, user = None):
+    def gethistory(self, team, file, user = None, offset = 0):
+        #This function retrieves the svn log output for the given file(s)
+        #to restrict logs to particular user, supply a user parameter
+        #a maximum of 10 results are sent to the browser, if there are more than 10
+        #results available, overflow > 0.
+        #supply an offset to view older results: 0<offset < overflow; offset = 0 is the most recent logs
+        offset = int(offset)
         c = Client(int(team))
-
         try:
             log = c.log(c.REPO+file)
         except:
             logging.debug("Log failed for %s" % c.REPO+file)
             return dict(path=file,history=[])
-		
+        authors = []
+        #get a list of users based on log authors
+        for y in log:
+            if y['author'] not in authors:
+                authors.append(y['author'])
+                
+        #narrow results by user (if supplied)
         result = []
         if user != None:
     	    for x in log:
@@ -331,7 +342,18 @@ class Root(controllers.RootController):
         else:
             result = log[:]
 
-        return dict(  path=file,\
+        #if many results, split into pages of 10 and return appropriate 
+        start = offset*10
+        end = start + 10
+        maxval = len(result)
+        if maxval%10 > 0:  
+            overflow = maxval/10 +1
+        else:
+            overflow = maxval/10
+
+        result = result[start:end]
+
+        return dict(  path=file, overflow=overflow, offset=offset, authors=authors,\
 	                  history=[{"author":x["author"], \
 	                  "date":time.strftime("%H:%M:%S %d/%m/%Y", \
 	                  time.localtime(x["date"])), \
