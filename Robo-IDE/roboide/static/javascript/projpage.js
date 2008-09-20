@@ -115,6 +115,10 @@ function map_1( func, arg, arr ) {
 function ProjFileList() {
 	this._project = "";
 	this._team = null;
+
+	// The files/folders that are currently selected
+	this._selection = [];
+
 	// Member functions:
 	// Public:
 	//  - update: Update the file list to the given project and team
@@ -223,15 +227,15 @@ ProjFileList.prototype._onclick = function(ev) {
 	path = getNodeAttribute( src, "ide_path" );
 
 	if( mods["ctrl"] ) {
-		toggleElementClass( "selected", ev.src() );
+		if( !this._is_file_selected( path ) ) {
+			addElementClass( src, "selected" );
 
-		if( kind == "FOLDER" ) {
-			// Select it's contents too
-			
+			this._select_path( path, kind );
 		} else {
-			// Check that it's parent isn't already selected
-		}
+			removeElementClass( src, "selected" );
 
+			this._deselect_path( path, kind );
+		}
 	}
 	else {
 		if( kind == "FOLDER" ) {
@@ -243,6 +247,34 @@ ProjFileList.prototype._onclick = function(ev) {
 	}
 }
 
+ProjFileList.prototype._is_file_selected = function( path ) {
+	for( var i in this._selection )
+		if( this._selection[i] == path )
+			return true;
+	return false;
+}
+
+ProjFileList.prototype._select_path = function(path, kind) {
+	if( kind == "FOLDER" ) {
+		
+	} else {
+		this._selection.push( path );
+	}
+}
+
+ProjFileList.prototype._deselect_path = function(path, kind) {
+	var i = findValue( this._selection, path );
+	if( i >= 0 ) {
+		if( kind == "FOLDER" ) {
+			
+		} else {
+			// Remove from the listn
+			this._selection.splice( i, 1 );
+		}
+	}
+}
+
+// Toggles the display of the contents of a directory
 ProjFileList.prototype._toggle_dir = function(src) {
 	// Get a handler on its children
 	var dir_contents = getFirstElementByTagAndClassName( "UL", null, src.parentNode ); 
