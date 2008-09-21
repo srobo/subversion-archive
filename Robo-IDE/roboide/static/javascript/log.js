@@ -1,12 +1,22 @@
-function Log(file) {
-	this.selectedRevision = -1;
-	this.team = 1;
-	this.user = null;
-	this.userList = new Array();
-	this.history = new Array();
-	this.file = file;
-	this.offset = 0;
-	this.overflow = 0;
+function Log(file, team) {
+    //class properties
+    this.tab = null;                    //holds reference to tab in tabbar
+	this.selectedRevision = -1;         //Selected revision, -1 indicates no revision set
+	this.team = team;                   //team number TODO: get this from elsewhere
+	this.user = null;                   //holds author name
+	this.userList = new Array();        //List of  users attributed to file(s)
+	this.history = new Array();         //array of log entries returned by server
+	this.file = file;                   //the file/directory for which we are interested
+	this.offset = 0;                    //which results page we want to retrieve from the server
+	this.overflow = 0;                  //stores  total number of results pages (retrieved from server)
+
+    //do this only once: add a new tab to the tabbar and link it to this log page
+    this.tab = new Tab("Log: "+this.file);
+    connect(this.tab, 'onfocus', bind(this._onfocus, this));
+    connect(this.tab, 'onblur', bind(this._onblur, this));
+    tabbar.add_tab(this.tab);
+    tabbar.switch_to(this.tab);
+    //start initialisation
 	this._init();
 	
 /*
@@ -27,6 +37,9 @@ function Log(file) {
     _revert(bool)           event handler for when user clicks 'revert' - if arg is false, confirmation is  requested from user
     _nextview(int)          event handler for when user clicks on 'older'/'newer' buttons, 
                             if int > 0 an older page of  results is retrieved, if int <0 a later page of results is retrieved
+    _onfocus()              event handler for tab click
+    _onblur()               event handler for tab looses focus
+    close()                 completely close the tab and log page
 */
 }
 
@@ -38,7 +51,6 @@ Log.prototype._init = function() {
     this.userList = new Array();
     //do new query
 	this._retrieveHistory();
-	display_log();
 }
 
 Log.prototype._receiveHistory = function(revisions) {
@@ -68,6 +80,8 @@ Log.prototype._retrieveHistory = function() {
 	d.addCallback( bind(this._receiveHistory, this));	
 	d.addErrback( bind(this._errorReceiveHistory, this));
 }
+//processess log data and formats into list. connects up related event handlers, 
+//deals with multile results pages
 Log.prototype._populateList = function() {
 	logDebug("Processing log list...");
 
@@ -109,7 +123,7 @@ Log.prototype._populateList = function() {
 
 	//clear log list
 	replaceChildNodes($("log-list"), null);
-	//now populate list of query results
+	//now populate log list
 	for(var x=0; x <this.history.length; x++) {
 		var logtxt = SPAN("r"+this.history[x].rev+" | "+this.history[x].author+" | "+this.history[x].date);
 		var item = LI(null, logtxt);
@@ -138,15 +152,24 @@ Log.prototype._populateList = function() {
 		disconnectAll($("newer"));
 	}
     //connect up the 'Revert' button to event handler
-    connect($("revert"), 'onclick', bind(this._revert, this, false))
+    disconnectAll($("revert"));
+    connect($("revert"), 'onclick', bind(this._revert, this, false));
+
+    //connect up the close button on log menu
+    disconnectAll($("log-close"));
+    connect($("log-close"), 'onclick', bind(this.close, this));
 } 
+//get older (updown > 0) or newer (updown < 0) results
 Log.prototype._nextview = function(updown) {
-    //get older or newer results
 	this.offset = this.offset+updown;
+    //get new results page
 	this._init();
 }
+//called when user applies author filter
 Log.prototype._update = function() {
+    //find out which author was selected  using select value as key to userList array
 	var index = $("svn-users").value;
+    //if user clicks 'All' (-1) clear user variable
 	if(index > -1) { 
 		this.user = this.userList[index];
 	}
@@ -158,7 +181,7 @@ Log.prototype._update = function() {
     this.offset = 0;
 	this._init();
 }
-
+//revert to selected revision. override = true to skip user confirmation
 Log.prototype._revert = function(override) {
     //find out which radio button is checked
     for(var x=0; x < document.log.log.length; x++) {
@@ -181,10 +204,31 @@ Log.prototype._revert = function(override) {
     }   
 
 }
+//tab gets focus
+Log.prototype._onfocus = function() {
+    if(getStyle($("log-mode"), "display") != "block") {
+        display_log();
+    }
+    //don't waste time doing query again, just process results in buffer
+    this._populateList();
+}
+
+//tab loses focus
+Log.prototype._onblur = function() {
+    hide_log();
+}
+//tab is closed
+Log.prototype.close = function() {   
+    this.tab.close();
+    hide_log();  
+    delete this;    //free memory      
+    logDebug("Closing log tab");
+}
+//shows all log page specific htmll
 function display_log() {
 	setStyle($("log-mode"), {"display" : "block"});
 }
-
+//hides all log page specfic html
 function hide_log() {
 	setStyle($("log-mode"), {"display" : "none"});	
 }

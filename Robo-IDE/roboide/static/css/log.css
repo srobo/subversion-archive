@@ -35,6 +35,8 @@
 }
 #logmenu li.log-user #svn-users {
     width: 200px;
+    margin-left: 10px;
+    margin-right: 25px;
 }
 #log-list  {
 	display:block;
