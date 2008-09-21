@@ -2,6 +2,7 @@
 //prep the vars
 $i = $no = $debug = $fast = 0;
 $yes = 1;
+$debug_info	= "";
 
 /* This function takes in the file name and retruns it, without the extension */
 function returnFileName($nameoffile)

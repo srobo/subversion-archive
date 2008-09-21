@@ -1,6 +1,9 @@
 <?php
 $users_arr["srobo"] = "fea0f1f6fede90bd0a925b4194deac11";
 
+$_username	= $_pass	= $debug_info	= "";
+$debug	= 0;
+
 /* This function generates a Time selector */
 function genTimeSelector($end, $hour, $minute)
 {
@@ -87,7 +90,7 @@ if(!isset($_username) || $_username == "")
 		$_username	= $_SESSION['SR_user'];
 }
 
-$_logged_in	= ($users_arr[$_username] == md5($_pass)) || (isset($_SESSION['SR_user']) && $users_arr[$_username] != "") ? TRUE : FALSE;
+$_logged_in	= ((isset($users_arr[$_username]) && $users_arr[$_username] == md5($_pass))) || (isset($_SESSION['SR_user']) && $users_arr[$_username] != "") ? TRUE : FALSE;
 
 if($_logged_in)
 {
@@ -97,13 +100,15 @@ $debug_info		.="\n ini_set('url_rewriter.tags', '') = ".ini_set('url_rewriter.ta
 
 $_SESSION['SR_user']	= $_username;
 $_filename	= "Date.inc.php";
-$DATE_OUT	= "<?\n\$Kick_DATE	= \"".implode("-", array($Kick_year, $Kick_month, $Kick_day,))." $Kick_hour:$Kick_minute\";\n"
-			."\$Comp_DATE	= \"".implode("-", array($Comp_year, $Comp_month, $Comp_day,))."\";\n"
-			."\$Easter_DATE	= \"".implode("-", array($Easter_year, $Easter_month, $Easter_day,))."\";\n?>";
 
 if(isset($_saving))
+{
+	$DATE_OUT	= "<?\n\$Kick_DATE	= \"".implode("-", array($Kick_year, $Kick_month, $Kick_day,))." $Kick_hour:$Kick_minute\";\n"
+			."\$Comp_DATE	= \"".implode("-", array($Comp_year, $Comp_month, $Comp_day,))."\";\n"
+			."\$Easter_DATE	= \"".implode("-", array($Easter_year, $Easter_month, $Easter_day,))."\";\n?>";
 	if(!file_put_content($_filename, $DATE_OUT))
 		echo "file write failed";
+}
 
 include $_filename;
 
