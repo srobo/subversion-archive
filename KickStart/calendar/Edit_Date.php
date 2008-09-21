@@ -60,7 +60,7 @@ function genDateSelector($prefix, $day, $month, $year)
 /* This function is only in php5(file_put_contents()), so I need to write it, but to avoid clashes I have changed the name slightly */
 function file_put_content($file, $data)
 {
-	if(function_exists(file_put_contents))
+	if(function_exists('file_put_contents'))
 		return file_put_contents($file, $data);
 
 	$handle = fopen($file, 'w');
