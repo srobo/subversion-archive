@@ -116,7 +116,7 @@ function selectFolder(path, files) {
 		appendChildNodes($("right-pane-list"), li);
 	}
 	//update current new file name
-	if(options.isFile) {
+	if(this.isFile) {
 		$("browser-status").innerHTML = "Please choose a file name:";
 	}
 	else {

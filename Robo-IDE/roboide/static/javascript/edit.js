@@ -204,7 +204,7 @@ function EditTab(path) {
 	this.path = path;
 
 	//The commit message
-	this.commitMsg;
+	this.commitMsg = "Default Commit Message";
 
 	//the original contents (before edits)
 	this.original;
@@ -219,7 +219,7 @@ function EditTab(path) {
 	this.dirty = true;	//
 
 	//true if file is new (unsaved)
-	this.isNew = true;	//TODO
+	this.isNew = false;	//TODO
 
 	// All our current signal connection idents
 	this._signals = [];
@@ -253,14 +253,47 @@ function EditTab(path) {
 		//do an update
 		this._save_contents();
 		//if new file	-- TODO
-		if(this.dirty) {
+		if(this.isNew) {
 			status_msg( "Enter a filename for new file", LEVEL_OK );
-			var fileBrowser = new Browser(team, bind(this._receive_new_fname, this), {'isFile' : 'true'});	
+			var fileBrowser = new Browser(team, bind(this._receive_new_fname, this), {'isFile' : true});	
 		}
 		else {
-			//TODO - call to actual save function
-			status_msg( this.path +" Saved OK", LEVEL_OK );
+			status_msg("Contacting server....", LEVEL_OK );
+			this._svn_save();
 		}
+	}
+
+	//ajax event handler
+	this._receive_svn_save = function(nodes){
+		switch(nodes.success){
+			case "True": 
+				status_msg("File Saved successfully (New Revision: "+nodes.new_revision+")");
+				break;
+			case "Merged":
+				status_msg("File Merge successful (New Revision: "+nodes.new_revision+")");
+				break;
+			case "Error creating new directory":
+				status_msg("Error creating new directory (New Revision: "+nodes.new_revision+")");
+				break;
+			case "Invalid filename" :
+				status_msg("Save operation failed, Invalid filename (New Revision: "+nodes.new_revision+")");
+				break;
+		}
+	}
+
+	this._error_receive_svn_save = function() {
+		button_status("Error contacting server", LEVEL_ERROR, "retry", bind(this._svn_save, this));
+	}
+
+	this._svn_save = function() {
+	var d = loadJSONDoc("./savefile", { team : team,
+					    file : this.path, 
+						rev : 0,				//TODO: make this dynamic
+					    message : this.commitMsg,
+						code: this.contents});
+
+	d.addCallback( bind(this._receive_svn_save, this));	
+	d.addErrback( bind(this._error_receive_svn_save, this));		
 	}
 
 	this._close = function(override) {
