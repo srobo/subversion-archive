@@ -27,11 +27,11 @@ if (!empty($_GET))
 
 include "Date.inc.php";
 
-$then	= strtotime("+$i day", strtotime($Kick_DATE));	//the 'current' date
+$then	= strtotime("$Kick_DATE, +$i day");	//the 'current' date
 $now	= strtotime("now");
 $time_left	= $then - $now;
 
-$debug_info	.= "\$then=$then,	\$now=$now,	\n<br />\n";
+$debug_info	.= "\$then=$then (".date("Y-m-d; l j F Y", $then)."),	\$now=$now (".date("Y-m-d; l j F Y", $now).")\n<br />\n";
 
 $time_per_slide = round($time_left / 206);
 
@@ -97,6 +97,9 @@ switch ($date)
 	case $Competition_Date:
 		$addon	= " (Competition Day)";
 		$image = "Competition.jpg";
+		break;
+	default:
+		$addon	= "";
 		break;
 }
 
