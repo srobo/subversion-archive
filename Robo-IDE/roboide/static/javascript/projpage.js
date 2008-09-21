@@ -117,7 +117,7 @@ function ProjFileList() {
 	this._team = null;
 
 	// The files/folders that are currently selected
-	this._selection = [];
+	this.selection = [];
 
 	// Member functions:
 	// Public:
@@ -248,8 +248,8 @@ ProjFileList.prototype._onclick = function(ev) {
 }
 
 ProjFileList.prototype._is_file_selected = function( path ) {
-	for( var i in this._selection )
-		if( this._selection[i] == path )
+	for( var i in this.selection )
+		if( this.selection[i] == path )
 			return true;
 	return false;
 }
@@ -258,18 +258,18 @@ ProjFileList.prototype._select_path = function(path, kind) {
 	if( kind == "FOLDER" ) {
 		
 	} else {
-		this._selection.push( path );
+		this.selection.push( path );
 	}
 }
 
 ProjFileList.prototype._deselect_path = function(path, kind) {
-	var i = findValue( this._selection, path );
+	var i = findValue( this.selection, path );
 	if( i >= 0 ) {
 		if( kind == "FOLDER" ) {
 			
 		} else {
 			// Remove from the listn
-			this._selection.splice( i, 1 );
+			this.selection.splice( i, 1 );
 		}
 	}
 }

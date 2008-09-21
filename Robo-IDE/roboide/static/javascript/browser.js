@@ -1,9 +1,10 @@
-function Browser(team, rootpath, cback) {
+function Browser(team, cback, options) {
 	this.newFilePath = "";
+	this.isFile = options.isFile
 	this.commitMsg = "";
 	this.fileTree = null;
 	this.callback = cback;
-	this._init(team, rootpath);
+	this._init(team, "");
 }
 
 Browser.prototype._init = function(team, rootpath) {
@@ -115,7 +116,12 @@ function selectFolder(path, files) {
 		appendChildNodes($("right-pane-list"), li);
 	}
 	//update current new file name
-	$("browser-status").innerHTML = "Please choose a file name:";
+	if(options.isFile) {
+		$("browser-status").innerHTML = "Please choose a file name:";
+	}
+	else {
+		$("browser-status").innerHTML = "Please choose a folder name:";
+	}
 }
 
 function display_file_browser() {

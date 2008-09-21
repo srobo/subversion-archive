@@ -11,7 +11,7 @@ function Log(file, team) {
 	this.overflow = 0;                  //stores  total number of results pages (retrieved from server)
 
     //do this only once: add a new tab to the tabbar and link it to this log page
-    this.tab = new Tab("Log: "+this.file);
+    this.tab = new Tab("Log: "+abridge(this.file.toString()));
     connect(this.tab, 'onfocus', bind(this._onfocus, this));
     connect(this.tab, 'onblur', bind(this._onblur, this));
     tabbar.add_tab(this.tab);

@@ -15,6 +15,7 @@ LEVEL_INFO = 0;
 LEVEL_OK = 1;
 LEVEL_WARN = 2;
 LEVEL_ERROR = 3;
+MAX_TAB_NAME_LENGTH = 8;
 
 // Number that's incremented every time a new status message is displayed
 status_num = 0;
@@ -494,4 +495,35 @@ function TeamSelector() {
 
 		replaceChildNodes( $("teamname"), " " + name );
 	}
+}
+
+//new folder call
+function new_folder(new_name) {
+	if(new_name == null && new_name == undefined) {
+		var browser = new Browser(1, new_folder, {'isFile' : 'false'});
+	}
+	else {
+		//TODO: actually create new directory
+	}
+}
+
+//view log
+function view_log() {
+	for(var i = 0; i < projpage.flist.selection.length; i++) {
+		var cow = new Log(projpage.flist.selection[i], 1);
+	}
+}
+
+function abridge(fpath) {
+
+	if(fpath.length > MAX_TAB_NAME_LENGTH) {
+		var abridge = "..";
+		for(var i = (fpath.length - MAX_TAB_NAME_LENGTH-3); i < fpath.length; i++){
+			abridge += fpath[i];
+		}
+	}
+	else {
+		var abridge = fpath;
+	}	
+	return abridge;
 }
