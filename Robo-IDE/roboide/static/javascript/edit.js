@@ -63,7 +63,8 @@ function EditPage() {
 	}
 	//actually get the file contents
 	this._receive_file_contents = function(fpath, nodes) {
-		this._open_files[fpath].contents = nodes.code;	
+		this._open_files[fpath].contents = nodes.code;
+		this._open_files[fpath].original = nodes.code;
 		this._open_files[fpath]._update_contents();
 	}
 
@@ -205,6 +206,9 @@ function EditTab(path) {
 	//The commit message
 	this.commitMsg;
 
+	//the original contents (before edits)
+	this.original;
+
 	// The current contents
 	this.contents;
 
@@ -212,7 +216,7 @@ function EditTab(path) {
 	this.tab = null;
 
 	// true if tab has been modified
-	this.dirty = true;	//TODO
+	this.dirty = true;	//
 
 	//true if file is new (unsaved)
 	this.isNew = true;	//TODO
@@ -246,6 +250,8 @@ function EditTab(path) {
 	}
 	
 	this._save = function() {
+		//do an update
+		this._save_contents();
 		//if new file	-- TODO
 		if(this.dirty) {
 			status_msg( "Enter a filename for new file", LEVEL_OK );
@@ -257,15 +263,18 @@ function EditTab(path) {
 		}
 	}
 
-	this._close = function() {
+	this._close = function(override) {
+		//update
+		this._save_contents();
 		var obj = this;
-		if(this.dirty == true) {
-			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", function(){ obj.dirty = false; obj._close()});
+		if(this.dirty == true && !override ) {
+			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", bind(this._close, this, true));
 		}
 		else{
 			signal( this, "onclose", this );
 			this.tab.close();
 			disconnectAll(this);
+			status_hide();
 		}
 	}
 
@@ -274,7 +283,7 @@ function EditTab(path) {
 		// Close handler
 		this._signals.push( connect( $("close-edit-area"),
 					     "onclick",
-					     bind( this._close, this ) ) );
+					     bind( this._close, this, false ) ) );
 		// Check syntax handler
 		this._signals.push( connect( $("check-syntax"),
 					     "onclick",
@@ -288,12 +297,13 @@ function EditTab(path) {
 		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );
 
 		//load file contents
-		this._update_contents		
+		this._update_contents();		
 	}
 
 	// Handler for when the tab loses focus
 	this._onblur = function() {
-		this.contents = editAreaLoader.getValue("editpage-editarea");
+		//don't loose changes to file content
+		this._save_contents();
 		// Disconnect all the connected signal
 		map( disconnect, this._signals );
 		this._signals = [];
@@ -303,6 +313,14 @@ function EditTab(path) {
 		logDebug("Updating editarea contents: ");
 	 	editAreaLoader.setValue("editpage-editarea", this.contents);
 	}
-
+	this._save_contents = function() {
+		this.contents = editAreaLoader.getValue("editpage-editarea");
+		if(this.contents == this.original) {
+			this.dirty = false;
+		}
+		else {
+			this.dirty = true;
+		}
+	}
 	this._init();
 }
