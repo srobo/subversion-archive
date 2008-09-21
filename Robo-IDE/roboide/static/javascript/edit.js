@@ -43,7 +43,8 @@ function EditPage() {
 		this.textbox = TEXTAREA({"id" : "editpage-editarea",
 					 "value" : "" });
 		appendChildNodes($("edit-mode"), this.textbox);
-
+		//now let textbox point point to actual textbox
+		this.textbox = $("editpage-editarea"); 
 		//initialize new instance of editArea			
 		editAreaLoader.init({
 	 		id : "editpage-editarea",
@@ -59,6 +60,24 @@ function EditPage() {
  		});
 		
 		this._ea_initted = true;
+	}
+	//actually get the file contents
+	this._receive_file_contents = function(fpath, nodes) {
+		this._open_files[fpath].contents = nodes.code;	
+		this._open_files[fpath]._update_contents();
+	}
+
+	this._error_receive_file_contents = function() {
+		this._file_contents = "Error - Cannot load contents";
+	}
+
+	this._get_file_contents = function(fpath, revision) {
+		var d = loadJSONDoc("./filesrc", { team : team,
+								file : fpath, 
+								revision : revision});
+
+			d.addCallback( bind(this._receive_file_contents, this, fpath));	
+			d.addErrback( bind(this._error_receive_file_contents, this));		
 	}
 
 	// Show the edit page
@@ -121,7 +140,8 @@ function EditPage() {
 		var etab = new EditTab(path);
 		etab.path = path;
 		etab.project = project;
-		etab.contents = "TODO: Do the contents stuff";
+		logDebug("Path: "+path);		
+		this._get_file_contents(path, 0);
 
 		connect( etab, "onclose", bind( this._on_tab_close, this ) );
 
@@ -169,6 +189,7 @@ function EditPage() {
 	}
 
 	this._init();
+
 }
 
 // Represents a tab that's being edited
@@ -265,13 +286,22 @@ function EditTab(path) {
 
 		//display filepath
 		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );
+
+		//load file contents
+		this._update_contents		
 	}
 
 	// Handler for when the tab loses focus
 	this._onblur = function() {
+		this.contents = editAreaLoader.getValue("editpage-editarea");
 		// Disconnect all the connected signal
 		map( disconnect, this._signals );
 		this._signals = [];
+	}
+
+	this._update_contents = function() {
+		logDebug("Updating editarea contents: ");
+	 	editAreaLoader.setValue("editpage-editarea", this.contents);
 	}
 
 	this._init();
