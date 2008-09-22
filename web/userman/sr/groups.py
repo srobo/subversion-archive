@@ -59,7 +59,7 @@ class group:
     def user_add(self,userl):
         """Add a user to the group"""
         if userl.__class__ is users.user:
-            userl = [user.username]
+            userl = [userl.username]
         elif type(userl) is not types.ListType:
             userl = [userl]
         
