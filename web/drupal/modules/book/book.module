@@ -1,5 +1,5 @@
 <?php
-// $Id: book.module,v 1.454.2.3 2008/03/25 14:03:02 goba Exp $
+// $Id: book.module,v 1.454.2.5 2008/07/03 06:38:46 dries Exp $
 
 /**
  * @file
@@ -515,7 +515,7 @@ function book_get_flat_menu($book_link) {
   static $flat = array();
 
   if (!isset($flat[$book_link['mlid']])) {
-    // Call menu_tree_full_data() to take advantage of the menu system's caching.
+    // Call menu_tree_all_data() to take advantage of the menu system's caching.
     $tree = menu_tree_all_data($book_link['menu_name'], $book_link);
     $flat[$book_link['mlid']] = array();
     _book_flatten_menu($tree, $flat[$book_link['mlid']]);
@@ -1078,7 +1078,7 @@ function book_menu_subtree_data($item) {
       $data['node_links'] = array();
       menu_tree_collect_node_links($data['tree'], $data['node_links']);
       // Compute the real cid for book subtree data.
-      $tree_cid = 'links:'. $menu_name .':subtree-data:'. md5(serialize($data));
+      $tree_cid = 'links:'. $item['menu_name'] .':subtree-data:'. md5(serialize($data));
       // Cache the data, if it is not already in the cache.
       if (!cache_get($tree_cid, 'cache_menu')) {
         cache_set($tree_cid, $data, 'cache_menu');

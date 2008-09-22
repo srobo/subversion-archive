@@ -1,5 +1,5 @@
 <?php
-// $Id: form.inc,v 1.265.2.4 2008/02/11 14:45:57 goba Exp $
+// $Id: form.inc,v 1.265.2.10 2008/08/13 23:59:12 drumm Exp $
 
 /**
  * @defgroup forms Form builder functions
@@ -100,7 +100,7 @@ function drupal_get_form($form_id) {
       array_unshift($args_temp, $form_id);
 
       $form = call_user_func_array('drupal_retrieve_form', $args_temp);
-      $form_build_id = 'form-'. md5(mt_rand());
+      $form_build_id = 'form-'. md5(uniqid(mt_rand(), true));
       $form['#build_id'] = $form_build_id;
       drupal_prepare_form($form_id, $form, $form_state);
       // Store a copy of the unprocessed form for caching and indicate that it
@@ -216,27 +216,35 @@ function drupal_rebuild_form($form_id, &$form_state, $args, $form_build_id = NUL
 }
 
 /**
- * Fetch a form from cache.
+ * Store a form in the cache.
  */
-function form_get_cache($form_build_id, &$form_state) {
-  if ($cached = cache_get('form_'. $form_build_id, 'cache_form')) {
-    $form = $cached->data;
-    if ($cached = cache_get('storage_'. $form_build_id, 'cache_form')) {
-      $form_state['storage'] = $cached->data;
-    }
-    return $form;
+function form_set_cache($form_build_id, $form, $form_state) {
+  global $user;
+  // 6 hours cache life time for forms should be plenty.
+  $expire = 21600;
+
+  if ($user->uid) {
+    $form['#cache_token'] = drupal_get_token();
+  }
+  cache_set('form_'. $form_build_id, $form, 'cache_form', time() + $expire);
+  if (!empty($form_state['storage'])) {
+    cache_set('storage_'. $form_build_id, $form_state['storage'], 'cache_form', time() + $expire);
   }
 }
 
 /**
- * Store a form in the cache
+ * Fetch a form from cache.
  */
-function form_set_cache($form_build_id, $form, $form_state) {
-  $expire = max(ini_get('session.cookie_lifetime'), 86400);
-
-  cache_set('form_'. $form_build_id, $form, 'cache_form', $expire);
-  if (!empty($form_state['storage'])) {
-    cache_set('storage_'. $form_build_id, $form_state['storage'], 'cache_form', $expire);
+function form_get_cache($form_build_id, &$form_state) {
+  global $user;
+  if ($cached = cache_get('form_'. $form_build_id, 'cache_form')) {
+    $form = $cached->data;
+    if ((isset($form['#cache_token']) && drupal_valid_token($form['#cache_token'])) || (!isset($form['#cache_token']) && !$user->uid)) {
+      if ($cached = cache_get('storage_'. $form_build_id, 'cache_form')) {
+        $form_state['storage'] = $cached->data;
+      }
+      return $form;
+    }
   }
 }
 
@@ -1270,20 +1278,30 @@ function form_type_token_value($form, $edit = FALSE) {
 }
 
 /**
- * Use this function to make changes to form values in the form validate
- * phase, so they will be available in the submit phase in $form_state.
+ * Change submitted form values during the form processing cycle.
  *
- * Specifically, if $form['#parents'] is array('foo', 'bar')
- * and $value is 'baz' then this function will make
- * $form_state['values']['foo']['bar'] to be 'baz'.
+ * Use this function to change the submitted value of a form item in the
+ * validation phase so that it persists in $form_state through to the
+ * submission handlers in the submission phase.
  *
- * @param $form
- *   The form item. Keys used: #parents, #value
+ * Since $form_state['values'] can either be a flat array of values, or a tree
+ * of nested values, some care must be taken when using this function.
+ * Specifically, $form_item['#parents'] is an array that describes the branch of
+ * the tree whose value should be updated. For example, if we wanted to update
+ * $form_state['values']['one']['two'] to 'new value', we'd pass in
+ * $form_item['#parents'] = array('one', 'two') and $value = 'new value'.
+ *
+ * @param $form_item
+ *   The form item that should have its value updated. Keys used: #parents,
+ *   #value. In most cases you can just pass in the right element from the $form
+ *   array.
  * @param $value
- *   The value for the form item.
+ *   The new value for the form item.
+ * @param $form_state
+ *   The array where the value change should be recorded.
  */
-function form_set_value($form, $value, &$form_state) {
-  _form_set_value($form_state['values'], $form, $form['#parents'], $value);
+function form_set_value($form_item, $value, &$form_state) {
+  _form_set_value($form_state['values'], $form_item, $form_item['#parents'], $value);
 }
 
 /**
@@ -1293,7 +1311,7 @@ function form_set_value($form, $value, &$form_state) {
  * in $form_state['values'] if needed. Then we insert the value into
  * the right array.
  */
-function _form_set_value(&$form_values, $form, $parents, $value) {
+function _form_set_value(&$form_values, $form_item, $parents, $value) {
   $parent = array_shift($parents);
   if (empty($parents)) {
     $form_values[$parent] = $value;
@@ -1302,7 +1320,7 @@ function _form_set_value(&$form_values, $form, $parents, $value) {
     if (!isset($form_values[$parent])) {
       $form_values[$parent] = array();
     }
-    _form_set_value($form_values[$parent], $form, $parents, $value);
+    _form_set_value($form_values[$parent], $form_item, $parents, $value);
   }
 }
 
@@ -1489,7 +1507,7 @@ function theme_fieldset($element) {
     }
   }
 
-  return '<fieldset'. drupal_attributes($element['#attributes']) .'>'. ($element['#title'] ? '<legend>'. $element['#title'] .'</legend>' : '') . (isset($element['#description']) && $element['#description'] ? '<div class="description">'. $element['#description'] .'</div>' : '') . (!empty($element['#children']) ? $element['#children'] : '') . $element['#value'] ."</fieldset>\n";
+  return '<fieldset'. drupal_attributes($element['#attributes']) .'>'. ($element['#title'] ? '<legend>'. $element['#title'] .'</legend>' : '') . (isset($element['#description']) && $element['#description'] ? '<div class="description">'. $element['#description'] .'</div>' : '') . (!empty($element['#children']) ? $element['#children'] : '') . (isset($element['#value']) ? $element['#value'] : '') ."</fieldset>\n";
 }
 
 /**
@@ -1506,6 +1524,7 @@ function theme_fieldset($element) {
 function theme_radio($element) {
   _form_set_class($element, array('form-radio'));
   $output = '<input type="radio" ';
+  $output .= 'id="'. $element['#id'] .'" ';
   $output .= 'name="'. $element['#name'] .'" ';
   $output .= 'value="'. $element['#return_value'] .'" ';
   $output .= (check_plain($element['#value']) == $element['#return_value']) ? ' checked="checked" ' : ' ';
@@ -1722,6 +1741,7 @@ function expand_radios($element) {
           '#attributes' => $element['#attributes'],
           '#parents' => $element['#parents'],
           '#id' => form_clean_id('edit-'. implode('-', $parents_for_id)),
+          '#ahah' => isset($element['#ahah']) ? $element['#ahah'] : NULL,
         );
       }
     }
