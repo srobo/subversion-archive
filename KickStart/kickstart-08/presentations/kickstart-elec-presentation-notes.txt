@@ -1,0 +1,119 @@
+[slide 1]
+
+Hi my name is chris and i'm going to tell you about the electronics kit
+
+The good news is that we don't expect you to have any previous experience with electronics, we hope though, that by the end of the competition you might have learnt a thing or two about how the kit works.
+
+[slide 2]
+
+So before i tell you what kit you will be given, i want you to tell me what features and functionality you might need to complete the task?
+
+To get you started here are a couple of questions to think about, [read out questions]
+
+Ok, you have 1 minute to think up as many useful electronics feature & gadgets as possible 
+
+[pause for one minute]
+
+OK, time is up, so can anyone volunteer some suggestions?
+
+[silence, prompt, pick]
+
+[slowly gather some suggestions , if struggling use following:
+	// . camera
+	// . light sensors with filters
+	// . servos to move balls around
+	// . big drive motors 
+	// . proximity sensors
+	// . light beams, 
+	// . electronic compas
+	// . counting wheel revolutions
+
+The point of that exercise was to show you that there's more than one way to answer any of these questions, some are more elaborate and difficult than others, but what we hope we've achieved with the kit is to give you as much freedom as possible. 
+
+So, now to take a look at some of the kit each of the teams will be given.
+
+[slide 3]
+
+Well this slide is an overview of the kit you'll be given to assemble your robot from [read out bullet points]. 
+
+And now to find out what they actually do!
+
+[slide 4]
+
+At the centre of the electronics is the power board. In itself it is fairly uninteresting but every bit of electronics you'll use connects to it in some way!
+
+The most interesting feature is this radio module in the top corner. 
+
+Whilst we want you to build autonomous robots, the radio module allows us to remotely start and stop the robots in the arena, meaning that all robots start at exactly the same time, and most importantly we can kill any of the robots if they start going crazy
+
+[slide 5]
+
+As we decided earlier, we need motors to move around the arena and this is the board that controls them.
+
+[slide 6]
+
+You can independently control the speed and direction of up to two DC motors. 
+
+[slie 7]
+
+In addition you can build a simple mechanical deivce to add feedback from the motors. This would allow you to calculate the actual speed and distance travelled by your robots. This in turn could help you keep track of where you are in the arena, which as you will discover is a critical part of this game.
+
+[slide 8]
+
+This cryptically titled board allows you to control up to 5 different servos independently. Can anyone tell me what a servo is?
+
+[slide 9]
+
+A servo is a small geared motor whos rotary position can be acurately controlled, i.e. you tell it to move to 45 degrees, and it does and then stops. These are perfect for moving ball collection mechanisms where a normal DC motor would be useless
+
+[slide 10]
+
+The Joint-IO board or 'Joint input output' board is the most customisable board. You can connect to it a maximum of 8 digital or analogue inputs. This is perfect for adding all manor of sensors, detectors and cool features to your robot. 
+
+In addition you can control up to 4 digital outputs, perfect for switching things on and off dynamically and triggering certain mechanisms.
+
+the next few slides hint at how you can use the joint io board to do pretty much anything you can conceive:
+
+[slide 11] 
+
+Microswitches - these are the simplest addition to your robot and were used by pretty much every team last year as bump sesors and for feedback in token collection mechanisms
+
+[slide 12]
+
+Relays can be used to control extra motors and components that require larger currents
+
+[slide 13]
+
+Optical sensors, particularaly useful for following lines and detecting when you have crossed over floor markings in the arena.
+
+[slide 14]
+
+All teams will receive a standard usb webcam which can be used to help your robots navigate around the arena, locate the balls and find scoring zones.
+
+The arena will be white inside and each zone identified by one of four colours (reb, blue, green, yello). The webcam will be able to spot the different blobs of colour (which may be balls or scoring zones or even other robots!). It is then up to you and your team to think of how to use this information to control your robot and win the game - you'll find out more about this in the programming presentation
+
+Unfortunately, the vision system during last years competition was heavily affected by the lighting in the arena and was not very reliable. We hope to work on it this year and deliver a system which is more reliable in a couple of months
+
+[slide 15]
+
+This year, depending on sponsorship, we hope to develop and dispatch a fith board - the screen board. This will allow you to view all sorts of information about your robot in real time and enable you to quickly spot your mistakes and problems with the kit. We are really excited about this new board as we think it will be a massive help not to mention look really cool.
+
+[slide 16]
+
+Ok, so i hope i have given you a good idea of the kind of things you can achieve with the electronic kit we supply, but this is by no means a difinite list. We really do encourage you to think up new ideas and gadgets that will give you an edge in the competition.
+
+All we ask is that you follow a few rules 
+
+[slide 17]
+
+So that we can help you fix things when they go wrong we ask you to stick to a simple colour coding system and neatly and securely position all of the electronics. In our experience, teams with the messiest robots have the lowest success rates.
+
+[slide 18]
+
+So, when can you get your hands on the kit?
+
+we hope to have it dispatched by [insert random number here]
+
+[slide 19]
+
+So any questions?
