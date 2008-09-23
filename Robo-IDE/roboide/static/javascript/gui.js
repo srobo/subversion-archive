@@ -502,7 +502,7 @@ function TeamSelector() {
 //new folder call
 function new_folder(new_name) {
 	if(new_name == null && new_name == undefined) {
-		var browser = new Browser(1, new_folder, {'isFile' : 'false'});
+		var browser = new Browser(new_folder, {'type' : 'isDir'});
 	}
 	else {
 		//TODO: actually create new directory

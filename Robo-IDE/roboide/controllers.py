@@ -549,7 +549,7 @@ class Root(controllers.RootController):
         return dict(new_revision=str(newrev), code=code,
                     success=success, file=file, reloadfiles=reload)
 
-    def create_svn_dir(self, client, path):
+    def create_svn_dir(self, client, path, msg=""):
         """Creates an svn directory if one doesn't exist yet
         inputs:
             client - a pysvn client
@@ -562,7 +562,7 @@ class Root(controllers.RootController):
             #Recurse to ensure folder parents exist
             self.create_svn_dir(client, upperpath)
 
-            client.mkdir(client.REPO + path, "New Directory: " + path)
+            client.mkdir(client.REPO + path, "New Directory: " + path + " Notes: " + msg)
 
     @expose("json")
     def filelist(self, team, rootpath="/"):
@@ -652,6 +652,20 @@ class Root(controllers.RootController):
         return dict(tree=tree)
 
     @expose("json")
+    def newdir(self, team, path, msg):
+        client = Client(int(team))
+
+        if not client.is_url(client.REPO + path):
+            try:
+                self.create_svn_dir(client, path, msg)
+            except pysvn.ClientError:
+                return dict(new_revision="0", newdir = path,\
+			                feedback="Error creating new directory")
+
+        return dict(new_revision="0", newdir = path,\
+	                feedback="Directory successfully created")
+
+    @expose("json")
     def projlist(self, team):
         """Returns a list of projects"""
         client = Client(int(team))
@@ -665,3 +679,4 @@ class Root(controllers.RootController):
                 projects.append(name)
 
         return dict( projects = projects )
+
