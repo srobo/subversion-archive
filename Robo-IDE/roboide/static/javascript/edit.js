@@ -111,10 +111,6 @@ function EditPage() {
 		this._new_count ++;
 		var fname = "New File " + this._new_count;
 		var etab = this._new_etab( team, null, fname );
-		etab.contents = "";
-		etab.original = "";
-		etab.isNew = true;
-		etab.dirty = false;
 		tabbar.switch_to( etab.tab );
 	}
 
