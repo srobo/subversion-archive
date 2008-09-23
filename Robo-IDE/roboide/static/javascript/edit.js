@@ -66,6 +66,8 @@ function EditPage() {
 		this._open_files[fpath].contents = nodes.code;
 		this._open_files[fpath].original = nodes.code;
 		this._open_files[fpath]._update_contents();
+		this._open_files[fpath].isNew = false;
+		this._open_files[fpath].dirty = false;
 	}
 
 	this._error_receive_file_contents = function() {
@@ -141,8 +143,20 @@ function EditPage() {
 		var etab = new EditTab(path);
 		etab.path = path;
 		etab.project = project;
-		logDebug("Path: "+path);		
-		this._get_file_contents(path, 0);
+		logDebug("Path: "+path);
+		
+		//if not new file - get file contents and put in edit area
+		if(project != null) {		
+			this._get_file_contents(path, 0);
+		}
+		//new file - set some defaults
+		else {
+			etab.contents = "";
+			etab.original = "";
+			etab.isNew = true;
+			etab.dirty = false;
+			etab._update_contents();
+		}
 
 		connect( etab, "onclose", bind( this._on_tab_close, this ) );
 
@@ -216,10 +230,10 @@ function EditTab(path) {
 	this.tab = null;
 
 	// true if tab has been modified
-	this.dirty = true;	//
+	this.dirty;	//
 
 	//true if file is new (unsaved)
-	this.isNew = false;	//TODO
+	this.isNew;	//TODO
 
 	// All our current signal connection idents
 	this._signals = [];
@@ -272,11 +286,13 @@ function EditTab(path) {
 				status_msg("File Saved successfully (New Revision: "+nodes.new_revision+")", LEVEL_OK);
 				this.dirty = false;
 				this.original = this.contents;
+				this.isNew = false;
 				break;
 			case "Merged":
 				status_msg("File Merge successful (New Revision: "+nodes.new_revision+")", LEVEL_OK);
 				this.dirty = false;
 				this.original = this.contents;
+				this.isNew = false;
 				break;
 			case "Error creating new directory":
 				status_msg("Error creating new directory (New Revision: "+nodes.new_revision+")", LEVEL_ERROR);
