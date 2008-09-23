@@ -219,8 +219,7 @@ Log.prototype._onblur = function() {
 }
 //tab is closed
 Log.prototype.close = function() {   
-    this.tab.close();
-    this.hide();  
+    this.tab.close(); 
     delete this;    //free memory      
     logDebug("Closing log tab");
 }
@@ -232,3 +231,4 @@ Log.prototype.display = function() {
 Log.prototype.hide = function() {
 	setStyle($("log-mode"), {"display" : "none"});	
 }
+
