@@ -251,7 +251,7 @@ function ldapauth_admin_form(&$form_state, $op = NULL, $sid = NULL) {
     '#title' => t('Store passwords in encrypted form'),
     '#return_value' => 1,
     '#default_value' => $edit['encrypted'],
-    '#description' => t('Secure the password in LDAP by storing it MD5 encrypted (use with care, as some LDAP directories may do this automatically, what would cause logins problems).'),
+    '#description' => t('Secure the password in LDAP by storing its SHA hash (use with care, as some LDAP directories may do this automatically, which would cause logins problems).'),
   );
 
   $form['login-procedure'] = array(

@@ -472,8 +472,8 @@ function _ldapdata_user_update_drupal_account(&$edit, &$user) {
       $ldap_attr = $d2l_map[$key];
       if ($ldap_attr) {
         if ($key == 'pass') {
-          if ($value) {
-            $pw = $encr ? '{md5}'. base64_encode(pack('H*', md5($value))) : $value;
+          if ($value) { 
+            $pw = $encr ? "{SHA}" . base64_encode(pack("H*", sha1($value))) : $value;
             $writeout[$ldap_attr] = $pw;
           }
         }
