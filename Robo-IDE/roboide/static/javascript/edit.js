@@ -132,7 +132,10 @@ function EditPage() {
 		this._new_count ++;
 		var fname = "New File " + this._new_count;
 		var etab = this._new_etab( team, null, fname );
-
+		etab.contents = "";
+		etab.original = "";
+		etab.isNew = true;
+		etab.dirty = false;
 		tabbar.switch_to( etab.tab );
 	}
 
@@ -143,23 +146,16 @@ function EditPage() {
 		etab.path = path;
 		etab.project = project;
 		logDebug("Path: "+path);
-		
-		//if not new file - get file contents and put in edit area
-		if(project != null) {		
-			this._get_file_contents(path, 0);
-		}
-		//new file - set some defaults
-		else {
-			etab.contents = "";
-			etab.original = "";
-			etab.isNew = true;
-			etab.dirty = false;
-			etab._update_contents();
-		}
 
 		connect( etab, "onclose", bind( this._on_tab_close, this ) );
 
 		this._open_files[path] = etab;
+
+		//if not new file - get file contents and put in edit area
+		if(project != null) {		
+			this._get_file_contents(path, 0);
+		}
+
 		return etab;
 	}
 
