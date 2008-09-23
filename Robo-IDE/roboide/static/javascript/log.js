@@ -117,9 +117,9 @@ Log.prototype._populateList = function() {
 		opt.value = i;
 		appendChildNodes($("svn-users"), opt);			
 	}
-    //add event handler for when user applies filter to results 
+    //remove event handler for when user applies filter to results 
 	disconnectAll($("svn-users"));
-	connect($("svn-users"), 'onchange', bind(this._update, this));
+
 
 	//clear log list
 	replaceChildNodes($("log-list"), null);
@@ -134,6 +134,13 @@ Log.prototype._populateList = function() {
 		appendChildNodes(item, commitMsg);	
 		appendChildNodes($("log-list"), item);	
 	}	
+	//make selected user selected in drop down box (visual clue that filter is applied)
+	if(this.user != null) {
+		$("svn-users").value = findValue(this.userList, this.user);
+	}
+
+	//connect event handler for when user applies filter to results
+	connect($("svn-users"), 'onchange', bind(this._update, this));
 
     //if older results are available, enable the 'older' button	
 	if(this.offset < (this.overflow-1)) {
@@ -207,7 +214,7 @@ Log.prototype._revert = function(override) {
 //tab gets focus
 Log.prototype._onfocus = function() {
     if(getStyle($("log-mode"), "display") != "block") {
-        this.display();
+        setStyle($("log-mode"), {"display" : "block"});
     }
     //don't waste time doing query again, just process results in buffer
     this._populateList();
@@ -215,7 +222,7 @@ Log.prototype._onfocus = function() {
 
 //tab loses focus
 Log.prototype._onblur = function() {
-    this.hide();
+    setStyle($("log-mode"), {"display" : "none"});
 }
 //tab is closed
 Log.prototype.close = function() {   
@@ -223,12 +230,3 @@ Log.prototype.close = function() {
     delete this;    //free memory      
     logDebug("Closing log tab");
 }
-//shows all log page specific htmll
-Log.prototype.display = function() {
-	setStyle($("log-mode"), {"display" : "block"});
-}
-//hides all log page specfic html
-Log.prototype.hide = function() {
-	setStyle($("log-mode"), {"display" : "none"});	
-}
-
