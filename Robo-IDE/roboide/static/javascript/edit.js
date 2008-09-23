@@ -60,27 +60,6 @@ function EditPage() {
 		
 		this._ea_initted = true;
 	}
-	//actually get the file contents
-	this._receive_file_contents = function(fpath, nodes) {
-		this._open_files[fpath].contents = nodes.code;
-		this._open_files[fpath].original = nodes.code;
-		this._open_files[fpath]._update_contents();
-		this._open_files[fpath].isNew = false;
-		this._open_files[fpath].dirty = false;
-	}
-
-	this._error_receive_file_contents = function() {
-		this._file_contents = "Error - Cannot load contents";
-	}
-
-	this._get_file_contents = function(fpath, revision) {
-		var d = loadJSONDoc("./filesrc", { team : team,
-								file : fpath, 
-								revision : revision});
-
-			d.addCallback( bind(this._receive_file_contents, this, fpath));	
-			d.addErrback( bind(this._error_receive_file_contents, this));		
-	}
 
 	// Show the edit page
 	this._show = function() {
@@ -142,20 +121,11 @@ function EditPage() {
 	// Create a new tab that's one of ours
 	// Doesn't load the tab
 	this._new_etab = function(team, project, path) {
-		var etab = new EditTab(path);
-		etab.path = path;
-		etab.project = project;
-		logDebug("Path: "+path);
-
+		var etab = new EditTab(team, project, path);
+		
 		connect( etab, "onclose", bind( this._on_tab_close, this ) );
 
 		this._open_files[path] = etab;
-
-		//if not new file - get file contents and put in edit area
-		if(project != null) {		
-			this._get_file_contents(path, 0);
-		}
-
 		return etab;
 	}
 
@@ -204,11 +174,11 @@ function EditPage() {
 
 // Represents a tab that's being edited
 // Managed by EditPage -- do not instantiate outside of EditPage
-function EditTab(path) {
+function EditTab(team, project, path) {
 	// The team
-	this.team = null;
-	// The project (TODO)
-	this.project = null;
+	this.team = team;
+	// The project
+	this.project = project;
 	// The path
 	this.path = path;
 
@@ -216,22 +186,24 @@ function EditTab(path) {
 	this.commitMsg = "Default Commit Message";
 
 	//the original contents (before edits)
-	this.original;
+	this.original = "";
 
 	// The current contents
-	this.contents;
+	this.contents = "";
 
 	// The tab representing us
 	this.tab = null;
 
 	// true if tab has been modified
-	this.dirty;	//
+	this.dirty = false;
 
 	//true if file is new (unsaved)
-	this.isNew;	//TODO
+	this.isNew = false;
 
 	// All our current signal connection idents
 	this._signals = [];
+	// The "Failed to load contents" of file status message:
+	this._stat_contents = null;
 
 	this._init = function() {
 		this.tab = new Tab( this.path );
@@ -245,6 +217,48 @@ function EditTab(path) {
 
 		connect( this.tab, "onfocus", bind( this._onfocus, this ) );
 		connect( this.tab, "onblur", bind( this._onblur, this ) );
+
+		if( this.project == null ) {
+			// New file
+			this.isNew = true;
+			this.contents = "";
+			this.original = "";
+			this.dirty = false;
+		} else
+			// Existing file
+			this._load_contents();
+	}
+
+	// Start load the file contents
+	this._load_contents = function() {
+		var d = loadJSONDoc("./filesrc", { team : this.team,
+						   file : this.path,
+						   revision : 0});
+
+		d.addCallback( bind(this._recv_contents, this));	
+		d.addErrback( bind(this._recv_contents_err, this));
+	}
+
+	// Handler for the reception of file contents
+	this._recv_contents = function(nodes) {
+		if( this._stat_contents != null ) {
+			this._stat_contents.close();
+			this._stat_contents = null;
+		}
+
+		this.contents = nodes.code;
+		this.original = nodes.code;
+		this.isNew = false;
+		this.dirty = false;
+
+		this._update_contents();
+	}
+
+	// Handler for errors in receiving the file contents
+	this._recv_contents_err = function() {
+		this._stat_contents = status_button( "Failed to load contents of file " + this.path,
+						     LEVEL_ERROR,
+						     "retry", bind( this._load_contents, this ) );
 	}
 
 	this._check_syntax = function() {
