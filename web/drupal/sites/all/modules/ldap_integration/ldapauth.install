@@ -1,0 +1,147 @@
+<?php
+// $Id: ldapauth.install,v 1.11.2.9 2008/08/11 11:10:07 miglius Exp $
+
+/**
+ * @file
+ * ldapauth module installation and upgrade code.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+// Core API hooks
+
+/**
+ * Implementation of hook_install().
+ */
+function ldapauth_install() {
+  drupal_install_schema('ldapauth');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function ldapauth_uninstall() {
+  // Remove tables.
+  drupal_uninstall_schema('ldapauth');
+
+  // Remove variables
+  variable_del('ldapauth_login_process');
+  variable_del('ldapauth_login_conflict');
+  variable_del('ldapauth_forget_passwords');
+  variable_del('ldapauth_disable_pass_change');
+  variable_del('ldapauth_alter_email_field');
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Schema API hooks
+
+/**
+ * Implementation of hook_schema().
+ */
+function ldapauth_schema() {
+  $schema['ldapauth'] = array(
+    'fields' => array(
+      'sid' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'size' => 'tiny',
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+      ),
+      'server' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'port' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 389,
+      ),
+      'tls' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+      ),
+      'encrypted' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+      ),
+      'basedn' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'tiny',
+      ),
+      'user_attr' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'mail_attr' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'binddn' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'bindpw' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'bindpw_clear' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'indexes' => array(
+      'sid' => array('sid'),
+    ),
+    'primary key' => array('name')
+  );
+  return $schema;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Upgrades
+
+function ldapauth_update_6000() {
+  $ret = array();
+  $result = db_query("SELECT * FROM {ldapauth}");
+  while ($row = db_fetch_object($result)) {
+    $servers[$row->name] = $row->sid;
+  }
+  if (!empty($servers)) {
+    $result = db_query("SELECT uid FROM {users} WHERE uid > '1'");
+    while ($row = db_fetch_object($result)) {
+      $account = user_load($row->uid);
+      if ($account->ldap_config && in_array($account->ldap_config, array_keys($servers))) {
+        user_save($account, array('ldap_config' => $servers[$account->ldap_config]));
+      }
+    }
+  }
+  return $ret;
+}
+
