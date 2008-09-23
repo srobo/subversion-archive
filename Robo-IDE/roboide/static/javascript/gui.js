@@ -511,17 +511,20 @@ function new_folder(new_name) {
 
 //event handler for 'view log' in project view
 function view_log() {
-
+	//for every file that is selected:
 	for(var i = 0; i < projpage.flist.selection.length; i++) {
+		//try to find log file in tabbar
 		var exists = map(function(x){
 							if(x.label == "Log: "+projpage.flist.selection[i]) {
 								return true;}
 							else { return false; }
 						}, tabbar.tabs);
 		var test = findValue(exists, true);
+		//if already present, flash it but don't open a new one
 		if(test > -1) {
 			tabbar.tabs[test].flash();
 		}
+		//not present, open it
 		else{
 			var cow = new Log(projpage.flist.selection[i], 1);
 		}
