@@ -43,8 +43,7 @@ function EditPage() {
 		this.textbox = TEXTAREA({"id" : "editpage-editarea",
 					 "value" : "" });
 		appendChildNodes($("edit-mode"), this.textbox);
-		//now let textbox point point to actual textbox
-		this.textbox = $("editpage-editarea"); 
+
 		//initialize new instance of editArea			
 		editAreaLoader.init({
 	 		id : "editpage-editarea",
