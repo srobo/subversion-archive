@@ -207,6 +207,7 @@ Browser.prototype.display = function() {
 	logDebug("showing debug");
 	showElement($("file-browser"));
 	showElement($("grey-out"));
+
 	//clear previous events
 	disconnectAll($("save-new-file"));
 	disconnectAll($("cancel-new-file"));
@@ -249,14 +250,14 @@ Browser.prototype.hide = function() {
 function enlarge_commit_msg() {
 	//delete deafult text on focus
 	if($("new-commit-msg").innerHTML == "Commit message") { $("new-commit-msg").innerHTML = "";}
-	Morph($("right-pane"), {"style": {"height" : "100px" }});
-	Morph($("left-pane"), {"style": {"height" : "100px" }});
-	Morph($("new-commit-msg"), {"style": {"height" : "150px" }});
+	setStyle("right-pane", {"height" : "50px" });
+	setStyle("left-pane", {"height" : "50px" });
+	setStyle("new-commit-msg", {"height" : "200px" });
 }	
 //when commit message box looses focus:
 function shrink_commit_msg() {
-	Morph($("right-pane"), {"style": {"height" : "200px" }});
-	Morph($("left-pane"), {"style": {"height" : "200px" }});
-	Morph($("new-commit-msg"), {"style": {"height" : "50px" }});
+	setStyle("right-pane", {"height" : "200px" });
+	setStyle("left-pane", {"height" : "200px" });
+	setStyle("new-commit-msg", {"height" : "50px" });
 }	
 
