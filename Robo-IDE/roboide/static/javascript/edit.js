@@ -12,7 +12,8 @@ function EditPage() {
 	//  - _show: Show the edit page.
 	//           Triggers initialisation of the editarea if necessary
 	//  - _hide: Hide the edit page.
-	//  - _new_etab: Creates a new instance of an EditTab and wire it up to a Tab
+	//  - _new_etab: Creates a new instance of an EditTab and wire it 
+	// 	up to a Tab
 	//               TODO: Can we get EditTab to do this for us?
 	//  - _file_get_etab: Given a file path, returns the tab for it.
 	//                    If the file isn't currently open, return null.
@@ -171,31 +172,54 @@ function EditPage() {
 // Represents a tab that's being edited
 // Managed by EditPage -- do not instantiate outside of EditPage
 function EditTab(team, project, path) {
+	// Member functions:
+	// Public:
+	//  None.
+	// Private:
+	//  - _init: Constructor.
+	//  - _check_syntax: Handler for when the "check syntax" button is clicked
+	//  - _update_contents: Update the contents of the edit area.
+	//  - _capture_code: Store the contents of the edit area.
+
+	//  ** File Contents Related ** 
+	//  - _load_contents: Start the file contents request.
+	//  - _recv_contents: Handler for file contents reception.
+	//  - _recv_contents_err: Handler for file contents reception errors.
+
+	//  ** Save Related **
+	//  - _save: Handler for when the save button is clicked.
+	//  - _receive_new_fname: Handler for save dialog.
+	//  - _receive_commit_msg: Handler for save dialog.
+	//  - _svn_save: Save the file to the server.
+	//  - _receive_svn_save: Handler for successfully sending to server. 
+	//  - _error_receive_svn_save: Handler for when a save fails.
+
+	//  ** Tab related **
+	//  - _close: Handler for when the tab is closed.
+	//  - _onfocus: Handler for when the tab receives focus.
+	//  - _onblur: Handler for when the tab is blurred.
+
+	// *** Public Properties ***
 	// The team
 	this.team = team;
 	// The project
 	this.project = project;
 	// The path
 	this.path = path;
-
-	//The commit message
-	this.commitMsg = "Default Commit Message";
-
-	//the original contents (before edits)
-	this.original = "";
-
 	// The current contents
 	this.contents = "";
-
 	// The tab representing us
 	this.tab = null;
 
+	// *** Private Properties ***
 	// true if tab has been modified
-	this.dirty = false;
-
+	this._dirty = false;
 	//true if file is new (unsaved)
-	this.isNew = false;
-
+	this._isNew = false;
+	//The commit message
+	this._commitMsg = "Default Commit Message";
+	//the original contents (before edits)
+	this._original = "";
 	// All our current signal connection idents
 	this._signals = [];
 	// The "Failed to load contents" of file status message:
@@ -216,10 +240,10 @@ function EditTab(team, project, path) {
 
 		if( this.project == null ) {
 			// New file
-			this.isNew = true;
+			this._isNew = true;
 			this.contents = "";
-			this.original = "";
-			this.dirty = false;
+			this._original = "";
+			this._dirty = false;
 		} else
 			// Existing file
 			this._load_contents();
@@ -243,9 +267,9 @@ function EditTab(team, project, path) {
 		}
 
 		this.contents = nodes.code;
-		this.original = nodes.code;
-		this.isNew = false;
-		this.dirty = false;
+		this._original = nodes.code;
+		this._isNew = false;
+		this._dirty = false;
 
 		this._update_contents();
 	}
@@ -263,12 +287,12 @@ function EditTab(team, project, path) {
 
 	this._receive_new_fname = function(fpath, commitMsg) {
 		this.path = fpath;
-		this.commitMsg = commitMsg;
+		this._commitMsg = commitMsg;
 		this._svn_save();
 	}
 
 	this._receive_commit_msg = function(commitMsg) {
-		this.commitMsg = commitMsg;
+		this._commitMsg = commitMsg;
 		this._svn_save();
 	}
 	
@@ -276,12 +300,10 @@ function EditTab(team, project, path) {
 		//do an update
 		this._capture_code();
 		//if new file	-- TODO
-		if(this.isNew) {
+		if(this._isNew)
 			var fileBrowser = new Browser(bind(this._receive_new_fname, this), {'type' : 'isFile'});	
-		}
-		else {
+		else
 			var fileBrowser = new Browser(bind(this._receive_commit_msg, this), {'type' : 'isCommit'});	
-		}
 	}
 
 	//ajax event handler for saving to server
@@ -289,15 +311,15 @@ function EditTab(team, project, path) {
 		switch(nodes.success){
 			case "True": 
 				status_msg("File Saved successfully (New Revision: "+nodes.new_revision+")", LEVEL_OK);
-				this.dirty = false;
-				this.original = this.contents;
-				this.isNew = false;
+				this._dirty = false;
+				this._original = this.contents;
+				this._isNew = false;
 				break;
 			case "Merged":
 				status_msg("File Merge successful (New Revision: "+nodes.new_revision+")", LEVEL_OK);
-				this.dirty = false;
-				this.original = this.contents;
-				this.isNew = false;
+				this._dirty = false;
+				this._original = this.contents;
+				this._isNew = false;
 				break;
 			case "Error creating new directory":
 				status_msg("Error creating new directory (New Revision: "+nodes.new_revision+")", LEVEL_ERROR);
@@ -318,7 +340,7 @@ function EditTab(team, project, path) {
 	var d = loadJSONDoc("./savefile", { team : team,
 					    file : this.path, 
 						rev : 0,				//TODO: make this dynamic
-					    message : this.commitMsg,
+					    message : this._commitMsg,
 						code: this.contents});
 
 	d.addCallback( bind(this._receive_svn_save, this));	
@@ -329,7 +351,7 @@ function EditTab(team, project, path) {
 		//update
 		this._capture_code();
 		var obj = this;
-		if(this.dirty == true && !override ) {
+		if(this._dirty == true && !override ) {
 			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", bind(this._close, this, true));
 		}
 		else{
@@ -379,11 +401,11 @@ function EditTab(team, project, path) {
 	//call this to update this.contents with the current contents of the edit area
 	this._capture_code = function() {
 		this.contents = editAreaLoader.getValue("editpage-editarea");
-		if(this.contents == this.original) {
-			this.dirty = false;
+		if(this.contents == this._original) {
+			this._dirty = false;
 		}
 		else {
-			this.dirty = true;
+			this._dirty = true;
 		}
 	}
 

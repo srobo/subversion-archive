@@ -1,4 +1,26 @@
+// File save dialog
+// Arguments:
+//  - cback: Callback for when things happen.
+//  - options: Dictionary of settings:
+// 		- "type" 	'isFile' 	- renders file browser with file name box
+// 				'isDir' 	- renders file browser with folder name box
+// 				'isCommit' 	- renders file browser without file view, just commit box
+
 function Browser(cback, options) {
+	// Public functions:
+	//  - clickSaveFile(bool):	event handler for when save is clicked, if bool is true, ignore lack of commit msg
+	//  - clickCancelSave(): cancel and close browser
+	//  - dirSelected(): event handler for when a directory is selected  in the left hand pane
+	//  - display(): show all browser css
+	//  - hide():hide all browser css
+
+	// Private functions:
+	//  - _init:	Constructor.  Displays filebrowser, grabs file tree and connects up events.
+	//  - _receiveTree: AJAX success callback
+	//  - _errorReceiveTree: AJAX fail callback
+	//  - _getFileTree: Grab file tree from server
+	//  - _processTree: Recursive function to turn filelist into DOM
+
 	this.newDirectory = "";
 	this.newFname = "";
 	this.commitMsg = "";
@@ -10,23 +32,7 @@ function Browser(cback, options) {
 	this.callback = cback;
 	this._init();
 }
-/*
-	type 				'isFile' 	- renders typical file browser with file name box
-						'isDir' 	- renders typical file browser with folder name box
-						'isCommit' 	- renders file browser without file view, just commit box
 
-	_init				displays filebrowser, grabs file tree and connects up events
-	_receiveTree 		AJAX success callback
-	_errorReceiveTree 	AJAX fail callback
-	_getFileTree		grab file tree from server
-	clickSaveFile(bool)	event handler for when save is clicked, if bool is true, ignore lack of commit msg
-	clickCancelSave()	cancel and close browser
-	_processTree		recursive function to turn filelist into DOM
-	dirSelected()		event handler for when a directory is selected  in the left hand pane
-	display()			show all browser css
-	hide()				hide all browser css
-	
-*/
 Browser.prototype._init = function() {
 	//make visible
 	this.display();
