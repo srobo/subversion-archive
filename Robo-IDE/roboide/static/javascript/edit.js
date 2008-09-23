@@ -245,46 +245,54 @@ function EditTab(path) {
 	this._receive_new_fname = function(fpath, commitMsg) {
 		this.path = fpath;
 		this.commitMsg = commitMsg;
-		this.dirty = false;
-		this._save();
+		this._svn_save();
+	}
+
+	this._receive_commit_msg = function(commitMsg) {
+		this.commitMsg = commitMsg;
+		this._svn_save();
 	}
 	
 	this._save = function() {
 		//do an update
-		this._save_contents();
+		this._capture_code();
 		//if new file	-- TODO
 		if(this.isNew) {
-			status_msg( "Enter a filename for new file", LEVEL_OK );
-			var fileBrowser = new Browser(team, bind(this._receive_new_fname, this), {'isFile' : true});	
+			var fileBrowser = new Browser(bind(this._receive_new_fname, this), {'type' : 'isFile'});	
 		}
 		else {
-			status_msg("Contacting server....", LEVEL_OK );
-			this._svn_save();
+			var fileBrowser = new Browser(bind(this._receive_commit_msg, this), {'type' : 'isCommit'});	
 		}
 	}
 
-	//ajax event handler
+	//ajax event handler for saving to server
 	this._receive_svn_save = function(nodes){
 		switch(nodes.success){
 			case "True": 
-				status_msg("File Saved successfully (New Revision: "+nodes.new_revision+")");
+				status_msg("File Saved successfully (New Revision: "+nodes.new_revision+")", LEVEL_OK);
+				this.dirty = false;
+				this.original = this.contents;
 				break;
 			case "Merged":
-				status_msg("File Merge successful (New Revision: "+nodes.new_revision+")");
+				status_msg("File Merge successful (New Revision: "+nodes.new_revision+")", LEVEL_OK);
+				this.dirty = false;
+				this.original = this.contents;
 				break;
 			case "Error creating new directory":
-				status_msg("Error creating new directory (New Revision: "+nodes.new_revision+")");
+				status_msg("Error creating new directory (New Revision: "+nodes.new_revision+")", LEVEL_ERROR);
 				break;
 			case "Invalid filename" :
-				status_msg("Save operation failed, Invalid filename (New Revision: "+nodes.new_revision+")");
+				status_msg("Save operation failed, Invalid filename (New Revision: "+nodes.new_revision+")", LEVEL_ERROR);
 				break;
 		}
 	}
-
+	
+	//ajax event handler for saving to server
 	this._error_receive_svn_save = function() {
 		button_status("Error contacting server", LEVEL_ERROR, "retry", bind(this._svn_save, this));
 	}
-
+	
+	//save file contents to server as new revision
 	this._svn_save = function() {
 	var d = loadJSONDoc("./savefile", { team : team,
 					    file : this.path, 
@@ -298,7 +306,7 @@ function EditTab(path) {
 
 	this._close = function(override) {
 		//update
-		this._save_contents();
+		this._capture_code();
 		var obj = this;
 		if(this.dirty == true && !override ) {
 			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", bind(this._close, this, true));
@@ -336,7 +344,7 @@ function EditTab(path) {
 	// Handler for when the tab loses focus
 	this._onblur = function() {
 		//don't loose changes to file content
-		this._save_contents();
+		this._capture_code();
 		// Disconnect all the connected signal
 		map( disconnect, this._signals );
 		this._signals = [];
@@ -346,7 +354,9 @@ function EditTab(path) {
 		logDebug("Updating editarea contents: ");
 	 	editAreaLoader.setValue("editpage-editarea", this.contents);
 	}
-	this._save_contents = function() {
+
+	//call this to update this.contents with the current contents of the edit area
+	this._capture_code = function() {
 		this.contents = editAreaLoader.getValue("editpage-editarea");
 		if(this.contents == this.original) {
 			this.dirty = false;
@@ -355,5 +365,7 @@ function EditTab(path) {
 			this.dirty = true;
 		}
 	}
+
+	//initialisation
 	this._init();
 }

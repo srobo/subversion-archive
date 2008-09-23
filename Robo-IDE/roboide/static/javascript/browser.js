@@ -1,17 +1,41 @@
-function Browser(team, cback, options) {
-	this.newFilePath = "";
-	this.isFile = options.isFile
+function Browser(cback, options) {
+	this.newDirectory = "";
+	this.newFname = "";
 	this.commitMsg = "";
+
+	this.fileList = new Array();
+	this.type = options.type;
+
 	this.fileTree = null;
 	this.callback = cback;
-	this._init(team, "");
+	this._init();
 }
+/*
+	type 				'isFile' 	- renders typical file browser with file name box
+						'isDir' 	- renders typical file browser with folder name box
+						'isCommit' 	- renders file browser without file view, just commit box
 
-Browser.prototype._init = function(team, rootpath) {
+	_init				displays filebrowser, grabs file tree and connects up events
+	_receiveTree 		AJAX success callback
+	_errorReceiveTree 	AJAX fail callback
+	_getFileTree		grab file tree from server
+	clickSaveFile(bool)	event handler for when save is clicked, if bool is true, ignore lack of commit msg
+	clickCancelSave()	cancel and close browser
+	_processTree		recursive function to turn filelist into DOM
+	dirSelected()		event handler for when a directory is selected  in the left hand pane
+	display()			show all browser css
+	hide()				hide all browser css
+	
+*/
+Browser.prototype._init = function() {
 	//make visible
-	display_file_browser();
-	//get file listings
-	this._getFileTree(team, rootpath);
+	this.display();
+
+	//get file listings - if not just commit message
+	if(this.type != 'isCommit') {
+		this._getFileTree(team, ""); 
+	}
+
 	//set up event handlers
 	connect($("save-new-file"), 'onclick', bind(this.clickSaveFile, this, false));
 	connect($("cancel-new-file"), 'onclick', bind(this.clickCancelSave, this));
@@ -20,12 +44,9 @@ Browser.prototype._init = function(team, rootpath) {
 Browser.prototype._receiveTree = function(nodes) {
 	this.fileTree = nodes.tree;
 	//default to root directory
-	this.currFolder = this.fileTree[0].path;
-	$("selected-dir").innerHTML = "Save Directory: "+this.currFolder;
-	//populate left pane
-	$("browser-status").innerHTML = "Please Select a directory";
+	this.newDirectory = this.fileTree[0].path;
 	replaceChildNodes($("left-pane-list"), null);
-	processTree($("left-pane-list"), this.fileTree, "");
+	this._processTree($("left-pane-list"), this.fileTree, "");
 }
 
 Browser.prototype._errorReceiveTree = function() {
@@ -44,22 +65,83 @@ Browser.prototype._getFileTree = function(tm, rpath) {
 //when user clicks save
 Browser.prototype.clickSaveFile = function(override) {
 	this.commitMsg = $("new-commit-msg").value;
-	this.newFilePath = $("selected-dir").innerHTML +"/"+$("new-file-name").value;
-	logDebug("Commit Message: "+this.commitMsg);
-	logDebug("New File Name & Path: "+this.newFilePath);
+	this.newFname = $("new-file-name").value;
 
+	var fnameErrFlag = (findValue(this.fileList, this.newFname) > -1);
+	var commitErrFlag = ( ((this.commitMsg == "Commit message") || (this.commitMsg == "")) && !override);
+
+	switch(this.type) {
+		case 'isFile': 
+			if(fnameErrFlag) { 
+				$("browser-status").innerHTML = "\""+this.newFname+"\" already exists!";
+				return;
+			}
+			else if(commitErrFlag) {
+				$("browser-status").innerHTML = "No commit message added - click to ignore";
+				connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
+				return;				
+			}
+			else {
+				//execute callback function
+				this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
+				//remove events
+				disconnectAll($("browser-status"));
+				//hide browser
+				this.hide();
+			}
+			break;
+
+		case 'isDir' :
+			if(commitErrFlag) {
+				$("browser-status").innerHTML = "No commit message added - click to ignore";
+				connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
+				return;				
+			}
+			else {
+				//execute callback function
+				this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
+				//remove events
+				disconnectAll($("browser-status"));
+				//hide browser
+				this.hide();
+			}
+			break;
+
+		case 'isCommit' :
+			if(commitErrFlag) {
+				$("browser-status").innerHTML = "No commit message added - click to ignore";
+				connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
+				return;				
+			}
+			else {
+				//execute callback function
+				this.callback(this.commitMsg);
+				//remove events
+				disconnectAll($("browser-status"));
+				//hide browser
+				this.hide();
+			}
+			break;						
+	}
+
+	if(findValue(this.fileList, this.newFname) > -1) {
+		$("browser-status").innerHTML = "\""+this.newFname+"\" already exists!";
+		return;
+	}
+	
 	if( ((this.commitMsg == "Commit message") || (this.commitMsg == "")) && !override)
 	{
 			$("browser-status").innerHTML = "No commit message added - click to ignore";
 			connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
+			return;
 	}
 	else {
 		//execute callback function
-		this.callback(this.newFilePath, this.commitMsg);
+		this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
 		//remove events
 		disconnectAll($("browser-status"));
 		//hide browser
-		hide_file_browser();
+		this.hide();
 	}	
 }
 
@@ -68,18 +150,16 @@ Browser.prototype.clickCancelSave = function() {
 	status_hide();
 	this.commitMsg = "";
 	this.newFilePath = "";
-	hide_file_browser();
+	this.hide();
 }
 
-//Recursive function to conver filetree into valid DOM tree
-function processTree(parentDOM, tree, pathSoFar) {
+//Recursive function to convert filetree into valid DOM tree
+Browser.prototype._processTree = function(parentDOM, tree, pathSoFar) {
 	for (var i = 0; i < tree.length; i++) {
 		if(tree[i].kind == "FOLDER") {
 			//create entry in folder list
-			var newLeaf = LI(null, "");
 			var newPathSoFar = pathSoFar+"/"+tree[i].name;
-			newLeaf.setAttribute('path', newPathSoFar);
-			newLeaf.setAttribute('onClick', "selectFolder(this.getAttribute('path'), this.getAttribute('fileswithin'))");
+
 			//get just files contained within this directory
 			var filesWithin = "";
 			for (var j = 0; j < tree[i].children.length; j++) {
@@ -87,61 +167,84 @@ function processTree(parentDOM, tree, pathSoFar) {
 						filesWithin = filesWithin+"/"+tree[i].children[j].name;
 					}
 			}
-			newLeaf.setAttribute('fileswithin', filesWithin);
-			newLeaf.innerHTML = tree[i].name+"/";
+
+			var newLeaf = LI(null, tree[i].name+"/");
+
+			connect(newLeaf, 'onclick', bind(this.dirSelected, this, newPathSoFar, filesWithin));
+
 			//create new list for child folder
 			var newBranch = LI(null, "");
 			appendChildNodes(newBranch, UL(null, ""));
 			appendChildNodes(parentDOM, newLeaf);
+
 			//recursive call, with newly created branch
-			appendChildNodes(parentDOM, processTree(newBranch.childNodes[1], tree[i].children, newPathSoFar));
+			appendChildNodes(parentDOM, this._processTree(newBranch.childNodes[1], tree[i].children, newPathSoFar));
 		}
 	}
 	return parentDOM;
 }
 
-//when user selects a folder in right hand pane
-function selectFolder(path, files) {
-	logDebug("Folder selected :"+path);
+Browser.prototype.dirSelected = function(directory, files) {
+	logDebug("Folder selected :"+directory);
 	//update selected directory
-	$("selected-dir").innerHTML = "Save Directory: "+path;
-	var fileList = files.split("/");
+	this.newDirectory = directory;
+	$("selected-dir").innerHTML = "Save Directory: "+directory;
+
+	//populate left hand list
+	this.fileList = files.split("/");
 	var li = null;
 	//empty file list	
 	replaceChildNodes($("right-pane-list"));
 	//populate file list
-	for(var k = 1; k < fileList.length; k++) {
+	for(var k = 1; k < this.fileList.length; k++) {
 		li = LI(null, "");
-		li.innerHTML = fileList[k];
+		li.innerHTML = this.fileList[k];
 		appendChildNodes($("right-pane-list"), li);
-	}
-	//update current new file name
-	if(this.isFile) {
-		$("browser-status").innerHTML = "Please choose a file name:";
-	}
-	else {
-		$("browser-status").innerHTML = "Please choose a folder name:";
 	}
 }
 
-function display_file_browser() {
+Browser.prototype.display = function() {
 	logDebug("showing debug");
 	showElement($("file-browser"));
 	showElement($("grey-out"));
 	//clear previous events
 	disconnectAll($("save-new-file"));
 	disconnectAll($("cancel-new-file"));
-	//fade($("file-browser"), {'from' : 0.0, 'to' : 1.0});
+
+	switch(this.type) {
+		case 'isFile': 
+			$("browser-status").innerHTML = "Please Select a save directory & new file name";
+			$("selected-dir").innerHTML = "File Save As:";
+			showElement("right-pane");
+			showElement("left-pane");
+			showElement("new-file-name");
+			break;
+		case 'isDir' :
+			$("browser-status").innerHTML = "Please Select a save directory & new directory name";
+			$("selected-dir").innerHTML = "New Directory:";
+			showElement("right-pane");
+			showElement("left-pane");
+			showElement("new-file-name");
+			break;
+		case 'isCommit' :
+			$("browser-status").innerHTML = "Please add a commit message before saving";
+			$("selected-dir").innerHTML = "Commit Message:";
+			hideElement("right-pane");
+			hideElement("left-pane");
+			hideElement("new-file-name");
+			break;						
+	}
 }
-function hide_file_browser() {
+Browser.prototype.hide = function() {
 	logDebug("Hiding File Browser");
 	disconnectAll($("save-new-file"));
 	disconnectAll($("cancel-new-file"));
 	disconnectAll($("browser-status"));
-	//fade($("file-browser"), {'from' : 1.0, 'to' : 0});
 	hideElement($("file-browser"));
 	hideElement($("grey-out"));
 }
+
+
 //when commit message box has focus:
 function enlarge_commit_msg() {
 	//delete deafult text on focus
