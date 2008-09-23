@@ -11,7 +11,7 @@ function Log(file, team) {
 	this.overflow = 0;                  //stores  total number of results pages (retrieved from server)
 
     //do this only once: add a new tab to the tabbar and link it to this log page
-    this.tab = new Tab("Log: "+abridge(this.file.toString()));
+    this.tab = new Tab("Log: "+this.file.toString());
     connect(this.tab, 'onfocus', bind(this._onfocus, this));
     connect(this.tab, 'onblur', bind(this._onblur, this));
     tabbar.add_tab(this.tab);
@@ -207,7 +207,7 @@ Log.prototype._revert = function(override) {
 //tab gets focus
 Log.prototype._onfocus = function() {
     if(getStyle($("log-mode"), "display") != "block") {
-        display_log();
+        this.display();
     }
     //don't waste time doing query again, just process results in buffer
     this._populateList();
@@ -215,20 +215,20 @@ Log.prototype._onfocus = function() {
 
 //tab loses focus
 Log.prototype._onblur = function() {
-    hide_log();
+    this.hide();
 }
 //tab is closed
 Log.prototype.close = function() {   
     this.tab.close();
-    hide_log();  
+    this.hide();  
     delete this;    //free memory      
     logDebug("Closing log tab");
 }
 //shows all log page specific htmll
-function display_log() {
+Log.prototype.display = function() {
 	setStyle($("log-mode"), {"display" : "block"});
 }
 //hides all log page specfic html
-function hide_log() {
+Log.prototype.hide = function() {
 	setStyle($("log-mode"), {"display" : "none"});	
 }

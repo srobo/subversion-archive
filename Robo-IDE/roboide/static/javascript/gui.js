@@ -496,7 +496,9 @@ function TeamSelector() {
 		replaceChildNodes( $("teamname"), " " + name );
 	}
 }
-
+//
+//	TODO: Move below stuff into appropriate classes
+//
 //new folder call
 function new_folder(new_name) {
 	if(new_name == null && new_name == undefined) {
@@ -507,13 +509,26 @@ function new_folder(new_name) {
 	}
 }
 
-//view log
+//event handler for 'view log' in project view
 function view_log() {
+
 	for(var i = 0; i < projpage.flist.selection.length; i++) {
-		var cow = new Log(projpage.flist.selection[i], 1);
+		var exists = map(function(x){
+							if(x.label == "Log: "+projpage.flist.selection[i]) {
+								return true;}
+							else { return false; }
+						}, tabbar.tabs);
+		var test = findValue(exists, true);
+		if(test > -1) {
+			tabbar.tabs[test].flash();
+		}
+		else{
+			var cow = new Log(projpage.flist.selection[i], 1);
+		}
 	}
 }
 
+//TODO: decide if this is necessary, remove if not
 function abridge(fpath) {
 
 	if(fpath.length > MAX_TAB_NAME_LENGTH) {
