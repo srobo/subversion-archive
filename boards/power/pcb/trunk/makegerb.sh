@@ -4,7 +4,8 @@
 EXPECTED_ARGS=1
 E_BADARGS=65
 
-if [ $# -ne $EXPECTED_ARGS ]
+
+if [ $# -lt $EXPECTED_ARGS ]
 then
   echo "Usage: `basename $0` <file.brd>"
   echo "output files in gerbers/"
@@ -17,3 +18,7 @@ eagle -X -dGERBER_RS274X -ogerbers/top.gbr $1 top pad via
 eagle -X -dGERBER_RS274X -ogerbers/bottom.gbr $1 bottom pad via
 eagle -X -dGERBER_RS274X -ogerbers/dim.gbr $1 dimension
 eagle -X -dexcellon -ogerbers/drill.drd PWR1.brd drills
+
+
+eagle -X -dGERBER_RS274X -x3 -y4 -ogerbers/topshift.gbr $1 top pad via
+
