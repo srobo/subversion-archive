@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-EXPECTED_ARGS=1
+EXPECTED_ARGS=2
 E_BADARGS=65
 
 
@@ -13,12 +13,11 @@ then
   exit $E_BADARGS
 fi
 
-mkdir -p gerbers
-eagle -X -dGERBER_RS274X -ogerbers/top.gbr $1 top pad via
-eagle -X -dGERBER_RS274X -ogerbers/bottom.gbr $1 bottom pad via
-eagle -X -dGERBER_RS274X -ogerbers/dim.gbr $1 dimension
-eagle -X -dexcellon -ogerbers/drill.drd PWR1.brd drills
+eagle -X -dGERBER_RS274X -o$2-top.gbr $1 top pad via
+eagle -X -dGERBER_RS274X -o$2-bottom.gbr $1 bottom pad via
+eagle -X -dGERBER_RS274X -o$2-dim.gbr $1 dimension
+eagle -X -dexcellon -o$2-drill.drd $1 drills
 
 
-eagle -X -dGERBER_RS274X -x3 -y4 -ogerbers/topshift.gbr $1 top pad via
+#eagle -X -dGERBER_RS274X -x3 -y4 -o$2-topshift.gbr $1 top pad via
 
