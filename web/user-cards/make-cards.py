@@ -1,5 +1,5 @@
 #!/bin/env python
-import csv
+import csv, sys, sr
 
 X_DELTA = 3.54
 Y_DELTA = 2.04
@@ -36,7 +36,9 @@ def page_footer():
 def footer():
     print """\\end{document}"""
 
-def output(x,y,user):
+def output(x,y,info):
+    user = info["user"]
+    pw = info["password"]
     print "\\put(%f,%f) {" % ( x * X_DELTA,
                               y * Y_DELTA )
 
@@ -45,9 +47,9 @@ def output(x,y,user):
     print "\\textbf{Student Robotics Login Details}\\\\"
     print "\\vspace{3pt} \\\\"
 
-    print "%s %s\\\\" % ( user["fname"], user["lname"] )
-    print "Username: \\texttt{%s} \\\\" % user["username"]
-    print "Password: \\texttt{%s}" % user["password"]
+    print "%s %s\\\\" % ( user.cname, user.sname )
+    print "Username: \\texttt{%s} \\\\" % user.username
+    print "Password: \\texttt{%s}" % pw
     print "\\vspace{3pt} \\\\"
     print "Use these details on the Student Robotics website: \\\\"
     print "\\texttt{http://www.studentrobotics.org/}"
@@ -62,22 +64,19 @@ def output(x,y,user):
 
 users = []
 
-users.append( {"fname": "Robert",
-               "lname": "Spanton",
-               "username":"rspanton",
-               "password":"dfhgdfgo",
-               "email":"rspanton@zepler.net"} )
-users.append( { "fname" : "Tom",
-                "lname" : "Bennellick",
-                "username":"tbennellick",
-               "password":"0hjsd-0js",
-               "email":""} )
-for x in range(0,12):
-    users.append( { "fname" : "Chris",
-                    "lname" : "Cross",
-                    "username":"ccross",
-                   "password":"er0lngldsp",
-                   "email":""} )
+r = csv.reader( open(sys.argv[1], "r") )
+for row in r:
+    uname = row[5].strip()
+    pw = row[6].strip()
+
+    user = sr.user( uname )
+
+    users.append( { "user":user, "password":pw } ) 
+#     { "fname" : ,
+#       "lname" : "Bennellick",
+#       "username":"tbennellick",
+#       "password":"0hjsd-0js",
+#       "email":""} )
 
 header()
 
