@@ -681,3 +681,79 @@ class Root(controllers.RootController):
 
         return dict( projects = projects )
 
+    @expose("json")
+    def revert(self, team, file, torev, message):
+        torev=int(torev)
+        client = Client(int(team))
+        reload = "false"
+        #1. SVN checkout of file's directory
+        #TODO: Check for path naugtiness
+        path = os.path.dirname(file)
+        basename = os.path.basename(file)
+        rev = self.get_revision("HEAD") #Always check in over the head to get
+        #old revisions to merge over new ones
+
+        if not client.is_url(client.REPO + path): #new dir needed...
+            return dict(new_revision="0", code = "",\
+			                success="Error reverting file - file doesn't exist")
+
+        try:
+            tmpdir = self.checkoutintotmpdir(client, rev, path)
+        except pysvn.ClientError:
+            try:
+                shutil.rmtree(tmpdir)
+            except:
+                pass
+
+            return dict(new_revision="0", code = "",\
+			                success="Error reverting file - could check out tmp dir")
+        #2. Do a merge
+        revertto = pysvn.Revision( pysvn.opt_revision_kind.number, torev)
+        revertfrom = pysvn.Revision( pysvn.opt_revision_kind.head )
+        client.merge(client.REPO+path, \
+                revertfrom,\
+                client.REPO+path,\
+                revertto, \
+                tmpdir)
+
+        #2 1/2: use client.add if we're adding a new file, ready for checkin
+        try:
+            client.add([join(tmpdir, basename)],
+                       recurse=False)
+            reload = "true"
+        except pysvn.ClientError:
+            pass
+
+        #3. Commit the new directory
+        try:
+            newrev = client.checkin([tmpdir], message)
+            if newrev == None:
+                raise pysvn.ClientError
+            newrev = newrev.number
+            success = "True"
+        except pysvn.ClientError:
+            #Can't commit - merge issues
+            #Need to bring local copy up to speed
+            #Hopefully this means a merge!
+            #Throw the new contents of the file back to the client for
+            #tidying, then they can resubmit
+            newrev = client.update(tmpdir)[0] #This comes back as a list.
+            if newrev == None:
+                #No update to be made.
+                success = "True"
+                newrev = 0
+            else:
+                success = "Merge"
+                #Grab the merged text.
+                mergedfile = open(join(tmpdir, basename), "rt")
+                code = mergedfile.read()
+                mergedfile.close()
+                newrev = newrev.number
+
+        #4. Wipe the directory
+        shutil.rmtree(tmpdir)
+
+        return dict(new_revision=newrev, code = "",\
+		                success="Success !!!")
+
+
