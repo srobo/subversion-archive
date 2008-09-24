@@ -1,9 +1,9 @@
 all: power motor pwm jointio
 
 power_dir=../power/pcb/trunk/
-motor_dir=../power/pcb/trunk/
-pwm_dir=../power/pcb/trunk/
-jointio_dir=../power/pcb/trunk/
+motor_dir=../motor/pcb/trunk/
+pwm_dir=../pwm/pcb/trunk/
+jointio_dir=../jointio/pcb/trunk/
 
 power: 
 	mkdir -p ${power_dir}/gerbers
@@ -15,11 +15,11 @@ motor:
 
 pwm:
 	mkdir -p ${pwm_dir}/gerbers
-	./makegerb.sh ${pwm_dir}PWR1.brd ${pwm_dir}gerbers/power
+	./e5makegerb.sh ${pwm_dir}pwm-board.brd ${pwm_dir}gerbers/power
 
 jointio: 
 	mkdir -p ${jointio_dir}/gerbers
-	./makegerb.sh ${jointio_dir}PWR1.brd ${jointio_dir}gerbers/power
+	./makegerb.sh ${jointio_dir}jointio.brd ${jointio_dir}gerbers/power
 
 # tile: 
 # 	mkdir -p ${}/gerbers
