@@ -15,13 +15,13 @@ fi
 
 if [ $1 -eq "5" ]
 then
-    egl="/opt/eagle-5.2.0/bin/eagle"
-    echo 'using egl 5'
+    egl="/opt/eagle-5.2.0/bin/eagle" # path to eagle 5 binary
+    echo 'using eagle 5'
 
 elif [ $1 -eq "4" ]
 then
-    egl="/opt/eagle/bin/eagle"
-    echo 'using egl 5'
+    egl="/opt/eagle/bin/eagle" # path to eagle 4 binary
+    echo 'using eagle 4'
 else
     echo "error second argument must be 4 or 5 indicating eagle version to use"
     exit 
