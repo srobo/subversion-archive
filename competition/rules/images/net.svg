@@ -76,8 +76,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.84894117"
-     inkscape:cx="151.91173"
-     inkscape:cy="281.27146"
+     inkscape:cx="468.51022"
+     inkscape:cy="253.62921"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -246,7 +246,11 @@
          sodipodi:role="line"
          x="313.8443"
          y="658.71655"
-         id="tspan5962">Coloured wall shows zone colour</tspan></text>
+         id="tspan5962">Coloured wall shows net's </tspan><tspan
+         sodipodi:role="line"
+         x="313.8443"
+         y="658.71655"
+         id="tspan2432">associated colour</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 258.20765,498.46514 L 382.11154,570.00108"

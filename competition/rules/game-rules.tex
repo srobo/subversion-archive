@@ -22,6 +22,12 @@ At the start of a match, the arena will be populated with (approximately) random
 
 \item A team will be awarded two game points if the team's robot is within the team zone at the end of a match (at least one part of the robot must be touching the floor of the team zone) -- provided that the robot left the zone during the match.
 
+\item Balls will be regarded as in a zone if either:
+  \begin{itemize}
+  \item The ball is touching the arena floor bounded by the zone border
+    \item The ball is supported by a robot that is entirely within a zone (no part of the robot touching the floor of another zone).
+  \end{itemize}
+
 \item Balls that are on a zone boundary will not be regarded as being in a zone.
 
 \subsection{Golf Scoring}
