@@ -43,8 +43,10 @@ Browser.prototype._init = function() {
 	}
 
 	//set up event handlers
-	connect($("save-new-file"), 'onclick', bind(this.clickSaveFile, this, false));
-	connect($("cancel-new-file"), 'onclick', bind(this.clickCancelSave, this));
+    disconnectAll("save-new-file");
+    disconnectAll("cancel-new-file");
+	connect("save-new-file", 'onclick', bind(this.clickSaveFile, this, false));
+	connect("cancel-new-file", 'onclick', bind(this.clickCancelSave, this));
 }
 
 Browser.prototype._receiveTree = function(nodes) {
@@ -76,79 +78,31 @@ Browser.prototype.clickSaveFile = function(override) {
 	var fnameErrFlag = (findValue(this.fileList, this.newFname) > -1);
 	var commitErrFlag = ( ((this.commitMsg == "Commit message") || (this.commitMsg == "")) && !override);
 
-	switch(this.type) {
-		case 'isFile': 
-			if(fnameErrFlag) { 
-				$("browser-status").innerHTML = "\""+this.newFname+"\" already exists!";
-				return;
-			}
-			else if(commitErrFlag) {
-				$("browser-status").innerHTML = "No commit message added - click to ignore";
-				connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
-				return;				
-			}
-			else {
-				//execute callback function
-				this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
-				//remove events
-				disconnectAll($("browser-status"));
-				//hide browser
-				this.hide();
-			}
-			break;
-
-		case 'isDir' :
-			if(commitErrFlag) {
-				$("browser-status").innerHTML = "No commit message added - click to ignore";
-				connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
-				return;				
-			}
-			else {
-				//execute callback function
-				this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
-				//remove events
-				disconnectAll($("browser-status"));
-				//hide browser
-				this.hide();
-			}
-			break;
-
-		case 'isCommit' :
-			if(commitErrFlag) {
-				$("browser-status").innerHTML = "No commit message added - click to ignore";
-				connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
-				return;				
-			}
-			else {
-				//execute callback function
-				this.callback(this.commitMsg);
-				//remove events
-				disconnectAll($("browser-status"));
-				//hide browser
-				this.hide();
-			}
-			break;						
-	}
-
-	if(findValue(this.fileList, this.newFname) > -1) {
+    if(fnameErrFlag && (this.type=='isFile')) {
 		$("browser-status").innerHTML = "\""+this.newFname+"\" already exists!";
-		return;
-	}
-	
-	if( ((this.commitMsg == "Commit message") || (this.commitMsg == "")) && !override)
-	{
-			$("browser-status").innerHTML = "No commit message added - click to ignore";
-			connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
-			return;
-	}
-	else {
-		//execute callback function
-		this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
-		//remove events
-		disconnectAll($("browser-status"));
-		//hide browser
-		this.hide();
-	}	
+		return;       
+    }
+
+    if(commitErrFlag) {
+		$("browser-status").innerHTML = "No commit message added - click to ignore";
+		connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
+		return;			          
+    }
+    
+    disconnectAll("browser-status");
+
+    switch(this.type) {
+        case 'isFile' :
+            this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
+            break;
+        case 'isDir' :
+            this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
+            break;
+        case 'isCommit' :
+            this.callback(this.commitMsg);
+            break;
+    }
+    this.hide();
 }
 
 //cancel save operation

@@ -315,7 +315,7 @@ function EditTab(team, project, path) {
 				this._original = this.contents;
 				this._isNew = false;
 				break;
-			case "Merged":
+			case "Merge":
 				status_msg("File Merge successful (New Revision: "+nodes.new_revision+")", LEVEL_OK);
 				this._dirty = false;
 				this._original = this.contents;
