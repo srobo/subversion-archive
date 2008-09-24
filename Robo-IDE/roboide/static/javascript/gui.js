@@ -496,16 +496,37 @@ function TeamSelector() {
 		replaceChildNodes( $("teamname"), " " + name );
 	}
 }
-//
 //	TODO: Move below stuff into appropriate classes
-//
+
 //new folder call
-function new_folder(new_name) {
+
+function receive_newfolder(nodes) {
+    logDebug("Add new folder: ajax request successful");
+    switch(nodes.success) {
+        case 1:   	
+            status_msg("New Directory successfully added (reload file list)", LEVEL_OK);
+            break;
+        case 0:
+            status_msg("Failed to create new Directory", LEVEL_ERROR);
+            break;       	
+    }
+}
+function error_receive_newfolder(new_name, new_message) {
+    logDebug("Add new folder: ajax request failed");
+   	button_msg("Error contacting server", LEVEL_ERROR, "retry", function(){new_folder(new_name, new_msg)});
+}
+function new_folder(new_name, new_msg) {
+    logDebug("Add new folder: "+new_name+" ...contacting server");
 	if(new_name == null && new_name == undefined) {
 		var browser = new Browser(new_folder, {'type' : 'isDir'});
 	}
 	else {
-		//TODO: actually create new directory
+	var d = loadJSONDoc("./newdir", { team : team,
+					    path : new_name,
+					    msg : new_msg});
+
+	d.addCallback( receive_newfolder);	
+	d.addErrback( error_receive_newfolder, new_name, new_msg);
 	}
 }
 

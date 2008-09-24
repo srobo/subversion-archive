@@ -651,6 +651,7 @@ class Root(controllers.RootController):
         tree = dicttolist(tree)["children"]
         return dict(tree=tree)
 
+	#create a new directory
     @expose("json")
     def newdir(self, team, path, msg):
         client = Client(int(team))
@@ -659,10 +660,10 @@ class Root(controllers.RootController):
             try:
                 self.create_svn_dir(client, path, msg)
             except pysvn.ClientError:
-                return dict(new_revision="0", newdir = path,\
+                return dict( success=0, newdir = path,\
 			                feedback="Error creating new directory")
 
-        return dict(new_revision="0", newdir = path,\
+        return dict( success=1, newdir = path,\
 	                feedback="Directory successfully created")
 
     @expose("json")
