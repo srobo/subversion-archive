@@ -4,27 +4,44 @@
 \begin{enumerate}
 \item There will be a maximum of 4 robots in a match.
 \item A match lasts 180 seconds.
-\item Matches are started and stopped by the Student Robotics radio system\footnote{The Student Robotics radio system is supplied as part of the kit.  It is part of the power board, and is used for safety cut-off, start-match and stop-match signals.  Start-match signals are accompanied by data indicating the type of game that is being played.}.
-\item The goal of the game is to collect as many of a particular token colour as possible and place them in the team zone.  The token colour required will be specified electronically at the beginning of a match.
-\item There are two types of game:
+\item Matches are started and stopped by the Student Robotics radio system\footnote{The Student Robotics radio system is supplied as part of the kit.  It is part of the power board, and is used for safety cut-off, start-match and stop-match signals.}.
+\item There are two types of game that will be played:
   \renewcommand{\labelenumii}{\arabic{enumii}.}
   \begin{enumerate}
-  \item All teams collecting the same token colour.
-  \item Each team collecting a unique colour. 
+  \item \textbf{Golf} The aim of Golf is to have no balls in the team's zone at the end of the match.
+  \item \textbf{Squirrel} The aim of Squirrel is to have as many balls of the team's colour and none of any other in the team's zone at the end of the match.
   \end{enumerate}
-The game type will be specified through the Student Robotics radio system to the robot at the beginning of the match.
 
-The arena will be populated with (approximately) randomly dispersed tokens.  The number of tokens in the arena will be supplied to the robot over the radio system at the start of the match.  In game type 2, there will be equal numbers of each colour token in the arena.
+The game type will be specified through the Student Robotics radio system to the robot at the beginning of the match.  Each robot will be supplied with the colour of it's team net and zone through the same mechanism.
 
-\item A token is in a zone if the token is within or touching the zone border.
-\item A token is considered to be valid if it is of the team's allocated colour for the match and in the team zone.  (Note: In game type 1, all teams participating in a match are allocated the same colour).
-\item At the end of the match, the teams will be awarded:
-  \begin{itemize}
-  \item 2 points for every valid token in the team zone.
-  \item An extra bonus point for every valid token in the bonus zone.
-  \item -1 point for every token of the wrong colour in the team zone.
-  \item 2 points if the team robot is within the team zone (within or touching the zone border) - provided that the robot left the zone during the match.
-  \end{itemize}
-\item A robot will start the match touching the bonus zone barrier of the team's designated zone.
-\item The team with the most points at the end of the match wins the match.
+At the start of a match, the arena will be populated with (approximately) randomly dispersed balls.  In Squirrel, there will be equal numbers of each colour of ball in the arena.
+
+\item Robots must start the match within their team's zone.  A \emph{maximum} of two members of each team may place their robot in the arena at the beginning of the match.
+
+\item At the end of a match, after all balls have settled, a team's ``\textbf{game points}'' will be counted.
+
+\item A team will be awarded two game points if the team's robot is within the team zone at the end of a match (at least one part of the robot must be touching the floor of the team zone) -- provided that the robot left the zone during the match.
+
+\item Balls that are on a zone boundary will not be regarded as being in a zone.
+
+\subsection{Golf Scoring}
+\item At the end of a game of Golf, game points are awarded as follows:
+\begin{itemize}
+\item Balls in the team's zone are worth 1 game point.
+\item Balls in the team's net are worth 3 game points.
+\end{itemize}
+
+\item At the end of a game of Golf, the teams will be ordered by number of game points.  The team with the \emph{fewest} game points will then be awarded 3 points towards the competition league.  The team with the second fewest will be awarded 2.  The team with the third fewest will be awarded 1 point, and the team with the most game points will be given no points.
+
+\subsection{Squirrel Scoring}
+\item At the end of a game of Squirrel, game points are awarded as follows:
+\begin{itemize}
+\item Balls in the team's zone of the team's assigned colour are worth 1 game point.
+\item Balls in the team's net of the team's assigned colour are worth 3 game points.
+\item Balls in the team's zone that are not of the team's assigned colour are worth -1 game points.
+\item Balls in the team's net that are not of the team's assigned colour are worth -3 game points.
+\end{itemize}
+
+\item At the end of a game of Squirrel, the team with the \emph{most} game points is awarded 3 points towards the competition league.  The team with the second most is awarded 2.  The team with the third most is awarded 1 point, and the team with the fewest game points is awarded no points.
+
 \end{enumerate}
