@@ -1,4 +1,8 @@
 #!/bin/env python
+import sys
+# Do this for sr
+sys.path.append("../")
+
 import csv, sys, sr
 
 X_DELTA = 3.54
@@ -62,6 +66,10 @@ def output(x,y,info):
     print """} % end makebox
   }"""
 
+if len(sys.argv) < 2:
+    print "Usage: make-cards.py INPUT-CSV"
+    sys.exit(1)
+
 users = []
 
 r = csv.reader( open(sys.argv[1], "r") )
@@ -72,11 +80,6 @@ for row in r:
     user = sr.user( uname )
 
     users.append( { "user":user, "password":pw } ) 
-#     { "fname" : ,
-#       "lname" : "Bennellick",
-#       "username":"tbennellick",
-#       "password":"0hjsd-0js",
-#       "email":""} )
 
 header()
 

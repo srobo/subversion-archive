@@ -94,8 +94,16 @@ Usage:
             return
 
         u = sr.users.user( args[0] )
+        groups = u.groups()
+
         if u.delete():
             print "User '%s' deleted" % (args[0])
+
+            for group in groups:
+                g = sr.group(group)
+                g.user_rm(args[0])
+                g.save()
+
         else:
             print "Error: User '%s' could not be deleted"
 
