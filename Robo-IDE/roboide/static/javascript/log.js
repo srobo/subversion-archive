@@ -9,7 +9,7 @@ function Log(file, team) {
 	this.file = file;                   //the file/directory for which we are interested
 	this.offset = 0;                    //which results page we want to retrieve from the server
 	this.overflow = 0;                  //stores  total number of results pages (retrieved from server)
-
+    
     //do this only once: add a new tab to the tabbar and link it to this log page
     this.tab = new Tab("Log: "+this.file.toString());
     connect(this.tab, 'onfocus', bind(this._onfocus, this));
@@ -72,7 +72,7 @@ Log.prototype._errorReceiveHistory = function() {
 }
 
 Log.prototype._retrieveHistory = function() {
-	var d = loadJSONDoc("./gethistory", { team : this.team,
+	var d = loadJSONDoc("./gethistory", { team : team,
 					    file : this.file, 
 					    user : this.user,
 					    offset : this.offset});
@@ -188,6 +188,30 @@ Log.prototype._update = function() {
     this.offset = 0;
 	this._init();
 }
+
+Log.prototype._receiveRevert = function(nodes) {
+    if(nodes.new_revision > 0) {
+        status_msg("Successfully reverted to version "+nodes.new_revision, LEVEL_OK);
+    }
+    else {
+        status_msg("Failed to revert: "+nodes.success, LEVEL_ERROR);
+    }
+}
+
+Log.prototype._errorReceiveRevision = function() {
+    button_status("Unable to contact server", LEVEL_ERROR, "retry", bind(this._revert, this));
+}
+Log.prototype._do_revert = function(commitMsg) {
+	var d = loadJSONDoc("./revert", { 
+	                    team : team,
+					    file : this.file, 
+					    torev : this.selectedRevision,
+					    message : commitMsg});
+
+	d.addCallback( bind(this._receiveRevert, this));	
+	d.addErrback( bind(this._errorReceiveRevision, this));    
+}
+
 //revert to selected revision. override = true to skip user confirmation
 Log.prototype._revert = function(override) {
     //find out which radio button is checked
@@ -203,7 +227,8 @@ Log.prototype._revert = function(override) {
     }
     else if(override){
         //user has confirmed revert, proceed
-        status_msg("Reverting to revision: "+this.selectedRevision, LEVEL_OK);
+        status_msg("Reverting to revision: "+this.selectedRevision+"...", LEVEL_OK);
+        var b = new Browser(bind(this._do_revert, this), {'type' : 'isCommit'});
     }
     else {
         //user has not confirmed revert, seek confirmation
@@ -211,6 +236,9 @@ Log.prototype._revert = function(override) {
     }   
 
 }
+
+
+
 //tab gets focus
 Log.prototype._onfocus = function() {
     if(getStyle($("log-mode"), "display") != "block") {
