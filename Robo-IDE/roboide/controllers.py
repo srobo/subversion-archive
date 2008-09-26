@@ -685,7 +685,7 @@ class Root(controllers.RootController):
     def revert(self, team, file, torev, message):
         torev=int(torev)
         client = Client(int(team))
-        reload = "false"
+
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness
         path = os.path.dirname(file)
@@ -693,14 +693,15 @@ class Root(controllers.RootController):
         rev = self.get_revision("HEAD") #Always check in over the head to get
         #old revisions to merge over new ones
 
-        if not client.is_url(client.REPO + path): #new dir needed...
+        if not client.is_url(client.REPO + path): #requested revision of dir that doesn't exist
             return dict(new_revision="0", code = "",\
 			                success="Error reverting file - file doesn't exist")
 
         try:
             tmpdir = self.checkoutintotmpdir(client, rev, path)
         except pysvn.ClientError:
-            try:
+            try:    
+                #wipe temp directory
                 shutil.rmtree(tmpdir)
             except:
                 pass
@@ -708,7 +709,9 @@ class Root(controllers.RootController):
             return dict(new_revision="0", code = "",\
 			                success="Error reverting file - could check out tmp dir")
         #2. Do a merge
+        #revision we want to go back to
         revertto = pysvn.Revision( pysvn.opt_revision_kind.number, torev)
+        #current revision (Head)
         revertfrom = pysvn.Revision( pysvn.opt_revision_kind.head )
         client.merge(client.REPO+path, \
                 revertfrom,\
@@ -720,7 +723,6 @@ class Root(controllers.RootController):
         try:
             client.add([join(tmpdir, basename)],
                        recurse=False)
-            reload = "true"
         except pysvn.ClientError:
             pass
 
