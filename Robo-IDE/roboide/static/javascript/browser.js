@@ -42,6 +42,9 @@ Browser.prototype._init = function() {
 		this._getFileTree(team, ""); 
 	}
 
+	//clear previous events
+	disconnectAll($("save-new-file"));
+	disconnectAll($("cancel-new-file"));
 	//set up event handlers
     disconnectAll("save-new-file");
     disconnectAll("cancel-new-file");
@@ -164,13 +167,8 @@ Browser.prototype.dirSelected = function(directory, files) {
 }
 
 Browser.prototype.display = function() {
-	logDebug("showing debug");
 	showElement($("file-browser"));
 	showElement($("grey-out"));
-
-	//clear previous events
-	disconnectAll($("save-new-file"));
-	disconnectAll($("cancel-new-file"));
 
 	switch(this.type) {
 		case 'isFile': 
@@ -203,6 +201,8 @@ Browser.prototype.hide = function() {
 	disconnectAll($("browser-status"));
 	hideElement($("file-browser"));
 	hideElement($("grey-out"));
+	replaceChildNodes($("left-pane-list"));
+	replaceChildNodes($("right-pane-list"));
 }
 
 

@@ -300,10 +300,12 @@ function EditTab(team, project, path) {
 		//do an update
 		this._capture_code();
 		//if new file	-- TODO
-		if(this._isNew)
+		if(this._isNew) {
 			var fileBrowser = new Browser(bind(this._receive_new_fname, this), {'type' : 'isFile'});	
-		else
+		}
+		else {
 			var fileBrowser = new Browser(bind(this._receive_commit_msg, this), {'type' : 'isCommit'});	
+		}
 	}
 
 	//ajax event handler for saving to server
@@ -336,15 +338,15 @@ function EditTab(team, project, path) {
 	}
 	
 	//save file contents to server as new revision
-	this._svn_save = function() {
-	var d = loadJSONDoc("./savefile", { team : team,
-					    file : this.path, 
-						rev : 0,				//TODO: make this dynamic
-					    message : this._commitMsg,
-						code: this.contents});
+	    this._svn_save = function() {
+	    var d = loadJSONDoc("./savefile", { team : team,
+					        file : this.path, 
+						    rev : 0,				//TODO: make this dynamic
+					        message : this._commitMsg,
+						    code: this.contents});
 
-	d.addCallback( bind(this._receive_svn_save, this));	
-	d.addErrback( bind(this._error_receive_svn_save, this));		
+	    d.addCallback( bind(this._receive_svn_save, this));	
+	    d.addErrback( bind(this._error_receive_svn_save, this));		
 	}
 
 	this._close = function(override) {
