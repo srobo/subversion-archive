@@ -1,4 +1,4 @@
-function Log(file, team) {
+function Log(file) {
     //class properties
     this.tab = null;                    //holds reference to tab in tabbar
 	this.selectedRevision = -1;         //Selected revision, -1 indicates no revision set
@@ -191,7 +191,7 @@ Log.prototype._update = function() {
 
 Log.prototype._receiveRevert = function(nodes) {
     if(nodes.new_revision > 0) {
-        status_msg("Successfully reverted to version "+nodes.new_revision, LEVEL_OK);
+        status_msg("Successfully reverted to version "+this.selectedRevision+" (New Revision: "+nodes.new_revision+")", LEVEL_OK);
     }
     else {
         status_msg("Failed to revert: "+nodes.success, LEVEL_ERROR);
@@ -215,9 +215,9 @@ Log.prototype._do_revert = function(commitMsg) {
 //revert to selected revision. override = true to skip user confirmation
 Log.prototype._revert = function(override) {
     //find out which radio button is checked
-    for(var x=0; x < document.log.log.length; x++) {
-        if(document.log.log[x].checked == true) {
-            this.selectedRevision = document.log.log[x].value;
+    for(var x=0; x < document.log.length; x++) {
+        if(document.log[x].checked == true) {
+            this.selectedRevision = document.log[x].value;
             break;
         }    
     }   

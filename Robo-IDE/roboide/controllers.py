@@ -713,19 +713,33 @@ class Root(controllers.RootController):
         revertto = pysvn.Revision( pysvn.opt_revision_kind.number, torev)
         #current revision (Head)
         revertfrom = pysvn.Revision( pysvn.opt_revision_kind.head )
-        client.merge(client.REPO+path, \
+        try:
+            client.merge(client.REPO+path, \
                 revertfrom,\
                 client.REPO+path,\
                 revertto, \
                 tmpdir)
-
+        except pysvn.ClientError:
+                #wipe temp directory           
+                shutil.rmtree(tmpdir)
+                print "ClientError, returning";
+                return dict();   
+        print "didn't throw merge exception"
         #2 1/2: use client.add if we're adding a new file, ready for checkin
         try:
-            client.add([join(tmpdir, basename)],
-                       recurse=False)
+            if os.path.isdir(file) :
+                client.add(tmpdir, recurse=True)
+            else:
+                client.add(join(tmpdir, basename), recurse=False)
         except pysvn.ClientError:
-            pass
-
+            try:    
+                #wipe temp directory
+                shutil.rmtree(tmpdir)
+            except:
+                pass
+            return dict(new_revision="0", code = "",\
+			                success="Error reverting file(s) - Are you already at the current revision ")
+			                
         #3. Commit the new directory
         try:
             newrev = client.checkin([tmpdir], message)
@@ -744,14 +758,15 @@ class Root(controllers.RootController):
                 #No update to be made.
                 success = "True"
                 newrev = 0
-            else:
+            elif os.path.isdir(join(tmpdir, basename)) == True:
                 success = "Merge"
-                #Grab the merged text.
+                #Grab the merged text.                
                 mergedfile = open(join(tmpdir, basename), "rt")
                 code = mergedfile.read()
                 mergedfile.close()
                 newrev = newrev.number
-
+                return dict(new_revision=newrev, code = "",\
+		                        success="Merge Issues")
         #4. Wipe the directory
         shutil.rmtree(tmpdir)
 

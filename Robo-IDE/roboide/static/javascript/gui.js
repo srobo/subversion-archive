@@ -547,7 +547,7 @@ function view_log() {
 		}
 		//not present, open it
 		else{
-			var cow = new Log(projpage.flist.selection[i], 1);
+			var cow = new Log(projpage.flist.selection[i]);
 		}
 	}
 }
