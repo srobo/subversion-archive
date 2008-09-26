@@ -210,7 +210,9 @@ function EditTab(team, project, path) {
 	this.contents = "";
 	// The tab representing us
 	this.tab = null;
-
+	// The version of the current file in the tab
+	this.rev = 0;
+	
 	// *** Private Properties ***
 	// true if tab has been modified
 	this._dirty = false;
@@ -253,7 +255,7 @@ function EditTab(team, project, path) {
 	this._load_contents = function() {
 		var d = loadJSONDoc("./filesrc", { team : this.team,
 						   file : this.path,
-						   revision : 0});
+						   revision : this.rev});
 
 		d.addCallback( bind(this._recv_contents, this));	
 		d.addErrback( bind(this._recv_contents_err, this));
@@ -378,6 +380,10 @@ function EditTab(team, project, path) {
 		this._signals.push( connect( $("save-file"),
 					     "onclick",
 					     bind( this._save, this ) ) );
+        // change revision handler
+		this._signals.push( connect( "history",
+					     "onclick",
+					     bind( this._change_revision, this ) ) );						  
 
 		//display filepath
 		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );
@@ -398,6 +404,8 @@ function EditTab(team, project, path) {
 	this._update_contents = function() {
 		logDebug("Updating editarea contents: ");
 	 	editAreaLoader.setValue("editpage-editarea", this.contents);
+	 	this._get_revisions();
+	 	status_hide();
 	}
 
 	//call this to update this.contents with the current contents of the edit area
@@ -410,6 +418,48 @@ function EditTab(team, project, path) {
 			this._dirty = true;
 		}
 	}
+
+    this._change_revision = function() {
+        switch($("history").value) {
+            case "-2":
+                var d = new Log(this.path);
+                break;
+            case "-1":
+                break;
+            default:
+                this.rev = $("history").value;
+                status_msg("Opening history .."+$("history").value, LEVEL_OK);
+           	    this._load_contents();
+           	    break;
+        }
+    }
+
+    this._receive_revisions = function(nodes) {
+        if(nodes.history.length == 0) {
+            replaceChildNodes("history", OPTION({'value' : -1}, "No File History!"));
+        }
+	    else{
+            replaceChildNodes("history", OPTION({'value' : -1}, "Select File Revision"));	    
+	        for(var i=0; i < nodes.history.length; i++) {
+                appendChildNodes("history", OPTION({'value' : nodes.history[i].rev, 'title' : "Log Msg: "+nodes.history[i].message}, nodes.history[i].date+" ["+nodes.history[i].author+"]"));
+            }
+		    appendChildNodes("history", OPTION({'value' : -2}, "--View Full History--"));			
+	    }  
+     }
+
+    this._error_receive_revisions = function() {
+        status_msg("Couldn't retrieve file history", LEVEL_ERROR);
+    }
+    
+    this._get_revisions = function() {
+        logDebug("retrieving file history");
+        var d = loadJSONDoc("./gethistory", { team : team,
+					    file : this.path, 
+					    user : null,
+					    offset : 0});
+	    d.addCallback( bind(this._receive_revisions, this));	
+	    d.addErrback( bind(this._error_receive_revisions, this)); 			    
+    }
 
 	//initialisation
 	this._init();
