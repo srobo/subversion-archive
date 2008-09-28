@@ -27,24 +27,29 @@ if (!empty($_GET))
 
 include "Date.inc.php";
 
-$then	= strtotime("$Kick_DATE, +$i day");	//the 'current' date
+$Kick_time	= strtotime(date('Y-m-d', strtotime($Kick_DATE)));
+$Comp_time	= strtotime($Comp_DATE);
+
+$Comp_days	= round(($Comp_time - $Kick_time)/(24 * 60 * 60));	//the number of days between kickstart and competition
+$days_left	= $Comp_days - $i;	//the number of days not yet shown
+
+$KickStart_Date	= date("m-d", $Kick_time);
+$Competition_Date	= date("m-d", $Comp_time);
+$Easter_Day_Date	= date("m-d", strtotime($Easter_DATE));
+$Pancake_Day_Date	= date("m-d", strtotime($Easter_DATE." -47 days"));
+
+$then	= strtotime("$Kick_DATE, +$i days");	//the 'current' date: the one that the page is showing
 $now	= strtotime("now");
-$time_left	= $then - $now;
+$time_left	= strtotime($Kick_DATE) - $now;
 
-$debug_info	.= "\$then=$then (".date("Y-m-d; l j F Y", $then)."),	\$now=$now (".date("Y-m-d; l j F Y", $now).")\n<br />\n";
+$long_date_format	= "Y-m-d; l j F Y H:i:s (a)";
+$debug_info	.= "\$then=$then (".date($long_date_format, $then)."),	\$now=$now (".date($long_date_format, $now)."),	\$Comp_days=$Comp_days,	\$days_left=$days_left\n<br />\n";
 
-$time_per_slide = round($time_left / 206);
+$time_per_slide = round($time_left / $days_left);
 
 $print_date = date("l j F", $then);
 
 $date	= date("m-d", $then);
-
-$KickStart_Date	= date("m-d", strtotime($Kick_DATE));
-$Competition_Date	= date("m-d", strtotime($Comp_DATE));
-$Easter_Day_Date	= date("m-d", strtotime($Easter_DATE));
-$Pancake_Day_Date	= date("m-d", strtotime($Easter_DATE." -47 days"));
-
-$number_of_days	= 1+(strtotime($Comp_DATE) - strtotime($Kick_DATE))/(24*60*60);
 
 if($no)
 	$yes = 0;
@@ -65,6 +70,9 @@ switch ($date)
 	case "10-31":
 		$addon	= " (Halloween)";
 		$image = "Halloween.jpg";
+		break;
+	case "11-05":
+		$addon	= " (Bonfire Night)";
 		break;
 	case "12-24":
 		$addon	= " (Christmas Eve)";
@@ -116,9 +124,9 @@ list($width, $height, $type, $attr) = getimagesize($image);
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <?	$i++;
-if(!$no && $i < $number_of_days)
+if(!$no && $i < $Comp_days)
 { ?>
-<meta http-equiv="REFRESH" content="<?php echo ($fast ? (1/$fast) : $time_per_slide); ?>; URL=?i=<?php echo $i.($fast ? "&fast=$fast" : ""); ?>" />
+<meta http-equiv="REFRESH" content="<?php echo ($fast ? (1/$fast) : $time_per_slide); ?>; URL=?i=<?php echo $i.($fast ? "&fast=$fast" : "").($debug ? "&debug=$debug" : ""); ?>" />
 <? }//	One Day is 21 seconds	?>
 <title>Six Months in 1 Hour: <?php echo $date.$addon; ?></title>
 <link rel="stylesheet" type="text/css" href="6style.css"/>
