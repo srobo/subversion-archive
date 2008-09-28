@@ -281,14 +281,13 @@ ul, ol {
 #block-menu-primary-links ul li {
 	display: block;
 	list-style-type: none;
-	list-style-image: none;
 	list-style-position: outside;
 	background-image: url('images/pri-menu_arrow-dark.png');
 	background-repeat: no-repeat;
-	background-position: center left;
+	background-position: 0em 0.3em;
 	vertical-align: middle;
 	padding-top: 0.2em;
-	padding-left: 20px;
+	padding-left: 15px;
 }
 #block-menu-primary-links ul li:hover {
 	background-image: url('images/pri-menu_arrow.png');
@@ -304,7 +303,16 @@ ul, ol {
 #sidebar-left h2 {
 	margin: 0 0.5em;
 }
-
+#block-menu-primary-links ul li.expanded ul.menu{
+	font-size: 1em;
+	padding: 0em 0em 0em 1em;
+	margin: 0em;
+}
+#block-menu-primary-links ul li.expanded ul.menu li.leaf {
+	background-image: none;
+	padding: 0em;
+	margin: 0.2em 0 0.2em 0;;
+}
 
 /* RIGHT SIDEBAR */
 
