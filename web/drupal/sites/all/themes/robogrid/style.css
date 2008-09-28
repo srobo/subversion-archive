@@ -271,7 +271,7 @@ ul, ol {
 	background-position: bottom left;
 }
 #block-menu-primary-links h2 {
-	display: none;
+	display: block;
 }
 #block-menu-primary-links ul {
 	font-size: 1.2em;
@@ -297,6 +297,10 @@ ul, ol {
 	text-decoration: none;
 	background-image: none;
 }
+.block-menu, .block-user {
+	margin-top: 10px;
+}
+
 #sidebar-left h2 {
 	margin: 0 0.5em;
 }
@@ -458,4 +462,17 @@ ul, ol {
 .doc-title a, .doc-title b, .doc-title i
 {
 	margin-left:10px;
+}
+#edit-search-block-form-1-wrapper {
+        padding-left: 10px;
+}
+.form-text{
+	margin-left:10px;
+	color:#253571;
+	font-weight: bold;
+}
+.form-submit{
+	margin-left: 10px;
+	color: #253571;
+	font-weight: bold;
 }
