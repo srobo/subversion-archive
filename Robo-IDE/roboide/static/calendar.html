@@ -1,0 +1,49 @@
+<html>
+<head>
+<script src="javascript/MochiKit.js" type="text/javascript"></script>
+<script src="javascript/calendar.js" type="text/javascript"></script>
+<style>
+#calendar{
+    background-color: #eeeeee;
+}
+#calendar td{
+    background-color: white;
+    margin: 1px;
+    padding: 4px;
+    text-align: center;
+}
+#calendar td a{
+    color: blue;
+    text-decoration: none;
+    font-weight: bold;
+}
+#calendar .null {
+    background-color: #eeeeee;
+}
+</style>
+</head>
+<body>
+<b>To populate callendar: var cow = new calendar(1, 2008)</b>
+<br /><br />
+    <table id="calendar">
+        <tr><td colspan=7 id="cal-header" class="calendar-month"> September </td></tr>
+        <tr class="calendar-days">
+            <td>S</td>
+            <td>M</td>
+            <td>T</td>
+            <td>W</td>
+            <td>T</td>
+            <td>F</td>
+            <td>S</td>
+        </tr>
+            <tr id="cal-row-0"></tr>      
+            <tr id="cal-row-1"></tr>
+            <tr id="cal-row-2"></tr>            
+            <tr id="cal-row-3"></tr>
+            <tr id="cal-row-4"></tr>
+            <tr id="cal-row-5"></tr>                             
+        </tr>
+    </table>
+
+</body>
+</html>
