@@ -20,10 +20,13 @@
 #calendar .null {
     background-color: #eeeeee;
 }
+#cal-prev-month, #cal-next-month {
+    cursor: pointer;
+}
 </style>
 </head>
 <body>
-<b>To populate callendar: var cow = new calendar(8, 2008)</b>
+<b>To populate callendar: var cow = new calendar(8, 2008, [folder])</b>
 <br /><br />
     <table id="calendar">
         <tr><td id="cal-prev-month">&lt;&lt;</td><td colspan=5 id="cal-header" class="calendar-month"> September </td><td id="cal-next-month">&gt;&gt;</td></tr>

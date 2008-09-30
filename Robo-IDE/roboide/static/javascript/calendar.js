@@ -1,5 +1,10 @@
-function calendar(month, year) {
+function calendar(month, year, project) {
 
+    if(project != null && project != undefined)
+        this.proj = project;
+    else
+        this.proj = "/";     
+           
     this.date = new Date();
     this.date.setMonth(month);
     this.date.setYear(year);
@@ -103,7 +108,7 @@ calendar.prototype._errorReceiveDates = function() {
 calendar.prototype.getDates = function() {
 	var d = loadJSONDoc("http://localhost:8080/calendar", { 
 	                    team : 1,               //TODO Change this
-					    file : "/lollypop", 
+					    file : this.proj, 
 					    mnth : this.date.getMonth(),
 					    yr : this.date.getFullYear()});
 
