@@ -772,5 +772,47 @@ class Root(controllers.RootController):
 
         return dict(new_revision=newrev, code = "",\
 		                success="Success !!!")
+		                
+    @expose("json")
+    def calendar(self, mnth, yr, file, team):
+        #returns data for calendar function
 
+        month = int(mnth)+1
+        year = int(yr)
+        c = Client(int(team))
+        try:
+            log = c.log(c.REPO+file)
+        except:
+            logging.debug("Log failed for %s" % c.REPO+file)
+            print "failed to retrieve log"
+            return dict(path=file, history=[])
+        
+        #get a list of users based on log authors
+        start = datetime.datetime(year, month, 1, 0, 0, 0)
+
+        if(month >=12):
+            end = datetime.datetime(year+1, 1, 1, 0, 0, 0) #watchout for rollover
+        else:
+            end = datetime.datetime(year, month+1, 1, 0, 0, 0)
+        
+        result = []
+        
+        print "i'm here"
+                 
+        for y in log:
+            now = datetime.datetime(2000, 1, 1);    #create a dummy datetime
+            now = now.fromtimestamp(y["date"]);
+            if (start <= now < end):
+                result.append(y)
+                
+
+        return dict(  path=file,\
+                      history=[{"author":x["author"], \
+                      "date":time.strftime("%Y/%m/%d/%H/%M/%S", \
+                      time.localtime(x["date"])), \
+                      "message":x["message"], "rev":x["revision"].number} \
+                      for x in result])
+    @cherrypy.expose    
+    def cal(self):
+        return open("./roboide/static/calendar.html", "r").read()
 
