@@ -147,7 +147,9 @@ calendar.prototype.processDates = function() {
 calendar.prototype.updateCal = function() {
     for(var i=0; i < this.logdays.length; i++) {
         var date = this.extract(this.logdays[i].date).getDate();
-        setStyle("cal"+date, {'background-color' : 'lightblue'});
+        setNodeAttribute($("cal"+date), "class", "td-log");
+        setNodeAttribute($("cal"+date), "rev", this.logdays[i].rev);        
+        setNodeAttribute($("cal"+date), "onclick", "alert('TODO: switch to revision: x')");
     }
 }
 
