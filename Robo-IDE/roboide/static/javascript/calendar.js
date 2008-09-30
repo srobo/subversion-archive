@@ -20,6 +20,11 @@ calendar.prototype.init = function() {
     this.drawCal();
     //try ajax 
     this.getDates();
+    //setup events
+    disconnectAll("cal-prev-month");
+    disconnectAll("cal-next-month");
+    connect("cal-prev-month", 'onclick', bind(this.changeMonth, this, -1)); 
+    connect("cal-next-month", 'onclick', bind(this.changeMonth, this, +1));     
 }
 
 calendar.prototype.drawCal = function() {
@@ -139,4 +144,9 @@ calendar.prototype.updateCal = function() {
         var date = this.extract(this.logdays[i].date).getDate();
         setStyle("cal"+date, {'background-color' : 'lightblue'});
     }
+}
+
+calendar.prototype.changeMonth = function(dir) {
+    this.date.setMonth(this.date.getMonth() + dir);
+    this.init();
 }
