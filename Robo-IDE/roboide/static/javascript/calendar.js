@@ -35,7 +35,7 @@ calendar.prototype.init = function() {
 calendar.prototype.drawCal = function() {
 
     //Set month header
-    $("cal-header").innerHTML = MONTHS[this.date.getMonth()];    
+    $("cal-header").innerHTML = MONTHS[this.date.getMonth()]+" "+this.date.getFullYear();    
     
     //reset row, cell and day variables
     var td = 0;
