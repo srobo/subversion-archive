@@ -86,8 +86,9 @@ Calendar.prototype.drawCal = function() {
         }    
     } 
     
-    //highlight today's date
-    setStyle("cal"+(new Date()).getDate(), {"border" : "1px solid #000000", "font-weight" : "bold"});       
+    //highlight today's date if we are showing current month and current year
+    if( ( this.date.getMonth() == (new Date()).getMonth() ) && (this.date.getFullYear() == (new Date()).getFullYear() ) )
+        setStyle("cal"+(new Date()).getDate(), {"border" : "1px solid #000000", "font-weight" : "bold"});       
 }
 
 //convert date string in log array into jscript date
