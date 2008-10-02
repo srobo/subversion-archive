@@ -56,7 +56,8 @@ function EditPage() {
 			display : 'onload',
 	 		replace_tab_by_spaces : 4,
 			min_width:600,
-			min_height:400
+			min_height:400,
+			change_callback: "txt_has_changed"
  		});
 		
 		this._ea_initted = true;
@@ -167,6 +168,12 @@ function EditPage() {
 
 	this._init();
 
+}
+
+function txt_has_changed(id) {
+    //relay editArea's signal so that we can actually use it
+    //editArea forces you to pass string
+    signal(this, "txt_changed", this);
 }
 
 // Represents a tab that's being edited
@@ -383,10 +390,14 @@ function EditTab(team, project, path) {
         // change revision handler
 		this._signals.push( connect( "history",
 					     "onclick",
-					     bind( this._change_revision, this ) ) );						  
+					     bind( this._change_revision, this ) ) );
+        //code has been changed
+        this._signals.push( connect(window, 
+                         "txt_changed", 
+                         bind(this._content_changed, this) ) );				     						  
 
 		//display filepath
-		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );
+		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );	
 
 		//load file contents
 		this._update_contents();		
@@ -395,7 +406,7 @@ function EditTab(team, project, path) {
 	// Handler for when the tab loses focus
 	this._onblur = function() {
 		//don't loose changes to file content
-		this._capture_code();
+		this._capture_code();   
 		// Disconnect all the connected signal
 		map( disconnect, this._signals );
 		this._signals = [];
@@ -411,12 +422,6 @@ function EditTab(team, project, path) {
 	//call this to update this.contents with the current contents of the edit area
 	this._capture_code = function() {
 		this.contents = editAreaLoader.getValue("editpage-editarea");
-		if(this.contents == this._original) {
-			this._dirty = false;
-		}
-		else {
-			this._dirty = true;
-		}
 	}
 
     this._change_revision = function() {
@@ -459,6 +464,15 @@ function EditTab(team, project, path) {
 					    offset : 0});
 	    d.addCallback( bind(this._receive_revisions, this));	
 	    d.addErrback( bind(this._error_receive_revisions, this)); 			    
+    }
+
+    //editAreaLoader triggers onchange event, now handle it:
+    this._content_changed = function() {
+        this._dirty = true;
+        logDebug("Current File Tab is now dirty");
+        //now we don't need to listen out for event:
+        var sig = this._signals.pop();
+        disconnect(sig);
     }
 
 	//initialisation
