@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="./static/css/projpage.css" type="text/css"/>
 <link rel="stylesheet" href="./static/css/browser.css" type="text/css"/>
 <link rel="stylesheet" href="./static/css/log.css" type="text/css"/>
+<link rel="stylesheet" href="./static/css/calendar.css" type="text/css"/>
 <! -- Javascript Source Files -->
 <script src="./static/javascript/edit_area/edit_area_loader.js" type="text/javascript"></script>
 <script src="./static/javascript/MochiKit.js" type="text/javascript"></script>
@@ -17,6 +18,7 @@
 <script src="./static/javascript/browser.js" type="text/javascript"></script>
 <script src="./static/javascript/edit.js" type="text/javascript"></script>
 <script src="./static/javascript/log.js" type="text/javascript"></script>
+<script src="./static/javascript/calendar.js" type="text/javascript"></script>
 <title>Robotics IDE</title>
 </head>
 <body>
@@ -125,7 +127,26 @@
 
   <div id="proj-revselect">
     Date: TODO!<br/>
-    Revision: TODO!
+    <table id="calendar">
+    <tr><td id="cal-prev-month">&lt;&lt;</td><td colspan=5 id="cal-header" class="calendar-month"> September </td><td id="cal-next-month">&gt;&gt;</td></tr>
+    <tr class="calendar-days">
+        <td title="Sunday">S</td>
+        <td title="Monday">M</td>
+        <td title="Tuesday">T</td>
+        <td title="Wednesday">W</td>
+        <td title="Thursday">T</td>
+        <td title="Friday">F</td>
+        <td title="Saturday">S</td>
+    </tr>
+        <tr id="cal-row-0"></tr>      
+        <tr id="cal-row-1"></tr>
+        <tr id="cal-row-2"></tr>            
+        <tr id="cal-row-3"></tr>
+        <tr id="cal-row-4"></tr>
+        <tr id="cal-row-5"></tr>                             
+    </tr>
+</table>
+
   </div>
 
   <div id="proj-fileops">

@@ -1,0 +1,22 @@
+#calendar{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    background-color: #eeeeee;
+}
+#calendar .null {
+    background-color: #eeeeee;
+}
+#cal-prev-month, #cal-next-month, .td-log{
+    cursor: pointer;
+}
+#calendar td.td-log{
+    background-color: lightblue;
+}
+#calendar td{
+    background-color: white;
+    border: 1px solid #eeeeee;
+    padding: 3px;
+    text-align: center;
+    font-weight: normal;
+}

@@ -1,24 +1,31 @@
-function calendar(month, year, project) {
+function Calendar(project) {
 
+    //Default project is the root dir.
     if(project != null && project != undefined)
         this.proj = project;
     else
         this.proj = "/";     
-           
+    
+    //holds the selected month & year          
     this.date = new Date();
-    this.date.setMonth(month);
-    this.date.setYear(year);
     this.date.setDate(1);
-
+    
     this.logs = new Array();       //will hold complete month of log entries
     this.logdays = new Array();    //will hold max of one log entry (the last) for each day in month
+
+    //event signals
+    this._signals = new Array();
     
     this.init();
 }
     
-var MONTHS = new Array("January", "February", "March", "April", "May", "June", "July", "August","September", "October", "November", "December");
+var MONTHS = new Array("January", "February", "March", 
+                        "April", "May", "June", "July", 
+                        "August","September", "October", 
+                        "November", "December");
 
-calendar.prototype.init = function() {
+
+Calendar.prototype.init = function() {
     this.logs = new Array();
     this.logdays = new Array();
     //do html 
@@ -26,13 +33,19 @@ calendar.prototype.init = function() {
     //try ajax 
     this.getDates();
     //setup events
-    disconnectAll("cal-prev-month");
-    disconnectAll("cal-next-month");
-    connect("cal-prev-month", 'onclick', bind(this.changeMonth, this, -1)); 
-    connect("cal-next-month", 'onclick', bind(this.changeMonth, this, +1));     
+    
+    map( disconnect, this._signals );
+	this._signals = [];
+    
+    this._signals.push( connect("cal-prev-month", 
+                                'onclick', 
+                                 bind(this.changeMonth, this, -1) ) ); 
+    this._signals.push( connect("cal-next-month", 
+                                'onclick', 
+                                 bind(this.changeMonth, this, +1) ) );     
 }
 
-calendar.prototype.drawCal = function() {
+Calendar.prototype.drawCal = function() {
 
     //Set month header
     $("cal-header").innerHTML = MONTHS[this.date.getMonth()]+" "+this.date.getFullYear();    
@@ -58,7 +71,8 @@ calendar.prototype.drawCal = function() {
             day++;  
         }
     }   
-    //now do the rest of the cells in rows of 7 cells
+    
+    //now generate the rest of the cells in rows of 7 cells
     for(tr=1; tr < 6; tr++) {
         while(td < (7*(tr+1))){
             if(day <= this.dinm() ) {
@@ -70,23 +84,25 @@ calendar.prototype.drawCal = function() {
             }
             td++; 
         }    
-    }   
-    //we're done     
+    } 
+    
+    //highlight today's date
+    setStyle("cal"+(new Date()).getDate(), {"border" : "1px solid #000000", "font-weight" : "bold"});       
 }
 
 //convert date string in log array into jscript date
-calendar.prototype.extract = function(datetime) {
+Calendar.prototype.extract = function(datetime) {
     var parts = datetime.split("/");
     return new Date(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
 }
 
 //return the number of days in the week
-calendar.prototype.dinm = function() {
+Calendar.prototype.dinm = function() {
     return 32 - new Date(this.date.getFullYear(), this.date.getMonth(), 32).getDate();
 }
 
 //ajax handler for receiving logs from server
-calendar.prototype._receiveDates = function(nodes) {
+Calendar.prototype._receiveDates = function(nodes) {
 
     if(nodes.history.length > 0) {
         this.logs = nodes.history;
@@ -94,18 +110,19 @@ calendar.prototype._receiveDates = function(nodes) {
         this.updateCal();        
     }
     else {
-        //appropriate message
+        this.logs = [];
+        this.logdays = [];
         return;
     }
 }
 
 //ajax handler for failed requests
-calendar.prototype._errorReceiveDates = function() {
+Calendar.prototype._errorReceiveDates = function() {
     logDebug("Error retrieving calendar dates");
 }
 
 //get month of logs messages from server
-calendar.prototype.getDates = function() {
+Calendar.prototype.getDates = function() {
 	var d = loadJSONDoc("http://localhost:8080/calendar", { 
 	                    team : 1,               //TODO Change this
 					    file : this.proj, 
@@ -116,8 +133,8 @@ calendar.prototype.getDates = function() {
 	d.addErrback( bind(this._errorReceiveDates, this));    
 }
 
-//create a new array with one log entry per date (the last one from that day of month)
-calendar.prototype.processDates = function() {
+//create a new array with one log entry per date (the last one from that day of that month)
+Calendar.prototype.processDates = function() {
     var temp = new Array();
     //log array is ordered newest to oldest, so stop after the first
     
@@ -143,17 +160,18 @@ calendar.prototype.processDates = function() {
     update(this.logdays, temp);
 }
 
-//use logdays to bring to life the cells on the calendar which relate to log entries
-calendar.prototype.updateCal = function() {
+//use logdays to bring to life the cells on the Calendar which relate to log entries
+Calendar.prototype.updateCal = function() {
     for(var i=0; i < this.logdays.length; i++) {
         var date = this.extract(this.logdays[i].date).getDate();
         setNodeAttribute($("cal"+date), "class", "td-log");
         setNodeAttribute($("cal"+date), "rev", this.logdays[i].rev);        
         setNodeAttribute($("cal"+date), "onclick", "alert('TODO: switch to revision: x')");
+        setNodeAttribute($("cal"+date), "title", this.logdays[i].message);
     }
 }
 
-calendar.prototype.changeMonth = function(dir) {
+Calendar.prototype.changeMonth = function(dir) {
     this.date.setMonth(this.date.getMonth() + dir);
     this.init();
 }

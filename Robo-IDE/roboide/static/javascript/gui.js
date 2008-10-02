@@ -32,6 +32,9 @@ var projtab = null;
 // The edit page
 var editpage = null;
 
+// The Calendar 
+var svn_calendar = null;
+
 // The user
 var user;
 
@@ -92,6 +95,9 @@ function load_gui() {
 	ntab.can_focus = false;
 	connect( ntab, "onclick", bind(editpage.new_file, editpage) );
 	tabbar.add_tab( ntab );
+	
+	//The Calendar
+	svn_calendar = new Calendar();
 
 	tabbar.switch_to( projtab );
 }
@@ -551,6 +557,7 @@ function view_log() {
 		}
 	}
 }
+
 
 //TODO: decide if this is necessary, remove if not
 function abridge(fpath) {
