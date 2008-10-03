@@ -255,22 +255,14 @@ ProjFileList.prototype._is_file_selected = function( path ) {
 }
 
 ProjFileList.prototype._select_path = function(path, kind) {
-	if( kind == "FOLDER" ) {
-		
-	} else {
-		this.selection.push( path );
-	}
+	this.selection.push( path );
 }
 
 ProjFileList.prototype._deselect_path = function(path, kind) {
 	var i = findValue( this.selection, path );
 	if( i >= 0 ) {
-		if( kind == "FOLDER" ) {
-			
-		} else {
-			// Remove from the listn
-			this.selection.splice( i, 1 );
-		}
+		// Remove from the listn
+		this.selection.splice( i, 1 );
 	}
 }
 
