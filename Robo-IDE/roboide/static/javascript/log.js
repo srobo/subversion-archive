@@ -99,22 +99,16 @@ Log.prototype._populateList = function() {
 	replaceChildNodes($("svn-users"), opt);
 
 	//first item in list is: 'Filter by user'
-	var opt = OPTION(null, "");
-	opt.innerHTML = "Filter by user";
-	opt.value = -1;
+	var opt = OPTION({"value":-1}, "Filter by user");
 	appendChildNodes($("svn-users"), opt);
 
 	//second item in the list is: 'all' meaning, show logs from all users
-	var opt = OPTION(null, "");
-	opt.innerHTML = "Show all";
-	opt.value = -1;
+	var opt = OPTION({"value":-1}, "Show all");
 	appendChildNodes($("svn-users"), opt);
 
 	//now add all attributed authors
 	for(var i=0; i < this.userList.length; i++) {
-		var opt = OPTION(null, "");
-		opt.innerHTML = this.userList[i];
-		opt.value = i;
+		var opt = OPTION({"value":i}, this.userList[i]);
 		appendChildNodes($("svn-users"), opt);			
 	}
     //remove event handler for when user applies filter to results 
