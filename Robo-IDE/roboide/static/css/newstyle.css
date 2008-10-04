@@ -118,16 +118,16 @@ body {
 /* CSS for edit-mode should be place in css/editmode.css */
 /* CSS for file-mode should be place in css/filemode.css */
 
-#grey-out {
+#login-back {
 	width: 100%;
 	height: 100%;
-	background-color:#ffffff;
-	opacity: 0.5;
-	position:absolute;
-	display:none;
+	background-color:#DFDBD8;
+	position:fixed;
+	top: 0;
+ 	display:none;
 }
 
-#popup {
+#login-box {
 	margin: 150px 25% 0 25%;
 	padding: 20px;
 	background-color: #253571;
@@ -135,22 +135,22 @@ body {
 	color: #ffffff;
 	font-size: 1.5em;
 	font-weight: bold;
-	display: none; /* for dev only */
 }
-#popup strong {
+
+#login-box strong {
 	display: block;
 	font-family: arial;
 }
-#popup em {
+#login-box em {
 	font-size: 0.7em;
 }
 
-#popup a {
+#login-box a {
 	color:#ffffff;
 	text-decoration: none;
 	font-size: 0.7em;
 }
-#popup a:hover {
+#login-box a:hover {
 	color:#253571;
 }
 .login input {
