@@ -502,74 +502,129 @@ function TeamSelector() {
 		replaceChildNodes( $("teamname"), " " + name );
 	}
 }
-//	TODO: Move below stuff into appropriate classes
 
-//new folder call
+//handles all 'selection operations' in sidebar of project page
+function ProjOps() {
 
-function receive_newfolder(nodes) {
-    logDebug("Add new folder: ajax request successful");
-    switch(nodes.success) {
-        case 1:   	
-            status_msg("New Directory successfully added (reload file list)", LEVEL_OK);
-            break;
-        case 0:
-            status_msg("Failed to create new Directory", LEVEL_ERROR);
-            break;       	
+    //view_log()                    for each item selected in file list it will attempt to open a new log tab
+    //receive_newfolder([])         ajax success handler 
+    //error_receive_newfolder()     ajax fail hanlder     
+    //newfolder()                   gets folder name & location and instigates new folder on server
+    
+    //list of operations
+    this.ops = new Array();
+                      
+                                                   
+    this.init = function() {
+        //connect up operations
+        for(var i=0; i < this.ops.length; i++) {
+            this.ops[i].event = connect(this.ops[i].handle, 'onclick', this.ops[i].action);
+            logDebug("connecting up "+this.ops[i].name);
+        }
     }
-}
-function error_receive_newfolder(new_name, new_message) {
-    logDebug("Add new folder: ajax request failed");
-   	button_msg("Error contacting server", LEVEL_ERROR, "retry", function(){new_folder(new_name, new_msg)});
-}
-function new_folder(new_name, new_msg) {
-    logDebug("Add new folder: "+new_name+" ...contacting server");
-	if(new_name == null && new_name == undefined) {
-		var browser = new Browser(new_folder, {'type' : 'isDir'});
-	}
-	else {
-	var d = loadJSONDoc("./newdir", { team : team,
-					    path : new_name,
-					    msg : new_msg});
-
-	d.addCallback( receive_newfolder);	
-	d.addErrback( error_receive_newfolder, new_name, new_msg);
-	}
-}
-
-//event handler for 'view log' in project view
-function view_log() {
+    
+    this.view_log = function() {
 	//for every file that is selected:
-	for(var i = 0; i < projpage.flist.selection.length; i++) {
-		//try to find log file in tabbar
-		var exists = map(function(x){
-							if(x.label == "Log: "+projpage.flist.selection[i]) {
-								return true;}
-							else { return false; }
-						}, tabbar.tabs);
-		var test = findValue(exists, true);
-		//if already present, flash it but don't open a new one
-		if(test > -1) {
-			tabbar.tabs[test].flash();
-		}
-		//not present, open it
-		else{
-			var cow = new Log(projpage.flist.selection[i]);
-		}
-	}
-}
+	    for(var i = 0; i < projpage.flist.selection.length; i++) {
+		    //try to find log file in tabbar
+		    var exists = map(function(x){
+							    if(x.label == "Log: "+projpage.flist.selection[i]) {
+								    return true;}
+							    else { return false; }
+						    }, tabbar.tabs);
+		    var test = findValue(exists, true);
+		    //if already present, flash it but don't open a new one
+		    if(test > -1) {
+			    tabbar.tabs[test].flash();
+		    }
+		    //not present, open it
+		    else{
+			    var cow = new Log(projpage.flist.selection[i]);
+		    }
+	    }
+    }  
+    
+    this.receive_newfolder = function(nodes) {
+        logDebug("Add new folder: ajax request successful");
+        switch(nodes.success) {
+            case 1:   	
+                status_msg("New Directory successfully added (reload file list)", LEVEL_OK);
+                break;
+            case 0:
+                status_msg("Failed to create new Directory", LEVEL_ERROR);
+                break;       	
+        }
+    }
+    
+    this.error_receive_newfolder = function(new_name, new_message) {
+        logDebug("Add new folder: ajax request failed");
+       	button_msg("Error contacting server", LEVEL_ERROR, "retry", bind(this.new_folder, this, new_name, new_msg) );
+    }
+    this.new_folder = function(new_name, new_msg) {
+        logDebug("Add new folder: "+new_name+" ...contacting server");
+	    if(new_name == null || new_name == undefined) {
+		    var browser = new Browser(bind(this.new_folder, this), {'type' : 'isDir'});
+	    }
+	    else {
+	        var d = loadJSONDoc("./newdir", { team : team,
+					            path : new_name,
+					            msg : new_msg});
 
+	        d.addCallback( this.receive_newfolder);	
+	        d.addErrback( this.error_receive_newfolder, new_name, new_msg);
+	    }
+    }   
 
-//TODO: decide if this is necessary, remove if not
-function abridge(fpath) {
-
-	if(fpath.length > MAX_TAB_NAME_LENGTH) {
-		var abridge = "..";
-		for(var i = (fpath.length - MAX_TAB_NAME_LENGTH-3); i < fpath.length; i++){
-			abridge += fpath[i];
-		}
-	}
-	else {
-		var abridge = fpath;
-	}	
-	return abridge;
+    this.newfile = function() {
+        status_msg("TODO: Implement add file");   
+    }           
+    this.mv = function() {
+        status_msg("TODO: Implement file/folder Move");
+    }   
+    this.cp = function() {
+        status_msg("TODO: Implement file/folder copy");
+    }  
+    this.rm = function() {
+        status_msg("TODO: Implement file/folder Delete");
+    }
+    this.undel = function() {
+        status_msg("TODO: Implement file/folder Undelete");
+    }         
+ 
+    this.ops.push({ "name" : "New File", 
+                        "action" : bind(this.newfile, this), 
+                        "handle" : $("op-newfile"), 
+                        "event" : null});
+                      
+    this.ops.push({ "name" : "New Directory", 
+                        "action" : bind(this.new_folder, this, null, null), 
+                        "handle": $("op-mkdir"), 
+                        "event" : null});    
+                                
+    this.ops.push({ "name" : "Move", 
+                        "action" : bind(this.mv, this), 
+                        "handle": $("op-mv"), 
+                        "event" : null });  
+                          
+    this.ops.push({ "name" : "Copy", 
+                        "action" : bind(this.cp, this), 
+                        "handle": $("op-cp"), 
+                        "event" : null });   
+                                                                              
+    this.ops.push({ "name" : "Delete", 
+                        "action" : bind(this.rm, this), 
+                        "handle": $("op-rm"), 
+                        "event" : null });  
+                                                  
+    this.ops.push({ "name" : "Undelete", 
+                        "action" : bind(this.undel, this), 
+                        "handle": $("op-undel"), 
+                        "event" : null });  
+                                                  
+    this.ops.push({ "name" : "View Log", 
+                        "action" : bind(this.view_log, this), 
+                        "handle": $("op-log"), 
+                        "event" : null });   
+                            
+    this.init();   
 }
