@@ -28,12 +28,10 @@
 	<div id="login-box">	
 		<strong>Student Robotics IDE Login:</strong>
 		<em id="login-feedback">You must be logged in to use the IDE</em>
-		<form name="login" class="login" method="POST" action="" onSubmit="startLogin()">
-			<input type="text" name="username"  value="username"/>	
-			<input type="password" name="password" />
-			<a href="#" onClick="startLogin(document.login.username.value, document.login.password.value)" class="button" >Log In</a>
+			<input type="text" name="username"  value="username"/>
+			<input type="password" name="password" id="password" />
+			<a href="#" onClick="startLogin()" class="button" >Log In</a>
 			<br /><a href="#" onClick="tabChange(1)" >&raquo; Forgotten password</a>
-		</form>
 	</div>
 </div>	
 <!-- File Browser  -->
