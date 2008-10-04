@@ -12,7 +12,7 @@ function Calendar(project) {
     
     this.logs = new Array();       //will hold complete month of log entries
     this.logdays = new Array();    //will hold max of one log entry (the last) for each day in month
-
+    
     //event signals
     this._signals = new Array();
     
@@ -106,7 +106,17 @@ Calendar.prototype.dinm = function() {
 Calendar.prototype._receiveDates = function(nodes) {
 
     if(nodes.history.length > 0) {
-        this.logs = nodes.history;
+        //convert string representation of date to javascript date object      
+        this.logs = map(function(x) {
+                var parts = x.date.split("/");
+                var jsdate = new Date(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
+                return { "date" : jsdate, 
+                                    "message" : x.message, 
+                                    "rev" : x.rev, 
+                                    "author" : x.author};
+        }, nodes.history);
+        
+
         this.processDates();
         this.updateCal();        
     }
@@ -135,44 +145,50 @@ Calendar.prototype.getDates = function() {
 }
 
 //create a new array with one log entry per date (the last one from that day of that month)
-Calendar.prototype.processDates = function() {
-    var temp = new Array();
-    //log array is ordered newest to oldest, so stop after the first
+Calendar.prototype.processDates = function() {  
     
-    //find out what is the last day in the month for which there are log entries
-    var day = this.extract(this.logs[0].date).getDate();
-    temp.push(this.logs[0]); 
-    day--;   
-
-    //now count down through the month
-    for(var z=1; z < this.logs.length; z++) { 
-        var now = this.extract(this.logs[z].date).getDate();   
-        if(now > day) {
-            //ignore (same day)
-        }
-        else {
-            //moved to a new day, add to the new array
-            temp.push(this.logs[z]); 
-            day = now-1;             
-        }
-    }
+    //blank array
+    this.logdays = new Array();    
     
-    this.logdays = new Array();
-    update(this.logdays, temp);
+    //get array of days with corresponding log entries
+    for(var z=0; z < this.logs.length; z++) { 
+        var now = this.logs[z].date.getDate();   
+        if(findValue(this.logdays, now) < 0) {
+            this.logdays.push(now);
+        }
+    }   
 }
 
 //use logdays to bring to life the cells on the Calendar which relate to log entries
 Calendar.prototype.updateCal = function() {
-    for(var i=0; i < this.logdays.length; i++) {
-        var date = this.extract(this.logdays[i].date).getDate();
-        setNodeAttribute($("cal"+date), "class", "td-log");
-        setNodeAttribute($("cal"+date), "rev", this.logdays[i].rev);        
-        setNodeAttribute($("cal"+date), "onclick", "alert('TODO: switch to revision: x')");
-        setNodeAttribute($("cal"+date), "title", this.logdays[i].message);
+    for(var i=0; i < this.logdays.length; i++) {        
+        setNodeAttribute($("cal"+this.logdays[i]), "class", "td-log");      
+        connect($("cal"+this.logdays[i]), 
+                    'onclick', 
+                    bind(this.change_day, this, this.logdays[i]) );
+        setNodeAttribute($("cal"+this.logdays[i]), "title", "Click to see revisions for this day");
     }
 }
 
 Calendar.prototype.changeMonth = function(dir) {
     this.date.setMonth(this.date.getMonth() + dir);
+    replaceChildNodes("cal-revs", OPTION({"value" : -1}, "Select a date"));    
     this.init();
+}
+
+Calendar.prototype.change_day = function(target) {
+    //alert use to select a revision
+    replaceChildNodes("cal-revs", OPTION({"value" : -1}, "Select a revision"));
+    
+    //get logs for target date
+    for(var i = 0; i < this.logs.length; i++) {
+        if(this.logs[i].date.getDate() == target) {
+            appendChildNodes("cal-revs", OPTION(null, 
+                                            this.logs[i].author+": "+
+                                            this.logs[i].message.slice(0, 20)+" ("+
+                                            this.logs[i].date.getHours()+":"+
+                                            this.logs[i].date.getMinutes()+")")); 
+        }
+    }
+    status_msg("Now Select a project revision", LEVEL_OK);            
 }
