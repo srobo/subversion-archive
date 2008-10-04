@@ -95,13 +95,13 @@ function EditPage() {
 
 	// Open the given file and switch to the tab
 	// or if the file is already open, just switch to the tab
-	this.edit_file = function( team, project, path ) {
+	this.edit_file = function( team, project, path, rev ) {
 		// TODO: We don't support files of the same path being open in
 		// different teams at the moment.
 		var etab = this._file_get_etab( path );
 
 		if( etab == null ) {
-			etab = this._new_etab( team, project, path );
+			etab = this._new_etab( team, project, path, rev);
 			// TODO: Load file contents
 		}
 
@@ -112,14 +112,14 @@ function EditPage() {
 	this.new_file = function() {
 		this._new_count ++;
 		var fname = "New File " + this._new_count;
-		var etab = this._new_etab( team, null, fname );
+		var etab = this._new_etab( team, null, fname, 0 );
 		tabbar.switch_to( etab.tab );
 	}
 
 	// Create a new tab that's one of ours
 	// Doesn't load the tab
-	this._new_etab = function(team, project, path) {
-		var etab = new EditTab(team, project, path);
+	this._new_etab = function(team, project, path, rev) {
+		var etab = new EditTab(team, project, path, rev);
 		
 		connect( etab, "onclose", bind( this._on_tab_close, this ) );
 
@@ -183,7 +183,7 @@ function ea_loaded(id) {
 
 // Represents a tab that's being edited
 // Managed by EditPage -- do not instantiate outside of EditPage
-function EditTab(team, project, path) {
+function EditTab(team, project, path, rev) {
 	// Member functions:
 	// Public:
 	//  None.
@@ -212,6 +212,13 @@ function EditTab(team, project, path) {
 	//  - _onblur: Handler for when the tab is blurred.
 
 	// *** Public Properties ***
+	if(rev == null || rev == undefined) {
+	    this.rev = 0; 
+	}
+	else {
+	    this.rev = rev;
+	}
+	
 	// The team
 	this.team = team;
 	// The project
@@ -222,8 +229,6 @@ function EditTab(team, project, path) {
 	this.contents = "";
 	// The tab representing us
 	this.tab = null;
-	// The version of the current file in the tab
-	this.rev = 0;
 	
 	// *** Private Properties ***
 	// true if tab has been modified
