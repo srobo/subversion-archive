@@ -200,71 +200,71 @@ function status_clearclass() {
 
 // Hide the status bar
 function status_hide() {
-    setStyle( "status-span", {"display":"none"} );
+	setStyle( "status-span", {"display":"none"} );
 
-    var s = getElement("status");
+	var s = getElement("status");
 	status_clearclass();
 }
 
 // Show the status bar with the given message, and prepend "warning" or "error"
 function status_msg( message, level ) {
-    switch(level) {
-    case LEVEL_WARN:
-	message = [ createDOM( "STRONG", null, "Warning: " ),
-		    message ];
-	break;
-    case LEVEL_ERROR:
-	message = [ createDOM( "STRONG", null, "Error: " ), 
-		    message ];
-	break;
-    }
+	switch(level) {
+	case LEVEL_WARN:
+		message = [ createDOM( "STRONG", null, "Warning: " ),
+			    message ];
+		break;
+	case LEVEL_ERROR:
+		message = [ createDOM( "STRONG", null, "Error: " ), 
+			    message ];
+		break;
+	}
 
-    return status_rich_show( message, level );
+	return status_rich_show( message, level );
 }
 
 // Replace the status bar's content with the given DOM object
 function status_rich_show( obj, level ) {
-    var s = getElement("status");
+	var s = getElement("status");
 
-    var o = createDOM( "SPAN", { "id" : "status-span",
-					      "display" : "" }, obj );
-    replaceChildNodes( "status", o );
+	var o = createDOM( "SPAN", { "id" : "status-span",
+				     "display" : "" }, obj );
+	replaceChildNodes( "status", o );
 
 	status_clearclass();
-    switch(level) {
-    case LEVEL_INFO:
-	    addElementClass( s, "info" );
-	break;
-    case LEVEL_OK:
-	    addElementClass( s, "ok" );
-	break;
-    case LEVEL_WARN:
-	    addElementClass( s, "warn" );
-	break;
-    default:
-    case LEVEL_ERROR:
-	    addElementClass( s, "error ");
-	break;
-    }
+	switch(level) {
+	case LEVEL_INFO:
+		addElementClass( s, "info" );
+		break;
+	case LEVEL_OK:
+		addElementClass( s, "ok" );
+		break;
+	case LEVEL_WARN:
+		addElementClass( s, "warn" );
+		break;
+	default:
+	case LEVEL_ERROR:
+		addElementClass( s, "error ");
+		break;
+	}
 
-    // Give it a shake if it's not OK
-    if( level > LEVEL_OK )
-	shake(s);
+	// Give it a shake if it's not OK
+	if( level > LEVEL_OK )
+		shake(s);
 
-    status_num ++;
-    var close_f = partial( status_close, status_num );
+	status_num ++;
+	var close_f = partial( status_close, status_num );
 
-    return { "close": close_f };
+	return { "close": close_f };
 }
 
 // Hide the status if message id is still displayed
 function status_close(id) {
-    if( status_num == id )
-	status_hide();
+	if( status_num == id )
+		status_hide();
 }
 
 function status_click() {
-    status_hide();
+	status_hide();
 }
 
 // Display a status message with a button
@@ -274,12 +274,12 @@ function status_click() {
 //      btext: The button text
 //      bfunc: The function to call when the button is clicked.
 function status_button( message, level, btext, bfunc ) {
-    var b = createDOM( "A", { "href" : "#" }, btext );
-    connect( b, "onclick", bfunc );
+	var b = createDOM( "A", { "href" : "#" }, btext );
+	connect( b, "onclick", bfunc );
 
-    var m = [ message, " -- ", b ]
+	var m = [ message, " -- ", b ]
 
-    return status_msg( m, level );
+	return status_msg( m, level );
 }
 
 // The user 
