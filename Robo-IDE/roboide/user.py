@@ -12,7 +12,6 @@ def anon_login():
 sr.set_userinfo( anon_login )
 
 class User(object):
-
     @expose()
     def index(self):
         return "Bees!"
@@ -22,54 +21,73 @@ class User(object):
         """Returns a variety of information about the user
         outputs:
           - teams: dict mapping team numbers to team names."""
+        user = get_curuser()
+        if user == None:
+            return {}
+
         teams = {}
         for team in getteams():
-            teams[team] = model.TeamNames.get(team).name
+            try:
+                teams[team] = model.TeamNames.get(team).name
+            except model.SQLObjectNotFound:
+                teams[team] = "Unnamed team"
 
         # Get the setting values
-        svals = model.SettingValues.select( model.SettingValues.q.uname == get_curuser() )
+        svals = model.SettingValues.select( model.SettingValues.q.uname == user )
         settings = {}
         for sval in svals.lazyIter():
             sname = model.Settings.get(sval.id).name
             settings[sname] = sval.value
 
-        return {"teams" : teams, "settings": settings}
+        return { "user" : user,
+                 "teams" : teams, 
+                 "settings": settings}
 
     @expose("json")
     def login(self, usr="",pwd=""):
-        def ldap_login():
-            """LDAP Anonymous Login"""
-            password = config.get("ldap.anonpass")
-            return (config.get("ldap.anonuser"),password)
+        SUCCESS = {"login" : 1}
+        FAIL = {"login": 0}
+
+        # When not using LDAP, logins are always successful
+        if dev_env() and not config.get( "user.use_ldap" ):
+            return SUCCESS
 
         u = sr.user( usr )
         if not u.in_db:
-            return {"login": 0}
+            return FAIL
 
         if u.bind( pwd ):
-            return {"login": 1}
+            cherrypy.session["user"] = usr
+            return SUCCESS
         else:
-            return {"login": 0}
+            return FAIL
+
+    @expose("json")
+    def logout(self):
+        cherrypy.session.clear()
+        return {}
 
 def dev_env():
     """Returns True if we're in a development environment"""
     return config.get("server.environment" ) == "development"
 
 def get_curuser():
-    """Returns the user we're currently acting as"""
+    """Returns the user we're currently acting as.
+    Returns None if not logged in."""
 
-    # Default to the development user if the header isn't present
-    if not cherrypy.request.headers.has_key( config.get("user.header" ) ):
-        if dev_env():
-            return config.get( "user.default" )
-        else:
-            return None
+    if dev_env() and not config.get( "user.use_ldap" ):
+        return config.get( "user.default" )
     else:
-        return cherrypy.request.headers["X-Forwarded-User"]
+        # Use LDAP
+        if not cherrypy.session.has_key( "user" ):
+            return None
+        return cherrypy.session["user"]
 
 def getteams():
     """Return a list of the teams the user's in"""
     username = get_curuser()
+    if username == None:
+        return []
 
     groups = None
 
