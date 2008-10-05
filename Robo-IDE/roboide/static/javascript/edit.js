@@ -55,10 +55,9 @@ function EditPage() {
 	 		allow_resize : "no",
 			display : 'onload',
 	 		replace_tab_by_spaces : 4,
-			min_width:600,
-			min_height:400,
-			change_callback: "txt_has_changed",
-			EA_load_callback: "ea_loaded"
+			min_width: "100",   //NOTE: HAD TO EDIT 'edit_area_loader.js' line:573 to get % width
+			min_height:500,
+			change_callback: "txt_has_changed"
  		});
 		this._ea_initted = true;
 	}
@@ -174,11 +173,6 @@ function txt_has_changed(id) {
     //relay editArea's signal so that we can actually use it
     //editArea forces you to pass string
     signal(this, "txt_changed", this);
-}
-
-function ea_loaded(id) {
-    //expand EA to full page width - not possible using init()
-    setStyle("frame_editpage-editarea", {"width" : "100%"});
 }
 
 // Represents a tab that's being edited
