@@ -24,7 +24,7 @@ def getteams():
 
     groups = None
 
-    if dev_env() and not config.get( "user.user_ldap" ):
+    if dev_env() and not config.get( "user.use_ldap" ):
         # Use the default group list when not using LDAP
         groups = config.get( "user.default_groups" )
     else:
