@@ -69,6 +69,9 @@ class User(object):
         SUCCESS = {"login" : 1}
         FAIL = {"login": 0}
 
+        if pwd == "":
+            return FAIL
+
         if usr == "" and pwd == "":
             # Already logged in
             if get_curuser() != None:
