@@ -167,15 +167,19 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 
 	this._project = pname;
 	this._team = team;
-
+	this.refresh();
+}
+	
+ProjFileList.prototype.refresh = function() {    
+    this.selection = new Array();
 	var d = loadJSONDoc("./filelist", {team : this._team,
-					   rootpath : pname, rev : this._rev});
+					   rootpath : this._project, rev : this._rev});
 	
 	d.addCallback( bind( this._received, this ) );
 	
 	d.addErrback( bind( function (){
 		status_button( "Error retrieving the project file listing", LEVEL_ERROR,
-			       "retry", bind( this.update, this ) );
+			       "retry", bind( this.refresh, this ) );
 	}, this ) );
 }
 
@@ -584,9 +588,66 @@ function ProjOps() {
 
     this.newfile = function() {
         status_msg("TODO: Implement add file");   
+    }
+    this._mv_cback = function(dest, cmsg) {         
+        var src = projpage.flist.selection[0];
+        var type = null;
+        
+        //is it a file or a folder?
+        if(src.indexOf(".") < 0) { type = 'isDir'; }
+        else { type = 'isFile'; }
+        
+        //do we already have a move to location?
+        logDebug("type "+type);
+        if(dest == "" || dest == null) {
+            logDebug("launch file browser to get move destination");
+            var b = new Browser(bind(this._mv_cback, this), {'type' : 'isFile'});
+            return;
+        }
+        else {
+            switch(type) {
+                case 'isFile' : 
+                    if(dest.indexOf(".") < 0) {
+                        status_msg("Move destination file must have an extension", LEVEL_ERROR);
+                        return;
+                    }
+                    break;
+                case 'isDir' :
+                    if(dest[dest.length-1] == "/") {
+                        dest = dest.slice(0, dest.length-2);
+                    }
+                    if(dest.indexOf(".") > 0) {
+                        status_msg("Move destination must be a folder", LEVEL_ERROR);
+                        return;
+                    }
+                    break;                        
+            }
+        }
+        
+        status_msg("About to do move..."+src+" to "+dest, LEVEL_OK); 
+        	var d = loadJSONDoc("./move", {team : team,
+					   src : src, dest : dest, msg : cmsg});
+	
+	        d.addCallback( function() {
+	                            status_msg("Move successful!", LEVEL_OK);
+	                            projpage.flist.refresh();
+                                });
+	
+	        d.addErrback( bind( function (){
+		        status_button( "Error moving files/folders", LEVEL_ERROR,
+			               "retry", bind( this._mv_cback, this, dest, cmsg ) );
+	        }, this ) );   
     }           
     this.mv = function() {
-        status_msg("TODO: Implement file/folder Move");
+        //we can only deal with one file/folder at a time, so ignore all but the first    
+        if(projpage.flist.selection.length == 0 || projpage.flist.selection.length > 1) { 
+            status_msg("You must sellect a single file/folder", LEVEL_ERROR); 
+            return;
+        }        
+        
+        var b = new Browser(bind(this._mv_cback, this), {'type' : 'isFile'});
+        return;
+
     }   
     this.cp = function() {
         status_msg("TODO: Implement file/folder copy");
