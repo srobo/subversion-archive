@@ -216,7 +216,8 @@ ProjFileList.prototype._dir = function( node, level ) {
 	// Assemble the link with divs in it
 	var link = A( { "href" : "#",
 			"ide_path" : node.path,
-			"ide_kind" : node.kind },
+			"ide_kind" : node.kind,
+			"ide_rev" : node.rev },
 		this._nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
 	connect( link, "onclick", bind( this._onclick, this ) );
 	
@@ -241,6 +242,7 @@ ProjFileList.prototype._onclick = function(ev) {
 	src = ev.src();
 	kind = getNodeAttribute( src, "ide_kind" );
 	path = getNodeAttribute( src, "ide_path" );
+	rev =  getNodeAttribute( src, "ide_rev"  );
 
 	if( mods["ctrl"] ) {
 		if( !this._is_file_selected( path ) ) {
@@ -258,7 +260,7 @@ ProjFileList.prototype._onclick = function(ev) {
 			this._toggle_dir( src );
 
 		} else {
-			editpage.edit_file( this._team, this._project, path );
+			editpage.edit_file( this._team, this._project, path, rev );
 		}
 	}
 }

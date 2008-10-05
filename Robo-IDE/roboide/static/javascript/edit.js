@@ -291,6 +291,8 @@ function EditTab(team, project, path, rev) {
 		this._dirty = false;
 
 		this._update_contents();
+		
+		status_msg("File: "+this.path+" Opened at revision: "+this.rev, LEVEL_OK);
 	}
 
 	// Handler for errors in receiving the file contents
@@ -357,7 +359,7 @@ function EditTab(team, project, path, rev) {
 	}
 	
 	//save file contents to server as new revision
-	    this._svn_save = function() {
+	this._svn_save = function() {
 	    var d = loadJSONDoc("./savefile", { team : team,
 					        file : this.path, 
 						    rev : 0,				//TODO: make this dynamic

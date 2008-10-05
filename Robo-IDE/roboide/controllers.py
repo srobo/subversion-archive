@@ -603,6 +603,7 @@ class Root(controllers.RootController):
                     top["children"][path] = dict( name = basename,
                                                   path = filename,
                                                   kind = kind,
+                                                  rev = details["created_rev"].number,
                                                   children = {} )
                 top = top["children"][path]
 
