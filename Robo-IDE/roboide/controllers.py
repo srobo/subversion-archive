@@ -11,15 +11,12 @@ import zipfile
 import random
 from os.path import join
 from cherrypy.lib.cptools import serveFile
-import user
+import sr, user
 
 log = logging.getLogger("roboide.controllers")
 
 ZIPNAME = "robot.zip"
 SYSFILES = "/srv/sysfiles"
-USERNAME = "face"		# hardcoded for dev purposes only
-PASSWORD = "face"		#
-
 
 class Client:
     """
@@ -92,34 +89,8 @@ class Feed(FeedController):
         )
 
 class Root(controllers.RootController):
-
+    user = user.User()
     #feed = Feed()
-
-    @expose("json")
-    def userinfo(self):
-        """Returns a variety of information about the user
-        outputs:
-          - teams: dict mapping team numbers to team names."""
-        teams = {}
-        for team in user.getteams():
-            teams[team] = model.TeamNames.get(team).name
-
-        # Get the setting values
-        svals = model.SettingValues.select( model.SettingValues.q.uname == user.get_curuser() )
-        settings = {}
-        for sval in svals.lazyIter():
-            sname = model.Settings.get(sval.id).name
-            settings[sname] = sval.value
-
-        return {"teams" : teams, "settings": settings}
-
-
-    @expose("json")
-    def verifylogin(self, usr="",pwd=""):
-		if (usr == USERNAME) and (pwd == PASSWORD): 
-			return {"login" : 1}
-		else:
-			return {"login" : 0}
 
     @expose()
     def index(self):

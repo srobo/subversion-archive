@@ -314,7 +314,7 @@ function User() {
 	this.load_info = function() {
 		// Return a deferred that fires when the data's ready
 		var retd = new Deferred();
-		var d = loadJSONDoc("./userinfo");
+		var d = loadJSONDoc("./user/info");
 		
 		d.addCallback( bind( this._got_info, this ) );
 
