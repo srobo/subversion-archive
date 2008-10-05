@@ -116,6 +116,9 @@ function ProjFileList() {
 	this._project = "";
 	this._team = null;
 
+    //store the current project revision
+	this._rev = 0;
+
 	// The files/folders that are currently selected
 	this.selection = [];
 
@@ -131,9 +134,14 @@ function ProjFileList() {
 	//  - _show: Show the filelist
 }
 
+ProjFileList.prototype.change_rev = function(revision) {
+    this._rev = revision;
+    this.update(this._project, this._team, this._rev);
+}
+
 // Request and update the project file listing
-ProjFileList.prototype.update = function( pname, team ) {
-	logDebug( "ProjFileList.update( \"" + pname + "\", " + team + " )" );
+ProjFileList.prototype.update = function( pname, team, rev ) {
+	logDebug( "ProjFileList.update( \"" + pname + "\", " + team + ", "+rev+" )" );
 	if( pname == "" ) {
 		// No project selected.
 		this._hide();
@@ -147,12 +155,20 @@ ProjFileList.prototype.update = function( pname, team ) {
 			       "class" : "loading"}, 
 			      "Loading project file listing..." ) );
 	}
+    
+    //store project revision (if one given)
+    if(rev == undefined || rev == null) {
+        this._rev = 0;
+    }
+    else {
+        this._rev = rev;
+    }
 
 	this._project = pname;
 	this._team = team;
 
 	var d = loadJSONDoc("./filelist", {team : this._team,
-					   rootpath : pname});
+					   rootpath : pname, rev : this._rev});
 	
 	d.addCallback( bind( this._received, this ) );
 	

@@ -183,12 +183,24 @@ Calendar.prototype.change_day = function(target) {
     //get logs for target date
     for(var i = 0; i < this.logs.length; i++) {
         if(this.logs[i].date.getDate() == target) {
-            appendChildNodes("cal-revs", OPTION(null, 
+            appendChildNodes("cal-revs", OPTION({ "value" : this.logs[i].rev}, 
                                             this.logs[i].author+": "+
                                             this.logs[i].message.slice(0, 20)+" ("+
                                             this.logs[i].date.getHours()+":"+
                                             this.logs[i].date.getMinutes()+")")); 
         }
     }
+    
+    disconnectAll("cal-revs");
+    connect("cal-revs", 'onchange', bind(this._load_new_rev, this) );  
+    
     status_msg("Now Select a project revision", LEVEL_OK);            
+}
+
+Calendar.prototype._load_new_rev = function() {
+    var target = $("cal-revs").value;
+       if(target >= 0) {
+        projpage.flist.change_rev(target);
+        status_msg("Now showing project at revision: "+target, LEVEL_OK);
+    }   
 }

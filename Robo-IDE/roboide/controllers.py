@@ -565,7 +565,7 @@ class Root(controllers.RootController):
             client.mkdir(client.REPO + path, "New Directory: " + path + " Notes: " + msg)
 
     @expose("json")
-    def filelist(self, team, rootpath="/"):
+    def filelist(self, team, rootpath="/", rev=0):
         """
         Returns a directory tree of the current repository.
         inputs: None
@@ -577,6 +577,15 @@ class Root(controllers.RootController):
         """    
         client = Client(int(team))
         
+        if int(rev) == 0:
+            target_rev = pysvn.Revision( pysvn.opt_revision_kind.head )
+        else:
+            target_rev = pysvn.Revision( pysvn.opt_revision_kind.number, int(rev))    
+            
+        peg_rev = pysvn.Revision( pysvn.opt_revision_kind.head );    
+        
+        print("target revision: ")
+        
         if rootpath == "":
             rootpath = "/"
 
@@ -586,8 +595,9 @@ class Root(controllers.RootController):
         #This returns a flat list of files
         #This is sorted, so a directory is defined before the files in it
         try:
-            files = client.list(client.REPO + rootpath, recurse=True)
-        except pysvn.ClientError:
+            files = client.list(client.REPO + rootpath, revision=target_rev, recurse=True)
+        except pysvn.ClientError, e:
+            print str(e)
             return { "error" : "Error accessing repository" }
         
         #Start off with a directory to represent the root of the path
