@@ -832,7 +832,7 @@ class Root(controllers.RootController):
             return dict(new_revision="0", status="1", message="Source file/folder doesn't exist: "+src)
             
         if not client.is_url(os.path.dirname(destination)):
-            return dict(new_revision="0", status="1", message="Destination file/folder doesn't exist: "+src)
+            return dict(new_revision="0", status="1", message="Destination file/folder doesn't exist: "+dest)
             
         try:
             client.move(source, destination, force=True)

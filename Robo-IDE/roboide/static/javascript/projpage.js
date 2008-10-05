@@ -559,7 +559,8 @@ function ProjOps() {
         logDebug("Add new folder: ajax request successful");
         switch(nodes.success) {
             case 1:   	
-                status_msg("New Directory successfully added (reload file list)", LEVEL_OK);
+                status_msg("New Directory successfully added", LEVEL_OK);
+                projpage.flist.refresh();
                 break;
             case 0:
                 status_msg("Failed to create new Directory", LEVEL_ERROR);
@@ -589,6 +590,19 @@ function ProjOps() {
     this.newfile = function() {
         status_msg("TODO: Implement add file");   
     }
+    
+    this._mv_success = function(nodes) {
+        logDebug("_mv_success()");
+        logDebug(nodes.status);
+        if(nodes.status == 0) { 
+            status_msg("Move successful!", LEVEL_OK);
+            projpage.flist.refresh();
+        }
+        else {
+            status_msg("ERROR: "+nodes.message, LEVEL_ERROR);
+        }    
+    }
+    
     this._mv_cback = function(dest, cmsg) {         
         var src = projpage.flist.selection[0];
         var type = null;
@@ -605,6 +619,7 @@ function ProjOps() {
             return;
         }
         else {
+            //do some sanity checking
             switch(type) {
                 case 'isFile' : 
                     if(dest.indexOf(".") < 0) {
@@ -625,13 +640,11 @@ function ProjOps() {
         }
         
         status_msg("About to do move..."+src+" to "+dest, LEVEL_OK); 
+        
         	var d = loadJSONDoc("./move", {team : team,
-					   src : src, dest : dest, msg : cmsg});
+					   src : src, dest : dest, msg : cmsg});	      
 	
-	        d.addCallback( function() {
-	                            status_msg("Move successful!", LEVEL_OK);
-	                            projpage.flist.refresh();
-                                });
+	        d.addCallback( bind( this._mv_success, this) );
 	
 	        d.addErrback( bind( function (){
 		        status_button( "Error moving files/folders", LEVEL_ERROR,
@@ -652,8 +665,27 @@ function ProjOps() {
     this.cp = function() {
         status_msg("TODO: Implement file/folder copy");
     }  
-    this.rm = function() {
-        status_msg("TODO: Implement file/folder Delete");
+    this.rm = function(override) {
+        if(projpage.flist.selection.length == 0) {
+            status_msg("There are no files/folders selected for deletion", LEVEL_ERROR);
+            return;            
+        }
+        if(override == false) {
+            status_button("Are you sure you want to delete "+projpage.flist.selection.length+" selected files/folders", LEVEL_WARN, "delete", bind(this.rm, this, true));
+            return;
+        }
+        var death_list = "";
+        for(var x = 0; x< projpage.flist.selection.length; x++) {
+            death_list = death_list + projpage.flist.selection[x] + ",";
+        }
+        death_list = death_list.slice(0, death_list.length-1);
+        
+        logDebug("will delete: "+death_list);
+        
+    	var d = loadJSONDoc("./delete", {team : team,
+				   files : death_list}); 
+	    d.addCallback( function(nodes) { status_msg(nodes.Message, LEVEL_OK) });
+	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.rm, this, true));});
     }
     this.undel = function() {
         status_msg("TODO: Implement file/folder Undelete");
@@ -680,7 +712,7 @@ function ProjOps() {
                         "event" : null });   
                                                                               
     this.ops.push({ "name" : "Delete", 
-                        "action" : bind(this.rm, this), 
+                        "action" : bind(this.rm, this, false), 
                         "handle": $("op-rm"), 
                         "event" : null });  
                                                   
