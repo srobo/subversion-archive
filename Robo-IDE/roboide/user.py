@@ -69,6 +69,10 @@ class User(object):
         SUCCESS = {"login" : 1}
         FAIL = {"login": 0}
 
+        # When not using LDAP, logins are always successful
+        if dev_env() and not config.get( "user.use_ldap" ):
+            return SUCCESS
+
         if pwd == "":
             return FAIL
 
@@ -76,10 +80,6 @@ class User(object):
             # Already logged in
             if get_curuser() != None:
                 return SUCCESS
-
-        # When not using LDAP, logins are always successful
-        if dev_env() and not config.get( "user.use_ldap" ):
-            return SUCCESS
 
         u = sr.user( usr )
         if not u.in_db:
