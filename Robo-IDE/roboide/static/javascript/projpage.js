@@ -78,6 +78,7 @@ ProjPage.prototype._on_proj_change = function(proj, team) {
 		$("proj-name").innerHTML = "Project " + this.project;
 		this._rpane_show();
 	}
+	
 }
 
 ProjPage.prototype.set_team = function(team) {

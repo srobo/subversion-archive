@@ -16,7 +16,8 @@ function Calendar(project) {
     //event signals
     this._signals = new Array();
     
-    this.init();
+    //when project changes we need to refresh the calendar
+    connect(projpage._selector, "onchange", bind( this.change_proj, this));
 }
     
 var MONTHS = new Array("January", "February", "March", 
@@ -136,7 +137,7 @@ Calendar.prototype._errorReceiveDates = function() {
 Calendar.prototype.getDates = function() {
 	var d = loadJSONDoc("http://localhost:8080/calendar", { 
 	                    team : 1,               //TODO Change this
-					    file : this.proj, 
+					    file : "/"+this.proj, 
 					    mnth : this.date.getMonth(),
 					    yr : this.date.getFullYear()});
 
@@ -203,4 +204,14 @@ Calendar.prototype._load_new_rev = function() {
         projpage.flist.change_rev(target);
         status_msg("Now showing project at revision: "+target, LEVEL_OK);
     }   
+}
+
+Calendar.prototype.change_proj = function(project) {
+    this.proj = project;
+    this.date = new Date();
+    this.date.setDate(1);
+    this.logs = new Array();
+    this.logdays = new Array();
+    
+    this.init();
 }
