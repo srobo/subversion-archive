@@ -28,10 +28,6 @@ def in_team():
     return lambda: len(getteams()) > 0
 
 class User(object):
-    @expose()
-    def index(self):
-        return "Bees!"
-
     @expose("json")
     def info(self):
         """Returns a variety of information about the user
