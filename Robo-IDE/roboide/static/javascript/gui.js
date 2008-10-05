@@ -19,6 +19,8 @@ MAX_TAB_NAME_LENGTH = 8;
 
 // Number that's incremented every time a new status message is displayed
 status_num = 0;
+// The ID of the status bar
+status_id = "status";
 
 // The tab bar
 var tabbar = null;
@@ -193,7 +195,7 @@ function saveFile(e) {
 
 function status_clearclass() {
 	var classes = ["info", "ok", "warn", "error"];
-	var s = $("status");
+	var s = $(status_id);
 	
 	map( partial( removeElementClass, s ), classes );
 }
@@ -202,7 +204,7 @@ function status_clearclass() {
 function status_hide() {
 	setStyle( "status-span", {"display":"none"} );
 
-	var s = getElement("status");
+	var s = getElement(status_id);
 	status_clearclass();
 }
 
@@ -224,11 +226,11 @@ function status_msg( message, level ) {
 
 // Replace the status bar's content with the given DOM object
 function status_rich_show( obj, level ) {
-	var s = getElement("status");
+	var s = getElement(status_id);
 
 	var o = createDOM( "SPAN", { "id" : "status-span",
 				     "display" : "" }, obj );
-	replaceChildNodes( "status", o );
+	replaceChildNodes( status_id, o );
 
 	status_clearclass();
 	switch(level) {
@@ -309,7 +311,8 @@ function User() {
  		d.addCallback( bind( this._got_info, this ) );
 
  		d.addErrback( bind( function() {
-			window.alert( "Failed to load user info -- TODO: replace this" );
+			status_button( "Failed to load user information", LEVEL_ERROR,
+				       "retry", bind( this._request_info, this ) );
 		}, this ) );
 	}
 
@@ -343,7 +346,8 @@ function User() {
 
 		d.addCallback( bind( this._resp_logged_in, this ) );
 		d.addErrback( bind( function() {
-			window.alert( "Failed to discover whether user is logged in. TODO: replace this message mechanism" );
+			status_button( "Failed to check whether user is logged in.", LEVEL_ERROR,
+				       "retry", bind( this._check_logged_in, this ) );
 		}, this ) );
 	}
 
@@ -359,6 +363,8 @@ function User() {
 
 	// Show the login dialog
 	this._show_login = function() {
+		status_id = "login-feedback";
+
 		// Connect up the onclick event to the login button
 		disconnectAll( "login-button" );
 		connect( "login-button", "onclick", bind( this._do_login, this ) );
@@ -373,6 +379,7 @@ function User() {
 
 	// Hide the login dialog
 	this._hide_login = function() {
+		status_id = "status";
 		setStyle( "login-back", {"display" :"none"} );
 	}
 
@@ -390,7 +397,8 @@ function User() {
 		
 		d.addCallback( bind( this._login_resp, this ) );
 		d.addErrback( bind( function() {
-			window.alert( "Error whilst logging in -- TODO: Change this message mechanism" );
+			status_button( "Error whilst logging in", LEVEL_ERROR,
+				       "retry", bind( this._do_login, this ) );
 		}, this ) );
 	}
 
@@ -400,21 +408,24 @@ function User() {
 			this._hide_login();
 			this._request_info();
 		}
-		else {
+		else
 			// Something was wrong with username/password
-			window.alert( "Incorrect username/password -- TODO: Change this message mechanism" );
-		}
+			status_msg( "Incorrect username or password", LEVEL_WARN );
 	}
 
 	this._logout_click = function(ev) {
-		ev.preventDefault();
-		ev.stopPropagation();
+		if( ev != null ) {
+			ev.preventDefault();
+			ev.stopPropagation();
+		}
 	
 		var d = loadJSONDoc( "./user/logout", {} );
 		
 		d.addCallback( bind( this._logout_resp, this ) );
 		d.addErrback( bind( function() {
-			window.alert( "Error whilst logging out -- TODO: Change this message mechanism" );
+			status_button( "Failed to log out", LEVEL_ERROR,
+				       "retry", partial( bind( this._logout_click, this ),
+							 null ) );
 		}, this ) );
 	}
 
