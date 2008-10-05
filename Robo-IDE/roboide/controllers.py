@@ -11,7 +11,8 @@ import zipfile
 import random
 from os.path import join
 from cherrypy.lib.cptools import serveFile
-import sr, user
+import sr
+import user as srusers
 
 log = logging.getLogger("roboide.controllers")
 
@@ -39,10 +40,10 @@ class Client:
         
         #Using self.__dict__[] to avoid calling setattr in recursive death
         self.__dict__["client"] = c
-        if not team in user.getteams():
+        if not team in srusers.getteams():
             raise RuntimeError("User can not access team %d" % team)
 
-        self.__dict__["REPO"] = user.get_svnrepo( team )
+        self.__dict__["REPO"] = srusers.get_svnrepo( team )
 
     def is_url(self, url):
         """Override the default is_url which just tells you if the url looks
@@ -89,7 +90,7 @@ class Feed(FeedController):
         )
 
 class Root(controllers.RootController):
-    user = user.User()
+    user = srusers.User()
     #feed = Feed()
 
     @expose()
@@ -119,6 +120,7 @@ class Root(controllers.RootController):
         return rev
 
     @expose()
+    @srusers.require(srusers.in_team())
     def checkout(self, team, files="", simulator=False):
         """
         This function grabs a set of files and makes a zip available. Should be
@@ -232,6 +234,7 @@ class Root(controllers.RootController):
         return zipdata
 
     @expose("json")
+    @srusers.require(srusers.in_team())
     def filesrc(self, team, file=None, revision="HEAD"):
         """
         Returns the contents of the file.
@@ -285,6 +288,7 @@ class Root(controllers.RootController):
                 name=os.path.basename(file))
 
     @expose("json")
+    @srusers.require(srusers.in_team())
     def gethistory(self, team, file, user = None, offset = 0):
         #This function retrieves the svn log output for the given file(s)
         #to restrict logs to particular user, supply a user parameter
@@ -337,6 +341,7 @@ class Root(controllers.RootController):
         return tmpdir
 
     @expose("json")
+    @srusers.require(srusers.in_team())
     def polldata(self, team, files = "",logrev=None):
         """Returns poll data:
             inputs: files - comma seperated list of files the client needs info
@@ -380,6 +385,7 @@ class Root(controllers.RootController):
         return dict(files=r, log=l)
     
     @expose("json")
+    @srusers.require(srusers.in_team())
     def delete(self, team, files):
         """
         Delete files from the repository, and prune empty directories.
@@ -418,6 +424,7 @@ class Root(controllers.RootController):
             return dict(Message = message)
     
     @expose("json")
+    @srusers.require(srusers.in_team())
     def fulllog(self, team):
         """Get a full log of file changes
             inputs: None
@@ -437,6 +444,7 @@ class Root(controllers.RootController):
                           x.changed_paths]} for x in log])
 
     @expose("json")
+    @srusers.require(srusers.in_team())
     def savefile(self, team, file, rev, message, code):
         """Write a commit of one file.
         1. SVN checkout the file's directory
@@ -536,6 +544,7 @@ class Root(controllers.RootController):
             client.mkdir(client.REPO + path, "New Directory: " + path + " Notes: " + msg)
 
     @expose("json")
+    @srusers.require(srusers.in_team())
     def filelist(self, team, rootpath="/", rev=0):
         """
         Returns a directory tree of the current repository.
@@ -634,7 +643,9 @@ class Root(controllers.RootController):
         return dict(tree=tree)
 
 	#create a new directory
+
     @expose("json")
+    @srusers.require(srusers.in_team())
     def newdir(self, team, path, msg):
         client = Client(int(team))
 
@@ -649,6 +660,7 @@ class Root(controllers.RootController):
 	                feedback="Directory successfully created")
 
     @expose("json")
+    @srusers.require(srusers.in_team())
     def projlist(self, team):
         """Returns a list of projects"""
         client = Client(int(team))
@@ -664,6 +676,7 @@ class Root(controllers.RootController):
         return dict( projects = projects )
 
     @expose("json")
+    @srusers.require(srusers.in_team())
     def revert(self, team, file, torev, message):
         torev=int(torev)
         client = Client(int(team))
@@ -756,6 +769,7 @@ class Root(controllers.RootController):
 		                success="Success !!!")
 		                
     @expose("json")
+    @srusers.require(srusers.in_team())
     def calendar(self, mnth, yr, file, team):
         #returns data for calendar function
 
@@ -796,6 +810,7 @@ class Root(controllers.RootController):
                       for x in result])
                       
     @expose("json")
+    @srusers.require(srusers.in_team())
     def move(self, team, src, dest, msg=""):
         #   the source and destination arguments may be directories or files
         #   directories rendered empty as a result of the move are automatically 'pruned'
@@ -836,4 +851,7 @@ class Root(controllers.RootController):
                         
         return dict(new_revision="0", status="0", message=message)                              
 
+    @cherrypy.expose
+    def cal(self):
+        return open("./roboide/static/calendar.html", "r").read()
 

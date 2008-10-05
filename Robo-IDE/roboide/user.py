@@ -11,6 +11,22 @@ def anon_login():
 # Bind to LDAP with the anonymous user to access user information
 sr.set_userinfo( anon_login )
 
+def require(*conditions):
+    """Returns a decorator that enforces the given conditions.
+    conditions is a list of is a function that returns True or False.
+    cherrypy.HTTPError(401) is raised if a condition evaluates to be False."""
+    def d(fn):
+        def decorated( *args, **keywords ):
+            if False in [condition() for condition in conditions]:
+                raise cherrypy.HTTPError( 401, "Authorisation required" )
+            return fn(*args, **keywords)
+        return decorated
+    return d
+
+def in_team():
+    """Returns a function that returns True if the current user is in a team"""
+    return lambda: len(getteams()) > 0
+
 class User(object):
     @expose()
     def index(self):
