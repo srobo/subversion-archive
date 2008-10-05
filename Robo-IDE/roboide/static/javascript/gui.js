@@ -54,7 +54,7 @@ addLoadEvent( function() {
 	cur_path = "";
 
 	user = new User();
-	var d = user.load_info();
+	var d = user.load();
 	// Wait for the user information to come back
 	d.addCallback( load_select_team );
 	d.addErrback( function() { window.alert("Failed to get user info: TODO: replace this message mechanism"); } );
@@ -282,24 +282,6 @@ function status_button( message, level, btext, bfunc ) {
     return status_msg( m, level );
 }
 
-// ****Login Screen****
-function startLogin(username, password) {
-	var d = loadJSONDoc("./verifylogin", {"usr" : username, "pwd" : password});
-
-	var gotMetadata = function (meta) {
-	    if (meta.login == 1) {
-		    tabbar.switch_to( projtab );
-	    } else {
-		  getElement("login-feedback").innerHTML = "Incorrect Username / Password";
-	    }
-	};
-
-	var failMetadata = function (meta) {
-		  getElement("login-feedback").innerHTML = "Could Not Contact Server";		
-	};
-	d.addCallbacks(gotMetadata, failMetadata);
-}
-
 // The user 
 function User() {
 	// List of team numbers
@@ -311,21 +293,28 @@ function User() {
 
 	this._info_deferred = null;
 
-	this.load_info = function() {
+	this.load = function() {
 		// Return a deferred that fires when the data's ready
 		var retd = new Deferred();
-		var d = loadJSONDoc("./user/info");
-		
-		d.addCallback( bind( this._got_info, this ) );
 
-		// Pass on the failure -- our caller is more qualified to handle it  
-		d.addErrback( bind( retd.errback, retd ) );
+		this._check_logged_in();
 
 		this._info_deferred = retd;
 		return this._info_deferred;
 	}
 
+	this._request_info = function() {
+ 		var d = loadJSONDoc("./user/info");
+		
+ 		d.addCallback( bind( this._got_info, this ) );
+
+ 		d.addErrback( bind( function() {
+			window.alert( "Failed to load user info -- TODO: replace this" );
+		}, this ) );
+	}
+
 	this._got_info = function( info ) {
+		logDebug( "Got user information" );
 		this.team_names = info["teams"];
 
 		this.teams = [];
@@ -337,12 +326,108 @@ function User() {
 			logDebug( k + " = " + this._settings[k] );
 		}
 
+		// Connect up the logout button
+		disconnectAll( "logout-button" );
+		connect( "logout-button", "onclick", bind( this._logout_click, this ) );
+
  		this._info_deferred.callback(null);
 	}
 
 	this.get_setting = function(sname) {
 		return this._settings[sname];
 	}
+
+	// Asks the server if we're logged in
+	this._check_logged_in = function() {
+		var d = loadJSONDoc("./user/login", {});
+
+		d.addCallback( bind( this._resp_logged_in, this ) );
+		d.addErrback( bind( function() {
+			window.alert( "Failed to discover whether user is logged in. TODO: replace this message mechanism" );
+		}, this ) );
+	}
+
+	// Handle the response from the server about whether we're logged in
+	this._resp_logged_in = function(res) {
+		if ( res["login"] ) {
+			// We're logged in -- grab user information
+			this._request_info();
+		}
+		else
+			this._show_login();
+	}
+
+	// Show the login dialog
+	this._show_login = function() {
+		// Connect up the onclick event to the login button
+		disconnectAll( "login-button" );
+		connect( "login-button", "onclick", bind( this._do_login, this ) );
+
+		// Do stuff when the user presses enter
+		disconnectAll( "password" );
+		connect( "password", "onkeydown", bind( this._pwd_on_keypress, this ) );
+
+		// Show the dialog
+		setStyle( "login-back", {"display":"block"} );
+	}
+
+	// Hide the login dialog
+	this._hide_login = function() {
+		setStyle( "login-back", {"display" :"none"} );
+	}
+
+	// Grab the username and password from the login form and start the login
+	this._do_login = function(ev) {
+		if( ev != null ) {
+			ev.preventDefault();
+			ev.stopPropagation();
+		}
+
+		var user = $("username").value;
+		var pass = $("password").value;
+
+		var d = loadJSONDoc( "./user/login", {"usr": user, "pwd": pass} );
+		
+		d.addCallback( bind( this._login_resp, this ) );
+		d.addErrback( bind( function() {
+			window.alert( "Error whilst logging in -- TODO: Change this message mechanism" );
+		}, this ) );
+	}
+
+	this._login_resp = function(resp) {
+		if( resp["login"] ) {
+			// Logged in -- grab user information
+			this._hide_login();
+			this._request_info();
+		}
+		else {
+			// Something was wrong with username/password
+			window.alert( "Incorrect username/password -- TODO: Change this message mechanism" );
+		}
+	}
+
+	this._logout_click = function(ev) {
+		ev.preventDefault();
+		ev.stopPropagation();
+	
+		var d = loadJSONDoc( "./user/logout", {} );
+		
+		d.addCallback( bind( this._logout_resp, this ) );
+		d.addErrback( bind( function() {
+			window.alert( "Error whilst logging out -- TODO: Change this message mechanism" );
+		}, this ) );
+	}
+
+	this._logout_resp = function(resp) {
+		window.location.reload();
+	}
+	
+	// Do the login if they press enter in the password box
+	this._pwd_on_keypress = function(ev) {
+		if ( ev.key()["string"] == "KEY_ENTER" )
+			this._do_login( null );
+	}
+
 };
 
 function polled()

@@ -28,10 +28,10 @@
 	<div id="login-box">	
 		<strong>Student Robotics IDE Login:</strong>
 		<em id="login-feedback">You must be logged in to use the IDE</em>
-		<input type="text" name="username"  value="username"/>
+		<input type="text" name="username" value="username" id="username" />
 		<input type="password" name="password" id="password" />
-		<a href="#" onClick="startLogin()" class="button" >Log In</a>
-		<br /><a href="#" onClick="tabChange(1)" >&raquo; Forgotten password</a>
+		<a href="Login" id="login-button" class="button" >Log In</a>
+		<br /><a href="http://www.studentrobotics.org/forgot-pass">&raquo; Forgotten password</a>
 	</div>
 </div>	
 <!-- File Browser  -->
@@ -52,7 +52,7 @@
 
 <div id="top">
 	<ul id="topleft">
-	  	<li><a href="#logout">Logout</a></li>
+	  	<li><a href="#" id="logout-button">Logout</a></li>
 		<li id="teaminfo">Loading...</li>
 	</ul>
 
