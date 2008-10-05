@@ -794,7 +794,46 @@ class Root(controllers.RootController):
                       time.localtime(x["date"])), \
                       "message":x["message"], "rev":x["revision"].number} \
                       for x in result])
-    @cherrypy.expose    
-    def cal(self):
-        return open("./roboide/static/calendar.html", "r").read()
+                      
+    @expose("json")
+    def move(self, team, src, dest, msg=""):
+        #   the source and destination arguments may be directories or files
+        #   directories rendered empty as a result of the move are automatically 'pruned'
+        #   returns status = 0 on success
+        client = Client(int(team))
+        source = client.REPO +src
+        destination = client.REPO + dest        
+        
+        #log message callback - needed by client.move
+        def cb():
+            return True, str(msg)
+            
+        client.callback_get_log_message = cb       
+        
+        #message what gets returned to the browser
+        message=""
+            
+        if not client.is_url(os.path.dirname(source)):
+            return dict(new_revision="0", status="1", message="Source file/folder doesn't exist: "+src)
+            
+        if not client.is_url(os.path.dirname(destination)):
+            return dict(new_revision="0", status="1", message="Destination file/folder doesn't exist: "+src)
+            
+        try:
+            client.move(source, destination, force=True)
+            #TODO: Need to prune empty directories. 
+            print "not failed yet\n"
+            if len(client.ls(os.path.dirname(source))) == 0:
+                #The directory is empty, OK to delete it
+                log.debug("Deleting empty directory: " + source)
+                client.remove(os.path.dirname(source))
+                message += "\nRemove empty directory " + src
+            message +="\n successfully moved file"
+                
+        except pysvn.ClientError, e:
+            message = "Error moving files. :: "+str(e)
+            return dict(new_revision="0", status="0", message=message) 
+                        
+        return dict(new_revision="0", status="0", message=message)                              
+
 
