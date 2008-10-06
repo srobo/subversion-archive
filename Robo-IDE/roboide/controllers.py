@@ -853,8 +853,10 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def copy(self, team, src="", dest="", msg="SVN Copy"):
-    
+    def copy(self, team, src="", dest="", msg="SVN Copy", rev="0"):
+        
+        src_rev = int(rev)                
+        
         client = Client(int(team))
         source = client.REPO +src
         destination = client.REPO + dest                 
@@ -864,13 +866,18 @@ class Root(controllers.RootController):
             
         client.callback_get_log_message = cb 
         
+        if src_rev == 0:
+            source_rev = pysvn.Revision( pysvn.opt_revision_kind.head)
+        else:
+            source_rev = pysvn.Revision( pysvn.opt_revision_kind.number, src_rev)
+            
         if not client.is_url(os.path.dirname(source)):
             return dict(new_revision="0", status="1", msg="No Source file/folder specified");
         if not client.is_url(os.path.dirname(destination)):
             return dict(new_revision="0", status="1", msg="No Destination file/folder specified");
             
         try:
-            client.copy(source, destination);
+            client.copy(source, destination, source_rev);
 
         except pysvn.ClientError, e: 
             return dict(new_revision = "0", status="1", message="Copy Failed: "+str(e))

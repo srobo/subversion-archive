@@ -661,9 +661,42 @@ function ProjOps() {
         var b = new Browser(bind(this._mv_cback, this), {'type' : 'isFile'});
         return;
 
-    }   
+    }
+    
+    this._cp_callback1 = function(nodes) {
+        if(nodes.status > 0) {
+            status_msg("ERROR COPYING: "+nodes.message, LEVEL_ERROR);
+        }
+        else {
+            status_msg("Successful Copy: "+nodes.message, LEVEL_OK);
+            projpage.flist.refresh();
+        }
+    }
+    this._cp_callback2 = function(fname, cmsg) {
+        logDebug("copying "+projpage.flist.selection[0]+" to "+fname);
+        
+        if(fname == null || fname=="")
+            return;
+        
+    	var d = loadJSONDoc("./copy", {team : team,
+				   src : projpage.flist.selection[0],
+				   dest : fname,
+				   msg : cmsg,
+				   rev : 0  }); 
+	    d.addCallback( bind(this._cp_callback1, this));
+	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this._cp_callback2, this, true));});             
+    }       
     this.cp = function() {
-        status_msg("TODO: Implement file/folder copy");
+        if(projpage.flist.selection.length == 0) {
+            status_msg("There are no files/folders selected to copy", LEVEL_ERROR);
+            return;            
+        }
+        if(projpage.flist.selection.length > 1) {
+            status_msg("Multiple files selected!", LEVEL_ERROR);
+            return;            
+        }        
+        var b = new Browser(bind(this._cp_callback2, this), {'type' : 'isFile'});
+        return;                     
     }  
     this.rm = function(override) {
         if(projpage.flist.selection.length == 0) {
