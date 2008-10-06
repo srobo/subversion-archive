@@ -118,7 +118,7 @@ function ProjFileList() {
 	this._team = null;
 
     //store the current project revision
-	this._rev = 0;
+	this.rev = 0;
 
 	// The files/folders that are currently selected
 	this.selection = [];
@@ -136,8 +136,8 @@ function ProjFileList() {
 }
 
 ProjFileList.prototype.change_rev = function(revision) {
-    this._rev = revision;
-    this.update(this._project, this._team, this._rev);
+    this.rev = revision;
+    this.update(this._project, this._team, this.rev);
 }
 
 // Request and update the project file listing
@@ -159,10 +159,10 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
     
     //store project revision (if one given)
     if(rev == undefined || rev == null) {
-        this._rev = 0;
+        this.rev = 0;
     }
     else {
-        this._rev = rev;
+        this.rev = rev;
     }
 
 	this._project = pname;
@@ -173,7 +173,7 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 ProjFileList.prototype.refresh = function() {    
     this.selection = new Array();
 	var d = loadJSONDoc("./filelist", {team : this._team,
-					   rootpath : this._project, rev : this._rev});
+					   rootpath : this._project, rev : this.rev});
 	
 	d.addCallback( bind( this._received, this ) );
 	
@@ -720,8 +720,29 @@ function ProjOps() {
 	    d.addCallback( function(nodes) { status_msg(nodes.Message, LEVEL_OK) });
 	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.rm, this, true));});
     }
+
+    this._undel_callback = function(nodes) {
+        if(nodes.status > 0) {
+            status_msg("ERROR Undeleting: "+nodes.message, LEVEL_ERROR);
+        }
+        else {
+            status_msg("Successful Undelete", LEVEL_OK);
+            projpage.flist.refresh();
+        }
+    }
     this.undel = function() {
-        status_msg("TODO: Implement file/folder Undelete");
+        if(projpage.flist.selection.length == 0) {        
+            status_msg("There are no files/folders selected for undeletion", LEVEL_ERROR);
+            return;            
+        }
+            
+    	var d = loadJSONDoc("./copy", {team : team,
+				   src : projpage.flist.selection[0],
+				   dest : projpage.flist.selection[0],
+				   msg : "Undelete File",
+				   rev : projpage.flist.rev  }); 
+	    d.addCallback( bind(this._undel_callback, this));
+	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.undel, this, true));});                     
     }         
  
     this.ops.push({ "name" : "New File", 
