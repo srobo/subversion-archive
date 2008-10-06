@@ -851,7 +851,29 @@ class Root(controllers.RootController):
                         
         return dict(new_revision="0", status="0", message=message)                              
 
-    @cherrypy.expose
-    def cal(self):
-        return open("./roboide/static/calendar.html", "r").read()
+    @expose("json")
+    @srusers.require(srusers.in_team())
+    def copy(self, team, src="", dest="", msg="SVN Copy"):
+    
+        client = Client(int(team))
+        source = client.REPO +src
+        destination = client.REPO + dest                 
+        
+        def cb():
+            return True, str(msg)
+            
+        client.callback_get_log_message = cb 
+        
+        if not client.is_url(os.path.dirname(source)):
+            return dict(new_revision="0", status="1", msg="No Source file/folder specified");
+        if not client.is_url(os.path.dirname(destination)):
+            return dict(new_revision="0", status="1", msg="No Destination file/folder specified");
+            
+        try:
+            client.copy(source, destination);
+
+        except pysvn.ClientError, e: 
+            return dict(new_revision = "0", status="1", message="Copy Failed: "+str(e))
+        
+        return dict(new_revision = "0", status="0", message="copy successful")
 
