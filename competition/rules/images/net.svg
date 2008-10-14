@@ -75,9 +75,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.84894117"
-     inkscape:cx="468.51022"
-     inkscape:cy="253.62921"
+     inkscape:zoom="1.6978823"
+     inkscape:cx="185.44184"
+     inkscape:cy="268.76415"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -198,7 +198,7 @@
          sodipodi:role="line"
          id="tspan5942"
          x="86.624504"
-         y="683.37512">1.8 m*</tspan></text>
+         y="683.37512">1.4 m</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -208,7 +208,7 @@
          sodipodi:role="line"
          id="tspan5946"
          x="56.639095"
-         y="588.42133">0.6m*</tspan></text>
+         y="588.42133">0.5m</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -219,20 +219,6 @@
          id="tspan5950"
          x="164.08679"
          y="603.41406" /></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="230.23485"
-       y="934.37964"
-       id="text5952"><tspan
-         sodipodi:role="line"
-         id="tspan5954"
-         x="230.23485"
-         y="934.37964">* These measurements may be revised within </tspan><tspan
-         sodipodi:role="line"
-         x="230.23485"
-         y="949.37964"
-         id="tspan7719">two weeks of the Kick Start event.</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 313.18089,660.05315 L 262.37229,704.19832"
