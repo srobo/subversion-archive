@@ -73,13 +73,13 @@ class User(object):
         if dev_env() and not config.get( "user.use_ldap" ):
             return SUCCESS
 
-        if pwd == "":
-            return FAIL
-
         if usr == "" and pwd == "":
             # Already logged in
             if get_curuser() != None:
                 return SUCCESS
+
+        if pwd == "":
+            return FAIL
 
         u = sr.user( usr )
         if not u.in_db:
