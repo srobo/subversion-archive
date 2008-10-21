@@ -206,12 +206,10 @@ function EditTab(team, project, path, rev) {
 	//  - _onblur: Handler for when the tab is blurred.
 
 	// *** Public Properties ***
-	if(rev == null || rev == undefined) {
+	if(rev == null || rev == undefined)
 	    this.rev = 0; 
-	}
-	else {
+	else
 	    this.rev = rev;
-	}
 	
 	// The team
 	this.team = team;
