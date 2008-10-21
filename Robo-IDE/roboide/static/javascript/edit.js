@@ -393,14 +393,14 @@ function EditTab(team, project, path, rev) {
 		this._signals.push( connect( $("save-file"),
 					     "onclick",
 					     bind( this._save, this ) ) );
-        // change revision handler
+		// change revision handler
 		this._signals.push( connect( "history",
 					     "onclick",
 					     bind( this._change_revision, this ) ) );
-        //code has been changed
-        this._signals.push( connect(window, 
-                         "txt_changed", 
-                         bind(this._content_changed, this) ) );				     						  
+		//code has been changed
+		this._signals.push( connect(window, 
+					    "txt_changed", 
+					    bind(this._content_changed, this) ) );				     						  
 
 		//display filepath
 		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );	
