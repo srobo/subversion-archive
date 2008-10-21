@@ -430,57 +430,56 @@ function EditTab(team, project, path, rev) {
 		this.contents = editAreaLoader.getValue("editpage-editarea");
 	}
 
-    this._change_revision = function() {
-        switch($("history").value) {
-            case "-2":
-                var d = new Log(this.path);
-                break;
-            case "-1":
-                break;
-            default:
-                this.rev = $("history").value;
-                status_msg("Opening history .."+$("history").value, LEVEL_OK);
-           	    this._load_contents();
-           	    break;
-        }
-    }
+	this._change_revision = function() {
+		switch($("history").value) {
+		case "-2":
+			var d = new Log(this.path);
+			break;
+		case "-1":
+			break;
+		default:
+			this.rev = $("history").value;
+			status_msg("Opening history .."+$("history").value, LEVEL_OK);
+           		this._load_contents();
+           		break;
+		}
+	}
+	
+	this._receive_revisions = function(nodes) {
+		if(nodes.history.length == 0) {
+			replaceChildNodes("history", OPTION({'value' : -1}, "No File History!"));
+		} else {
+			replaceChildNodes("history", OPTION({'value' : -1}, "Select File Revision"));	    
+			for(var i=0; i < nodes.history.length; i++)
+				appendChildNodes("history", OPTION({'value' : nodes.history[i].rev, 'title' : "Log Msg: "+nodes.history[i].message}, nodes.history[i].date+" ["+nodes.history[i].author+"]"));
 
-    this._receive_revisions = function(nodes) {
-        if(nodes.history.length == 0) {
-            replaceChildNodes("history", OPTION({'value' : -1}, "No File History!"));
-        }
-	    else{
-            replaceChildNodes("history", OPTION({'value' : -1}, "Select File Revision"));	    
-	        for(var i=0; i < nodes.history.length; i++) {
-                appendChildNodes("history", OPTION({'value' : nodes.history[i].rev, 'title' : "Log Msg: "+nodes.history[i].message}, nodes.history[i].date+" ["+nodes.history[i].author+"]"));
-            }
-		    appendChildNodes("history", OPTION({'value' : -2}, "--View Full History--"));			
-	    }  
-     }
+			appendChildNodes("history", OPTION({'value' : -2}, "--View Full History--"));			
+		}
+	}
 
-    this._error_receive_revisions = function() {
-        status_msg("Couldn't retrieve file history", LEVEL_ERROR);
-    }
+	this._error_receive_revisions = function() {
+		status_msg("Couldn't retrieve file history", LEVEL_ERROR);
+	}
     
-    this._get_revisions = function() {
-        logDebug("retrieving file history");
-        var d = loadJSONDoc("./gethistory", { team : team,
-					    file : this.path, 
-					    user : null,
-					    offset : 0});
-	    d.addCallback( bind(this._receive_revisions, this));	
-	    d.addErrback( bind(this._error_receive_revisions, this)); 			    
-    }
+	this._get_revisions = function() {
+		logDebug("retrieving file history");
+		var d = loadJSONDoc("./gethistory", { team : team,
+						      file : this.path, 
+						      user : null,
+						      offset : 0});
+		d.addCallback( bind(this._receive_revisions, this));	
+		d.addErrback( bind(this._error_receive_revisions, this)); 			    
+	}
 
-    //editAreaLoader triggers onchange event, now handle it:
-    this._content_changed = function() {
-        this._dirty = true;
-        logDebug("Current File Tab is now dirty");
-        //now we don't need to listen out for event:
-        var sig = this._signals.pop();
-        disconnect(sig);
-    }
-
+	//editAreaLoader triggers onchange event, now handle it:
+	this._content_changed = function() {
+		this._dirty = true;
+		logDebug("Current File Tab is now dirty");
+		//now we don't need to listen out for event:
+		var sig = this._signals.pop();
+		disconnect(sig);
+	}
+	
 	//initialisation
 	this._init();
 }
