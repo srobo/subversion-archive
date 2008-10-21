@@ -48,6 +48,9 @@ ProjPage.prototype._init = function() {
 	// Update the file list when the project changes
 	connect( this._selector, "onchange", bind( this.flist.update, this.flist ) );
 
+	connect("new-project", 'onclick', bind(this.clickNewProject, this)); 
+	// Create new project pressed
+
 	// We have to synthesize the first "onchange" event from the ProjSelect,
 	// as these things weren't connected to it when it happened
 	this._on_proj_change( this._selector.project );
@@ -101,6 +104,45 @@ ProjPage.prototype._rpane_hide = function() {
 
 ProjPage.prototype._rpane_show = function() {
 	setStyle( "proj-rpane", {'display':''} );
+}
+
+ProjPage.prototype.clickNewProject = function() {
+	showElement($("new-project-box"));
+
+	connect("new-project-cancel", "onclick",
+		bind(this.clickCancelNewProject, this));
+	connect("new-project-create", "onclick",
+		bind(this.clickCreateNewProject, this));
+}
+
+ProjPage.prototype.clickCancelNewProject = function() {
+	hideElement($("new-project-box"));
+	disconnectAll("new-project-cancel");
+	disconnectAll("new-project-create");
+}
+
+ProjPage.prototype.clickCreateNewProject = function() {
+	hideElement($("new-project-box"));
+	disconnectAll("new-project-cancel");
+	disconnectAll("new-project-create");
+
+	var newProjName = $("new-project-input").value;
+	/* Postback to create a new project - then what? */
+
+	var d = loadJSONDoc("./createproj",{ name : newProjName, team : team });
+	d.addCallback(bind(this.createProjectSuccess, this));
+	d.addErrback(bind(this.createProjectFailure, this));
+}
+
+ProjPage.prototype.createProjectSuccess = function() {
+	status_msg("Created project successfully", LEVEL_OK);
+	update(team)
+	this._list.update(team)
+}
+
+ProjPage.prototype.createProjectFailure = function() {
+	/* XXX - check for preexisting projects perhaps */
+	status_msg("Create project failed - svn error", LEVEL_ERROR);
 }
 
 // ***** Project Page File Listing *****
@@ -717,8 +759,13 @@ function ProjOps() {
         
     	var d = loadJSONDoc("./delete", {team : team,
 				   files : death_list}); 
-	    d.addCallback( function(nodes) { status_msg(nodes.Message, LEVEL_OK) });
-	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.rm, this, true));});
+	    d.addCallback( function(nodes) { 
+		status_msg(nodes.Message, LEVEL_OK)
+                projpage.flist.refresh();
+	     });
+
+	    d.addErrback(function() { status_button("Error contacting server",
+			    LEVEL_ERROR, "retry", bind(this.rm, this, true));});
     }
 
     this._undel_callback = function(nodes) {

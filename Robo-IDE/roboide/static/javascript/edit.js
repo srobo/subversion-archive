@@ -325,6 +325,8 @@ function EditTab(team, project, path, rev) {
 
 	//ajax event handler for saving to server
 	this._receive_svn_save = function(nodes){
+		projpage.flist.refresh();
+
 		switch(nodes.success){
 			case "True": 
 				status_msg("File Saved successfully (New Revision: "+nodes.new_revision+")", LEVEL_OK);

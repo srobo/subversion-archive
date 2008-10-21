@@ -47,10 +47,10 @@ class User(object):
         # Get the setting values
         svals = model.SettingValues.select( model.SettingValues.q.uname == user )
         settings = {}
-        for sval in svals.lazyIter():
-            sname = model.Settings.get(sval.id).name
-            settings[sname] = sval.value
-
+#        for sval in svals.lazyIter():
+#            sname = model.Settings.get(sval.id).name
+#            settings[sname] = sval.value
+# Settings fail. Where's this db?
         return { "user" : user,
                  "teams" : teams, 
                  "settings": settings}

@@ -414,6 +414,11 @@ class Root(controllers.RootController):
                 for dir in paths:
                     if len(client.ls(client.REPO + dir)) == 0:
                         #The directory is empty, OK to delete it
+
+			#jmorse - don't prune project dirs, this offends gui
+			if dir.encode("iso-8859-1").find('/', 1) == -1:
+				continue
+
                         log.debug("Deleting empty directory: " + client.REPO + dir)
                         client.remove(client.REPO + dir)
                         message += "\nRemove empty directory " + dir
@@ -674,6 +679,23 @@ class Root(controllers.RootController):
                 projects.append(name)
 
         return dict( projects = projects )
+
+    @expose("json")
+    @srusers.require(srusers.in_team())
+    def createproj(self, name, team):
+	"""Creates new project directory"""
+	client = Client(int(team))
+
+	print "create proj " + name + " in group " + team
+
+	if name.find(".") != -1:
+	    """No ../../ nastyness"""
+	    return nil
+
+	url = srusers.get_svnrepo(team) + "/" + name
+	print url
+	client.mkdir(url, "Added project \"" + name + "\"")
+	return dict( )
 
     @expose("json")
     @srusers.require(srusers.in_team())
