@@ -134,7 +134,7 @@ def getteams():
 def get_svnrepo( team ):
     """Return the subversion repository URL for the current user and given team.
     Given team must be an integer."""
-    return config.get( "svn.repos" ) % { "team" : team }
+    return config.get( "svn.repos" ).replace( "TEAM", str(team) )
     
 
 
