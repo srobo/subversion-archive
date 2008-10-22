@@ -29,8 +29,8 @@ class Client:
         Create a pysvn client and use it
         """
         def get_login(realm, username, may_save):
-            user = get_curuser()
-            return True, user, "", False
+            u = str(srusers.get_curuser())
+            return True, u, "", False
 
         c = pysvn.Client()
         c.callback_get_login = get_login
