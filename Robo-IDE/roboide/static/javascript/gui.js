@@ -117,21 +117,6 @@ function beforeunload(e) {
 	}
 }
 
-function checkout() {
-	/*Checkout a list of files.
-		TODO: Security munging. Path character escaping.
-		inputs: none
-		returns: none, but causes a file download by changing
-			document.location to a source that provides an attachment*/
-	//files is an array of paths of selected files
-	var files = get_selected();
-	if(files.length > 0){
-		document.location = "./checkout?team=" + team + "&files=" + files.join(",");
-	} else {
-		alert("No files selected.");
-	}
-}
-
 //OPEN AND SAVE FILES
 function saveFile(e) {
 	/*Save the current tab back to the subversion server.

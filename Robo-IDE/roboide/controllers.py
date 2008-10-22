@@ -17,7 +17,6 @@ import user as srusers
 log = logging.getLogger("roboide.controllers")
 
 ZIPNAME = "robot.zip"
-SYSFILES = "/srv/sysfiles"
 
 class Client:
     """
@@ -121,7 +120,7 @@ class Root(controllers.RootController):
 
     @expose()
     @srusers.require(srusers.in_team())
-    def checkout(self, team, files="", simulator=False):
+    def checkout(self, team, project, simulator=False):
         """
         This function grabs a set of files and makes a zip available. Should be
         linked to directly.
@@ -132,55 +131,20 @@ class Root(controllers.RootController):
             sent.
         """
         client = Client(int(team))
-        files = files.split(",")
         rev = self.get_revision("HEAD")
 
-        #Need to check out the folders that contain the files
-        #Create a folder to dump everything in
+        # Directory to work in
         root = tempfile.mkdtemp()
 
-        dirs = [""] #List of directories already created
+        # Checkout the code
+        client.export(client.REPO + "/%s" % project,
+                      root + "/code",
+                      revision=rev,
+                      recurse=True)
 
-        if files == [""]:
-            client.export(client.REPO,
-                    root + "/all",
-                    revision=rev,
-                    recurse=True)
-        else:
-            for file in files:
-                path = os.path.dirname(file)
-                if not path in dirs:
-                    #If the directory path isn't in the dirs list
-                    #Need to create a directory for it
-                    #Makedirs creates parent directories as necessary
-                    os.makedirs(os.path.join(root, path))
-                    #TODO: Is there a os.path to do this safely?
-                    pathparts = path.split("/")
-                    
-                    #Need to put all created directories in dirs
-                    for i in range(0, len(pathparts)):
-                        #e.g. if path was moo/poo/loo
-                        #subdir is:
-                        #moo
-                        #moo/poo
-                        #moo/poo/loo
-                        subdir = "/".join(pathparts[0:i+1])
-                        if not subdir in dirs:
-                            dirs.append(subdir)
-                #Directory exists, copy file into it
-                f = open(os.path.join(root, file), "wb")
-                f.write(client.cat(client.REPO + file, rev))
-                f.close()
-
-        #Now should have a tree in root.
-        #Create a zip file in a temporary directory
+        # (internal) robot.zip to contain the code
         zfile = tempfile.mktemp()
         zip = zipfile.ZipFile(zfile, "w")
-
-        #Check for an all directory on its own in the root
-        head = root
-        if(os.listdir(root) == ["all"]):
-            head = root + "/all"
 
         def add_dir_to_zip(head, zip):
             #Walk through the tree of files checked out and add them
@@ -197,38 +161,37 @@ class Root(controllers.RootController):
                     else:
                         #Add it with a suitable path
                         zip.write(os.path.join(node, name),
-                            node[len(root)+1:]+"/"+name)
+                            node[len(root + "/code")+1:]+"/"+name)
         
-        add_dir_to_zip(head, zip)
+        add_dir_to_zip(root + "/code", zip)
         zip.close()
-        #Zipfile now ready to be shipped.
-        #Clean up root dir
+
+        # Remove the temporary dir
         shutil.rmtree(root)
+
+        if not simulator:
+            """The robot expects a zipfile containing libraries, with another zipfile inside."""
+            #Create a second zip file placing the user zip in the system zip
+            syszfile = tempfile.mktemp()
+            syszip = zipfile.ZipFile(syszfile, "w")
+            add_dir_to_zip(config.get("svn.packagedir"), syszip)
+
+            syszip.write(zfile, ZIPNAME)
+            syszip.close() 
+
+            #Read the data in from the temporary zipfile
+            zipdata = open(syszfile, "rb").read()
+            os.unlink(syszfile)
+        else:
+            zipdata = open(zfile, "rb").read()
+
+        os.unlink(zfile)
 
         #Set up headers for correctly serving a zipfile
         cherrypy.response.headers['Content-Type'] = \
                 "application/x-download"
         cherrypy.response.headers['Content-Disposition'] = \
                 'attachment; filename="' + ZIPNAME + '"'
-
-        #Read the data in from the temporary zipfile
-        zipdata = open(zfile, "rb").read()
-
-        if not simulator:
-            #Create a second zip file placing the user zip in the system zip
-            syszfile = tempfile.mktemp()
-            syszip = zipfile.ZipFile(syszfile, "w")
-            add_dir_to_zip(SYSFILES, syszip)
-
-            syszip.write(zfile, ZIPNAME)
-            #Get rid of the temporary zipfile
-            syszip.close() 
-
-            #Read the data in from the temporary zipfile
-            zipdata = open(syszfile, "rb").read()
-            os.unlink(syszfile)
-
-        os.unlink(zfile)
 
         #Return the data
         return zipdata

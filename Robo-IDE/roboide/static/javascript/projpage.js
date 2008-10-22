@@ -12,6 +12,8 @@ function ProjPage() {
 	// The project selector -- a ProjSelect instance
 	this._selector = null;
 
+	this._iframe = null;
+
 	this.flist = null;
 	this.project = "";
 
@@ -48,8 +50,9 @@ ProjPage.prototype._init = function() {
 	// Update the file list when the project changes
 	connect( this._selector, "onchange", bind( this.flist.update, this.flist ) );
 
+	// Connect up the project management buttons
 	connect("new-project", 'onclick', bind(this.clickNewProject, this)); 
-	// Create new project pressed
+	connect("export-project", 'onclick', bind(this.clickExportProject, this)); 
 
 	// We have to synthesize the first "onchange" event from the ProjSelect,
 	// as these things weren't connected to it when it happened
@@ -143,6 +146,17 @@ ProjPage.prototype.createProjectSuccess = function() {
 ProjPage.prototype.createProjectFailure = function() {
 	/* XXX - check for preexisting projects perhaps */
 	status_msg("Create project failed - svn error", LEVEL_ERROR);
+}
+
+ProjPage.prototype.clickExportProject = function() {
+	if( this._iframe == null ) {
+		this._iframe = createDOM( "iframe",
+					  { "style": "display:none" },
+					  "beards" );
+		appendChildNodes( document.body, this._iframe );
+	}
+
+	this._iframe.src = "./checkout?team=" + team + "&project=" + this.project;
 }
 
 // ***** Project Page File Listing *****
