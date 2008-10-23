@@ -7,8 +7,8 @@ E_BADARGS=65
 
 if [ $# -lt $EXPECTED_ARGS ]
 then
-  echo "Usage: `basename $0` [4/5][file.brd] <xshift  yshift>"
-  echo "output files in gerbers/"
+  echo "Usage: `basename $0` [4/5][file.brd] [outputprefix] <xshift  yshift>"
+  echo "output files in gerbers/outputprefixfile.{gbr,drd}}"
   exit $E_BADARGS
 fi
 
@@ -44,5 +44,4 @@ $egl -X -dGERBER_RS274X  $of1 -o$3-dim.gbr $2 dimension
 $egl -X -dexcellon  $of1 -o$3-drill.drd $2 drills
     
 
-#eagle -X -dGERBER_RS274X -x3 -y4 -o$2-topshift.gbr $1 top pad via
 
