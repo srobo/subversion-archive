@@ -1,0 +1,3 @@
+This is the dummy library used for code checking in RoboIDE.
+
+It provides the same interface as pyenv, but doesn't do anything.
