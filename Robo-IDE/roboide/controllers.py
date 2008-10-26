@@ -869,3 +869,7 @@ class Root(controllers.RootController):
         
         return dict(new_revision = "0", status="0", message="copy successful")
 
+    @expose("json")
+    @srusers.require(srusers.in_team())
+    def checkcode(self, team, path):
+        return dict( messages = """Some errors""" )

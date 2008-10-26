@@ -59,6 +59,7 @@ ProjPage.prototype._init = function() {
 	// Connect up the project management buttons
 	connect("new-project", 'onclick', bind(this.clickNewProject, this)); 
 	connect("export-project", 'onclick', bind(this.clickExportProject, this)); 
+	connect("check-code", "onclick", bind(this.clickCheckCode, this));
 
 	// We have to synthesize the first "onchange" event from the ProjSelect,
 	// as these things weren't connected to it when it happened
@@ -163,6 +164,23 @@ ProjPage.prototype.clickExportProject = function() {
 	}
 
 	this._iframe.src = "./checkout?team=" + team + "&project=" + this.project;
+}
+
+ProjPage.prototype.clickCheckCode = function() {
+	var d = loadJSONDoc("./checkcode",{ team : team, path : this.project });
+	
+	d.addCallback(bind(this.doneCheckCode, this));
+	d.addErrback(bind(this.failCheckCode, this));
+}
+
+ProjPage.prototype.doneCheckCode = function(info) {
+	logDebug( "code back" );
+	var a = new ErrorsTab( info["messages"] );
+}
+
+ProjPage.prototype.failCheckCode = function() {
+	status_button( "Failed to check code", LEVEL_ERROR,
+		       "retry", bind( this.clickCheckCode, this ) );
 }
 
 // ***** Project Page File Listing *****
