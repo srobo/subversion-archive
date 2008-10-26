@@ -1,10 +1,7 @@
-function Calendar(project) {
+function Calendar() {
 
-    //Default project is the root dir.
-    if(project != null && project != undefined)
-        this.proj = project;
-    else
-        this.proj = "/";     
+        this.proj = "";
+	this.team = null;
     
     //holds the selected month & year          
     this.date = new Date();
@@ -133,7 +130,7 @@ Calendar.prototype._errorReceiveDates = function() {
 //get month of logs messages from server
 Calendar.prototype.getDates = function() {
 	var d = loadJSONDoc("./calendar", { 
-	        	team : 1,               //TODO Change this
+	        	team : this.team,
 			file : "/"+this.proj, 
 			mnth : this.date.getMonth(),
 			yr : this.date.getFullYear() } );
@@ -203,8 +200,9 @@ Calendar.prototype._load_new_rev = function() {
     }   
 }
 
-Calendar.prototype.change_proj = function(project) {
+Calendar.prototype.change_proj = function(project, team) {
     this.proj = project;
+    this.team = team;
     this.date = new Date();
     this.date.setDate(1);
     this.logs = new Array();
