@@ -189,15 +189,18 @@ Calendar.prototype.change_day = function(target) {
 	disconnectAll("cal-revs");
 	connect("cal-revs", 'onchange', bind(this._load_new_rev, this) );  
 	
-	status_msg("Now Select a project revision", LEVEL_OK);            
+	this._load_rev( this.logs[0].rev );	
 }
 
 Calendar.prototype._load_new_rev = function() {
 	var target = $("cal-revs").value;
-	if(target >= 0) {
-		projpage.flist.change_rev(target);
-		status_msg("Now showing project at revision: "+target, LEVEL_OK);
-	}   
+	if(target >= 0)
+		this._load_rev( target );
+}
+
+Calendar.prototype._load_rev = function(rev) {
+	projpage.flist.change_rev(rev);
+	status_msg("Now showing project at revision: "+rev, LEVEL_OK);
 }
 
 Calendar.prototype.change_proj = function(project, team) {
