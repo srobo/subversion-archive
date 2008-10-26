@@ -132,11 +132,11 @@ Calendar.prototype._errorReceiveDates = function() {
 
 //get month of logs messages from server
 Calendar.prototype.getDates = function() {
-	var d = loadJSONDoc("http://localhost:8080/calendar", { 
-	                    team : 1,               //TODO Change this
-					    file : "/"+this.proj, 
-					    mnth : this.date.getMonth(),
-					    yr : this.date.getFullYear()});
+	var d = loadJSONDoc("./calendar", { 
+	        	team : 1,               //TODO Change this
+			file : "/"+this.proj, 
+			mnth : this.date.getMonth(),
+			yr : this.date.getFullYear() } );
 
 	d.addCallback( bind(this._receiveDates, this));	
 	d.addErrback( bind(this._errorReceiveDates, this));    
