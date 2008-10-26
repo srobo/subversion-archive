@@ -3,11 +3,6 @@ cur_path = ""; //TODO: Replace these with cur_tab
 open_files = {}; //A dictionary (hash table) of the currently open
 //files - one for each tab
 
-//POLLING
-POLL_TIME = 2000; //In ms.
-poll_data = {}; /*The data to be shipped with the poll.
-files : comma seperated list of open files*/
-
 // Initialise to an invalid team number
 team = 0; /*The current team number*/
 
@@ -114,65 +109,6 @@ function beforeunload(e) {
 			e.confirmUnload("You should close tabs before closing this window");
 			break;
 		}
-	}
-}
-
-//OPEN AND SAVE FILES
-function saveFile(e) {
-	/*Save the current tab back to the subversion server.
-		inputs: e - A load of data from MochiKit. Not used
-		returns: none. Creates a deferred which in turn calls filesaved
-	*/
-
-	/* TODO: Figure out why this was here.
-	if(open_files[cur_path].revision){
-		alert("Invalid revision.");
-		return;
-	}*/
-
-	document.body.style.cursor = "wait";
-
-	//TODO: Check cur_path is valid
-
-	//Put data from the current tab into its open_files entry
-	savecurrenttab();
-
-	//See if the file has been altered.
-	if(open_files[cur_path].dirty ||
-			(open_files[cur_path].editedfilename != cur_path)){
-
-		//Disable the button
-		getElement("savefile").disabled = true;
-
-		//TODO:Cope with saving as a new file name!
-		//Could have:
-		//cur_path = MochiKit.DOM.getElement("filename").value;
-		//But need to rename open_files data etc
-
-		//TODO: When commit message in open_files, read it from there
-
-		var keys = ["file", "rev", "message", "code", "team"];
-		var values = [open_files[cur_path].editedfilename, //File
-					  open_files[cur_path].revision, //rev
-					  getElement("message").value, //message
-					  open_files[cur_path].tabdata, //Code
-					  team]; //Team
-		var content = queryString(keys, values);
-
-		//Using doXHR (New in MochiKit 1.4) to do a post request
-		var d = doXHR("./savefile",
-						   {"method" : "POST",
-							"mimeType" : "application/x-www-form-urlencoded",
-							"sendContent" : content,
-							"headers" : {'Content-Type' :
-							'application/x-www-form-urlencoded'}});
-		d.addCallback(filesaved);
-		d.addErrback(function (){
-			alert("Error connecting to studentrobotics.org. Please refresh.");
-			});
-
-	} else {
-		alert("File not changed, not saving.");
 	}
 }
 
@@ -425,57 +361,6 @@ function User() {
 	}
 
 };
-
-function polled()
-{
-	/*Polling makes sure we're up to date with others changes.
-	  This function run roughly every POLL_TIME ms by setTimeout
-	  call in pollAction
-	  inputs: None
-	  returns: Nothing, but callback created*/
-	poll_data["team"] = team;
-	var j = loadJSONDoc("./polldata", poll_data );
-	j.addCallback(pollAction);
-	j.addErrback(function (){
-		alert("Error connecting to studentrobotics.org. Please refresh.");
-		});
-}
-
-function pollAction(result)
-{
-	/*Data received from polling call. Process it, then set up a
-	  timeout to call polled in POLL_TIME ms.
-	  input: A dictionary of filenames -> revision numbers
-				result[filename]["rev"] = N
-	  returns: Nothing, but sets up timeout*/
-
-	//For each file for which there is info available, if that file
-	//is open and if the local working revision is less than that
-	//saved on the server, then mark that file as changed
-
-	for (var file in result["files"]){
-		if(open_files[file])
-			if(open_files[file].revision < result["files"][file]["rev"]){
-				open_files[file].changed = true;
-				var lr = "lr" + file;
-				Highlight(lr, {'startcolor' : '#ffff99'});
-			}
-	}
-
-	if(result["log"].length != undefined){
-		if(result["log"][0]["rev"] > poll_data["logrev"]){
-			rows = map(buildLogTableEntry, result["log"]);
-			insertSiblingNodesAfter("fltablehead", rows);
-			poll_data["logrev"] = result["log"][0]["rev"];
-		}
-	}
-
-	//Generate the tab list, in case formatting etc needs changing
-	//to mark that a file has conflicts
-	generatetablist();
-	//Setup the next poll in POLL_TIME ms
-	setTimeout( "polled()", POLL_TIME );
-}
 
 function TeamSelector() {
 	this._prompt = null;
