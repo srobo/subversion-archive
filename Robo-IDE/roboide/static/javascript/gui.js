@@ -29,9 +29,6 @@ var projtab = null;
 // The edit page
 var editpage = null;
 
-// The Calendar 
-var svn_calendar = null;
-
 // The user
 var user;
 
@@ -93,9 +90,6 @@ function load_gui() {
 	connect( ntab, "onclick", bind(editpage.new_file, editpage) );
 	tabbar.add_tab( ntab );
 	
-	//The Calendar
-	svn_calendar = new Calendar();
-
     //The selection operations
     sel_operations = new ProjOps();
 

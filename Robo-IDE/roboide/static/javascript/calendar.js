@@ -15,9 +15,6 @@ function Calendar(project) {
     
     //event signals
     this._signals = new Array();
-    
-    //when project changes we need to refresh the calendar
-    connect(projpage._selector, "onchange", bind( this.change_proj, this));
 }
     
 var MONTHS = new Array("January", "February", "March", 

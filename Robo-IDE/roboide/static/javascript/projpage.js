@@ -11,6 +11,8 @@ function ProjPage() {
 	this._list = null;
 	// The project selector -- a ProjSelect instance
 	this._selector = null;
+	// The calendar
+	this._calendar = null;
 
 	this._iframe = null;
 
@@ -49,6 +51,10 @@ ProjPage.prototype._init = function() {
 	this.flist = new ProjFileList();
 	// Update the file list when the project changes
 	connect( this._selector, "onchange", bind( this.flist.update, this.flist ) );
+
+	this._calendar = new Calendar();
+	// Refresh the calendar when the project changes
+	connect(this._selector, "onchange", bind( this._calendar.change_proj, this._calendar ) );
 
 	// Connect up the project management buttons
 	connect("new-project", 'onclick', bind(this.clickNewProject, this)); 
