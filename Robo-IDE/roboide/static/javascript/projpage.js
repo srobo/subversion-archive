@@ -167,15 +167,18 @@ ProjPage.prototype.clickExportProject = function() {
 }
 
 ProjPage.prototype.clickCheckCode = function() {
-	var d = loadJSONDoc("./checkcode",{ team : team, path : this.project });
+	var d = loadJSONDoc("./checkcode",{ team : team, path : "/" + this.project });
 	
 	d.addCallback(bind(this.doneCheckCode, this));
 	d.addErrback(bind(this.failCheckCode, this));
 }
 
 ProjPage.prototype.doneCheckCode = function(info) {
-	logDebug( "code back" );
-	var a = new ErrorsTab( info["messages"] );
+
+	if( info["errors"] == 1 )
+		var a = new ErrorsTab( info["messages"] );
+	else
+		status_msg( "No errors found", LEVEL_OK );
 }
 
 ProjPage.prototype.failCheckCode = function() {

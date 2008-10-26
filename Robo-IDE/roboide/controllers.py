@@ -11,6 +11,7 @@ import zipfile
 import random
 from os.path import join
 from cherrypy.lib.cptools import serveFile
+import subprocess
 import sr
 import user as srusers
 
@@ -872,4 +873,37 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def checkcode(self, team, path):
-        return dict( messages = """Some errors""" )
+
+        client = Client(int(team))
+        rev = self.get_revision("HEAD")
+
+        # Directory to work in
+        td = tempfile.mkdtemp()
+
+        # Check out the code
+        print "Checking out %s" % (client.REPO + path)
+        client.export(client.REPO + path,
+                      td + "/code",
+                      revision=rev,
+                      recurse=True)
+
+        # Check out the dummified SR library too
+        shutil.copy( config.get("checker.file"), td + "/code" )
+
+        # Run pychecker
+        p = subprocess.Popen( ["pychecker", "-e", "Error", "robot.py" ],
+                              cwd = "%s/code" % td,
+                              stdout = subprocess.PIPE,
+                              stderr = subprocess.PIPE )
+        output = p.communicate()
+
+        rval = p.wait()
+
+        # Remove the temporary directory
+        shutil.rmtree(td)
+
+        if rval == 0:
+            return dict( errors = 0 )
+        else:
+            return dict( messages = output,
+                         errors = 1 )
