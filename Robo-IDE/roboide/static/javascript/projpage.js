@@ -63,7 +63,7 @@ ProjPage.prototype._init = function() {
 	// We have to synthesize the first "onchange" event from the ProjSelect,
 	// as these things weren't connected to it when it happened
 	this._on_proj_change( this._selector.project );
-	this.flist.update( this._selector.project );
+	this.flist.update( this._selector.project, this._selector._team );
 
 	this._initted = true;
 }
