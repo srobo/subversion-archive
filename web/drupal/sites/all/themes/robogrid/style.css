@@ -300,6 +300,11 @@ ul, ol {
 	margin-top: 10px;
 }
 
+.block-user ul {
+	font-size: 1.2em;
+	padding: 0.5em 20px 0;
+}
+
 #sidebar-left h2 {
 	margin: 0 0.5em;
 }
