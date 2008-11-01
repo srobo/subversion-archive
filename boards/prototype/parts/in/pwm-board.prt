@@ -1,0 +1,41 @@
+Partlist
+
+Exported from pwm-board.sch at 11/1/08 9:31 PM
+
+EAGLE Version 5.2.0 Copyright (c) 1988-2008 CadSoft
+
+Part     Value            Device                 Package         Library   Sheet
+
+C1       100nF            C-EUC0603K             C0603K          rcl       1
+C2       100nF            C-EUC0603K             C0603K          rcl       1
+C3       10uF             CPOL-EUE2-4_0.6MMDRILL E2-4_0.6MMDRILL ecssr     1
+C5       10uF             CPOL-EUE2-4_0.6MMDRILL E2-4_0.6MMDRILL ecssr     1
+CON1     MODULE_CON       MODULE_CON             RJ11-4P4C       ecssr     1
+D1       ZENERBZX384-C3V3 ZENERBZX384-C3V3       SOD323-W        ecssr     1
+D2       LM4040           LM4040                 SOT23           ecssr     1
+IC1      MSP430F2234      MSP430F2234            TSSOP38         ecssr     1
+IC2      74ACT04D         74ACT04D               SO14            74xx-eu   1
+JP1                       PINHD-1X3              1X03            pinhead   1
+JP2                       PINHD-1X3              1X03            pinhead   1
+JP3                       PINHD-1X3              1X03            pinhead   1
+JP4                       PINHD-1X3              1X03            pinhead   1
+JP5                       PINHD-1X3              1X03            pinhead   1
+JP6                       PINHD-1X3              1X03            pinhead   1
+JP7                       PINHD-1X3              1X03            pinhead   1
+JP8                       PINHD-1X3              1X03            pinhead   1
+JP9                       PINHD-1X4              1X04            pinhead   1
+LED2                      LEDCHIP-LED0603        CHIP-LED0603    led       1
+LED4                      LEDCHIP-LED0603        CHIP-LED0603    led       1
+LED5                      LEDCHIP-LED0603        CHIP-LED0603    led       1
+R1       47K              R-EU_R0603             R0603           rcl       1
+R2       560              R-EU_R0603             R0603           rcl       1
+R3       680              R-EU_R0603             R0603           rcl       1
+R4       680              R-EU_R0603             R0603           rcl       1
+R5       680              R-EU_R0603             R0603           rcl       1
+R6       680              R-EU_R0603             R0603           rcl       1
+R7       680              R-EU_R0603             R0603           rcl       1
+R8       680              R-EU_R0603             R0603           rcl       1
+R10      Work this out    R-EU_R0603             R0603           rcl       1
+R11      560              R-EU_R0603             R0603           rcl       1
+R13      560              R-EU_R0603             R0603           rcl       1
+U$1      CAMCON2W         CAMCON2W               09CON2W         ecssr-Pwr 1

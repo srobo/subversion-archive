@@ -1,0 +1,89 @@
+Partlist
+
+Exported from jointio.sch at 11/01/2008 21:30:18 
+
+EAGLE Version 4.16r2 Copyright (c) 1988-2006 CadSoft
+
+Part     Value          Device          Package      Library                 Sheet
+
+C2       100n           C-EUC0603       C0603        rcl                     1
+C3       1uF            CPOL-EUB45181A  B45181A      rcl                     1
+CON1     CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON2     CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON3     CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON4     CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON5     CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON6     CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON7     CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON8     CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON9     CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON10    MODULE_CON     MODULE_CON      RJ11-4P4C    ecssr                   1
+CON11    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON12    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON13    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON14    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON15    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON16    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON17    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON18    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON19    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON20    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+CON21    CAGECLAMP      CAGECLAMP       CAGECLAMP    ecssr                   1
+D1       BAT754S        BAT754S         SOT23        ecssr                   1
+D2       BAT754S        BAT754S         SOT23        ecssr                   1
+D3       BAT754S        BAT754S         SOT23        ecssr                   1
+D4       BAT754S        BAT754S         SOT23        ecssr                   1
+D5       BAT754S        BAT754S         SOT23        ecssr                   1
+D6       BAT754S        BAT754S         SOT23        ecssr                   1
+D7       BAT754S        BAT754S         SOT23        ecssr                   1
+D8       BAT754S        BAT754S         SOT23        ecssr                   1
+IC2      MSP430F2234    MSP430F2234     TSSOP38      ecssr                   1
+JP1      SBW            PINHD-1X4       1X04         pinhead                 1
+LED1                    LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED4                    LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED5                    LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED6                    LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED7                    LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED8                    LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED10                   LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED11                   LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED12                   LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED13                   LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED14                   LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED15                   LEDCHIP-LED0603 CHIP-LED0603 led                     1
+LED16                   LEDCHIP-LED0603 CHIP-LED0603 led                     1
+Q9       BSS84          BSS84           SOT23        transistor-small-signal 1
+Q10      BSS84          BSS84           SOT23        transistor-small-signal 1
+Q11      BSS84          BSS84           SOT23        transistor-small-signal 1
+Q12      BSS84          BSS84           SOT23        transistor-small-signal 1
+Q13      BSS123         BSS123          SOT23        transistor-small-signal 1
+Q14      BSS123         BSS123          SOT23        transistor-small-signal 1
+Q15      BSS123         BSS123          SOT23        transistor-small-signal 1
+Q16      BSS123         BSS123          SOT23        transistor-small-signal 1
+R1       1k             R-EU_R0603      R0603        rcl                     1
+R2       1k             R-EU_R0603      R0603        rcl                     1
+R4       1k             R-EU_R0603      R0603        rcl                     1
+R5       1k             R-EU_R0603      R0603        rcl                     1
+R6       1k             R-EU_R0603      R0603        rcl                     1
+R7       1k             R-EU_R0603      R0603        rcl                     1
+R8       1k             R-EU_R0603      R0603        rcl                     1
+R9       1k             R-EU_R0603      R0603        rcl                     1
+R10      47k            R-EU_R0603      R0603        rcl                     1
+R13      560            R-EU_R0603      R0603        rcl                     1
+R14      560            R-EU_R0603      R0603        rcl                     1
+R15      560            R-EU_R0603      R0603        rcl                     1
+R16      560            R-EU_R0603      R0603        rcl                     1
+R17      220k           R-EU_R0603      R0603        rcl                     1
+R18      560            R-EU_R0603      R0603        rcl                     1
+R19      220k           R-EU_R0603      R0603        rcl                     1
+R20      220k           R-EU_R0603      R0603        rcl                     1
+R21      220k           R-EU_R0603      R0603        rcl                     1
+R22      560            R-EU_R0603      R0603        rcl                     1
+R23      560            R-EU_R0603      R0603        rcl                     1
+R24      560            R-EU_R0603      R0603        rcl                     1
+R25      560            R-EU_R0603      R0603        rcl                     1
+R26      560            R-EU_R0603      R0603        rcl                     1
+R27      560            R-EU_R0603      R0603        rcl                     1
+R28      560            R-EU_R0603      R0603        rcl                     1
+R29      560            R-EU_R0603      R0603        rcl                     1
+X1       32Khz          CRYSTALTC26H    TC26H        crystal                 1
