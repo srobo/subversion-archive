@@ -1,6 +1,6 @@
 Partlist
 
-Exported from pwm-board.sch at 11/1/08 9:31 PM
+Exported from pwm-board.sch at 11/11/08 10:11 AM
 
 EAGLE Version 5.2.0 Copyright (c) 1988-2008 CadSoft
 
@@ -35,7 +35,7 @@ R5       680              R-EU_R0603             R0603           rcl       1
 R6       680              R-EU_R0603             R0603           rcl       1
 R7       680              R-EU_R0603             R0603           rcl       1
 R8       680              R-EU_R0603             R0603           rcl       1
-R10      Work this out    R-EU_R0603             R0603           rcl       1
-R11      560              R-EU_R0603             R0603           rcl       1
-R13      560              R-EU_R0603             R0603           rcl       1
+R10      270              R-EU_R0603             R0603           rcl       1
+R11      180              R-EU_R0603             R0603           rcl       1
+R13      1k               R-EU_R0603             R0603           rcl       1
 U$1      CAMCON2W         CAMCON2W               09CON2W         ecssr-Pwr 1
