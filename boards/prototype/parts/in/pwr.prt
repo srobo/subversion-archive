@@ -1,6 +1,6 @@
 Partlist
 
-Exported from PWR1.sch at 11/01/2008 21:29:20 
+Exported from PWR1.sch at 11/10/2008 23:46:13 
 
 EAGLE Version 4.16r2 Copyright (c) 1988-2006 CadSoft
 
@@ -18,7 +18,7 @@ C9        0.47u                C-EUC0603           C0603        rcl             
 C10       100n                 C-EUC0603           C0603        rcl              1
 C11       10u                  C-EUC0805           C0805        rcl              1
 C12       100n                 C-EUC0603           C0603        rcl              1
-C15                            C-EUC0603           C0603        rcl              1
+C15       na                   C-EUC0603           C0603        rcl              1
 C16       0.47u                C-EUC0603           C0603        rcl              1
 C17       100n                 C-EUC0603           C0603        rcl              1
 C18       100n                 C-EUC0603           C0603        rcl              1
@@ -65,34 +65,34 @@ Q9                             CRYSTALTC26H        TC26H        crystal         
 R1        220K                 R-EU_R0603          R0603        rcl              1
 R2        10k                  R-EU_R0603          R0603        rcl              1
 R3        47k                  R-EU_R0603          R0603        rcl              1
-R4        330r                 R-EU_R0603          R0603        rcl              1
-R5        330r                 R-EU_R0603          R0603        rcl              1
-R6        330R                 R-EU_R0603          R0603        rcl              1
-R7        330R                 R-EU_R0603          R0603        rcl              1
-R8        330R                 R-EU_R0603          R0603        rcl              1
+R4        270R                 R-EU_R0603          R0603        rcl              1
+R5        1k                   R-EU_R0603          R0603        rcl              1
+R6        1k                   R-EU_R0603          R0603        rcl              1
+R7        1k                   R-EU_R0603          R0603        rcl              1
+R8        1k                   R-EU_R0603          R0603        rcl              1
 R9        220K                 R-EU_R0603          R0603        rcl              1
 R10       220K                 R-EU_R0603          R0603        rcl              1
 R11       220K                 R-EU_R0603          R0603        rcl              1
-R12       330R                 R-EU_R0603          R0603        rcl              1
+R12       180R                 R-EU_R0603          R0603        rcl              1
 R13       220k                 R-EU_R0603          R0603        rcl              1
-R14       330r                 R-EU_R0603          R0603        rcl              1
-R15                            R-EU_R0603          R0603        rcl              1
+R14       270R                 R-EU_R0603          R0603        rcl              1
+R15       680                  R-EU_R0603          R0603        rcl              1
 R16       30k                  R-EU_R0603          R0603        rcl              1
 R17       220k                 R-EU_R0603          R0603        rcl              1
 R18       10k                  R-EU_R0603          R0603        rcl              1
 R19       220k                 R-EU_R0603          R0603        rcl              1
 R20       220k                 R-EU_R0603          R0603        rcl              1
-R21                            R-EU_R0603          R0603        rcl              1
-R22                            R-EU_R0603          R0603        rcl              1
+R21       na                   R-EU_R0603          R0603        rcl              1
+R22       680                  R-EU_R0603          R0603        rcl              1
 R23       10k                  R-EU_R0603          R0603        rcl              1
 R24       2k7                  R-EU_R0603          R0603        rcl              1
 R25       0.04R                R-EU_R2512          R2512        rcl              1
 R26       0.04R                R-EU_R2512          R2512        rcl              1
-R27                            R-EU_R0603          R0603        rcl              1
+R27       680                  R-EU_R0603          R0603        rcl              1
 R28       0.04R                R-EU_R2512          R2512        rcl              1
 R29       220K                 R-EU_R0603          R0603        rcl              1
 R30       0.04R                R-EU_R2512          R2512        rcl              1
-R31                            R-EU_R0603          R0603        rcl              1
+R31       220k                 R-EU_R0603          R0603        rcl              1
 R32       10k                  R-EU_R0603          R0603        rcl              1
 RL1       SRM-1C-SL-5VDCRELAY  SRM-1C-SL-5VDCRELAY RELAY5PIN    ecssr-Pwr        1
 S1                             DP04                DP-04        switch-dil       1
