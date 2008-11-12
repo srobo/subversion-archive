@@ -122,10 +122,10 @@ ul, ol {
 	display: inline;
 	font-weight: normal;
 	vertical-align: middle;
+	border: none;
 }
 #edit-name,
 #edit-pass {
-	border: none;
 }
 
 
