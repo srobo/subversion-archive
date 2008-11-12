@@ -3,7 +3,7 @@
 	http: //www.free-css-templates.com
 	Heavily edited by Student Robotics
 
-This document is arranged into section for ease of use:
+This document is arranged into section for ease of use: 
 	Overall - general and site-wide style
 	Top - the header section of the website
 	Login - formatting of login boxes
@@ -31,10 +31,10 @@ body {
 	font: .74em Arial, sans-serif;
 	line-height: 1.5em;
 	color: #000000;
-	text-align:center;
+	text-align: center;
 }
 #outer {
-	width:900px;
+	width: 900px;
 	display: block;
 	text-align: left;
 	margin: auto;
@@ -56,11 +56,11 @@ h3 {
 	padding: 4px 0;
 	margin:  0;
 }
-a, a:active {
+a, a: active {
 	color: #253571;
 	background: inherit;
 }
-a:hover {
+a: hover {
 	color: red;
 	background: inherit;
 	text-decoration: underline;
@@ -122,6 +122,8 @@ ul, ol {
 	display: inline;
 	font-weight: normal;
 	vertical-align: middle;
+}
+#user-login-form input {
 	border: none;
 }
 #edit-name,
@@ -147,7 +149,7 @@ ul, ol {
 	color: white;
 	text-decoration: none;
 }
-#block-menu-secondary-links ul li a:hover {
+#block-menu-secondary-links ul li a: hover {
 	color: red;
 	text-decoration: none;
 }
@@ -180,7 +182,7 @@ ul, ol {
 #switchboard ul li a {
 	text-decoration: none;
 }
-#switchboard ul li a:hover {
+#switchboard ul li a: hover {
 	color: red;
 }
 
@@ -190,7 +192,7 @@ ul, ol {
 #main {
 	float: left;
 	width: 100%;
-	background-color:#FFFFFF;
+	background-color: #FFFFFF;
 	padding-bottom: 1em;
 	border-style: solid none none none;
 	border-color: #253571;
@@ -227,7 +229,7 @@ ul, ol {
 	color: white;
 	text-decoration: none;
 }
-#navigation-menu ul li a:hover {
+#navigation-menu ul li a: hover {
 	color: red;
 	text-decoration: none;
 }
@@ -289,7 +291,7 @@ ul, ol {
 	padding-top: 0.2em;
 	padding-left: 15px;
 }
-#block-menu-primary-links ul li:hover {
+#block-menu-primary-links ul li: hover {
 	background-image: url('images/pri-menu_arrow.png');
 }
 #block-menu-primary-links a {
@@ -308,7 +310,7 @@ ul, ol {
 #sidebar-left h2 {
 	margin: 0 0.5em;
 }
-#block-menu-primary-links ul li.expanded ul.menu{
+#block-menu-primary-links ul li.expanded ul.menu {
 	font-size: 1em;
 	padding: 0em 0em 0em 1em;
 	margin: 0em;
@@ -344,7 +346,7 @@ ul, ol {
 	color: #FFFFFF;
 	background-image: none;
 }
-#footer a:hover {
+#footer a: hover {
 	color: red;
 }
 
@@ -353,138 +355,134 @@ ul, ol {
 }
 
 /* Gallery */
-#imagegallery{
-	background:#F2F2F2;
-	padding:10px;
-	width:500px;
-	height:420px;
+#imagegallery {
+	background: #F2F2F2;
+	padding: 10px;
+	width: 500px;
+	height: 420px;
 	overflow: hidden;
 	clear: left;
 }
 
-#items{
+#items {
 	float: left;
 	width: 75px;
 	height: 100%;
 	border: 1px solid #DFDFDF;
-	background:white;
+	background: white;
 }
 #items .item {
 	float: left;
-	padding:5px;
+	padding: 5px;
 	position: relative;
 	width: 52px;
-	height:52px;
+	height: 52px;
 	margin: 5px;
 	background-color: #fff;
 	cursor: pointer;
 	border: 1px solid white;
 }
-#items .item:hover{border: 1px solid #ddd;}
+#items .item: hover { border: 1px solid #ddd; }
 #items .item img {
-	width:50px;
-	max-height:35px;
+	width: 50px;
+	max-height: 35px;
 }
 
-#large{
+#large {
 	border: 1px solid #DFDFDF;
 	width: 420px;
 	height: 100%;
-	margin-left:0px;
+	margin-left: 0px;
 	background-color: #fff;
-	text-align:center;
-	font-family:Arial, Times, san-serif;
-	font-size:12px;
-	overflow:hidden;
+	text-align: center;
+	font-family: Arial, Times, san-serif;
+	font-size: 12px;
+	overflow: hidden;
 }
-#large .info{
+#large .info {
 	font-size: 1.2em;
 	text-align: center;
 	font-weight: bold;
-	padding:5px;
-	color:#253571;
+	padding: 5px;
+	color: #253571;
 }
-#items  p{display:none;}
+#items  p { display: none; }
 #large .item {
-	margin-top:10px;
-	margin-bottom:10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 	border-width: 1px;
 	cursor: default;
-	text-align:center;
+	text-align: center;
 }
-#large .item img{
-	max-width:400px;
+#large .item img {
+	max-width: 400px;
 	max-height: 400px;
 }
 /*static gallery */
-.static-gallery{
+.static-gallery {
 	clear: left;
 	width: 500px;
 	border: 10px solid #F2F2F2;
-	background:white;	
-	overflow:hidden;
-	text-align:center;
-	display:block;
-}
-.static-gal-image{
+	background: white;	
+	overflow: hidden;
+	text-align: center;
 	display: block;
-	padding:5px;
+}
+.static-gal-image {
+	display: block;
+	padding: 5px;
 	position: relative;
 	margin: 5px;
 	background-color: #fff;
 	border: 1px solid #F2F2F2;
 }
-.static-gal-image img{
+.static-gal-image img {
 	height: 100px;
 }
-.static-gal-image p{
+.static-gal-image p {
 	background: #F2F2F2;
 	display: block;
 }
 /* picture format */
-.right-just-img{
-	width:210px;
+.right-just-img {
+	width: 210px;
 	border: 1px solid #F2F2F2;
 	padding: 5px;
 	text-align: center;
 	display: block;
 	float: right;
 }
-.right-just-img img{
-	width:200px;
+.right-just-img img {
+	width: 200px;
 }
 /* Publically visible Documentation page formatting */
-#docs
-{
+#docs {
 	width: 500px; 
 	border: 10px solid #F2F2F2; 
-	display:block; 
+	display: block; 
 	overflow: hidden; 
-	padding:0px;  
-	margin:0px; 
-	text-align:center;
+	padding: 0px;  
+	margin: 0px; 
+	text-align: center;
 }
-.doc-title
-{
+.doc-title {
 	display: block; 
 	border: 2px solid #F2F2F2; 
-	margin:2px; 
-	padding:0px; 
-	text-align:left;
+	margin: 2px; 
+	padding: 0px; 
+	text-align: left;
 }
-.doc-title a, .doc-title b, .doc-title i
-{
-	margin-left:10px;
+.doc-title a, .doc-title b, .doc-title i {
+	margin-left: 10px;
 }
 #edit-search-block-form-1-wrapper {
         padding-left: 10px;
 }
-.form-text{
-	margin-left:10px;
-	color:#253571;
-	font-weight: bold;
+.form-text {
+	margin-left: 10px;
+	color: #253571;
 }
-.form-submit{
+.form-submit {
 	margin-left: 10px;
 	color: #253571;
 	font-weight: bold;
