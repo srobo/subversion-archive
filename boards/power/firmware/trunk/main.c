@@ -3,9 +3,7 @@
 #include"hwinit.h"
 #include<signal.h>
 
-
-
-int poo =0; 			/* dummy variable to fix gdb bug */
+int dummy =0; 			/* dummy variable to fix gdb bug */
 
 
 /* init routine flags */
