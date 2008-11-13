@@ -176,7 +176,7 @@ ProjPage.prototype.clickCheckCode = function() {
 ProjPage.prototype.doneCheckCode = function(info) {
 
 	if( info["errors"] == 1 )
-		var a = new ErrorsTab( info["messages"] );
+		var a = new ErrorsTab( info);
 	else
 		status_msg( "No errors found", LEVEL_OK );
 }

@@ -905,5 +905,23 @@ class Root(controllers.RootController):
         if rval == 0:
             return dict( errors = 0 )
         else:
-            return dict( messages = output,
+            pyerrors = []
+            pylines = []
+            pyfiles = []
+
+            for line in output:
+		pyerrors.append(line)
+                substart = line.rfind(", line ")
+                if substart > -1:
+                    subend = line.find(",", substart+7)
+                    pylines.append( int(line[substart+7:subend]))
+                else:
+                    pylines.append(0) 
+                substart = line.rfind("File \"")
+                if substart > -1:
+                    subend = line.find("\"", substart+6);
+                    pyfiles.append( line[substart+6 : subend])    
+                else:
+                    pyfiles.append("")
+            return dict( messages = pyerrors, len = len(pyerrors), lines = pylines, files = pyfiles,
                          errors = 1 )
