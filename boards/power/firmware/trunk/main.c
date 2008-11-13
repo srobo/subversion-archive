@@ -2,23 +2,21 @@
 #include<io.h>
 #include"hwinit.h"
 #include<signal.h>
+#include"led.h"
+#include <stdint>
 
 int dummy =0; 			/* dummy variable to fix gdb bug */
-
-
-/* init routine flags */
-
 
 
 int main(void)
 {
 
-  init_wd();
-  init_io();
-  init_osc();
-  
+  init_cpu();
+  init_led();
   while(1)
     {
+      set_led(0xFF);
+      set_led(0x0);
     }
 
 }
