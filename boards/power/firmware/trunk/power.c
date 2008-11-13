@@ -1,11 +1,14 @@
 #include "power.h"
 #include"device.h"
 
+
+static void delay(int16_t time);
+
 void pwr_init(void)
 {
   P5OUT |= 0x80; 		/* set sug boot hi before un-tristate, else slug boot */
   P5DIR |= 0x80;
-  P2DIR |= 0x07:
+  P2DIR |= 0x07;
   delay(25);			/* let power settle to help mode B */
   P2OUT |= 0x01;		/* power slug rail */
   delay(25);
@@ -15,14 +18,14 @@ void pwr_init(void)
   delay(5);
 }
 
-void pwr_set_slug(uint8_t val);
+void pwr_set_slug(uint8_t val)
 {
   if (val == 0) 
     P2OUT |= 0x01;
   else
     P2OUT &= ~0x01;
 }
-uint8_t pwr_get_slug(void);
+uint8_t pwr_get_slug(void)
 {
   return (P2IN &=0x01);
 }
@@ -40,7 +43,7 @@ uint8_t pwr_get_servo(void)
   return (P2IN &=0x02)>>1;
 }
 
-void pwr_set_motor(uint8_t val);
+void pwr_set_motor(uint8_t val)
 {
   if (val == 0) 
     P2OUT |= 0x04;
@@ -48,7 +51,7 @@ void pwr_set_motor(uint8_t val);
     P2OUT &= ~0x04;
 }
 
-uint8_t pwr_get_motor(void);
+uint8_t pwr_get_motor(void)
 {
   return (P2IN &=0x04)>>2;
 }
@@ -58,7 +61,7 @@ uint8_t pwr_get_motor(void);
 static void delay(int16_t time)
 {
     int16_t sponge =0;
-    startupdel=0;
+    int16_t startupdel=0;
     for (startupdel=0;startupdel<(time*100);startupdel++)
     {
         for(sponge=0;sponge<250;sponge++);	
