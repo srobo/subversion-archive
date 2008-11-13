@@ -5,7 +5,7 @@
 #include"led.h"
 #include <stdint.h>
 #include"switch.h"
-
+#include"power.h"
 int dummy =0; 			/* dummy variable to fix gdb bug */
 
 
@@ -15,10 +15,15 @@ int main(void)
   init_cpu();
   init_led();
   init_switch();
+  pwr_init();
+
   while(1)
     {
-      set_led(get_switch());
+ 
+      pwr_set_slug(getswitch() & 0x1 );
+      pwr_set_servo(getswitch() & 0x2);
+      pwr_set_motor(getswitch() & 0x4 );
+      set_led(pwr_get_slug() | pwr_get_servo() <1 | pwr_get_motor() <2);
     }
-
 }
 
