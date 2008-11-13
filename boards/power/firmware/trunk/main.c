@@ -3,7 +3,7 @@
 #include"hwinit.h"
 #include<signal.h>
 #include"led.h"
-#include <stdint>
+#include <stdint.h>
 
 int dummy =0; 			/* dummy variable to fix gdb bug */
 
@@ -15,8 +15,7 @@ int main(void)
   init_led();
   while(1)
     {
-      set_led(0xFF);
-      set_led(0x0);
+      set_led(get_switch());
     }
 
 }
