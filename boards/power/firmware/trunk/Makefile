@@ -1,5 +1,5 @@
 CC := msp430-gcc
-CFLAGS := -g -mmcu=msp430x169  -lm #-Wall -O3
+CFLAGS := -g -mmcu=msp430x169  -Wall -O3
 LDFLAGS :=
 
 H_FILES = hwinit.h led.h switch.h

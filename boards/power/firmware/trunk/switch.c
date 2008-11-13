@@ -9,5 +9,5 @@ void init_switch(void)
 
 uint8_t get_switch(void)
 {
-  return (P1IN &= 0xf0)<<4;
+  return (P1IN &= 0xf0)>>4;
 }
