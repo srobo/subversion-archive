@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include"switch.h"
 #include"power.h"
+#include"i2c.h"
 
 int dummy =0; 			/* dummy variable to fix gdb bug */
 
@@ -17,7 +18,7 @@ int main(void)
   init_led();
   init_switch();
   pwr_init();
-
+  i2c_init();
   while(1)
     {
 
