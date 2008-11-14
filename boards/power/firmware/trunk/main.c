@@ -20,11 +20,12 @@ int main(void)
 
   while(1)
     {
+
  
-      pwr_set_slug(get_switch() & 0x1 );
-      pwr_set_servo(get_switch() & 0x2);
-      pwr_set_motor(get_switch() & 0x4 );
-      set_led(pwr_get_slug() | (pwr_get_servo() <<1) | (pwr_get_motor() <<2));
+/*       pwr_set_slug(get_switch() & 0x1 ); */
+/*       pwr_set_servo(get_switch() & 0x2); */
+/*       pwr_set_motor(get_switch() & 0x4 ); */
+/*       set_led(pwr_get_slug() | (pwr_get_servo() <<1) | (pwr_get_motor() <<2)); */
     }
 }
 

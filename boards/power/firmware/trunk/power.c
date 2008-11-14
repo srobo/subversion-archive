@@ -1,21 +1,29 @@
 #include "power.h"
 #include"device.h"
-
+#include"led.h"
 
 static void delay(int16_t time);
 
 void pwr_init(void)
 {
+  set_led(0);
   P5OUT |= 0x80; 		/* set sug boot hi before un-tristate, else slug boot */
   P5DIR |= 0x80;
   P2DIR |= 0x07;
-  delay(25);			/* let power settle to help mode B */
+  delay(250);			/* let power settle to help mode B */
+  set_led(1);
+
   P2OUT |= 0x01;		/* power slug rail */
-  delay(25);
+  delay(250);
+  set_led(2);
+  
   P5OUT &= ~0x80;		/* blip down -PRESS THE BUTTON*/
-  delay(5);
+  set_led(4);
+  delay(50);
   P5OUT |= 0x80;		/* NEVER PRESS THE BUTTON */
-  delay(5);
+  set_led(3);
+  delay(50);
+  set_led(6);
 }
 
 void pwr_set_slug(uint8_t val)
