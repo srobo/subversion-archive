@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ADDRESS 0x0F
+#define ADDRESS 0x1e
 #define POS0 3
 #define POS1 135
 
