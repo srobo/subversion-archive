@@ -28,7 +28,7 @@ html {
 	background-color: #636363;
 }
 body {
-	font: .74em Arial, sans-serif;
+	font: 0.74em Arial, sans-serif;
 	line-height: 1.5em;
 	color: #000000;
 	text-align: center;
@@ -69,10 +69,10 @@ ul, ol {
 	list-style-position: inside;
 }
 .left {
-        float: left;
+		float: left;
 }
 .right {
-        float: right;
+		float: right;
 }
 
 
@@ -237,41 +237,31 @@ ul, ol {
 /* PRIMARY MENU */
 
 #sidebar-left {
-        float: left;
-	background-color: #DFDBD8;
+	float: left;
 	margin: 0 1.5em 1.5em 0;
-	/* border right */
-        background-image: url('images/pri-menu_dot.png');
-	background-repeat: repeat-y;
-	background-position: top right;
 	width: 200px;
 }
-#sidebar-left-inner0 {
-        /* border left */
-        background-image: url('images/pri-menu_dot.png');
-	background-repeat: repeat-y;
-	background-position: top left;
+#sidebar-left-inner {
+	background-color: #DFDBD8;
+	border: solid #253571;
+	border-width: 0 3px;
+	padding-top: 1px;
 }
-#sidebar-left-inner1 {
-        /* border-bottom */
-        background-image: url('images/pri-menu_dot.png');
-	background-repeat: repeat-x;
-	background-position: bottom left;
-}
-#sidebar-left-inner2 {
-        /* border bottom right corner */
-        background-image: url('images/pri-menu_br.png');
-	background-repeat: no-repeat;
-	background-position: bottom right;
-}
-#sidebar-left-blcorner {
-        /* border bottom left corner */
-        width: 13px;
-	height: 13px;
-	background-image: url('images/pri-menu_bl.png');
-	background-repeat: no-repeat;
-	background-position: bottom left;
-}
+.htmlCurve span	{ border: solid #253571; display: block; background-color: #DFDBD8; height: 1px; font-size: 0; overflow: hidden; }
+.htmlCurve span.bottom	{ background-color: #253571; }
+.htmlCurve .htmlCurve-1	{ margin: 0; border-width: 0 3px; }
+.htmlCurve .htmlCurve-2	{ margin: 0; border-width: 0 4px; }
+.htmlCurve .htmlCurve-3	{ margin: 0 1px; border-width: 0 3px; }
+.htmlCurve .htmlCurve-4	{ margin: 0 1px; border-width: 0 4px; }
+.htmlCurve .htmlCurve-5	{ margin: 0 2px; border-width: 0 3px; }
+.htmlCurve .htmlCurve-6	{ margin: 0 2px; border-width: 0 4px; }
+.htmlCurve .htmlCurve-7	{ margin: 0 3px; border-width: 0 4px; }
+.htmlCurve .htmlCurve-8	{ margin: 0 4px; border-width: 0 4px; }
+.htmlCurve .htmlCurve-9	{ margin: 0 5px; border-width: 0 5px; }
+.htmlCurve .htmlCurve-10	{ margin: 0 6px; border-width: 0 6px; }
+.htmlCurve .htmlCurve-11	{ margin: 0 7px; border-width: 0; }
+.htmlCurve .htmlCurve-12	{ margin: 0 9px; border-width: 0; }
+.htmlCurve .htmlCurve-13	{ margin: 0 11px; border-width: 0; }
 #block-menu-primary-links h2 {
 	display: block;
 }
@@ -283,6 +273,7 @@ ul, ol {
 #block-menu-primary-links ul li {
 	display: block;
 	list-style-type: none;
+	list-style-image: none;
 	list-style-position: outside;
 	background-image: url('images/pri-menu_arrow-dark.png');
 	background-repeat: no-repeat;
@@ -341,6 +332,7 @@ ul, ol {
 	text-align: center;
 	padding : 8px 0;
 	background : #253571 url('images/footer.png') 50%;
+	clear: both;
 }
 #footer a {
 	color: #FFFFFF;
@@ -476,7 +468,7 @@ ul, ol {
 	margin-left: 10px;
 }
 #edit-search-block-form-1-wrapper {
-        padding-left: 10px;
+		padding-left: 10px;
 }
 .form-text {
 	margin-left: 10px;
