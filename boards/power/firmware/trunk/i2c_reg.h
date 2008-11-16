@@ -3,9 +3,6 @@
 #include "types.h"
 //#include<stdint.h>
 
-#define GUM_POWER_PASSWORD 0x78B5
-#define GUM_DATA_CLEAR_PASSWORD 0x203E
-
 typedef struct
 {
 	/* Returns the size of the register */
@@ -20,7 +17,7 @@ typedef struct
 	void (*write) ( uint8_t* data, uint8_t len );
 } reg_access_t;
 
-#define I2C_NUM_COMMANDS 13
+#define I2C_NUM_COMMANDS 9
 
 extern const reg_access_t dev_regs[];
 

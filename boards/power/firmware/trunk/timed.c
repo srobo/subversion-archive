@@ -1,0 +1,4 @@
+void stayingalive(void)
+{
+	return;
+}

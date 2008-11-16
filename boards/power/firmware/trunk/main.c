@@ -15,8 +15,8 @@ int main(void)
 {
 
   init_cpu();
-  init_led();
-  init_switch();
+  led_init();
+  switch_init();
   pwr_init();
   i2c_init();
   while(1)

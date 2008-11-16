@@ -1,3 +1,6 @@
+#ifndef __POWER_H
+#define __POWER_H
+
 #include <stdint.h>
 void pwr_init(void);
 
@@ -48,3 +51,5 @@ uint8_t pwr_get_motor(void);
 /*     delay(5); */
 /*     PORTCbits.RC0=1; // never press the button, ever!! (dont hold down) */
 /*     delay(5); // JUST TO BE SURE NO POWER RAIL FLUCTUATION */
+
+#endif
