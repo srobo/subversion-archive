@@ -1,6 +1,3 @@
-
-
-
 #include <stdio.h>
 #include <stdint.h>
 #include "i2c-dev.h"
@@ -11,29 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "pwr-qual.h"
 
-//#define ADDRESS 0x55
-#define ADDRESS 0x3f
-
-typedef enum
-{
-	FALSE = 0, TRUE
-} bool;
-
-typedef enum
-{
-	IDENTIFY,
-	SETLED,
-	GETV,
-	GETI,
-	GETDIPS,
-	SETRAILS,
-	GETRAILS,
-	SENDSER,
-	ISUSB,
-	BEEGEES,
-} com;
-bool err_enable = TRUE;
 
 uint16_t readword(int fd, uint8_t cmd) {
 	signed int tmp;
