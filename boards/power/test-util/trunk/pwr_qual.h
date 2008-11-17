@@ -1,5 +1,5 @@
-#ifndef __PWR-QUAL_H
-#define __PWR-QUAL_H
+#ifndef __PWR_QUAL_H
+#define __PWR_QUAL_H
 
 
 
@@ -16,7 +16,7 @@
 
 
 //#define ADDRESS 0x55
-#define ADDRESS 0x3f
+#define ADDRESS 0x4f
 
 typedef enum
 {
@@ -26,14 +26,13 @@ typedef enum
 typedef enum
 {
 	IDENTIFY,
-	SETLED,
-	GETV,
-	GETI,
-	GETDIPS,
-	SETRAILS,
-	GETRAILS,
-	SENDSER,
-	ISUSB,
+	LED,
+	DIPSWITCH,
+	BUTTON,
+	SLUG_POWER,
+	SERVO_POWER,
+	MOTOR_POWER,
+	BATTERY,
 	BEEGEES,
 } com;
 bool err_enable = TRUE;

@@ -1,9 +1,9 @@
-all: pwr-qual
+all: pwr_qual
 
-pwr-qual: pwr-qual.c
+pwr-qual: pwr_qual.c
 
 
 .PHONY: clean
 
 clean:
-	-rm -f pwr-qual
+	-rm -f pwr_qual
