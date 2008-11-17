@@ -14,19 +14,20 @@ int dummy =0; 			/* dummy variable to fix gdb bug */
 int main(void)
 {
 
-  init_cpu();
-  led_init();
-  switch_init();
-  pwr_init();
-  i2c_init();
-  while(1)
-    {
+	init_cpu();
+	led_init();
+	switch_init();
+	pwr_init();
+	i2c_init();
+	eint();			/* enable global interrupts */
+	while(1)
+	{
 
  
 /*       pwr_set_slug(get_switch() & 0x1 ); */
 /*       pwr_set_servo(get_switch() & 0x2); */
 /*       pwr_set_motor(get_switch() & 0x4 ); */
 /*       set_led(pwr_get_slug() | (pwr_get_servo() <<1) | (pwr_get_motor() <<2)); */
-    }
+	}
 }
 
