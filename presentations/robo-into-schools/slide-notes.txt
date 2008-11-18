@@ -1,0 +1,78 @@
+[slide ] [notes]
+
+[1] - introduction slide
+
+[2 - who are we?] 
+	A group of under/postgraduates ...
+	range of disciplines aeronautical - electronic
+	we organise and fund a robotics competition for 16-18 year old college students
+
+[3 - Our Aim] 
+	why are we doing this
+	rob - previous experiences/influences
+
+[4 - What]
+	Design and build our own kit
+	ship it to schools
+	they take our kit and build robots in teams of 6 students
+	building happens in timetabled curriculum activity slot
+	In designing our own kit we learn ourselves
+	We provide electronics which abstracts implementation without limiting the creative potential - students can go as low as they like
+	
+[5 - robot] 
+	over the course of 6 months teams work on building their robot 
+	to complete a given task/s in a series of inter school rounds/stages
+	portray size of robot
+	
+[6 - arena]
+	At easter the teams converge at the university of southampton to pit their robots against each other
+	describe the competition task
+
+[7 - mentoring]
+	each week before the comp, visits from mentors
+	reasons
+		guidance 
+		technical help
+		monitor progress
+		feedback
+		chance for students to speak to university students from engineering
+	
+[8 - what we are not]
+	we are not robot wars or lego mindstorm
+	RW is rc, its been done before, technically less interesting, plenty of oportunities to get involved in Remote control projects anyway
+	Lego is expensive and difficult to hack, get to the lower levels, restrictive
+
+
+[9 - !NEW! - What we are] 
+	what's special about us
+
+[10 -Software]
+	we can't bring stuff into the school
+	very restrictive 'locked down' systems
+	forced to use a web based interface
+	students are writing software which they otherwise wouldn't be incouraged to do
+	
+[11 - Competition]
+	we've run this for one year now
+	plans to expand..
+
+[12 - !NEW! - Funding] 
+	mixture of local business
+	university ECS
+	SCA
+	large business - motorola
+	
+[13 - !NEW! - Reflections]
+	was it valuable?
+	experience
+	benefits for us
+	self confidence
+	technical degree -> put into context
+	subsequent achievements
+
+Sue White suggestions:
+
+	how much staff time does it take	
+	what is the cost
+	is it disruptive
+	what demographics do we cross
