@@ -1,12 +1,15 @@
-#/bin/bash
-rm -rf ship
-mkdir ship
-cd ship
-mkdir power motor pwm jointio
-cd ..
-cp ../power/pcb/trunk/gerbers/power-*.{gbr,drd} ship/power/
-cp ../motor/pcb/trunk/gerbers/motor-*.{gbr,drd} ship/motor/
-cp ../pwm/pcb/trunk/gerbers/pwm-*.{gbr,drd} ship/pwm/
-cp ../jointio/pcb/trunk/gerbers/jointio-*.{gbr,drd} ship/jointio/
+#!/bin/bash
+tdir=`mktemp -d`
 
+for x in power motor pwm jointio
+do
+    mkdir -p ${tdir}/ship/${x}
+    cp ../${x}/pcb/trunk/gerbers/${x}-*.{gbr,drd} ${tdir}/ship/${x}/
+done
+
+pushd $tdir
 zip -r ship ship
+popd
+
+mv ${tdir}/ship.zip ./
+rm -rf $tdir
