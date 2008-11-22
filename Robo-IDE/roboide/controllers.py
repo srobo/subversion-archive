@@ -925,3 +925,8 @@ class Root(controllers.RootController):
                     pyfiles.append("")
             return dict( messages = pyerrors, len = len(pyerrors), lines = pylines, files = pyfiles,
                          errors = 1 )
+
+    @expose("json")
+    def autocomplete(self, str, nocache):
+        print str
+	return "{}"
