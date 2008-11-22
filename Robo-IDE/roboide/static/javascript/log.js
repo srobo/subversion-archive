@@ -121,7 +121,7 @@ Log.prototype._populateList = function() {
 	for(var x=0; x <this.history.length; x++) {
 		var logtxt = SPAN("r"+this.history[x].rev+" | "+this.history[x].author+" | "+this.history[x].date);
 		var item = LI(null, logtxt);
-		var radio = INPUT({'type' : 'radio', 'name' : 'log', 'value' : this.history[x].rev });
+		var radio = INPUT({'type' : 'radio', 'name' : 'log', 'class' : 'log-radio', 'value' : this.history[x].rev });
 		var commitMsg = DIV({'class' : 'commit-msg'}, this.history[x].message);
 		appendChildNodes(item, radio);
 		appendChildNodes(item, logtxt);	
@@ -209,9 +209,10 @@ Log.prototype._do_revert = function(commitMsg) {
 //revert to selected revision. override = true to skip user confirmation
 Log.prototype._revert = function(override) {
     //find out which radio button is checked
-    for(var x=0; x < document.log.length; x++) {
-        if(document.log[x].checked == true) {
-            this.selectedRevision = document.log[x].value;
+	 var radios = getElementsByTagAndClassName("input", "log-radio");
+    for(var x=0; x < radios.length; x++) {
+        if(radios[x].checked == true) {
+            this.selectedRevision = radios[x].value;
             break;
         }    
     }   

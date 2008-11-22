@@ -1,4 +1,4 @@
-#calendar{
+#calendar {
     margin: 0px;
     padding: 0px;
     width: 100%;
@@ -11,7 +11,7 @@
     cursor: pointer;
 }
 #calendar td.td-log{
-    background-color: lightblue;
+    background-color: #ADD8E6;
 }
 #calendar td{
     background-color: white;

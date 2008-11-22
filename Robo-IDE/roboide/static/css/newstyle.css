@@ -89,7 +89,7 @@ body {
 }
 
 
-#status{	
+#status {
 	margin-left: auto;	
 	margin-right: auto;
 	margin-top: 5px;
@@ -172,10 +172,9 @@ a.button {
 	display: block;
 	color: #ffffff;
 }
-a.button:hover{
+a.button:hover {
 	color: #253571;
 	background-color: #ffffff;
-
 }
 #edit-mode { 	
 	text-align: center;
@@ -186,4 +185,7 @@ a.button:hover{
   font-weight: bold;
   font-size: 1.5em;
   font-style: italic;
- }
+}
+.dummy {
+	display: none;
+}
