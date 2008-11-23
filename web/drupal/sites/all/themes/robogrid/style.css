@@ -190,7 +190,7 @@ ul, ol {
 	padding-bottom: 1em;
 	border-style: solid none none none;
 	border-color: #253571;
-	padding: 0 20px 0 0.5em;
+	padding: 0 20px 15px 0.5em;
 }
 .breadcrumb {
 	/* background-color: lime; */
