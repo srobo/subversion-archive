@@ -46,30 +46,30 @@ function LOGO()
 	</div><!-- end top -->
 
 	<div id="main">
+		<?php if ($left) { ?>
+		<div id="sidebar-left">
+			<div id="sidebar-left-inner">
+				<?php print $search_box ?>
+				<?php print $left ?>
+			</div> <!-- sidebar-left-inner end -->
+			<div class="htmlCurve">
+				<span class="htmlCurve-1"></span>
+				<span class="htmlCurve-2"></span>
+				<span class="htmlCurve-3"></span>
+				<span class="htmlCurve-4"></span>
+				<span class="htmlCurve-5"></span>
+				<span class="htmlCurve-6"></span>
+				<span class="htmlCurve-7"></span>
+				<span class="htmlCurve-8"></span>
+				<span class="htmlCurve-9"></span>
+				<span class="htmlCurve-10"></span>
+				<span class="bottom htmlCurve-11"></span>
+				<span class="bottom htmlCurve-12"></span>
+				<span class="bottom htmlCurve-13"></span>
+			</div><!-- end htmlCurve -->
+		</div> <!-- sidebar-left end -->
+		<?php }	//end if left ?>
 		<div id="content">
-			<?php if ($left) { ?>
-			<div id="sidebar-left">
-				<div id="sidebar-left-inner">
-					<?php print $search_box ?>
-					<?php print $left ?>
-				</div> <!-- sidebar-left-inner end -->
-				<div class="htmlCurve">
-					<span class="htmlCurve-1"></span>
-					<span class="htmlCurve-2"></span>
-					<span class="htmlCurve-3"></span>
-					<span class="htmlCurve-4"></span>
-					<span class="htmlCurve-5"></span>
-					<span class="htmlCurve-6"></span>
-					<span class="htmlCurve-7"></span>
-					<span class="htmlCurve-8"></span>
-					<span class="htmlCurve-9"></span>
-					<span class="htmlCurve-10"></span>
-					<span class="bottom htmlCurve-11"></span>
-					<span class="bottom htmlCurve-12"></span>
-					<span class="bottom htmlCurve-13"></span>
-				</div><!-- end htmlCurve -->
-			</div> <!-- sidebar-left end -->
-			<?php } ?>
 			<?php if ($mission) { ?><div id="mission"><?php print $mission ?></div><?php } ?>
 			<?php print $breadcrumb ?>
 			<h1 class="title"><?php print $title ?></h1>
@@ -79,9 +79,11 @@ function LOGO()
 			<?php print $content; ?>
 			<?php print $feed_icons; ?>
 		</div><!-- end content -->
+		<?php if ($right) { ?>
 		<div id="sidebar-right">
-			<?php if ($right) print $right ?>
+			<?php print $right; ?>
 		</div><!-- end sidebar-right -->
+		<?php } //end if right ?>
 	</div><!-- end main -->
 
 	<div id="footer">
