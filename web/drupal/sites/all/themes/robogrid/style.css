@@ -473,6 +473,13 @@ ul, ol {
 
 /* FORUM STYLES */
 
+.forum-topic-navigation {
+	height: 1.8em;
+}
+.forum-topic-navigation:after {
+	clear: none;
+}
+
 #forum .forum-outer {
 
 	width:600px;
