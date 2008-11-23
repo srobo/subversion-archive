@@ -459,12 +459,13 @@ ul, ol {
 #edit-search-block-form-1-wrapper {
 		padding-left: 10px;
 }
+#edit-search-block-form-1-wrapper label {
+		display: none;
+}
 .form-text {
-	margin-left: 10px;
 	color: #253571;
 }
 .form-submit {
-	margin-left: 10px;
 	color: #253571;
 	font-weight: bold;
 }

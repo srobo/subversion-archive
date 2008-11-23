@@ -49,7 +49,6 @@ function LOGO()
 		<?php if ($left) { ?>
 		<div id="sidebar-left">
 			<div id="sidebar-left-inner">
-				<?php print $search_box ?>
 				<?php print $left ?>
 			</div> <!-- sidebar-left-inner end -->
 			<div class="htmlCurve">
@@ -77,7 +76,6 @@ function LOGO()
 			<?php if ($show_messages) { print $messages; } ?>
 			<?php print $help ?>
 			<?php print $content; ?>
-			<?php print $feed_icons; ?>
 		</div><!-- end content -->
 		<?php if ($right) { ?>
 		<div id="sidebar-right">
