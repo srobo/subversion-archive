@@ -231,6 +231,7 @@ ul, ol {
 #sidebar-left {
 	float: left;
 	width: 200px;
+	margin-bottom: 15px;
 }
 #sidebar-left-inner {
 	background-color: #DFDBD8;
