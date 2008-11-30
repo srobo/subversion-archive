@@ -6,6 +6,6 @@
 #include <iomacros.h>
 
 //Interrupt capabilities of P1 and P2
-#define RAIL_MONITOR_PIN 0x80
+#define RAIL_MONITOR_PIN 0x01
 
 #endif //HARDWARE_H
