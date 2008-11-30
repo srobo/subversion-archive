@@ -61,11 +61,6 @@ function forum_theme() {
       'template' => 'forum-submitted',
       'arguments' => array('topic' => NULL),
     ),
-	// Added by probinson 20/11/08
-	'forum_submitted_starter' => array(
-      'template' => 'forum-submitted-starter',
-      'arguments' => array('topic' => NULL),
-    ),
   );
 }
 
@@ -570,11 +565,9 @@ function forum_get_topics($tid, $sortby, $forum_per_page) {
   $forum_topic_list_header = array(
     array('data' => '&nbsp;', 'field' => NULL),
     array('data' => t('Topic'), 'field' => 'n.title'),
-	array('data' => t('Last reply'), 'field' => 'l.last_comment_timestamp'),
-	array('data' => t('Replies'), 'field' => 'l.comment_count')
-    
- //   array('data' => t('Created'), 'field' => 'n.created'),
-    
+    array('data' => t('Replies'), 'field' => 'l.comment_count'),
+    array('data' => t('Created'), 'field' => 'n.created'),
+    array('data' => t('Last reply'), 'field' => 'l.last_comment_timestamp'),
   );
 
   $order = _forum_get_topic_order($sortby);
@@ -595,7 +588,6 @@ function forum_get_topics($tid, $sortby, $forum_per_page) {
   $result = pager_query($sql, $forum_per_page, 0, $sql_count, $tid);
   $topics = array();
   while ($topic = db_fetch_object($result)) {
-	  
     if ($user->uid) {
       // folder is new if topic is new or there are new comments since last visit
       if ($topic->tid != $tid) {
@@ -805,20 +797,8 @@ function template_preprocess_forum_topic_list(&$variables) {
   $ts = tablesort_init($forum_topic_list_header);
   $header = '';
   foreach ($forum_topic_list_header as $cell) {
-	
     $cell = tablesort_header($cell, $forum_topic_list_header, $ts);
-
-	$header .= '<th>'.$cell['data'].'</th>';
-//	foreach($cell as $headings)
-//	{
-	//	$header .= '<th>'.$headings['data'].'</th>';
-	//}
-	//print_r($forum_topic_list_header);
-	//print_r($ts);
-//	echo 'Cell: '.$cell.' header:'.$forum_topic_list_header.' ts: '.$ts;
-   // $header .= _theme_table_cell($cell, TRUE);
- 
-		
+    $header .= _theme_table_cell($cell, TRUE);
   }
   $variables['header'] = $header;
 
@@ -842,8 +822,7 @@ function template_preprocess_forum_topic_list(&$variables) {
         $variables['topics'][$id]->title = l($topic->title, "node/$topic->nid");
         $variables['topics'][$id]->message = '';
       }
-      $variables['topics'][$id]->created = theme('forum_submitted_starter', $topic); // Added by probinson 20/11/08
-	    
+      $variables['topics'][$id]->created = theme('forum_submitted', $topic);
       $variables['topics'][$id]->last_reply = theme('forum_submitted', isset($topic->last_reply) ? $topic->last_reply : NULL);
 
       $variables['topics'][$id]->new_text = '';
@@ -942,21 +921,6 @@ function template_preprocess_forum_topic_navigation(&$variables) {
 function template_preprocess_forum_submitted(&$variables) {
   $variables['author'] = isset($variables['topic']->uid) ? theme('username', $variables['topic']) : '';
   $variables['time'] = isset($variables['topic']->timestamp) ? format_interval(time() - $variables['topic']->timestamp) : '';
-}
-
-/**
- * Process variables to format submission info for display in the forum list and topic list.
- *
- * $variables will contain: $topic
- *
- * @see forum-submitted-starter.tpl.php
- * @see theme_forum_submitted_starter()
- */
- // Added by probinson 20/11/08
-function template_preprocess_forum_submitted_starter(&$variables) {
-  $variables['author'] = isset($variables['topic']->uid) ? theme('username', $variables['topic']) : '';
- // $variables['time'] = isset($variables['topic']->timestamp) ? format_interval(time() - $variables['topic']->timestamp) : '';
- $variables['time'] = isset($variables['topic']->timestamp) ? date('d M H:i',$variables['topic']->timestamp) : '';
 }
 
 function _forum_user_last_visit($nid) {
