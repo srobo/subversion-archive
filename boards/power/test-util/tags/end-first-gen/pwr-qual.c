@@ -77,10 +77,10 @@ char setpins( int fd, uint8_t command, uint8_t val )
 int main( int argc, char** argv )
 {
 	int fd;			
-	fd = open( "/dev/i2c-0", O_RDWR );
+	fd = open( "/dev/i2c-1", O_RDWR );
 	if( fd == -1 )
 	{
-		fprintf( stderr, "Failed to open /dev/`i2c-0: %m\n" );
+		fprintf( stderr, "Failed to open /dev/`i2c-1: %m\n" );
 		return 1;
 	}
 
@@ -105,7 +105,7 @@ int main( int argc, char** argv )
 //------------------------------
 	if (argc<2){ // check at least 1 arg
 		printf("incorrect args\n");
-		printf("Usage: %s {w,l,v,i,r,s}\n");
+		//printf("Usage: %s {w,l,v,i,r,s}\n");
 		printf("w - identify(currently unsupported locally)\n"
 		       "l - set led values, needs 2 args\n"
 		       "v - read voltage\n"

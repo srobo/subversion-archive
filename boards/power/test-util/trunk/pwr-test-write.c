@@ -12,7 +12,9 @@
 /* PCF8574A address: 01000000 = 0x20 */
 
 //#define ADDRESS 0x0F
-#define ADDRESS 0x55 // - DIO Chip
+//#define ADDRESS 0x55 // - DIO Chip
+
+#define ADDRESS 0x4f // - DIO Chip
 
 #define POS0 3
 #define POS1 135
@@ -41,7 +43,7 @@ int main( int argc, char** argv )
 	int fd;
 
 	struct timespec pause = {0,5000000};
-	fd = open( "/dev/i2c-0", O_RDWR );
+	fd = open( "/dev/i2c-1", O_RDWR );
 
 	if( fd == -1 )
 	{
