@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 #define ADDRESS 0x20
 #define POS0 3
 #define POS1 135
@@ -26,7 +27,7 @@ int main( int argc, char** argv )
 	uint8_t setting;
 	int fd;
 
-	fd = open( "/dev/i2c-0", O_RDWR );
+	fd = open( "/dev/i2c-1", O_RDWR );
 
 	if( argc != 2 )
 	{
@@ -38,7 +39,7 @@ int main( int argc, char** argv )
 
 	if( fd == -1 )
 	{
-		fprintf( stderr, "Failed to open /dev/i2c-0: %m\n" );
+		fprintf( stderr, "Failed to open /dev/i2c-1: %m\n" );
 		return 1;
 	}
 
@@ -55,7 +56,7 @@ int main( int argc, char** argv )
 /*     } */
 
 	if( i2c_smbus_write_byte( fd, setting ) < 0 )
-		fprintf( stderr, "Failed to set io\n" );
+		fprintf( stderr, "Failed to set io: %m\n" );
 	
 	return 0;
 }
