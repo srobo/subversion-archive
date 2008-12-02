@@ -15,8 +15,8 @@ int main(void)
 {
 
 	init_cpu();
-	led_init();
-	switch_init();
+	//led_init();
+	//switch_init();
 	//pwr_init();
 	//i2c_init();
 	//eint();			/* enable global interrupts */
@@ -24,7 +24,7 @@ int main(void)
 	P3DIR |= 10;		/* sda and scl as outputs */
 	while(1)
 	{
-		P3OUT ^= 13;
+		P3OUT ^= 8;
 		
 		
 	}

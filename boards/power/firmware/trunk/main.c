@@ -15,11 +15,11 @@ int main(void)
 {
 
 	init_cpu();
-	led_init();
-	switch_init();
-	pwr_init();
-	i2c_init();
-	eint();			/* enable global interrupts */
+	//led_init();
+	//switch_init();
+	//pwr_init();
+	//i2c_init();
+	//eint();			/* enable global interrupts */
 	while(1)
 	{
 
