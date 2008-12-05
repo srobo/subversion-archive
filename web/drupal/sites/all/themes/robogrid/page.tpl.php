@@ -11,11 +11,11 @@
 <?php print $styles ?>
 <?php print $scripts ?>
 <script type="text/javascript">
-/* find out what browser they are running, if its too crap then don't do some parts of the js */
+<!-- hide from mad browsers
+//find out what browser they are running, if its too crap then don't do some parts of the js
 function bad_browser()
 {
-	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent))
-	{ //test for MSIE x.x;
+	if (/MSIE (\d+\.\d+);/.test(navigator.userAgent))	{ //test for MSIE x.x;
 		var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
 		if (ieversion<7)
 			return true;
@@ -27,6 +27,7 @@ function LOGO()
 	if(bad_browser())
 		document.getElementById('banner-logo').src	= document.getElementById('banner-logo').src.replace('.png', '.gif');
 }
+//-->
 </script>
 </head>
 <body onload="LOGO()">
