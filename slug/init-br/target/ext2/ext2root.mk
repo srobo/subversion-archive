@@ -3,8 +3,8 @@
 # genext2fs to build to target ext2 filesystems
 #
 #############################################################
-GENEXT2_DIR=$(BUILD_DIR)/genext2fs-1.3
-GENEXT2_SOURCE=genext2fs_1.3.orig.tar.gz
+GENEXT2_DIR=$(BUILD_DIR)/genext2fs-1.4.1
+GENEXT2_SOURCE=genext2fs_1.4.1.orig.tar.gz
 GENEXT2_SITE=http://ftp.debian.org/debian/pool/main/g/genext2fs
 
 $(DL_DIR)/$(GENEXT2_SOURCE):
@@ -12,7 +12,6 @@ $(DL_DIR)/$(GENEXT2_SOURCE):
 
 $(GENEXT2_DIR)/.unpacked: $(DL_DIR)/$(GENEXT2_SOURCE)
 	$(ZCAT) $(DL_DIR)/$(GENEXT2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(GENEXT2_DIR).orig $(GENEXT2_DIR)
 	toolchain/patch-kernel.sh $(GENEXT2_DIR) target/ext2/ genext2fs\*.patch
 	touch $(GENEXT2_DIR)/.unpacked
 
