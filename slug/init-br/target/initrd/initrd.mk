@@ -21,11 +21,10 @@ $(INITRD_TARGET): initrd-stuff
 	@rm -rf $(INITRD_DIR)/usr/info
 	-/sbin/ldconfig -r $(INITRD_DIR) 2>/dev/null
 
-	# Use fakeroot to pretend all target binaries are owned by root
 	rm -f $(STAGING_DIR)/_initrd_fakeroot.$(notdir $(INITRD_TARGET))
-	touch $(STAGING_DIR)/.initrd_fakeroot.00000
-	cat $(STAGING_DIR)/.initrd_fakeroot* > $(STAGING_DIR)/_initrd_fakeroot.$(notdir $(INITRD_TARGET))
-	echo "chown -R root:root $(TARGET_DIR)" >> $(STAGING_DIR)/_initrd_fakeroot.$(notdir $(INITRD_TARGET))
+
+	# Use fakeroot to pretend all target binaries are owned by root
+	echo "chown -R root:root $(INITRD_DIR)" >> $(STAGING_DIR)/_initrd_fakeroot.$(notdir $(INITRD_TARGET))
 
 	# Use fakeroot to pretend to create all needed device nodes
 	echo "$(STAGING_DIR)/bin/makedevs -d $(TARGET_DEVICE_TABLE) $(INITRD_DIR)" \
@@ -34,12 +33,13 @@ $(INITRD_TARGET): initrd-stuff
 	# Use fakeroot so mkcramfs believes the previous fakery
 	echo "$(CRAMFS_DIR)/mkcramfs -q $(CRAMFS_ENDIANNESS) " \
 		"$(INITRD_DIR) $(INITRD_TARGET)" >> $(STAGING_DIR)/_initrd_fakeroot.$(notdir $(INITRD_TARGET))
+
 	chmod a+x $(STAGING_DIR)/_initrd_fakeroot.$(notdir $(INITRD_TARGET))
 	$(STAGING_DIR)/usr/bin/fakeroot -- $(STAGING_DIR)/_initrd_fakeroot.$(notdir $(INITRD_TARGET))
 	-@rm -f $(STAGING_DIR)/_initrd_fakeroot.$(notdir $(INITRD_TARGET))
 
 
-initrd: cramfs $(INITRD_TARGET)
+initrd: host-fakeroot cramfs $(INITRD_TARGET)
 
 ifeq ($(strip $(BR2_TARGET_INITRD)),y)
 TARGETS+=initrd
