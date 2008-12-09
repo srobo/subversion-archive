@@ -13,21 +13,25 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
-#ifndef __I2C_H
-#define __I2C_H
+#include <msp430x22x4.h>
+#include <stddef.h>
 
-#define I2C_ADDRESS 0x12
 
-/* The commands */
-enum {
-	M_IDENTIFY,
-	M_CONF,
-	M_LAST_COMMAND
-};
+#define FLAG() P4OUT |= 0x80
+#define FLAG_OFF() P4OUT &= ~0x80
 
-void i2c_init( void );
+typedef enum 
+{
+	FALSE = 0, TRUE
+} bool;
 
-/* Reset the I2C device */
-void i2c_reset( void );
+/* These should be migrated to msp430 libc */
+#define UCSSEL_UCLKI UCSSEL_0
+#define UCSSEL_ACLK UCSSEL_1
+#define UCSSEL_SMCLK UCSSEL_2
 
-#endif	/* __I2C_H */
+/* As should these */
+#define UCMODE_SPI_3PIN UCMODE_0
+#define UCMODE_SPI_4PIN_STE1 UCMODE_1
+#define UCMODE_SPI_4PIN_STE0 UCMODE_2
+#define UCMODE_I2C UCMODE_3

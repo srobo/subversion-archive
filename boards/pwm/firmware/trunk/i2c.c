@@ -1,239 +1,222 @@
-/****
-I2c Section, implements the i2c hardware code and the SMBUS protols
-SMBUS protols supported:
-Write word protocol
-Read word protocol
-Block read protocol
-**/
-#include "hardware.h"
+/*   Copyright (C) 2007 Robert Spanton
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
+#include "common.h"
+#include "msp430/usci.h"
+#include <signal.h>
 #include "i2c.h"
 #include "servo.h"
 #include "smbus_pec.h"
-#include "i2c-watchdog.h"
+#include "timer-b.h"
 
-typedef enum
-{
-	state_idle = 0,
-	state_rx_address,
-	state_check_address,
-	state_rx_command,
-	state_check_command,
-	state_rx_data,
-	state_check_data,
-	state_prep_for_start
-}state_t;
+#define USE_CHECKSUMS 0
+#define I2C_BUF_LEN 32
+#define MODULE_IDENTITY 0x0201
+#define FIRMWARE_REV 0x0304
 
-/* Command lengths */
-static const uint8_t command_len[] = 
-{
-	0,			/* COMMAND_IDENTIFY */
-	2,			/* COMMAND_SET */
-	0			/* COMMAND_READ */
-};
 
-/* Buffer for I2C data */
-uint8_t i2c_data[32];
+static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
+					MODULE_IDENTITY & 0xFF, 
+					(FIRMWARE_REV >> 8) & 0xFF,
+					FIRMWARE_REV & 0xFF };
 
-/* The I2C transmission state machine state */
-state_t I2C_State = state_idle;
-
-/* The number of bytes that have currently been received */
-static uint8_t data_pos = 0;
-
-/* The number of bytes to be received */
-static uint8_t num_bytes = 0;
-
+static uint8_t pos = 0;
+static uint8_t buf[I2C_BUF_LEN];
 static uint8_t checksum;
 
-/*** Device Macros ***/
-/* Set SDA to an output */
-#define sda_output() do { USICTL0 |= USIOE; } while (0)
-/* Set SDA to an input */
-#define sda_input() do { USICTL0 &= ~USIOE; } while (0)
-
-void i2c_init(void)
+typedef struct
 {
-	/* Hold the I2C device in reset */
-	USICTL0 |= USISWRST;
+	/* The receive size - 0 if receive not supported*/
+	uint8_t rx_size;
 
-	USICTL0 = USIPE6	/* USI SDO/SCL Port Enabled */
-		| USIPE7;	/* USI SDI/SDA Port Enabled */
-				/* USILSB = 0 - MSB First */
-				/* USIMST = 0 - Slave Mode */
-				/* USIGE = 0 - Output latch depends on shift clock */
-				/* USIOE = 0 - Output disabled */
-				/* USISWRST = 0 - Device out of reset mode */
+	/* Receive function - processes buf data */
+	void (*rx) ( uint8_t* buf );
 
-	USICTL1 = 		/* USICKPH = 0 - Data on first SCLK edge. */
-		USII2C;		/* I2C Mode */
-				/* USISTTIE = 0 - No interrupt on START */
+	/* Transmit function - fills buf with data.
+	   Returns length of the data. */
+	uint8_t (*tx) ( uint8_t* buf );
+} i2c_cmd_t;
 
-	USICKCTL = USICKPL;	/* Inactive Clock state is high */
+/* Transmit (read) functions */
+static uint8_t i2cr_identity( uint8_t *buf );
 
-	USICNT |= USIIFGCC;	/* USIIFG not cleared automatically */
-}
-
-void i2c_enable(void)
+const i2c_cmd_t cmds[] = 
 {
-	USICTL0 &= ~USISWRST;                // Enable USI
-	USICTL1 &= ~USIIFG;                  // Clear pending flag
-}
+	/* Send the identity to the master */
+	{ 0, NULL, i2cr_identity }
+};
 
-inline void isr_usi (void)
+
+
+/* The current command */
+static const i2c_cmd_t *cmd = NULL;
+/* Whether we just got a start bit */
+static bool at_start = FALSE;
+
+interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 {
-	/* START Received */
-	if (USICTL1 & USISTTIFG)
+	if( IFG2 & UCB0RXIFG )
 	{
-		/* Move into the state machine */
-		I2C_State = state_rx_address;
+		uint8_t tmp = UCB0RXBUF;
 
-		i2c_watchdog_start();
+		/* Command? */
+		if( at_start )
+		{
+			if( tmp < sizeof(cmds) )
+				cmd = &cmds[tmp];
+			else
+				cmd = NULL;
+
+			checksum = crc8( I2C_ADDRESS << 1 );
+			checksum = crc8( checksum ^ tmp );
+
+			at_start = FALSE;
+		}
+		else if( cmd != NULL && cmd->rx != NULL )
+		{
+			if( pos < cmd->rx_size )
+			{
+				buf[pos] = tmp;
+				checksum = crc8( checksum ^ tmp );
+			}
+			
+			pos++;
+			
+			if( pos == cmd->rx_size + (USE_CHECKSUMS?1:0) )
+			{
+				if( !USE_CHECKSUMS || checksum == tmp )
+					cmd->rx( buf );
+			}
+		}
 	}
 
-	if( USICTL1 & USISTP )
+	if( IFG2 & UCB0TXIFG )
 	{
-		i2c_watchdog_stop();
+		static uint8_t size = 0;
+		uint8_t tmp = 0;
 
-		/* Clear the STOP interrupt flag */
-		USICTL1 &= ~USISTP;
-	}
-
-	switch(I2C_State)
-	{
-		/* Idly doing nothing */
-	case state_idle:
-		sda_input();
-		break;
-
-		/* Receive the address */
-	case state_rx_address:
-		sda_input();
-
-		USICNT = (USICNT & 0xE0) | 0x08;
-
-		/* Clear the START flag */
-		USICTL1 &= ~USISTTIFG;
-
-		I2C_State = state_check_address;
-		break;
-
-		/* Check the received address */
-	case state_check_address:
-		/* Our Address? */
-		if ( (USISRL & 0xFE) == (ADDRESS << 1) )
+		if( cmd != NULL && cmd->tx != NULL )
 		{
-			sda_output();
-
-			data_pos = 0;
-
-			/* Initialise the checksum */
-			checksum = crc8( USISRL );
-
-			/* Send ACK */
-			USISRL = 0x00;
-			/* ACK is 1 bit */
-			USICNT |= 0x01; 
-
-			/* Start receiving things */
-			I2C_State = state_rx_command;
-		}
-		else
-		{
-			sda_input();
-			I2C_State = state_idle;
-		}
-		break;
-
-		/* Prepare to receive first data byte */
-	case state_rx_command:
-		sda_input();
-		/* 8-bits to receive */
-		USICNT |=  0x08;
-
-		I2C_State = state_check_command;
-		break;
-
-		/* Process a command byte */
-	case state_check_command:
-		sda_output();
-
-		/* Process the command */
-		if( USISRL < sizeof( command_len ) )
-		{
-			num_bytes = command_len[ USISRL ];
-
-			checksum = crc8( checksum ^ USISRL );
-
-			I2C_State = state_rx_data;
-		}
-		else
-			/* Command is out of range */
-			I2C_State = state_prep_for_start;
-
-		/* Send ACK */
-		USISRL = 0x00;
-		USICNT |= 0x01;
-		break;
-
-		/* Receive data */
-	case state_rx_data:
-
-		/* When using checksums we need to receive an additional byte */
-		if( data_pos < num_bytes + (USE_CHECKSUMS?1:0) )
-		{ 
-			/* More data to receive */
-			sda_input();
-
-			USICNT |=  0x08;
-
-			I2C_State = state_check_data;
-		}
-		else
-		{
-			servo_set_pwm( i2c_data[0],
-				       (MIN_PULSE + ((MAX_PULSE-MIN_PULSE)/255)*(uint16_t)i2c_data[1]));
-			data_pos = 0;
-
-			/* START condition will happen next */
-			sda_input();
-			I2C_State = state_idle;
-		}
-		break;
-		
-		/* Store the received data */
-	case state_check_data:
-		sda_output();
-
-		if( !USE_CHECKSUMS || data_pos != num_bytes )
-		{
-			i2c_data[data_pos] = USISRL;
-
-			checksum = crc8( checksum ^ USISRL );
-		}
-		else if( checksum != USISRL )
-			I2C_State = state_prep_for_start;
-		
-		data_pos++;
-		
-		/* Send ACK */
-		USISRL = 0x00;
-		USICNT |= 0x01;
-
-		/* Receive the next byte */
-		I2C_State = state_rx_data;
-		break;
+			if( pos == 0 ) 
+			{
+				size = cmd->tx( buf );
+				checksum = crc8( checksum ^ ((I2C_ADDRESS << 1)|1) );
+			}
 	
-		/* Prepare for a START bit */
-	case state_prep_for_start:
-		sda_input();
+			if( pos < size )
+				tmp = buf[ pos ];
 
-		I2C_State = state_idle;
-		break;
+			if( USE_CHECKSUMS )
+			{
+				if( pos == size )
+					tmp = checksum;
+				else
+					checksum = crc8( checksum ^ tmp );
+			}
 
-	default:
-		I2C_State = state_idle;
+			/* Random high number to avoid overflow situations */
+			if( pos < 128 )
+				pos++;
+		}
+		
+		UCB0TXBUF = tmp;
 	}
 
-	USICTL1 &= ~USIIFG;
 }
 
+/* start/stop/nack/arb-lost interrupts */
+interrupt (USCIAB0RX_VECTOR) usci_rx_isr( void )
+{
+	/* Start? */
+	if( UCB0STAT & UCSTTIFG )
+	{
+		/* Reset to beginning of register */
+		pos = 0;
+		at_start = TRUE;
+		FLAG();
+
+		/* Start the reset generator */
+		timer_b_start();
+
+		/* Clear the flag */
+		UCB0STAT &= ~UCSTTIFG;
+	}
+
+	/* Stop? */
+	if( UCB0STAT & UCSTPIFG )
+	{
+		UCB0STAT &= ~UCSTPIFG;
+		FLAG_OFF();
+
+		/* We don't need to reset things */
+		timer_b_stop();
+	}
+}
+
+void i2c_init( void )
+{
+    /* After power-up, USCI is held in reset (UCSWRST set) */
+    /* Set UCSWRST just in case */
+    UCB0CTL1 |= UCSWRST;
+
+    UCB0CTL0 = /* UCA10: 7 bit address */
+	    /* USCLA10: Don't care about slave addressing */
+	    /* UCMM: Don't care about multi-master */
+	    /* UCMST: Slave mode */
+	    UCMODE_I2C		/* I2C mode */
+	    | UCSYNC;		/* Synchronous mode */
+
+    /* Don't want to touch UCSWRST whilst fiddling with this register */
+    UCB0CTL1 &= UCSWRST;
+    UCB0CTL1 |= UCSSEL_SMCLK	/* Clock source is SMCLK */
+	    /* UCTR: receive mode for now */
+	    /* UCTXNACK: ACK normally */
+	    /* UCTXSTP: No STOP now */
+	    /* UCTXSTT: No START now */;
+
+    UCB0I2COA = I2C_ADDRESS;
+    
+    /* Enable all of the state interrupts */
+    UCB0I2CIE = UCNACKIE	/* NACK */
+	    | UCSTPIE		/* STOP */
+	    | UCSTTIE		/* START */
+	    | UCALIE;		/* Arbitration lost */
+
+    /* Clear the interrupt flags */
+    IFG2 &= ~( UCB0TXIFG | UCB0RXIFG );
+
+    /* Release from reset */
+    UCB0CTL1 &= ~UCSWRST;
+
+    /* Enable the receive and transmit interrupts */
+    IE2 |=  UCB0RXIE | UCB0TXIE;
+
+    FLAG_OFF();
+}
+
+static uint8_t i2cr_identity( uint8_t *buf )
+{
+	uint8_t i;
+
+	for(i=0; i<4; i++)
+		buf[i] = i2c_identity[i];
+
+	return 4;
+}
+
+void i2c_reset( void )
+{
+	i2c_init();
+}
