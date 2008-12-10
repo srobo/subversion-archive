@@ -20,6 +20,8 @@
 #include <signal.h>
 #include "sweep.h"
 #include "common.h"
+#include "timer-b.h"
+#include "i2c.h"
 
 #define USE_WATCHDOG 0
 #define SWEEP_SERVOS 1
@@ -47,12 +49,18 @@ int main( void )
 {
 	i  = 1;
 	init();
+	i2c_init();
+	timer_b_init();
+
+	eint();
+
+	servo_set_pwm(0, MIDDLE_PULSE);
+	servo_set_pwm(1, MIDDLE_PULSE);		
 
 	while(1)
 	{
-		sweepServo();
-		P2OUT = 0xFF;
-	}
+		
+	}	
 }
 
 void init(void)
@@ -117,8 +125,6 @@ void init(void)
 		/* WDT needs resetting every 12KHz/512 = 43 ms */
 		WDTCTL = WDTPW | WATCHDOG_SETTINGS | WDTCNTCL;
 	}
-
-	eint(); //enable interrupts
 }
 
 /* ISR for IO interrupt */

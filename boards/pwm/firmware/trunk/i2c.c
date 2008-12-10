@@ -18,6 +18,7 @@
 #include <signal.h>
 #include "i2c.h"
 #include "servo.h"
+#include "servo.h"
 #include "smbus_pec.h"
 #include "timer-b.h"
 
@@ -49,16 +50,32 @@ typedef struct
 	uint8_t (*tx) ( uint8_t* buf );
 } i2c_cmd_t;
 
+/* Receive (write) functions */
+static void i2cw_motor_set( uint8_t *buf );
+
 /* Transmit (read) functions */
 static uint8_t i2cr_identity( uint8_t *buf );
+
+/* Send the motor 0 setting to the master */
+static uint8_t i2cr_motor_get0( uint8_t *buf );
+
+/* Send the motor 1 setting to the master */
+static uint8_t i2cr_motor_get1( uint8_t *buf );
 
 const i2c_cmd_t cmds[] = 
 {
 	/* Send the identity to the master */
-	{ 0, NULL, i2cr_identity }
+	{ 0, NULL, i2cr_identity },
+
+	/* Read the motor setting from the master */
+	{ 2, i2cw_motor_set, NULL },
+
+	/* Send the motor 1 setting to the master */
+	{ 0, NULL, i2cr_motor_get0 },
+
+	/* Send the motor 2 setting to the master */
+	{ 0, NULL, i2cr_motor_get1 },
 };
-
-
 
 /* The current command */
 static const i2c_cmd_t *cmd = NULL;
@@ -220,3 +237,39 @@ void i2c_reset( void )
 {
 	i2c_init();
 }
+
+static void i2cw_motor_set( uint8_t *buf )
+{
+	if(servo_get_pwm(0) < MAX_PULSE)
+	{
+		servo_set_pwm(0, MAX_PULSE);
+	}
+	else
+	{
+		servo_set_pwm(0, MIN_PULSE);
+	}
+	if(servo_get_pwm(1) < MAX_PULSE)
+	{
+		servo_set_pwm(1, MAX_PULSE);
+	}
+	else
+	{
+		servo_set_pwm(1, MIN_PULSE);
+	}
+}
+
+static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor )
+{
+	return 2;
+}
+
+static uint8_t i2cr_motor_get0( uint8_t *buf )
+{
+	return 2; 
+}
+
+static uint8_t i2cr_motor_get1( uint8_t *buf )
+{
+	return 2;
+}
+
