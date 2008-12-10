@@ -128,7 +128,8 @@ uint16_t i2cs_dipswitch( void )
 
 uint8_t i2cr_dipswitch( uint8_t* data )
 {
-	return switch_get();
+	data[0] =switch_get();
+	return 1;
 }
 
 
@@ -142,7 +143,8 @@ uint16_t i2cs_button( void )
 
 uint8_t i2cr_button( uint8_t* data )
 {
-	return 23;
+	data[0]=23;
+	return 1;
 }
 
 
@@ -193,7 +195,7 @@ uint16_t i2cs_motor_power( void )
 
 uint8_t i2cr_motor_power( uint8_t *data )
 {
-	data[0]=pwr_get_motor();
+	data[0]= 99 ; //pwr_get_motor();
 	return 1;
 }
 
@@ -213,7 +215,8 @@ uint16_t i2cs_battery( void )
 
 uint8_t i2cr_battery( uint8_t *data )
 {
-	return battery_get();
+	data[0]= battery_get();
+	return 1;
 }
 
 /* Beegees - Staying Alive :-) */

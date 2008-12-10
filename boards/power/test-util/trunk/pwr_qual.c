@@ -14,6 +14,8 @@
 
 int init_i2c(void);
 int32_t sr_block_read( int fd, uint8_t reg, uint8_t **buf );
+int pecoff(int fd);
+int pecon(int fd);
 
 
 
@@ -51,7 +53,7 @@ int main( int argc, char** argv )
 /* 		//printf("Read ID as %x\n", readbyte(fd, 0)); */
 /* 		printf("sorry you cant because it sucks\n"); */
 /* 		return -1; */
-		sr_block_read(fd,0,&buf);
+		sr_block_read(fd,atoi(argv[2]),&buf);
 		//printf("r: %d",*buf);
 		
 		
@@ -79,6 +81,8 @@ int32_t sr_block_read( int fd, uint8_t reg, uint8_t **buf )
 	int len, r;
 	uint8_t checksum, i;
 
+	pecoff(fd); /* need to disable pec so can do 2 actions consecutively - see gumsense readme */
+
 	
 	/* We have to hack around the fact that the i2c adapter doesn't
 	   support i2c block read. */
@@ -88,9 +92,10 @@ int32_t sr_block_read( int fd, uint8_t reg, uint8_t **buf )
 
 	/* Set the command and grab the length */
 	len = i2c_smbus_read_byte_data( fd, reg );
-
+	printf("len=%d\n",len);
 	if( len < 0 ) {
 		fprintf( stderr, "Failed to read register %hhu length\n", reg );
+		fprintf( stderr, "length is %d", len );
 		goto error0;
 	}
 	
@@ -148,12 +153,16 @@ int32_t sr_block_read( int fd, uint8_t reg, uint8_t **buf )
 			printf( "%hhX: %hhX\n", i, (*buf)[i] );
 	}
 
+	pecon(fd);
+
 	return len+1;
 
 error1:
 	free( *buf );
 	*buf = NULL;
+
 error0:
+	pecon(fd);
 	return -1;
 }
 
@@ -179,15 +188,34 @@ int init_i2c(void){
 
 	
 
+	pecon(fd);
+/* 	if( ioctl( fd, I2C_PEC, 1) < 0) */
+/* 	{ */
+/* 		fprintf( stderr, "Failed to enable PEC\n"); */
+/* 		return 3; */
+/* 	} */
+
+	return fd;
+}
+
+
+int pecon(int fd){
+
 	if( ioctl( fd, I2C_PEC, 1) < 0)
 	{
 		fprintf( stderr, "Failed to enable PEC\n");
 		return 3;
 	}
-
-	return fd;
+	return;
 }
 
+int pecoff(int fd){
+	if( ioctl( fd, I2C_PEC, 0) < 0) /* need to disable pec so can do 2 actions consecutively - see gumsense readme */
+	{
+		fprintf( stderr, "Failed to disnable PEC\n");
+		return 3;
+	}
+}
 
 
 
