@@ -24,7 +24,7 @@
 
 #define USE_CHECKSUMS 0
 #define I2C_BUF_LEN 32
-#define MODULE_IDENTITY 0x0201
+#define MODULE_IDENTITY 0x7062
 #define FIRMWARE_REV 0x0304
 
 
@@ -240,36 +240,25 @@ void i2c_reset( void )
 
 static void i2cw_motor_set( uint8_t *buf )
 {
-	if(servo_get_pwm(0) < MAX_PULSE)
-	{
-		servo_set_pwm(0, MAX_PULSE);
-	}
-	else
-	{
-		servo_set_pwm(0, MIN_PULSE);
-	}
-	if(servo_get_pwm(1) < MAX_PULSE)
-	{
-		servo_set_pwm(1, MAX_PULSE);
-	}
-	else
-	{
-		servo_set_pwm(1, MIN_PULSE);
-	}
+	servo_set_pwm( buf[0],
+	       (MIN_PULSE + ((MAX_PULSE-MIN_PULSE)/255)*(uint16_t)buf[1]));
 }
 
 static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor )
 {
+	servo_set_pwm(0, MIN_PULSE);
 	return 2;
 }
 
 static uint8_t i2cr_motor_get0( uint8_t *buf )
 {
+	i2cr_motor_get(buf, 0);
 	return 2; 
 }
 
 static uint8_t i2cr_motor_get1( uint8_t *buf )
 {
+	i2cr_motor_get(buf, 0);
 	return 2;
 }
 
