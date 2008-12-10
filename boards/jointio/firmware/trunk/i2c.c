@@ -246,9 +246,8 @@ static void i2cw_output_set( uint8_t *buf )
 {
 	uint8_t v;
 
-	v = (*buf) & 0x3;
-	v |= ((*buf) & 0x4)<<1;
-	v |= ((*buf) & 0x8)>>1;
+	v = (*buf) & 0xf;
+	/* The outputs are connected through inverters */
 	v ^= 0xf;
 
 	P1OUT = (P1OUT & 0xf0) | v;
@@ -258,9 +257,8 @@ static uint8_t i2cr_output_get( uint8_t *buf )
 {
 	uint8_t b;
 
-	b = P1OUT & 0x3;
-	b |= (P1OUT & 0x4)<<1;
-	b |= (P1OUT & 0x8)>>1;
+	b = P1OUT & 0xf;
+	/* The outputs are connected through inverters */
 	b ^= 0xf;
 	
 	buf[0] = b;
