@@ -19,7 +19,7 @@ void init_cpu(void)
   BCSCTL2 = 0;
 
   P1DIR = P2DIR = P3DIR = P4DIR = P5DIR = P6DIR = 0;
-
+	P3SEL |= 0x0A;
   
 }
 

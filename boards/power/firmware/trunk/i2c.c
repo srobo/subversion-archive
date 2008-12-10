@@ -106,14 +106,19 @@ interrupt (USART0TX_VECTOR) i2c_service( void )
 				}
 				
 				checksum = crc8( checksum ^ d );
+/* 				if(rpos == rsize) /\* breakpoint rtest *\/ */
+/* 					rpos = rsize; */
 			}
-			else if( rpos == rsize && checksum == d )
+			else if( rpos == rsize)
 			{
-				/* Checksum is valid */
-				//gum_watchdog_clear();
-
-				if( dev_regs[command].write != NULL )
-					dev_regs[command].write( i2c_buf, rsize );
+				if (checksum == d)
+				{
+					/* Checksum is valid */
+					//gum_watchdog_clear();
+					
+					if( dev_regs[command].write != NULL )
+						dev_regs[command].write( i2c_buf, rsize );
+				}
 			}
 		}
 
@@ -180,7 +185,8 @@ interrupt (USART0TX_VECTOR) i2c_service( void )
 void i2c_init( void )
 {
   /* Switch to I2C Mode */
-  U0CTL |= SYNC + I2C;
+	// U0CTL |= SYNC + I2C;
+  U0CTL = SYNC | I2C;
 
   /* Clear I2CEN for configuration */
   U0CTL &= ~I2CEN;
@@ -188,6 +194,8 @@ void i2c_init( void )
   /* Slave mode, 7-bit addressing, non-loopback */
   U0CTL &= ~(XA | LISTEN | MST);
 
+
+  I2CTCTL = 0;
   /* byte mode */
   I2CTCTL &= ~I2CWORD;
   

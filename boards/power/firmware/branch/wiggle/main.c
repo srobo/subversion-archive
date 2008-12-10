@@ -24,7 +24,7 @@ int main(void)
 	P3DIR |= 10;		/* sda and scl as outputs */
 	while(1)
 	{
-		P3OUT ^= 8;
+		P3OUT ^= 2;
 		
 		
 	}
