@@ -13,30 +13,12 @@
 #define POLY    (0x1070U << 3)
 
 int init_i2c(void);
-int32_t sr_block_read( int fd, uint8_t reg, uint8_t **buf );
+int32_t sr_read( int fd, uint8_t reg, uint8_t **buf );
+int32_t sr_write( int fd, uint8_t command, uint8_t len, uint8_t *buf );
 int pecoff(int fd);
 int pecon(int fd);
+uint8_t crc8( uint8_t tempdata );
 
-
-
-
-//#if USE_CHECKSUMS
-uint8_t crc8( uint8_t tempdata )
-{
-	uint8_t i;
-	uint16_t data;
-
-	data = (uint16_t)tempdata<<8;
-	for(i = 0; i < 8; i++) 
-	{
-		if (data & 0x8000)
-			data = data ^ POLY;
-		data <<= 1;
-	}
-
-	return (data >> 8) & 0xFF;
-}
- 
 
 int main( int argc, char** argv )
 {
@@ -44,17 +26,17 @@ int main( int argc, char** argv )
 	int retval;
 	uint8_t value[30];
 
-	uint8_t *buf;
+	uint8_t *buf = value;
 
   	fd = init_i2c();
 
 	switch( *argv[1]){
 	case 'w':
-/* 		//printf("Read ID as %x\n", readbyte(fd, 0)); */
-/* 		printf("sorry you cant because it sucks\n"); */
-/* 		return -1; */
-		sr_block_read(fd,atoi(argv[2]),&buf);
-		//printf("r: %d",*buf);
+		retval = sr_read(fd, IDENTIFY , &buf);
+		
+		printf("Read ID as %x%x\n", value[2],value[1]);
+    
+		printf("r: %d",retval);
 		
 		
 		break;
@@ -65,18 +47,27 @@ int main( int argc, char** argv )
 			return -1;
 		}
 		value[0]= atoi(argv[2]);
-		retval = i2c_smbus_write_block_data(fd,LED,1,value);
-		printf("returned %d",retval);
+/* 		retval = i2c_smbus_write_block_data(fd,LED,1,value); */
+/* 		printf("returned %d",retval); */
+		sr_write(fd,LED,1,value);
 		return 0;
 	}
 
 
 }
 
-/* int32_t sr_block_write( int fd, uint8_t reg, uint8_t **buf ) */
+int32_t sr_write( int fd, uint8_t command, uint8_t len, uint8_t *buf ){
+	int retval=0;
+	retval = i2c_smbus_write_block_data(fd,command,len,buf);
+	if (retval != 0)
+	{
+		fprintf( stderr, "Block Write failed:  %m\n" );
+	}
+	return retval;
+}
 
 
-int32_t sr_block_read( int fd, uint8_t reg, uint8_t **buf )
+int32_t sr_read( int fd, uint8_t reg, uint8_t **buf )
 {
 	int len, r;
 	uint8_t checksum, i;
@@ -178,7 +169,6 @@ int init_i2c(void){
 		return 1;
 	}
 
-	
 
 	if( ioctl( fd, I2C_SLAVE, ADDRESS ) < 0 )
 	{
@@ -186,14 +176,8 @@ int init_i2c(void){
 		return 2;
 	}
 
-	
-
+       
 	pecon(fd);
-/* 	if( ioctl( fd, I2C_PEC, 1) < 0) */
-/* 	{ */
-/* 		fprintf( stderr, "Failed to enable PEC\n"); */
-/* 		return 3; */
-/* 	} */
 
 	return fd;
 }
@@ -217,6 +201,22 @@ int pecoff(int fd){
 	}
 }
 
+
+uint8_t crc8( uint8_t tempdata )
+{
+	uint8_t i;
+	uint16_t data;
+
+	data = (uint16_t)tempdata<<8;
+	for(i = 0; i < 8; i++) 
+	{
+		if (data & 0x8000)
+			data = data ^ POLY;
+		data <<= 1;
+	}
+
+	return (data >> 8) & 0xFF;
+}
 
 
 
