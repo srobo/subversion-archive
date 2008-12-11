@@ -2,5 +2,5 @@
 
 uint8_t battery_get(void)
 {
-	return 45;
+	return 0x55;
 }

@@ -42,7 +42,8 @@ int main( int argc, char** argv )
 		       "m - get/set motor power"
 		       "c - get battery charge status"
 		       "v - read voltage\n"
-		       "i - read current\n");
+		       "a - read current\n"
+		       "e - Stay alive packet");
 		       
 		return -1;
 	}
@@ -96,15 +97,80 @@ int main( int argc, char** argv )
 			       "set rail 0/1: pwr_qual s {0,1}\n");
 			return -1;
 		}			
-		return 0;
+		
+		break;
+       	case 'p':
+		if (argc == 2 )
+		{
+			retval = sr_read(fd, SERVO_POWER , value);
+			printf("Servo power = %d \n",value[2]);
+		     
+		}
+		else if (argc == 3){
+			if (atoi(argv[2])>0){
+				value[0] = 1;
+			}
+			else{
+				value[0] =0 ;
+			}
+			printf("val=%d",value[0]);
+			sr_write(fd,SERVO_POWER,1,value);
+		}
+		else{
+			printf("Usage:\n "
+			       "show rail status: pwr_qual p"
+			       "set rail 0/1: pwr_qual p {0,1}\n");
+			return -1;
+		}
+		break;
 
+		
+       	case 'm':
+		if (argc == 2 )
+		{
+			retval = sr_read(fd, MOTOR_POWER , value);
+			printf("Motor power = %d \n",value[2]);
+		     
+		}
+		else if (argc == 3){
+			if (atoi(argv[2])>0){
+				value[0] = 1;
+			}
+			else{
+				value[0] =0 ;
+			}
+			printf("val=%d",value[0]);
+			sr_write(fd,MOTOR_POWER,1,value);
+		}
+		else{
+			printf("Usage:\n "
+			       "show rail status: pwr_qual m"
+			       "set rail 0/1: pwr_qual m {0,1}\n");
+			return -1;
+		}
+		break;
+		    
+   	case 'c':
+		retval = sr_read(fd, BATTERY , value);
+		printf("Battery status: %d\n", value[3],value[2]);
+		break;	
 
+	case 'e':
+		printf("Ah Ah Ah Ah, stayin' alive!\n");
+		retval = sr_read(fd, BEEGEES , value);
+		//sends alive packet!
+		break;
+		
+	case 'v':
+	case 'a':
+		printf("sorry not implemented on power board yet\n");
+		return -1;
+	default:
+		printf("Sorry not recognised command try no args for usage\n");
 
-
-
-
+		
 	}
-
+	return 0;
 
 }
 
