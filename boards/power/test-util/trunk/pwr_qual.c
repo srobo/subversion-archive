@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdint.h>
 #include "i2c-dev.h"
@@ -8,9 +9,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <assert.h>
 #include "pwr_qual.h"
 //#include "smbus_pec.h"
 #define POLY    (0x1070U << 3)
+
+#define BUFLEN 30
 
 int init_i2c(void);
 int32_t sr_read( int fd, uint8_t reg, uint8_t *buf );
@@ -24,7 +28,7 @@ int main( int argc, char** argv )
 {
 	int fd =0;
 	int retval;
-	uint8_t value[30];
+	uint8_t value[BUFLEN];
 
 	uint8_t *buf = value;
 
@@ -212,6 +216,10 @@ int32_t sr_read( int fd, uint8_t reg, uint8_t *buf )
 		fprintf( stderr, "length is %d", len );
 		goto error0;
 	}
+
+	/* Prevent buffer overflows */
+	assert( (len+3) < BUFLEN );
+
 	r = read(fd, buf, len + 3 );
 	
 	if( r < 0 ) {
