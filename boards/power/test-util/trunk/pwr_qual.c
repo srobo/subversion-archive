@@ -13,7 +13,7 @@
 #define POLY    (0x1070U << 3)
 
 int init_i2c(void);
-int32_t sr_read( int fd, uint8_t reg, uint8_t **buf );
+int32_t sr_read( int fd, uint8_t reg, uint8_t *buf );
 int32_t sr_write( int fd, uint8_t command, uint8_t len, uint8_t *buf );
 int pecoff(int fd);
 int pecon(int fd);
@@ -32,9 +32,9 @@ int main( int argc, char** argv )
 
 	switch( *argv[1]){
 	case 'w':
-		retval = sr_read(fd, IDENTIFY , &buf);
+		retval = sr_read(fd, IDENTIFY , value);
 		
-		printf("Read ID as %x%x\n", value[2],value[1]);
+		printf("Read ID as %x %x\n", value[2],value[1]);
     
 		printf("r: %d",retval);
 		
@@ -67,7 +67,7 @@ int32_t sr_write( int fd, uint8_t command, uint8_t len, uint8_t *buf ){
 }
 
 
-int32_t sr_read( int fd, uint8_t reg, uint8_t **buf )
+int32_t sr_read( int fd, uint8_t reg, uint8_t *buf )
 {
 	int len, r;
 	uint8_t checksum, i;
@@ -90,67 +90,67 @@ int32_t sr_read( int fd, uint8_t reg, uint8_t **buf )
 		goto error0;
 	}
 	
-	/* We have to read the byte count, command and checksum: */
-	/* (see README) */
-	*buf = (uint8_t*)malloc(len + 3);
+/* 	/\* We have to read the byte count, command and checksum: *\/ */
+/* 	/\* (see README) *\/ */
+/* 	*buf = (uint8_t*)malloc(len + 3); */
 
-	if( *buf == NULL )
-	{
-		fprintf( stderr, "Failed to allocate memory\n" );
-		goto error0;
-	}
+/* 	if( *buf == NULL ) */
+/* 	{ */
+/* 		fprintf( stderr, "Failed to allocate memory\n" ); */
+/* 		goto error0; */
+/* 	} */
 
-	r = read(fd, *buf, len + 3 );
+	r = read(fd, buf, len + 3 );
 	
 	if( r < 0 ) {
 		fprintf( stderr, "Failed to read register %hhu\n", reg );
-		goto error1;
+		goto error0;
 	}
 
 	if( r != len + 3 ) {
 		fprintf( stderr, "Failed to read all of register %hhu\n", reg );
-		goto error1;
+		goto error0;
 	}
 
 	/* Generate the checksum: */
 	checksum = crc8( (ADDRESS<<1) | 1 );
 	for( i=0; i<len+2; i++ )
-		checksum = crc8( checksum ^ (*buf)[i] );
+		checksum = crc8( checksum ^ (buf)[i] );
 
-	if( (*buf)[r-1] != checksum ) {
+	if( (buf)[r-1] != checksum ) {
 		if( 1 )
 			fprintf( stderr, "Incorrect checksum reading register %hhu\n", reg );
 		printf( "Checksums: received = 0x%2.2hhx, calculated = 0x%2.2hhx\n",
-			(*buf)[len+2],
+			(buf)[len+2],
 			checksum );
 		/* Checksum's incorrect */
-		goto error1;
+		goto error0;
 	}
 
-	if( (*buf)[1] != reg ) {
+	if( (buf)[1] != reg ) {
 		fprintf( stderr, "Incorrect register read %hhu\n", reg );
 
 		/* Incorrect command read back */
-		goto error1;
+		goto error0;
 	}
 
 	/* TODO: Remove this horrible hack */
-	memmove( (*buf) + 1, (*buf) + 2, len );
+//	memmove( (*buf) + 1, (*buf) + 2, len );
 
 	if( 1 )	{
 		uint8_t i;
 		printf( "Read %i bytes from register %hhu:\n", len, reg );
 		for( i=0; i<len+2; i++ )
-			printf( "%hhX: %hhX\n", i, (*buf)[i] );
+			printf( "%hhX: %hhX\n", i, (buf)[i] );
 	}
 
 	pecon(fd);
 
 	return len+1;
 
-error1:
-	free( *buf );
-	*buf = NULL;
+/* error1: */
+/* 	//free( *buf ); */
+/* 	*buf = NULL; */
 
 error0:
 	pecon(fd);
