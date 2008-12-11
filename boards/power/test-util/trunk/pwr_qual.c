@@ -32,12 +32,12 @@ int main( int argc, char** argv )
 
 	if (argc<2){ // check at least 1 arg
 		printf("incorrect args\n");
-		//printf("Usage: %s {w,l,v,i,r,s}\n");
+		printf("Usage:\n");
 		printf("i - identify(currently unsupported locally)\n"
 		       "l - set led values, needs 2 args\n"
 		       "d - get dip switch values\n"
 		       "b - check for button status"
-		       "s - get/set slug power" 
+		       "s - get/set slug power add val arg to set" 
 		       "p - get/set servo power"
 		       "m - get/set motor power"
 		       "c - get battery charge status"
@@ -52,7 +52,6 @@ int main( int argc, char** argv )
 	case 'i':
 		retval = sr_read(fd, IDENTIFY , value);
 		printf("Read ID as %x %x\n", value[3],value[2]);
-    
 		break;
 	case 'l':
 		if (argc!=3)
@@ -61,14 +60,57 @@ int main( int argc, char** argv )
 			return -1;
 		}
 		value[0]= atoi(argv[2]);
-/* 		retval = i2c_smbus_write_block_data(fd,LED,1,value); */
-/* 		printf("returned %d",retval); */
 		sr_write(fd,LED,1,value);
 		return 0;
+
+	case 'd':
+		retval = sr_read(fd, DIPSWITCH , value);
+		printf("Read dips as %d \n",value[2]);
+		break;
+
+	case 'b':
+		retval = sr_read(fd, BUTTON , value);
+		printf("Button history is %d\n", value[2]);
+		break;
+
+       	case 's':
+		if (argc == 2 )
+		{
+			retval = sr_read(fd, SLUG_POWER , value);
+			printf("Slug power = %d \n",value[2]);
+		     
+		}
+		else if (argc == 3){
+			if (atoi(argv[2])>0){
+				value[0] = 1;
+			}
+			else{
+				value[0] =0 ;
+			}
+			printf("val=%d",value[0]);
+			sr_write(fd,SLUG_POWER,1,value);
+		}
+		else{
+			printf("Usage:\n "
+			       "show rail status: pwr_qual s"
+			       "set rail 0/1: pwr_qual s {0,1}\n");
+			return -1;
+		}			
+		return 0;
+
+
+
+
+
+
 	}
 
 
 }
+
+
+
+
 
 int32_t sr_write( int fd, uint8_t command, uint8_t len, uint8_t *buf ){
 	int retval=0;
@@ -98,7 +140,7 @@ int32_t sr_read( int fd, uint8_t reg, uint8_t *buf )
 
 	/* Set the command and grab the length */
 	len = i2c_smbus_read_byte_data( fd, reg );
-	printf("len=%d\n",len);
+
 	if( len < 0 ) {
 		fprintf( stderr, "Failed to read register %hhu length\n", reg );
 		fprintf( stderr, "length is %d", len );
@@ -138,7 +180,7 @@ int32_t sr_read( int fd, uint8_t reg, uint8_t *buf )
 		goto error0;
 	}
 
-	if( 1 )	{
+	if( 0 )	{
 		uint8_t i;
 		printf( "Read %i bytes from register %hhu:\n", len, reg );
 		for( i=0; i<len+2; i++ )

@@ -28,10 +28,11 @@ void pwr_init(void)
 
 void pwr_set_slug(uint8_t val)
 {
-  if (val == 0) 
-    P2OUT |= 0x01;
-  else
-    P2OUT &= ~0x01;
+	if (val == 0) 
+		P2OUT &= ~0x01;
+	else
+		P2OUT |= 0x01;
+
 }
 uint8_t pwr_get_slug(void)
 {
@@ -40,10 +41,11 @@ uint8_t pwr_get_slug(void)
 
 void pwr_set_servo(uint8_t val)
 {
-  if (val == 0) 
-    P2OUT |= 0x02;
-  else
-    P2OUT &= ~0x02;
+	if (val == 0) 
+		P2OUT &= ~0x02;
+	else
+		
+		P2OUT |= 0x02;
 }
 
 uint8_t pwr_get_servo(void)
