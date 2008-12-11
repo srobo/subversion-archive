@@ -30,15 +30,29 @@ int main( int argc, char** argv )
 
   	fd = init_i2c();
 
+	if (argc<2){ // check at least 1 arg
+		printf("incorrect args\n");
+		//printf("Usage: %s {w,l,v,i,r,s}\n");
+		printf("i - identify(currently unsupported locally)\n"
+		       "l - set led values, needs 2 args\n"
+		       "d - get dip switch values\n"
+		       "b - check for button status"
+		       "s - get/set slug power" 
+		       "p - get/set servo power"
+		       "m - get/set motor power"
+		       "c - get battery charge status"
+		       "v - read voltage\n"
+		       "i - read current\n");
+		       
+		return -1;
+	}
+
+
 	switch( *argv[1]){
-	case 'w':
+	case 'i':
 		retval = sr_read(fd, IDENTIFY , value);
-		
-		printf("Read ID as %x %x\n", value[2],value[1]);
+		printf("Read ID as %x %x\n", value[3],value[2]);
     
-		printf("r: %d",retval);
-		
-		
 		break;
 	case 'l':
 		if (argc!=3)
@@ -69,6 +83,7 @@ int32_t sr_write( int fd, uint8_t command, uint8_t len, uint8_t *buf ){
 
 int32_t sr_read( int fd, uint8_t reg, uint8_t *buf )
 {
+	/* The Origins of this code are stolen from Robert Spanton's Gumsense firmware forge.ecs.soton.ac.uk */
 	int len, r;
 	uint8_t checksum, i;
 
@@ -79,7 +94,7 @@ int32_t sr_read( int fd, uint8_t reg, uint8_t *buf )
 	   support i2c block read. */
 	/*  First, do a read to get the length byte. */
 	/* This read byte operation also sets the command that we're doing
-	   within the gumsense */
+	   within the powerboard */
 
 	/* Set the command and grab the length */
 	len = i2c_smbus_read_byte_data( fd, reg );
@@ -89,17 +104,6 @@ int32_t sr_read( int fd, uint8_t reg, uint8_t *buf )
 		fprintf( stderr, "length is %d", len );
 		goto error0;
 	}
-	
-/* 	/\* We have to read the byte count, command and checksum: *\/ */
-/* 	/\* (see README) *\/ */
-/* 	*buf = (uint8_t*)malloc(len + 3); */
-
-/* 	if( *buf == NULL ) */
-/* 	{ */
-/* 		fprintf( stderr, "Failed to allocate memory\n" ); */
-/* 		goto error0; */
-/* 	} */
-
 	r = read(fd, buf, len + 3 );
 	
 	if( r < 0 ) {
@@ -134,9 +138,6 @@ int32_t sr_read( int fd, uint8_t reg, uint8_t *buf )
 		goto error0;
 	}
 
-	/* TODO: Remove this horrible hack */
-//	memmove( (*buf) + 1, (*buf) + 2, len );
-
 	if( 1 )	{
 		uint8_t i;
 		printf( "Read %i bytes from register %hhu:\n", len, reg );
@@ -147,10 +148,6 @@ int32_t sr_read( int fd, uint8_t reg, uint8_t *buf )
 	pecon(fd);
 
 	return len+1;
-
-/* error1: */
-/* 	//free( *buf ); */
-/* 	*buf = NULL; */
 
 error0:
 	pecon(fd);
