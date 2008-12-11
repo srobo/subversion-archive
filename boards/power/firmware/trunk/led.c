@@ -8,10 +8,10 @@ void led_init(void)
 }
 void led_set(uint8_t val)
 {
-  P1OUT = (val &= 0x0f);
+	P1OUT = (P1OUT & 0xf0) | (val & 0x0f);
 }
 
 uint8_t led_get(void)
 {
-  return (P1IN &= 0x0f);
+  return (P1IN & 0x0f);
 }

@@ -80,7 +80,7 @@ const reg_access_t dev_regs[] =
 	I2C_REG_ENTRY_RO( dipswitch ), 
 	I2C_REG_ENTRY_RO( button ),
 	I2C_REG_ENTRY( slug_power ),  
-	I2C_REG_ENTRY_WO( servo_power ),	
+	I2C_REG_ENTRY( servo_power ),	
 	I2C_REG_ENTRY( motor_power ),	   
 	I2C_REG_ENTRY_RO( battery ),   
 	I2C_REG_ENTRY_WO( beegees ),  
@@ -176,7 +176,7 @@ uint16_t i2cs_servo_power( void )
 
 uint8_t i2cr_servo_power( uint8_t *data )
 {
-	data[0]=pwr_get_servo();
+	data[0]= pwr_get_servo();
 	return 1;
 }
 
@@ -195,7 +195,7 @@ uint16_t i2cs_motor_power( void )
 
 uint8_t i2cr_motor_power( uint8_t *data )
 {
-	data[0]= 99 ; //pwr_get_motor();
+	data[0]= pwr_get_motor();
 	return 1;
 }
 

@@ -36,7 +36,8 @@ void pwr_set_slug(uint8_t val)
 }
 uint8_t pwr_get_slug(void)
 {
-  return (P2IN &=0x01);
+	
+	return (P2IN & 0x01);
 }
 
 void pwr_set_servo(uint8_t val)
@@ -50,20 +51,20 @@ void pwr_set_servo(uint8_t val)
 
 uint8_t pwr_get_servo(void)
 {
-  return (P2IN &=0x02)>>1;
+	return ((P2IN & 0x02)>>1);
 }
 
 void pwr_set_motor(uint8_t val)
 {
   if (val == 0) 
-    P2OUT |= 0x04;
+	  P2OUT &= ~0x04;
   else
-    P2OUT &= ~0x04;
+	  P2OUT |= 0x04;
 }
 
 uint8_t pwr_get_motor(void)
 {
-  return (P2IN &=0x04)>>2;
+  return (P2IN & 0x04)>>2;
 }
 
 
