@@ -237,7 +237,7 @@ ul, ol {
 	background-color: #DFDBD8;
 	border: solid #253571;
 	border-width: 0 3px;
-	padding-top: 1px;
+	padding: 1px 0;
 }
 .htmlCurve span	{ border: solid #253571; display: block; background-color: #DFDBD8; height: 1px; font-size: 0; overflow: hidden; }
 .htmlCurve span.bottom	{ background-color: #253571; }
@@ -281,7 +281,7 @@ ul, ol {
 	text-decoration: none;
 	background-image: none;
 }
-.block-menu, .block-user {
+.block-menu, .block-user, .block-search {
 	margin-top: 10px;
 }
 
