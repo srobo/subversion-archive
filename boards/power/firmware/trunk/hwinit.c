@@ -1,5 +1,5 @@
-#include"device.h"
-#include<io.h>
+#include "device.h"
+#include <io.h>
 
 /* void wait(void)          //delay function */
 /* { */
