@@ -8,7 +8,7 @@
 #include"power.h"
 #include"i2c.h"
 #include"timer-a.h"
-
+#include"usart.h"
 int dummy =0; 			/* dummy variable to fix gdb bug */
 
 
@@ -20,6 +20,7 @@ int main(void)
 	switch_init();
 	pwr_init();
 	i2c_init();
+	//usart_init();
 	timera_init();
 	eint();			/* enable global interrupts */
 	while(1)
