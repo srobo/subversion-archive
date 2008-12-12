@@ -5,6 +5,8 @@
 #include "power.h"
 
 static uint8_t alive =0;
+static uint16_t safe_count =0;
+
 
 void stayingalive(void)
 {
@@ -24,6 +26,22 @@ void alive_service(void){	/* called ever 0.1s */
 	}
 	
 }
+
+void make_safe(void){
+	togc;
+	safe_count =0;
+	pwr_set_motor(1);
+}
+
+
 void safe_service(void){
+	
+	if(safe_count>=SAFE_TIMEOUT){
+		safe_count =0;
+		pwr_set_motor(0);	
+	}
+	else
+		safe_count++;
+
 	return;
 }

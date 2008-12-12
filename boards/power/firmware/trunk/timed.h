@@ -5,6 +5,7 @@
 #define SAFE_TIMEOUT 30		/* 3 sec */
 void stayingalive(void);
 void alive_service(void);
+void make_safe(void);
 void safe_service(void);
 
 #endif

@@ -8,6 +8,7 @@
 #include "battery.h"
 #include "timed.h"
 #include "device.h"
+#include "timed.h"
 
 
 
@@ -277,6 +278,7 @@ uint16_t i2cs_test( void )
 uint8_t i2cr_test( uint8_t *data )
 {
 	togc;
+	make_safe();
 	data[0]= TAR&0xff;
 	data[1]= ((TAR&0xff00)>>8);
 	return 2;
@@ -284,6 +286,8 @@ uint8_t i2cr_test( uint8_t *data )
 
 void i2cw_test( uint8_t* data, uint8_t len )
 {
+	togd;
+	make_safe();
 	data[0]=42;
 	data[1]=42;
 	togd;
