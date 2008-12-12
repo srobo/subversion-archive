@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 void pwr_init(void);
+void slug_boot(uint8_t reboot);
 
 void pwr_set_slug(uint8_t val);
 uint8_t pwr_get_slug(void);

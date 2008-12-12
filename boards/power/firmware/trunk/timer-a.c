@@ -2,6 +2,7 @@
 #include "timer-a.h"
 #include <signal.h>
 #include "led.h"
+#include "timed.h"
 
 #define PERIOD2 60240		/* this gives interupts every 0.1 sec appx(DCO) */
 /* timer tics at appx 1.66us per tick don;y appx because derived from dco */
@@ -9,16 +10,15 @@ interrupt (TIMERA1_VECTOR) timera_service( void )
 {
 
 	uint8_t taiv_l = TAIV;	/* buffer so only one read as per datasheet */
-	toga;
 	switch( taiv_l )
 	{
 	case TAIV_CCR1:	     
-		togc;
 		/* do something here */
 		break;
 	case TAIV_CCR2:
 		TACCR2 += PERIOD2;
-		togb;
+		alive_service();
+		safe_service();
 		break;
 		
 	}
