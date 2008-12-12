@@ -178,7 +178,29 @@ int main( int argc, char** argv )
 		retval = sr_read(fd, BEEGEES , value);
 		//sends alive packet!
 		break;
+
+	case 't':
+		if (argc == 2 )
+		{ 
+			retval = sr_read(fd, TEST , value);
+			printf("test = %d %d\n",value[3],value[2]);
+		     
+		}
+		else if (argc == 3){
+			value[0]= atoi(argv[2]);
+			sr_write(fd,TEST,1,value);
 		
+		}
+		else{
+			printf("Usage:\n "
+			       " pwr_qual t"
+			       "set test : pwr_qual t <N>\n");
+			return -1;
+		}			
+		
+		break;		
+
+
 	case 'v':
 	case 'a':
 		printf("sorry not implemented on power board yet\n");

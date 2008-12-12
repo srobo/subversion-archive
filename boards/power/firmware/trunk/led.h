@@ -6,12 +6,14 @@ void led_init(void);
 void led_set(uint8_t val);
 uint8_t led_get(void);
 
+
 /* #define goff P5OUT |= 0x01 */
 /* #define gon P5OUT &= ~0x1 */
-/* #define roff P5OUT |= 0x04 */
-/* #define ron P5OUT &= ~0x4 */
-/* #define rtog P5OUT ^= 0x4 */
-/* #define gtog P5OUT ^= 0x1 */
+
+#define toga P1OUT ^= 0x1
+#define togb P1OUT ^= 0x2
+#define togc P1OUT ^= 0x4
+#define togd P1OUT ^= 0x8
 
 /* Led's are: */
 /*          pin */

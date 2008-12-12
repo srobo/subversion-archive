@@ -17,7 +17,7 @@ typedef struct
 	void (*write) ( uint8_t* data, uint8_t len );
 } reg_access_t;
 
-#define I2C_NUM_COMMANDS 9
+#define I2C_NUM_COMMANDS 12
 
 extern const reg_access_t dev_regs[];
 

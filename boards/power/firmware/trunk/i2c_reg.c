@@ -1,19 +1,13 @@
 #include "i2c_reg.h"
-//#include "time.h"
-//#include "schedule.h"
 #include "types.h"
-//#include "timer-b.h"
-//#include "power.h"
-//#include "job.h"
-//#include "gum-watchdog.h"
 #include <string.h>
 #include <signal.h>
-
 #include "led.h"
 #include "switch.h"
 #include "power.h"
 #include "battery.h"
 #include "timed.h"
+#include "device.h"
 
 
 
@@ -70,7 +64,10 @@ I2C_REG( slug_power );
 I2C_REG( servo_power );
 I2C_REG( motor_power );		
 I2C_REG_RO( battery );	
+I2C_REG_RO( volt );	
+I2C_REG_RO( amp );	
 I2C_REG_WO( beegees );	
+I2C_REG( test );
 /* When adding new commands, make sure you change I2C_NUM_COMMANDS */
 
 const reg_access_t dev_regs[] = 
@@ -83,7 +80,10 @@ const reg_access_t dev_regs[] =
 	I2C_REG_ENTRY( servo_power ),	
 	I2C_REG_ENTRY( motor_power ),	   
 	I2C_REG_ENTRY_RO( battery ),   
-	I2C_REG_ENTRY_WO( beegees ),  
+	I2C_REG_ENTRY_RO( volt ),
+	I2C_REG_ENTRY_RO( amp ),
+	I2C_REG_ENTRY_WO( beegees ), 
+	I2C_REG_ENTRY( test ),   
 };
 
 
@@ -219,6 +219,40 @@ uint8_t i2cr_battery( uint8_t *data )
 	return 1;
 }
 
+
+/* voltage */
+
+
+uint16_t i2cs_volt( void )
+{
+	return 1;
+}
+
+uint8_t i2cr_volt( uint8_t *data )
+{
+	data[0]= 'v';
+	return 1;
+}
+
+
+/* current */
+
+
+uint16_t i2cs_amp( void )
+{
+	return 1;
+}
+
+uint8_t i2cr_amp( uint8_t *data )
+{
+	data[0]= 'i';
+	return 1;
+}
+
+
+
+
+
 /* Beegees - Staying Alive :-) */
 
 uint16_t i2cs_beegees( void )
@@ -232,3 +266,25 @@ void i2cw_beegees( uint8_t *data, uint8_t len )
 	stayingalive();
 }
 
+
+/* test Handler */
+
+uint16_t i2cs_test( void )
+{
+	return 2;
+}
+
+uint8_t i2cr_test( uint8_t *data )
+{
+	togc;
+	data[0]= TAR&0xff;
+	data[1]= ((TAR&0xff00)>>8);
+	return 2;
+}
+
+void i2cw_test( uint8_t* data, uint8_t len )
+{
+	data[0]=42;
+	data[1]=42;
+	togd;
+}

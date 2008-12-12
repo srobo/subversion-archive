@@ -4,7 +4,8 @@
 #include "device.h"
 #include "smbus_pec.h"
 #include <signal.h>
-//#include "gum-watchdog.h"
+#include "led.h"
+
 
 typedef enum 
 {

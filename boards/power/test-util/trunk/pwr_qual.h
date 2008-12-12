@@ -22,6 +22,7 @@ typedef enum
 	VOLT,
 	AMP,
 	BEEGEES,
+	TEST,
 } com;
 bool err_enable = TRUE;
 
