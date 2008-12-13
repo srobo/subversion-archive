@@ -1,11 +1,11 @@
 #include"device.h"
 #include "usart.h"
 #include <signal.h>
-/* ----------------- transmit-------------------- */
+#include "timed.h"
 
 interrupt (USART1TX_VECTOR) uart_tx_isr(void)
 {
-	U1TXBUF = 'P';
+	U1TXBUF = 0xAA;		/* transmit to calibrate on oscope */
 }
 
 /* --------------receive---------------------- */
@@ -13,18 +13,9 @@ interrupt (USART1TX_VECTOR) uart_tx_isr(void)
 
 interrupt (USART1RX_VECTOR) uart_rx_isr(void)
 {
-	uint8_t temp =0;
-	static enum states {
-		idle,
-		w4adhi,
-		w4adlo,
-		w4data,
-		w4cksum
-	} state = idle;
-
-	state = idle;
-	temp = U1RXBUF;
-
+	uint8_t u1rxbuf_l = 0;
+	u1rxbuf_l =U1RXBUF;
+	xbee_handler(U1RXBUF);
 }
 
 
@@ -59,13 +50,75 @@ void usart_init(void) {
 
 }
 
-static inline void putc(char c) {
-	while(!(IFG2 & UTXIFG1));	// wait for tx buf empty
-	U1TXBUF = c;
+
+void xbee_handler(uint8_t rxbuf)
+{
+	static uint8_t place=0;
+	static uint8_t xbchecksum=0;
+	static uint8_t delim=0;
+
+	    
+	if(rxbuf==0x7e )//is it a sentinel if so resart
+	{
+		place=1;
+	       	xbchecksum=0;
+		return;
+	}
+			
+			
+	/* escaped char replacemnt scheme: */
+	if(delim)		/* previous byte was delimiter */
+	{
+		rxbuf ^= 0x20;
+		delim =0;
+	}
+
+	if(rxbuf==0x7D)
+	{
+		delim =1;	/* next byte needs to be doctored */
+		return;
+	}
+			
+
+	/* is value within the areas we care about, if so, is it the same as the buffer */
+	if(((place>STARTIG)&&(place<STOPIG))||(safe[place]==rxbuf)||(place>HOWSAFE-2))//
+	{ //      in the ignoor zone                 char corret           checksum???
+		/* temp[place]=rxbuf; */
+		if (place==HOWSAFE-1) /* reached end of string */
+		{		       
+			if(rxbuf+xbchecksum==0xff)
+			{
+				/* the packet is verifyed */
+				make_safe();
+			}
+			else 
+			{
+				place=0;
+						   	
+			}
+		}
+		else
+		{
+			if ((place>STARTIG)&&(place<HOWSAFE-1))/*  add up bytes between end of length and penultimate(checksum) */
+			{
+				xbchecksum+=rxbuf;
+			}
+			place++;
+		}
+	} 
+	else place=0;		/* byte was not in the expected series - fail */
+	
+    
+    
 }
 
-static inline unsigned int getc(void) {
-	while(!(IFG2 & URXIFG1));	// wait for rx buf full
-	return U1RXBUF;
-}
 
+/* static inline void putc(char c) { */
+/* 	while(!(IFG2 & UTXIFG1));	// wait for tx buf empty */
+/* 	U1TXBUF = c; */
+/* } */
+
+/* static inline unsigned int getc(void) { */
+/* 	while(!(IFG2 & URXIFG1));	// wait for rx buf full */
+/* 	return U1RXBUF; */
+/* } */
