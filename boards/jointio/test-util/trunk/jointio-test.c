@@ -9,7 +9,7 @@
 #include <string.h>
 #include "smbus_pec.h"
 
-#define ADDRESS 0x14
+#define ADDRESS 0x24
 
 #define I2C_DEVICE "/dev/i2c-0"
 
