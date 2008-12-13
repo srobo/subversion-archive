@@ -129,7 +129,7 @@ int main( int argc, char** argv )
 	setservo(fd,servo,val);
 	
 	servo_status last_command = servo_read(fd);
-	if(last_command.number > 8)
+	if(0)
 		fprintf(stderr, "Error reading servo position");
 	else
 		fprintf(stderr, "Last servo command:\n\tServo:\t%u\n\tPosition:\t%u\n",
