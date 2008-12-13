@@ -11,6 +11,8 @@
 
 #define ADDRESS 0x14
 
+#define I2C_DEVICE "/dev/i2c-0"
+
 /* The commands */
 enum
 {
@@ -139,11 +141,11 @@ int jointio_i2c_conf( void )
 {
 	int fd;
 
-	fd = open( "/dev/i2c-0", O_RDWR );
+	fd = open( I2C_DEVICE, O_RDWR );
 
 	if( fd == -1 )
 	{
-		fprintf( stderr, "Failed to open /dev/i2c-0: %m\n" );
+		fprintf( stderr, "Failed to open " I2C_DEVICE ": %m\n" );
 		exit(1);
 	}
 
