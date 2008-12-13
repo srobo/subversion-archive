@@ -31,6 +31,7 @@ static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
 					MODULE_IDENTITY & 0xFF, 
 					(FIRMWARE_REV >> 8) & 0xFF,
 					FIRMWARE_REV & 0xFF };
+static uint8_t last_servo = 0;
 
 static uint8_t pos = 0;
 static uint8_t buf[I2C_BUF_LEN];
@@ -50,30 +51,24 @@ typedef struct
 } i2c_cmd_t;
 
 /* Receive (write) functions */
-static void i2cw_motor_set( uint8_t *buf );
+static void i2cw_servo_set( uint8_t *buf );
 
 /* Transmit (read) functions */
 static uint8_t i2cr_identity( uint8_t *buf );
 
-/* Send the motor 0 setting to the master */
-static uint8_t i2cr_motor_get0( uint8_t *buf );
-
-/* Send the motor 1 setting to the master */
-static uint8_t i2cr_motor_get1( uint8_t *buf );
+/* Send the number of the servo last changed and its current value */
+static uint8_t i2cr_servo_getlast( uint8_t *buf );
 
 const i2c_cmd_t cmds[] = 
 {
 	/* Send the identity to the master */
 	{ 0, NULL, i2cr_identity },
 
-	/* Read the motor setting from the master */
-	{ 2, i2cw_motor_set, NULL },
+	/* Read the servo setting from the master */
+	{ 2, i2cw_servo_set, NULL },
 
-	/* Send the motor 1 setting to the master */
-	{ 0, NULL, i2cr_motor_get0 },
-
-	/* Send the motor 2 setting to the master */
-	{ 0, NULL, i2cr_motor_get1 },
+	/* Send the number of the servo last changed and its current value */
+	{ 0, NULL, i2cr_servo_getlast },
 };
 
 /* The current command */
@@ -237,27 +232,19 @@ void i2c_reset( void )
 	i2c_init();
 }
 
-static void i2cw_motor_set( uint8_t *buf )
+static void i2cw_servo_set( uint8_t *buf )
 {
 	servo_set_pwm( buf[0],
 	       (MIN_PULSE + ((MAX_PULSE-MIN_PULSE)/255)*(uint16_t)buf[1]));
+	last_servo = buf[0];
 }
 
-static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor )
+static uint8_t i2cr_servo_getlast( uint8_t *buf)
 {
-	servo_set_pwm(0, MIN_PULSE);
-	return 2;
-}
-
-static uint8_t i2cr_motor_get0( uint8_t *buf )
-{
-	i2cr_motor_get(buf, 0);
-	return 2; 
-}
-
-static uint8_t i2cr_motor_get1( uint8_t *buf )
-{
-	i2cr_motor_get(buf, 0);
-	return 2;
+	buf[0] = last_servo;
+	uint16_t position  = servo_get_pwm(last_servo);
+	buf[1] = (position >> 8) & 0xFF;
+	buf[2] = position & 0xFF;
+	return 3;
 }
 
