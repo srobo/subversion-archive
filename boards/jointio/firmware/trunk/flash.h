@@ -3,11 +3,11 @@
 #include <stdint.h>
 #include "common.h"
 
-/* WARNING: These are highly MSP430F2234 specific: */
-/* 8k of flash, split into two 3.5k sections */
-#define AREA_0 0xe000
-#define AREA_1 0xf000
-#define AREA_LEN 0xe00
+/* WARNING: These are highly MSP430F2254 specific: */
+/* 8k of flash, split into two 7.5k sections */
+#define AREA_0 0xc000
+#define AREA_1 0xe000
+#define AREA_LEN 0x1e00
 
 #define IVT ((uint16_t*)0xFFC0)
 
