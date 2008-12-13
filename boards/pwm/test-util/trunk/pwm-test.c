@@ -11,19 +11,32 @@
 #define ADDRESS 0x1e
 #define POS0 3
 #define POS1 135
+#define READ_COMMAND 2
 
 typedef enum
 {
 	FALSE = 0, TRUE
 } bool;
 
+typedef struct
+{
+	uint8_t number;
+	uint16_t position;
+} servo_status;
+
 bool err_enable = TRUE;
+
+servo_status current = {0,0};
 
 /* Enable the use of the PEC*/
 void i2c_pec_enable( int fd );
 
 /* Disable use of the PEC */
 void i2c_pec_disable( int fd );
+
+/* Read back the last servo changed
+   and its current position. */
+servo_status servo_read( int fd);
 
 void setservo( int fd, uint8_t n, uint8_t val )
 {
@@ -35,6 +48,25 @@ void setservo( int fd, uint8_t n, uint8_t val )
 		fprintf( stderr, "i2c failed: %m\n" );
 }
 
+servo_status servo_read(int fd)
+{
+	int32_t r;
+	uint8_t command = READ_COMMAND;
+	servo_status stat = {255, 0};
+	r = i2c_smbus_read_word_data(fd, command);
+	if(r < 0)
+		return stat; 
+
+	/* Incomming bits:
+		Bits 7:0  -> Servo Number
+		Bits 23:8 -> Servo position
+	*/
+
+	stat.number = (uint8_t) r & 0xf;
+	stat.position = (uint16_t) (r >> 8) & 0xff;
+
+	return stat;
+}
 void spam( int fd )
 {
 	uint8_t addr = 0;
@@ -96,6 +128,12 @@ int main( int argc, char** argv )
 	i2c_pec_enable(fd);
 	setservo(fd,servo,val);
 	
+	servo_status last_command = servo_read(fd);
+	if(last_command.number > 8)
+		fprintf(stderr, "Error reading servo position");
+	else
+		fprintf(stderr, "Last servo command:\n\tServo:\t%u\n\tPosition:\t%u\n",
+			last_command.number, last_command.position);
 	return 0;
 }
 void i2c_pec_enable( int fd )
