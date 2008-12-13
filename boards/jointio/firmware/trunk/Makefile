@@ -1,10 +1,12 @@
 ARCH=msp430x2254
 CC := msp430-gcc
-CFLAGS := -g -mmcu=${ARCH} -Wall -O3
+CFLAGS := -g -mmcu=${ARCH} -Wall
 LDFLAGS :=
 
-H_FILES = common.h i2c.h init.h smbus_pec.h timer-b.h adc.h flash.h
-C_FILES = main.c i2c.c init.c smbus_pec.c timer-b.c adc.c flash.c
+H_FILES = common.h i2c.h init.h smbus_pec.h timer-b.h adc.h flash.h \
+	i2c-flash.h
+C_FILES = main.c i2c.c init.c smbus_pec.c timer-b.c adc.c flash.c \
+	i2c-flash.c
 
 world: jointio-top jointio-bottom
 

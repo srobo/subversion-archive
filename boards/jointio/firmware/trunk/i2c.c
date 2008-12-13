@@ -20,6 +20,7 @@
 #include "smbus_pec.h"
 #include "timer-b.h"
 #include "adc.h"
+#include "i2c-flash.h"
 
 #define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x0201
@@ -78,7 +79,14 @@ const i2c_cmd_t cmds[] =
 	{ 0, NULL, i2cr_output_get },
 
 	/* Send the inputs in digital form to the master */
-	{ 0, NULL, i2cr_input_digital }
+	{ 0, NULL, i2cr_input_digital },
+
+        /* Firmware version */
+        { 0, NULL, i2c_flashr_fw_ver },
+        /* Firmware chunk reception, and next-address transmission */
+        { 20, i2c_flashw_fw_chunk, i2c_flashr_fw_next },
+        /* Firmware CRC transmission and confirmation */
+        { 4, i2c_flashw_confirm, i2c_flashr_crc }
 };
 
 /* The current command */

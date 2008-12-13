@@ -17,6 +17,8 @@
 #include "i2c.h"
 #include "init.h"
 #include "adc.h"
+#include "flash.h"
+#include "i2c-flash.h"
 
 static int i = 0;
 
@@ -33,6 +35,10 @@ int main( void )
 
 	init();
 
-	while(1)
+	while(1) {
 		adc_sample();
+
+		if( i2c_flash_received )
+			flash_switchover();
+	}
 }
