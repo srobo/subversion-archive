@@ -22,7 +22,6 @@
 #include "smbus_pec.h"
 #include "timer-b.h"
 
-#define USE_CHECKSUMS 0
 #define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x7062
 #define FIRMWARE_REV 0x0304
