@@ -1,0 +1,12 @@
+name = ACL
+description = Access control list API. Has no features on its own.
+package = Access control
+core = 6.x
+
+
+; Information added by drupal.org packaging script on 2008-10-16
+version = "6.x-1.0-beta2"
+core = "6.x"
+project = "acl"
+datestamp = "1224186002"
+

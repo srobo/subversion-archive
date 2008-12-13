@@ -1,0 +1,24 @@
+CHANGELOG for Forum Access for Drupal 6
+
+forum_access HEAD:
+
+forum_access 6.x-1.x-BETA1 (2008-10-14):
+  Bugs fixed:
+    - #309113: Fix warning messages in bootstrap.inc (caused by bad drupal_set_message() call).
+    - #302774: Remove cruft from _forum_access_get_roles().
+    - Use node_access_needs_rebuild() rather than node_access_rebuild() when enabling/disabling module.
+    - Fix cosmetic coder issues (no functional change).
+    - #246959: Fix a bad t() call.
+    - #219778: Remove grants when roles are deleted, purge orphaned grants.
+    - #230123: Newest pgsql refuses to do automatic type conversions.
+    - Provide a message for uninitialized forums when newly installed, rather than the incorrect 'default' setting of grant_all for 1 & 2.
+    - #222477: forum_access_node_access_records() didn't return its result.
+  Porting to D6:
+    - #128846: Accommodate PostgreSQL 8.3's requirement for explicit casts.
+    - Publish .pot file.
+    - Port precautionary warning on Content Access page (will need to test and activate full diagnostics when CA is ported).
+    - #231611: Add support for non-forum content types; update moderator(s) when changing forum.
+    - Avoid E_NOTICEs — ready for beta.
+    - First-shot port to D6.
+    - Copied 5.x-1.9.
+

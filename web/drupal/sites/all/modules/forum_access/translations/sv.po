@@ -1,0 +1,94 @@
+# $Id: sv.po,v 1.1 2008/07/28 16:01:28 seals Exp $
+#
+# Swedish translation of Drupal (forum_access)
+# Copyright 2008 Magnus Gunnarsson <seals@passagen.se>
+# Generated from files:
+#  forum_access.module,v 1.22 2008/03/29 14:25:44 salvis
+#  forum_access.info: n/a
+#  forum_access.install,v 1.6 2008/03/14 02:13:40 salvis
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Forum Access 6.x\n"
+"POT-Creation-Date: 2008-07-28 17:44+0200\n"
+"PO-Revision-Date: 2008-07-28 17:51+0100\n"
+"Last-Translator: Magnus Gunnarsson <seals@passagen.se>\n"
+"Language-Team: drupalsverige.se\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: forum_access.module:75
+#: forum_access.info:0
+msgid "Forum Access"
+msgstr "Tillgång till forum"
+
+#: forum_access.module:171
+msgid "If you have only just installed !Forum_Access, then the posts in this forum may still be accessible, but once your permissions get rebuilt (intentionally or behind-the-scenes by some other module), they will vanish &mdash; so, be sure to set the desired Access Control below and save!"
+msgstr "Om du precis har installerat !Forum_Access kan inläggen i detta forum fortfarande vara tillgängliga, men så snart dina rättigheter har byggts om (med avsikt eller genom någon annan modul) kommer de att försvina &mdash; så var noga med att ange rätt åtkomst nedan och spara!"
+
+#: forum_access.module:182
+#: forum_access.info:0
+msgid "Access control"
+msgstr "Behörighet"
+
+#: forum_access.module:191
+msgid "View this forum"
+msgstr "Visa detta forum"
+
+#: forum_access.module:198
+msgid "Post in this forum"
+msgstr "Göra inlägg i detta forum"
+
+#: forum_access.module:208
+msgid "Edit posts"
+msgstr "Redigera inlägg"
+
+#: forum_access.module:215
+msgid "Delete posts"
+msgstr "Radera inlägg"
+
+#: forum_access.module:236
+msgid "Moderators"
+msgstr "Moderatorer"
+
+#: forum_access.module:0
+msgid "forum_access"
+msgstr "forum_access"
+
+#: forum_access.install:17
+msgid "The base Forum Access Control table."
+msgstr "Huvudtabellen för behörighetstillgång åt forum."
+
+#: forum_access.install:20
+msgid "The {term_data}.tid to which this {forum_access} entry applies."
+msgstr "Det {term_date} för noteringen till denna {forum_access} det gäller."
+
+#: forum_access.install:25
+msgid "The {role}.rid to which this {forum_access} entry applies."
+msgstr "Det {role}.rid för noteringen till denna {forum_access} det gäller."
+
+#: forum_access.install:30
+msgid "Whether to grant \"view\" permission."
+msgstr "Huruvida att ge rättigheter av typen \"visa\"."
+
+#: forum_access.install:37
+msgid "Whether to grant \"update\" permission."
+msgstr "Huruvida att ge rättigheter av typen \"uppdatera\"."
+
+#: forum_access.install:44
+msgid "Whether to grant \"delete\" permission."
+msgstr "Huruvida att ge rättigheter av typen \"radera\"."
+
+#: forum_access.install:51
+msgid "Whether to grant \"create\" permission."
+msgstr "Huruvida att ge rättigheter av typen \"skapa\"."
+
+#: forum_access.info:0
+msgid "Allows forums to be set private and allows forums to be given moderators."
+msgstr "Låter forum bli satta till privata och låter dem bli givna moderatorer."
+
