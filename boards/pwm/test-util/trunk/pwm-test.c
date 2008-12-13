@@ -19,6 +19,12 @@ typedef enum
 
 bool err_enable = TRUE;
 
+/* Enable the use of the PEC*/
+void i2c_pec_enable( int fd );
+
+/* Disable use of the PEC */
+void i2c_pec_disable( int fd );
+
 void setservo( int fd, uint8_t n, uint8_t val )
 {
 	uint16_t p;
@@ -87,8 +93,26 @@ int main( int argc, char** argv )
 		fprintf( stderr, "Failed to set slave address: %m\n" );
 		return 2;
 	}
-
+	i2c_pec_enable(fd);
 	setservo(fd,servo,val);
 	
 	return 0;
 }
+void i2c_pec_enable( int fd )
+{
+        if( ioctl( fd, I2C_PEC, 1) < 0) 
+        { 
+                fprintf( stderr, "Failed to enable PEC\n"); 
+                exit(3);
+        } 
+}
+
+void i2c_pec_disable( int fd )
+{
+        if( ioctl( fd, I2C_PEC, 0) < 0) 
+        { 
+                fprintf( stderr, "Failed to disable PEC\n"); 
+                exit(3);
+        } 
+}
+
