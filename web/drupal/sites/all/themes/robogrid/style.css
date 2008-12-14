@@ -3,7 +3,7 @@
 	http: //www.free-css-templates.com
 	Heavily edited by Student Robotics
 
-This document is arranged into section for ease of use: 
+This document is arranged into section for ease of use:
 	Overall - general and site-wide style
 	Top - the header section of the website
 	Login - formatting of login boxes
@@ -58,11 +58,11 @@ h3 {
 	padding: 4px 0;
 	margin:  0;
 }
-a, a:active {
+a, a: active {
 	color: #253571;
 	background: inherit;
 }
-a:hover {
+a: hover {
 	color: red;
 	background: inherit;
 	text-decoration: underline;
@@ -147,7 +147,7 @@ ul, ol {
 	color: white;
 	text-decoration: none;
 }
-#block-menu-secondary-links ul li a:hover {
+#block-menu-secondary-links ul li a: hover {
 	color: red;
 	text-decoration: none;
 }
@@ -179,7 +179,7 @@ ul, ol {
 #switchboard ul li a {
 	text-decoration: none;
 }
-#switchboard ul li a:hover {
+#switchboard ul li a: hover {
 	color: red;
 }
 
@@ -222,7 +222,7 @@ ul, ol {
 	color: white;
 	text-decoration: none;
 }
-#navigation-menu ul li a:hover {
+#navigation-menu ul li a: hover {
 	color: red;
 	text-decoration: none;
 }
@@ -275,7 +275,7 @@ ul, ol {
 	padding-top: 0.2em;
 	padding-left: 15px;
 }
-#block-menu-primary-links ul li:hover {
+#block-menu-primary-links ul li: hover {
 	background-image: url('images/pri-menu_arrow.png');
 }
 #block-menu-primary-links a {
@@ -329,7 +329,7 @@ ul, ol {
 	color: #FFFFFF;
 	background-image: none;
 }
-#footer a:hover {
+#footer a: hover {
 	color: red;
 }
 
@@ -365,7 +365,7 @@ ul, ol {
 	cursor: pointer;
 	border: 1px solid white;
 }
-#items .item:hover { border: 1px solid #ddd; }
+#items .item: hover { border: 1px solid #ddd; }
 #items .item img {
 	width: 50px;
 	max-height: 35px;
@@ -406,7 +406,7 @@ ul, ol {
 	clear: left;
 	width: 500px;
 	border: 10px solid #F2F2F2;
-	background: white;	
+	background: white;
 	overflow: hidden;
 	text-align: center;
 	display: block;
@@ -440,19 +440,19 @@ ul, ol {
 }
 /* Publically visible Documentation page formatting */
 #docs {
-	width: 500px; 
-	border: 10px solid #F2F2F2; 
-	display: block; 
-	overflow: hidden; 
-	padding: 0px;  
-	margin: 0px; 
+	width: 500px;
+	border: 10px solid #F2F2F2;
+	display: block;
+	overflow: hidden;
+	padding: 0px;
+	margin: 0px;
 	text-align: center;
 }
 .doc-title {
-	display: block; 
-	border: 2px solid #F2F2F2; 
-	margin: 2px; 
-	padding: 0px; 
+	display: block;
+	border: 2px solid #F2F2F2;
+	margin: 2px;
+	padding: 0px;
 	text-align: left;
 }
 .doc-title a, .doc-title b, .doc-title i {
@@ -477,110 +477,103 @@ ul, ol {
 .forum-topic-navigation {
 	height: 1.8em;
 }
-.forum-topic-navigation:after {
+.forum-topic-navigation: after {
 	clear: none;
 }
 
 #forum .forum-outer {
-
-	width:600px;
+	width: 600px;
 }
 
-#forum td{
-	border-bottom:1px solid #cccccc;
-
+#forum td {
+	border-bottom: 1px solid #cccccc;
 }
 
 #forum td.topics {
-	text-align:left;
-	width:auto;
-	padding:0px;
-	padding-left:6px;
-	margin:0px;
+	text-align: left;
+	width: auto;
+	padding: 0px;
+	padding-left: 6px;
+	margin: 0px;
 }
 
 #forum th.topics_header {
-	text-align:left;
-	width:50px;
-	padding:0px;
-	margin:0px;
+	text-align: left;
+	width: 50px;
+	padding: 0px;
+	margin: 0px;
 }
 
 #forum tbody {
-
-	border:0px;
+	border: 0px;
 }
 
 #forum .container {
-	background-color:#FFFFFF;
-	padding-bottom:10px;
-	border:0px;
+	background-color: #FFFFFF;
+	padding-bottom: 10px;
+	border: 0px;
 }
 
 #forum .container a {
-	font-size:1.2em;
-	
-	text-decoration:none;
-
+	font-size: 1.2em;
+	text-decoration: none;
 }
 
 #forum .container_spacer {
-	border-bottom:0px;
-	height:20px;
+	border-bottom: 0px;
+	height: 20px;
 }
 
 #forum .table_headers th {
-	border-bottom:3px solid #cccccc;
+	border-bottom: 3px solid #cccccc;
 }
 
 #forum .container .raquo {
-	font-size:14pt;
-	
+	font-size: 14pt;
+
 }
 #forum .active {
-	/*padding:0px;*/
+	/*padding: 0px;*/
 }
 #forum .replies {
-	padding-left:8px;
-	width:60px;
-	
+	padding-left: 8px;
+	width: 60px;
+
 }
 
 .comment {
-	margin-top:15px;
-	border:1px #cccccc solid;
-
-
+	margin-top: 15px;
+	border: 1px #cccccc solid;
 }
+
 .comment .submitted {
-	background-color:#eeeeee;
-	border-bottom:1px #cccccc solid;
-	padding-left:5px;
-	padding-top:1px;
-	padding-bottom:1px;
+	background-color: #eeeeee;
+	border-bottom: 1px #cccccc solid;
+	padding-left: 5px;
+	padding-top: 1px;
+	padding-bottom: 1px;
 }
 
 .comment .content {
-	padding:5px;
+	padding: 5px;
 }
 
 .comment .reply-links {
-
-
-	border-top:1px #cccccc solid;
-	padding-top:1px;
-	padding-bottom:1px;
-	padding-left:5px;
+	border-top: 1px #cccccc solid;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 5px;
 }
+
 .indented {
-  margin-left:0px; /* LTR */
+  margin-left: 0px; /* LTR */
 }
 
 .node .content {
-	border-top:1px #cccccc solid;
-	border-bottom:1px #cccccc solid;
-	margin-top:3px;
-	margin-bottom:3px;
+	border-top: 1px #cccccc solid;
+	border-bottom: 1px #cccccc solid;
+	margin-top: 3px;
+	margin-bottom: 3px;
 }
 
 /* User Profile */
