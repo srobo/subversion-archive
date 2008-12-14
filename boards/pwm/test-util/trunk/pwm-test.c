@@ -11,8 +11,8 @@
 #define ADDRESS 0x1e
 #define POS0 3
 #define POS1 135
-#define READ_COMMAND 2
-
+#define READ_COMMAND 0x02
+#define RETRY_ATTEMPTS 255
 typedef enum
 {
 	FALSE = 0, TRUE
@@ -21,10 +21,11 @@ typedef enum
 typedef struct
 {
 	uint8_t number;
-	uint16_t position;
+	uint8_t position;
 } servo_status;
 
 bool err_enable = TRUE;
+static max_servo_no = 5;
 
 servo_status current = {0,0};
 
@@ -51,20 +52,16 @@ void setservo( int fd, uint8_t n, uint8_t val )
 servo_status servo_read(int fd)
 {
 	int32_t r;
-	uint8_t command = READ_COMMAND;
 	servo_status stat = {255, 0};
-	r = i2c_smbus_read_word_data(fd, command);
-	if(r < 0)
-		return stat; 
-
+	r = i2c_smbus_read_word_data(fd, READ_COMMAND);
+	
 	/* Incomming bits:
 		Bits 7:0  -> Servo Number
-		Bits 23:8 -> Servo position
+		Bits 15:8 -> Servo position
 	*/
-
-	stat.number = (uint8_t) r & 0xf;
-	stat.position = (uint16_t) (r >> 8) & 0xff;
-
+	uint16_t d = (uint16_t) r;
+	stat.number = (uint8_t) d & 0x0f;
+	stat.position = (d >> 8);
 	return stat;
 }
 void spam( int fd )
@@ -112,8 +109,6 @@ int main( int argc, char** argv )
 	servo = atol( argv[1] );
 	val = atol( argv[2] );	
 
-	printf( "servo: %u value: %u\n", servo, val );
-
 	if( fd == -1 )
 	{
 		fprintf( stderr, "Failed to open /dev/i2c-0: %m\n" );
@@ -126,15 +121,35 @@ int main( int argc, char** argv )
 		return 2;
 	}
 	i2c_pec_enable(fd);
-	setservo(fd,servo,val);
+	uint8_t attempt = 0;
+	servo_status fback = {0, 0};
 	
-	servo_status last_command = servo_read(fd);
-	if(0)
-		fprintf(stderr, "Error reading servo position");
+	if(servo >= max_servo_no)
+	{
+		fprintf( stderr, "Invalid Servo Number. Valid Servos:  0..%u\n", max_servo_no);
+		return 3;
+	}
+	do
+	{
+		setservo(fd, servo, val);
+		fback = servo_read(fd);
+		if(fback.position == val && fback.number == servo)
+			break;
+		attempt++;
+	}
+	while(attempt < RETRY_ATTEMPTS);
+	
+	if(attempt < RETRY_ATTEMPTS)
+	{
+		fprintf(stderr, "Succeeded with %u retries\n", attempt);
+		fprintf(stderr, "Servo No.\t%u\nServo Position:\t%u\n", fback.number, fback.position);
+		return 0;
+	}
 	else
-		fprintf(stderr, "Last servo command:\n\tServo:\t%u\n\tPosition:\t%u\n",
-			last_command.number, last_command.position);
-	return 0;
+	{
+		fprintf(stderr, "Failed with %u retries\n", RETRY_ATTEMPTS);
+		return 4;
+	}
 }
 void i2c_pec_enable( int fd )
 {
