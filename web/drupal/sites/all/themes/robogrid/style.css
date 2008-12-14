@@ -26,6 +26,7 @@ body,div,ul,ol,li,pre,blockquote,img,form,a {
 }
 html {
 	background-color: #636363;
+	overflow-y: scroll;
 }
 body {
 	font: 0.74em Arial, sans-serif;
