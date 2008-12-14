@@ -32,6 +32,7 @@ static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
 					(FIRMWARE_REV >> 8) & 0xFF,
 					FIRMWARE_REV & 0xFF };
 static uint8_t last_servo = 0;
+static uint8_t last_position = 0;
 
 static uint8_t pos = 0;
 static uint8_t buf[I2C_BUF_LEN];
@@ -237,14 +238,13 @@ static void i2cw_servo_set( uint8_t *buf )
 	servo_set_pwm( buf[0],
 	       (MIN_PULSE + ((MAX_PULSE-MIN_PULSE)/255)*(uint16_t)buf[1]));
 	last_servo = buf[0];
+	last_position = buf[1];
 }
 
 static uint8_t i2cr_servo_getlast( uint8_t *buf)
 {
 	buf[0] = last_servo;
-	uint16_t position  = servo_get_pwm(last_servo);
-	buf[1] = (position >> 8) & 0xFF;
-	buf[2] = position & 0xFF;
-	return 3;
+	buf[1] = last_position;
+	return 2;
 }
 
