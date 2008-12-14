@@ -58,11 +58,11 @@ h3 {
 	padding: 4px 0;
 	margin:  0;
 }
-a, a: active {
+a, a:active {
 	color: #253571;
 	background: inherit;
 }
-a: hover {
+a:hover {
 	color: red;
 	background: inherit;
 	text-decoration: underline;
@@ -535,10 +535,10 @@ ul, ol {
 #forum .active {
 	/*padding: 0px;*/
 }
-#forum .replies {
+#forum td.replies {
 	padding-left: 8px;
 	width: 60px;
-
+	text-align: left;
 }
 
 .comment {
