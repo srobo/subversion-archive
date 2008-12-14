@@ -38,7 +38,7 @@ function robogrid_preprocess_forum_topic_list(&$variables) {
 	}
 //	echo "\nheader: ".print_r($header, true);
 
-	$variables['header'] = $header['&nbsp;'].$header['Topic'].$header['Last reply'].$header['Replies'];
+	$variables['header'] = $header[''].$header['Topic'].$header['Last reply'].$header['Replies'];
 
 }
 ?>
