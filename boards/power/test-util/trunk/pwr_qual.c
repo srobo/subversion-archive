@@ -339,11 +339,11 @@ error0:
 int init_i2c(void){
 	int fd;			
       
-	fd = open( "/dev/i2c-1", O_RDWR );
+	fd = open( "/dev/i2c-0", O_RDWR );
 	
 	if( fd == -1 )
 	{
-		fprintf( stderr, "Failed to open /dev/`i2c-1: %m\n" );
+		fprintf( stderr, "Failed to open /dev/`i2c-0: %m\n" );
 		return 1;
 	}
 
