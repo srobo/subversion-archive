@@ -24,7 +24,19 @@ enum
 	COMMAND_GET0,
 
 	/* Get motor 1 settings */
-	COMMAND_GET1
+	COMMAND_GET1,
+	
+	/* Get Firmware version */
+	COMMAND_FWVER,
+
+	/*Firware Reception & Chunk transmission*/
+	COMMAND_FWCHUNK,
+
+	/* Firmware CRC Transmission */
+	COMMAND_FWCONFIRM,
+
+	/* Feedback read*/
+	COMMAND_FEEDBACK
 };
 
 typedef enum
@@ -68,6 +80,10 @@ bool motor_read( int fd, uint8_t m, motor_state_t *s, pwm_ratio_t *val );
 /* Configure a motor, but read back and try again. */
 void motor_set_retry( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val );
 
+/* Read feedback pins */
+void motor_fback_read( int fd);
+
+
 int main( int argc, char** argv )
 {
 	int fd;
@@ -75,10 +91,16 @@ int main( int argc, char** argv )
 	motor_state_t dir;
 	pwm_ratio_t pwm;
 	bool test = FALSE;
+	bool fback = FALSE;
 
 	if( argc == 2 && strcmp( argv[1], "test" ) == 0 )
 		/* Run tests */
 		test = TRUE;
+
+	if( argc == 2 && strcmp( argv[1], "fback") == 0)
+		/* run feedback*/
+		fback = TRUE;
+
 	else if( argc < 4 )
 	{
 		printf("Usage: %s CHANNEL DIR PWM_VALUE\n"
@@ -100,6 +122,11 @@ int main( int argc, char** argv )
 	if( test )
 	{
 
+	}
+	else if( fback)
+	{
+		printf("Reading feebackpins on motor board\n");
+		motor_fback_read(fd);	
 	}
 	else
 	{
@@ -246,4 +273,14 @@ void motor_set_retry( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
 	while( r_s != s && r_v != val );
 
 	printf("%u attempts. s=%u, r=%u\n", attempts, a_s, a_r);
+}
+
+void  motor_fback_read( int fd)
+{
+	int32_t r;
+	r = i2c_smbus_read_word_data(fd, COMMAND_FEEDBACK);
+	uint16_t d = (uint16_t) r;
+
+	fprintf(stderr, "Motor fback pins:\t%u\n",(d&0x0f) );
+	return;	
 }
