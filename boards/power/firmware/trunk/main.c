@@ -10,6 +10,7 @@
 #include"timer-a.h"
 #include"usart.h"
 #include "adc.h"
+#include "isense.h"
 
 int dummy =0; 			/* dummy variable to fix gdb bug */
 
@@ -23,6 +24,7 @@ int main(void)
 	pwr_init();
 	i2c_init();
 	adc_init();
+	isense_init();
 	//usart_init();
 	timera_init();
 	eint();			/* enable global interrupts */
