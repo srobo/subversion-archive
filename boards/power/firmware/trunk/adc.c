@@ -13,25 +13,19 @@ interrupt (ADC12_VECTOR) adc_service( void )
 	uint8_t adc12v_l = ADC12IV;
 	/* We only care about the interrupt relating to the last in 
 	   the conversion sequence - which is the only one that we enabled */
-	if( adc12v_l & 0x01 )
-	{
-		current = ADC12MEM0;
-		
-		//ADC12CTL0 &= ~ENC; /* wibble the enable - datasheet says so */
-		//ADC12CTL0 |= ENC;	
-		togd;
-		
-	}
-	else if ( adc12v_l & 0x02 )
+	if ( adc12v_l == 0x08)
 	{
 		toga;
+		current = ADC12MEM0;
 		voltage = ADC12MEM1;
+		ADC12IFG &= ~0x02; /* clear flag */
 	}
 
 	else
 	{
 		togc;
 		/* possible error handler from other misc iv's */
+		ADC12IFG = 0; /* clear everything else */
 	}
 }
 
@@ -68,7 +62,7 @@ void adc_init( void )
 		| INCH_1;	/* source = ch0 = voltage sense out*/
 
 //	ADC12IFG = 0;		/* clear any erroneous flags */
-	ADC12IE = 0x3;		/* set interrupt on last conversion */
+	ADC12IE = 0x2;		/* set interrupt on last conversion */
 
 
 

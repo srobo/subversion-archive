@@ -15,7 +15,6 @@ interrupt (TIMERA1_VECTOR) timera_service( void )
 	case TAIV_CCR1:	     
 		/* do something here */
 		TACCR1 += PERIOD1;
-		togb;
 		ADC12CTL0 &= ~ENC; /* wibble the enable - datasheet says so */
 		ADC12CTL0 |= ENC;
 		break;
