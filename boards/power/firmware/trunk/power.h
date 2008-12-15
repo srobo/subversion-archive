@@ -14,6 +14,7 @@ uint8_t pwr_get_servo(void);
 void pwr_set_motor(uint8_t val);
 uint8_t pwr_get_motor(void);
 
+void delay(int16_t time);
 
 /*          20       P2.0/ACLK  I/O      SLUG-PWR-EN */
 /*          21       P2.1/TAINCLK I/O      SERVO-PWR-EN */

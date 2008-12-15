@@ -2,6 +2,7 @@
 #include "device.h"
 #include <signal.h>
 #include <stdio.h>
+#include "led.h"
 
 uint16_t voltage=0;
 uint16_t current=0;
@@ -10,7 +11,7 @@ interrupt (ADC12_VECTOR) adc_service( void )
 {
 
 	uint8_t adc12v_l = ADC12IV;
-
+	togd;
 	/* We only care about the interrupt relating to the last in 
 	   the conversion sequence - which is the only one that we enabled */
 	if( adc12v_l == 0x02 )
@@ -18,9 +19,11 @@ interrupt (ADC12_VECTOR) adc_service( void )
 		current = ADC12MEM0;
 		voltage = ADC12MEM1;
 		ADC12CTL0 &= ~ENC; /* wibble the enable - datasheet says so */
-		ADC12CTL0 |= ENC;		
+		ADC12CTL0 |= ENC;	
+		togc;
 		
 	}
+
 	else
 	{
 		/* possible error handler from other misc iv's */
@@ -44,7 +47,7 @@ void adc_init( void )
 
 
 	ADC12CTL1 = CSTARTADD_0	/* start at 0 */
-		| SHS_TACCR1	/* conversion start from timera cc1 */
+		| SHS_ADC12SC	/* conversion start from timera cc1 */
 		| SHP
 		/* no ISSH? */
 		| ADC12DIV_0	/* no adc divider */
@@ -56,7 +59,7 @@ void adc_init( void )
 		
 	ADC12MCTL1 = EOS  	/* last memory in sequence */
 		| SREF_1	/* use internal referance */
-		| INCH_1;	/* source = ch0 = current sense out*/
+		| INCH_1;	/* source = ch0 = voltage sense out*/
 
 	ADC12IFG = 0;		/* clear any erroneous flags */
 	ADC12IE = 0x2;		/* set interrupt on last conversion */
@@ -64,7 +67,7 @@ void adc_init( void )
 
 
 	/* movethis to a post warm up timer */
-	ADC12CTL0 |= ENC;
+	
 		
 }
 

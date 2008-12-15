@@ -2,7 +2,7 @@
 #include"device.h"
 #include"led.h"
 
-static void delay(int16_t time);
+void delay(int16_t time);
 
 void pwr_init(void)
 {
@@ -76,7 +76,7 @@ uint8_t pwr_get_motor(void)
 
 
 
-static void delay(int16_t time)
+void delay(int16_t time)
 {
     int16_t sponge =0;
     int16_t startupdel=0;
