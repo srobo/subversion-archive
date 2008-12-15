@@ -125,7 +125,7 @@ int main( int argc, char** argv )
 	uint8_t attempt = 0;
 	servo_status fback = {0, 0};
 	
-	if(servo >= max_servo_no)
+	if(servo > max_servo_no)
 	{
 		fprintf( stderr, "Invalid Servo Number. Valid Servos:  0..%u\n", max_servo_no);
 		return 3;
