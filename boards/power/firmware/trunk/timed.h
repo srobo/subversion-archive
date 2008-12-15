@@ -13,6 +13,6 @@ void stayingalive(void);
 void alive_service(void);
 void make_safe(void);
 void safe_service(void);
-void button_override(void);
+void timer_override(void);
 
 #endif

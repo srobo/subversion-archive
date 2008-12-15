@@ -3,6 +3,8 @@
 #define __SWITCH_H
 #include <stdint.h>
 
+extern uint8_t button_pressed;
+
 void switch_init(void);
 
 /* Returns the DIP switch values.

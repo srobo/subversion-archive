@@ -4,7 +4,7 @@
 #include "timed.h"
 #include "power.h"
 
-uint8_t alive =0;
+uint8_t alive =1;
 static uint16_t safe_count =0;
 uint8_t override=0;	/* button override */
 
@@ -28,7 +28,7 @@ void alive_service(void){	/* called ever 0.1s */
 	
 }
 
-void button_override(void){
+void timer_override(void){
 	override =1;		/* buton pressed so override the serial timout routine */
 	pwr_set_motor(1);
 }

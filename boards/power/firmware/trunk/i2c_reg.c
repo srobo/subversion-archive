@@ -60,7 +60,7 @@
 I2C_REG_RO( identify );		
 I2C_REG( led );		
 I2C_REG_RO( dipswitch );	
-I2C_REG_RO( button );	
+I2C_REG( button );	
 I2C_REG( slug_power );	
 I2C_REG( servo_power );
 I2C_REG( motor_power );		
@@ -77,7 +77,7 @@ const reg_access_t dev_regs[] =
 	I2C_REG_ENTRY_RO( identify ), 
 	I2C_REG_ENTRY( led ),	      
 	I2C_REG_ENTRY_RO( dipswitch ), 
-	I2C_REG_ENTRY_RO( button ),
+	I2C_REG_ENTRY( button ),
 	I2C_REG_ENTRY( slug_power ),  
 	I2C_REG_ENTRY( servo_power ),	
 	I2C_REG_ENTRY( motor_power ),	   
@@ -146,8 +146,14 @@ uint16_t i2cs_button( void )
 
 uint8_t i2cr_button( uint8_t* data )
 {
-	data[0]=23;
+	data[0]=button_pressed;
 	return 1;
+}
+
+void i2cw_button( uint8_t* data, uint8_t len )
+{
+	button_pressed =0;	/* clear the logged button interupt */
+	/* we may need to consider bounce on release */
 }
 
 
@@ -319,5 +325,5 @@ uint8_t i2cr_fakebutton( uint8_t *data )
 void i2cw_fakebutton( uint8_t* data, uint8_t len )
 {
 	
-	button_override();
+	P2IFG |= 0x08;		/* create hardware interrupt from software, datasheet says yes! */
 }
