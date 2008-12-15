@@ -16,7 +16,7 @@
 #ifndef __I2C_H
 #define __I2C_H
 
-#define I2C_ADDRESS 0x1E
+#define I2C_ADDRESS 0x2E
 
 /* The commands */
 enum {

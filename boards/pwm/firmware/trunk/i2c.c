@@ -23,7 +23,7 @@
 #include "timer-b.h"
 
 #define I2C_BUF_LEN 32
-#define MODULE_IDENTITY 0x7062
+#define MODULE_IDENTITY 0x7063
 #define FIRMWARE_REV 0x0304
 
 
