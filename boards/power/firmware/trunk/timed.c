@@ -35,7 +35,6 @@ void timer_override(void){
 
 void make_safe(void){
 	if(override != 1){
-		togc;
 		safe_count =0;
 		pwr_set_motor(1);
 	}
