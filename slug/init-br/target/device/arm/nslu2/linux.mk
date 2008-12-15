@@ -25,7 +25,7 @@
 ifneq ($(filter $(TARGETS),linux),)
 
 # Version of Linux to download and then apply patches to
-DOWNLOAD_LINUX_VERSION=2.6.15
+DOWNLOAD_LINUX_VERSION=2.6.27
 # Version of Linux AFTER patches
 LINUX_VERSION=$(DOWNLOAD_LINUX_VERSION)nslu2
 
@@ -102,17 +102,15 @@ $(LINUX_KCONFIG):
 $(LINUX_DIR)/include/linux/autoconf.h $(BUILD_DIR)/linux/include/linux/autoconf.h:  $(LINUX_DIR)/.unpacked  $(LINUX_KCONFIG) 
 	-cp $(LINUX_KCONFIG) $(LINUX_DIR)/.config
 	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) silentoldconfig
-	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) prepare1 include/asm-arm/.arch
+	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) archprepare
 
 $(LINUX_DIR)/$(LINUX_BINLOC): $(LINUX_DIR)/.config $(LINUX_DIR)/include/linux/autoconf.h
 	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH)
 
 $(LINUX_KERNEL): $(LINUX_DIR)/$(LINUX_BINLOC) $(BUSYBOX_DIR)/.configured
-	-echo DEPMOD3=$(DEPMOD)
-	-echo DEPMOD_TMP=$(DEPMOD_TMP)
 	mkdir -p $(TARGET_DIR)/boot
 
-	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) DEPMOD="$(DEPMOD)" CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) INSTALL_MOD_PATH=$(TARGET_DIR) modules_install
+	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) DEPMOD="$(DEPMOD_TMP)" CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) INSTALL_MOD_PATH=$(TARGET_DIR) modules_install
 	find $(TARGET_DIR)/lib/modules -type l -name build -exec rm {} \;
 	find $(TARGET_DIR)/lib/modules -type l -name source -exec rm {} \;
 	#cp -fpR --no-dereference $(LINUX_DIR)/$(LINUX_BINLOC) $(LINUX_KERNEL)
