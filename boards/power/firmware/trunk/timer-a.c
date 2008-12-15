@@ -3,7 +3,7 @@
 #include <signal.h>
 #include "led.h"
 #include "timed.h"
-
+#define PERIOD1 3000 
 #define PERIOD2 60240		/* this gives interupts every 0.1 sec appx(DCO) */
 /* timer tics at appx 1.66us per tick don;y appx because derived from dco */
 interrupt (TIMERA1_VECTOR) timera_service( void )
@@ -14,6 +14,7 @@ interrupt (TIMERA1_VECTOR) timera_service( void )
 	{
 	case TAIV_CCR1:	     
 		/* do something here */
+		togb;
 		break;
 	case TAIV_CCR2:
 		TACCR2 += PERIOD2;
@@ -37,7 +38,16 @@ void timera_init( void )
 
 	/* capture control regs */
 	TACCTL0 = 0;
-	TACCTL1 = 0;
+	/* cc1 triggers adc reading */
+	TACCTL1 = CM_0 | 	/* no capture */
+		CCIS_3 |	/* no in, out triggers adc12 */
+		SCS |		/* sychronise capture - superflous? */
+		/* no CAP so in compare mode */
+		OUTMOD_0|	/* normal output, poss irrellevant */
+		CCIE ;		/* cc interupt en */
+		
+
+	/* cc2 generates 0.1s ish tick */
 	TACCTL2 = CM_0 |		/* no capture */
 		CCIS_3 |	/* no in or out pins connected */
 		SCS |		/* sychronise capture - superflous? */
@@ -45,6 +55,7 @@ void timera_init( void )
 		OUTMOD_0|	/* normal output, poss irrellevant */
 		CCIE ;		/* cc interupt en */
 		
+	TACCR1 = PERIOD1;	
 	TACCR2 = PERIOD2;
 
 	TACTL |= MC_2;			/* start timer */
