@@ -3,7 +3,7 @@
 #include <signal.h>
 #include "led.h"
 #include "timed.h"
-#define PERIOD1 3000 
+#define PERIOD1 30000
 #define PERIOD2 60240		/* this gives interupts every 0.1 sec appx(DCO) */
 /* timer tics at appx 1.66us per tick don;y appx because derived from dco */
 interrupt (TIMERA1_VECTOR) timera_service( void )
@@ -14,6 +14,7 @@ interrupt (TIMERA1_VECTOR) timera_service( void )
 	{
 	case TAIV_CCR1:	     
 		/* do something here */
+		TACCR1 += PERIOD1;
 		togb;
 		break;
 	case TAIV_CCR2:
