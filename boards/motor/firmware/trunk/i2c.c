@@ -61,6 +61,9 @@ static uint8_t i2cr_motor_get0( uint8_t *buf );
 /* Send the motor 1 setting to the master */
 static uint8_t i2cr_motor_get1( uint8_t *buf );
 
+/* send back the feedback info */
+static uint8_t i2cr_motor_fback(uint8_t *buf);
+
 const i2c_cmd_t cmds[] = 
 {
 	/* Send the identity to the master */
@@ -80,9 +83,11 @@ const i2c_cmd_t cmds[] =
 	/* Firmware chunk reception, and next-address transmission */
 	{ 20, i2c_flashw_fw_chunk, i2c_flashr_fw_next },
 	/* Firmware CRC transmission and confirmation */
-	{ 4, i2c_flashw_confirm, i2c_flashr_crc }
-};
+	{ 4, i2c_flashw_confirm, i2c_flashr_crc },
 
+	/* Feedback info */
+	{0, NULL, i2cr_motor_fback} 
+}; 
 /* Used by i2cr_motor_get0 and i2cr_motor_get1.
    Fills the buffer with the info about motor. */
 static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor );
@@ -284,6 +289,16 @@ static uint8_t i2cr_motor_get0( uint8_t *buf )
 static uint8_t i2cr_motor_get1( uint8_t *buf )
 {
 	return i2cr_motor_get(buf, 1);
+}
+
+
+/* send back the feedback info */
+static uint8_t i2cr_motor_fback(uint8_t *buf)
+{
+	buf[0] = P2IN & 0x0f;
+	buf[1] = P2IN & 0x0f;
+
+	return 2;
 }
 
 void i2c_reset( void )

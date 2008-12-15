@@ -73,6 +73,9 @@ void init_gpio( void )
 	/* Crystal inputs */
 	P2SEL |= 0xC0;
 
+	/* Feedbacak inputs */
+	P2DIR &= 0xf0;
+
 	/* Debug light off */
 	FLAG_OFF();
 }
