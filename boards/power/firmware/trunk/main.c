@@ -28,10 +28,6 @@ int main(void)
 	eint();			/* enable global interrupts */
 
 
-	delay(250);
-	ADC12CTL0 |= ENC;
-	/* Start the conversion */
-	ADC12CTL0 |= ADC12SC;
 
 	while(1)
 	{

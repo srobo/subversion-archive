@@ -14,7 +14,7 @@ interrupt (ADC12_VECTOR) adc_service( void )
 	togd;
 	/* We only care about the interrupt relating to the last in 
 	   the conversion sequence - which is the only one that we enabled */
-	if( adc12v_l == 0x02 )
+	if( adc12v_l == 0x01 )
 	{
 		current = ADC12MEM0;
 		voltage = ADC12MEM1;
@@ -37,8 +37,9 @@ void adc_init( void )
 	P6SEL |= 0x03;		/* disable dio */
 
 
-	ADC12CTL0 = SHT0_0 | SHT1_0 /* sample and hold fastest for now to avoid trip hazard, */
-		| MSC		     /* multi sample */
+	ADC12CTL0 = ADC12ON;
+	ADC12CTL0 |= SHT0_0 | SHT1_0 /* sample and hold fastest for now to avoid trip hazard, */
+	       	| MSC		     /* multi sample */
 		| REF2_5V	     /* ref voltage 2.5v */
 		| REFON		     /* ref generator on */
 		| ADC12ON;	     /* adc module on */
@@ -51,8 +52,8 @@ void adc_init( void )
 		| SHP
 		/* no ISSH? */
 		| ADC12DIV_0	/* no adc divider */
-		| ADC12SSEL_3	/* clock from smclock */
-		| CONSEQ1;	/* single sequence of channels */
+		| ADC12SSEL_0	/* clock from adcclock */
+		| CONSEQ_REPEAT_SINGLE;	/* single sequence of channels */
 
 	ADC12MCTL0 = SREF_1	/* use internal referance */
 		| INCH_0;	/* source = ch0 = current sense out*/
@@ -61,13 +62,17 @@ void adc_init( void )
 		| SREF_1	/* use internal referance */
 		| INCH_1;	/* source = ch0 = voltage sense out*/
 
-	ADC12IFG = 0;		/* clear any erroneous flags */
-	ADC12IE = 0x2;		/* set interrupt on last conversion */
+//	ADC12IFG = 0;		/* clear any erroneous flags */
+	ADC12IE = 0x1;		/* set interrupt on last conversion */
 
 
 
 	/* movethis to a post warm up timer */
-	
+	       
+	ADC12CTL0 |= ENC;
+	/* Start the conversion */
+	ADC12CTL0 |= ADC12SC;
+
 		
 }
 
