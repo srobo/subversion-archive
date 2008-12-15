@@ -15,7 +15,7 @@ UCLIBC_SOURCE:=uClibc-$(strip $(subst ",, $(BR2_USE_UCLIBC_SNAPSHOT))).tar.bz2
 #"))
 UCLIBC_SITE:=http://www.uclibc.org/downloads/snapshots
 else
-UCLIBC_VER:=0.9.28
+UCLIBC_VER:=0.9.30
 UCLIBC_DIR:=$(TOOL_BUILD_DIR)/uClibc-$(UCLIBC_VER)
 UCLIBC_SOURCE:=uClibc-$(UCLIBC_VER).tar.bz2
 UCLIBC_SITE:=http://www.uclibc.org/downloads
@@ -61,20 +61,23 @@ uclibc-unpacked: $(UCLIBC_DIR)/.unpacked
 $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE)
 	mkdir -p $(TOOL_BUILD_DIR)
 	$(UCLIBC_CAT) $(DL_DIR)/$(UCLIBC_SOURCE) | tar -C $(TOOL_BUILD_DIR) $(TAR_OPTIONS) -
-	toolchain/patch-kernel.sh $(UCLIBC_DIR) toolchain/uClibc/ \*.patch
+#	toolchain/patch-kernel.sh $(UCLIBC_DIR) toolchain/uClibc/ \*.patch
 	touch $(UCLIBC_DIR)/.unpacked
 
 uclibc-configured: dependencies kernel-headers $(UCLIBC_DIR)/.configured
-$(UCLIBC_DIR)/.prepared: $(UCLIBC_DIR)/.unpacked
+
+uclibc-prepared: $(UCLIBC_DIR)/.prepared
+$(UCLIBC_DIR)/.prepared: $(UCLIBC_DIR)/.unpacked host-sed
 	cp $(UCLIBC_CONFIG_FILE) $(UCLIBC_DIR)/.config
-	$(SED) 's,^CROSS_COMPILER_PREFIX=.*,CROSS_COMPILER_PREFIX="$(TARGET_CROSS)",g' \
+	$(SED)  's,^CROSS_COMPILER_PREFIX=.*,CROSS_COMPILER_PREFIX="$(TARGET_CROSS)",g' \
 		-e 's,# TARGET_$(UCLIBC_TARGET_ARCH) is not set,TARGET_$(UCLIBC_TARGET_ARCH)=y,g' \
 		-e 's,^TARGET_ARCH="none",TARGET_ARCH=\"$(UCLIBC_TARGET_ARCH)\",g' \
-		-e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(LINUX_HEADERS_DIR)\",g' \
+		-e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=\"$(LINUX_HEADERS_DIR)/include\",g' \
 		-e 's,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX=\"/\",g' \
 		-e 's,^DEVEL_PREFIX=.*,DEVEL_PREFIX=\"/usr/\",g' \
 		-e 's,^SHARED_LIB_LOADER_PREFIX=.*,SHARED_LIB_LOADER_PREFIX=\"/lib\",g' \
 		$(UCLIBC_DIR)/.config
+
 ifeq ($(UCLIBC_TARGET_ARCH),arm)
 	$(SED) 's,^.*CONFIG_$(shell echo $(BR2_ARM_TYPE)).*,CONFIG_$(shell echo $(BR2_ARM_TYPE))=y,g' \
 	$(UCLIBC_DIR)/.config
@@ -123,6 +126,7 @@ endif
 	mkdir -p $(TOOL_BUILD_DIR)/uClibc_dev/usr/include
 	mkdir -p $(TOOL_BUILD_DIR)/uClibc_dev/usr/lib
 	mkdir -p $(TOOL_BUILD_DIR)/uClibc_dev/lib
+	$(MAKE1) CC=$(HOSTCC) -C $(UCLIBC_DIR) oldconfig
 	touch $(UCLIBC_DIR)/.prepared
 
 $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.prepared
@@ -131,7 +135,7 @@ $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.prepared
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TOOL_BUILD_DIR)/uClibc_dev/ \
 		HOSTCC="$(HOSTCC)" \
-		pregen install_dev && \
+		headers install_headers && \
 	touch $(UCLIBC_DIR)/.configured
 
 $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured $(LIBFLOAT_TARGET)

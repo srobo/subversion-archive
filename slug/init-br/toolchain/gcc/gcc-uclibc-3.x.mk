@@ -117,6 +117,8 @@ endif
 
 $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.patched
 	mkdir -p $(GCC_BUILD_DIR1)
+	ln -snf ../include $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/sys-include
+
 	(cd $(GCC_BUILD_DIR1); PATH=$(TARGET_PATH) \
 		CC="$(HOSTCC)" \
 		$(GCC_DIR)/configure \

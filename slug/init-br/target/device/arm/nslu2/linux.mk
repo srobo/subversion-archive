@@ -85,8 +85,6 @@ endif
 	#Apply the patches
 	(cd $(LINUX_DIR); QUILT_PATCHES=$(LINUX_PATCH_DIR) $(QUILT) push -a)
 
-	# We no longer need the kernel headers used for the toolchain, since we've now got a fully fledged kernel 
-	-(cd $(TOOL_BUILD_DIR); rm -rf linux; ln -sf $(LINUX_DIR) linux)
 	touch $(LINUX_DIR)/.unpacked
 	touch $(LINUX_DIR)/.patched
 
@@ -118,21 +116,15 @@ $(LINUX_KERNEL): $(LINUX_DIR)/$(LINUX_BINLOC) $(BUSYBOX_DIR)/.configured
 
 $(TARGET_DIR)/lib/modules/latest: $(LINUX_KERNEL)
 	( cd $(TARGET_DIR)/lib/modules; \
-	  ln -s $(DOWNLOAD_LINUX_VERSION) latest ; )
+	  ln -sf $(DOWNLOAD_LINUX_VERSION) latest ; )
 
-#Generate enough kernel headers for the toolchain to build - requires the kernel to be configured
-$(STAGING_DIR)/include/linux/version.h: $(LINUX_DIR)/include/linux/autoconf.h #$(LINUX_DIR)/include/linux/version.h
-	mkdir -p $(STAGING_DIR)/include
-	tar -ch -C $(LINUX_DIR)/include -f - linux | tar -xf - -C $(STAGING_DIR)/include/
-	tar -ch -C $(LINUX_DIR)/include -f - asm | tar -xf - -C $(STAGING_DIR)/include/
-	touch $(STAGING_DIR)/include/linux/version.h
+kernel-headers: $(LINUX_DIR)/include/linux/autoconf.h #$(STAGING_DIR)/include/linux/version.h 
+	$(MAKE) -C $(LINUX_DIR) ARCH=$(LINUX_KARCH) HOSTCC="$(HOSTCC)" HOSTCFLAGS="$(HOSTCFLAGS)" \
+		HOSTCXX="$(HOSTCXX)" INSTALL_HDR_PATH=$(LINUX_HEADERS_DIR) headers_install
+	$(MAKE) -C $(LINUX_DIR) ARCH=$(LINUX_KARCH) HOSTCC="$(HOSTCC)" HOSTCFLAGS="$(HOSTCFLAGS)" \
+		HOSTCXX="$(HOSTCXX)" INSTALL_HDR_PATH=$(STAGING_DIR)/$(REAL_GNU_TARGET_NAME) headers_install
 
-$(LINUX_DIR)/include/linux/version.h: $(LINUX_DIR)/include/linux/autoconf.h
-	$(MAKE) PATH=$(TARGET_PATH) -C $(LINUX_DIR) include/linux/version.h
-
-kernel-headers: $(STAGING_DIR)/include/linux/version.h
-
-linux: kernel-headers $(LINUX_KERNEL) $(TARGET_DIR)/lib/modules/latest
+linux: $(LINUX_KERNEL) $(TARGET_DIR)/lib/modules/latest
 
 linux-source: $(DL_DIR)/$(LINUX_SOURCE)
 
