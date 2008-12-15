@@ -8,11 +8,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ADDRESS 0x1e
+#define ADDRESS 0x2e
 #define POS0 3
 #define POS1 135
 #define READ_COMMAND 0x02
 #define RETRY_ATTEMPTS 255
+#define TRY_INDEF 1
+
 typedef enum
 {
 	FALSE = 0, TRUE
@@ -46,9 +48,8 @@ void setservo( int fd, uint8_t n, uint8_t val )
 	p = ((uint16_t)val<<8) | n;
 
 	if( i2c_smbus_write_word_data( fd, 1, p ) < 0 && err_enable )
-		fprintf( stderr, "i2c failed: %m\n" );
+      		fprintf( stderr, "i2c failed: %m\n" );
 }
-
 servo_status servo_read(int fd)
 {
 	int32_t r;
@@ -137,12 +138,11 @@ int main( int argc, char** argv )
 			break;
 		attempt++;
 	}
-	while(attempt < RETRY_ATTEMPTS);
+	while(attempt < RETRY_ATTEMPTS || TRY_INDEF);
 	
 	if(attempt < RETRY_ATTEMPTS)
 	{
 		fprintf(stderr, "Succeeded with %u retries\n", attempt);
-		fprintf(stderr, "Servo No.\t%u\nServo Position:\t%u\n", fback.number, fback.position);
 		return 0;
 	}
 	else
