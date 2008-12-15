@@ -9,7 +9,7 @@
 #include "timed.h"
 #include "device.h"
 #include "timed.h"
-
+#include "adc.h"
 
 
 /* Register functions:
@@ -234,13 +234,14 @@ uint8_t i2cr_battery( uint8_t *data )
 
 uint16_t i2cs_volt( void )
 {
-	return 1;
+	return 2;
 }
 
 uint8_t i2cr_volt( uint8_t *data )
 {
-	data[0]= 'v';
-	return 1;
+	data[0]= voltage & 0xff;
+	data[1]= ((voltage & 0xFF00)>>8);
+	return 2;
 }
 
 
@@ -249,13 +250,14 @@ uint8_t i2cr_volt( uint8_t *data )
 
 uint16_t i2cs_amp( void )
 {
-	return 1;
+	return 2;
 }
 
 uint8_t i2cr_amp( uint8_t *data )
 {
-	data[0]= 'i';
-	return 1;
+	data[0]= current & 0xff;
+	data[1]= ((current & 0xFF00)>>8);
+	return 2;	
 }
 
 
