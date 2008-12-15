@@ -231,9 +231,13 @@ int main( int argc, char** argv )
 		break;
 
 	case 'v':
+		retval = sr_read(fd, VOLT , value);
+		printf("%d\n", ((value[3]<<8) | value[2]));
+		break;
 	case 'a':
-		printf("sorry not implemented on power board yet\n");
-		return -1;
+		retval = sr_read(fd, AMP , value);
+		printf("%d\n", ((value[3]<<8) | value[2]));
+		break;
 	default:
 		printf("Sorry not recognised command try no args for usage\n");
 
