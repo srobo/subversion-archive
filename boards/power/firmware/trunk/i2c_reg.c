@@ -67,8 +67,9 @@ I2C_REG( motor_power );
 I2C_REG_RO( battery );	
 I2C_REG_RO( volt );	
 I2C_REG_RO( amp );	
-I2C_REG_WO( beegees );	
+I2C_REG( beegees );	
 I2C_REG( test );
+I2C_REG( fakebutton );
 /* When adding new commands, make sure you change I2C_NUM_COMMANDS */
 
 const reg_access_t dev_regs[] = 
@@ -83,8 +84,9 @@ const reg_access_t dev_regs[] =
 	I2C_REG_ENTRY_RO( battery ),   
 	I2C_REG_ENTRY_RO( volt ),
 	I2C_REG_ENTRY_RO( amp ),
-	I2C_REG_ENTRY_WO( beegees ), 
+	I2C_REG_ENTRY( beegees ), 
 	I2C_REG_ENTRY( test ),   
+	I2C_REG_ENTRY( fakebutton ),
 };
 
 
@@ -266,6 +268,13 @@ void i2cw_beegees( uint8_t *data, uint8_t len )
 {
 	stayingalive();
 }
+uint8_t i2cr_beegees( uint8_t *data )
+{
+	data[0]= alive;
+	return 1;
+}
+
+
 
 
 /* test Handler */
@@ -291,4 +300,24 @@ void i2cw_test( uint8_t* data, uint8_t len )
 	data[0]=42;
 	data[1]=42;
 	togd;
+}
+
+
+/* fake button press Handler */
+
+uint16_t i2cs_fakebutton( void )
+{
+	return 1;
+}
+
+uint8_t i2cr_fakebutton( uint8_t *data )
+{
+	data[0]= override;
+	return 1;
+}
+
+void i2cw_fakebutton( uint8_t* data, uint8_t len )
+{
+	
+	button_override();
 }
