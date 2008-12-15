@@ -47,7 +47,8 @@ int main( int argc, char** argv )
 		       "c - get battery charge status\n"
 		       "v - read voltage\n"
 		       "a - read current\n"
-		       "e - Stay alive packet\n");
+		       "e - Stay alive packet\n"
+		       "f - Fake pressing the button\n");
 		       
 		return -1;
 	}
@@ -174,6 +175,32 @@ int main( int argc, char** argv )
 		break;	
 
 	case 'e':
+		if (argc == 2 )
+		{
+			retval = sr_read(fd, BEEGEES , value);
+			printf("slug alive? 0 = timer,1= safe: %d \n",value[2]);
+		     
+		}
+		else if (argc == 3){
+			sr_write(fd,BEEGEES,1,value);
+			retval = sr_read(fd, BEEGEES , value);
+			if (value[2])
+				printf("Ah Ah Ah Ah, stayin' alive!\n");
+			else
+				printf("Failed to disable timer");
+		}
+		else{
+			printf("Usage:\n "
+			       "get alive stat: pwr_qual e\n"
+			       "     0= timer active,1=timer neutered\n"
+			       " pwr_qual e 1     # any arg sets timer off\n");
+			return -1;
+		}
+		break;
+
+
+
+
 		printf("Ah Ah Ah Ah, stayin' alive!\n");
 		retval = sr_read(fd, BEEGEES , value);
 		//sends alive packet!
@@ -198,8 +225,10 @@ int main( int argc, char** argv )
 			return -1;
 		}			
 		
-		break;		
-
+		break;	
+	case 'f':
+		sr_write(fd,BUTTON_FAKE,1,value);
+		break;
 
 	case 'v':
 	case 'a':
@@ -310,7 +339,7 @@ error0:
 int init_i2c(void){
 	int fd;			
       
-	fd = open( "/dev/i2c-0", O_RDWR );
+	fd = open( "/dev/i2c-1", O_RDWR );
 	
 	if( fd == -1 )
 	{
