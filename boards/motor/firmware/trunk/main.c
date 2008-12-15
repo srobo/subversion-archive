@@ -21,9 +21,12 @@
 #include "flash.h"
 #include "i2c-flash.h"
 #include <signal.h>
+#include <msp430/adc10.h>
 
 static int i = 0;
-
+static uint8_t adc_channel = 0;
+static uint16_t currents [2] = {0, 0};
+ 
 /* Initialise the GPIO ports */
 void init_gpio( void );
 
@@ -42,9 +45,35 @@ int main( void )
 	motor_set( 0, 0, M_OFF );
 	motor_set( 1, 0, M_OFF );
 
+	/* start conversion */
+	adc_channel = 1;	
+	ADC10CTL1 &= 0x0FFF;
+	ADC10CTL1 |= 0xC000;	/* start with motor 0 current sense */
+	ADC10CTL0 |= 0x0019;	/* Turn on ADC & enable conversion, start */
+
+	
 	while(1) {
 		if( i2c_flash_received ) {
 				flash_switchover();
+		}
+		if(ADC10BUSY)
+		{
+			currents[adc_channel] = ADC10MEM >> 6;
+			if(adc_channel)
+			{
+				adc_channel = 0x01;	//change the channel
+				ADC10CTL1 &= 0xF000;
+				ADC10CTL1 |= 0xD000;
+				ADC10CTL0 |= 0x0019;	//start next conversion
+			}
+			else
+			{
+				adc_channel = 0x00;	//change the channel
+				ADC10CTL1 &= 0xF000;
+				ADC10CTL1 |= 0xC000;
+				ADC10CTL0 |= 0x0019;	//start next conversion
+			}
+				
 		}
 	}
 }
@@ -76,6 +105,22 @@ void init_gpio( void )
 	/* Feedbacak inputs */
 	P2DIR &= 0xf0;
 
+	/* Current Sense initialisation TODO: Move into serparate header?*/
+	/* set up MAX4069 chips with GSEL signal to give gain of 50 */
+	P4DIR |= 0x60;
+	P4OUT &= ~0x60;
+
+	/* Enable A12 and A13 as analogue inputs */
+	ADC10AE1 |= 0x30;
+	/* Setup up ADC Control register - do not start it*/
+	ADC10CTL0 =  0x1480;
+	/* ADC Control Register - channel, hold time, non-invert,
+ 	ADC clock source & division, single channel-single convert.*/
+	ADC10CTL1 |= 0xC0E0;
+	/*Disable Data Transfer Control Reg. TODO: perhaps use this in future */
+	ADC10DCTL1 = 0x00;
+
+	/* End Current Sense Initialisation */
 	/* Debug light off */
 	FLAG_OFF();
 }
