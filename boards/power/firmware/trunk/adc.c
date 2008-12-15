@@ -56,7 +56,7 @@ void adc_init( void )
 		| CONSEQ_REPEAT_SINGLE;	/* single sequence of channels */
 
 	ADC12MCTL0 = SREF_1	/* use internal referance */
-		| INCH_0;	/* source = ch0 = current sense out*/
+		| INCH_1;	/* source = ch0 = current sense out*/
 		
 	ADC12MCTL1 = EOS  	/* last memory in sequence */
 		| SREF_1	/* use internal referance */
