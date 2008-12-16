@@ -103,6 +103,16 @@ kernel-menuconfig: $(LINUX_DIR)/include/linux/autoconf.h $(BUILD_DIR)/linux/incl
 kernel-gconfig: $(LINUX_DIR)/include/linux/autoconf.h $(BUILD_DIR)/linux/include/linux/autoconf.h
 	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) gconfig
 
+kernel-reconf: $(LINUX_DIR)/.config
+	@( read -p "Do you want to use the serial port for console? [y/n] (If unsure, say no) " -n 1 yn ; \
+	   echo ; \
+	  if [[ "$$yn" == "y" ]] ; \
+	  then sed -e 's#^CONFIG_CMDLINE=.*#CONFIG_CMDLINE=\"console=ttyS0,115200n8 root=/dev/ram0 rw rootfstype=cramfs initrd=0x01000000,0x8B000 mem=32M@00000000\"#' \
+		   -e 's,# CONFIG_SERIAL_8250_CONSOLE is not set,CONFIG_SERIAL_8250_CONSOLE=y,' -i $(LINUX_DIR)/.config; \
+	  else \
+	   sed -e 's#^CONFIG_CMDLINE=.*#CONFIG_CMDLINE=\"root=/dev/ram0 rw rootfstype=cramfs initrd=0x01000000,0x8B000 mem=32M@00000000\"#' \
+	       -e 's,CONFIG_SERIAL_8250_CONSOLE=y,# CONFIG_SERIAL_8250_CONSOLE is not set,' -i $(LINUX_DIR)/.config; \
+	 fi ; )
 
 $(LINUX_DIR)/.config $(LINUX_DIR)/include/linux/autoconf.h $(BUILD_DIR)/linux/include/linux/autoconf.h:  $(LINUX_DIR)/.unpacked $(LINUX_KCONFIG) 
 	-cp $(LINUX_KCONFIG) $(LINUX_DIR)/.config
