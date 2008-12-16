@@ -2,7 +2,17 @@
 
 case "$1" in
     start)
+	echo Starting udev...
 	udevd --daemon
+
+	umount /dev/pts
+	mount -t tmpfs tmpfs /dev
+	mkdir /dev/pts
+	mount -t devpts devpts /dev/pts
+
+	# Trigger udev to create all the devices
+	echo Triggering device node creation
+	udevadm trigger
 	;;
     stop)
 	# do nothing
