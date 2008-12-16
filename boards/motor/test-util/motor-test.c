@@ -36,7 +36,12 @@ enum
 	COMMAND_FWCONFIRM,
 
 	/* Feedback read*/
-	COMMAND_FEEDBACK
+	COMMAND_FEEDBACK,
+
+	/* current 0 */
+	COMMAND_CURRENT0,
+	/*current 1 */
+	COMMAND_CURRENT1	
 };
 
 typedef enum
@@ -83,6 +88,8 @@ void motor_set_retry( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val );
 /* Read feedback pins */
 void motor_fback_read( int fd);
 
+/* Read current values 8 */
+void motor_current_read( int fd);
 
 int main( int argc, char** argv )
 {
@@ -92,6 +99,7 @@ int main( int argc, char** argv )
 	pwm_ratio_t pwm;
 	bool test = FALSE;
 	bool fback = FALSE;
+	bool current = FALSE;
 
 	if( argc == 2 && strcmp( argv[1], "test" ) == 0 )
 		/* Run tests */
@@ -100,6 +108,10 @@ int main( int argc, char** argv )
 	if( argc == 2 && strcmp( argv[1], "fback") == 0)
 		/* run feedback*/
 		fback = TRUE;
+
+	if( argc == 2 && strcmp( argv[1], "current") == 0)
+		/* run current*/
+		current = TRUE;
 
 	else if( argc < 4 )
 	{
@@ -127,6 +139,11 @@ int main( int argc, char** argv )
 	{
 		printf("Reading feebackpins on motor board\n");
 		motor_fback_read(fd);	
+	}
+	else if( current)
+	{
+		printf("Reading Motor currents:\n");
+		motor_current_read(fd);	
 	}
 	else
 	{
@@ -282,5 +299,17 @@ void  motor_fback_read( int fd)
 	uint16_t d = (uint16_t) r;
 
 	fprintf(stderr, "Motor fback pins:\t%u\n",(d&0x0f) );
+	return;	
+}
+void  motor_current_read( int fd)
+{
+	int32_t r;
+	r = i2c_smbus_read_word_data(fd, COMMAND_CURRENT0);
+	uint16_t d = (uint16_t) r;
+	fprintf(stderr, "Motor 0 Current: \t%u\n",d );
+
+	r = i2c_smbus_read_word_data(fd, COMMAND_CURRENT1);
+	d = (uint16_t) r;
+	fprintf(stderr, "Motor 1 Current: \t%u\n",d );
 	return;	
 }
