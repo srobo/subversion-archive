@@ -3,7 +3,7 @@
 # udev
 #
 #############################################################
-UDEV_VERSION:=100
+UDEV_VERSION:=135
 UDEV_SOURCE:=udev-$(UDEV_VERSION).tar.bz2
 UDEV_SITE:=ftp://ftp.uk.kernel.org/pub/linux/utils/kernel/hotplug
 UDEV_CAT:=$(BZCAT)
@@ -32,6 +32,24 @@ $(UDEV_DIR)/.unpacked: $(DL_DIR)/$(UDEV_SOURCE)
 	touch $(UDEV_DIR)/.unpacked
 
 $(UDEV_DIR)/.configured: $(UDEV_DIR)/.unpacked
+	( cd $(UDEV_DIR); rm -rf config.cache; \
+	$(TARGET_CONFIGURE_OPTS) \
+	./configure \
+                --target=$(GNU_TARGET_NAME) \
+                --host=$(GNU_TARGET_NAME) \
+                --build=$(GNU_HOST_NAME) \
+                --prefix=/usr \
+                --exec-prefix=/usr \
+                --bindir=/usr/bin \
+                --sbindir=/usr/sbin \
+                --libexecdir=/usr/lib \
+                --sysconfdir=/etc \
+                --datadir=/usr/share \
+                --localstatedir=/var \
+                --mandir=/usr/man \
+                --infodir=/usr/info \
+                $(DISABLE_NLS) \
+        );
 	touch $(UDEV_DIR)/.configured
 
 $(UDEV_DIR)/$(UDEV_BINARY): $(UDEV_DIR)/.configured
@@ -50,8 +68,9 @@ UDEV_CONF:=etc/udev/frugalware/*
 $(TARGET_DIR)/$(UDEV_TARGET_BINARY): $(UDEV_DIR)/$(UDEV_BINARY)
 	-mkdir $(TARGET_DIR)/sys
 	-mkdir -p $(TARGET_DIR)/etc/udev/rules.d
-	$(INSTALL) -D -m 0644 $(UDEV_DIR)/$(UDEV_CONF) \
-		$(TARGET_DIR)/etc/udev/rules.d
+# 	-mkdir -p $(TARGET_DIR)/etc/udev/rules.d/frugalware
+# 	$(INSTALL) -D -m 0644 $(UDEV_DIR)/$(UDEV_CONF) \
+# 		$(TARGET_DIR)/etc/udev/rules.d
 	$(MAKE) CROSS_COMPILE=$(TARGET_CROSS) CC=$(TARGET_CC)  LD=$(TARGET_CC) \
 		DESTDIR=$(TARGET_DIR) \
 		CFLAGS="$(BR2_UDEV_CFLAGS)" \

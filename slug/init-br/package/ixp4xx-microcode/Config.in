@@ -1,0 +1,8 @@
+config BR2_PACKAGE_IXP4XX_MICROCODE
+       bool "ixp4xx-microcode"
+       default n
+       help
+         Firmware for the IXP4XX network processing engine cores.
+         Required on the NLSU2 if you want the network interface to
+         work.
+
