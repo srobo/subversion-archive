@@ -27,6 +27,10 @@
 #define FIRMWARE_REV 0x0304
 
 
+/* adc buffer, pointer */
+extern uint8_t adc_channel;
+extern uint16_t currents[2]; 
+
 static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
 					MODULE_IDENTITY & 0xFF, 
 					(FIRMWARE_REV >> 8) & 0xFF,
@@ -64,6 +68,12 @@ static uint8_t i2cr_motor_get1( uint8_t *buf );
 /* send back the feedback info */
 static uint8_t i2cr_motor_fback(uint8_t *buf);
 
+/* send back current drawn by motor 0 */
+static uint8_t i2cr_motor_current0(uint8_t *buf);
+
+/*send back current drawn by motor 1 */
+static uint8_t i2cr_motor_current1(uint8_t *buf);
+
 const i2c_cmd_t cmds[] = 
 {
 	/* Send the identity to the master */
@@ -86,8 +96,13 @@ const i2c_cmd_t cmds[] =
 	{ 4, i2c_flashw_confirm, i2c_flashr_crc },
 
 	/* Feedback info */
-	{0, NULL, i2cr_motor_fback} 
+	{0, NULL, i2cr_motor_fback},
+
+	/*current info */
+	{0, NULL, i2cr_motor_current0},
+	{0, NULL, i2cr_motor_current1}
 }; 
+
 /* Used by i2cr_motor_get0 and i2cr_motor_get1.
    Fills the buffer with the info about motor. */
 static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor );
@@ -301,7 +316,24 @@ static uint8_t i2cr_motor_fback(uint8_t *buf)
 	return 2;
 }
 
+/* send back current info */
+static uint8_t i2cr_motor_current0(uint8_t * buf)
+{
+	buf[0] = (0xFF00 & currents[0]) >> 8;
+	buf[1] = 0x00FF & currents[0];
+
+	return 2;	
+}
+/* send back current info */
+static uint8_t i2cr_motor_current1(uint8_t * buf)
+{
+	buf[0] = (0xFF00 & currents[1]) >> 8;
+	buf[1] = 0x00FF & currents[1];
+
+	return 2;	
+}
 void i2c_reset( void )
 {
 	i2c_init();
 }
+

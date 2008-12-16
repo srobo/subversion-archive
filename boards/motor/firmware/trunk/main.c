@@ -24,9 +24,11 @@
 #include <msp430/adc10.h>
 
 static int i = 0;
-static uint8_t adc_channel = 0;
-static uint16_t currents [2] = {0, 0};
- 
+
+/* adc buffer, pointer */
+extern uint8_t adc_channel;
+extern uint16_t currents[2]; 
+
 /* Initialise the GPIO ports */
 void init_gpio( void );
 
@@ -46,10 +48,9 @@ int main( void )
 	motor_set( 1, 0, M_OFF );
 
 	/* start conversion */
-	adc_channel = 1;	
-	ADC10CTL1 &= 0x0FFF;
-	ADC10CTL1 |= 0xC000;	/* start with motor 0 current sense */
-	ADC10CTL0 |= 0x0019;	/* Turn on ADC & enable conversion, start */
+	adc_channel = 0;	
+	ADC10CTL0 |= ENC 
+			| ADC10SC;	/* Turn on ADC & enable conversion, start */
 
 	
 	while(1) {
@@ -58,20 +59,22 @@ int main( void )
 		}
 		if(ADC10BUSY)
 		{
-			currents[adc_channel] = ADC10MEM >> 6;
+			currents[adc_channel] = ADC10MEM;
 			if(adc_channel)
-			{
-				adc_channel = 0x01;	//change the channel
-				ADC10CTL1 &= 0xF000;
-				ADC10CTL1 |= 0xD000;
-				ADC10CTL0 |= 0x0019;	//start next conversion
-			}
-			else
 			{
 				adc_channel = 0x00;	//change the channel
 				ADC10CTL1 &= 0xF000;
-				ADC10CTL1 |= 0xC000;
-				ADC10CTL0 |= 0x0019;	//start next conversion
+				ADC10CTL1 |= INCH_12;
+				ADC10CTL0 |= ENC 
+					| ADC10SC;	/* Turn on ADC & enable conversion, start */
+			}
+			else
+			{
+				adc_channel = 0x01;	//change the channel
+				ADC10CTL1 &= 0xF000;
+				ADC10CTL1 |= INCH_13;
+				ADC10CTL0 |= ENC 
+					| ADC10SC;	/* Turn on ADC & enable conversion, start */
 			}
 				
 		}
@@ -111,14 +114,19 @@ void init_gpio( void )
 	P4OUT &= ~0x60;
 
 	/* Enable A12 and A13 as analogue inputs */
+	ADC10CTL0 |= 	SREF_0
+			| ADC10SHT_DIV64
+			| ADC10ON
+			| REF2_5V;
+
+	ADC10CTL1 |=  INCH_12
+			| ADC10DIV_0
+			| ADC10SSEL_0
+			| CONSEQ_0;
+
 	ADC10AE1 |= 0x30;
-	/* Setup up ADC Control register - do not start it*/
-	ADC10CTL0 =  0x1480;
-	/* ADC Control Register - channel, hold time, non-invert,
- 	ADC clock source & division, single channel-single convert.*/
-	ADC10CTL1 |= 0xC0E0;
-	/*Disable Data Transfer Control Reg. TODO: perhaps use this in future */
-	ADC10DCTL1 = 0x00;
+
+	ADC10DTC1 = 0x00;
 
 	/* End Current Sense Initialisation */
 	/* Debug light off */

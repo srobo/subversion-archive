@@ -19,6 +19,10 @@
 #define __MOTOR_H
 #include "pwm.h"
 
+/* buffer for current sense of motor channels*/
+uint8_t adc_channel;
+uint16_t currents [2];
+
 /* At the moment it just sets the pwm ratio equal to speed */
 
 typedef pwm_ratio_t speed_t;
