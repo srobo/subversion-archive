@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdint.h>
 #include "i2c-dev.h"
@@ -29,6 +28,7 @@ int main( int argc, char** argv )
 	int fd =0;
 	int retval;
 	uint8_t value[BUFLEN];
+	uint8_t temp;
 
 	uint8_t *buf = value;
 
@@ -48,7 +48,10 @@ int main( int argc, char** argv )
 		       "v - read voltage\n"
 		       "a - read current\n"
 		       "e - Stay alive packet\n"
-		       "f - Fake pressing the button\n");
+		       "f - Fake pressing the button\n"
+		       "r - set/get RTS on xbee\n"
+		       "g - get CTS from Xbee\n"
+		       "x - Xbee reset control\n");
 		       
 		return -1;
 	}
@@ -174,6 +177,18 @@ int main( int argc, char** argv )
 		printf("Battery status: %d\n",value[2]);
 		break;	
 
+
+
+	case 'v':
+		retval = sr_read(fd, VOLT , value);
+		printf("%d\n", ((value[3]<<8) | value[2]));
+		break;
+	case 'a':
+		retval = sr_read(fd, AMP , value);
+		printf("%d\n", ((value[3]<<8) | value[2]));
+		break;
+
+
 	case 'e':
 		if (argc == 2 )
 		{
@@ -213,9 +228,10 @@ int main( int argc, char** argv )
 			printf("test = %d %d\n",value[3],value[2]);
 		     
 		}
-		else if (argc == 3){
+		else if (argc == 4){
 			value[0]= atoi(argv[2]);
-			sr_write(fd,TEST,1,value);
+			value[1]= atoi(argv[3]);
+			sr_write(fd,TEST,2,value);
 		
 		}
 		else{
@@ -226,18 +242,107 @@ int main( int argc, char** argv )
 		}			
 		
 		break;	
+
 	case 'f':
 		sr_write(fd,BUTTON_FAKE,1,value);
 		break;
 
-	case 'v':
-		retval = sr_read(fd, VOLT , value);
-		printf("%d\n", ((value[3]<<8) | value[2]));
+
+	case 'r':
+		if (argc == 2 )
+		{
+			retval = sr_read(fd, RTS , value);
+			printf("RTS: %d \n",value[2]);
+		     
+		}
+		else if (argc == 3){
+			if (atoi(argv[2])>0){
+				value[0] = 1;
+			}
+			else{
+				value[0] =0 ;
+			}
+
+			temp = value[0];
+			sr_write(fd,RTS,1,value);
+			retval = sr_read(fd, RTS , value);
+			if (value[2] == temp)
+				printf("written ok");
+			else
+			{
+				printf("Failed write");
+				return -1;
+			}
+		}
+		else{
+			printf("Usage:\n "
+			       "get RTS stat: pwr_qual r\n"
+			       " pwr_qual r {0,1}  \n");
+			return -1;
+		}
 		break;
-	case 'a':
-		retval = sr_read(fd, AMP , value);
-		printf("%d\n", ((value[3]<<8) | value[2]));
+
+
+	case 'g':
+		if (argc == 2 )
+		{
+			retval = sr_read(fd, CTS , value);
+			printf(" CTS %d \n",value[2]);
+		     
+		}
+		else{
+			printf("Usage:\n "
+			       "CTS stat: pwr_qual g\n"
+			       " pwr_qual g {0,1} \n");
+			return -1;
+		}
 		break;
+
+
+	case 'x':
+		if (argc == 2 )
+		{
+			retval = sr_read(fd, XBEE , value);
+			printf("xbee %d \n",value[2]);
+		     
+		}
+
+		else if (argc == 3){
+			if (atoi(argv[2])>0){
+				value[0] = 1;
+			}
+			else{
+				value[0] =0 ;
+			}
+
+			temp = value[0];
+			sr_write(fd,XBEE,1,value);
+			retval = sr_read(fd, XBEE , value);
+			if (value[2] == temp)
+				printf("written ok");
+			else
+			{
+				printf("Failed write");
+				return -1;
+			}
+		}
+	
+
+
+
+
+		else{
+			printf("Usage:\n "
+			       "get alive stat: pwr_qual e\n"
+			       "     0= timer active,1=timer neutered\n"
+			       " pwr_qual e 1     # any arg sets timer off\n");
+			return -1;
+		}
+		break;
+
+
+
+
 	default:
 		printf("Sorry not recognised command try no args for usage\n");
 
@@ -343,7 +448,7 @@ error0:
 int init_i2c(void){
 	int fd;			
       
-	fd = open( "/dev/i2c-0", O_RDWR );
+	fd = open( "/dev/i2c-1", O_RDWR );
 	
 	if( fd == -1 )
 	{

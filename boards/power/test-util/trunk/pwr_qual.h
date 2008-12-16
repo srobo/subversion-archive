@@ -23,7 +23,10 @@ typedef enum
 	AMP,
 	BEEGEES,
 	TEST,
-	BUTTON_FAKE
+	BUTTON_FAKE,
+	RTS,
+	CTS,
+	XBEE
 } com;
 bool err_enable = TRUE;
 
