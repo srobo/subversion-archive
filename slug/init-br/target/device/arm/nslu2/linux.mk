@@ -97,7 +97,14 @@ $(LINUX_KCONFIG):
 		sleep 5; \
 	fi;
 
-$(LINUX_DIR)/include/linux/autoconf.h $(BUILD_DIR)/linux/include/linux/autoconf.h:  $(LINUX_DIR)/.unpacked  $(LINUX_KCONFIG) 
+kernel-menuconfig: $(LINUX_DIR)/include/linux/autoconf.h $(BUILD_DIR)/linux/include/linux/autoconf.h
+	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) menuconfig
+
+kernel-gconfig: $(LINUX_DIR)/include/linux/autoconf.h $(BUILD_DIR)/linux/include/linux/autoconf.h
+	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) gconfig
+
+
+$(LINUX_DIR)/.config $(LINUX_DIR)/include/linux/autoconf.h $(BUILD_DIR)/linux/include/linux/autoconf.h:  $(LINUX_DIR)/.unpacked $(LINUX_KCONFIG) 
 	-cp $(LINUX_KCONFIG) $(LINUX_DIR)/.config
 	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) silentoldconfig
 	$(MAKE) $(JLEVEL) -C $(LINUX_DIR) CROSS_COMPILE=$(KERNEL_CROSS) ARCH=$(LINUX_KARCH) archprepare

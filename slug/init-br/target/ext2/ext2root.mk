@@ -112,7 +112,7 @@ $(EXT2_BASE).lzma: lzma-host $(EXT2_BASE)
 EXT2_COPYTO := $(strip $(subst ",,$(BR2_TARGET_ROOTFS_EXT2_COPYTO)))
 # " stupid syntax highlighting does not like unmatched quote from above line
 
-ext2root: $(EXT2_TARGET)
+ext2root: $(EXT2_TARGET) linux
 	@ls -l $(EXT2_TARGET)
 ifneq ($(EXT2_COPYTO),)
 	@cp -f $(EXT2_TARGET) $(EXT2_COPYTO)
