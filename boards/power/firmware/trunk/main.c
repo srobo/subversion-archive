@@ -11,6 +11,7 @@
 #include"usart.h"
 #include "adc.h"
 #include "isense.h"
+#include "xbee.h"
 
 int dummy =0; 			/* dummy variable to fix gdb bug */
 
@@ -19,13 +20,14 @@ int main(void)
 {
 
 	init_cpu();
-	led_init();
+x	led_init();
 	switch_init();
 	pwr_init();
 	i2c_init();
 	adc_init();
 	isense_init();
-	//usart_init();
+	usart_init();
+	xbee_init();
 	timera_init();
 	eint();			/* enable global interrupts */
 

@@ -70,6 +70,9 @@ I2C_REG_RO( amp );
 I2C_REG( beegees );	
 I2C_REG( test );
 I2C_REG( fakebutton );
+I2C_REG( RTS );
+I2C_REG_RO( CTS );
+I2C_REG( XBEE );
 /* When adding new commands, make sure you change I2C_NUM_COMMANDS */
 
 const reg_access_t dev_regs[] = 
@@ -87,6 +90,9 @@ const reg_access_t dev_regs[] =
 	I2C_REG_ENTRY( beegees ), 
 	I2C_REG_ENTRY( test ),   
 	I2C_REG_ENTRY( fakebutton ),
+	I2C_REG_ENTRY( RTS ),
+	I2C_REG_ENTRY_RO( CTS ),
+	I2C_REG_ENTRY( XBEE ),
 };
 
 
@@ -295,18 +301,17 @@ uint16_t i2cs_test( void )
 uint8_t i2cr_test( uint8_t *data )
 {
      
-	make_safe();
-	data[0]= TAR&0xff;
-	data[1]= ((TAR&0xff00)>>8);
+/* 	make_safe(); */
+/* 	data[0]= TAR&0xff; */
+/* 	data[1]= ((TAR&0xff00)>>8); */
 	return 2;
 }
 
 void i2cw_test( uint8_t* data, uint8_t len )
 {
 	
-	make_safe();
-	data[0]=42;
-	data[1]=42;
+	U1BR0 = data[0];
+	U1BR1 = data[1];
 	
 }
 
@@ -328,4 +333,61 @@ void i2cw_fakebutton( uint8_t* data, uint8_t len )
 {
 	
 	P2IFG |= 0x08;		/* create hardware interrupt from software, datasheet says yes! */
+}
+
+/*  RTS Handler*/
+
+uint16_t i2cs_rts( void )
+{
+	return 1;
+}
+
+uint8_t i2cr_rts( uint8_t *data )
+{
+	data[0]= RTS_state;
+	return 1;
+}
+
+void i2cw_rts( uint8_t* data, uint8_t len )
+{
+	if (data[0])
+		startRTS;
+	else
+		stopRTS;
+}
+
+/* CTS Handler */
+
+uint16_t i2cs_cts( void )
+{
+	return 1;
+}
+
+uint8_t i2cr_cts( uint8_t *data )
+{
+	data[0]= CTSOK;
+	return 1;
+}
+
+
+/* fake button press Handler */
+
+uint16_t i2cs_xbee( void )
+{
+	return 1;
+}
+
+uint8_t i2cr_xbee( uint8_t *data )
+{
+	data[0]= xbee_state;
+	return 1;
+}
+
+void i2cw_xbee( uint8_t* data, uint8_t len )
+{
+	
+	if (data[0])
+		xbee_on();
+	else
+		xbee_off();
 }

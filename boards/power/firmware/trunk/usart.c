@@ -3,6 +3,18 @@
 #include <signal.h>
 #include "timed.h"
 
+#define HOWSAFE 17 		/* I guess these should maby live somewhere else? */
+
+const uint8_t safe[HOWSAFE]={
+	0x7E, //  framing byte
+	0, 0x0D, // length
+	0x80,             // API identifier for ive recived a packet
+	0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07, //# Source address -- this should be ignoored
+	0, //rssi -ignoored
+	0xff, // options -- ignoored
+	0x01,0x02, // the actuall data!!!
+	0x00};//last one is checksum
+
 interrupt (USART1TX_VECTOR) uart_tx_isr(void)
 {
 	U1TXBUF = 0xAA;		/* transmit to calibrate on oscope */
@@ -15,38 +27,34 @@ interrupt (USART1RX_VECTOR) uart_rx_isr(void)
 {
 	uint8_t u1rxbuf_l = 0;
 	u1rxbuf_l =U1RXBUF;
-	xbee_handler(U1RXBUF);
+	xbee_handler(u1rxbuf_l);
 }
 
 
 
 void usart_init(void) {
+	P3SEL |= (1 << 6) | (1 << 7);	// P3 bits 6,7 used by uart
+	P3DIR |= (1 << 6);		// P3 bit 6 tx
+	P3DIR &= ~(1 << 7);		// P3 bit 7 rx
+
 	U1CTL = SWRST + CHAR;
-	U1TCTL = SSEL_ACLK;	/* Aclk 8MHz */
+	U1TCTL = SSEL_SMCLK;	/* Aclk 8MHz */
 	U1RCTL = 0;
 
-
-	U1BR0 = 0x41;	// 9600, 8MHz clock
-	U1BR1 = 0x3;
-	U1MCTL = 0x9;
-
-
-/* 	U1BR0 = 0xF0; */
-/*  	U1BR1 = 0x13; */
-/*  	U1MCTL = 0x04; */
+	U1BR0 = 0x45;		/* baud hi and lo */
+	U1BR1 = 0x00;
+	U1MCTL = 0xAA;		/* modulation factor */
 
 
-	
-	//ME2 |= UTXE1;	// enable transmitter
+
+	ME2 |= UTXE1;	// enable transmitter
 	ME2 |= URXE1;	// enable receiver
 
 	U1CTL &= ~SWRST;
 	
 	IE2 |= UTXIE1|URXIE1;
 
-	P3SEL |= (1 << 6) | (1 << 7);	// P3 bits 6,7 used by uart
-	P3DIR |= (1 << 6);		// P3 bit 6 tx
-	P3DIR &= ~(1 << 7);		// P3 bit 7 rx
+
 
 }
 
