@@ -11,4 +11,9 @@ staff:x:50:
 nobody:x:99:
 nogroup:x:99:
 users:x:100:
+uucp:x:101:
+kmem:x:102:
+video:x:103:
+lp:x:104:
+floppy:x:105:
 default:x:1000:
