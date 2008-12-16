@@ -8,7 +8,7 @@ UDEV_SOURCE:=udev-$(UDEV_VERSION).tar.bz2
 UDEV_SITE:=ftp://ftp.uk.kernel.org/pub/linux/utils/kernel/hotplug
 UDEV_CAT:=$(BZCAT)
 UDEV_DIR:=$(BUILD_DIR)/udev-$(UDEV_VERSION)
-UDEV_TARGET_BINARY:=sbin/udev
+UDEV_TARGET_BINARY:=usr/sbin/udevd
 UDEV_BINARY:=udev
 
 # 094 had _GNU_SOURCE set
