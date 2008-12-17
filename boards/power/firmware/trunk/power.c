@@ -7,30 +7,27 @@ void delay(int16_t time);
 void pwr_init(void)
 {
 	//led_set(0);
-  P5OUT |= 0x80; 		/* set sug boot hi before un-tristate, else slug boot */
-  P5DIR |= 0x80;		/* slugboot set as output */
-  P2DIR |= 0x07;		/* power rail enable control pins as out */
+	P2DIR |= 0x07;		/* power rail enable control pins as out */
   
   //led_set(1);
   slug_boot(0);
 }
 
 void slug_boot(uint8_t reboot){
+
 	if (reboot)
 		P2OUT &= ~0x01;	/* reeboot so power off first */
    
 	delay(250);			/* let power settle to help mode B */
 	P2OUT |= 0x01;		/* power slug rail */
 	delay(250);
-	//led_set(2);
-  
-	P5OUT &= ~0x80;		/* blip down -PRESS THE BUTTON*/
-	//led_set(4);
+
+	P5OUT &= ~0x80;	   /* slugboot low then untristate */
+	P5DIR |= 0x80;		/* slugboot set as output */	
 	delay(50);
-	P5OUT |= 0x80;		/* NEVx80;ER PRESS THE BUTTON */
-	//led_set(3);
+
 	delay(50);
-	//led_set(6);
+
 	P5DIR &= ~0x80;		/* retristate the pin */
 }
 
