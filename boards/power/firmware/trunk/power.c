@@ -27,10 +27,11 @@ void slug_boot(uint8_t reboot){
 	P5OUT &= ~0x80;		/* blip down -PRESS THE BUTTON*/
 	//led_set(4);
 	delay(50);
-	P5OUT |= 0x80;		/* NEVER PRESS THE BUTTON */
+	P5OUT |= 0x80;		/* NEVx80;ER PRESS THE BUTTON */
 	//led_set(3);
 	delay(50);
 	//led_set(6);
+	P5DIR &= ~0x80;		/* retristate the pin */
 }
 
 void pwr_set_slug(uint8_t val)
