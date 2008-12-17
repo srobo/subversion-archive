@@ -20,7 +20,7 @@ int main(void)
 {
 
 	init_cpu();
-x	led_init();
+	led_init();
 	switch_init();
 	pwr_init();
 	i2c_init();

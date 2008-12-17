@@ -10,7 +10,7 @@
 #include "device.h"
 #include "timed.h"
 #include "adc.h"
-
+#include "xbee.h"
 
 /* Register functions:
  * i2ct: The type of the register.
@@ -70,9 +70,9 @@ I2C_REG_RO( amp );
 I2C_REG( beegees );	
 I2C_REG( test );
 I2C_REG( fakebutton );
-I2C_REG( RTS );
-I2C_REG_RO( CTS );
-I2C_REG( XBEE );
+I2C_REG( rts );
+I2C_REG_RO( cts );
+I2C_REG( xbee );
 /* When adding new commands, make sure you change I2C_NUM_COMMANDS */
 
 const reg_access_t dev_regs[] = 
@@ -90,9 +90,9 @@ const reg_access_t dev_regs[] =
 	I2C_REG_ENTRY( beegees ), 
 	I2C_REG_ENTRY( test ),   
 	I2C_REG_ENTRY( fakebutton ),
-	I2C_REG_ENTRY( RTS ),
-	I2C_REG_ENTRY_RO( CTS ),
-	I2C_REG_ENTRY( XBEE ),
+	I2C_REG_ENTRY( rts ),
+	I2C_REG_ENTRY_RO( cts ),
+	I2C_REG_ENTRY( xbee ),
 };
 
 
