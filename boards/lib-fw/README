@@ -1,0 +1,5 @@
+This directory is for firmware libraries.
+
+Unfortunately this directory couldn't go in /boards/lib as this
+directory is already devoted to PCB libraries.
+ 
