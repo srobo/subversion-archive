@@ -18,14 +18,8 @@
 #include <msp430x22x4.h>
 #include <stddef.h>
 
-
 #define FLAG() P4OUT |= 0x80
 #define FLAG_OFF() P4OUT &= ~0x80
-
-typedef enum 
-{
-	FALSE = 0, TRUE
-} bool;
 
 /* These constants have only recently been added to the mspgcc libc */
 #ifndef UCSSEL_UCLKI

@@ -18,8 +18,8 @@
 #include "pwm.h"
 #include "i2c.h"
 #include "timer-b.h"
-#include "flash.h"
-#include "i2c-flash.h"
+#include "flash430/flash.h"
+#include "flash430/i2c-flash.h"
 #include <signal.h>
 #include <msp430/adc10.h>
 

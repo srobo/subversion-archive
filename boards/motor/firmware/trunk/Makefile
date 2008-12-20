@@ -1,22 +1,29 @@
 ARCH=msp430x2234
 CC := msp430-gcc
 CFLAGS := -g -mmcu=${ARCH} -Wall -O3
-LDFLAGS :=
 
-H_FILES = common.h i2c.h motor.h pwm.h smbus_pec.h timer-b.h flash.h \
-	i2c-flash.h
-C_FILES = main.c i2c.c motor.c pwm.c smbus_pec.c timer-b.c flash.c \
-	i2c-flash.c
+# for bool
+CFLAGS += -I ./types
+
+# flash430
+LDFLAGS := -L ./flash430 -lflash430
+
+H_FILES = common.h i2c.h motor.h pwm.h smbus_pec.h timer-b.h
+C_FILES = main.c i2c.c motor.c pwm.c smbus_pec.c timer-b.c
 
 world: motor-bottom motor-top
 
-motor-bottom: ${H_FILES} ${C_FILES} ${ARCH}-bottom.x
-	${CC} -o $@ ${C_FILES} ${CFLAGS} ${LDFLAGS} -Wl,-T,${ARCH}-bottom.x
+./flash430/libflash430.a:
+	$(MAKE) -C ./flash430 ARCH="$(ARCH)" CC="$(CC)" CFLAGS="$(CFLAGS)"
 
-motor-top: ${H_FILES} ${C_FILES} ${ARCH}-top.x
-	${CC} -o $@ ${C_FILES} ${CFLAGS} ${LDFLAGS} -Wl,-T,${ARCH}-top.x
+motor-bottom: ${H_FILES} ${C_FILES} ./flash430/lkr/${ARCH}-bottom.x ./flash430/libflash430.a
+	${CC} -o $@ ${C_FILES} ${CFLAGS} ${LDFLAGS} -Wl,-T,./flash430/lkr/${ARCH}-bottom.x
+
+motor-top: ${H_FILES} ${C_FILES} ./flash430/lkr/${ARCH}-top.x ./flash430/libflash430.a
+	${CC} -o $@ ${C_FILES} ${CFLAGS} ${LDFLAGS} -Wl,-T,./flash430/lkr/${ARCH}-top.x
 
 .PHONY: clean
 
 clean:
 	-rm -f motor-{bottom,top}
+	$(MAKE) -C flash430 clean
