@@ -17,14 +17,10 @@
 #define __COMMON_H
 #include <msp430x22x4.h>
 #include <stddef.h>
+#include <bool.h>
 
 #define FLAG() P4OUT |= 0x80
 #define FLAG_OFF() P4OUT &= ~0x80
-
-typedef enum 
-{
-	FALSE = 0, TRUE
-} bool;
 
 /* These should be migrated to msp430 libc */
 #define UCSSEL_UCLKI UCSSEL_0

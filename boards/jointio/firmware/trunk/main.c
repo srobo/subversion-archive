@@ -17,8 +17,8 @@
 #include "i2c.h"
 #include "init.h"
 #include "adc.h"
-#include "flash.h"
-#include "i2c-flash.h"
+#include "flash430/flash.h"
+#include "flash430/i2c-flash.h"
 
 static int i = 0;
 

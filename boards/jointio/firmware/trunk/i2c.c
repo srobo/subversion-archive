@@ -20,7 +20,7 @@
 #include "smbus_pec.h"
 #include "timer-b.h"
 #include "adc.h"
-#include "i2c-flash.h"
+#include "flash430/i2c-flash.h"
 
 #define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x0201

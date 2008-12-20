@@ -18,7 +18,7 @@
 #include "i2c.h"
 #include "timer-b.h"
 #include "adc.h"
-#include "i2c-flash.h"
+#include "flash430/i2c-flash.h"
 #include <signal.h>
 
 /* Initialise the GPIO ports */
