@@ -1,6 +1,5 @@
 #include "i2c-flash.h"
 #include "flash.h"
-#include "common.h"
 
 volatile bool i2c_flash_received;
 

@@ -1,7 +1,8 @@
 #ifndef __FLASH_H
 #define __FLASH_H
 #include <stdint.h>
-#include "common.h"
+#include <bool.h>
+#include "dev.h"
 
 /* WARNING: These are highly MSP430F2234 specific: */
 /* 8k of flash, split into two 3.5k sections */

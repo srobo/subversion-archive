@@ -16,7 +16,7 @@
 #ifndef __I2C_FLASH
 #define __I2C_FLASH
 #include <stdint.h>
-#include "common.h"
+#include <bool.h>
 
 void i2c_flash_init( void );
 

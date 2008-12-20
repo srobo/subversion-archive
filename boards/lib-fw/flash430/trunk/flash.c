@@ -1,5 +1,5 @@
 #include "flash.h"
-#include "common.h"
+#include "dev.h"
 #include <signal.h>
 
 /* Values of the registers */
