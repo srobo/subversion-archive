@@ -7,10 +7,16 @@
 
 #ifdef __MSP430_2254__
 #include <msp430x22x4.h>
+#define FLASH_AREA_0 0xc000
+#define FLASH_AREA_1 0xe000
+#define FLASH_AREA_LEN 0x1e00
 #endif
 
 #ifdef __MSP430_2234__
 #include <msp430x22x4.h>
+#define FLASH_AREA_0 0xe000
+#define FLASH_AREA_1 0xf000
+#define FLASH_AREA_LEN 0xe00
 #endif
 
 #endif /* __FLASH430_DEV_H */

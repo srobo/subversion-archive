@@ -67,10 +67,10 @@ void flash_init( void )
 	flash_lock();
 
 	/* Calculate which area we need to write to */
-	if( (uint16_t)mem_segment( flash_init ) >= AREA_1 )
-		other_area = (uint16_t*)AREA_0;
+	if( (uint16_t)mem_segment( flash_init ) >= FLASH_AREA_1 )
+		other_area = (uint16_t*)FLASH_AREA_0;
 	else
-		other_area = (uint16_t*)AREA_1;
+		other_area = (uint16_t*)FLASH_AREA_1;
 
 	/* Nothing's been written yet */
 	next_chunk = other_area;
