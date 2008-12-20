@@ -22,6 +22,8 @@
 #include "common.h"
 #include "timer-b.h"
 #include "i2c.h"
+#include "flash430/flash.h"
+#include "flash430/i2c-flash.h"
 
 #define USE_WATCHDOG 0
 #define SWEEP_SERVOS 1
@@ -51,7 +53,6 @@ int main( void )
 	init();
 	i2c_init();
 	timer_b_init();
-
 	eint();
 
 	servo_set_pwm(0, MIDDLE_PULSE);
@@ -59,7 +60,8 @@ int main( void )
 
 	while(1)
 	{
-		
+		if( i2c_flash_received )
+				flash_switchover();
 	}	
 }
 
@@ -125,6 +127,8 @@ void init(void)
 		/* WDT needs resetting every 12KHz/512 = 43 ms */
 		WDTCTL = WDTPW | WATCHDOG_SETTINGS | WDTCNTCL;
 	}
+
+	flash_init();
 }
 
 /* ISR for IO interrupt */

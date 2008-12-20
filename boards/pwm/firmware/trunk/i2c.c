@@ -16,11 +16,13 @@
 #include "common.h"
 #include "msp430/usci.h"
 #include <signal.h>
+#include <bool.h>
 #include "i2c.h"
 #include "servo.h"
 #include "servo.h"
 #include "smbus_pec.h"
 #include "timer-b.h"
+#include "flash430/i2c-flash.h"
 
 #define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x7063
@@ -70,6 +72,13 @@ const i2c_cmd_t cmds[] =
 
 	/* Send the number of the servo last changed and its current value */
 	{ 0, NULL, i2cr_servo_getlast },
+
+	/* Firmware version */
+	{ 0, NULL, i2c_flashr_fw_ver },
+	/* Firmware chunk reception, and next-address transmission */
+	{ 20, i2c_flashw_fw_chunk, i2c_flashr_fw_next },
+	/* Firmware CRC transmission and confirmation */
+	{ 4, i2c_flashw_confirm, i2c_flashr_crc }
 };
 
 /* The current command */
