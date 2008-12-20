@@ -12,6 +12,11 @@ libflash430.a: flash.o i2c-flash.o
 	msp430-ar r $@ flash.o i2c-flash.o
 
 %.o: %.c %.h
+ifndef ARCH
+	@echo "ERROR:  ARCH is not set.  This should be set on the command line."
+	@echo -e "\tLike so: make ARCH=\"msp430x2234\""
+	@false
+endif
 	${CC} -c -o $@ ${CFLAGS} $<
 
 .PHONY: clean
