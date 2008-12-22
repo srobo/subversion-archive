@@ -32,7 +32,7 @@ void i2c_flashw_fw_chunk( uint8_t* buf )
 	ver = buf[0] | (((uint16_t)buf[1]) << 8);
 	addr = buf[2] | (((uint16_t)buf[3]) << 8);
 
-	flash_rx_chunk( addr, (uint16_t*)(buf + 4) );
+	flash_rx_chunk( addr, buf + 4 );
 }
 
 /* Transmits the address of the next required chunk to the master  */

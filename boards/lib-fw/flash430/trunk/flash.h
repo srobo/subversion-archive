@@ -22,7 +22,7 @@ void flash_init( void );
 /* Take a 16-byte chunk of new firmware, and its chunk number.
    The chunk must have been verified as non-erroneous before reaching
    this function. */
-void flash_rx_chunk( uint16_t c_addr, const uint16_t *fw);
+void flash_rx_chunk( uint16_t c_addr, const uint8_t *fw);
 
 /* Erase a segment starting at addr */
 void flash_erase_segment( uint16_t *addr );

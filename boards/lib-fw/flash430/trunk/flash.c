@@ -34,11 +34,14 @@ uint16_t *next_chunk;
 static uint16_t *last_erased;
 
 /* Buffer for the interrupt vector table */
-static uint16_t ivt_buf[32];
+static uint8_t ivt_buf[64];
 
 bool firmware_received;
 
-void flash_write_chunk( const uint16_t *source, uint16_t *dest )
+/* For grabbing 16-bit words from 8-bit buffers */
+#define fw_word(buf,n) ( ((uint16_t)buf[n*2]) | (((uint16_t)buf[n*2+1])<<8) )
+
+void flash_write_chunk( const uint8_t *source, uint16_t *dest )
 {
 	uint8_t i;
 
@@ -50,7 +53,7 @@ void flash_write_chunk( const uint16_t *source, uint16_t *dest )
 	flash_write_mode();
 	/* Now write it */
 	for( i=0; i<(CHUNK_SIZE/2); i++ )
-		*(dest + i) = *(source + i);
+		*(dest + i) = fw_word(source,i);
 
 	flash_write_mode_off();
 	flash_lock();
@@ -95,7 +98,7 @@ void flash_erase_segment( uint16_t *addr )
 	last_erased = mem_segment(addr);
 }
 
-void flash_rx_chunk( uint16_t c_addr, const uint16_t *fw)
+void flash_rx_chunk( uint16_t c_addr, const uint8_t *fw )
 {
 	uint8_t i;
 	/* Pointer to the chunk */
@@ -108,9 +111,9 @@ void flash_rx_chunk( uint16_t c_addr, const uint16_t *fw)
 	if( c >= IVT )
 	{
 		/* It's an interrupt vector table entry */
-		uint8_t cpos = c - IVT;
+		uint8_t cpos = (c - IVT)*2;
 
-		for( i=0; i<(CHUNK_SIZE/2); i++ )
+		for( i=0; i<CHUNK_SIZE; i++ )
 			ivt_buf[i + cpos] = fw[i];
 
 		/* Last entry? */
@@ -145,9 +148,9 @@ void flash_switchover( void )
 	dint();
 
 	for( i=0; i<32; i += (CHUNK_SIZE/2) )
-		flash_write_chunk( ivt_buf + i, IVT + i );
+		flash_write_chunk( ivt_buf + (i*2), IVT + i );
 
 	/* Finished loading new firmware! */
 	/* Jump to the reset vector! */
-	(*(void (*)()) (ivt_buf[31])) ();
+	(*(void (*)()) (fw_word(ivt_buf,31))) ();
 }
