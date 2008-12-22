@@ -1,0 +1,25 @@
+From 8eed89bcb8b1047026515fc8a5e317b8ce35815e Mon Sep 17 00:00:00 2001
+From: Rob Spanton <rds204@zepler.net>
+Date: Mon, 22 Dec 2008 11:59:40 +0000
+Subject: [PATCH] Slow I2C down to 20 KHz and allow long clock stretches.
+
+---
+ arch/arm/mach-ixp4xx/nslu2-setup.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ixp4xx/nslu2-setup.c b/arch/arm/mach-ixp4xx/nslu2-setup.c
+index a48a665..c607806 100644
+--- a/arch/arm/mach-ixp4xx/nslu2-setup.c
++++ b/arch/arm/mach-ixp4xx/nslu2-setup.c
+@@ -53,6 +53,8 @@ static struct platform_device nslu2_flash = {
+ static struct i2c_gpio_platform_data nslu2_i2c_gpio_data = {
+ 	.sda_pin		= NSLU2_SDA_PIN,
+ 	.scl_pin		= NSLU2_SCL_PIN,
++	.udelay			= 25,
++	.timeout		= HZ
+ };
+ 
+ static struct i2c_board_info __initdata nslu2_i2c_board_info [] = {
+-- 
+1.6.0.4
+
