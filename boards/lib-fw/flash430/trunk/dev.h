@@ -19,6 +19,13 @@
 #define FLASH_AREA_LEN 0xe00
 #endif
 
+#ifdef __MSP430_169__
+#include <msp430x16x.h>
+#define FLASH_AREA_0 0x1200
+#define FLASH_AREA_1 0x8900
+#define FLASH_AREA_LEN 0x7500
+#endif
+
 #ifdef __MSP430_1611__
 #include <msp430x16x.h>
 #define FLASH_AREA_0 0x4000
