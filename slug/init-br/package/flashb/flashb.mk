@@ -24,7 +24,7 @@ $(FLASHB_DIR)/flashb: $(FLASHB_DIR)/.source
 $(TARGET_DIR)/usr/bin/flashb: $(FLASHB_DIR)/flashb
 	cp -a $(FLASHB_DIR)/flashb $(TARGET_DIR)/usr/bin/
 
-flashb: $(TARGET_DIR)/usr/bin/flashb
+flashb: glib libelf $(TARGET_DIR)/usr/bin/flashb
 
 ifeq ($(strip $(BR2_PACKAGE_FLASHB)),y)
 TARGETS+=flashb
