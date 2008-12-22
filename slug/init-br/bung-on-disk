@@ -27,7 +27,7 @@ sync
 echo Unplug and then plug the device back in please... then press enter.
 read
 
-while [[ ! -e /dev/sdb1 ]]
+while [[ ! -e ${dev}1 ]]
 do
     sleep 1
     echo "Waiting"
