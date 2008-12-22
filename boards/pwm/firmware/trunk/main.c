@@ -129,6 +129,7 @@ void init(void)
 	}
 
 	flash_init();
+	i2c_flash_init();
 }
 
 /* ISR for IO interrupt */
