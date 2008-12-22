@@ -34,7 +34,7 @@
 #if (USE_WATCHDOG)
 #define watchdog_clear() do { WDTCTL = WATCHDOG_SETTINGS | WDTCNTCL | WDTPW; } while (0)
 #else
-#define watchdog_clear() do {}while(0)
+#define watchdog_clear() do {} while(0)
 #endif
 
 static uint8_t i = 0;
@@ -51,9 +51,6 @@ int main( void )
 {
 	i  = 1;
 	init();
-	i2c_init();
-	timer_b_init();
-	eint();
 
 	servo_set_pwm(0, MIDDLE_PULSE);
 	servo_set_pwm(1, MIDDLE_PULSE);		
@@ -130,6 +127,9 @@ void init(void)
 
 	flash_init();
 	i2c_flash_init();
+	i2c_init();
+	timer_b_init();
+	eint();
 }
 
 /* ISR for IO interrupt */
