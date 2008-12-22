@@ -11,6 +11,7 @@
 #include "timed.h"
 #include "adc.h"
 #include "xbee.h"
+#include "flash430/i2c-flash.h"
 
 /* Register functions:
  * i2ct: The type of the register.
@@ -73,6 +74,9 @@ I2C_REG( fakebutton );
 I2C_REG( rts );
 I2C_REG_RO( cts );
 I2C_REG( xbee );
+I2C_REG_RO( flash_fw_ver );
+I2C_REG( flash_fw_chunk_next );
+I2C_REG( flash_fw_confirm_crc );
 /* When adding new commands, make sure you change I2C_NUM_COMMANDS */
 
 const reg_access_t dev_regs[] = 
@@ -93,6 +97,9 @@ const reg_access_t dev_regs[] =
 	I2C_REG_ENTRY( rts ),
 	I2C_REG_ENTRY_RO( cts ),
 	I2C_REG_ENTRY( xbee ),
+	I2C_REG_ENTRY_RO( flash_fw_ver ),
+	I2C_REG_ENTRY( flash_fw_chunk_next ),
+	I2C_REG_ENTRY( flash_fw_confirm_crc ),
 };
 
 
@@ -390,4 +397,48 @@ void i2cw_xbee( uint8_t* data, uint8_t len )
 		xbee_on();
 	else
 		xbee_off();
+}
+
+uint16_t i2cs_flash_fw_ver( void )
+{
+	return 2;
+}
+
+uint8_t i2cr_flash_fw_ver( uint8_t *data )
+{
+	return i2c_flashr_fw_ver( data );
+}
+
+uint16_t i2cs_flash_fw_chunk_next( void )
+{
+	return 20;
+}
+
+/* Send the address of the next chunk to the master */
+uint8_t i2cr_flash_fw_chunk_next( uint8_t *data )
+{
+	return i2c_flashr_fw_next( data );
+}
+
+/* Receives a chunk of firmware */
+void i2cw_flash_fw_chunk_next( uint8_t* data, uint8_t len )
+{
+	i2c_flashw_fw_chunk( data );
+}
+
+uint16_t i2cs_flash_fw_confirm_crc( void )
+{
+	return 4;
+}
+
+/* Send the CRC */
+uint8_t i2cr_flash_fw_confirm_crc( uint8_t *data )
+{
+	return i2c_flashr_crc( data );
+}
+
+/* CRC confirmation */
+void i2cw_flash_fw_confirm_crc( uint8_t* data, uint8_t len )
+{
+	i2c_flashw_confirm( data );
 }
