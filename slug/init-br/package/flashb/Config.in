@@ -1,0 +1,7 @@
+config BR2_PACKAGE_FLASHB
+	bool "flashb"
+	default n
+	select BR2_PACKAGE_GLIB
+	select BR2_PACKAGE_LIBELF
+	help
+	  Utility for flashing Student Robotics over I2C.
