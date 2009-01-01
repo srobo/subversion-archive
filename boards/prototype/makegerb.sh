@@ -38,10 +38,10 @@ fi
 echo $of1
 echo $egl
 
-$egl -X -dGERBER_RS274X  $of1 -o$3-top.gbr $2 top pad via
-$egl -X -dGERBER_RS274X  $of1 -o$3-bottom.gbr $2 bottom pad via
-$egl -X -dGERBER_RS274X  $of1 -o$3-dim.gbr $2 dimension
-$egl -X -dexcellon  $of1 -o$3-drill.drd $2 drills
+echo "$egl -X -dGERBER_RS274X  $of1 -o$3-top.gbr $2 top pad via"
+echo "$egl -X -dGERBER_RS274X  $of1 -o$3-bottom.gbr $2 bottom pad via"
+echo "$egl -X -dGERBER_RS274X  $of1 -o$3-dim.gbr $2 dimension"
+echo "$egl -X -dexcellon  $of1 -o$3-drill.drd $2 drills"
     
 
 
