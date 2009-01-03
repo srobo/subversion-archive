@@ -9,20 +9,20 @@ bom_dir=../shipping/2008/bom/in/
 power: 
 	mkdir -p ${power_dir}/gerbers
 	./makegerb.sh 4 ${power_dir}PWR1.brd ${power_dir}gerbers/power
-	./getprt.sh ${power_dir}PWR.sch ${bom_dir}pwr.prt
+	./getprt.sh ${power_dir}PWR1.sch ${bom_dir}pwr.prt
 
 motor:
 	mkdir -p ${motor_dir}/gerbers
 	./makegerb.sh 4 ${motor_dir}motor.brd ${motor_dir}gerbers/motor
-	./getprt.sh ${motor_dir}PWR.sch ${bom_dir}motor.prt
+	./getprt.sh ${motor_dir}PWR1.sch ${bom_dir}motor.prt
 pwm:
 	mkdir -p ${pwm_dir}/gerbers
 	./makegerb.sh 5 ${pwm_dir}pwm-board.brd ${pwm_dir}gerbers/pwm
- 	./getprt.sh ${pwm_dir}PWR.sch ${bom_dir}pwm-board.prt
+	./getprt.sh ${pwm_dir}pwm-board.sch ${bom_dir}pwm-board.prt
 jointio: 
 	mkdir -p ${jointio_dir}/gerbers
 	./makegerb.sh 4 ${jointio_dir}jointio.brd ${jointio_dir}gerbers/jointio
-	./getprt.sh ${jointio_dir}PWR.sch ${bom_dir}jointio.prt
+	./getprt.sh ${jointio_dir}jointio.sch ${bom_dir}jointio.prt
 tile: 
 	mkdir -p gerbers
 	./makegerb.sh 4 ${power_dir}PWR1.brd ${power_dir}gerbers/shift-power 0 0
@@ -48,7 +48,7 @@ clean::
 	-rm -f ${pwm_dir}gerbers/pwm*
 	-rm -f ${jointio_dir}gerbers/jointio*
 	
-	-rm -f ${power_dir}PWR.prt	
+	-rm -f ${power_dir}PWR1.prt	
 	-rm -f ${jointio.prt}jointio.prt	
 	-rm -f ${motor_dir}motor.prt	
 	-rm -f ${bom_dir}pwm.prt
