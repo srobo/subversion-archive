@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-import sys
-
+import sys, csv
 
 if(sys.argv.__len__() < 4):
     print "error usage is:"
@@ -19,19 +18,20 @@ lib ={}
 bom={}
 fail = 0
 
-for line in srfile:
-    if (not line.strip()[0] == '#'):
-        #print "valid comp",line
-        lib[line.split(",")[0]]=0
-    #else:
-     #   print "comment",line
+sr_csv = csv.DictReader( srfile )
 
-# for j in lib:
-#     print j
+for line in sr_csv:
+    if line["sr-code"].strip()[0] == "#":
+        continue
+    c = line["sr-code"]
+    # Remove the code from the dictionary
+    del line["sr-code"]
 
+    lib[c] = line
+
+# EAGLE specific stuff
 for i in range(8): # skip eagle header
     infile.readline()
-
 
 error = 0
 found = 0
@@ -40,7 +40,6 @@ for line in infile:
     fields = line.split()
     sr_id = fields[1] # eg SRcr10k
     board_id = fields[0] # eg R1
-
 
     if ( not (lib.has_key(sr_id))):
         print "Error, ",board_id," ",sr_id, "Is not a valid SR component, please re-align your mind"
