@@ -17,10 +17,14 @@ infile = open(inpath,"r") # eagle bom file
 bom = {}
 fail = 0
 
-# EAGLE specific stuff
-for i in range(8): # skip eagle header
-    infile.readline()
-
+# skip eagle header
+for i in range(8):
+    l = infile.readline()
+    # line 5 starts with "EAGLE" in EAGLE parts lists.
+    if i == 4 and l[0:5] != "EAGLE":
+        print "Error: Parts list is not EAGLE parts list."
+        sys.exit(3)
+        
 error = 0
 found = 0
 
