@@ -312,9 +312,8 @@ static uint8_t i2cr_motor_get1( uint8_t *buf )
 static uint8_t i2cr_motor_fback(uint8_t *buf)
 {
 	buf[0] = P2IN & 0x0f;
-	buf[1] = P2IN & 0x0f;
 
-	return 2;
+	return 1;
 }
 
 /* send back current info */
