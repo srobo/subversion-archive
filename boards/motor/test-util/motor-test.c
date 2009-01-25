@@ -304,7 +304,7 @@ int16_t motor_fback_read( int fd )
 {
 	int32_t r;
 
-	r = i2c_smbus_read_word_data(fd, COMMAND_FEEDBACK);
+	r = i2c_smbus_read_byte_data(fd, COMMAND_FEEDBACK);
 
 	if ( r < 0 )
 		return -1;
