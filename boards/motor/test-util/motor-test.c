@@ -110,11 +110,11 @@ int main( int argc, char** argv )
 		/* Run tests */
 		test = TRUE;
 
-	if( argc == 2 && strcmp( argv[1], "fback") == 0)
+	else if( argc == 2 && strcmp( argv[1], "fback") == 0)
 		/* run feedback*/
 		fback = TRUE;
 
-	if( argc == 2 && strcmp( argv[1], "current") == 0)
+	else if( argc == 2 && strcmp( argv[1], "current") == 0)
 		/* run current*/
 		current = TRUE;
 
