@@ -20,6 +20,7 @@
 #include "timer-b.h"
 #include "flash430/flash.h"
 #include "flash430/i2c-flash.h"
+#include "leds.h"
 #include <signal.h>
 #include <msp430/adc10.h>
 
@@ -84,6 +85,7 @@ int main( void )
 void init( void )
 {
 	init_gpio();
+	leds_init();
 	pwm_init();
 	motor_init();
 	timer_b_init();
