@@ -85,8 +85,13 @@ bool motor_read( int fd, uint8_t m, motor_state_t *s, pwm_ratio_t *val );
 /* Configure a motor, but read back and try again. */
 void motor_set_retry( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val );
 
-/* Read feedback pins */
-void motor_fback_read( int fd);
+/* Read feedback pins.
+   Lower 4 bits of return value are the feedback input bits. 
+   Returns negative value on fail. */
+int16_t motor_fback_read( int fd );
+
+/* Wrapper around motor_fback_read that retries forever until there's no failure */
+uint8_t motor_fback_read_retry( int fd );
 
 /* Read current values 8 */
 void motor_current_read( int fd);
@@ -137,8 +142,11 @@ int main( int argc, char** argv )
 	}
 	else if( fback)
 	{
-		printf("Reading feebackpins on motor board\n");
-		motor_fback_read(fd);	
+		uint8_t v = motor_fback_read_retry(fd);
+		uint8_t i;
+		printf( "Feedback pins:\n" );
+		for( i=0; i<4; i++ ) 
+			printf( "\tPin %hhu = %hhu\n", i, ((1<<i)&v)?1:0 );
 	}
 	else if( current)
 	{
@@ -292,15 +300,30 @@ void motor_set_retry( int fd, uint8_t m, motor_state_t s, pwm_ratio_t val )
 	printf("%u attempts. s=%u, r=%u\n", attempts, a_s, a_r);
 }
 
-void  motor_fback_read( int fd)
+int16_t motor_fback_read( int fd )
 {
 	int32_t r;
-	r = i2c_smbus_read_word_data(fd, COMMAND_FEEDBACK);
-	uint16_t d = (uint16_t) r;
 
-	fprintf(stderr, "Motor fback pins:\t%u\n",(d&0x0f) );
-	return;	
+	r = i2c_smbus_read_word_data(fd, COMMAND_FEEDBACK);
+
+	if ( r < 0 )
+		return -1;
+
+	return (int16_t)r;	
 }
+
+uint8_t motor_fback_read_retry( int fd )
+{
+	int16_t v;
+
+	do
+		v = motor_fback_read(fd);
+	while( v < 0 );
+
+	return (uint8_t)v;
+}
+
+
 void  motor_current_read( int fd)
 {
 	int32_t r;
