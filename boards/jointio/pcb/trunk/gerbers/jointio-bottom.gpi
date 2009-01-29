@@ -1,0 +1,55 @@
+Photoplotter Info File: /home/chris/srobo/boards/jointio/pcb/trunk/gerbers/jointio-bottom.gpi
+
+ Date              :  1/29/2009 12:17:20 
+ Plotfile          : /home/chris/srobo/boards/jointio/pcb/trunk/gerbers/jointio-bottom.gbr
+ Apertures         : generated: 
+ Device            : Gerber photoplotter with RS-274-X aperture generation
+
+Parameter settings:
+
+ Emulate Apertures : no
+ Emulate Thermal   : no
+ Emulate Annulus   : no
+ Tolerance Draw  + :  0.00 %
+ Tolerance Draw  - :  0.00 %
+ Tolerance Flash + :  0.00 %
+ Tolerance Flash - :  0.00 %
+ Rotate            : no
+ Mirror            : no
+ Optimize          : yes
+ Auto fit          : yes
+ OffsetX           : 0inch
+ OffsetY           : 0inch
+
+Plotfile Info:
+
+ Coordinate Format : 2.4
+ Coordinate Units  : Inch
+ Data Mode         : Absolute
+ Zero Suppression  : None
+ End Of Block      : *
+
+Apertures used:
+
+ Code     Shape     Size                  used
+
+ D10      draw      0.0060inch              55
+ D11      rectangle 0.0394inch x 0.0551inch    24
+ D12      round     0.0787inch              40
+ D13      round     0.0630inch               1
+ D14      octagon   0.0630inch               1
+ D15      round     0.0525inch               4
+ D16      round     0.0480inch               2
+ D17      rectangle 0.0118inch x 0.0453inch    38
+ D18      oval      0.0600inch x 0.1200inch     4
+ D19      rectangle 0.0551inch x 0.0394inch    12
+ D20      draw      0.0120inch              42
+ D21      square    0.0354inch              24
+ D22      draw      0.0079inch            3217
+ D23      draw      0.0118inch              11
+ D24      octagon   0.0354inch              19
+ D25      square    0.0394inch               1
+ D26      draw      0.0236inch              46
+ D27      draw      0.0160inch              34
+ D28      octagon   0.0394inch               3
+
