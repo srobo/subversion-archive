@@ -1,7 +1,7 @@
 #ifndef __I2C_REG_H
 #define __I2C_REG_H
 #include "types.h"
-//#include<stdint.h>
+#include<stdint.h>
 
 typedef struct
 {
