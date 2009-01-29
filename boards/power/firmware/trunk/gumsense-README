@@ -1,38 +1,3 @@
-Notes on compilation:
- * This compiles on mspgcc 3.2.3, using binutils 2.16.
-
-It appears that SOME timestamps may be sent MSB first.
-
-New I2C commands:
- * Identify read
- * Time read/write
- * Job table entry read/write
-    - Change read to read a single entry.
- * Job Data Size
- * Job data read
- * Job data clear
-    - Change this to be a command of its own (currently happens when
-      you write to the job data read command)
- * Gumstix Power
- * Gumstix Wakeup Time
- * Job Execution Mask
- * Job Data CRC
-    - Probably get rid of this, since there'll be CRCs in all
-    commands.
- * Job Read Cursor
- * Job Data Size Time
-
-The main problem that needs to be addressed is the association between
-data, time and sensors.  
-At the moment, the channel number is stored in the top 4 bits of the
-data.  There are 8 channels.
-
-We can use the most significant bit of each recording to mark a
-reading in some special way.
-
-Or we could extend each log by one byte so that the job number can
-also be stored with each reading. 
-
 *** How the I2C protocol on the Gumsense works: ***
 
 Since the Linux driver for the pxa's i2c adapter doesn't support block
