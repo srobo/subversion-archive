@@ -14,8 +14,8 @@ uint8_t i2c_flashr_fw_ver( uint8_t* buf )
 	/* Reinitialise the flashing system */
 	flash_init();
 
-	buf[1] = 0;
-	buf[0] = 2;
+	buf[0] = firmware_version & 0xff;
+	buf[1] = (firmware_version>>8) &0xff;
 
 	return 2;
 }

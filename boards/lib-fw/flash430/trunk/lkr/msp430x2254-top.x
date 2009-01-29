@@ -72,6 +72,9 @@ SECTIONS
   /* Internal text space.  */
   .text :
   {
+    /* The firmware version */
+    *(.fwver);
+    
     . = ALIGN(2);
     *(.init)
     KEEP(*(.init))

@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <bool.h>
 #include "dev.h"
+#include "fw_ver.h"
 
 #define IVT ((uint16_t*)0xFFC0)
 
@@ -29,9 +30,6 @@ void flash_erase_segment( uint16_t *addr );
 
 /* Switch over to the new firmware */
 void flash_switchover( void );
-
-/* Current firmware version */
-const extern uint16_t FIRMWARE_VERSION;
 
 /* The next firmware chunk that's required */
 extern uint16_t *next_chunk;

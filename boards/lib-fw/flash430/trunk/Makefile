@@ -5,11 +5,13 @@ endif
 CFLAGS ?= -g -mmcu=${ARCH} -Wall -O3
 CFLAGS += -I./types
 
-C_FILES := flash.c i2c-flash.c
-H_FILES := flash.h i2c-flash.h
+override CFLAGS += -DFW_VER=0
 
-libflash430.a: flash.o i2c-flash.o
-	msp430-ar r $@ flash.o i2c-flash.o
+C_FILES := flash.c i2c-flash.c fw_ver.c
+H_FILES := flash.h i2c-flash.h fw_ver.h
+
+libflash430.a: flash.o i2c-flash.o fw_ver.o
+	msp430-ar r $@ flash.o i2c-flash.o fw_ver.o
 
 %.o: %.c %.h
 ifndef ARCH
