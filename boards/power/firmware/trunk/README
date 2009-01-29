@@ -1,8 +1,9 @@
-*** How the I2C protocol on the Gumsense works: ***
+*** How the I2C protocol on the power board works: ***
 
-Since the Linux driver for the pxa's i2c adapter doesn't support block
-read or write operations, it's necessary to do some fudgery to sort
-out the transfers.  Unfortunately, read is now different to write:
+Since the Linux driver for the Slug's bit-banged i2c adapter doesn't
+support block read or write operations, it's necessary to do some
+fudgery to sort out the transfers.  Unfortunately, read is now
+different to write:
 
  * Block Write Operations
    These are pretty straightforward, and their format is the same as
