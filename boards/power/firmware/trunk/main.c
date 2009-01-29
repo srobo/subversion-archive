@@ -17,10 +17,8 @@
 
 int dummy =0; 			/* dummy variable to fix gdb bug */
 
-
 int main(void)
 {
-
 	init_cpu();
 	led_init();
 	switch_init();
@@ -34,7 +32,6 @@ int main(void)
 	flash_init();
 	i2c_flash_init();
 	eint();			/* enable global interrupts */
-
 
 	while(1)
 	{

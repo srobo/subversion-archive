@@ -102,7 +102,6 @@ const reg_access_t dev_regs[] =
 	I2C_REG_ENTRY( flash_fw_confirm_crc ),
 };
 
-
 uint16_t i2cs_identify( void )
 {
 	return 2;
@@ -135,7 +134,6 @@ void i2cw_led( uint8_t* data, uint8_t len )
 }
 
 /* Dip switch Handler */
-
 
 uint16_t i2cs_dipswitch( void )
 {
@@ -190,7 +188,6 @@ uint8_t i2cr_slug_power( uint8_t *data )
 
 /* servo power handler */
 
-
 uint16_t i2cs_servo_power( void )
 {
 	return 1;
@@ -208,7 +205,6 @@ void i2cw_servo_power( uint8_t* data, uint8_t len )
 }
 
 /* motor handler */
-
 
 uint16_t i2cs_motor_power( void )
 {
@@ -229,7 +225,6 @@ void i2cw_motor_power( uint8_t* data, uint8_t len )
 
 /* Battery */
 
-
 uint16_t i2cs_battery( void )
 {
 	return 1;
@@ -243,7 +238,6 @@ uint8_t i2cr_battery( uint8_t *data )
 
 
 /* voltage */
-
 
 uint16_t i2cs_volt( void )
 {
@@ -260,7 +254,6 @@ uint8_t i2cr_volt( uint8_t *data )
 
 /* current */
 
-
 uint16_t i2cs_amp( void )
 {
 	return 2;
@@ -274,9 +267,6 @@ uint8_t i2cr_amp( uint8_t *data )
 }
 
 
-
-
-
 /* Beegees - Staying Alive :-) */
 
 uint16_t i2cs_beegees( void )
@@ -284,18 +274,16 @@ uint16_t i2cs_beegees( void )
 	return 1;
 }
 
-
 void i2cw_beegees( uint8_t *data, uint8_t len )
 {
 	stayingalive();
 }
+
 uint8_t i2cr_beegees( uint8_t *data )
 {
 	data[0]= alive;
 	return 1;
 }
-
-
 
 
 /* test Handler */
@@ -319,7 +307,6 @@ void i2cw_test( uint8_t* data, uint8_t len )
 	
 	U1BR0 = data[0];
 	U1BR1 = data[1];
-	
 }
 
 
@@ -392,7 +379,6 @@ uint8_t i2cr_xbee( uint8_t *data )
 
 void i2cw_xbee( uint8_t* data, uint8_t len )
 {
-	
 	if (data[0])
 		xbee_on();
 	else

@@ -1,7 +1,6 @@
 #include "isense.h"
 #include"device.h"
 
-
 void isense_init(void)
 {
 	/* Isense EN = p5.0 */

@@ -9,8 +9,8 @@ uint16_t current=0;
 
 interrupt (ADC12_VECTOR) adc_service( void )
 {
-
 	uint8_t adc12v_l = ADC12IV;
+
 	/* We only care about the interrupt relating to the last in 
 	   the conversion sequence - which is the only one that we enabled */
 	if ( adc12v_l == 0x08)
@@ -20,7 +20,6 @@ interrupt (ADC12_VECTOR) adc_service( void )
 		voltage = ADC12MEM1;
 		ADC12IFG &= ~0x02; /* clear flag */
 	}
-
 	else
 	{
 		togc;
@@ -35,7 +34,6 @@ void adc_init( void )
 	P6DIR &= ~0x03;		/* 6.0 + 6.1 as inputs */
 	P6SEL |= 0x03;		/* disable dio */
 
-
 	ADC12CTL0 = ADC12ON;
 	ADC12CTL0 |= SHT0_0 | SHT1_0 /* sample and hold fastest for now to avoid trip hazard, */
 	       	| MSC		     /* multi sample */
@@ -44,7 +42,6 @@ void adc_init( void )
 		| ADC12ON;	     /* adc module on */
 		/* overflows not on */
 		/* enc set later */
-
 
 	ADC12CTL1 = CSTARTADD_0	/* start at 0 */
 		| SHS_ADC12SC	/* conversion start from timera cc1 */
@@ -64,14 +61,10 @@ void adc_init( void )
 //	ADC12IFG = 0;		/* clear any erroneous flags */
 	ADC12IE = 0x2;		/* set interrupt on last conversion */
 
-
-
 	/* movethis to a post warm up timer */
 	       
 	ADC12CTL0 |= ENC;
 	/* Start the conversion */
 	ADC12CTL0 |= ADC12SC;
-
-		
 }
 

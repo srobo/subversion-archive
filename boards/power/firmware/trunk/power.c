@@ -72,15 +72,13 @@ uint8_t pwr_get_motor(void)
   return (P2IN & 0x04)>>2;
 }
 
-
-
 void delay(int16_t time)
 {
     int16_t sponge =0;
     int16_t startupdel=0;
+
     for (startupdel=0;startupdel<(time*100);startupdel++)
     {
         for(sponge=0;sponge<250;sponge++);	
     }
-
 }

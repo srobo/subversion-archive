@@ -4,10 +4,9 @@
 #include "timed.h"
 #include "power.h"
 
-uint8_t alive =1;
+uint8_t alive = 1;
 static uint16_t safe_count =0;
 uint8_t override=0;	/* button override */
-
 
 void stayingalive(void)
 {
@@ -25,7 +24,6 @@ void alive_service(void){	/* called ever 0.1s */
 		else
 			alive_count++;
 	}
-	
 }
 
 void timer_override(void){
@@ -39,7 +37,6 @@ void make_safe(void){
 		pwr_set_motor(1);
 	}
 }
-
 
 void safe_service(void){
 	if (override !=1){

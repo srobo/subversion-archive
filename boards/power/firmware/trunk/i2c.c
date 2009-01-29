@@ -6,7 +6,6 @@
 #include <signal.h>
 #include "led.h"
 
-
 typedef enum 
 {
 	S_I2C_IDLE, 
@@ -195,7 +194,6 @@ void i2c_init( void )
   /* Slave mode, 7-bit addressing, non-loopback */
   U0CTL &= ~(XA | LISTEN | MST);
 
-
   I2CTCTL = 0;
   /* byte mode */
   I2CTCTL &= ~I2CWORD;
@@ -221,5 +219,4 @@ void i2c_init( void )
   /* set I2CEN to enable peripheral */
   U0CTL |= I2CEN;
 }
-
 
