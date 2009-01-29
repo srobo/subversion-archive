@@ -5,5 +5,4 @@
 
 #define BIT(n) ( 1 << (n) )
 
-
 #endif	/* __TYPES_H */

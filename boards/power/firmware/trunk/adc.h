@@ -6,9 +6,7 @@
 extern uint16_t voltage;
 extern uint16_t current;
 
-
 /* Initialises the ADC peripheral */
 void adc_init( void );
-
 
 #endif	/* __ADC_H */

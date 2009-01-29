@@ -7,7 +7,6 @@
 #define RTS (1<<4)
 #define CTS (1<<5)
 
-
 void xbee_init(void);
 
 #define CTSOK (!(P5IN& CTS ) )      /*  ok to send data when this evaluates true */
