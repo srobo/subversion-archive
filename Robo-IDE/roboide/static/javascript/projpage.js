@@ -257,7 +257,10 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 }
 	
 ProjFileList.prototype.refresh = function() {    
-    this.selection = new Array();
+	if( this._project == "" )
+		return;
+
+	this.selection = new Array();
 	var d = loadJSONDoc("./filelist", {team : this._team,
 					   rootpath : this._project, rev : this.rev});
 	
