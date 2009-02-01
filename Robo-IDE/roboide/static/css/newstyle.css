@@ -189,3 +189,15 @@ a.button:hover {
 .dummy {
 	display: none;
 }
+
+#grey-out {
+	background-color: #DFDBD8;
+	display: none;
+	height: 100%;
+	width: 100%;
+	position:fixed;
+	top: 0;
+	-moz-opacity: 0.75;
+	opacity:.75;
+	filter: alpha(opacity=75);
+}

@@ -118,6 +118,7 @@ ProjPage.prototype._rpane_show = function() {
 
 ProjPage.prototype.clickNewProject = function() {
 	showElement($("new-project-box"));
+	showElement($("grey-out"));
 
 	connect("new-project-cancel", "onclick",
 		bind(this.clickCancelNewProject, this));
@@ -127,12 +128,14 @@ ProjPage.prototype.clickNewProject = function() {
 
 ProjPage.prototype.clickCancelNewProject = function() {
 	hideElement($("new-project-box"));
+	hideElement($("grey-out"));
 	disconnectAll("new-project-cancel");
 	disconnectAll("new-project-create");
 }
 
 ProjPage.prototype.clickCreateNewProject = function() {
 	hideElement($("new-project-box"));
+	hideElement($("grey-out"));
 	disconnectAll("new-project-cancel");
 	disconnectAll("new-project-create");
 
