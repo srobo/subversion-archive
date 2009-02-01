@@ -25,6 +25,9 @@ function Browser(cback, options) {
 	this.newFname = "";
 	this.commitMsg = "";
 
+	this._DEFAULT_MSG = "Commit message";
+	this._DEFAULT_FNAME = "new.py";
+
 	this.fileList = new Array();
 	this.type = options.type;
 
@@ -34,7 +37,10 @@ function Browser(cback, options) {
 }
 
 Browser.prototype._init = function() {
-	$("new-commit-msg").value = "Commit message";
+
+	$("new-commit-msg").value = this._DEFAULT_MSG;
+	$("new-file-name").value = this._DEFAULT_FNAME;
+
 	//make visible
 	this.display();
 
@@ -51,6 +57,8 @@ Browser.prototype._init = function() {
     disconnectAll("cancel-new-file");
 	connect("save-new-file", 'onclick', bind(this.clickSaveFile, this, false));
 	connect("cancel-new-file", 'onclick', bind(this.clickCancelSave, this));
+	connect("new-commit-msg","onfocus", bind(this._msg_focus, this));
+	connect("new-file-name","onfocus", bind(this._fname_focus, this));
 }
 
 Browser.prototype._receiveTree = function(nodes) {
@@ -206,19 +214,18 @@ Browser.prototype.hide = function() {
 	replaceChildNodes($("right-pane-list"));
 }
 
+Browser.prototype._msg_focus = function() {
+	var t = $("new-commit-msg");
 
-//when commit message box has focus:
-function enlarge_commit_msg() {
-	//delete deafult text on focus
-	if($("new-commit-msg").innerHTML == "Commit message") { $("new-commit-msg").innerHTML = "";}
-	setStyle("right-pane", {"height" : "50px" });
-	setStyle("left-pane", {"height" : "50px" });
-	setStyle("new-commit-msg", {"height" : "200px" });
-}	
-//when commit message box looses focus:
-function shrink_commit_msg() {
-	setStyle("right-pane", {"height" : "200px" });
-	setStyle("left-pane", {"height" : "200px" });
-	setStyle("new-commit-msg", {"height" : "50px" });
-}	
+	if( t.value == this._DEFAULT_MSG )
+		// Select all
+		t.select();
+}
 
+Browser.prototype._fname_focus = function() {
+	var t = $("new-file-name");
+
+	if( t.value == this._DEFAULT_FNAME )
+		// Select all
+		t.select();
+}
