@@ -34,6 +34,7 @@ function Browser(cback, options) {
 }
 
 Browser.prototype._init = function() {
+	$("new-commit-msg").value = "Commit message";
 	//make visible
 	this.display();
 
