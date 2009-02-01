@@ -299,9 +299,15 @@ function EditTab(team, project, path, rev) {
 	}
 
 	this._receive_new_fname = function(fpath, commitMsg) {
-		this.path = fpath;
-		this._commitMsg = commitMsg;
-		this._svn_save();
+		var a = fpath.split( "/", 2 );
+
+		if (a.length == 2 ) {
+			this.project = a[1];
+			this.path = fpath;
+			this._commitMsg = commitMsg;
+			this._svn_save();
+		} else
+			status_msg( "No project specified", LEVEL_ERROR );
 	}
 
 	this._receive_commit_msg = function(commitMsg) {
@@ -331,12 +337,14 @@ function EditTab(team, project, path, rev) {
 				this._dirty = false;
 				this._original = this.contents;
 				this._isNew = false;
+ 				this._update_contents();
 				break;
 			case "Merge":
 				status_msg("File Merge successful (New Revision: "+nodes.new_revision+")", LEVEL_OK);
 				this._dirty = false;
 				this._original = this.contents;
 				this._isNew = false;
+ 				this._update_contents();
 				break;
 			case "Error creating new directory":
 				status_msg("Error creating new directory (New Revision: "+nodes.new_revision+")", LEVEL_ERROR);
@@ -402,9 +410,6 @@ function EditTab(team, project, path, rev) {
 					    "txt_changed", 
 					    bind(this._content_changed, this) ) );				     						  
 
-		//display filepath
-		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );	
-
 		//load file contents
 		this._update_contents();		
 	}
@@ -422,7 +427,9 @@ function EditTab(team, project, path, rev) {
 		logDebug("Updating editarea contents: ");
 	 	editAreaLoader.setValue("editpage-editarea", this.contents);
 	 	this._get_revisions();
-	 	status_hide();
+
+		// Display file path
+		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );
 	}
 
 	//call this to update this.contents with the current contents of the edit area
