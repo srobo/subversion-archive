@@ -59,6 +59,9 @@ Browser.prototype._init = function() {
 	connect("cancel-new-file", 'onclick', bind(this.clickCancelSave, this));
 	connect("new-commit-msg","onfocus", bind(this._msg_focus, this));
 	connect("new-file-name","onfocus", bind(this._fname_focus, this));
+
+	if(this.type == "isCommit")
+		$("new-commit-msg").focus();
 }
 
 Browser.prototype._receiveTree = function(nodes) {
