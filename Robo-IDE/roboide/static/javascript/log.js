@@ -59,7 +59,7 @@ Log.prototype._receiveHistory = function(revisions) {
 	update(this.history, revisions.history);
     update(this.userList, revisions.authors);
 	this.overflow = revisions.overflow;
-	status_msg("File History loaded successsfully", LEVEL_OK);	
+	status_msg("File history loaded successfully", LEVEL_OK);	
     //present data
 	this._populateList();
 }
