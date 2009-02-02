@@ -459,7 +459,9 @@ function EditTab(team, project, path, rev) {
 		} else {
 			replaceChildNodes("history", OPTION({'value' : -1}, "Select File Revision"));	    
 			for(var i=0; i < nodes.history.length; i++)
-				appendChildNodes("history", OPTION({'value' : nodes.history[i].rev, 'title' : "Log Msg: "+nodes.history[i].message}, nodes.history[i].date+" ["+nodes.history[i].author+"]"));
+				appendChildNodes("history", OPTION( {'value' : nodes.history[i].rev, 
+								     'title' : nodes.history[i].message }, 
+								    "r" + nodes.history[i].rev + " " + nodes.history[i].date + " [" +nodes.history[i].author + "]"));
 
 			appendChildNodes("history", OPTION({'value' : -2}, "--View Full History--"));			
 		}
