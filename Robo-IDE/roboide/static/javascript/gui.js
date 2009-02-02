@@ -467,3 +467,41 @@ function TeamSelector() {
 }
 
 
+// Count of outstanding asynchronous requests
+var async_count = 0;
+
+function loadJSONDoc( url, qa ) {
+	async_count += 1;
+	showElement( $("rotating-box") );
+
+	var d = new Deferred();
+	var r;
+	
+	if( qa == undefined )
+		r = MochiKit.Async.loadJSONDoc( url );
+	else
+		r = MochiKit.Async.loadJSONDoc( url, qa );
+
+	r.addCallback( partial( ide_json_cb, d ) );
+	r.addErrback( partial( ide_json_err, d ) );
+
+	return d;
+}
+
+function ide_json_cb( d, res ) {
+	async_count -= 1;
+
+	if( async_count == 0 )
+		hideElement( $("rotating-box") );
+
+	d.callback(res);
+}
+
+function ide_json_err( def, res ) {
+	async_count -= 1;
+
+	if( async_count == 0 )
+		hideElement( $("rotating-box") );
+
+	def.errback(res);
+}

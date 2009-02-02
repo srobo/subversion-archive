@@ -107,6 +107,16 @@ body {
 #status.warn { background-color: #ffff31; }
 #status.error { background-color: #ff5e5e; }
 
+#rotating-box {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 10px;
+	height: 10px;
+	background-color: white;
+}
+
 #page {
       width: 100%;
 }
