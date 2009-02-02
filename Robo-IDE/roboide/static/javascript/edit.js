@@ -337,6 +337,7 @@ function EditTab(team, project, path, rev) {
 				this._dirty = false;
 				this._original = this.contents;
 				this._isNew = false;
+				this.rev = nodes.new_revision;
  				this._update_contents();
 				break;
 			case "Merge":
@@ -344,6 +345,7 @@ function EditTab(team, project, path, rev) {
 				this._dirty = false;
 				this._original = this.contents;
 				this._isNew = false;
+				this.rev = nodes.new_revision;
  				this._update_contents();
 				break;
 			case "Error creating new directory":
@@ -429,7 +431,10 @@ function EditTab(team, project, path, rev) {
 	 	this._get_revisions();
 
 		// Display file path
-		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );
+		var t = this.path;
+		if( this.rev != 0 )
+			t = t + " - r" + this.rev;
+		replaceChildNodes( $("tab-filename"), t );
 		this.tab.set_label( this.path );
 	}
 
