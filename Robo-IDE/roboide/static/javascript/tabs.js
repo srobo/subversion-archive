@@ -75,6 +75,11 @@ function Tab(label) {
 		status_msg( "TODO: Remove flash style", LEVEL_WARN );
 	}
 
+	this.set_label = function( l ) {
+		this.label = l;
+		replaceChildNodes(this._a, l);
+	}
+
 	this._init();
 }
 

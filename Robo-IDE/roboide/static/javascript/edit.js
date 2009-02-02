@@ -430,6 +430,7 @@ function EditTab(team, project, path, rev) {
 
 		// Display file path
 		replaceChildNodes( $("tab-filename"), this.project + "::" + this.path );
+		this.tab.set_label( this.path );
 	}
 
 	//call this to update this.contents with the current contents of the edit area
