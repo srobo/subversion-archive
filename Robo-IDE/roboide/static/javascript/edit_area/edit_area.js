@@ -2,7 +2,7 @@
  *
  *	EditArea 
  * 	Developped by Christophe Dolivet
- *	Released under LGPL license
+ *	Released under LGPL, Apache and BSD licenses (use the one you want)
  *
 ******/
 
@@ -22,8 +22,10 @@
 		this.last_hightlighted_text= "";
 		this.syntax_list= new Array();
 		this.allready_used_syntax= new Object();
+		this.check_line_selection_timer= 50;	// the timer delay for modification and/or selection change detection
 		
 		this.textareaFocused= false;
+		this.highlight_selection_line= null;
 		this.previous= new Array();
 		this.next= new Array();
 		this.last_undo="";
@@ -40,7 +42,7 @@
 		for(var index in this.assocBracket){
 			this.revertAssocBracket[this.assocBracket[index]]=index;
 		}
-		
+		this.is_editable= true;
 		
 		
 		/*this.textarea="";	
@@ -81,6 +83,8 @@
 		
 		if(this.settings['syntax'])
 			this.allready_used_syntax[this.settings['syntax']]=true;
+		
+		
 	};
 	
 	
@@ -108,7 +112,7 @@
 			
 			// check that the popups don't get out of the screen
 			for(var i=0; i<editArea.inlinePopup.length; i++){
-				var popup= document.getElementById(editArea.inlinePopup[i]["popup_id"]);
+				var popup= $(editArea.inlinePopup[i]["popup_id"]);
 				var max_left= document.body.offsetWidth- popup.offsetWidth;
 				var max_top= document.body.offsetHeight- popup.offsetHeight;
 				if(popup.offsetTop>max_top)
@@ -120,16 +124,21 @@
 	};
 
 	EditArea.prototype.init= function(){
-		this.textarea= document.getElementById("textarea");
-		this.container= document.getElementById("container");
-		this.result= document.getElementById("result");
-		this.content_highlight= document.getElementById("content_highlight");
-		this.selection_field= document.getElementById("selection_field");
-		this.processing_screen= document.getElementById("processing");
-		this.editor_area= document.getElementById("editor");
-		this.tab_browsing_area= document.getElementById("tab_browsing_area");
+		this.textarea= $("textarea");
+		this.container= $("container");
+		this.result= $("result");
+		this.content_highlight= $("content_highlight");
+		this.selection_field= $("selection_field");
+		this.processing_screen= $("processing");
+		this.editor_area= $("editor");
+		this.tab_browsing_area= $("tab_browsing_area");
 		
-		if(syntax_selec= document.getElementById("syntax_selection"))
+		if(!this.settings['is_editable'])
+			this.set_editable(false);
+		
+		this.set_show_line_colors( this.settings['show_line_colors'] );
+		
+		if(syntax_selec= $("syntax_selection"))
 		{
 			// set up syntax selection lsit in the toolbar
 			for(var i=0; i<this.syntax_list.length; i++) {
@@ -144,7 +153,7 @@
 		}
 		
 		// add plugins buttons in the toolbar
-		spans= parent.getChildren(document.getElementById("toolbar_1"), "span", "", "", "all", -1);
+		spans= parent.getChildren($("toolbar_1"), "span", "", "", "all", -1);
 		
 		for(var i=0; i<spans.length; i++){
 		
@@ -167,7 +176,6 @@
 		}
 		
 		
-		
 		// init datas
 		this.textarea.value=editAreas[this.id]["textarea"].value;
 		if(this.settings["debug"])
@@ -176,8 +184,8 @@
 		// init size		
 		//this.update_size();
 		
-		if(document.getElementById("redo") != null)
-			this.switchClassSticky(document.getElementById("redo"), 'editAreaButtonDisabled', true);
+		if($("redo") != null)
+			this.switchClassSticky($("redo"), 'editAreaButtonDisabled', true);
 		
 		
 		// insert css rules for highlight mode		
@@ -188,18 +196,15 @@
 		}
 		// init key events
 		if(this.nav['isOpera'])
-			document.getElementById("editor").onkeypress= keyDown;
+			$("editor").onkeypress= keyDown;
 		else
-			document.getElementById("editor").onkeydown= keyDown;
-	/*	if(this.nav['isIE'] || this.nav['isFirefox'])
-			this.textarea.onkeydown= keyDown;
-		else if
-			this.textarea.onkeypress= keyDown;*/
+			$("editor").onkeydown= keyDown;
+
 		for(var i=0; i<this.inlinePopup.length; i++){
 			if(this.nav['isIE'] || this.nav['isFirefox'])
-				document.getElementById(this.inlinePopup[i]["popup_id"]).onkeydown= keyDown;
+				$(this.inlinePopup[i]["popup_id"]).onkeydown= keyDown;
 			else
-				document.getElementById(this.inlinePopup[i]["popup_id"]).onkeypress= keyDown;
+				$(this.inlinePopup[i]["popup_id"]).onkeypress= keyDown;
 		}
 		
 		if(this.settings["allow_resize"]=="both" || this.settings["allow_resize"]=="x" || this.settings["allow_resize"]=="y")
@@ -230,26 +235,30 @@
 			this.textarea.spellcheck= this.settings["gecko_spellcheck"];
 		}
 		
+		/** Browser specific style fixes **/
+		
+		// fix rendering bug for highlighted lines beginning with no tabs
+		if( this.nav['isFirefox'] >= '3' )
+			this.content_highlight.style.borderLeft= "solid 1px transparent";
+		
+		if(this.nav['isIE']){
+			this.textarea.style.marginTop= "-1px";
+		}
+		/*
 		if(this.nav['isOpera']){
 			this.editor_area.style.position= "absolute";
-			this.selection_field.style.marginTop= "-1pt";			
-			this.selection_field.style.paddingTop= "1pt";
-			document.getElementById("cursor_pos").style.marginTop= "-1pt";
-			document.getElementById("end_bracket").style.marginTop= "-1pt";
-			this.content_highlight.style.marginTop= "-1pt";
-			/*document.getElementById("end_bracket").style.marginTop="1px";*/
+		}*/
+		
+		if(this.nav['isSafari'] ){
+			this.editor_area.style.position= "absolute";
+			this.textarea.style.marginLeft="-3px";
+			this.textarea.style.marginTop="1px";
 		}
 		
-		if(this.nav['isSafari']){
+		if( this.nav['isChrome'] ){
 			this.editor_area.style.position= "absolute";
-			this.selection_field.style.marginTop= "-1pt";			
-			this.selection_field.style.paddingTop= "1pt";
-			this.selection_field.style.marginLeft= "3px";			
-			this.content_highlight.style.marginTop= "-1pt";
-			this.content_highlight.style.marginLeft= "3px";
-			document.getElementById("cursor_pos").style.marginLeft= "3px";	
-			document.getElementById("end_bracket").style.marginLeft= "3px";	
-			
+			this.textarea.style.marginLeft="0px";
+			this.textarea.style.marginTop="0px";
 		}
 		
 		// si le textarea n'est pas grand, un click sous le textarea doit provoquer un focus sur le textarea
@@ -258,6 +267,7 @@
 		if(this.settings['is_multi_files']!=false)
 			this.open_file({'id': this.curr_file, 'text': ''});
 	
+		this.set_wrap_text( this.settings['wrap_text'] );
 		
 		setTimeout("editArea.focus();editArea.manage_size();editArea.execCommand('EA_load');", 10);		
 		//start checkup routine
@@ -277,6 +287,7 @@
 		parent.editAreaLoader.add_event(top.window, "resize", editArea.update_size);
 		parent.editAreaLoader.add_event(window, "unload", function(){if(editAreas[editArea.id] && editAreas[editArea.id]["displayed"]) editArea.execCommand("EA_unload");});
 		
+		
 		/*date= new Date();
 		alert(date.getTime()- parent.editAreaLoader.start_time);*/
 	};
@@ -291,29 +302,25 @@
 			
 			//1) Manage display width
 			//1.1) Calc the new width to use for display
-			var area_width= this.textarea.scrollWidth;
-			var area_height= this.textarea.scrollHeight;
-			if(this.nav['isOpera']){
-				area_height= this.last_selection['nb_line']*this.lineHeight;
-				area_width=10000; /* TODO: find a better way to fix the width problem */								
+			if( this.settings['wrap_text'] )
+			{
+				//	var area_width= this.result.offsetWidth -50;
+			}
+			else
+			{
+				var area_width= this.textarea.scrollWidth;
+				var area_height= this.textarea.scrollHeight;
+				if(this.nav['isOpera']){
+					area_width=10000; /* TODO: find a better way to fix the width problem */								
+				}
 			}
 			
-			if(this.nav['isIE']>=7)
-				area_width-=45;
-	
-			if(this.nav['isGecko'] && this.smooth_selection && this.last_selection["nb_line"])
-				area_height= this.last_selection["nb_line"]*this.lineHeight;
 			
 			//1.2) the width is not the same, we must resize elements
 			if(this.textarea.previous_scrollWidth!=area_width)
 			{	
-				if(!this.nav['isOpera'] && this.textarea.style.width && (this.textarea.style.width.replace("px","") < area_width))
-					area_width+=50;
-			
-				if(this.nav['isGecko'] || this.nav['isOpera'])
-					this.container.style.width= (area_width+45)+"px";
-				else
-					this.container.style.width= area_width+"px";
+				
+				this.container.style.width= area_width+"px";
 				this.textarea.style.width= area_width+"px";
 				this.content_highlight.style.width= area_width+"px";	
 				this.textarea.previous_scrollWidth=area_width;
@@ -353,7 +360,7 @@
 				if(this.nav['isIE'])
 					span.unselectable=true;
 				span.innerHTML=div_line_number;         
-				document.getElementById("line_number").appendChild(span);       
+				$("line_number").appendChild(span);       
 			}
 		
 			//4) be sure the text is well displayed
@@ -491,6 +498,9 @@
 		for(var i in values)
 			parent.editAreaLoader.lang[language][i]= values[i];
 	};
+	
+	// short cut for document.getElementById()
+	function $(id){return document.getElementById( id );};
 
 	var editArea = new EditArea();	
 	editArea.add_event(window, "load", init);
