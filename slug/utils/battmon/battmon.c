@@ -79,7 +79,10 @@ int main (int argc, char **argv)
       currenttime = tp.tv_sec + (tp.tv_usec / 1e6);
       
       /* Output the values to stdout */
-      fprintf (stdout, "Time: %f - Voltage: %d, Current: %d\n", currenttime - epoch, voltage, current);
+      printf ( "Time: %f - Voltage: %f, Current: %f\n", 
+	       currenttime - epoch, 
+	       (float)voltage * (3.3/1024.0) / (2.7/12.7), 
+	       ( ((float)current * (3.3/1024.0)) - 1.64 ) / ( 0.0035 * 50 ) );
 
 
       /* Output the current time relative to epoch */
