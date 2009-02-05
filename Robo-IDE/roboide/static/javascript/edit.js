@@ -237,8 +237,6 @@ function EditTab(iea, team, project, path, rev) {
 		this._isNew = false;
 
 		this._update_contents();
-		
-		status_msg("File: "+this.path+" Opened at revision: "+this.rev, LEVEL_OK);
 	}
 
 	// Handler for errors in receiving the file contents
