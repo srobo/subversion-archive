@@ -131,13 +131,6 @@ function EditPage() {
 
 }
 
-function txt_has_changed(id) {
-    //relay editArea's signal so that we can actually use it
-    //editArea forces you to pass string
-    signal(this, "txt_changed", this);
-}
-
-
 // Represents a tab that's being edited
 // Managed by EditPage -- do not instantiate outside of EditPage
 function EditTab(iea, team, project, path, rev) {
@@ -186,8 +179,6 @@ function EditTab(iea, team, project, path, rev) {
 	this.tab = null;
 	
 	// *** Private Properties ***
-	// true if tab has been modified
-	this._dirty = false;
 	//true if file is new (unsaved)
 	this._isNew = false;
 	//The commit message
@@ -219,7 +210,6 @@ function EditTab(iea, team, project, path, rev) {
 			this._isNew = true;
 			this.contents = "";
 			this._original = "";
-			this._dirty = false;
 		} else
 			// Existing file
 			this._load_contents();
@@ -245,7 +235,6 @@ function EditTab(iea, team, project, path, rev) {
 		this.contents = nodes.code;
 		this._original = nodes.code;
 		this._isNew = false;
-		this._dirty = false;
 
 		this._update_contents();
 		
@@ -299,7 +288,6 @@ function EditTab(iea, team, project, path, rev) {
 		switch(nodes.success){
 			case "True": 
 				status_msg("File Saved successfully (New Revision: "+nodes.new_revision+")", LEVEL_OK);
-				this._dirty = false;
 				this._original = this.contents;
 				this._isNew = false;
 				this.rev = nodes.new_revision;
@@ -307,7 +295,6 @@ function EditTab(iea, team, project, path, rev) {
 				break;
 			case "Merge":
 				status_msg("File Merge successful (New Revision: "+nodes.new_revision+")", LEVEL_OK);
-				this._dirty = false;
 				this._original = this.contents;
 				this._isNew = false;
 				this.rev = nodes.new_revision;
@@ -343,10 +330,9 @@ function EditTab(iea, team, project, path, rev) {
 		//update
 		this._capture_code();
 		var obj = this;
-		if(this._dirty == true && !override ) {
+		if( override != true && this.contents != this._original )
 			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", bind(this._close, this, true));
-		}
-		else{
+		else {
 			signal( this, "onclose", this );
 			this.tab.close();
 			disconnectAll(this);
@@ -372,21 +358,17 @@ function EditTab(iea, team, project, path, rev) {
 		this._signals.push( connect( "history",
 					     "onclick",
 					     bind( this._change_revision, this ) ) );
-		//code has been changed
-		this._signals.push( connect(window, 
-					    "txt_changed", 
-					    bind(this._content_changed, this) ) );				     						  
-
 		this._update_contents();
 	}
 
 	// Handler for when the tab loses focus
 	this._onblur = function() {
-		//don't loose changes to file content
-		this._capture_code();   
 		// Disconnect all the connected signal
 		map( disconnect, this._signals );
 		this._signals = [];
+
+		//don't loose changes to file content
+		this._capture_code();   
 	}
 
 	this._update_contents = function() {
@@ -450,15 +432,6 @@ function EditTab(iea, team, project, path, rev) {
 		d.addErrback( bind(this._error_receive_revisions, this)); 			    
 	}
 
-	//editAreaLoader triggers onchange event, now handle it:
-	this._content_changed = function() {
-		this._dirty = true;
-		logDebug("Current File Tab is now dirty");
-		//now we don't need to listen out for event:
-		var sig = this._signals.pop();
-		disconnect(sig);
-	}
-	
 	//initialisation
 	this._init();
 }
@@ -499,7 +472,6 @@ function ide_editarea(id) {
 	 		replace_tab_by_spaces : 4,
 			min_width: "100",   //NOTE: HAD TO EDIT 'edit_area_loader.js' line:573 to get % width
 			min_height:500,
-			change_callback: "txt_has_changed",
 			EA_load_callback: "ea_loaded"
  		});
 
