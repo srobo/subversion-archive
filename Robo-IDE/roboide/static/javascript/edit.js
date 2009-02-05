@@ -8,7 +8,6 @@ function EditPage() {
 
 	// Private functions:
 	//  - _init: Initialises the edit page (called on instantiation)
-	//  - _init_ea: Initialises the editarea
 	//  - _show: Show the edit page.
 	//           Triggers initialisation of the editarea if necessary
 	//  - _hide: Hide the edit page.
@@ -25,9 +24,8 @@ function EditPage() {
 	// Dict of open files.  Keys are paths, values are EditTab instances.
 	this._open_files = {};	
 
-	this._ea_initted = false;
 	this.textbox = null;
-	this._visible = false;
+	this._iea = null;
 
 	// The number of new files so far
 	this._new_count = 0;
@@ -35,60 +33,25 @@ function EditPage() {
 	// Initialise the edit page
 	this._init = function() {
 		connect( tabbar, "onswitch", bind( this._tab_switch, this ) );
-	}
 
-	// Initialise the editarea
-	// Assumes that we're visible at the time
-	this._init_ea = function() {
-		logDebug( "initting textarea" );
 		this.textbox = TEXTAREA({"id" : "editpage-editarea",
 					 "value" : "" });
 		appendChildNodes($("edit-mode"), this.textbox);
 
-		//initialize new instance of editArea			
-		editAreaLoader.init({
-	 		id : "editpage-editarea",
-	 		syntax : "python",
-	 		language : "en",
-	 		start_highlight : true,
-	 		allow_toggle : false,
-	 		allow_resize : "no",
-			display : 'onload',
-	 		replace_tab_by_spaces : 4,
-			min_width: "100",   //NOTE: HAD TO EDIT 'edit_area_loader.js' line:573 to get % width
-			min_height:500,
-			change_callback: "txt_has_changed"
- 		});
-		this._ea_initted = true;
+		this._iea = new ide_editarea("editpage-editarea");
 	}
 
 	// Show the edit page
 	this._show = function() {
-		if( this.visible )
-			return;
-
 		setStyle($("edit-mode"), {"display" : "block"});
 
-		if( !this._ea_initted )
-			this._init_ea();
-
-		logDebug( "showing editarea" );
-		editAreaLoader.show( "editpage-editarea" );
-
-		this._visible = true;
+		this._iea.show();
 	}
 
 	// Hide the edit page
 	this._hide = function() {
-		if( !this._visible ) 
-			return;
+		this._iea.hide();
 
-		if( this._ea_initted ) {
-			logDebug( "hiding editarea" );
-			editAreaLoader.hide( "editpage-editarea" );
-		}
-
-		this._visible = false;
 		setStyle($("edit-mode"), {"display" : "none"});
 	}
 
@@ -101,7 +64,6 @@ function EditPage() {
 
 		if( etab == null ) {
 			etab = this._new_etab( team, project, path, rev);
-			// TODO: Load file contents
 		}
 
 		tabbar.switch_to( etab.tab );
@@ -118,7 +80,7 @@ function EditPage() {
 	// Create a new tab that's one of ours
 	// Doesn't load the tab
 	this._new_etab = function(team, project, path, rev) {
-		var etab = new EditTab(team, project, path, rev);
+		var etab = new EditTab(this._iea, team, project, path, rev);
 		
 		connect( etab, "onclose", bind( this._on_tab_close, this ) );
 
@@ -175,9 +137,10 @@ function txt_has_changed(id) {
     signal(this, "txt_changed", this);
 }
 
+
 // Represents a tab that's being edited
 // Managed by EditPage -- do not instantiate outside of EditPage
-function EditTab(team, project, path, rev) {
+function EditTab(iea, team, project, path, rev) {
 	// Member functions:
 	// Public:
 	//  None.
@@ -235,6 +198,8 @@ function EditTab(team, project, path, rev) {
 	this._signals = [];
 	// The "Failed to load contents" of file status message:
 	this._stat_contents = null;
+	// the ide_editarea instance
+	this._iea = iea;
 
 	this._init = function() {
 		this.tab = new Tab( this.path );
@@ -412,8 +377,7 @@ function EditTab(team, project, path, rev) {
 					    "txt_changed", 
 					    bind(this._content_changed, this) ) );				     						  
 
-		//load file contents
-		this._update_contents();		
+		this._update_contents();
 	}
 
 	// Handler for when the tab loses focus
@@ -426,8 +390,8 @@ function EditTab(team, project, path, rev) {
 	}
 
 	this._update_contents = function() {
-		logDebug("Updating editarea contents: ");
-	 	editAreaLoader.setValue("editpage-editarea", this.contents);
+		this._iea.setValue( this.contents );
+
 	 	this._get_revisions();
 
 		// Display file path
@@ -440,7 +404,7 @@ function EditTab(team, project, path, rev) {
 
 	//call this to update this.contents with the current contents of the edit area
 	this._capture_code = function() {
-		this.contents = editAreaLoader.getValue("editpage-editarea");
+		this.contents = this._iea.getValue();
 	}
 
 	this._change_revision = function() {
@@ -498,3 +462,146 @@ function EditTab(team, project, path, rev) {
 	//initialisation
 	this._init();
 }
+
+// A fractionally nicer interface to the editarea
+// Cleans up the loading interface in particular.
+// Things don't explode as much if you try to do something to it before the 
+// editarea has loaded, or when it's invisible.
+
+// Emits these signals:
+//  - onload: Emitted when the editarea has finished loading
+function ide_editarea(id) {
+	// Public functions:
+	//  - show() -- won't break horribly if the editarea hasn't finished loading
+	//  - hide() -- won't break horribly if the editarea hasn't finished loading
+
+	// Public properties:
+	this.loaded = false;
+
+	this._id = id;
+	this._init_started = false;
+	this._visible = false;
+	this._open_queue = [];
+	this._close_queue = [];
+	this._value = null;
+
+	// Start initialising the editarea
+	this._init_start = function() {
+		//initialize new instance of editArea			
+		editAreaLoader.init({
+	 		id : this._id,
+	 		syntax : "python",
+	 		language : "en",
+	 		start_highlight : true,
+	 		allow_toggle : false,
+	 		allow_resize : "no",
+			display : 'onload',
+	 		replace_tab_by_spaces : 4,
+			min_width: "100",   //NOTE: HAD TO EDIT 'edit_area_loader.js' line:573 to get % width
+			min_height:500,
+			change_callback: "txt_has_changed",
+			EA_load_callback: "ea_loaded"
+ 		});
+
+		connect( window, "ea_init_done",
+			 bind( this._on_init_done, this ) );
+
+		this._init_started = true;
+	}
+
+	this._on_init_done = function() {
+		logDebug( "ide_editarea: editarea has finished loading" );
+		this.loaded = true;
+
+		if( this._visible )
+			this.show();
+		else
+			this.hide();
+
+		this._proc_open_queue();
+		this._proc_close_queue();
+
+		signal( this, "onload" );
+	}
+
+	this._proc_open_queue = function() {
+		// Open the files that we've been waiting to load
+		logDebug( "iea funnelling " + this._open_queue.length + " queued things into editarea" );
+		for( var i in this._open_queue ) {
+			logDebug( this._open_queue[i].id + " -- " + this._open_queue[i].text  );
+			editAreaLoader.openFile( this._id,
+						 this._open_queue[i] );
+		}
+		this._open_queue = [];
+	}
+
+	this.show = function() {
+		logDebug( "iea show" );
+		this._visible = true;
+
+		if( this.loaded ) {
+			editAreaLoader.show( this._id );
+			this._proc_open_queue();
+			this._proc_close_queue();
+			this._set_queued_value();
+		}
+		else if( !this._init_started )
+			this._init_start();
+	}
+
+	this.hide = function() {
+		this._visible = false;
+
+		if( this.loaded )
+			editAreaLoader.hide( this._id );
+	}
+
+	this.openFile = function( inf ) {
+		if( !this.loaded || !this._visible )
+			this._open_queue.push( inf );
+		else
+			editAreaLoader.openFile( this._id, inf );
+	}
+
+	this._proc_close_queue = function() {
+		for( var i in this._close_queue )
+			editAreaLoader.closeFile( this._id,
+						  this._close_queue[i] );
+		this._close_queue = [];
+	}
+
+	this.closeFile = function( id ) {
+		if( !this.loaded )
+			this._close_queue.push( id );
+		else
+			editAreaLoader.closeFile( this._id, id );
+	}
+
+	this.setValue = function( contents ) {
+		if( !this.loaded )
+			this._value = contents;
+		else
+			editAreaLoader.setValue( this._id, contents );
+	}
+
+	this._set_queued_value = function() {
+		if( this._value != null )
+			editAreaLoader.setValue( this._id, this._value );
+
+		this._value = null;
+	}
+
+	this.getValue = function() {
+		return editAreaLoader.getValue( this._id );
+	}
+}
+
+// Called when the editarea has finished loading
+function ea_loaded() {
+	ea_has_loaded = true;
+
+	// Rebroadcast the signal
+	signal(this, "ea_init_done", this);
+}
+
+
