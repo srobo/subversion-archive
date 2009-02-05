@@ -107,13 +107,14 @@ function TabBar() {
 		if( tab != this._curtab ) {
 			if( this._curtab != null )
 				this._curtab.lost_focus();
-			tab.got_focus();
 
 			var fromtab = this._curtab;
 			this._curtab = tab;
 
 			// Signal that the tab has been switched
 			signal( this, "onswitch", fromtab, tab );
+
+			tab.got_focus();
 		}
 	}
 
