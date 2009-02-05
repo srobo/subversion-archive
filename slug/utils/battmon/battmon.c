@@ -87,6 +87,13 @@ int main (int argc, char **argv)
 
       /* Output the current time relative to epoch */
       fprintf (write_file, "%u, %u, %f\n", voltage, current, (currenttime - epoch));
+
+      /* Flush the write file */
+      fflush (write_file);
+
+      /* Force any waiting disc writes */      
+      sync();
+
       sleep(1);
       i++;
     }
