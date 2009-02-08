@@ -287,8 +287,8 @@ ul, ol {
 }
 
 .block-user ul {
-	font-size: 1.2em;
-	padding: 0.5em 20px 0;
+	line-height: 14px;
+	padding: 2px 20px;
 }
 
 #sidebar-left h2 {
@@ -574,6 +574,10 @@ ul, ol {
 	border-bottom: 1px #cccccc solid;
 	margin-top: 3px;
 	margin-bottom: 3px;
+}
+
+.node-form .standard {
+	clear: none;
 }
 
 /* User Profile */
