@@ -9,5 +9,5 @@
     <span class="submitted"><?php print $submitted?></span>
   <!--  <div class="taxonomy"><?php print $terms?></div>-->
     <div class="content"><?php print $content?></div>
-    <?php if ($links) { ?><div class="links">&raquo; <?php print $links?></div><?php }; ?>
+    <?php if ($links) { ?><div class="links">&raquo; <?php print str_replace("Add new comment", "Reply to this topic", $links)?></div><?php }; ?>
   </div>
