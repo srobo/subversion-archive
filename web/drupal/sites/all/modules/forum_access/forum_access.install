@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.install,v 1.7 2008/07/21 14:56:04 salvis Exp $
+// $Id: forum_access.install,v 1.8 2009/01/25 16:52:15 salvis Exp $
 
 /**
  * Implementation of hook_install().
@@ -53,6 +53,12 @@ function forum_access_schema() {
         'size'        => 'tiny',
         'unsigned'    => TRUE,
         'not null'    => TRUE,
+        'default'     => 0),
+      'priority'  => array(
+        'description' => t('The priority of this grant.'),
+        'type'        => 'int',
+        'size'        => 'small',
+        'not null'    => TRUE,
         'default'     => 0)),
     'indexes'         => array(
       'tid'           => array('tid'),
@@ -76,5 +82,19 @@ function forum_access_update_1() {
   $ret = array();
   db_query("DELETE FROM {forum_access} WHERE rid NOT IN (SELECT rid from {role})");
   db_query("DELETE FROM {node_access} WHERE realm = 'forum_access' AND gid NOT IN (SELECT rid from {role})");
+  return $ret;
+}
+
+/**
+ * Add a priority column (will probably not be used until D6).
+ */
+function forum_access_update_2() {
+  $ret = array();
+  db_add_field($ret, 'forum_access', 'priority', array(
+    'description' => t('The priority of this grant.'),
+    'type'        => 'int',
+    'size'        => 'small',
+    'not null'    => TRUE,
+    'default'     => 0));
   return $ret;
 }

@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.module,v 1.28 2008/09/24 07:17:11 salvis Exp $
+// $Id: forum_access.module,v 1.35 2009/01/26 23:38:40 salvis Exp $
 
 /**
  * @file forum_access.module
@@ -41,7 +41,7 @@ function forum_access_node_access_records($node) {
           'grant_view' => $grant->grant_view,
           'grant_update' => $grant->grant_update,
           'grant_delete' => $grant->grant_delete,
-          'priority' => 0,
+          'priority' => $grant->priority,
         );
       }
       //drupal_set_message("forum_access_node_access_records($node->nid) (tid=$tid) returns ". var_export($grants[$tid], TRUE), 'status');
@@ -59,261 +59,23 @@ function forum_access_node_access_records($node) {
  */
 function forum_access_form_alter(&$form, &$form_state, $form_id) {
   if (isset($form['type']) && $form['type']['#value'] .'_node_form' == $form_id) {
-    forum_access_node_form($form_id, $form);
+    module_load_include('node.inc', 'forum_access');
+    _forum_access_node_form($form_id, $form);
   }
   else if ($form_id == 'forum_form_container') {
-    forum_access_forum_form($form_id, $form, TRUE);
+    module_load_include('admin.inc', 'forum_access');
+    _forum_access_forum_form($form_id, $form, TRUE);
   }
   else if ($form_id == 'forum_form_forum') {
-    forum_access_forum_form($form_id, $form, FALSE);
+    module_load_include('admin.inc', 'forum_access');
+    _forum_access_forum_form($form_id, $form, FALSE);
   }
   else if ($form_id == 'user_admin_role') {
     forum_access_user_admin_role_form($form_id, $form);
   }
-  else if ($form_id == 'content_access_admin_settings') {
-    if (arg(3) == 'forum' && empty($_POST)) {
-      drupal_set_message(t('Note: In Drupal, access can only be granted, not taken away. Whatever access you grant here will not be reflected on the !Forum_Access settings, but !Forum_Access can only allow <i>more</i> access, not less.', array('!Forum_Access' => t('Forum Access'))), 'warning');
-    }
-  }
-}
-
-/**
- * Rewrite the taxonomy item on the node form.
- */
-function forum_access_node_form($form_id, &$form) {
-  $vid = variable_get('forum_nav_vocabulary', '');
-
-  if (!isset($form['taxonomy'][$vid]['#options'])) {
-    return;
-  }
-
-  // forum administrators do NOT get their forms rewritten here.
-  if (user_access('administer forums')) {
-    return;
-  }
-  global $user;
-  $roles = _forum_access_get_roles($user);
-  $result = db_query("SELECT tid FROM {forum_access} WHERE rid IN (%s) AND grant_create = 1", $roles);
-  while ($obj = db_fetch_object($result)) {
-    $tids[$obj->tid] = $obj->tid;
-  }
-
-  // Also get all forums they happen to be able to moderate.
-
-  $result = db_query("SELECT a.name AS tid FROM {acl} a INNER JOIN {acl_user} u ON a.acl_id = u.acl_id WHERE a.module = 'forum_access' AND u.uid = %d", $user->uid);
-  while ($obj = db_fetch_object($result)) {
-    $tids[$obj->tid] = $obj->tid;
-  }
-
-  // Ensure the forum they're trying to post to directly is allowed, otherwise
-  // there will be much confusion.
-  $forum_tid = arg(3);
-  if (is_numeric($forum_tid) && $forum_tid && !$tids[$forum_tid]) {
-    drupal_access_denied();
-    module_invoke_all('exit');
-    exit;
-  }
-
-  foreach ($form['taxonomy'][$vid]['#options'] as $tid => $name) {
-    if (!is_numeric($tid)) {
-      $options[$tid] = $name;
-    }
-    elseif (is_object($name)) {
-      foreach ($name->option as $sub_tid => $sub_name) {
-        if ($tids[$sub_tid]) {
-          $options[$tid]->option[$sub_tid] = $sub_name;
-        }
-      }
-    }
-    elseif ($tids[$tid]) {
-      $options[$tid] = $name;
-    }
-  }
-
-  if ($options) {
-    $form['taxonomy'][$vid]['#options'] = $options;
-  }
-  else {
-    unset($form['taxonomy'][$vid]);
-  }
-}
-
-/**
- * Rewrite the forum administration page with our new access rules.
- */
-function forum_access_forum_form($form_id, &$form, $container) {
-  $rids = array();
-  $result = db_query("SELECT r.rid, r.name FROM {role} r ORDER BY r.name");
-  while ($obj = db_fetch_object($result)) {
-    $rids[$obj->rid] = $obj->name;
-  }
-
-  if (isset($form['tid']['#value'])) {  // edit
-    $result = db_query("SELECT * FROM {forum_access} where tid=%d", $form['tid']['#value']);
-
-    $view = $update = $delete = $create = array();
-    while ($forum_access = db_fetch_object($result)) {
-      $row_received = TRUE;
-      if ($forum_access->grant_view) {
-        $view[] = $forum_access->rid;
-      }
-      if ($forum_access->grant_update) {
-        $update[] = $forum_access->rid;
-      }
-      if ($forum_access->grant_delete) {
-        $delete[] = $forum_access->rid;
-      }
-      if ($forum_access->grant_create) {
-        $create[] = $forum_access->rid;
-      }
-    }
-    if (!isset($row_received) && empty($form['#parameters'][1]['post'])) {
-      drupal_set_message(t('If you have only just installed !Forum_Access, then the posts in this forum may still be accessible, but once your permissions get rebuilt (intentionally or behind-the-scenes by some other module), they will vanish &mdash; so, be sure to set the desired Access Control below and save!', array('!Forum_Access' => 'Forum Access')), 'error');
-    }
-  }
-  else {  // create
-    // Default to all users can read; all logged in users can post.
-    $view = array(1, 2);
-    $create = array(2);
-    $update = $delete = array();
-  }
-  
-  $form['forum_access'] = array('#type' => 'fieldset',
-    '#title' => t('Access control'),
-    '#collapsible' => TRUE,
-    '#tree' => TRUE,
-  );
-
-  $form['forum_access']['view'] = array('#type' => 'checkboxes',
-    '#prefix' => '<div class="forum-access-div">',
-    '#suffix' => '</div>',
-    '#options' => $rids,
-    '#title' => t('View this forum'),
-    '#default_value' => $view
-  );
-  $form['forum_access']['create'] = array('#type' => 'checkboxes',
-    '#prefix' => '<div class="forum-access-div">',
-    '#suffix' => '</div>',
-    '#options' => $rids,
-    '#title' => t('Post in this forum'),
-    '#default_value' => $create
-  );
-
-  // Containers do not contain any nodes, so these fields become meaningless for them.
-  if (!$container) {
-    $form['forum_access']['update'] = array('#type' => 'checkboxes',
-      '#prefix' => '<div class="forum-access-div">',
-      '#suffix' => '</div>',
-      '#options' => $rids,
-      '#title' => t('Edit posts'),
-      '#default_value' => $update
-    );
-    $form['forum_access']['delete'] = array('#type' => 'checkboxes',
-      '#prefix' => '<div class="forum-access-div">',
-      '#suffix' => '</div>',
-      '#options' => $rids,
-      '#title' => t('Delete posts'),
-      '#default_value' => $delete
-    );
-  }
-  // Find our moderator ACL:
-
-  $form['forum_access']['clearer'] = array(
-    '#value' => '<div class="forum-access-clearer"></div>',
-  );
-  drupal_add_css(drupal_get_path('module', 'forum_access') .'/forum_access.css');
-  if (isset($form['tid']['#value'])) {  // edit, not new
-    $acl_id = db_result(db_query("SELECT acl_id from {acl} WHERE module = 'forum_access' AND name = '%d'", $form['tid']['#value']));
-    if (!$acl_id) { // create one
-      $acl_id = acl_create_new_acl('forum_access', $form['tid']['#value']);
-      // update every existing node in this forum to use this acl.
-      $result = db_query("SELECT nid FROM {term_node} WHERE tid = %d", $form['tid']['#value']);
-      while ($node = db_fetch_object($result)) {
-        // all privs to this ACL.
-        acl_node_add_acl($node->nid, $acl_id, 1, 1, 1);
-      }
-    }
-    $form['forum_access']['acl'] = acl_edit_form($acl_id, t('Moderators'));
-  }
-  
-  //$form['forum_access']['interference'] = array(
-  //  '#type' => 'fieldset',
-  //  '#title' => t('Module interference'),
-  //  '#collapsible' => TRUE,
-  //);
-  //$variables = array(
-  //  '%content_type' => node_get_types('name', 'forum'),
-  //  '!Forum_Access' => 'Forum Access',
-  //  '!button' => t('Rebuild permissions'),
-  //);
-  //
-  //if (module_exists('content_access')) {    TODO: Test and activate when CA is ported to D6!
-  //  $ca_settings = variable_get('content_access_settings', array());
-  //  foreach (array('view', 'update', 'delete', 'per_node') as $type) {
-  //    $value = content_access_get_settings($type, 'forum');
-  //    if (!empty($value)) {
-  //      $ca_interferes = TRUE;
-  //    }
-  //  }
-  //  $ca_priority = content_access_get_settings('priority', 'forum');
-  //  $fa_priority = 0;
-  //  $is_conflict = $ca_priority >= $fa_priority && !empty($ca_interferes);
-  //  $form['forum_access']['interference']['#attributes'] = ($is_conflict ? array('class' => 'error') : array());
-  //  $variables += array(
-  //    '!Content_Access' => 'Content Access',
-  //    '!link' => l(t('!Content_Access configuration for the %content_type type', $variables), 'admin/content/types/forum/access', array(), NULL, NULL, FALSE, TRUE),
-  //  );
-  //  $specifically = ($ca_priority == $fa_priority ? t('Specifically, any grants given by !Content_Access cannot be taken back by !Forum_Access.', $variables) : '');
-  //  if ($is_conflict) {
-  //    $form['forum_access']['interference'][] = array(
-  //      '#value' => '<p>'. t('You have set the !Content_Access module to control access to content of type %content_type&mdash;this can interfere with proper operation of !Forum_Access!', $variables) ." $specifically</p>",
-  //    );
-  //    if ($ca_priority == $fa_priority) {
-  //      $form['forum_access']['interference'][] = array(
-  //        '#value' => '<p>'. t("Unless you really know what you're doing, we recommend that you go to the !link page and clear all checkboxes.", $variables) .'</p>',
-  //      );
-  //    }
-  //    else {
-  //      $form['forum_access']['interference'][] = array(
-  //        '#value' => '<div>'. t("The priority of !Content_Access ($ca_priority) is higher than the priority of !Forum_Access ($fa_priority), which means the latter is <b>completely disabled</b> for the %content_type type! Unless you really know what you're doing, we recommend that you go to the !link page and clear all checkboxes and/or change the priorities.", $variables) .'</div>',
-  //      );
-  //    }
-  //  }
-  //  else {
-  //    $form['forum_access']['interference'][] = array(
-  //      '#value' => '<p>'. t('Note: You have installed the !Content_Access module, which has the capability to grant access to content that would otherwise be protected by !Forum_Access. Be careful when configuring !Content_Access!', $variables) .'</p>',
-  //    );
-  //  }
-  //}
-
-  // Move some stuff down so our block goes in a nice place.
-  $form['submit']['#weight'] = 10;
-  $form['delete']['#weight'] = 10;
-
-  $form['#submit'][] = 'forum_access_form_submit';
-}
-
-function forum_access_form_submit($form, &$form_state) {
-  db_query("DELETE FROM {forum_access} WHERE tid = %d", $form_state['values']['tid']);
-  $access = $form_state['values']['forum_access']; // shortcut
-  if (array_key_exists('acl', $access)) {
-    acl_save_form($access['acl']);
-  }
-  foreach ($access['view'] as $rid => $checked) {
-    $grants[] = array(
-      'realm' => 'forum_access',
-      'gid' => $rid,
-      'grant_view' => (bool) $checked,
-      'grant_update' => !empty($access['update'][$rid]),
-      'grant_delete' => !empty($access['delete'][$rid]),
-    );
-    db_query("INSERT INTO {forum_access} (tid, rid, grant_view, grant_update, grant_delete, grant_create) VALUES (%d, %d, %d, %d, %d, %d)", $form_state['values']['tid'], $rid, (bool) $checked, !empty($access['update'][$rid]), !empty($access['delete'][$rid]), !empty($access['create'][$rid]));
-  }
-
-  // mass update
-  $result = db_query("SELECT n.nid FROM {node} n LEFT JOIN {term_node} tn ON tn.nid = n.nid WHERE tn.tid = %d", $form_state['values']['tid']);
-  while ($node = db_fetch_object($result)) {
-    node_access_write_grants($node, $grants, 'forum_access');
+  else if ($form_id == 'content_access_admin_settings' && empty($_POST)) {
+    module_load_include('admin.inc', 'forum_access');
+    _forum_access_content_access_admin_form();
   }
 }
 
@@ -343,7 +105,11 @@ function forum_access_db_rewrite_sql($query, $primary_table, $primary_field, $ar
   if ($primary_field == 'tid' && !user_access('administer forums')) {
     global $user;
     $roles = _forum_access_get_roles($user);
-    $sql['join'] = "LEFT JOIN {forum_access} fa ON $primary_table.tid = fa.tid LEFT JOIN {acl} acl ON acl.name = CAST($primary_table.tid AS CHAR) AND acl.module = 'forum_access' LEFT JOIN {acl_user} aclu ON aclu.acl_id = acl.acl_id AND aclu.uid = $user->uid";
+    $sql['join'] = "LEFT JOIN {forum_access} fa ON $primary_table.tid = fa.tid
+                    LEFT JOIN {acl} acl ON acl.name = ". ($GLOBALS['db_type'] == 'pgsql' ? 'CAST(' : '')
+                                                    ."$primary_table.tid". ($GLOBALS['db_type'] == 'pgsql' ? ' AS CHAR)' : '')
+                                                                      ." AND acl.module = 'forum_access' 
+                    LEFT JOIN {acl_user} aclu ON aclu.acl_id = acl.acl_id AND aclu.uid = $user->uid";
     $sql['where'] = "(fa.grant_view >= 1 AND fa.rid IN ($roles)) OR fa.tid IS NULL OR aclu.uid = $user->uid";
     $sql['distinct'] = 1;
     return $sql;
@@ -384,6 +150,45 @@ function forum_access_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
       }
       $old_tid = NULL;
       break;
+  }
+}
+
+/**
+ * Get an array of moderator UIDs or NULL.
+ */
+function forum_access_get_moderator_uids($tid) {
+  if ($acl_id = acl_get_id_by_name('forum_access', $tid)) {
+    if ($uids = acl_get_uids($acl_id)) {
+      return $uids;
+    }
+  }
+}
+
+/**
+ * Implementation of $modulename_preprocess_$hook().
+ *
+ * Add forum_access_moderators to each forum,
+ * containing a list of user objects.
+ *
+ * Note: On a site with many moderators, this function is expensive,
+ * and thus it is disabled by default. Set the variable to TRUE to enable.
+ */
+function forum_access_preprocess_forum_list(&$variables) {
+  if (variable_get('forum_access_provide_moderators_template_variable', FALSE)) {
+    static $users;
+    foreach ($variables['forums'] as $tid => $forum)
+    {
+      $moderators = array();
+      if ($uids = forum_access_get_moderator_uids($tid)) {
+        foreach ($uids as $uid) {
+          if (!isset($users[$uid])) {
+            $users[$uid] = user_load(array('uid' => $uid));
+          }
+          $moderators[$uid] = $users[$uid];
+        }
+      }
+      $forum->forum_access_moderators = (empty($moderators) ? NULL : $moderators);
+    }
   }
 }
 
@@ -453,7 +258,7 @@ function forum_access_access($tid, $type, $account = NULL) {
   }
 
   if (!isset($cache[$account->uid][$tid][$type])) {
-    $roles = _forum_access_get_roles($user);
+    $roles = _forum_access_get_roles($account);
     $result = db_result(db_query("SELECT tid FROM {forum_access} WHERE rid IN (%s) AND grant_%s = 1 AND tid = %d", $roles, $type, $tid));
 
     if ($result) {

@@ -1,9 +1,22 @@
 CHANGELOG for Forum Access for Drupal 6
 
-forum_access HEAD:
+forum_access 6.x-1.x-dev:
+
+
+forum_access 6.x-1.x-BETA2 (2009-01-29):
+  Enhancements:
+    - Collapse Moderators fieldset if empty.
+    - Factor out form and batch code into .inc files.
+    - Implement batch mode to support correct updating (using node_access_acquire_grants() rather than node_access_write_grants()).
+    - Implement grant priority.
+    - Provide help for getting along with Content Access.
+    - #109924: Add optional forum_access_preprocess_forum_list(&$variables) function to provide moderators in the $forums template variable.
+    - #109924: Add new forum_access_get_moderator_uids($tid) function (requires new ACL version!).
 
 forum_access 6.x-1.x-BETA1 (2008-10-14):
   Bugs fixed:
+    - #344711: Fix forum_access_access() to use $account consistently.
+    - #328341: Make pgsql CAST() conditional on the database engine.
     - #309113: Fix warning messages in bootstrap.inc (caused by bad drupal_set_message() call).
     - #302774: Remove cruft from _forum_access_get_roles().
     - Use node_access_needs_rebuild() rather than node_access_rebuild() when enabling/disabling module.

@@ -2,6 +2,13 @@ CHANGELOG for ACL for Drupal 6
 
 acl 6.x-1.x-dev:
 
+
+acl 6.x-1.x-BETA4 (2009-01-29):
+  Enhancements:
+    - Factor out form code into .inc file.
+    - Enable grant priority.
+    - Add new acl_get_uids() function.
+
 acl 6.x-1.x-BETA3 (2009-01-03):
   Bugs fixed:
     - Fix upgrade path from D5 (change acl_id column to auto_increment).
