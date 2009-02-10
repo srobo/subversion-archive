@@ -1,0 +1,9 @@
+<h2>Assembly</h2>
+
+<h3>Connect the Boards</h3>
+Connect each of the Motor Board, JointIO Board and Servo Boards to the Power Board using the black data cables provided. It doesn't matter which socket each board is conected to, or which order they are connected, but they should only be connected or diconeected when the kit is turned off.
+
+
+<h3>Connect the Slug to the Power Board</h3>
+
+

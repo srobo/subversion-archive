@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="layout.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0"
+   inkscape:export-filename="C:\Users\owner\Desktop\docs\assembly-guide\layout.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="753.10225"
+     inkscape:cy="347.68131"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1680"
+     inkscape:window-height="1000"
+     inkscape:window-x="1672"
+     inkscape:window-y="-8" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3237"
+       transform="translate(763.14324,345.31501)">
+      <text
+         id="text3155"
+         y="96.999451"
+         x="-12.486046"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="96.999451"
+           x="-12.486046"
+           id="tspan3157"
+           sodipodi:role="line">Slug</tspan></text>
+      <rect
+         y="44.362797"
+         x="-47.28508"
+         height="84.570183"
+         width="148.85588"
+         id="rect3203"
+         style="fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:3;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3242"
+       transform="translate(118.25446,395.7143)">
+      <text
+         id="text3159"
+         y="190.97406"
+         x="-69.997215"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="190.97406"
+           x="-69.997215"
+           id="tspan3161"
+           sodipodi:role="line">JointIO Board</tspan></text>
+      <rect
+         y="134.92407"
+         x="-91.009529"
+         height="83.447647"
+         width="284.87619"
+         id="rect3206"
+         style="fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:3;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3211"
+       transform="translate(-627.14284,-59.181236)">
+      <text
+         id="text3187"
+         y="206.40651"
+         x="669.64203"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="206.40651"
+           x="669.64203"
+           id="tspan3189"
+           sodipodi:role="line">USB Memory Stick (OS)</tspan></text>
+      <rect
+         y="154.83527"
+         x="642.14722"
+         height="82.419823"
+         width="488.13409"
+         id="rect3210"
+         style="fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:3.35557008;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3262"
+       transform="translate(145.68301,-267.19115)">
+      <text
+         id="text3175"
+         y="570.72998"
+         x="-50.737991"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="570.72998"
+           x="-50.737991"
+           id="tspan3177"
+           sodipodi:role="line">Webcam</tspan></text>
+      <rect
+         y="514.70093"
+         x="-85.51841"
+         height="83.893997"
+         width="225.32256"
+         id="rect3216"
+         style="fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:3;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3267"
+       transform="translate(733.14324,-370.04827)">
+      <text
+         id="text3179"
+         y="673.82147"
+         x="-23.716518"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="673.82147"
+           x="-23.716518"
+           id="tspan3181"
+           sodipodi:role="line">USB hub</tspan></text>
+      <rect
+         y="617.55804"
+         x="-55.518421"
+         height="83.893997"
+         width="225.32256"
+         id="rect3222"
+         style="fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:3;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3278"
+       transform="translate(178.54015,-340.39926)">
+      <text
+         id="text3183"
+         y="782.4696"
+         x="-70.401779"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="782.4696"
+           x="-70.401779"
+           id="tspan3185"
+           sodipodi:role="line">Battery</tspan></text>
+      <rect
+         y="730.41516"
+         x="-118.37556"
+         height="83.893997"
+         width="225.32256"
+         id="rect3224"
+         style="fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:3;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3247"
+       transform="translate(434.28571,291.4286)">
+      <text
+         id="text3163"
+         y="295.25"
+         x="-47.875282"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="295.25"
+           x="-47.875282"
+           id="tspan3165"
+           sodipodi:role="line">Servo Board</tspan></text>
+      <rect
+         y="239.20978"
+         x="-79.580956"
+         height="83.447647"
+         width="284.87619"
+         id="rect3226"
+         style="fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:3;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3252"
+       transform="translate(762.85752,201.42857)">
+      <text
+         id="text3167"
+         y="385.01566"
+         x="-50.185547"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="385.01566"
+           x="-50.185547"
+           id="tspan3169"
+           sodipodi:role="line">Motor Board</tspan></text>
+      <rect
+         y="329.20981"
+         x="-82.438095"
+         height="83.447647"
+         width="284.87619"
+         id="rect3228"
+         style="fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:3;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3257"
+       transform="translate(442.85713,-30.399292)">
+      <text
+         id="text3171"
+         y="476.44421"
+         x="-61.544365"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="476.44421"
+           x="-61.544365"
+           id="tspan3173"
+           sodipodi:role="line">Power Board</tspan></text>
+      <rect
+         y="420.63837"
+         x="-88.152382"
+         height="83.447647"
+         width="284.87619"
+         id="rect3230"
+         style="fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:3;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline"
+       d="M 714.35816,431.9629 L 641.08094,431.9629"
+       id="path3283"
+       inkscape:connector-type="polyline"
+       inkscape:connection-end="#g3257"
+       inkscape:connection-start="#g3237" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 790.2861,388.17781 L 790.2861,332.90377"
+       id="path3285"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#g3237"
+       inkscape:connection-end="#g3267" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 286.98715,431.9629 L 353.20475,431.9629"
+       id="path3291"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#g3278"
+       inkscape:connection-end="#g3257" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 497.14285,475.18672 L 497.14285,529.13838"
+       id="path3293"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#g3257"
+       inkscape:connection-end="#g3247" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 597.41851,475.18672 L 722.58185,529.13838"
+       id="path3297"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#g3257"
+       inkscape:connection-end="#g3252" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 396.32991,475.18672 L 270.49596,529.13838"
+       id="path3299"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#g3257"
+       inkscape:connection-end="#g3242" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 676.12482,289.45677 L 286.98716,289.45677"
+       id="path2423"
+       inkscape:connector-type="polyline"
+       inkscape:connection-end="#g3262"
+       inkscape:connection-start="#g3267" />
+    <g
+       id="g3216"
+       transform="translate(-95.928199,78.48374)">
+      <text
+         id="text2427"
+         y="68.731766"
+         x="655.14984"
+         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="68.731766"
+           x="655.14984"
+           id="tspan2429"
+           sodipodi:role="line">USB Memory Stick (code)</tspan></text>
+      <rect
+         y="17.203516"
+         x="632.18048"
+         height="82.353371"
+         width="508.06763"
+         id="rect2431"
+         style="fill:#ffffff;fill-opacity:0;stroke:#000000;stroke-width:3.42201853;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 790.2861,246.00978 L 790.2861,179.75164"
+       id="path3221"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#g3267"
+       inkscape:connection-end="#g3216" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 676.12482,256.66364 L 408.37446,179.75164"
+       id="path3223"
+       inkscape:connector-type="polyline"
+       inkscape:connection-start="#g3267"
+       inkscape:connection-end="#g3211" />
+  </g>
+</svg>

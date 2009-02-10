@@ -1,0 +1,15 @@
+//table, as per last year's
+Slug	[image]	Houses the main processor. USB ports for file system and webcam. Connects to power board using ribbon cable.
+Power Board	[image]	Regulates power to electronics, motors and servos. Home to radio module, power connectors and data cables.
+Motor Board	[image]	Controls the two main drive motors.
+JointIO Board	[image]	Digital/analogue inputs (bump/position sensors) connect to this board.
+Servo Board	[image]	Servos Connect to this board.
+
+5 Data Cables	-	Connects Motor, JointIO and PWM boards to the Power Board.
+USB Memory Stick	-	Stores Program code and operating system.
+USB Hub	-	Connects to the Slug.
+Web Camera	-	Provides input to vision system.
+PCB Standoffs	-	Bag of metal stand-offs with screws to securely mount boards to robot.
+Power Connectors	-	Insulated connectors for making connections to the terminals on the Power Board.
+Battery Charger	-	Mains powered battery charger.
+Electrical Wire	-	Many coloured lengths of insulated electrical wire.
