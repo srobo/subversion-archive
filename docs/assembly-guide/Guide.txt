@@ -5,5 +5,34 @@ Connect each of the Motor Board, JointIO Board and Servo Boards to the Power Boa
 
 
 <h3>Connect the Slug to the Power Board</h3>
+Connect the ribbon cable from the Slug to the connector in the middle of the Power Board (see Figure A)
+
+Figure A - Slug ribbon cable connecte to the Power Board
 
 
+<h3>Connect the USB devices to the Slug</h3>
+Connect the webcam and memory sticks to the USB Hub (*not* directly to the Slug). Next Connect the USB Hub to the Slug and the Hub power suply to the Hub.
+
+
+<h3>Connect the power connections between the boards</h3>
+Connect 
+//get details from elec ppl
+
+
+
+<h2>Intro to the Boards</h2>
+
+<h3>Power Board</h3>
+The Power Board hosts all the connections to all the boards, both the data communications and the power distribution for the electronics, motors and servos. It is also home to radio module which allows the robots to be safely activated from a distance.
+
+<h4>Inputs</h4>
+The Power board has four DIP switches which can be read into the code using <code>???????</code> which returns ???????
+
+<h4>Outputs</h4>
+The Power board has four LEDs that can be set using the function <code>setleds(x)</code> where x is a number between 0 and 15 to be dispalyed on the LEDs in binary form, ie: <code>setleds(12)</code> will turn on the second and third LEDs as decimal 12 is binary 0110.
+
+<h3>Motor Board</h3>
+The Motor Board has two high power variable power outputs that you can use to controll your motors. It is controlled using the function <code>setspeed(left [, right])</code> where left and right are values between -100 and 100. A negative value will provide an inverse power output, and a value of 0 will provide no output //or will this connect the rails together???? If provided with only one argument then setspeed will use that value for both outputs, eg: <code>setspeed(50)</code> wil set both outputs to 50% power. If provided with both arguments then setspeed will use the first argument for the left motor and the second for the right, eg: <code>setspeed(25, 75)</code> will set the left motor to 25% power and the right motor to 75% power.
+
+<h3>Servo Board</h3>
+The Servo Board has 8 ???? servo compatible outputs. It is controled by the function <code>setpos(servo, position)</code>
