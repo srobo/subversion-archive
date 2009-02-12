@@ -20,7 +20,7 @@ then
 
 elif [ $1 -eq "4" ]
 then
-    egl="/opt/eagle/bin/eagle" # path to eagle 4 binary
+    egl="/opt/eagle/bin/eagle1" # path to eagle 4 binary
     echo 'using eagle 4'
 else
     echo "error second argument must be 4 or 5 indicating eagle version to use"
@@ -38,10 +38,20 @@ fi
 echo $of1
 echo $egl
 
-echo "$egl -X -dGERBER_RS274X  $of1 -o$3-top.gbr $2 top pad via"
-echo "$egl -X -dGERBER_RS274X  $of1 -o$3-bottom.gbr $2 bottom pad via"
-echo "$egl -X -dGERBER_RS274X  $of1 -o$3-dim.gbr $2 dimension"
-echo "$egl -X -dexcellon  $of1 -o$3-drill.drd $2 drills"
+$egl -X -dGERBER_RS274X  $of1 -o$3-top.gbr $2 top pad via
+$egl -X -dGERBER_RS274X  $of1 -o$3-bottom.gbr $2 bottom pad via
+$egl -X -dGERBER_RS274X  $of1 -o$3-dim.gbr $2 dimension
+$egl -X -dexcellon  $of1 -o$3-drill.drd $2 drills
+
+$egl -X -dGERBER_RS274X  $of1 -o$3-tstop.gbr $2 tstop
+$egl -X -dGERBER_RS274X  $of1 -o$3-bstop.gbr $2 bstop
     
 
+
+rm $3-top.gpi
+rm $3-bottom.gpi
+rm $3-dim.gpi
+rm $3-drill.dri
+rm $3-tstop.gpi
+rm $3-bstop.gpi
 
