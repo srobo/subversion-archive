@@ -47,6 +47,10 @@ $egl -X -dGERBER_RS274X  $of1 -o$3-tstop.gbr $2 tstop
 $egl -X -dGERBER_RS274X  $of1 -o$3-bstop.gbr $2 bstop
     
 
+$egl -X -dGERBER_RS274X  $of1 -o$3-tsilk.gbr $2 tplace tname
+$egl -X -dGERBER_RS274X  $of1 -o$3-bsilk.gbr $2 bplace bname
+
+
 
 rm $3-top.gpi
 rm $3-bottom.gpi
@@ -54,4 +58,6 @@ rm $3-dim.gpi
 rm $3-drill.dri
 rm $3-tstop.gpi
 rm $3-bstop.gpi
+rm $3-tsilk.gpi
+rm $3-bsilk.gpi
 
