@@ -71,19 +71,20 @@ ul, ol {
 	list-style-position: inside;
 }
 .left {
-		float: left;
+	float: left;
 }
 .right {
-		float: right;
+	float: right;
 }
-
+.node {
+	clear: none;
+}
 
 /* TOP */
 
 #top {
 	margin-top: -1px;
 	background-color: #253571;
-	/* background: #253571 url(images/footer.png) repeat scroll 50% 50%; */
 	color: #FFFFFF;
 	overflow: hidden;
 }
