@@ -76,9 +76,6 @@ ul, ol {
 .right {
 	float: right;
 }
-.node {
-	clear: none;
-}
 
 /* TOP */
 
@@ -205,6 +202,12 @@ ul, ol {
 }
 #content {
 	margin-left: 220px;
+}
+.node {
+	clear: none;
+}
+.content li li {
+	padding: 0 8px;
 }
 
 /* NAVIGATE MENU (across the top bar, in place of the login) */
