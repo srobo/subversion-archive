@@ -81,9 +81,9 @@ Calendar.prototype.drawCal = function() {
 		}    
 	} 
 	
-	//highlight today's date if we are showing current month and current year
+	//highlight today's date (bold text only) if we are showing current month and current year
 	if( ( this.date.getMonth() == (new Date()).getMonth() ) && (this.date.getFullYear() == (new Date()).getFullYear() ) )
-		setStyle("cal"+(new Date()).getDate(), {"border" : "1px solid #000000", "font-weight" : "bold"});       
+		setStyle("cal"+(new Date()).getDate(), {"font-weight" : "bold", "border" : "1px solid #eee"});       
 }
 
 //convert date string in log array into jscript date
@@ -172,8 +172,17 @@ Calendar.prototype.changeMonth = function(dir) {
 }
 
 Calendar.prototype.change_day = function(target) {
-	//alert use to select a revision
-	replaceChildNodes("cal-revs", OPTION({"value" : -1}, "Select a revision"));
+	//set this.date's day to the current date (for message in drop-down)
+	this.date.setDate(target);
+	//alert user to select a revision
+	replaceChildNodes("cal-revs", OPTION({"value" : -1}, "Select a revision for "+this.date.getDate()+" "+MONTHS[this.date.getMonth()]));
+	
+	//clear the boxes from around all dates
+	for (var i=1; i<=this.dinm(); i++)
+		setStyle("cal"+i, {"border-color" : "#eee"});
+	
+	//but a box around the selected day
+	setStyle("cal"+target, {"border-color" : "#000"});
 	
 	//get logs for target date
 	for(var i = 0; i < this.logs.length; i++) {
