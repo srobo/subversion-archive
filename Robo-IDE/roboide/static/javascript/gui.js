@@ -290,6 +290,12 @@ function User() {
 
 		// Show the dialog
 		setStyle( "login-back", {"display":"block"} );
+		
+		//clear box on focus, replace with 'username' on blur.
+		connect("username","onfocus",function(){if ($("username").value==$("username").defaultValue) $("username").value=''});
+		connect("username","onblur",function(){if (!$("username").value) $("username").value = $("username").defaultValue});
+		//and focus the username
+		$("username").focus();
 	}
 
 	// Hide the login dialog

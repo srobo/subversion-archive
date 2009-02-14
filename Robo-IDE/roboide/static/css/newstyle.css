@@ -159,9 +159,11 @@ body {
 	color:#ffffff;
 	text-decoration: none;
 	font-size: 0.7em;
+	padding: 2px 4px;
 }
 #login-box a:hover {
 	color:#253571;
+	background-color: #fff;
 }
 #login-box input {
 	background-color: #ffffff;
