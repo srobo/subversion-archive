@@ -27,6 +27,7 @@ function Browser(cback, options) {
 
 	this._DEFAULT_MSG = "Commit message";
 	this._DEFAULT_FNAME = "new.py";
+	this._DEFAULT_DNAME = "new-directory";
 
 	this.fileList = new Array();
 	this.type = options.type;
@@ -39,7 +40,11 @@ function Browser(cback, options) {
 Browser.prototype._init = function() {
 
 	$("new-commit-msg").value = this._DEFAULT_MSG;
-	$("new-file-name").value = this._DEFAULT_FNAME;
+	if(this.type != 'isDir') {
+		$("new-file-name").value = this._DEFAULT_DNAME;
+	} else {
+		$("new-file-name").value = this._DEFAULT_FNAME;
+	}
 
 	//make visible
 	this.display();
