@@ -46,7 +46,7 @@ Browser.prototype._init = function() {
 
 	//get file listings - if not just commit message
 	if(this.type != 'isCommit') {
-		this._getFileTree(team, ""); 
+		this._getFileTree(team, "");
 	}
 
 	//clear previous events
@@ -80,7 +80,7 @@ Browser.prototype._getFileTree = function(tm, rpath) {
 	var d = loadJSONDoc("./filelist", { team : tm,
 					    rootpath : rpath});
 
-	d.addCallback( bind(this._receiveTree, this));	
+	d.addCallback( bind(this._receiveTree, this));
 	d.addErrback( bind(this._errorReceiveTree, this));
 
 }
@@ -95,15 +95,15 @@ Browser.prototype.clickSaveFile = function(override) {
 
     if(fnameErrFlag && (this.type=='isFile')) {
 		$("browser-status").innerHTML = "\""+this.newFname+"\" already exists!";
-		return;       
+		return;
     }
 
     if(commitErrFlag) {
 		$("browser-status").innerHTML = "No commit message added - click to ignore";
 		connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
-		return;			          
+		return;
     }
-    
+
     disconnectAll("browser-status");
 
     switch(this.type) {
@@ -168,7 +168,7 @@ Browser.prototype.dirSelected = function(directory, files) {
 	//populate left hand list
 	this.fileList = files.split("/");
 	var li = null;
-	//empty file list	
+	//empty file list
 	replaceChildNodes($("right-pane-list"));
 	//populate file list
 	for(var k = 1; k < this.fileList.length; k++) {
@@ -183,7 +183,7 @@ Browser.prototype.display = function() {
 	showElement($("grey-out"));
 
 	switch(this.type) {
-		case 'isFile': 
+		case 'isFile':
 			$("browser-status").innerHTML = "Please Select a save directory & new file name";
 			$("selected-dir").innerHTML = "File Save As:";
 			showElement("right-pane");
@@ -203,7 +203,7 @@ Browser.prototype.display = function() {
 			hideElement("right-pane");
 			hideElement("left-pane");
 			hideElement("new-file-name");
-			break;						
+			break;
 	}
 }
 Browser.prototype.hide = function() {

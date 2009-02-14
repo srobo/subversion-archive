@@ -9,7 +9,7 @@ function Log(file) {
 	this.file = file;                   //the file/directory for which we are interested
 	this.offset = 0;                    //which results page we want to retrieve from the server
 	this.overflow = 0;                  //stores  total number of results pages (retrieved from server)
-    
+
     //do this only once: add a new tab to the tabbar and link it to this log page
     this.tab = new Tab("Log: "+this.file.toString());
     connect(this.tab, 'onfocus', bind(this._onfocus, this));
@@ -18,7 +18,7 @@ function Log(file) {
     tabbar.switch_to(this.tab);
     //start initialisation
 	this._init();
-	
+
 /*
 	selectedRevision [int]	holds revision number to revert to
 	userList [string[]]		Array of users who have made revisions to the selected  file(s)
@@ -35,7 +35,7 @@ function Log(file) {
 	_populateList()			Takes history and updates list of logs on page, it also adds event handlers to log-menu buttons
 	_update()			    Event handler for when a new user is selected
     _revert(bool)           event handler for when user clicks 'revert' - if arg is false, confirmation is  requested from user
-    _nextview(int)          event handler for when user clicks on 'older'/'newer' buttons, 
+    _nextview(int)          event handler for when user clicks on 'older'/'newer' buttons,
                             if int > 0 an older page of  results is retrieved, if int <0 a later page of results is retrieved
     _onfocus()              event handler for tab click
     _onblur()               event handler for tab looses focus
@@ -59,7 +59,7 @@ Log.prototype._receiveHistory = function(revisions) {
 	update(this.history, revisions.history);
     update(this.userList, revisions.authors);
 	this.overflow = revisions.overflow;
-	status_msg("File history loaded successfully", LEVEL_OK);	
+	status_msg("File history loaded successfully", LEVEL_OK);
     //present data
 	this._populateList();
 }
@@ -73,27 +73,27 @@ Log.prototype._errorReceiveHistory = function() {
 
 Log.prototype._retrieveHistory = function() {
 	var d = loadJSONDoc("./gethistory", { team : team,
-					    file : this.file, 
+					    file : this.file,
 					    user : this.user,
 					    offset : this.offset});
 
-	d.addCallback( bind(this._receiveHistory, this));	
+	d.addCallback( bind(this._receiveHistory, this));
 	d.addErrback( bind(this._errorReceiveHistory, this));
 }
-//processess log data and formats into list. connects up related event handlers, 
+//processess log data and formats into list. connects up related event handlers,
 //deals with multile results pages
 Log.prototype._populateList = function() {
 	logDebug("Processing log list...");
 
 	//print summary information
-	var entries = this.history.length; 
+	var entries = this.history.length;
 	if(entries <= 0) {
 		$("log-summary").innerHTML = "There are no revisions availble for file(s): "+this.path;
 	}
 	else {
 		$("log-summary").innerHTML = "Displaying "+entries+ " revision(s) between "+this.history[this.history.length-1].date+" & "+this.history[0].date+" Page "+(this.offset+1)+" of "+(this.overflow);
 	}
-	
+
 	//fill drop down box with authors attributed to file(s)
 	//clear list:
 	replaceChildNodes($("svn-users"), opt);
@@ -109,9 +109,9 @@ Log.prototype._populateList = function() {
 	//now add all attributed authors
 	for(var i=0; i < this.userList.length; i++) {
 		var opt = OPTION({"value":i}, this.userList[i]);
-		appendChildNodes($("svn-users"), opt);			
+		appendChildNodes($("svn-users"), opt);
 	}
-    //remove event handler for when user applies filter to results 
+    //remove event handler for when user applies filter to results
 	disconnectAll($("svn-users"));
 
 
@@ -124,10 +124,10 @@ Log.prototype._populateList = function() {
 		var radio = INPUT({'type' : 'radio', 'name' : 'log', 'class' : 'log-radio', 'value' : this.history[x].rev });
 		var commitMsg = DIV({'class' : 'commit-msg'}, this.history[x].message);
 		appendChildNodes(item, radio);
-		appendChildNodes(item, logtxt);	
-		appendChildNodes(item, commitMsg);	
-		appendChildNodes($("log-list"), item);	
-	}	
+		appendChildNodes(item, logtxt);
+		appendChildNodes(item, commitMsg);
+		appendChildNodes($("log-list"), item);
+	}
 	//make selected user selected in drop down box (visual clue that filter is applied)
 	if(this.user != null) {
 		$("svn-users").value = findValue(this.userList, this.user);
@@ -136,7 +136,7 @@ Log.prototype._populateList = function() {
 	//connect event handler for when user applies filter to results
 	connect($("svn-users"), 'onchange', bind(this._update, this));
 
-    //if older results are available, enable the 'older' button	
+    //if older results are available, enable the 'older' button
 	if(this.offset < (this.overflow-1)) {
  		disconnectAll($("older"));
 		connect($("older"), 'onclick', bind(this._nextview, this, +1));
@@ -144,10 +144,10 @@ Log.prototype._populateList = function() {
 	else {
 		disconnectAll($("older"));
 	}
-    //if newer results are available, enable the 'newer' button	
+    //if newer results are available, enable the 'newer' button
 	if(this.offset > 0) {
  		disconnectAll($("newer"));
-		connect($("newer"), 'onclick', bind(this._nextview, this, -1));		
+		connect($("newer"), 'onclick', bind(this._nextview, this, -1));
 	}
 	else {
 		disconnectAll($("newer"));
@@ -159,7 +159,7 @@ Log.prototype._populateList = function() {
     //connect up the close button on log menu
     disconnectAll($("log-close"));
     connect($("log-close"), 'onclick', bind(this.close, this));
-} 
+}
 //get older (updown > 0) or newer (updown < 0) results
 Log.prototype._nextview = function(updown) {
 	this.offset = this.offset+updown;
@@ -171,11 +171,11 @@ Log.prototype._update = function() {
     //find out which author was selected  using select value as key to userList array
 	var index = $("svn-users").value;
     //if user clicks 'All' (-1) clear user variable
-	if(index > -1) { 
+	if(index > -1) {
 		this.user = this.userList[index];
 	}
-	else { 
-		this.user = null; 
+	else {
+		this.user = null;
 	}
 	logDebug("Filter logs by user: "+this.user);
     //reset offset
@@ -196,14 +196,14 @@ Log.prototype._errorReceiveRevision = function() {
     button_status("Unable to contact server", LEVEL_ERROR, "retry", bind(this._revert, this));
 }
 Log.prototype._do_revert = function(commitMsg) {
-	var d = loadJSONDoc("./revert", { 
+	var d = loadJSONDoc("./revert", {
 	                    team : team,
-					    file : this.file, 
+					    file : this.file,
 					    torev : this.selectedRevision,
 					    message : commitMsg});
 
-	d.addCallback( bind(this._receiveRevert, this));	
-	d.addErrback( bind(this._errorReceiveRevision, this));    
+	d.addCallback( bind(this._receiveRevert, this));
+	d.addErrback( bind(this._errorReceiveRevision, this));
 }
 
 //revert to selected revision. override = true to skip user confirmation
@@ -214,8 +214,8 @@ Log.prototype._revert = function(override) {
         if(radios[x].checked == true) {
             this.selectedRevision = radios[x].value;
             break;
-        }    
-    }   
+        }
+    }
     if(this.selectedRevision < 0) {
         //no revision selected
         status_msg("No revision selected !", LEVEL_WARN);
@@ -228,7 +228,7 @@ Log.prototype._revert = function(override) {
     else {
         //user has not confirmed revert, seek confirmation
         status_button("Are you sure you want to revert selected file(s)?", LEVEL_WARN, "Yes", bind(this._revert, this, true));
-    }   
+    }
 
 }
 
@@ -248,8 +248,8 @@ Log.prototype._onblur = function() {
     setStyle($("log-mode"), {"display" : "none"});
 }
 //tab is closed
-Log.prototype.close = function() {   
-    this.tab.close(); 
-    delete this;    //free memory      
+Log.prototype.close = function() {
+    this.tab.close();
+    delete this;    //free memory
     logDebug("Closing log tab");
 }

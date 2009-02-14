@@ -1,7 +1,7 @@
 function ErrorsTab(contents) {
 	this.tab = null;
 	this.signals = new Array();
-	this._init(contents);	
+	this._init(contents);
 	this.lines = new Array();
 	this.files = new Array();
 	this.messages = new Array();
@@ -56,7 +56,7 @@ ErrorsTab.prototype._switch = function(filename) {
 	return;
 }
 
-ErrorsTab.prototype._select = function() 
+ErrorsTab.prototype._select = function()
 {
 	status_msg("clicked", LEVEL_OK);
 	return;

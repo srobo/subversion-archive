@@ -64,7 +64,7 @@ function Tab(label) {
 	}
 
 	this.flash = function() {
-		Highlight( this._a, 
+		Highlight( this._a,
 				{ 'startcolor' : '#ffff31',
 				  'endcolor' : this._a.style.backgroundColor,
 				  'afterFinish' : bind(this._remove_flash_style, this)
@@ -98,7 +98,7 @@ function TabBar() {
 		connect( tab, "onclick", bind( this._onclick, this ) );
 		connect( tab, "onclose", bind( this._onclose, this ) );
 	}
-	
+
 	this.switch_to = function( tab ) {
 		// Don't do anything if the tab can't focus
 		if( !tab.can_focus )
@@ -149,7 +149,7 @@ function TabBar() {
 
 		index--;
 		if( index < 0 ) index = 0;
-		
+
 		// Try tabs to the left:
 		for( var i = index; i >= 0; i-- )
 			if( this.tabs[i].can_focus ) {

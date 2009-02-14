@@ -57,8 +57,8 @@ ProjPage.prototype._init = function() {
 	connect(this._selector, "onchange", bind( this._calendar.change_proj, this._calendar ) );
 
 	// Connect up the project management buttons
-	connect("new-project", 'onclick', bind(this.clickNewProject, this)); 
-	connect("export-project", 'onclick', bind(this.clickExportProject, this)); 
+	connect("new-project", 'onclick', bind(this.clickNewProject, this));
+	connect("export-project", 'onclick', bind(this.clickExportProject, this));
 	connect("check-code", "onclick", bind(this.clickCheckCode, this));
 
 	// We have to synthesize the first "onchange" event from the ProjSelect,
@@ -72,7 +72,7 @@ ProjPage.prototype._init = function() {
 ProjPage.prototype.show = function() {
 	logDebug( "Projpage.show: Current project is \"" + this.project + "\"" );
 	this._init();
-	
+
 	setStyle('projects-page', {'display':'block'});
 }
 
@@ -91,7 +91,7 @@ ProjPage.prototype._on_proj_change = function(proj, team) {
 		$("proj-name").innerHTML = "Project " + this.project;
 		this._rpane_show();
 	}
-	
+
 }
 
 ProjPage.prototype.set_team = function(team) {
@@ -171,7 +171,7 @@ ProjPage.prototype.clickExportProject = function() {
 
 ProjPage.prototype.clickCheckCode = function() {
 	var d = loadJSONDoc("./checkcode",{ team : team, path : "/" + this.project });
-	
+
 	d.addCallback(bind(this.doneCheckCode, this));
 	d.addErrback(bind(this.failCheckCode, this));
 }
@@ -194,7 +194,7 @@ function map_1( func, arg, arr ) {
 	var a = function( item ) {
 		return func( item, arg );
 	}
-	
+
 	return map( a, arr );
 }
 
@@ -238,11 +238,11 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 	if( pname != this._project || team != this._team ) {
 		// Hide the list whilst we're loading it
 		swapDOM( "proj-filelist",
-			 DIV( {"id": "proj-filelist", 
-			       "class" : "loading"}, 
+			 DIV( {"id": "proj-filelist",
+			       "class" : "loading"},
 			      "Loading project file listing..." ) );
 	}
-    
+
     //store project revision (if one given)
     if(rev == undefined || rev == null) {
         this.rev = 0;
@@ -255,17 +255,17 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 	this._team = team;
 	this.refresh();
 }
-	
-ProjFileList.prototype.refresh = function() {    
+
+ProjFileList.prototype.refresh = function() {
 	if( this._project == "" )
 		return;
 
 	this.selection = new Array();
 	var d = loadJSONDoc("./filelist", {team : this._team,
 					   rootpath : this._project, rev : this.rev});
-	
+
 	d.addCallback( bind( this._received, this ) );
-	
+
 	d.addErrback( bind( function (){
 		status_button( "Error retrieving the project file listing", LEVEL_ERROR,
 			       "retry", bind( this.refresh, this ) );
@@ -280,32 +280,32 @@ ProjFileList.prototype._show = function() {
 	setStyle( "proj-filelist", {"display":""} );
 }
 
-// Handler for receiving the file list 
+// Handler for receiving the file list
 ProjFileList.prototype._received = function(nodes) {
 	log( "filelist received" );
-	
+
 	swapDOM( "proj-filelist",
 		 UL( { "id" : "proj-filelist",
 		       "style" : "display:none" },
 		     map_1( bind(this._dir, this), 0, nodes["tree"] ) ) );
-	
+
 	this._show();
 }
 
 
 // Produce an object consisted of "level" levels of nested divs
-// the final div contains the DOM object inner 
+// the final div contains the DOM object inner
 ProjFileList.prototype._nested_divs = function( level, inner ) {
 	if (level == 0)
 		return inner;
-	
+
 	if (level > 1)
 		return DIV( null, this._nested_divs( level-1, inner ) );
-	
+
 	return DIV( null, inner );
 }
 
-// Returns a DOM object for the given node 
+// Returns a DOM object for the given node
 ProjFileList.prototype._dir = function( node, level ) {
 	// Assemble the link with divs in it
 	var link = A( { "href" : "#",
@@ -314,13 +314,13 @@ ProjFileList.prototype._dir = function( node, level ) {
 			"ide_rev" : node.rev },
 		this._nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
 	connect( link, "onclick", bind( this._onclick, this ) );
-	
+
 	if( node.kind == "FILE" ) {
 		var n = LI( null, link );
 		return n;
 	} else
-		var n = LI( null, [ link, 
-	    		UL( { "class" : "flist-l" }, 
+		var n = LI( null, [ link,
+	    		UL( { "class" : "flist-l" },
 			map_1( bind(this._dir, this), level + 1, node["children"] ) ) ] );
 	return n;
 }
@@ -330,7 +330,7 @@ ProjFileList.prototype._onclick = function(ev) {
 	// Prevent the browser doing something when someone clicks on this
 	ev.preventDefault();
 	ev.stopPropagation();
-	
+
 	mods = ev.modifier();
 
 	src = ev.src();
@@ -381,7 +381,7 @@ ProjFileList.prototype._deselect_path = function(path, kind) {
 // Toggles the display of the contents of a directory
 ProjFileList.prototype._toggle_dir = function(src) {
 	// Get a handler on its children
-	var dir_contents = getFirstElementByTagAndClassName( "UL", null, src.parentNode ); 
+	var dir_contents = getFirstElementByTagAndClassName( "UL", null, src.parentNode );
 
 	display = "";
 	if( getStyle( dir_contents, "display" ) != "none" ) {
@@ -394,7 +394,7 @@ ProjFileList.prototype._toggle_dir = function(src) {
 			c = c + "ren";
 
 		var div = this._get_innerdiv( src );
-		appendChildNodes( div, 
+		appendChildNodes( div,
 				  SPAN({"class":"proj-filelist-dir-collapse"},
 				       " [ " + nc + c + " hidden ]"));
 
@@ -455,9 +455,9 @@ ProjList.prototype._grab_list = function(team) {
 	this._team = team;
 
 	var d = loadJSONDoc("./projlist", {team : team});
-	
+
 	d.addCallback( bind( this._got_list, this ) );
-	
+
 	d.addErrback( bind( function() {
 		status_button( "Error retrieving the project list", LEVEL_ERROR,
 			       "retry", bind( this._grab_list, this) );
@@ -528,7 +528,7 @@ ProjSelect.prototype._plist_onchange = function(team) {
 	var items = [];
 
 	// Find the default project to be selected
-	if( this.project == "" 
+	if( this.project == ""
 	    || !this._plist.project_exists( this.project )
 	    || team != this._team ) {
 		this.project = "";
@@ -548,7 +548,7 @@ ProjSelect.prototype._plist_onchange = function(team) {
 	for( var p in this._plist.projects ) {
 		var pname = this._plist.projects[p];
 		var props = { "value" : pname };
-			
+
 		if( pname == this.project )
 			props["selected"] = "selected";
 		items[items.length] = ( OPTION( props, pname ) );
@@ -558,7 +558,7 @@ ProjSelect.prototype._plist_onchange = function(team) {
 
 	logDebug( "ProjList._plist_onchange: Now on project " + this._team + "." + this.project );
 
-	if( startproj != this.project 
+	if( startproj != this.project
 	    || startteam != this._team )
 		signal( this, "onchange", this.project, this._team );
 }
@@ -576,7 +576,7 @@ ProjSelect.prototype._onchange = function(ev) {
 	var tmp = $("projlist-tmpitem");
 	if( tmp != null && src != tmp )
 		removeElement( tmp );
-	
+
 	if( src != tmp ) {
 		var proj = src.value;
 
@@ -597,28 +597,28 @@ ProjSelect.prototype._get_default = function() {
 	    && this._plist.project_exists( dp ) )
 		return dp;
 
-	return null;		
+	return null;
 }
 
 //handles all 'selection operations' in sidebar of project page
 function ProjOps() {
 
     //view_log()                    for each item selected in file list it will attempt to open a new log tab
-    //receive_newfolder([])         ajax success handler 
-    //error_receive_newfolder()     ajax fail hanlder     
+    //receive_newfolder([])         ajax success handler
+    //error_receive_newfolder()     ajax fail hanlder
     //newfolder()                   gets folder name & location and instigates new folder on server
-    
+
     //list of operations
     this.ops = new Array();
-                      
-                                                   
+
+
     this.init = function() {
         //connect up operations
         for(var i=0; i < this.ops.length; i++) {
             this.ops[i].event = connect(this.ops[i].handle, 'onclick', this.ops[i].action);
         }
     }
-    
+
     this.view_log = function() {
 	//for every file that is selected:
 	    if(projpage.flist.selection.length == 0) {
@@ -642,21 +642,21 @@ function ProjOps() {
 			    var cow = new Log(projpage.flist.selection[i]);
 		    }
 	    }
-    }  
-    
+    }
+
     this.receive_newfolder = function(nodes) {
         logDebug("Add new folder: ajax request successful");
         switch(nodes.success) {
-            case 1:   	
+            case 1:
                 status_msg("New Directory successfully added", LEVEL_OK);
                 projpage.flist.refresh();
                 break;
             case 0:
                 status_msg("Failed to create new Directory", LEVEL_ERROR);
-                break;       	
+                break;
         }
     }
-    
+
     this.error_receive_newfolder = function(new_name, new_message) {
         logDebug("Add new folder: ajax request failed");
        	button_msg("Error contacting server", LEVEL_ERROR, "retry", bind(this.new_folder, this, new_name, new_msg) );
@@ -671,35 +671,35 @@ function ProjOps() {
 					            path : new_name,
 					            msg : new_msg});
 
-	        d.addCallback( this.receive_newfolder);	
+	        d.addCallback( this.receive_newfolder);
 	        d.addErrback( this.error_receive_newfolder, new_name, new_msg);
 	    }
-    }   
+    }
 
     this.newfile = function() {
-        status_msg("TODO: Implement add file");   
+        status_msg("TODO: Implement add file");
     }
-    
+
     this._mv_success = function(nodes) {
         logDebug("_mv_success()");
         logDebug(nodes.status);
-        if(nodes.status == 0) { 
+        if(nodes.status == 0) {
             status_msg("Move successful!", LEVEL_OK);
             projpage.flist.refresh();
         }
         else {
             status_msg("ERROR: "+nodes.message, LEVEL_ERROR);
-        }    
+        }
     }
-    
-    this._mv_cback = function(dest, cmsg) {         
+
+    this._mv_cback = function(dest, cmsg) {
         var src = projpage.flist.selection[0];
         var type = null;
-        
+
         //is it a file or a folder?
         if(src.indexOf(".") < 0) { type = 'isDir'; }
         else { type = 'isFile'; }
-        
+
         //do we already have a move to location?
         logDebug("type "+type);
         if(dest == "" || dest == null) {
@@ -710,7 +710,7 @@ function ProjOps() {
         else {
             //do some sanity checking
             switch(type) {
-                case 'isFile' : 
+                case 'isFile' :
                     if(dest.indexOf(".") < 0) {
                         status_msg("Move destination file must have an extension", LEVEL_ERROR);
                         return;
@@ -724,34 +724,34 @@ function ProjOps() {
                         status_msg("Move destination must be a folder", LEVEL_ERROR);
                         return;
                     }
-                    break;                        
+                    break;
             }
         }
-        
-        status_msg("About to do move..."+src+" to "+dest, LEVEL_OK); 
-        
+
+        status_msg("About to do move..."+src+" to "+dest, LEVEL_OK);
+
         	var d = loadJSONDoc("./move", {team : team,
-					   src : src, dest : dest, msg : cmsg});	      
-	
+					   src : src, dest : dest, msg : cmsg});
+
 	        d.addCallback( bind( this._mv_success, this) );
-	
+
 	        d.addErrback( bind( function (){
 		        status_button( "Error moving files/folders", LEVEL_ERROR,
 			               "retry", bind( this._mv_cback, this, dest, cmsg ) );
-	        }, this ) );   
-    }           
+	        }, this ) );
+    }
     this.mv = function() {
-        //we can only deal with one file/folder at a time, so ignore all but the first    
-        if(projpage.flist.selection.length == 0 || projpage.flist.selection.length > 1) { 
-            status_msg("You must sellect a single file/folder", LEVEL_ERROR); 
+        //we can only deal with one file/folder at a time, so ignore all but the first
+        if(projpage.flist.selection.length == 0 || projpage.flist.selection.length > 1) {
+            status_msg("You must sellect a single file/folder", LEVEL_ERROR);
             return;
-        }        
-        
+        }
+
         var b = new Browser(bind(this._mv_cback, this), {'type' : 'isFile'});
         return;
 
     }
-    
+
     this._cp_callback1 = function(nodes) {
         if(nodes.status > 0) {
             status_msg("ERROR COPYING: "+nodes.message, LEVEL_ERROR);
@@ -763,34 +763,34 @@ function ProjOps() {
     }
     this._cp_callback2 = function(fname, cmsg) {
         logDebug("copying "+projpage.flist.selection[0]+" to "+fname);
-        
+
         if(fname == null || fname=="")
             return;
-        
+
     	var d = loadJSONDoc("./copy", {team : team,
 				   src : projpage.flist.selection[0],
 				   dest : fname,
 				   msg : cmsg,
-				   rev : 0  }); 
+				   rev : 0  });
 	    d.addCallback( bind(this._cp_callback1, this));
-	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this._cp_callback2, this, true));});             
-    }       
+	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this._cp_callback2, this, true));});
+    }
     this.cp = function() {
         if(projpage.flist.selection.length == 0) {
             status_msg("There are no files/folders selected to copy", LEVEL_ERROR);
-            return;            
+            return;
         }
         if(projpage.flist.selection.length > 1) {
             status_msg("Multiple files selected!", LEVEL_ERROR);
-            return;            
-        }        
+            return;
+        }
         var b = new Browser(bind(this._cp_callback2, this), {'type' : 'isFile'});
-        return;                     
-    }  
+        return;
+    }
     this.rm = function(override) {
         if(projpage.flist.selection.length == 0) {
             status_msg("There are no files/folders selected for deletion", LEVEL_ERROR);
-            return;            
+            return;
         }
         if(override == false) {
             status_button("Are you sure you want to delete "+projpage.flist.selection.length+" selected files/folders", LEVEL_WARN, "delete", bind(this.rm, this, true));
@@ -801,12 +801,12 @@ function ProjOps() {
             death_list = death_list + projpage.flist.selection[x] + ",";
         }
         death_list = death_list.slice(0, death_list.length-1);
-        
+
         logDebug("will delete: "+death_list);
-        
+
     	var d = loadJSONDoc("./delete", {team : team,
-				   files : death_list}); 
-	    d.addCallback( function(nodes) { 
+				   files : death_list});
+	    d.addCallback( function(nodes) {
 		status_msg(nodes.Message, LEVEL_OK)
                 projpage.flist.refresh();
 	     });
@@ -825,54 +825,54 @@ function ProjOps() {
         }
     }
     this.undel = function() {
-        if(projpage.flist.selection.length == 0) {        
+        if(projpage.flist.selection.length == 0) {
             status_msg("There are no files/folders selected for undeletion", LEVEL_ERROR);
-            return;            
+            return;
         }
-            
+
     	var d = loadJSONDoc("./copy", {team : team,
 				   src : projpage.flist.selection[0],
 				   dest : projpage.flist.selection[0],
 				   msg : "Undelete File",
-				   rev : projpage.flist.rev  }); 
+				   rev : projpage.flist.rev  });
 	    d.addCallback( bind(this._undel_callback, this));
-	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.undel, this, true));});                     
-    }         
- 
-    this.ops.push({ "name" : "New File", 
-                        "action" : bind(editpage.new_file, editpage), 
-                        "handle" : $("op-newfile"), 
+	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.undel, this, true));});
+    }
+
+    this.ops.push({ "name" : "New File",
+                        "action" : bind(editpage.new_file, editpage),
+                        "handle" : $("op-newfile"),
                         "event" : null});
-                      
-    this.ops.push({ "name" : "New Directory", 
-                        "action" : bind(this.new_folder, this, null, null), 
-                        "handle": $("op-mkdir"), 
-                        "event" : null});    
-                                
-    this.ops.push({ "name" : "Move", 
-                        "action" : bind(this.mv, this), 
-                        "handle": $("op-mv"), 
-                        "event" : null });  
-                          
-    this.ops.push({ "name" : "Copy", 
-                        "action" : bind(this.cp, this), 
-                        "handle": $("op-cp"), 
-                        "event" : null });   
-                                                                              
-    this.ops.push({ "name" : "Delete", 
-                        "action" : bind(this.rm, this, false), 
-                        "handle": $("op-rm"), 
-                        "event" : null });  
-                                                  
-    this.ops.push({ "name" : "Undelete", 
-                        "action" : bind(this.undel, this), 
-                        "handle": $("op-undel"), 
-                        "event" : null });  
-                                                  
-    this.ops.push({ "name" : "View Log", 
-                        "action" : bind(this.view_log, this), 
-                        "handle": $("op-log"), 
-                        "event" : null });   
-                            
-    this.init();   
+
+    this.ops.push({ "name" : "New Directory",
+                        "action" : bind(this.new_folder, this, null, null),
+                        "handle": $("op-mkdir"),
+                        "event" : null});
+
+    this.ops.push({ "name" : "Move",
+                        "action" : bind(this.mv, this),
+                        "handle": $("op-mv"),
+                        "event" : null });
+
+    this.ops.push({ "name" : "Copy",
+                        "action" : bind(this.cp, this),
+                        "handle": $("op-cp"),
+                        "event" : null });
+
+    this.ops.push({ "name" : "Delete",
+                        "action" : bind(this.rm, this, false),
+                        "handle": $("op-rm"),
+                        "event" : null });
+
+    this.ops.push({ "name" : "Undelete",
+                        "action" : bind(this.undel, this),
+                        "handle": $("op-undel"),
+                        "event" : null });
+
+    this.ops.push({ "name" : "View Log",
+                        "action" : bind(this.view_log, this),
+                        "handle": $("op-log"),
+                        "event" : null });
+
+    this.init();
 }

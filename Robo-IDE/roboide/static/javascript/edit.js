@@ -11,7 +11,7 @@ function EditPage() {
 	//  - _show: Show the edit page.
 	//           Triggers initialisation of the editarea if necessary
 	//  - _hide: Hide the edit page.
-	//  - _new_etab: Creates a new instance of an EditTab and wire it 
+	//  - _new_etab: Creates a new instance of an EditTab and wire it
 	// 	up to a Tab
 	//               TODO: Can we get EditTab to do this for us?
 	//  - _file_get_etab: Given a file path, returns the tab for it.
@@ -22,7 +22,7 @@ function EditPage() {
 
 	// Private properties:
 	// Dict of open files.  Keys are paths, values are EditTab instances.
-	this._open_files = {};	
+	this._open_files = {};
 
 	this.textbox = null;
 	this._iea = null;
@@ -81,7 +81,7 @@ function EditPage() {
 	// Doesn't load the tab
 	this._new_etab = function(team, project, path, rev) {
 		var etab = new EditTab(this._iea, team, project, path, rev);
-		
+
 		connect( etab, "onclose", bind( this._on_tab_close, this ) );
 
 		this._open_files[path] = etab;
@@ -121,7 +121,7 @@ function EditPage() {
 
 	// Return true if the given tab is an edit tab
 	this._is_edit = function(tab) {
-		if( tab !== null && tab !== undefined 
+		if( tab !== null && tab !== undefined
 		    && tab.__edit === true )
 			return true;
 		return false;
@@ -143,7 +143,7 @@ function EditTab(iea, team, project, path, rev) {
 	//  - _update_contents: Update the contents of the edit area.
 	//  - _capture_code: Store the contents of the edit area.
 
-	//  ** File Contents Related ** 
+	//  ** File Contents Related **
 	//  - _load_contents: Start the file contents request.
 	//  - _recv_contents: Handler for file contents reception.
 	//  - _recv_contents_err: Handler for file contents reception errors.
@@ -153,7 +153,7 @@ function EditTab(iea, team, project, path, rev) {
 	//  - _receive_new_fname: Handler for save dialog.
 	//  - _receive_commit_msg: Handler for save dialog.
 	//  - _svn_save: Save the file to the server.
-	//  - _receive_svn_save: Handler for successfully sending to server. 
+	//  - _receive_svn_save: Handler for successfully sending to server.
 	//  - _error_receive_svn_save: Handler for when a save fails.
 
 	//  ** Tab related **
@@ -163,10 +163,10 @@ function EditTab(iea, team, project, path, rev) {
 
 	// *** Public Properties ***
 	if(rev == null || rev == undefined)
-	    this.rev = 0; 
+	    this.rev = 0;
 	else
 	    this.rev = rev;
-	
+
 	// The team
 	this.team = team;
 	// The project
@@ -177,7 +177,7 @@ function EditTab(iea, team, project, path, rev) {
 	this.contents = "";
 	// The tab representing us
 	this.tab = null;
-	
+
 	// *** Private Properties ***
 	//true if file is new (unsaved)
 	this._isNew = false;
@@ -221,7 +221,7 @@ function EditTab(iea, team, project, path, rev) {
 						   file : this.path,
 						   revision : this.rev});
 
-		d.addCallback( bind(this._recv_contents, this));	
+		d.addCallback( bind(this._recv_contents, this));
 		d.addErrback( bind(this._recv_contents_err, this));
 	}
 
@@ -266,16 +266,16 @@ function EditTab(iea, team, project, path, rev) {
 		this._commitMsg = commitMsg;
 		this._svn_save();
 	}
-	
+
 	this._save = function() {
 		//do an update
 		this._capture_code();
 		//if new file	-- TODO
 		if(this._isNew) {
-			var fileBrowser = new Browser(bind(this._receive_new_fname, this), {'type' : 'isFile'});	
+			var fileBrowser = new Browser(bind(this._receive_new_fname, this), {'type' : 'isFile'});
 		}
 		else {
-			var fileBrowser = new Browser(bind(this._receive_commit_msg, this), {'type' : 'isCommit'});	
+			var fileBrowser = new Browser(bind(this._receive_commit_msg, this), {'type' : 'isCommit'});
 		}
 	}
 
@@ -284,7 +284,7 @@ function EditTab(iea, team, project, path, rev) {
 		projpage.flist.refresh();
 
 		switch(nodes.success){
-			case "True": 
+			case "True":
 				status_msg("File Saved successfully (New Revision: "+nodes.new_revision+")", LEVEL_OK);
 				this._original = this.contents;
 				this._isNew = false;
@@ -306,22 +306,22 @@ function EditTab(iea, team, project, path, rev) {
 				break;
 		}
 	}
-	
+
 	//ajax event handler for saving to server
 	this._error_receive_svn_save = function() {
 		button_status("Error contacting server", LEVEL_ERROR, "retry", bind(this._svn_save, this));
 	}
-	
+
 	//save file contents to server as new revision
 	this._svn_save = function() {
 	    var d = loadJSONDoc("./savefile", { team : team,
-					        file : this.path, 
+					        file : this.path,
 						    rev : 0,				//TODO: make this dynamic
 					        message : this._commitMsg,
 						    code: this.contents});
 
-	    d.addCallback( bind(this._receive_svn_save, this));	
-	    d.addErrback( bind(this._error_receive_svn_save, this));		
+	    d.addCallback( bind(this._receive_svn_save, this));
+	    d.addErrback( bind(this._error_receive_svn_save, this));
 	}
 
 	this._close = function(override) {
@@ -366,7 +366,7 @@ function EditTab(iea, team, project, path, rev) {
 		this._signals = [];
 
 		//don't loose changes to file content
-		this._capture_code();   
+		this._capture_code();
 	}
 
 	this._update_contents = function() {
@@ -401,33 +401,33 @@ function EditTab(iea, team, project, path, rev) {
            		break;
 		}
 	}
-	
+
 	this._receive_revisions = function(nodes) {
 		if(nodes.history.length == 0) {
 			replaceChildNodes("history", OPTION({'value' : -1}, "No File History!"));
 		} else {
-			replaceChildNodes("history", OPTION({'value' : -1}, "Select File Revision"));	    
+			replaceChildNodes("history", OPTION({'value' : -1}, "Select File Revision"));
 			for(var i=0; i < nodes.history.length; i++)
-				appendChildNodes("history", OPTION( {'value' : nodes.history[i].rev, 
-								     'title' : nodes.history[i].message }, 
+				appendChildNodes("history", OPTION( {'value' : nodes.history[i].rev,
+								     'title' : nodes.history[i].message },
 								    "r" + nodes.history[i].rev + " " + nodes.history[i].date + " [" +nodes.history[i].author + "]"));
 
-			appendChildNodes("history", OPTION({'value' : -2}, "--View Full History--"));			
+			appendChildNodes("history", OPTION({'value' : -2}, "--View Full History--"));
 		}
 	}
 
 	this._error_receive_revisions = function() {
 		status_msg("Couldn't retrieve file history", LEVEL_ERROR);
 	}
-    
+
 	this._get_revisions = function() {
 		logDebug("retrieving file history");
 		var d = loadJSONDoc("./gethistory", { team : team,
-						      file : this.path, 
+						      file : this.path,
 						      user : null,
 						      offset : 0});
-		d.addCallback( bind(this._receive_revisions, this));	
-		d.addErrback( bind(this._error_receive_revisions, this)); 			    
+		d.addCallback( bind(this._receive_revisions, this));
+		d.addErrback( bind(this._error_receive_revisions, this));
 	}
 
 	//initialisation
@@ -436,7 +436,7 @@ function EditTab(iea, team, project, path, rev) {
 
 // A fractionally nicer interface to the editarea
 // Cleans up the loading interface in particular.
-// Things don't explode as much if you try to do something to it before the 
+// Things don't explode as much if you try to do something to it before the
 // editarea has loaded, or when it's invisible.
 
 // Emits these signals:
@@ -458,7 +458,7 @@ function ide_editarea(id) {
 
 	// Start initialising the editarea
 	this._init_start = function() {
-		//initialize new instance of editArea			
+		//initialize new instance of editArea
 		editAreaLoader.init({
 	 		id : this._id,
 	 		syntax : "python",

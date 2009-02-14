@@ -62,7 +62,7 @@ function load_select_team() {
 	projpage = new ProjPage();
 	connect( team_selector, "onchange", bind(projpage.set_team, projpage) );
 	tabchange_ident = connect( team_selector, "onchange", load_gui );
-		
+
 	// Triggers the signals from the team selector
 	team_selector.load();
 }
@@ -89,7 +89,7 @@ function load_gui() {
 	ntab.can_focus = false;
 	connect( ntab, "onclick", bind(editpage.new_file, editpage) );
 	tabbar.add_tab( ntab );
-	
+
     //The selection operations
     sel_operations = new ProjOps();
 
@@ -111,7 +111,7 @@ function beforeunload(e) {
 function status_clearclass() {
 	var classes = ["info", "ok", "warn", "error"];
 	var s = $(status_id);
-	
+
 	map( partial( removeElementClass, s ), classes );
 }
 
@@ -131,7 +131,7 @@ function status_msg( message, level ) {
 			    message ];
 		break;
 	case LEVEL_ERROR:
-		message = [ createDOM( "STRONG", null, "Error: " ), 
+		message = [ createDOM( "STRONG", null, "Error: " ),
 			    message ];
 		break;
 	}
@@ -199,11 +199,11 @@ function status_button( message, level, btext, bfunc ) {
 	return status_msg( m, level );
 }
 
-// The user 
+// The user
 function User() {
 	// List of team numbers
 	this.teams = null;
-	// Dictionary of team names (team number => name) 
+	// Dictionary of team names (team number => name)
 	this.team_names = null;
 	// The user's settings
 	this._settings = null;
@@ -222,7 +222,7 @@ function User() {
 
 	this._request_info = function() {
  		var d = loadJSONDoc("./user/info");
-		
+
  		d.addCallback( bind( this._got_info, this ) );
 
  		d.addErrback( bind( function() {
@@ -290,7 +290,7 @@ function User() {
 
 		// Show the dialog
 		setStyle( "login-back", {"display":"block"} );
-		
+
 		//clear box on focus, replace with 'username' on blur.
 		connect("username","onfocus",function(){if ($("username").value==$("username").defaultValue) $("username").value=''});
 		connect("username","onblur",function(){if (!$("username").value) $("username").value = $("username").defaultValue});
@@ -315,7 +315,7 @@ function User() {
 		var pass = $("password").value;
 
 		var d = loadJSONDoc( "./user/login", {"usr": user, "pwd": pass} );
-		
+
 		d.addCallback( bind( this._login_resp, this ) );
 		d.addErrback( bind( function() {
 			status_button( "Error whilst logging in", LEVEL_ERROR,
@@ -339,9 +339,9 @@ function User() {
 			ev.preventDefault();
 			ev.stopPropagation();
 		}
-	
+
 		var d = loadJSONDoc( "./user/logout", {} );
-		
+
 		d.addCallback( bind( this._logout_resp, this ) );
 		d.addErrback( bind( function() {
 			status_button( "Failed to log out", LEVEL_ERROR,
@@ -353,7 +353,7 @@ function User() {
 	this._logout_resp = function(resp) {
 		window.location.reload();
 	}
-	
+
 	// Do the login if they press enter in the password box
 	this._pwd_on_keypress = function(ev) {
 		if ( ev.key()["string"] == "KEY_ENTER" )
@@ -375,13 +375,13 @@ function TeamSelector() {
 			var olist = [];
 
 			if( !this._team_exists(team) ) {
-				// Work out what team we should be in 
+				// Work out what team we should be in
 				var team_last = user.get_setting("team.last");
-				if( team_last != undefined 
+				if( team_last != undefined
 				    && this._team_exists( team_last ) ) {
 					team = team_last;
 					logDebug( "Defaulting to team " + team );
-				} 
+				}
 			}
 
 			olist = this._build_options();
@@ -393,10 +393,10 @@ function TeamSelector() {
 						       "Please select a team." ) );
 
 				this._prompt = status_msg( "Please select a team", LEVEL_INFO );
-			}				
+			}
 
 			var tsel = SELECT( null, olist );
-			
+
 			connect( tsel, "onchange", bind( this._selected, this ) );
 			teambox.push( "Team: " );
 			teambox.push( tsel );
@@ -421,7 +421,7 @@ function TeamSelector() {
 
 			if( user.teams[t] == team )
 				props["selected"] = "selected";
-			
+
 			olist.push( OPTION(props, user.teams[t]) );
 		}
 
@@ -432,13 +432,13 @@ function TeamSelector() {
 	this._team_exists = function(team) {
 		if( team == 0 )
 			return false;
-		
+
 		for( i in user.teams )
 			if( user.teams[i] == team )
 				return true;
 		return false;
 	}
-	
+
 	this._selected = function(ev) {
 		if( this._prompt != null ) {
 			this._prompt.close();
@@ -451,7 +451,7 @@ function TeamSelector() {
 		var tmpitem = $("teamlist-tmpitem");
 		if( tmpitem != null && src != tmpitem )
 			removeElement( tmpitem );
-		
+
 		team = parseInt(src.value, 10);
 		logDebug( "team changed to " + team );
 		this._update_name();
@@ -463,7 +463,7 @@ function TeamSelector() {
 		var name = "";
 		if( this._team_exists(team) ) {
 			name = user.team_names[ team ];
-			
+
 			if( user.teams.length == 1 )
 				name = "Team " + team + ": " + name
 		}
@@ -482,7 +482,7 @@ function loadJSONDoc( url, qa ) {
 
 	var d = new Deferred();
 	var r;
-	
+
 	if( qa == undefined )
 		r = MochiKit.Async.loadJSONDoc( url );
 	else
