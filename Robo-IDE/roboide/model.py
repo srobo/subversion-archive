@@ -23,3 +23,45 @@ class SettingValues(SQLObject):
     uname = StringCol()
     # The setting value
     value = StringCol()
+
+class FirmwareTargets(SQLObject):
+    """Devices that we manage firmware for."""
+    # The name of the device.
+    name = StringCol()
+
+class FirmwareBlobs(SQLObject):
+    # The device
+    device = ForeignKey("FirmwareTargets")
+
+    # The version number
+    version = IntCol()
+
+    # The firmware filename
+    firmware = StringCol()
+
+    # The revision number in VC that the firmware is built from.
+    # Current supported formats:
+    #  - "svn:REV" where REV is the subversion commit number.
+    revision = StringCol()
+
+    # A description of the firmware.  Could contain a changelog.
+    desc = StringCol()
+
+class FirmwareState(SQLObject):
+    # The firmware this relates to.
+    fw_id = ForeignKey("FirmwareBlobs")
+
+    # The date and time of state change
+    date = DateTimeCol()
+
+    # An message to go with the state change
+    message = StringCol()
+
+    # The state the firmware changed to
+    state = EnumCol( enumValues = [ "ALLOCATED",
+                                    "DEVEL",
+                                    "TESTING",
+                                    "SHIPPING",
+                                    "FAILED",
+                                    "OLD_RELEASE",
+                                    "SUPERCEDED" ] )

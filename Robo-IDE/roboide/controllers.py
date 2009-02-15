@@ -14,6 +14,7 @@ from cherrypy.lib.cptools import serveFile
 import subprocess
 import sr
 import user as srusers
+import fw
 
 log = logging.getLogger("roboide.controllers")
 
@@ -91,6 +92,7 @@ class Feed(FeedController):
 
 class Root(controllers.RootController):
     user = srusers.User()
+    fw = fw.FwServe()
     #feed = Feed()
 
     @expose()

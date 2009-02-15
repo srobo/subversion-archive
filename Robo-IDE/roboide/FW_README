@@ -1,0 +1,37 @@
+How RoboIDE manages firmware shipping:
+
+*** FORMAT ***
+To allow for future changes in the number of files required to be
+shipped, the firmware shipping system is agnostic about the format of
+the firmware file submitted.
+
+It will, however, only accept a single file for each firmware release.
+Therefore, if each firmware release consists of multiple files, it
+must be packaged in an archive of some sort.  Uncompressed tar is
+sensible, since RoboIDE will perform compression at the time of
+packaging.
+
+Firmware can be in one of the following states:
+
+ o ALLOCATED
+    This firmware ID has been allocated, but no firmware image has yet
+    been submitted.
+ o DEVEL
+    The firmware image has been uploaded. 
+ o TESTING
+    The firmware image has been submitted for testing.
+    Only one firmware image per board may be in this state.
+ o SHIPPING
+    The firmware image is being distributed.  A number of people have
+    successfully tested the firmware.  That number is configurable.
+    Only one firmware image per board may be in this state.
+ o FAILED
+    The firmware failed some tests.
+ o OLD_RELEASE
+    The firmware has been superceded by a new release.
+ o SUPERCEDED
+    The firmware image was superceded by a new version before it could
+    be tested.
+
+Each firmware image has a 16-bit ID.  
+
