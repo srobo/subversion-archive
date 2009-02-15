@@ -192,11 +192,8 @@ class FwServe(object):
         return info
 
     @expose("json")
-    def status(self,device,state=None,version=None):
-        """Return information about the firmwares for the given device.
-        If "state" is given, only gives information about firmware images in 
-        the given state, otherwise all states."""
-
+    def images(self,device):
+        """Return information about the firmwares for the given device."""
         dev_id = self.__find_device(device)
         if not dev_id:
             return {"ERROR": "Device '%s' not found" % device}
