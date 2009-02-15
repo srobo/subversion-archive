@@ -40,11 +40,10 @@ function Browser(cback, options) {
 Browser.prototype._init = function() {
 
 	$("new-commit-msg").value = this._DEFAULT_MSG;
-	if(this.type != 'isDir') {
+	if(this.type == 'isDir')
 		$("new-file-name").value = this._DEFAULT_DNAME;
-	} else {
+	else
 		$("new-file-name").value = this._DEFAULT_FNAME;
-	}
 
 	//make visible
 	this.display();
