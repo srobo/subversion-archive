@@ -84,6 +84,9 @@ Calendar.prototype.drawCal = function() {
 	//highlight today's date (bold text only) if we are showing current month and current year
 	if( ( this.date.getMonth() == (new Date()).getMonth() ) && (this.date.getFullYear() == (new Date()).getFullYear() ) )
 		setStyle("cal"+(new Date()).getDate(), {"font-weight" : "bold", "border" : "1px solid #eee"});
+	
+	//clears date/revision select box
+	replaceChildNodes("cal-revs", OPTION({"value" : -1}, "Select a date"));   
 }
 
 //convert date string in log array into jscript date
