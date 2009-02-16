@@ -159,6 +159,10 @@ ProjPage.prototype.createProjectFailure = function() {
 }
 
 ProjPage.prototype.clickExportProject = function() {
+	if( $('projlist-tmpitem') != null && $('projlist-tmpitem').selected == true ) {
+		status_msg( "No project selected, please select a project", LEVEL_ERROR );
+		return;
+	}
 	if( this._iframe == null ) {
 		this._iframe = createDOM( "iframe",
 					  { "style": "display:none" },
