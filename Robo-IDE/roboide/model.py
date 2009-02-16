@@ -30,8 +30,8 @@ class FirmwareTargets(SQLObject):
     name = StringCol()
 
 class FirmwareBlobs(SQLObject):
-    # The device
-    device = ForeignKey("FirmwareTargets")
+    # The device (ForeignKey doesn't work in the sqlobject on button)
+    device = IntCol() #ForeignKey("FirmwareTargets")
 
     # The version number
     version = IntCol()
@@ -48,8 +48,8 @@ class FirmwareBlobs(SQLObject):
     desc = StringCol()
 
 class FirmwareState(SQLObject):
-    # The firmware this relates to.
-    fw_id = ForeignKey("FirmwareBlobs")
+    # The firmware this relates to. (ForeignKey doesn't work in the sqlobject on button)
+    fw_id = IntCol() #ForeignKey("FirmwareBlobs")
 
     # The date and time of state change
     date = DateTimeCol()
