@@ -143,13 +143,15 @@ ProjPage.prototype.clickCreateNewProject = function() {
 	/* Postback to create a new project - then what? */
 
 	var d = loadJSONDoc("./createproj",{ name : newProjName, team : team });
-	d.addCallback(bind(this.createProjectSuccess, this));
+	d.addCallback(bind(this.createProjectSuccess, this, newProjName));
 	d.addErrback(bind(this.createProjectFailure, this));
 }
 
-ProjPage.prototype.createProjectSuccess = function() {
+ProjPage.prototype.createProjectSuccess = function(newProjName) {
 	status_msg("Created project successfully", LEVEL_OK);
 	update(team)
+	// Transition to the new project once the project list has loaded
+	this._selector.trans_project = newProjName;
 	this._list.update(team)
 }
 
@@ -496,6 +498,8 @@ function ProjSelect(plist, elem) {
 	// The project that's selected
 	// Empty string means none selected
 	this.project = "";
+	// Project to transition to when the projlist changes
+	this.trans_project = "";
 
 	// The team that we're currently listing
 	this._team = null;
@@ -531,8 +535,15 @@ ProjSelect.prototype._plist_onchange = function(team) {
 	var startteam = this._team;
 	var items = [];
 
-	// Find the default project to be selected
-	if( this.project == ""
+	// Find the project to select
+	if( this.trans_project != ""
+	    && this._plist.project_exists( this.trans_project ) ) {
+		this.project = this.trans_project;
+
+		// Clear the transition default
+		this.trans_project = "";
+
+	} else if( this.project == ""
 	    || !this._plist.project_exists( this.project )
 	    || team != this._team ) {
 		this.project = "";
