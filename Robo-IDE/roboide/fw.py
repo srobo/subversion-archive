@@ -2,7 +2,7 @@ from turbogears import config, expose
 import model
 import cherrypy
 import sr
-import hashlib, datetime, time
+import sha, datetime, time
 import os.path
 from cherrypy.lib.cptools import serveFile
 
@@ -120,7 +120,7 @@ class FwServe(object):
         
         data = firmware.file.read()
 
-        s = hashlib.sha1()
+        s = sha.new()
         s.update( data )
 
         # Use the SHA1 as the filename
@@ -182,7 +182,7 @@ class FwServe(object):
 
         if info["state"] != "ALLOCATED":
             "The hash and size only make sense once the file's been uploaded "
-            h = hashlib.sha1()
+            h = sha.new()
             f = open( "%s/%s" % (config.get("firmware.dir"), fw.firmware), "r" )
             h.update( f.read() )
 
