@@ -235,6 +235,7 @@ function EditTab(iea, team, project, path, rev) {
 		this.contents = nodes.code;
 		this._original = nodes.code;
 		this._isNew = false;
+		this.rev	= nodes.revision
 
 		this._update_contents();
 	}
@@ -376,7 +377,9 @@ function EditTab(iea, team, project, path, rev) {
 
 		// Display file path
 		var t = this.path;
-		if( this.rev != 0 )
+		if( this.rev == 'HEAD' )
+			t = t + " - HEAD";
+		else if( this.rev != 0 )
 			t = t + " - r" + this.rev;
 		replaceChildNodes( $("tab-filename"), t );
 		this.tab.set_label( this.path );

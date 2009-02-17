@@ -211,6 +211,8 @@ function ProjFileList() {
 
     //store the current project revision
 	this.rev = 0;
+	//are we after the head revision? assume so
+	this.head = true;
 
 	// The files/folders that are currently selected
 	this.selection = [];
@@ -228,7 +230,12 @@ function ProjFileList() {
 }
 
 ProjFileList.prototype.change_rev = function(revision) {
-    this.rev = revision;
+	if( revision == 'HEAD' ) {
+		this.head = true;
+	} else {
+		this.rev = revision;
+		this.head	= false;
+	}
     this.update(this._project, this._team, this.rev);
 }
 
@@ -252,8 +259,7 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
     //store project revision (if one given)
     if(rev == undefined || rev == null) {
         this.rev = 0;
-    }
-    else {
+    } else {
         this.rev = rev;
     }
 
@@ -265,10 +271,15 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 ProjFileList.prototype.refresh = function() {
 	if( this._project == "" )
 		return;
+		
+	if( this.head )
+		getrev	= 'HEAD';
+	else
+		getrev	= this.rev;
 
 	this.selection = new Array();
 	var d = loadJSONDoc("./filelist", {team : this._team,
-					   rootpath : this._project, rev : this.rev});
+					   rootpath : this._project, rev : getrev});
 
 	d.addCallback( bind( this._received, this ) );
 
@@ -342,7 +353,8 @@ ProjFileList.prototype._onclick = function(ev) {
 	src = ev.src();
 	kind = getNodeAttribute( src, "ide_kind" );
 	path = getNodeAttribute( src, "ide_path" );
-	rev =  getNodeAttribute( src, "ide_rev"  );
+//	rev =  getNodeAttribute( src, "ide_rev"  );
+	rev	= ( this.head ? 'HEAD' : getNodeAttribute( src, "ide_rev"  ));
 
 	if( mods["ctrl"] ) {
 		if( !this._is_file_selected( path ) ) {
@@ -354,11 +366,9 @@ ProjFileList.prototype._onclick = function(ev) {
 
 			this._deselect_path( path, kind );
 		}
-	}
-	else {
+	} else {
 		if( kind == "FOLDER" ) {
 			this._toggle_dir( src );
-
 		} else {
 			editpage.edit_file( this._team, this._project, path, rev );
 		}
