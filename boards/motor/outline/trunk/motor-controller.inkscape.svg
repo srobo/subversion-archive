@@ -124,9 +124,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.64"
-     inkscape:cx="584.34425"
-     inkscape:cy="374.61277"
+     inkscape:zoom="1.8101934"
+     inkscape:cx="386.72607"
+     inkscape:cy="636.45646"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      width="744.09449px"
@@ -951,5 +951,25 @@
        d="M 371.23106,521.20346 L 371.23106,737.47869 L 330.90388,777.80588 L 303.83495,777.80588"
        id="path47162"
        sodipodi:nodetypes="cccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:25.91900253px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="378.7244"
+       y="372.76843"
+       id="text2538"><tspan
+         sodipodi:role="line"
+         id="tspan2540"
+         x="378.7244"
+         y="372.76843">+</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:39.51219559px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="356.60974"
+       y="375.18362"
+       id="text2542"><tspan
+         sodipodi:role="line"
+         id="tspan2544"
+         x="356.60974"
+         y="375.18362">-</tspan></text>
   </g>
 </svg>
