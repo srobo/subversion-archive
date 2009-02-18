@@ -124,9 +124,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.8101934"
-     inkscape:cx="386.72607"
-     inkscape:cy="636.45646"
+     inkscape:zoom="0.45254834"
+     inkscape:cx="200.71146"
+     inkscape:cy="567.1203"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      width="744.09449px"
@@ -640,16 +640,6 @@
          x="-723.2959"
          y="336.01715">Feedback Pins</tspan></text>
     <path
-       style="fill:#ff0000;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow1Send);stroke-miterlimit:4;stroke-dasharray:3.54330709, 3.54330709;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 132.85874,568.1952 L 220.14223,508.25685"
-       id="path43561"
-       sodipodi:nodetypes="cc" />
-    <path
-       style="fill:#ff0000;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow1Send);stroke-miterlimit:4;stroke-dasharray:3.54330709, 3.54330709;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 521.61753,553.78664 L 497.00422,508.81457"
-       id="path46972"
-       sodipodi:nodetypes="cc" />
-    <path
        id="path46974"
        d="M 330.64469,578.11595 L 330.64469,531.46295"
        style="fill:#932727;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.54330709, 3.54330709;stroke-dashoffset:0;stroke-opacity:1" />
@@ -971,5 +961,13 @@
          id="tspan2544"
          x="356.60974"
          y="375.18362">-</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Send);stroke-miterlimit:4;stroke-dasharray:3.54330709, 3.54330709;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 124.29612,566.22628 L 190.03495,566.22628 L 196.11165,566.22628 L 227.04757,535.29035 L 227.04757,518.16511"
+       id="path3887" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Send);stroke-miterlimit:4;stroke-dasharray:3.54330709, 3.54330709;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 519.83397,572.30298 L 506.57572,572.30298 L 488.89805,554.62531 L 488.89805,518.16511"
+       id="path4428" />
   </g>
 </svg>
