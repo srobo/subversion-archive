@@ -16,19 +16,25 @@
 
 \section{Board Outline}
 
+Figure \ref{slug-outline} illustrates the outline of the slug casing on a 1:1 scale.
+
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[keepaspectratio, width=12cm]{./images/outline.png}
+\includegraphics[keepaspectratio, scale=1, trim = 7cm 10cm 5cm 12cm]{./images/slugcase.png}
 \caption{\label{slug-outline}The board outline of the slug}
 \end{center}
 \end{figure}
 
 \section{Brief Description}
 
+The slug is a modified version of Linksys' NSLU2. It acts as the central processing unit for the robot. It connects directly to the power board which is where it sources its power and communicates over I2C with the board.
+
 \clearpage
 \newpage
 
 \section {Pin out}
+
+The following section provides the pin-out of the umbilical cord as illustrated in figure \ref{slug-pinout}.
 
 \begin{figure}[ht]
 \begin{center}
@@ -53,5 +59,9 @@ Not Connected & Not used & Brown\\
 \hline
 \end{tabular}
 \end{center}
+
+\section {Boot}
+
+THe slug boots in X seconds using firmware version X.
 
 \end {document}
