@@ -235,7 +235,7 @@ function EditTab(iea, team, project, path, rev) {
 		this.contents = nodes.code;
 		this._original = nodes.code;
 		this._isNew = false;
-		this.rev	= nodes.revision
+		this.rev = nodes.revision
 
 		this._update_contents();
 	}
