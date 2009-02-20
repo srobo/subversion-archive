@@ -124,17 +124,17 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.45254834"
-     inkscape:cx="200.71146"
-     inkscape:cy="567.1203"
+     inkscape:zoom="0.90509668"
+     inkscape:cx="397.36776"
+     inkscape:cy="347.30761"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g47071"
      width="744.09449px"
      height="1052.3622px"
-     inkscape:window-width="1280"
-     inkscape:window-height="725"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:window-width="1083"
+     inkscape:window-height="893"
+     inkscape:window-x="511"
+     inkscape:window-y="72"
      showgrid="false"
      showguides="false"
      inkscape:guide-bbox="true">
@@ -384,7 +384,11 @@
            y="814.43414"
            x="295.90955"
            id="tspan14919"
-           sodipodi:role="line">Mounting holes</tspan></text>
+           sodipodi:role="line">Mounting holes</tspan><tspan
+           y="839.43414"
+           x="295.90955"
+           sodipodi:role="line"
+           id="tspan2542">(3 mm diameter)</tspan></text>
     </g>
     <text
        xml:space="preserve"
