@@ -1,0 +1,1173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   version="1.0"
+   sodipodi:docbase="/home/justyn/electronic/robotics/ugforge/media/board outlines"
+   sodipodi:docname="power.inkscape.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2677" />
+    <marker
+       inkscape:stockid="Arrow2Send"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Send"
+       style="overflow:visible">
+      <path
+         id="path13868"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.97309,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z"
+         transform="matrix(-0.3,0,0,-0.3,0.69,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend"
+       style="overflow:visible">
+      <path
+         id="path13838"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <clipPath
+       id="clipPath3370"
+       clipPathUnits="userSpaceOnUse">
+      <path
+         id="path3372"
+         clip-rule="evenodd"
+         d="M 402,402 L 13631,402 L 13631,9515 L 402,9515 L 402,402 z" />
+    </clipPath>
+    <inkscape:perspective
+       id="perspective3352"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.54291411"
+     inkscape:cx="875.03278"
+     inkscape:cy="374.06686"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     width="744.09449px"
+     height="1052.3622px"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="725"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     showgrid="false" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#803300;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="-273.26804"
+       y="455.11374"
+       id="text3604"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.6888499,-0.6996552,0.7257597,0.7145512,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="-273.26804"
+         y="455.11374"
+         id="tspan3606">Motor</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:3.08586431;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3209"
+       width="347.42896"
+       height="210.85263"
+       x="321.80505"
+       y="400.68335"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ffffff;stroke:#00fefb;stroke-width:3.41278052;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4184"
+       width="37.939049"
+       height="36.433346"
+       x="633.06195"
+       y="492.82306"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#0000ff;stroke-width:3.81636524;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4188"
+       sodipodi:cx="40.3125"
+       sodipodi:cy="841.17468"
+       sodipodi:rx="5.9375"
+       sodipodi:ry="5.9375"
+       d="M 46.25,841.17468 A 5.9375,5.9375 0 1 1 34.375,841.17468 A 5.9375,5.9375 0 1 1 46.25,841.17468 z"
+       transform="matrix(0.6935994,0,0,0.7282367,307.39523,-157.34424)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#0000ff;stroke-width:3.81636524;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path5163"
+       sodipodi:cx="40.3125"
+       sodipodi:cy="841.17468"
+       sodipodi:rx="5.9375"
+       sodipodi:ry="5.9375"
+       d="M 46.25,841.17468 A 5.9375,5.9375 0 1 1 34.375,841.17468 A 5.9375,5.9375 0 1 1 46.25,841.17468 z"
+       transform="matrix(0.8497766,0,0,0.8068597,301.64053,-81.77639)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ffffff;stroke:#ff7f00;stroke-width:3.60842776;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect5169"
+       width="39.417103"
+       height="73.157951"
+       x="388.68277"
+       y="562.07556"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(0.7275402,0,0,0.7239758,613.96566,-153.66126)"
+       d="M 46.25,841.17468 A 5.9375,5.9375 0 1 1 34.375,841.17468 A 5.9375,5.9375 0 1 1 46.25,841.17468 z"
+       sodipodi:ry="5.9375"
+       sodipodi:rx="5.9375"
+       sodipodi:cy="841.17468"
+       sodipodi:cx="40.3125"
+       id="path5225"
+       style="fill:none;stroke:#0000ff;stroke-width:3.81636524;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55785128"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path15980"
+       d="M 420.64525,346.07167 L 420.64525,376.03418"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.03431582;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.03431598, 3.03431598;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.01061702;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.0106172, 3.0106172;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 399.93115,346.71103 L 399.93115,376.08444"
+       id="path15982"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="690.68079"
+       y="476.2012"
+       id="text15994"
+       sodipodi:linespacing="125%"
+       transform="scale(0.9818511,1.0184844)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan15996"
+         x="690.68079"
+         y="476.2012">General purpose status LEDs</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#00ffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="808.32355"
+       y="506.45657"
+       id="text15998"
+       sodipodi:linespacing="125%"
+       transform="scale(0.9818511,1.0184844)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan16000"
+         x="808.32355"
+         y="506.45657">General purpose switches</tspan><tspan
+         sodipodi:role="line"
+         x="808.32355"
+         y="531.91608"
+         id="tspan9042" /></text>
+    <path
+       id="path16002"
+       d="M 409.35633,690.39481 L 409.35633,642.88091"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.60842776;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.60842805, 3.60842805;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff7f00;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="-607.92029"
+       y="423.40161"
+       id="text6107"
+       sodipodi:linespacing="125%"
+       transform="matrix(0,-1.0184844,0.9818511,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan6109"
+         x="-607.92029"
+         y="423.40161">RJ11</tspan></text>
+    <g
+       id="g8898"
+       transform="translate(-75.057913,-12.432905)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="fill:#ffffff;stroke:#ff7f00;stroke-width:3.60842776;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect5173"
+         width="39.417103"
+         height="73.157951"
+         x="513.23303"
+         y="575.88989" />
+      <path
+         id="path16004"
+         d="M 534.83243,704.20915 L 534.83243,656.69525"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.60842776;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.60842805, 3.60842805;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         xml:space="preserve"
+         style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff7f00;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+         x="-621.48389"
+         y="549.89337"
+         id="text6111"
+         sodipodi:linespacing="125%"
+         transform="matrix(0,-1.0184844,0.9818511,0,0,0)"><tspan
+           sodipodi:role="line"
+           id="tspan6113"
+           x="-621.48389"
+           y="549.89337">RJ11</tspan></text>
+    </g>
+    <g
+       id="g8892"
+       transform="translate(-75.978869,-11.972427)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         y="575.88989"
+         x="562.72534"
+         height="73.157951"
+         width="39.417103"
+         id="rect5175"
+         style="fill:#ffffff;stroke:#ff7f00;stroke-width:3.60842776;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.60842776;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.60842805, 3.60842805;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 583.48779,704.20915 L 583.48779,656.69525"
+         id="path16006" />
+      <text
+         transform="matrix(0,-1.0184844,0.9818511,0,0,0)"
+         sodipodi:linespacing="125%"
+         id="text6115"
+         y="600.11993"
+         x="-621.48389"
+         style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff7f00;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+         xml:space="preserve"><tspan
+           y="600.11993"
+           x="-621.48389"
+           id="tspan6117"
+           sodipodi:role="line">RJ11</tspan></text>
+    </g>
+    <g
+       id="g8885"
+       transform="translate(-77.360303,-13.353861)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         id="path16008"
+         d="M 633.84802,704.20915 L 633.84802,656.69525"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.60842776;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.60842805, 3.60842805;stroke-dashoffset:0;stroke-opacity:1" />
+      <g
+         id="g8880">
+        <rect
+           y="575.88989"
+           x="612.21765"
+           height="73.157951"
+           width="39.417103"
+           id="rect5177"
+           style="fill:#ffffff;stroke:#ff7f00;stroke-width:3.60842776;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <text
+           transform="matrix(0,-1.0184844,0.9818511,0,0,0)"
+           sodipodi:linespacing="125%"
+           id="text6119"
+           y="650.70709"
+           x="-621.48389"
+           style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff7f00;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+           xml:space="preserve"><tspan
+             y="650.70709"
+             x="-621.48389"
+             id="tspan6121"
+             sodipodi:role="line">RJ11</tspan></text>
+      </g>
+    </g>
+    <rect
+       style="fill:#ffaaaa;fill-opacity:1;stroke:#ff0000;stroke-width:3.60842776;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4180"
+       width="48.494961"
+       height="30.078878"
+       x="641.58752"
+       y="398.78363"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path15990"
+       d="M 739.69361,412.71674 L 700.87739,412.71674"
+       style="fill:#cc0000;fill-opacity:0.59504131;fill-rule:evenodd;stroke:#000000;stroke-width:3.60842776;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.60842805, 3.60842805;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="662.03827"
+       y="412.93741"
+       id="text6131"
+       sodipodi:linespacing="125%"
+       transform="scale(0.9818511,1.0184844)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan6133"
+         x="662.03827"
+         y="412.93741">DC</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="758.50482"
+       y="410.99655"
+       id="text13931"
+       sodipodi:linespacing="125%"
+       transform="scale(0.9818511,1.0184844)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan13933"
+         x="758.50482"
+         y="410.99655">Charger</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="421.29941"
+       y="699.93176"
+       id="text13963"
+       sodipodi:linespacing="125%"
+       transform="scale(0.9818511,1.0184844)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan13965"
+         x="421.29941"
+         y="699.93176">Modular boards</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#7f0000;stroke-width:4.23160505;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3454"
+       width="8.3256769"
+       height="61.450596"
+       x="364.24081"
+       y="538.79761"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#800000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="347.89951"
+       y="532.40466"
+       id="text6365"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan6367"
+         x="347.89951"
+         y="532.40466">Pin header</tspan></text>
+    <path
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.40521526;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:4.40521551, 4.40521551;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 329.47418,647.69356 L 356.78888,587.03634"
+       id="path6369"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="271.70032"
+       y="663.75098"
+       id="text6371"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan6373"
+         x="271.70032"
+         y="663.75098">Connection </tspan><tspan
+         sodipodi:role="line"
+         x="271.70032"
+         y="688.75098"
+         id="tspan3560">to Slug</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:28px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="497.44305"
+       y="61.223583"
+       id="text8440"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan8442"
+         x="497.44305"
+         y="61.223583">Power board layout</tspan><tspan
+         sodipodi:role="line"
+         x="497.44305"
+         y="96.223579"
+         id="tspan8444">Scale 1:1</tspan><tspan
+         sodipodi:role="line"
+         x="497.44305"
+         y="131.22359"
+         id="tspan8446">v8.4  (check website for latest)</tspan></text>
+    <rect
+       style="fill:#fffff0;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.81761456;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3465"
+       width="54.974182"
+       height="40.400291"
+       x="323.20374"
+       y="385.25696"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.7408638;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3467"
+       width="53.209023"
+       height="40.421173"
+       x="382.2262"
+       y="385.21857"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#fffff0;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.81761456;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3469"
+       width="54.974182"
+       height="40.400291"
+       x="436.26459"
+       y="385.25696"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#fffff0;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.80091333;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3471"
+       width="88.758064"
+       height="39.736423"
+       x="488.78729"
+       y="385.24866"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#fffff0;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.86296129;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3473"
+       width="56.770752"
+       height="39.86174"
+       x="578.82916"
+       y="385.27963"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#f5fffa;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.63781691;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3477"
+       width="53.772545"
+       height="38.277699"
+       x="-520.20782"
+       y="306.15771"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#f5fffa;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.58696938;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3479"
+       width="53.823395"
+       height="37.407589"
+       x="-578.35651"
+       y="306.75092"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect3481"
+       width="8.504447"
+       height="3.9163978"
+       x="657.45697"
+       y="432.7818"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect3483"
+       width="8.504447"
+       height="3.9163978"
+       x="657.45697"
+       y="439.06665"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect3485"
+       width="8.504447"
+       height="3.9163978"
+       x="657.45697"
+       y="444.93616"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect3487"
+       width="8.504447"
+       height="3.9163978"
+       x="657.45697"
+       y="450.8056"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect3489"
+       width="8.504447"
+       height="3.9163978"
+       x="657.45697"
+       y="456.67505"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect3491"
+       width="8.504447"
+       height="3.9163978"
+       x="657.45697"
+       y="462.54462"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3493"
+       width="8.504447"
+       height="3.9163978"
+       x="657.45697"
+       y="468.41406"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3495"
+       width="8.504447"
+       height="3.9163978"
+       x="657.45697"
+       y="474.28357"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3497"
+       width="8.504447"
+       height="3.9163978"
+       x="657.45697"
+       y="480.15302"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3499"
+       width="8.504447"
+       height="3.9163978"
+       x="657.45697"
+       y="486.19464"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#729fcf;fill-opacity:0.92148761;fill-rule:evenodd;stroke:#204a87;stroke-width:4.46411371;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.87190079"
+       id="rect3475"
+       width="90.073784"
+       height="94.377594"
+       x="578.97656"
+       y="533.0036"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="597.59509"
+       y="547.47632"
+       id="text2734"
+       sodipodi:linespacing="125%"
+       transform="scale(0.9818511,1.0184844)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="597.59509"
+         y="547.47632"
+         id="tspan2738">Radio </tspan><tspan
+         sodipodi:role="line"
+         x="597.59509"
+         y="572.93579"
+         id="tspan2742">Module</tspan></text>
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#0000ff;stroke-width:3.81636524;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path5161"
+       sodipodi:cx="40.3125"
+       sodipodi:cy="841.17468"
+       sodipodi:rx="5.9375"
+       sodipodi:ry="5.9375"
+       d="M 46.25,841.17468 A 5.9375,5.9375 0 1 1 34.375,841.17468 A 5.9375,5.9375 0 1 1 46.25,841.17468 z"
+       transform="matrix(0.7863022,0,0,0.7821623,612.34336,-60.599713)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g3544"
+       transform="matrix(1.0215249,0,0,1.1373013,390.667,-287.04233)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         y="646.93707"
+         x="213.83005"
+         height="17.781286"
+         width="19.051378"
+         id="rect2758"
+         style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:#333333;stroke-width:2.34137845;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         transform="matrix(1.5517241,0,0,1.5517241,-133.54206,-395.5056)"
+         d="M 233.93361,677.52594 A 3.932797,3.932797 0 1 1 226.06801,677.52594 A 3.932797,3.932797 0 1 1 233.93361,677.52594 z"
+         sodipodi:ry="3.932797"
+         sodipodi:rx="3.932797"
+         sodipodi:cy="677.52594"
+         sodipodi:cx="230.00081"
+         id="path3542"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         sodipodi:type="arc" />
+    </g>
+    <rect
+       style="fill:#ff8080;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:2.40389323;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3548"
+       width="87.878532"
+       height="25.735123"
+       x="517.29578"
+       y="432.85083"
+       ry="9.4813604"
+       rx="0"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="465.91095"
+       y="452.82599"
+       id="text3550"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3552"
+         x="465.91095"
+         y="452.82599"
+         style="font-size:20px;font-weight:normal;fill:#ff0000;-inkscape-font-specification:Sans">Fuse</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="622.87756"
+       y="485.9035"
+       id="text3554"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3556"
+         x="628.60803"
+         y="485.9035"
+         style="font-size:18px;text-align:end;text-anchor:end;fill:#333333">Competition </tspan><tspan
+         sodipodi:role="line"
+         x="622.87756"
+         y="508.4035"
+         id="tspan3558"
+         style="font-size:18px;text-align:end;text-anchor:end;fill:#333333">Button</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#803300;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="457.07886"
+       y="-103.15779"
+       id="text3562"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.6816322,0.7066888,-0.7330556,0.7070643,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="457.07886"
+         y="-103.15779"
+         id="tspan3566">Motor</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3568"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="matrix(0,-1,1,0,2.0194925,533.08235)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion3570"><rect
+           id="rect3572"
+           width="135.7645"
+           height="69.296463"
+           x="189.50462"
+           y="384.85339"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara3576">GND</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="-341.57776"
+       y="428.06885"
+       id="text3580"
+       sodipodi:linespacing="125%"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3582"
+         x="-341.57776"
+         y="428.06885">12V</tspan></text>
+    <path
+       id="path3600"
+       d="M 244.98416,484.05698 L 292.13672,484.05698"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.60842776;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.60842805, 3.60842805;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.60842776;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.60842805, 3.60842805;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 244.98416,504.771 L 292.13672,504.771"
+       id="path3602"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3608"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(5.7824585,107.68777)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion3610"><rect
+           id="rect3612"
+           width="135.7645"
+           height="69.296463"
+           x="189.50462"
+           y="384.85339"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara3614">GND</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="197.98491"
+       y="491.47906"
+       id="text3616"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3618"
+         x="197.98491"
+         y="491.47906">12V</tspan></text>
+    <path
+       id="path4873"
+       d="M 243.3538,542.04809 L 290.50636,542.04809"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.60842776;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.60842805, 3.60842805;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.60842776;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.60842805, 3.60842805;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 243.3538,562.76211 L 290.50636,562.76211"
+       id="path4875"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#803300;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="-301.71939"
+       y="489.63239"
+       id="text4877"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.7007878,-0.6876976,0.7133559,0.7269346,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="-301.71939"
+         y="489.63239"
+         id="tspan4879">USB </tspan><tspan
+         id="tspan4893"
+         sodipodi:role="line"
+         x="-301.71939"
+         y="515.09186">Hub</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4881"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(4.1520955,165.67888)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion4883"><rect
+           id="rect4885"
+           width="135.7645"
+           height="69.296463"
+           x="189.50462"
+           y="384.85339"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara4887">GND</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="196.35454"
+       y="549.47015"
+       id="text4889"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan4891"
+         x="196.35454"
+         y="549.47015">5V</tspan></text>
+    <path
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.86096668;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:2.86096689, 2.86096689;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 363.91172,349.17988 L 363.91172,375.02571"
+       id="path4917"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path4919"
+       d="M 343.19788,347.90314 L 343.19788,374.92343"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.91234541;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:2.91234574, 2.91234574;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       transform="matrix(0.6112083,0.7684114,-0.7970812,0.6340126,0,0)"
+       sodipodi:linespacing="125%"
+       id="text4921"
+       y="-99.881569"
+       x="406.08786"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#803300;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         id="tspan4923"
+         y="-99.881569"
+         x="406.08786"
+         sodipodi:role="line">Servo</tspan></text>
+    <flowRoot
+       transform="matrix(0,-1,1,0,-54.71344,531.71874)"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       id="flowRoot4925"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion4927"><rect
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans"
+           y="384.85339"
+           x="189.50462"
+           height="69.296463"
+           width="135.7645"
+           id="rect4929" /></flowRegion><flowPara
+         id="flowPara4931">GND</flowPara></flowRoot>    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       sodipodi:linespacing="125%"
+       id="text4933"
+       y="371.33588"
+       x="-340.21414"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="371.33588"
+         x="-340.21414"
+         id="tspan4935"
+         sodipodi:role="line">5V</tspan></text>
+    <path
+       id="path4958"
+       d="M 532.42548,346.26038 L 532.42548,375.65231"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.01417017;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.01417048, 3.01417048;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.02215242;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.02215283, 3.02215283;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 509.7115,346.26437 L 509.7115,376.16101"
+       id="path4960"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#803300;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="514.4176"
+       y="-237.8804"
+       id="text4962"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.6823747,0.705972,-0.732312,0.7078343,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="514.4176"
+         y="-237.8804"
+         id="tspan4964">CHRG/RN</tspan><tspan
+         sodipodi:role="line"
+         x="514.4176"
+         y="-212.42093"
+         id="tspan4984">Switch</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4966"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="matrix(0,-1,1,0,111.79979,528.76899)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion4968"><rect
+           id="rect4970"
+           width="135.7645"
+           height="69.296463"
+           x="189.50462"
+           y="384.85339"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara4972">Run</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="-337.2644"
+       y="537.84918"
+       id="text4974"
+       sodipodi:linespacing="125%"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan4976"
+         x="-337.2644"
+         y="537.84918">Common</tspan></text>
+    <path
+       id="path4978"
+       d="M 553.08845,345.38802 L 553.08845,375.35053"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.03431582;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.03431598, 3.03431598;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="-338.33563"
+       y="559.8609"
+       id="text4980"
+       sodipodi:linespacing="125%"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan4982"
+         x="-338.33563"
+         y="559.8609">Charge</tspan></text>
+    <path
+       id="path4986"
+       d="M 613.03479,345.18417 L 613.03479,375.14668"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.03431582;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.03431598, 3.03431598;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.01061702;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:3.0106172, 3.0106172;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 592.32069,345.82353 L 592.32069,375.19694"
+       id="path4988"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#803300;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="609.40588"
+       y="-207.20079"
+       id="text4990"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.7269189,0.6600155,-0.6846411,0.7540405,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="609.40588"
+         y="-207.20079"
+         id="tspan4992">Battery</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4994"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="matrix(0,-1,1,0,194.40903,532.19485)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion4996"><rect
+           id="rect4998"
+           width="135.7645"
+           height="69.296463"
+           x="189.50462"
+           y="384.85339"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara5000">GND</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="-340.69025"
+       y="620.45837"
+       id="text5002"
+       sodipodi:linespacing="125%"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan5004"
+         x="-340.69025"
+         y="620.45837">+ve</tspan></text>
+    <path
+       id="path5006"
+       d="M 471.9986,293.76384 L 471.9986,371.82274"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.1867094;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:4.1867094, 4.1867094;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.1873064;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow2Send);stroke-miterlimit:4;stroke-dasharray:4.18730668, 4.18730668;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 451.28459,293.11292 L 451.28459,371.71204"
+       id="path5008"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#803300;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="504.79941"
+       y="-172.70337"
+       id="text5010"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.6636603,0.7235928,-0.7505904,0.6884218,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="507.62381"
+         y="-172.70337"
+         id="tspan5012">Logic </tspan><tspan
+         sodipodi:role="line"
+         x="504.79941"
+         y="-147.2439"
+         id="tspan5026"
+         style="text-align:center;text-anchor:middle;fill:#803300;fill-opacity:1">Switch</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
+       x="691.53583"
+       y="451.47195"
+       id="text3321"
+       sodipodi:linespacing="125%"
+       transform="scale(0.9818511,1.0184844)"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3323"
+         x="691.53583"
+         y="451.47195">Status LEDs</tspan></text>
+  </g>
+</svg>
