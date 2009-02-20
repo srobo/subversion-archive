@@ -2,114 +2,109 @@
 
 %\usepackage{savetrees}
 \usepackage{graphicx}
+
+%code for creating python code snippets
+\usepackage{float}
+\floatstyle{ruled}
+\newfloat{python}{thp}{lop}
+\floatname{python}{Listing}
+%end code for creating python code snippets
+
 \graphicspath{{./images/}}
 \title {Student Robotics 2009\\ Power Board Documentation}
 \date{\today}
 \setcounter{tocdepth}{1}
 
 
-\begin {document}
+\begin{document}
 
 \maketitle
 
 \noindent This document describes the functions of the Power Board. 
 
+\begin{figure}
+\centering
+\includegraphics[scale=1, angle=90]{outline}
+\caption{Power Board 1:1 Scale Drawing}
+\label{fig:outline}
+\end{figure}
+
+
 \section{Board Outline}
+Figure \label{fig:outline} is a 1:1 scale drawing of the power board which can be printed out and used to aid drilling holes for mounting.
 \label{sec:outline}
 
-\section{Functions}
-\subsection{Brief Description}
-The power board generates the power supplies necessary for the motors and auxiliary electronics. In addition it provides data connections to all of the Student Robotics boards, via the black, RJ11 Cables. During the competition, the power board also houses a radio module which allows your team's robot to be sent the \textit{go} and \textit{stop} commands at the beginning and end of competition rounds.
+\section{Brief Description}
+The power board generates the power supplies necessary for the motors and control electronics. In addition it provides data connections to all of the Student Robotics boards, via the black, RJ11 Cables. During the competition, the Power Board also houses a radio module which allows your team's robot to be sent the \textit{go} and \textit{stop} commands at the beginning and end of competition rounds.
 
-\section{Before you Begin}
-You should have completed the following before beginning:
-\begin{itemize}
-\item	Read the Student Robotics Electronics Guidelines
-\item	Charge your battery fully
-\item	\ldots
-\end{itemize}
+For instructions on how to assemble the power board and Student Robotics kit, see \textit{Student Robotics Assembly Guide 2009}, available from the website.
 
-\section{Assembly Instructions}
-\subsection{Identify Components}
-Identify the power board and orientate it with the Board Outline in section \ref{sec:outline}. A 1:1 scale drawing of the power board can be found online (http://www.srobo.org) for you to print out.
-
-\subsection{Preparing the Connectors}
-The Student Robotics modular boards are connected together using two different connectors. The black RJ11 cables (pre-assembled) are used for data whilst the green plug-in connectors are used for power. The following power connectors are provided pre-assembled:
+\section{Powering your Robot, Charge vs. Run Mode}
+There are two ways of powering your robot:
 \begin{enumerate}
-\item SR Connector \(\rightarrow\) Battery (Spade sockets)
-\item SR Connector \(\rightarrow\) USB Hub
+\item 12V Sealed Lead Acid Battery (supplied)
+\item 12V Mains regulated battery charger (supplied)
 \end{enumerate}
 
-You will have to build, using the SR connectors and wire supplied, the following connectors:
+These correspond to two distinct modes of operation: \textbf{charge mode} \& \textbf{run mode}. In \textbf{charge mode}, if the battery charger is plugged in, your robot's battery will charge. You can continue to operate your robot whilst in this mode however, the motors will be \textbf{deactivated} (this is to stop the robot running away from the mains socket). 
 
-\begin{enumerate}
-\item Power Board  \(\rightarrow\) Motor Board
-\item Power Board  \(\rightarrow\) Servo Board
-\item Power Board  \(\rightarrow\) Charge-Run Switch
-\item Power Board  \(\rightarrow\) Logic On/Off Switch
-\end{enumerate}
+\vspace{12pt}
+In \textbf{run mode} the motors will be activated and your robot will be fully functional. It should be noted that in this mode the battery \textbf{will not charge} even if the charger is connected! It is \textbf{required} that you mark clearly the two modes next to, or on, the switch.
 
-\subsection{Charge/Run Switch}
-This is a single-pole-double-throw switch (supplied in kit) meaning that the switch has two possible positions. You should connect this switch according to Figure \ref{fig:chrgrun}. When in charge position, the battery will charge and the motors will be \textbf{deactivated} - this is to stop the robot moving whilst plugged into the mains. In the run position, the battery \textbf{will not be charged} but the motors will be \textbf{activated}.
-\begin{figure}[h!]
-\center
-\includegraphics[scale=0.5]{chrg-run-switch}
-\caption{The Charge/Run Switch}
-\label{fig:chrgrun}
-\end{figure}
+\section{Competition Button}
+When you turn your robot on, the slug will boot and then wait until it receives the \textit{go code} over its radio module before executing your code. During testing it will never receive this signal, so you must press the competition button on the power board to override this feature. If you do not, the slug will wait indefinitely for either the radio signal or the button push. 
 
-\subsection{The On/Off switch}
-Connect the single-pole-single-throw switch to the \textit{Logic Switch} indicated in the outline. This is the master power switch for your robot.
+\vspace{12pt}
 
-\subsection{The Powered USB Hub}
-Connect the Hub's USB cable to the `Disk2' socket on the side of the slug - see figure \ref{fig:slug-side}. Now attach the SR Power \(\rightarrow\) USB Hub connector. Insert \textbf{both} memory sticks into the USB Hub.
+Pressing the competition mode button before the slug has booted may not work. It is recommended that you wait until the slug has booted before pressing the button. 
 
-\begin{figure}[h!]
-\center
-\includegraphics[scale=0.6]{slug-side-view}
-\caption{Side view of the Slug's USB Ports}
-\label{fig:slug-side}
-\end{figure}
+\section{Radio Module}
+You will be supplied with the radio module on the day of the competition. It is not required during testing \& developing.
 
-\subsection{The Slug}
-Identify the Slug's Pin Header on the power board and \textbf{carefully} plug the Slug's multicoloured ribbon cable into it. Be sure to orientate the socket correctly, before applying force. This cable provides both power and data connections between the slug and, indirectly, all the SR modules.
+\section{Additional Motors and Electronics}
 
-\subsection{The Webcam}
-Plug the USB Webcam into the spare USB port on the Slug (Disk1 in figure:\ \ref{fig:slug-side}).
+In addition to the supplied Student Robotics Kit, you can add additional motors and electronics to your robot. To aid with this, there is a spare 12V power connector provided on the Power Board through which \textbf{all additional electronics must be powered}. Devices connected in this way are subject to the same restrictions as the Motor Board, i.e.\ they are only powered when in Run mode.
 
-\subsection{RJ11 Cables}
-Connect the Motor Board, PWM Board \& JointIO Board to the Power board using three of the supplied, black, RJ11 cables. There will be a spare RJ11 socket on the power board. The order in which they are connected is unimportant. 
+\vspace{12pt}
 
-\subsection{Motor Board \& Servo Board Power}
-Connect your SR power connector from either of the `Motor' sockets on the Power Board, to the power socket on the Motor Board. Connect another SR power connector from the `Servo' socket on the Power board, to the power socket on the PWM Board. You may have to refer to the board-specific documentation. 
+Spare connectors are supplied in your kit for this purpose.
 
-These boards have different voltage requirements. Connecting them incorrectly \textbf{will damage your kit}. Be sure to check the polarity matches at both ends of the connector before proceeding to the next step.
 
-\subsection{The Fuse}
-Ensure that the fuse is fitted in the fuse socket on the power board before continuing.
+\section{General Purpose Switches}
 
-\subsection{The battery}
-Now attach the battery to the power board using the spade terminals spade connectors. 
+In addition to the IO features of the JointIO board, the Power Board has a bank of four DIP switches which can be read by your python code. These may be used to select between strategies depending on the current game type (Golf or Squirrel). Additionally, they may be used during testing to switch between different test routines. 
 
-\subsection{The Radio Module}
-This will be supplied to you on the competition day.
+\begin{python}
+\begin{verbatim}
 
-\section{Powering up the slug}
-To turn on your robot, ensure either charger or battery or both is connected and put the logic switch into the on position. The indicator lights on the Power board will illuminate and you will here the relay `click'. After a period of approx 20s the boot sequence will be complete, an audible beep will be heard and your robot will start executing your program code. Use the same switch to turn the robot off. 
+	bee = sw(0)		%insert proper code here 
 
-\section{Memory Sticks}
-Your team will be supplied with 2 standard USB memory sticks. One contains the operating system and files necessary for the slug to work - \textbf{do not overwrite this USB stick}. The second stick contains your program code and can be rewritten by checking out your code from the Student Robotics IDE and copying the generated zip file to it.
+\end{verbatim}
+  \caption{Reading the Power Board general purpose Switches in Python} 
+\end{python}
+
+\section{General Purpose LEDs}
+Four general purpose LEDs are provided on the power board to be used when debugging your code. They can be set from within your python code and may be configured to flash when a block is detected by the vision system, or when a particular block of code is being executed.
+
+\begin{python}
+\begin{verbatim}
+
+	setleds(0) = 1		%insert proper code here 
+
+\end{verbatim}
+  \caption{Setting the Power Board general purpose LEDs in Python} 
+\end{python}
 
 \section{Trouble shooting}
 \subsection{No lights illuminate}
 Is the fuse fitted and not blown? Is the battery or charger connected? Is the battery charged?
+
 \subsection{The Slug never boots/beeps}
-Are both memory sticks plugged in to the USB Hub? Is the USB Hub powered?
-\section{Glossary}
-\begin{tabular}{| l | p{5cm}|}
-\hline
-SR Connector & Green 2-Way or 3-Way plug-in male connector with screw terminals. \\ \hline
-Battery Connector & 2.1mm jack \\
-\hline
-\end{tabular}
+Are both memory sticks plugged in to the USB Hub? Is the USB Hub powered? Is the battery flat? Is the slug connected to the power board correctly? 
+
+\subsection{Our code never runs}
+Have you pressed the competition button to override waiting for the radio signal? Have you checked the syntax of your code using the IDE?
+
+\subsection{The lights on the motor board flash, but the wheels don't turn}
+Are you in Run mode? Have you wired up the connector correctly?
 \end {document}
