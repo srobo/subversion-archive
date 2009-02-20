@@ -353,8 +353,7 @@ ProjFileList.prototype._onclick = function(ev) {
 	src = ev.src();
 	kind = getNodeAttribute( src, "ide_kind" );
 	path = getNodeAttribute( src, "ide_path" );
-//	rev =  getNodeAttribute( src, "ide_rev"  );
-	rev	= ( this.head ? 'HEAD' : getNodeAttribute( src, "ide_rev"  ));
+	rev = ( this.head ? 'HEAD' : getNodeAttribute( src, "ide_rev"  ));
 
 	if( mods["ctrl"] ) {
 		if( !this._is_file_selected( path ) ) {
