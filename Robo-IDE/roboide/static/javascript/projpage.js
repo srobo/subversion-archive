@@ -273,7 +273,7 @@ ProjFileList.prototype.refresh = function() {
 		return;
 		
 	if( this.head )
-		getrev	= 'HEAD';
+		getrev	= 0;
 	else
 		getrev	= this.rev;
 
