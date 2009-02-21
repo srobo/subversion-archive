@@ -521,8 +521,6 @@ class Root(controllers.RootController):
         client = Client(int(team))
         target_rev = self.get_revision(rev)
             
-        print("target revision: ")
-        
         if len(rootpath) == 0 or rootpath[0] != "/":
             rootpath = "/" + rootpath
 
