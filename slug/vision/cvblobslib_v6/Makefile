@@ -48,4 +48,7 @@ install: libblob.a blobslib.pc
 	$(INST_MSG)
 	cp libblob.a $(DESTDIR)/lib
 	cp Blob.h $(DESTDIR)/include
+	cp BlobExtraction.h $(DESTDIR)/include
+	cp BlobLibraryConfiguration.h $(DESTDIR)/include
+	cp BlobResult.h $(DESTDIR)/include
 	cp blobslib.pc $(PKG_CONFIG_PATH)/blobslib.pc
