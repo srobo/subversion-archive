@@ -525,8 +525,6 @@ class Root(controllers.RootController):
         else:
             target_rev = pysvn.Revision( pysvn.opt_revision_kind.number, int(rev))    
             
-        peg_rev = pysvn.Revision( pysvn.opt_revision_kind.head );    
-        
         print("target revision: ")
         
         if rootpath == "":
