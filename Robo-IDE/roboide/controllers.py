@@ -519,11 +519,7 @@ class Root(controllers.RootController):
                        name : name of file}, ...]}
         """    
         client = Client(int(team))
-        
-        if int(rev) == 0:
-            target_rev = pysvn.Revision( pysvn.opt_revision_kind.head )
-        else:
-            target_rev = pysvn.Revision( pysvn.opt_revision_kind.number, int(rev))    
+        target_rev = self.get_revision(rev)
             
         print("target revision: ")
         
