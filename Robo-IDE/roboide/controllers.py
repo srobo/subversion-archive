@@ -523,11 +523,8 @@ class Root(controllers.RootController):
             
         print("target revision: ")
         
-        if rootpath == "":
-            rootpath = "/"
-
-        if rootpath[0] != "/":
-            rootpath = "/%s" % rootpath
+        if len(rootpath) == 0 or rootpath[0] != "/":
+            rootpath = "/" + rootpath
 
         #This returns a flat list of files
         #This is sorted, so a directory is defined before the files in it
