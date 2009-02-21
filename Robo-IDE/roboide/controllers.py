@@ -227,27 +227,19 @@ class Root(controllers.RootController):
                 pass
 
             if mime == "application/octet-stream":
-                code = "Binary File"
+                code = "Binary File:  You can't edit these in the IDE."
                 revision = 0
             else:
-                #Ugforge doesn't support locking, so do this the hard way...
-                while True:
-                    try:
-                        ver = client.log(client.REPO + file, limit=1, revision_start=rev)[0]["revision"]
-                        code = client.cat(client.REPO + file, revision=rev)
-                        ver2 = client.log(client.REPO + file, limit=1,
-                                revision_start=rev)[0]["revision"]
-                        if ver2.number == ver.number:
-                            revision = ver.number
-                            break
-                        else:
-                            print "Collision catting %s. Should be v rare!" % \
-                                client.REPO + file
-                    except pysvn.ClientError:
-                        code = "No file loaded."
-                        revision = 0
+                try:
+                    ver = client.log(client.REPO + file, limit=1, revision_start=rev)[0]["revision"]
+                    revision = ver.number
+
+                    code = client.cat(client.REPO + file, revision=pysvn.Revision(pysvn.opt_revision_kind.number, ver.number))
+                except pysvn.ClientError:
+                    code = "Error loading file '%s' at revision %s." % (file, revision)
+                    revision = 0
         else:
-            code = "No File Loaded"
+            code = "Error loading file: No filename was supplied by the IDE.  Contact an SR admin!"
             revision = 0
 
         return dict(curtime=curtime, code=code, revision=revision, path=file,
