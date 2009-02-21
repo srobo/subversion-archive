@@ -2,10 +2,10 @@
 # Makefile for blobs library for OpenCV Version 4 and its examples
 #
 
-.if !defined(INSTALL_PATH)
-  INST_MSG= @echo "Specify INSTALL_PATH= on the command line (ie, /usr, /usr/local, /usr/pkg...)"; false
+.if !defined(DESTDIR)
+  INST_MSG= @echo "Specify DESTDIR= on the command line (ie, /usr, /usr/local, /usr/pkg...)"; false
 .else
-  INST_MSG=@echo "Installing to $(INSTALL_PATH)..."
+  INST_MSG=@echo "Installing to $(DESTDIR)..."
 .endif
 
 CFLAGS= `pkg-config --cflags opencv gtk+-2.0` -I. 
@@ -41,11 +41,11 @@ clean:
 
 .PHONY: blobslib.pc
 blobslib.pc:
-	printf "prefix=$(INSTALL_PATH)\nName: Blob library\nDescription: Image processing library to find blobs of jam\nVersion: 1.0\nRequres: opencv\nCflags: -I{prefix}/include\nLibs: -L{prefix}/lib -lblob\n" > blobslib.pc
+	printf "prefix=$(DESTDIR)\nName: Blob library\nDescription: Image processing library to find blobs of jam\nVersion: 1.0\nRequres: opencv\nCflags: -I$$%s/include\nLibs: -L$$%s/lib -lblob\n" "{prefix}" "{prefix}" > blobslib.pc
 
 
 install: libblob.a blobslib.pc
 	$(INST_MSG)
-	cp libblob.a $(INSTALL_PATH)/lib
-	cp Blob.h $(INSTALL_PATH)/include
+	cp libblob.a $(DESTDIR)/lib
+	cp Blob.h $(DESTDIR)/include
 	cp blobslib.pc $(PKG_CONFIG_PATH)/blobslib.pc
