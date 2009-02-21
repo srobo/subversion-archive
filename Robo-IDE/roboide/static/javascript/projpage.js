@@ -209,10 +209,9 @@ function ProjFileList() {
 	this._project = "";
 	this._team = null;
 
-    //store the current project revision
-	this.rev = 0;
-	//are we after the head revision? assume so
-	this.head = true;
+	// the project revision we're displaying
+	// can be integer or "HEAD"
+	this.rev = "HEAD";
 
 	// The files/folders that are currently selected
 	this.selection = [];
@@ -230,12 +229,8 @@ function ProjFileList() {
 }
 
 ProjFileList.prototype.change_rev = function(revision) {
-	if( revision == 'HEAD' ) {
-		this.head = true;
-	} else {
-		this.rev = revision;
-		this.head	= false;
-	}
+	this.rev = revision;
+
     this.update(this._project, this._team, this.rev);
 }
 
@@ -256,9 +251,8 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 			      "Loading project file listing..." ) );
 	}
 
-    //store project revision (if one given)
     if(rev == undefined || rev == null) {
-        this.rev = 0;
+        this.rev = "HEAD";
     } else {
         this.rev = rev;
     }
@@ -272,14 +266,9 @@ ProjFileList.prototype.refresh = function() {
 	if( this._project == "" )
 		return;
 		
-	if( this.head )
-		getrev	= 0;
-	else
-		getrev	= this.rev;
-
 	this.selection = new Array();
 	var d = loadJSONDoc("./filelist", {team : this._team,
-					   rootpath : this._project, rev : getrev});
+					   rootpath : this._project, rev : this.rev} );
 
 	d.addCallback( bind( this._received, this ) );
 
@@ -327,8 +316,7 @@ ProjFileList.prototype._dir = function( node, level ) {
 	// Assemble the link with divs in it
 	var link = A( { "href" : "#",
 			"ide_path" : node.path,
-			"ide_kind" : node.kind,
-			"ide_rev" : node.rev },
+			"ide_kind" : node.kind },
 		this._nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
 	connect( link, "onclick", bind( this._onclick, this ) );
 
@@ -353,7 +341,6 @@ ProjFileList.prototype._onclick = function(ev) {
 	src = ev.src();
 	kind = getNodeAttribute( src, "ide_kind" );
 	path = getNodeAttribute( src, "ide_path" );
-	rev = ( this.head ? 'HEAD' : getNodeAttribute( src, "ide_rev"  ));
 
 	if( mods["ctrl"] ) {
 		if( !this._is_file_selected( path ) ) {
@@ -369,7 +356,7 @@ ProjFileList.prototype._onclick = function(ev) {
 		if( kind == "FOLDER" ) {
 			this._toggle_dir( src );
 		} else {
-			editpage.edit_file( this._team, this._project, path, rev );
+			editpage.edit_file( this._team, this._project, path, this.rev );
 		}
 	}
 }
