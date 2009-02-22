@@ -3,7 +3,7 @@
 # flashb
 #
 ############################################################
-FLASHB_REVISION := 2196
+FLASHB_REVISION := 2272
 FLASHB_SVN := http://svn.srobo.org/slug/utils/flashb/trunk
 FLASHB_SOURCE := $(DL_DIR)/flashb-$(FLASHB_REVISION)
 FLASHB_DIR := $(BUILD_DIR)/flashb-$(FLASHB_REVISION)
