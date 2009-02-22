@@ -1,0 +1,23 @@
+#!/bin/sh
+
+while ! [ -e /mnt/user/robot.zip ]
+do
+    # Throttle this a bit!
+    usleep 100000
+done
+
+TMPDIR=/mnt/user/.robotmp
+
+# Run the python on the partition
+rm -rf $TMPDIR
+mkdir $TMPDIR
+
+# Unzip the code
+unzip /mnt/user/robot.zip -d $TMPDIR
+
+if [ -e $TMPDIR/run.py ]
+then
+    cd $TMPDIR
+
+    exec $TMPDIR/run.py
+fi

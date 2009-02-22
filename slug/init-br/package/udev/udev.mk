@@ -80,6 +80,12 @@ $(TARGET_DIR)/$(UDEV_TARGET_BINARY): $(UDEV_DIR)/$(UDEV_BINARY)
 	$(INSTALL) -m 0755 -D package/udev/init-udev $(TARGET_DIR)/etc/init.d/S10udev
 	$(INSTALL) -m 0644 -D package/udev/udev.conf $(TARGET_DIR)/etc/udev
 
+# 	These files should probably be moved out to their own magic "SR Robot" package  
+	$(INSTALL) -m 0644 package/udev/99-usb-key.rules $(TARGET_DIR)/usr/lib/udev/rules.d/
+	$(INSTALL) -m 0755 package/udev/srmount $(TARGET_DIR)/usr/sbin/
+	$(INSTALL) -m 0755 package/udev/srobot $(TARGET_DIR)/usr/bin/
+	$(INSTALL) -m 0755 package/udev/S99robot $(TARGET_DIR)/etc/init.d/
+
 udev: uclibc $(TARGET_DIR)/$(UDEV_TARGET_BINARY)
 
 udev-clean:

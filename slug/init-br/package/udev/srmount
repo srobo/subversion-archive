@@ -1,0 +1,33 @@
+#!/bin/sh
+# Mount the given disk, look whether there's a robot.zip there
+# if there isn't, then unmount it
+# if there is, mount it under /mnt/face
+
+echo ${1} >> /tmp/srmounter
+
+MNT=/mnt/user
+
+# Check that something hasn't already been mounted with a robot.zip
+if [ -f $MNT/robot.zip ]
+then
+	exit
+fi
+
+TD=`mktemp -d /tmp/mounter.XXXXXX`
+# Mount with the right character set
+# use sync so that logs make it to disk
+mount -o codepage=850,iocharset=iso8859-1,utf8 -o sync ${1} $TD
+
+if [[ $? != 0 ]]
+then
+	umount $TD
+	rm -rf $TD
+fi
+
+if [ -f $TD/robot.zip ]
+then
+        mount -o bind $TD $MNT
+fi
+
+umount $TD
+rm -rf $TD

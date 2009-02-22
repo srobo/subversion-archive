@@ -1,0 +1,1 @@
+ACTION=="add", KERNEL=="sd*", RUN="/usr/sbin/srmount /dev/%k"
