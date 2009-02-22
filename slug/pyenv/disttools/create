@@ -32,7 +32,7 @@ else
 
     echo -n "Checking out code... "
     ( cd $checkout_dir ;
-	svn co -q http://studentrobotics.org/svn/$TEAM code ; )
+	svn export -q http://studentrobotics.org/svn/$TEAM code ; )
     echo "done."
 
     CODE_DIR=${checkout_dir}/code
@@ -43,16 +43,18 @@ dist_dir=`mktemp -d`
 
 # Create the user zip file
 ( cd $CODE_DIR ; 
-    zip -q $dist_dir/robot.zip * )
+    zip -q -r $dist_dir/robot.zip * )
 
 # Copy all files for distribution across
-cp ../trunk/* $dist_dir/
+cp -r ../trunk/* $dist_dir/
 
 # Create the final zip
 outdir=`pwd`
 rm -f robot.zip
 ( cd $dist_dir ;
-    zip -q $outdir/robot.zip * )
+    # Don't ship the .svn files
+    find -type d -name '.svn' -print0 | xargs -0 rm -rf ;
+    zip -q -r $outdir/robot.zip *  )
 
 rm -rf $dist_dir
 
