@@ -5,6 +5,9 @@
 ############################################################
 FLASHB_REVISION := 2272
 FLASHB_SVN := http://svn.srobo.org/slug/utils/flashb/trunk
+
+ifneq ($(strip $(subst ",, $(BR2_PACKAGE_FLASHB_IS_DEV))),y)
+#"
 FLASHB_SOURCE := $(DL_DIR)/flashb-$(FLASHB_REVISION)
 FLASHB_DIR := $(BUILD_DIR)/flashb-$(FLASHB_REVISION)
 
@@ -15,6 +18,14 @@ $(FLASHB_SOURCE)/.exported:
 $(FLASHB_DIR)/.source: $(FLASHB_SOURCE)/.exported
 	cp -r $(FLASHB_SOURCE) $(FLASHB_DIR)
 	touch $(FLASHB_DIR)/.source
+else
+FLASHB_DIR :=$(strip $(subst ",, $(BR2_PACKAGE_FLASHB_DEV_PATH)))
+#"
+
+$(FLASHB_DIR)/.source:
+#	echo ***** WARNING: Building flashb from development tree ******
+	touch $(FLASHB_DIR)/.source
+endif
 
 $(FLASHB_DIR)/flashb: $(FLASHB_DIR)/.source
 	( export PKG_CONFIG_LIBDIR=$(STAGING_DIR)/usr/local/lib/pkgconfig ; \

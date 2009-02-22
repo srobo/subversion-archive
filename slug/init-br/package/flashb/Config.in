@@ -5,3 +5,20 @@ config BR2_PACKAGE_FLASHB
 	select BR2_PACKAGE_LIBELF
 	help
 	  Utility for flashing Student Robotics over I2C.
+
+config BR2_PACKAGE_FLASHB_IS_DEV
+        bool "Build flashb from development tree"
+	default n
+	depends BR2_PACKAGE_FLASHB
+	help
+	  You might like to build flashb from a local development
+	  tree.
+
+config BR2_PACKAGE_FLASHB_DEV_PATH
+        string "Path of flashb development tree"
+	default ""
+	depends BR2_PACKAGE_FLASHB_IS_DEV
+	help
+	  Full path of the flashb development tree that you'd like 
+	  to build from.
+	  The build will be done *within* the path you specify.
