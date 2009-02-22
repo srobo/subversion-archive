@@ -20,14 +20,44 @@
 
 \begin{document}
 
+
 \maketitle
 
 \noindent This document explains how to connect up the Student Robotics electronics kit. It is a \textit{Getting Started Guide} and is not a comprehensive description of the hardware. For more information about individual boards, see the respective documentation, available from the website: http://www.srobo.org 
 
 \section{Before You Begin}
 
+Whilst some of the connecting cables are supplied to you, others will have to be put together yourself. Here is some general advice to follow when preparing your electronics kit:
+\begin{itemize}
+\item When assembling connectors you \textbf{must} follow the wiring guidelines as specified in the competition rules. This means using black wire for GND connections and red for 5V \& 12V. 
+\item Keep wiring neat and securely terminated. Do not leave bare wires exposed. Keep connectors as short as possible.
+\item \textbf{Never} make changes to your kit whilst it is switched on.
+\item Mount \textbf{all} components securely using cable ties and the pcb standoffs supplied.
+
+\end{itemize}
+
+
 \section{Identify Kit Components}
 Use the glossary in section \ref{sec:glossary} to identify the different components. This will make the following stages easier.
+\subsection{Types of Connector}
+There are two types of connector used within the SR kit: 
+\begin{itemize}
+\item \textbf{RJ11 cables} - provide data connections (and small amount of power) to each of the boards, similar to USB cables. 
+\item \textbf{SR Connectors} - supply power to some of the boards, the USB Hub and the battery.
+\end{itemize} 
+
+\input{power-assembly.tex}
+
+\input{motor-assembly.tex}
+
+\newpage
+\input{pwm-assembly.tex}
+
+\newpage
+\input{jointio-assembly.tex}
+
+\section{Conclusion}
+Once you have tested each of the boards individually, you should write another python script to test all of the boards together. This will include testing the webcam. It is a very good idea to keep a copy of all of your test routines for use in the future when you make changes which inadvertently stop your robot working.
 
 \newpage
 \input{glossary}

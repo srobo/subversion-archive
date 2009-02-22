@@ -1,38 +1,19 @@
 
-\section{Assembly Instructions}
-\subsection{Identify Components}
-Identify the power board and orientate it with the Board Outline in section \ref{sec:outline}. A 1:1 scale drawing of the power board can be found online (http://www.srobo.org) for you to print out.
+\section{Assembling the Power Board}
+The power board is at the heart of the electronics kit and for this reason should be assembled first. You will need a copy of the \textbf{Power Board Outline} for this section.
 
-\subsection{Preparing the Connectors}
-The Student Robotics modular boards are connected together using two different connectors. The black RJ11 cables (pre-assembled) are used for data whilst the green plug-in connectors are used for power. The following power connectors are provided pre-assembled:
+\subsection{Switches}
 \begin{enumerate}
-\item SR Connector \(\rightarrow\) Battery (Spade sockets)
-\item SR Connector \(\rightarrow\) USB Hub
+\item Connect the \textbf{Charge/Run Switch} to the Power Board. 
+\item Connect the \textbf{On/Off Switch} to the Power Board - be careful to locate the correct socket. Leave the switch in the `Off' position.
 \end{enumerate}
 
-You will have to build, using the SR connectors and wire supplied, the following connectors:
-
+\subsection{Power USB Hub}
 \begin{enumerate}
-\item Power Board  \(\rightarrow\) Motor Board
-\item Power Board  \(\rightarrow\) Servo Board
-\item Power Board  \(\rightarrow\) Charge-Run Switch
-\item Power Board  \(\rightarrow\) Logic On/Off Switch
+\item Use the \textbf{USB Hub Power Connector} to connect the Hub to the Power Board
+\item Use the \textbf{USB Cable} to connect the Hub to the `Disk 2' USB socket on the Slug - see Figure \ref{fig:slug-side}
+\item Insert both \textbf{USB Keys} into sockets on the USB Hub
 \end{enumerate}
-
-\subsection{Charge/Run Switch}
-This is a single-pole-double-throw switch (supplied in kit) meaning that the switch has two possible positions. You should connect this switch according to Figure \ref{fig:chrgrun}. When in charge position, the battery will charge and the motors will be \textbf{deactivated} - this is to stop the robot moving whilst plugged into the mains. In the run position, the battery \textbf{will not be charged} but the motors will be \textbf{activated}.
-\begin{figure}[h!]
-\center
-\includegraphics[scale=0.5]{chrg-run-switch}
-\caption{The Charge/Run Switch}
-\label{fig:chrgrun}
-\end{figure}
-
-\subsection{The On/Off switch}
-Connect the single-pole-single-throw switch to the \textit{Logic Switch} indicated in the outline. This is the master power switch for your robot.
-
-\subsection{The Powered USB Hub}
-Connect the Hub's USB cable to the `Disk2' socket on the side of the slug - see figure \ref{fig:slug-side}. Now attach the SR Power \(\rightarrow\) USB Hub connector. Insert \textbf{both} memory sticks into the USB Hub.
 
 \begin{figure}[h!]
 \center
@@ -41,25 +22,24 @@ Connect the Hub's USB cable to the `Disk2' socket on the side of the slug - see 
 \label{fig:slug-side}
 \end{figure}
 
+
 \subsection{The Slug}
-Identify the Slug's Pin Header on the power board and \textbf{carefully} plug the Slug's multicoloured ribbon cable into it. Be sure to orientate the socket correctly, before applying force. This cable provides both power and data connections between the slug and, indirectly, all the SR modules.
+Identify the Slug's Pin Header on the Power Board and \textbf{carefully} plug the Slug's multicoloured ribbon cable into it. Be sure to orientate the socket correctly, before applying force. This cable provides both power and data connections between the slug and, indirectly, all the SR modules.
 
 \subsection{The Webcam}
-Plug the USB Webcam into the spare USB port on the Slug (Disk1 in figure:\ \ref{fig:slug-side}).
+Plug the \textbf{USB Webcam} into one of the spare USB sockets on the USB Hub.
 
-\subsection{RJ11 Cables}
-Connect the Motor Board, PWM Board \& JointIO Board to the Power board using three of the supplied, black, RJ11 cables. There will be a spare RJ11 socket on the power board. The order in which they are connected is unimportant. 
+\subsection{Fuse}
+Your Power Board should have been supplied with a fuse already fitted. If yours hasn't, then contact a SR member as soon as possible.
 
-\subsection{Motor Board \& Servo Board Power}
-Connect your SR power connector from either of the `Motor' sockets on the Power Board, to the power socket on the Motor Board. Connect another SR power connector from the `Servo' socket on the Power board, to the power socket on the PWM Board. You may have to refer to the board-specific documentation. 
+\subsection{Battery \& Charger}
+Connect the {\bf battery} to the {\bf Battery Connector} and plug the other end into the correct socket on the Power Board. {\bf Check the polarity carefully!}
 
-These boards have different voltage requirements. Connecting them incorrectly \textbf{will damage your kit}. Be sure to check the polarity matches at both ends of the connector before proceeding to the next step.
+Initially the battery will be uncharged, so plug the {\bf Battery Charger} into the socket on the Power Board and turn it on at the mains.
 
-\subsection{The Fuse}
-Ensure that the fuse is fitted in the fuse socket on the power board before continuing.
 
-\subsection{The battery}
-Now attach the battery to the power board using the spade terminals spade connectors. 
+\subsection{Stop}
+At this point you have assembled the minimum amount of kit to power up your robot. Ensure the Charge/Run Switch is in charge mode (see Power Board Documentation) and put the On/Off switch into the On position. If you have made no mistakes so far, the LEDs on the Power Board will be lit, the Slug will be flashing, and the lights on the USB hub and keys will also flash.
 
-\subsection{The Radio Module}
-This will be supplied to you on the competition day.
+You may, at this point, write some python code to control the Power Board LEDs to satisfy yourself that everything is working.
+
