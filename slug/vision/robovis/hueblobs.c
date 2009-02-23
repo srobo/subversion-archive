@@ -6,8 +6,8 @@
 #include <time.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "opencv/cv.h"
-#include "opencv/highgui.h"
+#include "cv.h"
+#include "highgui.h"
 
 #define DEBUG 0
 #define ERROR 1
@@ -15,12 +15,16 @@
 //#define USEFILE
 #define FILENAME "out.jpg"
 
+/* NB: if you use USEFILE, disable the call to cvSaveFile near the end of     */
+/* this program. Otherwise, it repeatedly opens and saves out.jpg, causing a  */
+/* mass of jpeg compression roundings.*/
+
 //#define DEBUGMODE
 //#define DEBUGDISPLAY
 
 #define ADAPTIVESATTHRESH
 
-const unsigned int MINMASS = 600;
+const unsigned int MINMASS = 200;
 const unsigned int MAXMASS = 2000;
 
 const unsigned int CAMWIDTH = 320;
@@ -33,10 +37,10 @@ const unsigned int CUTOFF = 2;
 IplImage *frame = NULL, *hsv, *hue, *sat, *val,
             *satthresh, *huethresh, *huemasked;
 
-unsigned int huebins[4][4] = {{7, 12, 190, 255},
-                              {35, 45, 120, 140},
-                              {35, 45, 80, 93},
-                              {12, 20, 190, 200}};
+unsigned int huebins[4][4] = {{0, 22, 100, 256},  //red
+                              {22, 38, 100, 256}, //yellow
+                              {39, 78, 100, 256}, //green
+                              {100, 140, 100, 256}}; //blue
 
 /* Wait for a newline on stdin */
 void wait_trigger(void)
@@ -180,12 +184,13 @@ int main(int argc, char **argv){
 #ifndef USEFILE
     CvCapture *capture = NULL;
 #endif
-    IplImage *dsthsv, *dstrgb;
+    IplImage *dsthsv, *dstrgb, *huemask_backup;
     CvSize framesize;
     IplConvKernel *k;
     
     CvMemStorage *contour_storage;
     CvSeq *cont;
+    CvScalar white;
     int num_contours, i;
     double area;
 
@@ -201,6 +206,7 @@ int main(int argc, char **argv){
     cvNamedWindow("g", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("b", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("y", CV_WINDOW_AUTOSIZE);
+    cvNamedWindow("debug_window", CV_WINDOW_AUTOSIZE);
 #endif
 
 //Get a frame to find the image size
@@ -226,6 +232,7 @@ int main(int argc, char **argv){
     satthresh = allo_frame(framesize, IPL_DEPTH_8U, 1);
     dsthsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
     dstrgb = allo_frame(framesize, IPL_DEPTH_8U, 3);
+    huemask_backup = allo_frame(framesize, IPL_DEPTH_8U, 1);
 
     k = cvCreateStructuringElementEx( 5, 5, 0, 0, CV_SHAPE_RECT, NULL);
 
@@ -256,21 +263,22 @@ int main(int argc, char **argv){
         cvShowImage("sat", sat);
 #endif
 
-        #ifdef DEBUGDISPLAY
+#ifdef DEBUGDISPLAY
 
         cvShowImage("hue", hue);
 
-        cvInRangeS(hue, cvScalarAll(7), cvScalarAll(12), val); //0 - 14
+        cvInRangeS(hue, cvScalarAll(0), cvScalarAll(22), val); //red
         cvShowImage("r", val);
 
-        cvInRangeS(hue, cvScalarAll(67), cvScalarAll(78), val); //57-75
+        cvInRangeS(hue, cvScalarAll(100), cvScalarAll(140), val); //blue
         cvShowImage("b", val);
 
-        cvInRangeS(hue, cvScalarAll(40), cvScalarAll(58), val); //75 - 90
+        cvInRangeS(hue, cvScalarAll(39), cvScalarAll(78), val); //green
         cvShowImage("g", val);
 
-        cvInRangeS(hue, cvScalarAll(18), cvScalarAll(22), val); //14 - 30
+        cvInRangeS(hue, cvScalarAll(23), cvScalarAll(38), val); //yellow
         cvShowImage("y", val);
+
 #endif
 
         for(i = 0; i<4; i++){
@@ -287,6 +295,19 @@ int main(int argc, char **argv){
                             cvScalarAll(huebins[i][1]),
                             huemasked);
 
+	    white = cvScalar(255, 255, 255, 255);
+	    cvSet(huethresh, white, NULL); //NB: re-using huethresh.
+	    cvXor(huethresh, huemasked, huemasked, NULL);
+	    //invert the contents of the image via xor.
+
+	    cvCopy(huemasked, huemask_backup, NULL);
+		//cvFindContours writes over the original
+
+#ifdef DEBUGDISPLAY
+	    cvShowImage("debug_window", huemasked);
+	    cvWaitKey(2000);
+#endif
+
             num_contours = cvFindContours(huemasked, contour_storage, &cont,
                         sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE,
                         cvPoint(0,0));
@@ -297,7 +318,7 @@ int main(int argc, char **argv){
                 if(area < MINMASS)
                     continue;
                 
-                add_blob(cont, framesize, dsthsv, i, MINMASS, huemasked);
+                add_blob(cont, framesize, dsthsv, i, MINMASS, huemask_backup);
             }
         }
 
