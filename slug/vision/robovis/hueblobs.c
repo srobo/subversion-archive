@@ -37,10 +37,10 @@ const unsigned int CUTOFF = 2;
 IplImage *frame = NULL, *hsv, *hue, *sat, *val,
             *satthresh, *huethresh, *huemasked;
 
-unsigned int huebins[4][4] = {{0, 22, 100, 256},  //red
-                              {22, 38, 100, 256}, //yellow
-                              {39, 78, 100, 256}, //green
-                              {100, 140, 100, 256}}; //blue
+unsigned int huebins[4][4] = {{0, 22, 80, 256},  //red
+                              {23, 38, 80, 256}, //yellow
+                              {39, 78, 80, 256}, //green
+                              {100, 140, 80, 256}}; //blue
 
 /* Wait for a newline on stdin */
 void wait_trigger(void)
