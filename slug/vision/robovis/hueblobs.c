@@ -37,10 +37,10 @@ const unsigned int CUTOFF = 2;
 IplImage *frame = NULL, *hsv, *hue, *sat, *val,
             *satthresh, *huethresh, *huemasked;
 
-unsigned int huebins[4][4] = {{0, 22, 80, 256},  //red
-                              {23, 38, 80, 256}, //yellow
+unsigned int huebins[4][4] = {{1, 20, 80, 256},  //red
+                              {21, 38, 80, 256}, //yellow
                               {39, 78, 80, 256}, //green
-                              {100, 140, 80, 256}}; //blue
+                              {110, 140, 80, 256}}; //blue
 
 /* Wait for a newline on stdin */
 void wait_trigger(void)
@@ -184,13 +184,12 @@ int main(int argc, char **argv){
 #ifndef USEFILE
     CvCapture *capture = NULL;
 #endif
-    IplImage *dsthsv, *dstrgb, *huemask_backup;
+    IplImage *dsthsv, *dstrgb, *huemask_backup, *red_second_step;
     CvSize framesize;
     IplConvKernel *k;
     
     CvMemStorage *contour_storage;
     CvSeq *cont;
-    CvScalar white;
     int num_contours, i;
     double area;
 
@@ -233,6 +232,7 @@ int main(int argc, char **argv){
     dsthsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
     dstrgb = allo_frame(framesize, IPL_DEPTH_8U, 3);
     huemask_backup = allo_frame(framesize, IPL_DEPTH_8U, 1);
+    red_second_step = allo_frame(framesize, IPL_DEPTH_8U, 1);
 
     k = cvCreateStructuringElementEx( 5, 5, 0, 0, CV_SHAPE_RECT, NULL);
 
@@ -295,10 +295,16 @@ int main(int argc, char **argv){
                             cvScalarAll(huebins[i][1]),
                             huemasked);
 
-	    white = cvScalar(255, 255, 255, 255);
-	    cvSet(huethresh, white, NULL); //NB: re-using huethresh.
-	    cvXor(huethresh, huemasked, huemasked, NULL);
-	    //invert the contents of the image via xor.
+	    if (i == 0) {
+		/* An unpleasent side-effect of red being... red, i that it   */
+		/* wraps around the hue address space. There is also purplish */
+		/* red in the 160+ range, which should be included too        */
+
+		cvInRangeS(huethresh, cvScalarAll(155), cvScalarAll(185),
+			red_second_step);
+
+		cvOr(red_second_step, huemasked, huemasked, NULL);
+	}
 
 	    cvCopy(huemasked, huemask_backup, NULL);
 		//cvFindContours writes over the original
