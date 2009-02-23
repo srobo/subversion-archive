@@ -145,6 +145,12 @@ class Root(controllers.RootController):
                       revision=rev,
                       recurse=True)
 
+	# Check if __init__.py exists in user code, if it doesn't insert blank file before checkout
+	if not os.path.exists(root+"/code/__init__.py"):	
+		f = open(root+"/code/__init__.py", 'w')
+		f.close()
+		
+		
         # (internal) robot.zip to contain the code
         zfile = tempfile.mktemp()
         zip = zipfile.ZipFile(zfile, "w")
