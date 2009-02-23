@@ -1,15 +1,16 @@
 CBFLAGS = `pkg-config --cflags blobslib`
 LDBFLAGS = `pkg-config --libs blobslib`
-CFLAGS ?= `pkg-config --cflags opencv` -Wall
+CFLAGS += `pkg-config --cflags opencv` -Wall
 LDFLAGS += `pkg-config --libs opencv`
 
-PY_CFLAGS ?= /usr/include/python2.4
+# Python 2.4 doesn't support pkg-config; bodge this to your own include path
+PY_CFLAGS += -I/usr/include/python2.4
 
 robovis.so: robovis.o
-	$(CXX) -shared $< $(LDBFLAGS) -o $@
+	$(CXX) -shared $< $(LDBFLAGS) -o $@ 
 
 robovis.o: robovis.cpp
-	$(CXX) -ggdb $(CBFLAGS) -o $@ -fPIC -c $< $(PY_CFLAGS)
+	$(CXX) -ggdb $(CBFLAGS) $(CFLAGS) -o $@ -fPIC -c $< $(PY_CFLAGS)
 
 catcam: catcam.cpp
 	$(CXX) -ggdb $(CBFLAGS) -o $@ $< $(LDBFLAGS)
