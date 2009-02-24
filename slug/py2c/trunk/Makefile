@@ -1,5 +1,5 @@
 c2pymodule.so: c2pymodule.o smbus.o
-	$(CC) -shared c2pymodule.o smbus.o $(LDBFLAGS) -o $@
+	$(CC) -shared c2pymodule.o smbus.o $(CFLAGS) $(LDFLAGS) -o $@
 
 c2pymodule.o: c2pymodule.c smbus.o
 	$(CC) -o $@ -fPIC -c $< $(CFLAGS)
