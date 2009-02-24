@@ -1,0 +1,40 @@
+Since the purchased lcd does not have the correct datasheet, here is the information assumed corret for it.
+The assumption is based on the device conforming to standard  HD44780 interface specs...!
+information taken from assorted datasheets, http://www.doc.ic.ac.uk/~ih/doc/lcd/index.html and Tom's memory.
+
+The Device has a 4 or 8 bit databus, we are using 4 bit mode with no readback. Consiquently timings are fixed at over-estimates.
+
+The display has a larger data memory than display size. The display can be considered a window into the address space. The window and cursor may have totally diffent addresses, such that data is not written to the visable area of memory. The second line of the window has an adress 40 characters later than the first (Beware!)
+
+ The instruction set is:
+/*                              RS  R/W DB7 DB6 DB5 DB4 DB3 DB2 DB1 DB0 */
+/*                              ==  === === === === === === === === === */
+/* Clear Display                 0   0   0   0   0   0   0   0   0   1 */Execution Time = 82µs-1.64ms / 120µs-4.9ms 
+/* Return Home                   0   0   0   0   0   0   0   0   1   * */Execution Time = 40µs-1.6ms / 120µs-4.8ms
+/* Entry Mode Set                0   0   0   0   0   0   0   1  I/D  S */Execution Time = 40µs / 120µs
+/* Display ON/OFF                0   0   0   0   0   0   1   D   C   B */Execution Time = 40µs / 120µs 
+/* Cursor and Display Shift      0   0   0   0   0   1  S/C R/L  *   * */Execution Time = 40µs / 120µs 
+/* Function Set                  0   0   0   0   1   DL  N   F   *   * */Execution Time = 40µs / 120µs 
+/* Set CG RAM address            0   0   0   1   A   A   A   A   A   A */Execution Time = 40µs / 120µs 
+/* Set DD RAM address            0   0   1   A   A   A   A   A   A   A */Execution Time = 40µs / 120µs 
+/* Read busy flag and address    0   1   BF  A   A   A   A   A   A   A */Execution Time = 1µs 
+/* Write data to CG or DD RAM    1   0   D   D   D   D   D   D   D   D */Execution Time = 40µs / 120µs
+/* Read data from CG or DD RAM   1   1   D   D   D   D   D   D   D   D */Execution Time = 40µs / 120µs
+* means 0 or 1 have no effect
+Where execution times are given as A / B
+    A applies for 1/8 duty or 1/11 duty (1 display line)
+    B applies for 1/16 duty (2 display lines) 
+
+I/D: Display ram address auto inc after write - 1 = enabled
+S: if S=1 shift disp to the left when I/D = 1right when I/D = 0. Thus it looks as if the cursor stands still and the display moves. 
+D:  Display on D = 1 and OFF when D = 0.
+C: The cursor on = 1 and does not display when C = 0.
+B: The character indicated by the cursor blinks when B = 1.  409.6 ms interval. 
+S/C shift display with cursor? (cursor appears not to move, text does)
+R/L cursor shift direction
+/* DL: Sets interface data length */
+/*       Data is sent or received in 8 bit lengths (DB7-DB0) when DL = 1 */
+/*       Data is sent or received in 4 bit lengths (DB7-DB4) when DL = 0 */
+/*       When the 4 bit length is selected, data must be sent or received twice.  */
+/* N: Sets number of display lines */
+/* F: Sets character font  */
