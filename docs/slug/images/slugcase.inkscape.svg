@@ -13,7 +13,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   sodipodi:docname="slug.svg"
+   sodipodi:docname="slugcase.inkscape.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
@@ -55,9 +55,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.65352135"
-     inkscape:cx="302.77413"
-     inkscape:cy="578.27923"
+     inkscape:zoom="1.8484375"
+     inkscape:cx="348.52167"
+     inkscape:cy="568.22823"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -93,148 +93,76 @@
          x="269.31024"
          y="727.32104"
          style="font-size:15px" /></text>
-    <g
-       id="g4672"
-       transform="translate(-75.567197,-29.96962)">
-      <g
-         transform="translate(227.21893,-4.3279797)"
-         id="g2601">
-        <g
-           id="g2561"
-           transform="translate(-236.4569,176.42879)">
-          <path
-             sodipodi:nodetypes="ccccccc"
-             id="path2509"
-             d="M 236.9569,521.10268 C 700.13014,521.10268 700.13014,521.10268 700.13014,521.10268 L 700.13014,269.41213 L 615.60316,181.9452 L 237.81942,181.9452 L 236.9569,520.21016 L 236.9569,521.10268 z"
-             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-          <path
-             id="path2511"
-             d="M 480.18753,294.40268 C 480.18753,306.00544 480.18753,306.00544 480.18753,306.00544 L 564.71449,306.00544 L 564.71449,294.21322 L 480.18753,294.40268 z"
-             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-             sodipodi:nodetypes="ccccc" />
-        </g>
-        <rect
-           style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           id="rect2553"
-           width="31.889763"
-           height="3.5433071"
-           x="67.322838"
-           y="694.48816" />
-        <rect
-           style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           id="rect2555"
-           width="53.149605"
-           height="3.5433071"
-           x="159.44882"
-           y="694.48816" />
-        <rect
-           style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           id="rect2557"
-           width="53.149605"
-           height="3.5433071"
-           x="248.03149"
-           y="694.48816" />
-        <rect
-           style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           id="rect2559"
-           width="56.692913"
-           height="3.5433071"
-           x="329.52756"
-           y="694.48816" />
-        <rect
-           style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           id="rect2565"
-           width="7.0866141"
-           height="3.5433071"
-           x="119.58662"
-           y="694.48816" />
-      </g>
-      <text
-         id="text2567"
-         y="782.77234"
-         x="270.60037"
-         style="font-size:20px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         xml:space="preserve"><tspan
-           style="font-size:14px"
-           y="782.77234"
-           x="270.60037"
-           id="tspan2569"
-           sodipodi:role="line">DC Power</tspan></text>
-      <text
-         id="text2571"
-         y="782.75818"
-         x="345.4581"
-         style="font-size:20px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         xml:space="preserve"><tspan
-           style="font-size:15px"
-           y="782.75818"
-           x="345.4581"
-           id="tspan2573"
-           sodipodi:role="line">Reset</tspan></text>
-      <text
-         id="text2575"
-         y="782.75818"
-         x="410.07449"
-         style="font-size:20px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         xml:space="preserve"><tspan
-           style="font-size:15px"
-           y="782.75818"
-           x="410.07449"
-           id="tspan2577"
-           sodipodi:role="line">USB 1</tspan></text>
-      <text
-         id="text2583"
-         y="782.75818"
-         x="642.46021"
-         style="font-size:20px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         xml:space="preserve"><tspan
-           style="font-size:15px"
-           y="782.75818"
-           x="642.46021"
-           id="tspan2585"
-           sodipodi:role="line">Ethernet</tspan></text>
-      <text
-         id="text2587"
-         y="782.99304"
-         x="514.99902"
-         style="font-size:20px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         xml:space="preserve"><tspan
-           style="font-size:15px"
-           y="782.99304"
-           x="514.99902"
-           id="tspan2589"
-           sodipodi:role="line">USB 2 (Disk)</tspan></text>
-      <path
-         id="path2591"
-         d="M 273.12409,760.36189 C 310.6133,702.21535 310.6133,702.21535 310.6133,702.21535 L 310.6133,702.21535 L 310.6133,702.21535"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow1Lend);stroke-opacity:1" />
-      <path
-         id="path2593"
-         d="M 348.10251,761.50952 L 350.39777,701.06773"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow1Lend);stroke-opacity:1" />
-      <path
-         id="path2595"
-         d="M 412.36973,760.36189 L 412.36973,702.21536"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow1Lend);stroke-opacity:1" />
-      <path
-         id="path2597"
-         d="M 506.4753,759.5968 L 501.88479,702.98044"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow1Lend);stroke-opacity:1" />
-      <path
-         id="path2599"
-         d="M 638.07008,759.21425 L 595.22527,703.36298"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow1Lend);stroke-opacity:1" />
-      <text
-         id="text4668"
-         y="455.8577"
-         x="508.77057"
-         style="font-size:20px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-         xml:space="preserve"><tspan
-           style="font-size:15px"
-           y="455.8577"
-           x="508.77057"
-           id="tspan4670"
-           sodipodi:role="line">Slug Umbilical Cord</tspan></text>
-    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000012px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 100.0209,637.35826 C 568.15653,637.35826 568.15653,637.35826 568.15653,637.35826 L 568.15653,405.25674 L 447.69503,293.34612 L 100.89266,293.34612 L 100.0209,636.45297 L 100.0209,637.35826 z"
+       id="path2509"
+       sodipodi:nodetypes="ccccccc" />
+    <path
+       sodipodi:nodetypes="ccccc"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000012px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 335.22911,420.13582 C 335.22911,429.81336 335.22911,429.81336 335.22911,429.81336 L 406.48777,429.81336 L 406.48777,419.9778 L 335.22911,420.13582 z"
+       id="path2511" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2553"
+       width="32.231426"
+       height="3.5433071"
+       x="169.3311"
+       y="634.32208" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2555"
+       width="53.719044"
+       height="3.5433071"
+       x="260.67249"
+       y="634.32208" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2557"
+       width="53.719044"
+       height="3.5433071"
+       x="350.20422"
+       y="634.32208" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2559"
+       width="57.300316"
+       height="3.5433071"
+       x="430.80237"
+       y="634.32208" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2565"
+       width="7.1625395"
+       height="3.5433071"
+       x="234.5563"
+       y="634.32208" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="390.1991"
+       y="732.39056"
+       id="text2587"><tspan
+         sodipodi:role="line"
+         id="tspan2589"
+         x="390.1991"
+         y="732.39056"
+         style="font-size:15px">USB 2 (Disk)</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow1Lend);stroke-opacity:1"
+       d="M 381.6754,708.99431 L 377.08489,652.37795"
+       id="path2597" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="375.93262"
+       y="407.62076"
+       id="text4668"><tspan
+         sodipodi:role="line"
+         id="tspan4670"
+         x="375.93262"
+         y="407.62076"
+         style="font-size:15px">Slug Umbilical Cord</tspan></text>
   </g>
 </svg>
