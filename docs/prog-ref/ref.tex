@@ -1,0 +1,232 @@
+\documentclass[a4paper, 12pt]{article}
+
+%\usepackage{savetrees}
+\usepackage{graphicx}
+\usepackage{subfig}
+
+%code for creating python code snippets
+\usepackage{float}
+\floatstyle{ruled}
+\newfloat{python}{thp}{lop}
+\floatname{python}{Listing}
+%end code for creating python code snippets
+
+\graphicspath{{./images/}}
+\title {Student Robotics 2009\\ Programming Reference V2}
+\date{\today}
+\setcounter{tocdepth}{1}
+
+
+\begin{document}
+
+\maketitle
+
+\noindent This document details the programming interface for Student Robotics
+robots. {\bf This is not intended to be an introduction to the Python programming language.} For more information on programming in Python and about how to bring all this together see the tutorials linked to from the website. 
+
+\section{Directory structure}
+The minimum  requirement to create a functioning program using the IDE, is to have a python file called \texttt{robot.py} in a `Project' . Exporting your Project from the IDE will generate a zip file containing your code packaged as a python module. This file can be saved to your memory stick and inserted into your robot.
+
+To make your program easier to read and maintain you can split you code across multiple files within a Project. The export function of the IDE will package the zip file correctly.
+
+\subsection{robot.py}
+This file must at least contain the main function for the robot control
+algorithm - see Listing \ref{py:main}:
+
+\begin{python}
+\begin{verbatim}
+
+def main( game, colour ):
+        #Where game is either GOLF or SQUIRREL
+        #colour is one of the colour constants from above
+
+\end{verbatim}
+  \caption{\label{py:main}Minimum contents of robot.py} 
+\end{python}
+
+\subsection{import}
+Before you can control any of the student robotic kit e.g. motors, servos etc. you need to tell python to \textit{import} the Student Robotics interface (functions specific to the SR kit). Listing \ref{py:import} should appear at the top
+\begin{python}
+\begin{verbatim}
+#Import the Studnet Robotics Interface	
+from sr import * 
+
+#rest of code follows...
+\end{verbatim}
+  \caption{\label{py:import}} 
+\end{python}
+
+\section{Main function}
+The function \texttt{main} in \texttt{robot.py} is the first part of your code to be executed. It makes the following two variables availible to your code:
+\begin{description}
+\item[game] The type of competition round being played i.e. Squirrel or Golf
+\item[colour]The colour of \textit{your team's} balls.
+\end{description}
+
+This information is sent wirelessly to your robot at the start of each round.
+
+\section{Yielding control and interrupts}
+Once the main function is called, the algorithm has control of the robot.  The
+algorithm must \texttt{yield} control of the robot once it has
+processed any incoming data, and configured any outputs accordingly.
+The \texttt{yield} command passes control of the robot over to the
+Student Robotics environment. When an event occurs, the environment will pass
+control back to the algorithm at the instruction after the \texttt{yield}
+statement.  When control is passed back to the
+algorithm the \texttt{event} variable has been set to contain information
+about the event that just occurred.
+
+\subsection{Using \texttt{yield}}
+\subsubsection{Timeouts}
+The \texttt{yield} statement can be used to wait for a set amount of
+time.  For example:
+
+\begin{verbatim}
+yield 4
+\end{verbatim}
+
+Causes the program to be delayed for 4 seconds.
+
+\subsubsection{Waiting on events}
+The \texttt{yield} statement can be used to wait for an event to
+occur.  For example:
+
+\begin{verbatim}
+yield io
+\end{verbatim}
+
+Causes the algorithm to wait until a dio (digital IO) event is received.
+
+\subsubsection{Combinations of events and timeout}
+The \texttt{yield} statement can be used to wait on a combination of events and
+a timeout, whichever occurs first:
+
+\begin{verbatim}
+yield io, 5
+\end{verbatim}
+
+Causes the algorithm to wait until a dio event is received or 5 seconds,
+whichever comes first.
+
+\subsubsection{Calling subroutines}
+Control of the robot can be passed to subroutines, allowing the program to be
+split up into easier to understand parts.  The \texttt{yield} statement can be
+used to pass control of the robot to a subroutine.  When the subroutine returns,
+the program continues from the yield statement.  If more information is
+passed to yield after the name of a subroutine, then that information is passed
+as argument(s) to that subroutine.  For example:
+
+\begin{verbatim}
+yield findTokens, 3
+\end{verbatim}
+
+Causes control of the robot to be passed to the findTokens subroutine with the
+argument 3.
+
+\subsection{The \texttt{event} variable}
+The \texttt{event} variable is set when control is returned after a
+yield. It contains information regarding the event that caused control
+to be passed back.
+
+\subsubsection{Finding the event source}
+The \texttt{event} variable will return true when compared to the
+event source that led to its creation:
+
+\begin{verbatim}
+yield io, 5 #Wait until a dio event or 5 seconds passes
+
+if event == io:
+    pass #A io event happened first (pass means do-nothing)
+else:
+    pass #A timeout is the only other option
+\end{verbatim}
+
+\subsection{IO Events}
+IO events are caused by a change in the digital inputs of the
+Joint IO board. After a io event causes a \texttt{yield} statement to
+return control of the robot to the control algorithm, the
+\texttt{event} variable will be set. The io inputs that have changed
+are contained in a dictionary that can be accessed from \texttt{event.pins}: 
+
+\begin{verbatim}
+yield io, 5
+
+if event == io:                #Is it an io event?
+    if 0 in event.pins:        #Has input 0 been changed?
+        if event.pins[0] == 1: #Is input 0 now a 1?
+            pass
+\end{verbatim}
+
+\subsubsection{Monitoring specific pins}
+Sometimes you will want to only wait for events on specific pins.  This can be
+done by using \texttt{setsensitive} and \texttt{removesensitive} functions:
+
+\begin{verbatim}
+
+removesensitive(2) #Ignore pin 2 for now
+yield io, 5
+
+#Do stuff!
+
+setsensitive(2) #Resume monitoring pin 2
+\end{verbatim}
+
+\subsection{Visual Events}
+When the \texttt{vision} event source is passed to the \texttt{yield}
+command, the robot will grab an image with its webcam and start to
+process that image.  When this processing has finished, the vision
+system will raise an event (whether a token is seen or not).  Any
+tokens found are placed in the list \texttt{event.blobs}.  Each blob in this
+list has a set of properties:  
+\begin{description}
+\item[colour] The colour of the blob
+\item[mass] The number of pixels that make up the blob
+\item[centrex] The number of pixels between the left of the image and
+  the centre of the blob.
+\item[centrey] The number of pixels down from the top of the image to the
+  centre of the blob.
+\end{description}
+
+\begin{verbatim}
+yield vision    #This will always return as soon as
+                #a frame has been processed
+
+for blob in event.blobs:    #Go through each blob in 
+                            #turn. This does nothing if
+                            #there are no blobs
+    if blob.colour == 0:    #For each blob, check its colour
+        pass
+\end{verbatim}
+
+\section{Controlling the robot}
+\subsection{Controlling the motors}
+The motor controller has two outputs.  The \texttt{setspeed} command
+sets the direction of each motor and the power delivered to each one.
+
+\begin{description}
+\item[setspeed(n)] This sets both of the motors to n\% of maximum
+power.  $-100<n<100$. Negative values of n drive the motors backwards.
+\item[setspeed(n, m)] This sets the power delivered to motor 1 to n\%,
+  and the power delivered to motor 2 to m\%. $-100<n,m<100$.
+\end{description}
+
+\subsection{Controlling the PWM board}
+The Pulse Width Modulation board is used to control servo motors.  It is
+controlled with the \texttt{setpos} function that takes two arguments:
+
+\begin{verbatim}
+setpos(n, m)
+\end{verbatim}
+
+This will set PWM board output $0<n<5$ to the position $0<m<100$.
+
+\subsection{Controlling the JointIO Board Outputs}
+The outputs of the JointIO board can be controlled using the \texttt{setoutput} function.  This takes two arguments:
+
+\begin{verbatim}
+setoutput(n, val)
+\end{verbatim}
+
+This will set output $0<n<4$ to the value val, which is either 0 or 1.  If value is 1 then the output will be 3.3V, otherwise it will be 0V.
+
+\end{document}
