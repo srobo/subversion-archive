@@ -103,6 +103,12 @@ CvCapture *get_camera(){
 
 IplImage *get_frame(CvCapture *capture){
     IplImage *frame = cvQueryFrame(capture);
+    /*MY EYES THE BURNING AND THE PAIN AND THE PAAAIIINNN                     */
+    /* Highgui currently buffers 4 frames before handing them to us; this     */
+    /* means that any picture we take is increadibly delayed. If you use the  */
+    /* highgui binaries from srobo.org/~jmorse/highgui.tgz this is patched to */
+    /* be only one frame. To overcome this last frame, retrieve two.          */
+    frame = cvQueryFrame(capture);
     if(frame == NULL){
         srlog(ERROR, "Failed to grab initial frame.");
         //TODO: Exit here?
