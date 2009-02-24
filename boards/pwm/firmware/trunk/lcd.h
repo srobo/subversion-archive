@@ -1,9 +1,33 @@
+/*   Copyright (C) 2009 Tom Bennellick
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
+
 #ifndef __LCD_H
 #define __LCD_H
 #include <stdint.h>
+#include "hardware.h"
 
+#define command_delay lcd_delay_long(1) /* should be 120us - write another delay later if problem*/
 
-void lcd_init( void );
+/* this is the length of the inner loop to get ms ticks */
+/* 	clock speed = 12MHz - 83ns */
+/* 	so appx 12048 clocks for 1ms */
+/*      but loop is more likely about 5 ticks */
+/*      so try 2400 */
+#define MS_SCALE 2400	
+
 
 #define buf_qty 4
 #define buffer_len 16
@@ -12,37 +36,31 @@ void lcd_init( void );
 #define RS 0x04
 #define datapins 0xf0
 #define lcd_mask 0xfc
+/* all pins are PORT 1  */
 
+#define e_hi P1OUT |= E
+#define e_lo P1OUT &= ~E
 
+#define rs_hi P1OUT |= RS
+#define rs_lo P1OUT &= ~RS
 
-/*                              RS  R/W DB7 DB6 DB5 DB4 DB3 DB2 DB1 DB0 */
-/*                              ==  === === === === === === === === === */
-/* Clear Display                 0   0   0   0   0   0   0   0   0   1 */
-
-/* Return Home                   0   0   0   0   0   0   0   0   1   * */
-
-/* Entry Mode Set                0   0   0   0   0   0   0   1  I/D  S */
-
-/* Display ON/OFF                0   0   0   0   0   0   1   D   C   B */
-
-/* Cursor and Display Shift      0   0   0   0   0   1  S/C R/L  *   * */
-
-/* Function Set                  0   0   0   0   1   DL  N   F   *   * */
-
-/* Set CG RAM address            0   0   0   1   A   A   A   A   A   A */
-
-/* Set DD RAM address            0   0   1   A   A   A   A   A   A   A */
-
-/* Read busy flag and address    0   1   BF  A   A   A   A   A   A   A */
-
-/* Write data to CG or DD RAM    1   0   D   D   D   D   D   D   D   D */
-
-/* Read data from CG or DD RAM   1   1   D   D   D   D   D   D   D   D */
+uint8_t current_screen;
+uint8_t requested_screen;
+uint8_t redraw;
+/* display buffers */
+uint8_t lcd_screens[buf_qty][buffer_len]; 
 
 
 
 void lcd_init( void );
 void lcd_set_buffer(uint8_t buffer_loc, uint8_t* data);
-void lcd_redraw(void)
+void lcd_delay(void);
+void lcd_delay_long(uint16_t time);
+void lcd_set_buffer(uint8_t buffer_loc, uint8_t* data);
+void lcd_cmd4(uint8_t data);
+void lcd_dat4(uint8_t data);
+void lcd_address(uint8_t addr);
+void lcd_char(uint8_t data);
+void lcd_service(void);
 
 #endif /* __LCD_H */

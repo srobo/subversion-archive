@@ -1,4 +1,4 @@
-ARCH := msp430x2234
+ARCH := msp430x2254
 CC := msp430-gcc
 CFLAGS := -g -mmcu=${ARCH}  -Wall -O3
 LDFLAGS :=
@@ -9,8 +9,8 @@ CFLAGS += -I ./types
 # flash430
 LDFLAGS := -L ./flash430 -lflash430
 
-H_FILES = servo.h sweep.h hardware.h common.h i2c.h smbus_pec.h timer-b.h
-C_FILES = main.c servo.c sweep.c i2c.c smbus_pec.c timer-b.c
+H_FILES = servo.h sweep.h hardware.h common.h i2c.h smbus_pec.h timer-b.h lcd.h
+C_FILES = main.c servo.c sweep.c i2c.c smbus_pec.c timer-b.c lcd.c
 
 world: pwm-bottom pwm-top
 

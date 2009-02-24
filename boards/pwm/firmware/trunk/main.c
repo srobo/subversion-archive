@@ -24,6 +24,7 @@
 #include "i2c.h"
 #include "flash430/flash.h"
 #include "flash430/i2c-flash.h"
+#include "lcd.h"
 
 #define USE_WATCHDOG 0
 #define SWEEP_SERVOS 1
@@ -59,6 +60,7 @@ int main( void )
 	{
 		if( i2c_flash_received )
 				flash_switchover();
+		lcd_service();
 	}	
 }
 
@@ -66,7 +68,9 @@ void init(void)
 {
 	/* Disable the watchdog timer */
 	WDTCTL = WDTPW | WDTHOLD;
-
+	nop();
+	nop();
+	nop();
 	/* Configure DCOCTL to be 12 MHz */
 	DCOCTL = CALDCO_12MHZ;
 	BCSCTL1 = CALBC1_12MHZ;
@@ -129,6 +133,7 @@ void init(void)
 	i2c_flash_init();
 	i2c_init();
 	timer_b_init();
+	lcd_init();
 	eint();
 }
 
