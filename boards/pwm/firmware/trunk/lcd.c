@@ -100,7 +100,7 @@ void lcd_init( void )
 	lcd_cmd4(0x03);
 
 
-	for (i=0;i<buffer_len;i++)
+	for (i=0;i<lcd_buffer_len;i++)
 		lcd_screens[0][i]=0;
 	lcd_screens[0][0]='S';
 	lcd_screens[0][0]='p';
@@ -141,7 +141,7 @@ void lcd_delay_long(uint16_t time)
 void lcd_set_buffer(uint8_t buffer_loc, uint8_t* data)
 {
 	uint8_t i =0;
-	for (i=0;i<buffer_len;i++)
+	for (i=0;i<lcd_buffer_len;i++)
 	{
 		lcd_screens[buffer_loc][i]= data[i];
 	}
@@ -197,12 +197,23 @@ void lcd_service(void)
 	{
 		lcd_address(0);
       
-		for (i=0;i<buffer_len;i++)
+		for (i=0;i<lcd_buffer_len;i++)
 		{
-			if (i == buffer_len/2)
+			if (i == lcd_buffer_len/2)
 				lcd_address(40); /* jump to second line */
 			lcd_char(lcd_screens[requested_screen][i]);
 		}
 		current_screen = requested_screen;
 	}
+}
+
+uint8_t lcd_csum(uint8_t pos)
+{	
+	uint8_t i =0;
+	uint8_t total=0;
+	for (i=0;i<lcd_buffer_len;i++)
+	{
+		total += lcd_screens[pos][i];
+	}
+	return total;
 }

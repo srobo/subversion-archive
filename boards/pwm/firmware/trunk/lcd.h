@@ -30,7 +30,7 @@
 
 
 #define buf_qty 4
-#define buffer_len 16
+#define lcd_buffer_len 32
 
 #define E 0x02
 #define RS 0x04
@@ -48,7 +48,7 @@ uint8_t current_screen;
 uint8_t requested_screen;
 uint8_t redraw;
 /* display buffers */
-uint8_t lcd_screens[buf_qty][buffer_len]; 
+uint8_t lcd_screens[buf_qty][lcd_buffer_len]; 
 
 
 
@@ -62,5 +62,6 @@ void lcd_dat4(uint8_t data);
 void lcd_address(uint8_t addr);
 void lcd_char(uint8_t data);
 void lcd_service(void);
+uint8_t lcd_csum(uint8_t pos);
 
 #endif /* __LCD_H */

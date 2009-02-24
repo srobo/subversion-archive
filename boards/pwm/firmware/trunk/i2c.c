@@ -23,6 +23,7 @@
 #include "smbus_pec.h"
 #include "timer-b.h"
 #include "flash430/i2c-flash.h"
+#include "lcd.h"
 
 #define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x7063
@@ -39,6 +40,9 @@ static uint8_t last_position = 0;
 static uint8_t pos = 0;
 static uint8_t buf[I2C_BUF_LEN];
 static uint8_t checksum;
+
+static uint8_t screen_pos;
+
 
 typedef struct
 {
@@ -62,6 +66,17 @@ static uint8_t i2cr_identity( uint8_t *buf );
 /* Send the number of the servo last changed and its current value */
 static uint8_t i2cr_servo_getlast( uint8_t *buf );
 
+/* set location of buffer to write next string to */
+static void i2cw_screen_pos( uint8_t *buf);
+/* check last screen value written */
+static uint8_t  i2cr_screen_pos( uint8_t *buf);
+/* send screen string master-> screen */
+static void i2cw_screen_string( uint8_t *buf);
+/* return checksum of last screen string */
+static uint8_t i2cr_screen_csum( uint8_t *buf);
+
+
+
 const i2c_cmd_t cmds[] = 
 {
 	/* Send the identity to the master */
@@ -78,7 +93,17 @@ const i2c_cmd_t cmds[] =
 	/* Firmware chunk reception, and next-address transmission */
 	{ 20, i2c_flashw_fw_chunk, i2c_flashr_fw_next },
 	/* Firmware CRC transmission and confirmation */
-	{ 4, i2c_flashw_confirm, i2c_flashr_crc }
+	{ 4, i2c_flashw_confirm, i2c_flashr_crc },
+	
+
+	/* set screen position */
+	{ 2, i2cw_screen_pos, NULL},
+	/* get last screen pos set */
+	{0, NULL, i2cr_screen_pos},
+        /* set screen string */
+	{ 32, i2cw_screen_string, NULL},
+	/* get last screen data checksum */
+	{ 0, NULL, i2cr_screen_csum}
 };
 
 /* The current command */
@@ -257,3 +282,24 @@ static uint8_t i2cr_servo_getlast( uint8_t *buf)
 	return 2;
 }
 
+static void i2cw_screen_pos( uint8_t *buf)
+{
+	screen_pos = buf[0];
+}
+
+static uint8_t  i2cr_screen_pos( uint8_t *buf)
+{
+	buf[0] = screen_pos;
+	return 1;
+}
+
+static void i2cw_screen_string( uint8_t *buf)
+{
+	lcd_set_buffer(screen_pos,buf);
+}
+
+static uint8_t i2cr_screen_csum( uint8_t *buf)
+{
+	buf[0] = lcd_csum(screen_pos);
+	return 1;
+}
