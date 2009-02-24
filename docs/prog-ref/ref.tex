@@ -7,9 +7,11 @@
 %code for creating python code snippets
 \usepackage{float}
 \floatstyle{ruled}
-\newfloat{python}{thp}{lop}
+\newfloat{python}{H}{lop}
 \floatname{python}{Listing}
 %end code for creating python code snippets
+\usepackage{verbatim}
+\usepackage{moreverb}
 
 \graphicspath{{./images/}}
 \title {Student Robotics 2009\\ Programming Reference V2}
@@ -34,25 +36,23 @@ This file must at least contain the main function for the robot control
 algorithm - see Listing \ref{py:main}:
 
 \begin{python}
-\begin{verbatim}
-
+\begin{verbatimtab}
 def main( game, colour ):
         #Where game is either GOLF or SQUIRREL
         #colour is one of the colour constants from above
-
-\end{verbatim}
+\end{verbatimtab}
   \caption{\label{py:main}Minimum contents of robot.py} 
 \end{python}
 
 \subsection{import}
 Before you can control any of the student robotic kit e.g. motors, servos etc. you need to tell python to \textit{import} the Student Robotics interface (functions specific to the SR kit). Listing \ref{py:import} should appear at the top
 \begin{python}
-\begin{verbatim}
+\begin{verbatimtab}
 #Import the Studnet Robotics Interface	
 from sr import * 
 
 #rest of code follows...
-\end{verbatim}
+\end{verbatimtab}
   \caption{\label{py:import}} 
 \end{python}
 
@@ -63,7 +63,29 @@ The function \texttt{main} in \texttt{robot.py} is the first part of your code t
 \item[colour]The colour of \textit{your team's} balls.
 \end{description}
 
-This information is sent wirelessly to your robot at the start of each round.
+This information is sent wirelessly to your robot at the start of each round. The game types are available as constants for use in your code, as in Listing \ref{py:gametype}
+\begin{python}
+\begin{verbatimtab}
+#Import the Studnet Robotics Interface	
+from sr import * 
+
+def main( game, colour ):
+        #Where game is either GOLF or SQUIRREL
+        #colour is one of the colour constants from above
+
+	if game == GOLF:
+		print "Playing Golf Game..."
+		run_golf()	#defined elsewhere
+
+	elif game == SQUIRREL:
+		print "Playing Squirrel Game..."
+		run_squirrel()	#defined elsewhere
+\end{verbatimtab}
+  \caption{\label{py:gametype}} 
+\end{python}
+
+Similarly the colour constants: \texttt{RED, BLUE, YELLOW, GREEN} will be available for use with the vision methods.
+
 
 \section{Yielding control and interrupts}
 Once the main function is called, the algorithm has control of the robot.  The
@@ -76,39 +98,97 @@ statement.  When control is passed back to the
 algorithm the \texttt{event} variable has been set to contain information
 about the event that just occurred.
 
-\subsection{Using \texttt{yield}}
-\subsubsection{Timeouts}
+\subsection{Timeouts}
 The \texttt{yield} statement can be used to wait for a set amount of
 time.  For example:
 
-\begin{verbatim}
-yield 4
-\end{verbatim}
+\begin{verbatimtab}
+yield 3.4
+\end{verbatimtab}
 
-Causes the program to be delayed for 4 seconds.
+Causes the program to be delayed for 3.4 seconds.
 
-\subsubsection{Waiting on events}
+\subsection{Waiting on IO events}
 The \texttt{yield} statement can be used to wait for an event to
 occur.  For example:
 
-\begin{verbatim}
+\begin{verbatimtab}
 yield io
+\end{verbatimtab}
+
+Causes the algorithm to wait until a dio (digital IO) event is received. If you are only interested in certain inputs or conditions, then you can specify this in the yield statement:
+\begin{python}
+\begin{verbatimtab}
+# Wait for input 3 to change digital value
+yield io.pin(3)
+        
+# Wait for input 3 to become digital '1' (threshold 512)
+yield io.pin(3) == 1
+        
+# Wait for input 3 readings to exceed 1V
+yield io.apin(1) > 1
+        
+# Wait for input 2 readings to go below 2.5V
+yield io.apin(2) < 2.5
+\end{verbatimtab} 
+\caption{\label{py:yieldio}Yielding on specified pin inputs}
+\end{python}
+
+
+\subsection{Yielding on Power Board Events}
+The power board has a bank of four switches which you can yield on:
+\begin{verbatim}
+yield power.switch(x) == 0
 \end{verbatim}
+Where \texttt{x} can take the values: \{0, 1, 2, 3\}.
 
-Causes the algorithm to wait until a dio (digital IO) event is received.
 
-\subsubsection{Combinations of events and timeout}
+\subsection{Yielding on Vision Events}
+The 
+
+\subsection{Combinations of events and timeout}
 The \texttt{yield} statement can be used to wait on a combination of events and
 a timeout, whichever occurs first:
 
-\begin{verbatim}
+\begin{verbatimtab}
 yield io, 5
-\end{verbatim}
+\end{verbatimtab}
 
-Causes the algorithm to wait until a dio event is received or 5 seconds,
+Causes the algorithm to wait until a digital IO event is received or 5 seconds,
 whichever comes first.
 
-\subsubsection{Calling subroutines}
+
+\subsection{Logic Expressions}
+Sometimes you may want to wait for event A to occur AND event B to occur before proceeding. This can be achieved using the `\&' symbol (Logical AND operator) or the And() function:
+\begin{python}
+\begin{verbatim}
+#wait for input pin 3 to be logic 1 and input pin 2 to be logic 0
+yield io.pin(3) == 1 & io.pin(2) == 0
+
+#wait for pins 1 and 3 to change, and for pin 2 to be logic 1
+yield And(io.pin(1), io.pin(2) == 1, io.pin(3)) 
+\end{verbatim}
+\caption{\label{py:yieldand}Yielding on multiple events using logical AND}
+\end{python}
+
+The \texttt{And()} function can take an unlimited (within reason) number of events. It is functionally equivalent, but can be syntactically easier to read than `\&' operator.
+
+\vspace{12pt}
+
+A logical OR operation can be used to wait for any one of a list of events to occur. It is implemented using the `\texttt{|}' operator or the Or() function:
+\begin{python}
+\begin{verbatim}
+#wait for pin 1 to change or pin 3 to go above 2V:
+yield io.pin(1) | io.apin(3)>2
+
+#wait for pin 1 or pin 2 or pin 3 to change:
+yield Or(io.pin(1), io.pin(2), io.pin(3))
+\end{verbatim}
+\caption{\label{py:yieldor}Yielding on multiple events using logical OR}
+\end{python}
+
+\noindent\textbf{Note:} Any of the event types discussed above can be used in combination with these logical operators.
+\subsection{Calling subroutines}
 Control of the robot can be passed to subroutines, allowing the program to be
 split up into easier to understand parts.  The \texttt{yield} statement can be
 used to pass control of the robot to a subroutine.  When the subroutine returns,
@@ -116,9 +196,9 @@ the program continues from the yield statement.  If more information is
 passed to yield after the name of a subroutine, then that information is passed
 as argument(s) to that subroutine.  For example:
 
-\begin{verbatim}
+\begin{verbatimtab}
 yield findTokens, 3
-\end{verbatim}
+\end{verbatimtab}
 
 Causes control of the robot to be passed to the findTokens subroutine with the
 argument 3.
@@ -126,20 +206,27 @@ argument 3.
 \subsection{The \texttt{event} variable}
 The \texttt{event} variable is set when control is returned after a
 yield. It contains information regarding the event that caused control
-to be passed back.
+to be passed back. It is sometimes necessary to know which type of event has occurred 
 
 \subsubsection{Finding the event source}
 The \texttt{event} variable will return true when compared to the
 event source that led to its creation:
 
-\begin{verbatim}
-yield io, 5 #Wait until a dio event or 5 seconds passes
+\begin{python}
+\begin{verbatimtab}
+yield ...
 
 if event == io:
-    pass #A io event happened first (pass means do-nothing)
-else:
-    pass #A timeout is the only other option
-\end{verbatim}
+	pass #A io event happened first (pass means do-nothing)
+elif event == timeout:
+	pass #A timeout event happened first
+elif event == vision:
+ 	pass #A vision event happened first
+elif event == power_switch
+	pass #A power switch event happened first
+elif event
+\end{verbatimtab}
+\end{python}
 
 \subsection{IO Events}
 IO events are caused by a change in the digital inputs of the
@@ -148,20 +235,20 @@ return control of the robot to the control algorithm, the
 \texttt{event} variable will be set. The io inputs that have changed
 are contained in a dictionary that can be accessed from \texttt{event.pins}: 
 
-\begin{verbatim}
+\begin{verbatimtab}
 yield io, 5
 
 if event == io:                #Is it an io event?
     if 0 in event.pins:        #Has input 0 been changed?
         if event.pins[0] == 1: #Is input 0 now a 1?
             pass
-\end{verbatim}
+\end{verbatimtab}
 
 \subsubsection{Monitoring specific pins}
 Sometimes you will want to only wait for events on specific pins.  This can be
 done by using \texttt{setsensitive} and \texttt{removesensitive} functions:
 
-\begin{verbatim}
+\begin{verbatimtab}
 
 removesensitive(2) #Ignore pin 2 for now
 yield io, 5
@@ -169,7 +256,7 @@ yield io, 5
 #Do stuff!
 
 setsensitive(2) #Resume monitoring pin 2
-\end{verbatim}
+\end{verbatimtab}
 
 \subsection{Visual Events}
 When the \texttt{vision} event source is passed to the \texttt{yield}
@@ -187,7 +274,7 @@ list has a set of properties:
   centre of the blob.
 \end{description}
 
-\begin{verbatim}
+\begin{verbatimtab}
 yield vision    #This will always return as soon as
                 #a frame has been processed
 
@@ -196,7 +283,7 @@ for blob in event.blobs:    #Go through each blob in
                             #there are no blobs
     if blob.colour == 0:    #For each blob, check its colour
         pass
-\end{verbatim}
+\end{verbatimtab}
 
 \section{Controlling the robot}
 \subsection{Controlling the motors}
@@ -214,18 +301,18 @@ power.  $-100<n<100$. Negative values of n drive the motors backwards.
 The Pulse Width Modulation board is used to control servo motors.  It is
 controlled with the \texttt{setpos} function that takes two arguments:
 
-\begin{verbatim}
+\begin{verbatimtab}
 setpos(n, m)
-\end{verbatim}
+\end{verbatimtab}
 
 This will set PWM board output $0<n<5$ to the position $0<m<100$.
 
 \subsection{Controlling the JointIO Board Outputs}
 The outputs of the JointIO board can be controlled using the \texttt{setoutput} function.  This takes two arguments:
 
-\begin{verbatim}
+\begin{verbatimtab}
 setoutput(n, val)
-\end{verbatim}
+\end{verbatimtab}
 
 This will set output $0<n<4$ to the value val, which is either 0 or 1.  If value is 1 then the output will be 3.3V, otherwise it will be 0V.
 
