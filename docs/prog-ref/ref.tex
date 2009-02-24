@@ -188,6 +188,7 @@ yield Or(io.pin(1), io.pin(2), io.pin(3))
 \end{python}
 
 \noindent\textbf{Note:} Any of the event types discussed above can be used in combination with these logical operators.
+
 \subsection{Calling subroutines}
 Control of the robot can be passed to subroutines, allowing the program to be
 split up into easier to understand parts.  The \texttt{yield} statement can be
@@ -203,12 +204,13 @@ yield findTokens, 3
 Causes control of the robot to be passed to the findTokens subroutine with the
 argument 3.
 
+\section{Events}
 \subsection{The \texttt{event} variable}
 The \texttt{event} variable is set when control is returned after a
 yield. It contains information regarding the event that caused control
-to be passed back. It is sometimes necessary to know which type of event has occurred 
+to be passed back. It is often necessary to know which type of event has occurred and some further details about the event.
+\vspace{12pt}
 
-\subsubsection{Finding the event source}
 The \texttt{event} variable will return true when compared to the
 event source that led to its creation:
 
@@ -222,11 +224,12 @@ elif event == timeout:
 	pass #A timeout event happened first
 elif event == vision:
  	pass #A vision event happened first
-elif event == power_switch
+elif event == power_switch:
 	pass #A power switch event happened first
-elif event
 \end{verbatimtab}
 \end{python}
+
+\texttt{ io, timeout, vision} \& \texttt{power\_switch} are provided as global types which you can directly access from your robot code.
 
 \subsection{IO Events}
 IO events are caused by a change in the digital inputs of the
@@ -236,66 +239,68 @@ return control of the robot to the control algorithm, the
 are contained in a dictionary that can be accessed from \texttt{event.pins}: 
 
 \begin{verbatimtab}
-yield io, 5
+yield ...
 
-if event == io:                #Is it an io event?
-    if 0 in event.pins:        #Has input 0 been changed?
-        if event.pins[0] == 1: #Is input 0 now a 1?
-            pass
+if event == io:			#Is it an io event?
+    if 0 in event.io.pins:     	#Has input 0 been changed?
+        print io.event.vals 	#Ask Rob!
 \end{verbatimtab}
 
-\subsubsection{Monitoring specific pins}
-Sometimes you will want to only wait for events on specific pins.  This can be
-done by using \texttt{setsensitive} and \texttt{removesensitive} functions:
-
-\begin{verbatimtab}
-
-removesensitive(2) #Ignore pin 2 for now
-yield io, 5
-
-#Do stuff!
-
-setsensitive(2) #Resume monitoring pin 2
-\end{verbatimtab}
 
 \subsection{Visual Events}
 When the \texttt{vision} event source is passed to the \texttt{yield}
 command, the robot will grab an image with its webcam and start to
 process that image.  When this processing has finished, the vision
 system will raise an event (whether a token is seen or not).  Any
-tokens found are placed in the list \texttt{event.blobs}.  Each blob in this
+tokens found are placed in the list \texttt{event.vision.blobs}.  Each blob in this
 list has a set of properties:  
 \begin{description}
-\item[colour] The colour of the blob
-\item[mass] The number of pixels that make up the blob
-\item[centrex] The number of pixels between the left of the image and
-  the centre of the blob.
-\item[centrey] The number of pixels down from the top of the image to the
-  centre of the blob.
+\item[blob.x] The centre x coordinate of the blob (measured from left)
+\item[blob.y] The centre y coordinate of the blob (measured from top)
+\item[blob.mass] The number of pixels that make up the blob
+\item[blob.colour] The colour of the blob (RED, BLUE, YELLOW, GREEN)
+\item[blob.height] The height in pixels of the blob
+\item[blob.width] The width in pixels of the blob
 \end{description}
 
+To aid with processing the list of blobs, the following constants are provided:
+\begin{description}
+\item[VISION\_HEIGHT] The height in pixels of the raw jpg image
+\item[VISION\_WIDTH] The width in pixels of the raw jpg image
+\end{description}
+
+\begin{python}
 \begin{verbatimtab}
 yield vision    #This will always return as soon as
                 #a frame has been processed
 
-for blob in event.blobs:    #Go through each blob in 
-                            #turn. This does nothing if
-                            #there are no blobs
-    if blob.colour == 0:    #For each blob, check its colour
-        pass
+if event == vision:
+	for blob in event.vision.blobs: 	#Iterate blob list 
+        	if not blob.colour == colour:  	#Ignore Opponents  
+                	pass			#blobs.
+		else:				#If one of ours,
+			pickUpBlob()           	#pick it up!
+			break			#break out of loop
 \end{verbatimtab}
+\end{python}
+
 
 \section{Controlling the robot}
 \subsection{Controlling the motors}
-The motor controller has two outputs.  The \texttt{setspeed} command
+The motor controller has two outputs.  The \texttt{setpower} command
 sets the direction of each motor and the power delivered to each one.
 
 \begin{description}
-\item[setspeed(n)] This sets both of the motors to n\% of maximum
+\item[setpower(n)] This sets both of the motors to n\% of maximum
 power.  $-100<n<100$. Negative values of n drive the motors backwards.
-\item[setspeed(n, m)] This sets the power delivered to motor 1 to n\%,
+\item[setpower(n, m)] This sets the power delivered to motor 1 to n\%,
   and the power delivered to motor 2 to m\%. $-100<n,m<100$.
+\item[readpower(n)] This returns the current percentage power of motor n. Where n=\{0, 1\} 
 \end{description}
+
+\vspace{12pt}
+
+\noindent{\bf Extra functions will be added later to support motor feedback }
 
 \subsection{Controlling the PWM board}
 The Pulse Width Modulation board is used to control servo motors.  It is
@@ -305,15 +310,30 @@ controlled with the \texttt{setpos} function that takes two arguments:
 setpos(n, m)
 \end{verbatimtab}
 
-This will set PWM board output $0<n<5$ to the position $0<m<100$.
+This will set PWM board output $0<n<5$ to the position $0<m<100$. \(m = 100\) and \(m = 0\) correspond to the two extreme positions of the servo, and \(m\) can be though of as a percentage.
+
+\vspace{12pt}
+To read the current position of any of the servos:
+\begin{verbatimtab}
+readpos(n)	#n = servo number 
+\end{verbatimtab}
+If you attempt to read the position of a servo which has not previously been set, readpos() will return \(-1\).
 
 \subsection{Controlling the JointIO Board Outputs}
-The outputs of the JointIO board can be controlled using the \texttt{setoutput} function.  This takes two arguments:
+The outputs of the JointIO board can be controlled using ...
 
 \begin{verbatimtab}
-setoutput(n, val)
+Ask Rob...
 \end{verbatimtab}
 
 This will set output $0<n<4$ to the value val, which is either 0 or 1.  If value is 1 then the output will be 3.3V, otherwise it will be 0V.
+
+\subsection{Controlling Power Board LEDs}
+The four LEDs on the Power Board can be controlled independently:
+\begin{verbatimtab}
+power.led[n] = 1	#Turn LED `n' ON
+power.led[n] = 0	#Turn LED `n' OFF
+\end{verbatimtab}
+Where $0<n<4$ is the number of the LED.
 
 \end{document}
