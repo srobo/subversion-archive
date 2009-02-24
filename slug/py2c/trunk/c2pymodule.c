@@ -61,7 +61,7 @@ initc2py(void)
     Py_INCREF(I2CError);
     PyModule_AddObject(m, "I2CError", I2CError);
 
-	fd = open("/dev/i2c-1", O_RDWR);
+	fd = open("/dev/i2c-0", O_RDWR);
 	if( fd < 0 ){
         //Don't need to incref the ioerror object
         PyErr_SetString(PyExc_IOError, "Could not open /dev/i2c-0.\n");
@@ -320,94 +320,96 @@ static PyObject* c2py_smbusreadword_data( PyObject *self,
 static PyObject* c2py_powerread_data( PyObject *self, 
 				      PyObject *args )
 {
-	uint8_t address, command, nobytes;
-	uint8_t *buf, i=0, c=0;
+	const uint8_t BUFLEN = 30; /* see gumsense docs for explanation */
+	uint8_t address, command;
+	uint8_t *buf;
 	PyObject *retval;
 
-	if (!PyArg_ParseTuple(args,"BBB", &address, &command, &nobytes)){
+	int8_t len,r;
+
+/* 	int len, r; */
+	uint8_t checksum, i;
+
+	if (!PyArg_ParseTuple(args,"BB", &address, &command)){
 		return NULL;
 	}
+
+
+	/* pec off */
+	if( ioctl( fd, I2C_PEC, 0) < 0)
+	{
+		PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
+		return;
+	}
+
+
+	len = i2c_smbus_read_byte_data( fd, command );
+
+
+	if( len < 0 ) {
+		printf("%d",len);
+		PyErr_SetString(I2CError, "Error reading from bus");
+		return NULL;
+	}
+
+
+	/* Prevent buffer overflows */
+	if (!((len+3) < BUFLEN ))
+	{
+		PyErr_SetString(I2CError, "Error");
+		return NULL;
+	}
+
+	buf = malloc(len +3 );
+	r = read(fd, buf, len + 3 );
+
+	if( r < 0 ) {
+		PyErr_SetString(I2CError, "Error");
+		return NULL;
+	}
+
+	if( r != len + 3 ) {
+		PyErr_SetString(I2CError, "Error");
+		return NULL;
+	}
+
+	/* Generate the checksum: */
+	checksum = crc8( (address<<1) | 1 );
+	for( i=0; i<len+2; i++ )
+		checksum = crc8( checksum ^ (buf)[i] );
+
+	if( (buf)[r-1] != checksum ) {
+		if( 1 )
+		PyErr_SetString(I2CError, "checksum Error");
+		return NULL;
+	}
+
+	if( (buf)[1] != command ) {
+		PyErr_SetString(I2CError, "comand val Error");
+		return NULL;
+	}
+
+	/* pec on */
+	if( ioctl( fd, I2C_PEC, 1) < 0)
+	{
+		PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
+		return;
+	}
+
+
+	retval = PyList_New(len);
+	
+	for (i=0;i<len;i++)
+	{
+		printf("%hhu buf",buf[i+2]);
+		printf("%li casted",((long)buf[i+2]));
+		
+		PyList_SetItem(retval, i , PyInt_FromLong((long)buf[i+2]) );
+	}
+
+	return retval;
+
 }
-
-
-
-/* int32_t sr_read( int fd, uint8_t reg, uint8_t *buf ) */
-/* { */
-/* 	/\* The Origins of this code are stolen from Robert Spanton's Gumsense firmware forge.ecs.soton.ac.uk *\/ */
-/* 	int len, r; */
-/* 	uint8_t checksum, i; */
-
-/* 	pecoff(fd); /\* need to disable pec so can do 2 actions consecutively - see gumsense readme *\/ */
-
-	
-/* 	/\* We have to hack around the fact that the i2c adapter doesn't */
-/* 	   support i2c block read. *\/ */
-/* 	/\*  First, do a read to get the length byte. *\/ */
-/* 	/\* This read byte operation also sets the command that we're doing */
-/* 	   within the powerboard *\/ */
-
-/* 	/\* Set the command and grab the length *\/ */
-/* 	len = i2c_smbus_read_byte_data( fd, reg ); */
-
-/* 	if( len < 0 ) { */
-/* 		fprintf( stderr, "Failed to read register %hhu length\n", reg ); */
-/* 		fprintf( stderr, "length is %d", len ); */
-/* 		goto error0; */
-/* 	} */
-
-/* 	/\* Prevent buffer overflows *\/ */
-/* 	assert( (len+3) < BUFLEN ); */
-
-/* 	r = read(fd, buf, len + 3 ); */
-	
-/* 	if( r < 0 ) { */
-/* 		fprintf( stderr, "Failed to read register %hhu\n", reg ); */
-/* 		goto error0; */
-/* 	} */
-
-/* 	if( r != len + 3 ) { */
-/* 		fprintf( stderr, "Failed to read all of register %hhu\n", reg ); */
-/* 		goto error0; */
-/* 	} */
-
-/* 	/\* Generate the checksum: *\/ */
-/* 	checksum = crc8( (ADDRESS<<1) | 1 ); */
-/* 	for( i=0; i<len+2; i++ ) */
-/* 		checksum = crc8( checksum ^ (buf)[i] ); */
-
-/* 	if( (buf)[r-1] != checksum ) { */
-/* 		if( 1 ) */
-/* 			fprintf( stderr, "Incorrect checksum reading register %hhu\n", reg ); */
-/* 		printf( "Checksums: received = 0x%2.2hhx, calculated = 0x%2.2hhx\n", */
-/* 			(buf)[len+2], */
-/* 			checksum ); */
-/* 		/\* Checksum's incorrect *\/ */
-/* 		goto error0; */
-/* 	} */
-
-/* 	if( (buf)[1] != reg ) { */
-/* 		fprintf( stderr, "Incorrect register read %hhu\n", reg ); */
-
-/* 		/\* Incorrect command read back *\/ */
-/* 		goto error0; */
-/* 	} */
-
-/* 	if( 0 )	{		/\* read buffer debug - set to 1 to gat buffer printout *\/ */
-/* 		uint8_t i; */
-/* 		printf( "Read %i bytes from register %hhu:\n", len, reg ); */
-/* 		for( i=0; i<len+2; i++ ) */
-/* 			printf( "%hhX: %hhX\n", i, (buf)[i] ); */
-/* 	} */
-
-/* 	pecon(fd); */
-
-/* 	return len+1; */
-
-/* error0: */
-/* 	pecon(fd); */
-/* 	return -1; */
-/* } */
-
 
 
 static PyObject* c2py_powerwrite_data( PyObject *self, 
@@ -422,8 +424,6 @@ static PyObject* c2py_powerwrite_data( PyObject *self,
 	uint8_t buf_len=0;
 	uint8_t i;
 
-
-/* 	union i2c_smbus_data datablock; */
 	/* usepec is optional */
 	if (!PyArg_ParseTuple(args,"BBO|B", &address, &command, &data, &usepec)){
 		return NULL;
@@ -468,8 +468,6 @@ static PyObject* c2py_powerwrite_data( PyObject *self,
 		return;
 	}
     
-/*     datablock.word = data; */
-
 	if( i2c_smbus_write_block_data(fd,command,buf_len,buf) != 0 )
 	{
 		PyErr_SetString(I2CError, "Error writing to bus");
@@ -484,19 +482,3 @@ static PyObject* c2py_powerwrite_data( PyObject *self,
 
 }
 
-
-
-
-
-
-/* int32_t sr_write( int fd, uint8_t command, uint8_t len, uint8_t *buf ){ */
-/* 	int retval=0; */
-
-/* 	retval = i2c_smbus_write_block_data(fd,command,len,buf); */
-
-/* 	if (retval != 0) */
-/* 	{ */
-/* 		fprintf( stderr, "Block Write failed:  %m\n" ); */
-/* 	} */
-/* 	return retval; */
-/* } */
