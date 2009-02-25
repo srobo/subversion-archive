@@ -231,6 +231,7 @@ function ProjFileList() {
 
 	// Member functions:
 	// Public:
+	//  - change_rev: change the file list revision, uses current project and team info to update
 	//  - update: Update the file list to the given project and team
 	// Private:
 	//  - _received: handler for receiving the file list
