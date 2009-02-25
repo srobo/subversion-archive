@@ -347,7 +347,6 @@ static PyObject* c2py_powerread_data( PyObject *self,
 
 
 	if( len < 0 ) {
-		printf("%d",len);
 		PyErr_SetString(I2CError, "Error reading from bus");
 		return NULL;
 	}
@@ -379,7 +378,6 @@ static PyObject* c2py_powerread_data( PyObject *self,
 		checksum = crc8( checksum ^ (buf)[i] );
 
 	if( (buf)[r-1] != checksum ) {
-		if( 1 )
 		PyErr_SetString(I2CError, "checksum Error");
 		return NULL;
 	}
@@ -401,9 +399,8 @@ static PyObject* c2py_powerread_data( PyObject *self,
 	
 	for (i=0;i<len;i++)
 	{
-		printf("%hhu buf",buf[i+2]);
-		printf("%li casted",((long)buf[i+2]));
-		
+/* 		printf("%hhu buf",buf[i+2]); */
+/* 		printf("%li casted",((long)buf[i+2])); */		
 		PyList_SetItem(retval, i , PyInt_FromLong((long)buf[i+2]) );
 	}
 
@@ -432,12 +429,10 @@ static PyObject* c2py_powerwrite_data( PyObject *self,
 	}
 
 	/* this is just to prove a theory */
-	if (PyList_Check(data))
-		printf("pyobject was a list !");
-	else
+	if (! PyList_Check(data))
 	{
 		PyErr_SetString(I2CError, "Object passed was not a list");
-		printf("list is not a list!");
+		return NULL
 	}
 		
 	buf_len = PyList_Size(data);
@@ -448,12 +443,9 @@ static PyObject* c2py_powerwrite_data( PyObject *self,
 	{
 		list_int = PyList_GetItem(data, i );
 		
-		if (PyInt_Check(list_int))
-			printf("int is an int - good");
-		else
+		if (!PyInt_Check(list_int))
 		{
 			PyErr_SetString(I2CError, "Object passed was not an int");
-			printf("int is not an int!");
 		}
 		
 		buf[i]=(uint8_t)PyInt_AsUnsignedLongMask(list_int);
