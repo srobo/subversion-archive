@@ -74,26 +74,8 @@ Spare connectors are supplied in your kit for this purpose.
 
 In addition to the IO features of the JointIO board, the Power Board has a bank of four DIP switches which can be read by your python code. These may be used to select between strategies depending on the current game type (Golf or Squirrel). Additionally, they may be used during testing to switch between different test routines. 
 
-\begin{python}
-\begin{verbatim}
-
-	bee = sw(0)		%insert proper code here 
-
-\end{verbatim}
-  \caption{Reading the Power Board general purpose Switches in Python} 
-\end{python}
-
 \section{General Purpose LEDs}
 Four general purpose LEDs are provided on the power board to be used when debugging your code. They can be set from within your python code and may be configured to flash when a block is detected by the vision system, or when a particular block of code is being executed.
-
-\begin{python}
-\begin{verbatim}
-
-	setleds(0) = 1		%insert proper code here 
-
-\end{verbatim}
-  \caption{Setting the Power Board general purpose LEDs in Python} 
-\end{python}
 
 \section{Troubleshooting}
 \subsection{No lights illuminate}
