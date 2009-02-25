@@ -431,8 +431,8 @@ static PyObject* c2py_powerwrite_data( PyObject *self,
 	/* this is just to prove a theory */
 	if (! PyList_Check(data))
 	{
-		PyErr_SetString(I2CError, "Object passed was not a list");
-		return NULL
+		PyErr_SetString(PyExc_TypeError, "Object passed was not a list");
+		return NULL;
 	}
 		
 	buf_len = PyList_Size(data);
@@ -445,7 +445,7 @@ static PyObject* c2py_powerwrite_data( PyObject *self,
 		
 		if (!PyInt_Check(list_int))
 		{
-			PyErr_SetString(I2CError, "Object passed was not an int");
+			PyErr_SetString(PyExc_TypeError, "Object passed was not an int");
 		}
 		
 		buf[i]=(uint8_t)PyInt_AsUnsignedLongMask(list_int);
