@@ -43,16 +43,18 @@ unsigned int huebins[4][4] = {{1, 20, 80, 256},  //red
                               {110, 140, 80, 256}}; //blue
 
 /* Wait for a newline on stdin */
-void wait_trigger(void)
+char *wait_trigger(void)
 {
+	char *req_tag;
 	int r = 0;
 
-	while( r != '\n' ) 
-	{
-		r = fgetc(stdin);		
-		if( r == EOF )
-            exit(0);
-	}
+	req_tag = malloc(129);
+
+	req_tag = fgets(req_tag, 128, stdin);
+	if (req_tag == NULL) /*EOF*/
+		exit(0);
+
+	return req_tag;
 }
 
 void srlog(char level, char *m){
@@ -196,6 +198,7 @@ int main(int argc, char **argv){
     
     CvMemStorage *contour_storage;
     CvSeq *cont;
+    char *req_tag;
     int num_contours, i;
     double area;
 
@@ -245,7 +248,7 @@ int main(int argc, char **argv){
     while (1){
 #ifndef USEFILE
     #ifndef DEBUGDISPLAY
-	    wait_trigger();
+	    req_tag = wait_trigger();
     #endif
 #endif
         contour_storage = cvCreateMemStorage(0); //TODO: Look this up
@@ -333,6 +336,11 @@ int main(int argc, char **argv){
                 add_blob(cont, framesize, dsthsv, i, MINMASS, huemask_backup);
             }
         }
+
+	if (req_tag) {
+		fputs(req_tag, stdout);
+		free(req_tag);
+	}
 
         fputs("BLOBS\n", stdout);
         fflush(stdout);
