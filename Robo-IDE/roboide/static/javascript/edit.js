@@ -71,6 +71,10 @@ function EditPage() {
 
 	// Create a new tab with a new file open in it
 	this.new_file = function() {
+		if(!projpage.projects_exist()) {
+			status_msg("You must create a project before creating a file", LEVEL_ERROR);
+			return;
+		}
 		this._new_count ++;
 		var fname = "New File " + this._new_count;
 		var etab = this._new_etab( team, null, fname, 0 );

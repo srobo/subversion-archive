@@ -25,6 +25,7 @@ function ProjPage() {
 	//  - hide: Hide the project page
 	//  - show_filelist: Show the file list
 	//  - hide_filelist: Hide the file list
+	//  - projects_exist: check that one, or more, projects exist
 	//  - change_project: Change to the named project
 	// Private:
 	//  - _init: Initialises members of the project page
@@ -91,6 +92,13 @@ ProjPage.prototype.show_filelist = function() {
 ProjPage.prototype.hide_filelist = function() {
 	logDebug( "Hiding the file list" );
 	this.flist._hide();
+}
+
+ProjPage.prototype.projects_exist = function() {
+	if(this._list.projects.length > 0)
+		return true;
+	else
+		return false;
 }
 
 ProjPage.prototype._on_proj_change = function(proj, team) {
