@@ -407,6 +407,8 @@ static PyObject* c2py_powerread_data( PyObject *self,
 		PyList_SetItem(retval, i , PyInt_FromLong((long)buf[i+2]) );
 	}
 
+	free(buf);
+
 	return retval;
 
 }
