@@ -202,7 +202,7 @@ Calendar.prototype.change_day = function(target) {
 	disconnectAll("cal-revs");
 	connect("cal-revs", 'onchange', bind(this._load_new_rev, this) );
 
-	projpage.flist._hide();
+	projpage.hide_filelist();
 	status_msg("Please select a revision", LEVEL_OK);
 }
 
@@ -210,7 +210,6 @@ Calendar.prototype._load_new_rev = function() {
 	var target = $("cal-revs").value;
 	if(target >= 0)
 		this._load_rev( target );
-	projpage.flist._show();
 }
 
 Calendar.prototype._load_rev = function(rev) {

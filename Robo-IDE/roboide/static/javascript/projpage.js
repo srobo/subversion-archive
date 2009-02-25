@@ -23,6 +23,8 @@ function ProjPage() {
 	// Public:
 	//  - show: Show and activate the projects page
 	//  - hide: Hide the project page
+	//  - show_filelist: Show the file list
+	//  - hide_filelist: Hide the file list
 	//  - change_project: Change to the named project
 	// Private:
 	//  - _init: Initialises members of the project page
@@ -79,6 +81,16 @@ ProjPage.prototype.show = function() {
 ProjPage.prototype.hide = function() {
 	logDebug( "Hiding the projects page" );
 	setStyle('projects-page', {'display':'none'});
+}
+
+ProjPage.prototype.show_filelist = function() {
+	logDebug( "Projpage.show_filelist: Current project is \"" + this.project + "\"" );
+	this.flist._show();
+}
+
+ProjPage.prototype.hide_filelist = function() {
+	logDebug( "Hiding the file list" );
+	this.flist._hide();
 }
 
 ProjPage.prototype._on_proj_change = function(proj, team) {
@@ -212,6 +224,7 @@ function ProjFileList() {
 	// the project revision we're displaying
 	// can be integer or "HEAD"
 	this.rev = "HEAD";
+	this._rev = "HEAD";
 
 	// The files/folders that are currently selected
 	this.selection = [];
@@ -243,7 +256,13 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 		return;
 	}
 
-	if( pname != this._project || team != this._team ) {
+    if(rev == undefined || rev == null) {
+        this.rev = "HEAD";
+    } else {
+        this.rev = rev;
+    }
+
+	if( pname != this._project || team != this._team || rev != this._rev ) {
 		// Hide the list whilst we're loading it
 		swapDOM( "proj-filelist",
 			 DIV( {"id": "proj-filelist",
@@ -251,14 +270,9 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 			      "Loading project file listing..." ) );
 	}
 
-    if(rev == undefined || rev == null) {
-        this.rev = "HEAD";
-    } else {
-        this.rev = rev;
-    }
-
 	this._project = pname;
 	this._team = team;
+	this._rev = rev;
 	this.refresh();
 }
 
