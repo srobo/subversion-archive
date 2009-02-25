@@ -15,6 +15,7 @@ void switch_init(void)
   P2IES &= ~0x08;		/* int on rising edge */
   P2SEL &= ~0x08;		/* pin set as i/o */
   P2IE |= 0x08;			/* enable interrupt for that pin */
+  button_pressed = 0;
 }
 
 uint8_t switch_get(void)

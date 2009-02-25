@@ -338,7 +338,7 @@ uint16_t i2cs_rts( void )
 
 uint8_t i2cr_rts( uint8_t *data )
 {
-	data[0]= RTS_state;
+	data[0]= (RTS_state>>4);
 	return 1;
 }
 
@@ -373,7 +373,7 @@ uint16_t i2cs_xbee( void )
 
 uint8_t i2cr_xbee( uint8_t *data )
 {
-	data[0]= xbee_state;
+	data[0]= (xbee_state>>2);
 	return 1;
 }
 
