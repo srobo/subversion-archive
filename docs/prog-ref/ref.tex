@@ -120,16 +120,16 @@ Causes the algorithm to wait until a dio (digital IO) event is received. If you 
 \begin{python}
 \begin{verbatimtab}
 # Wait for input 3 to change digital value
-yield io.pin(3)
+yield io.pin[3]
         
 # Wait for input 3 to become digital '1' (threshold 512)
-yield io.pin(3) == 1
+yield io.pin[3] == 1
         
 # Wait for input 3 readings to exceed 1V
-yield io.apin(1) > 1
+yield io.apin[1] > 1
         
 # Wait for input 2 readings to go below 2.5V
-yield io.apin(2) < 2.5
+yield io.apin[2] < 2.5
 \end{verbatimtab} 
 \caption{\label{py:yieldio}Yielding on specified pin inputs}
 \end{python}
@@ -144,7 +144,10 @@ Where \texttt{x} can take the values: \{0, 1, 2, 3\}.
 
 
 \subsection{Yielding on Vision Events}
-The 
+The following command will cause a new image to be captured by the webcam and processed by the slug. Your algorithm will resume when the image has been processed and all the blobs of colours have been extracted from it.
+\begin{verbatimtab}
+yield vision
+\end{verbatimtab}
 
 \subsection{Combinations of events and timeout}
 The \texttt{yield} statement can be used to wait on a combination of events and
@@ -163,10 +166,10 @@ Sometimes you may want to wait for event A to occur AND event B to occur before 
 \begin{python}
 \begin{verbatim}
 #wait for input pin 3 to be logic 1 and input pin 2 to be logic 0
-yield io.pin(3) == 1 & io.pin(2) == 0
+yield io.pin[3] == 1 & io.pin[2] == 0
 
 #wait for pins 1 and 3 to change, and for pin 2 to be logic 1
-yield And(io.pin(1), io.pin(2) == 1, io.pin(3)) 
+yield And(io.pin[1], io.pin[2] == 1, io.pin[3]) 
 \end{verbatim}
 \caption{\label{py:yieldand}Yielding on multiple events using logical AND}
 \end{python}
@@ -179,10 +182,10 @@ A logical OR operation can be used to wait for any one of a list of events to oc
 \begin{python}
 \begin{verbatim}
 #wait for pin 1 to change or pin 3 to go above 2V:
-yield io.pin(1) | io.apin(3)>2
+yield io.pin[1] | io.apin[3]>2
 
 #wait for pin 1 or pin 2 or pin 3 to change:
-yield Or(io.pin(1), io.pin(2), io.pin(3))
+yield Or(io.pin[1], io.pin[2], io.pin[3])
 \end{verbatim}
 \caption{\label{py:yieldor}Yielding on multiple events using logical OR}
 \end{python}
@@ -227,6 +230,7 @@ elif event == vision:
 elif event == power_switch:
 	pass #A power switch event happened first
 \end{verbatimtab}
+\caption{\label{py:events} Student Robotics event types}
 \end{python}
 
 \texttt{ io, timeout, vision} \& \texttt{power\_switch} are provided as global types which you can directly access from your robot code.
@@ -239,11 +243,14 @@ return control of the robot to the control algorithm, the
 are contained in a dictionary that can be accessed from \texttt{event.pins}: 
 
 \begin{verbatimtab}
-yield ...
-
-if event == io:			#Is it an io event?
-    if 0 in event.io.pins:     	#Has input 0 been changed?
-        print io.event.vals 	#Ask Rob!
+yield io.apin[1] > 1.6, (io.pin[2] == 1) & (io.pin[3] == 0)
+if 2 in event.io.pins:
+    # event.io.vals is an array of the pin values
+    # e.g. event.io.vals[2] gives the value of the pin when the event happened
+    # the value of event.io.vals[0] is meaningless
+    # (and may later throw an error if read at the wrong time)
+elif 1 in event.io.pins:
+    # event.io.vals[1] is a voltage (float)
 \end{verbatimtab}
 
 
@@ -282,6 +289,7 @@ if event == vision:
 			pickUpBlob()           	#pick it up!
 			break			#break out of loop
 \end{verbatimtab}
+\caption{\label{py:vision}Example of the vision event and its event properties}
 \end{python}
 
 
@@ -320,20 +328,31 @@ readpos(n)	#n = servo number
 If you attempt to read the position of a servo which has not previously been set, readpos() will return \(-1\).
 
 \subsection{Controlling the JointIO Board Outputs}
-The outputs of the JointIO board can be controlled using ...
-
+The outputs and inputs of the JointIO board can be controlled using the following functions:
 \begin{verbatimtab}
-Ask Rob...
+yield io.apin[1] > 1.6, (io.pin[2] == 1) & (io.pin[3] == 0)
+if 2 in event.io.pins:
+    # event.io.vals is an array of the pin values
+    # e.g. event.io.vals[2] gives the value of the pin when the event happened
+    # the value of event.io.vals[0] is meaningless
+    # (and may later throw an error if read at the wrong time)
+elif 1 in event.io.pins:
+    # event.io.vals[1] is a voltage (float)
 \end{verbatimtab}
 
 This will set output $0<n<4$ to the value val, which is either 0 or 1.  If value is 1 then the output will be 3.3V, otherwise it will be 0V.
 
-\subsection{Controlling Power Board LEDs}
-The four LEDs on the Power Board can be controlled independently:
+\subsection{Controlling Power Board}
+The four LEDs on the Power Board can be controlled using a similar interface to the JointIO:
 \begin{verbatimtab}
-power.led[n] = 1	#Turn LED `n' ON
-power.led[n] = 0	#Turn LED `n' OFF
+#similar to jio inputs...
+if power.switch[0] == 1:
+        
+#and similar to jio outputs
+power.led[0] = 1
+#or
+setled(0,1) #where the first argument is the LED number
+
 \end{verbatimtab}
-Where $0<n<4$ is the number of the LED.
 
 \end{document}
