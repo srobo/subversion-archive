@@ -360,7 +360,7 @@ function EditTab(iea, team, project, path, rev) {
 		// change revision handler
 		this._signals.push( connect( "history",
 					     "onclick",
-					     bind( this._change_revision, this ) ) );
+					     bind( this._change_revision, this, false ) ) );
 		this._update_contents();
 	}
 
@@ -394,7 +394,7 @@ function EditTab(iea, team, project, path, rev) {
 		this.contents = this._iea.getValue();
 	}
 
-	this._change_revision = function() {
+	this._change_revision = function(override) {
 		switch($("history").value) {
 		case "-2":
 			var d = new Log(this.path);
@@ -402,10 +402,15 @@ function EditTab(iea, team, project, path, rev) {
 		case "-1":
 			break;
 		default:
-			this.rev = $("history").value;
-			status_msg("Opening history .."+$("history").value, LEVEL_OK);
-           		this._load_contents();
-           		break;
+			this._capture_code();
+			if( override != true && this.contents != this._original )
+				status_button(this.path+" has been modified!", LEVEL_WARN, "Go to Revision "+$("history").value+" Anyway", bind(this._change_revision, this, true));
+			else {
+				this.rev = $("history").value;
+				status_msg("Opening history .."+$("history").value, LEVEL_OK);
+				this._load_contents();
+				break;
+			}
 		}
 	}
 
