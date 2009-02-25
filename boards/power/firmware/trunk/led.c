@@ -4,7 +4,7 @@
 void led_init(void)
 {
   P1DIR |= 0x0f;
-  
+  P1OUT &= ~0x0f;
 }
 void led_set(uint8_t val)
 {
