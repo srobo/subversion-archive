@@ -65,6 +65,7 @@ initc2py(void)
 	if( fd < 0 ){
         //Don't need to incref the ioerror object
         PyErr_SetString(PyExc_IOError, "Could not open /dev/i2c-0.\n");
+	printf ("inited!");
         return;
     }
 
@@ -325,7 +326,7 @@ static PyObject* c2py_powerread_data( PyObject *self,
 	uint8_t *buf;
 	PyObject *retval;
 
-	int8_t len,r;
+	int32_t len,r;
 
 /* 	int len, r; */
 	uint8_t checksum, i;
@@ -334,12 +335,16 @@ static PyObject* c2py_powerread_data( PyObject *self,
 		return NULL;
 	}
 
+	if(ioctl( fd, I2C_SLAVE, address)){
+		PyErr_SetString(I2CError, "Error setting I2C address.");
+		return NULL;
+	}
 
 	/* pec off */
 	if( ioctl( fd, I2C_PEC, 0) < 0)
 	{
 		PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
-		return;
+		goto error0;
 	}
 
 
@@ -347,8 +352,10 @@ static PyObject* c2py_powerread_data( PyObject *self,
 
 
 	if( len < 0 ) {
+		printf("%m");
 		PyErr_SetString(I2CError, "Error reading from bus");
-		return NULL;
+		goto error0;
+		
 	}
 
 
@@ -356,7 +363,7 @@ static PyObject* c2py_powerread_data( PyObject *self,
 	if (!((len+3) < BUFLEN ))
 	{
 		PyErr_SetString(I2CError, "Error");
-		return NULL;
+		goto error0;
 	}
 
 	buf = malloc(len +3 );
@@ -364,12 +371,12 @@ static PyObject* c2py_powerread_data( PyObject *self,
 
 	if( r < 0 ) {
 		PyErr_SetString(I2CError, "Error");
-		return NULL;
+		goto error0;
 	}
 
 	if( r != len + 3 ) {
 		PyErr_SetString(I2CError, "Error");
-		return NULL;
+		goto error0;
 	}
 
 	/* Generate the checksum: */
@@ -379,19 +386,19 @@ static PyObject* c2py_powerread_data( PyObject *self,
 
 	if( (buf)[r-1] != checksum ) {
 		PyErr_SetString(I2CError, "checksum Error");
-		return NULL;
+		goto error0;		
 	}
 
 	if( (buf)[1] != command ) {
 		PyErr_SetString(I2CError, "comand val Error");
-		return NULL;
+		goto error0;		
 	}
 
 	/* pec on */
 	if( ioctl( fd, I2C_PEC, 1) < 0)
 	{
 		PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
-		return;
+		goto error0;
 	}
 
 
@@ -407,6 +414,11 @@ static PyObject* c2py_powerread_data( PyObject *self,
 	free(buf);
 
 	return retval;
+
+error0:
+	ioctl( fd, I2C_PEC, 1);
+	free(buf);
+       	return NULL;
 
 }
 
