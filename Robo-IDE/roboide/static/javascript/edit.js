@@ -5,6 +5,7 @@ function EditPage() {
 	// Public functions:
 	//  - edit_file: Open the given team, project and file path.
 	//  - new_file: Create a new edit tab with no filename.
+	//  - rename_tab: Rename a tab's parent object
 
 	// Private functions:
 	//  - _init: Initialises the edit page (called on instantiation)
@@ -79,6 +80,11 @@ function EditPage() {
 		var fname = "New File " + this._new_count;
 		var etab = this._new_etab( team, null, fname, 0 );
 		tabbar.switch_to( etab.tab );
+	}
+
+	this.rename_tab = function(old, New) {
+		this._open_files[New] = this._open_files[old];
+		this._open_files[old] = null;
 	}
 
 	// Create a new tab that's one of ours
@@ -259,6 +265,7 @@ function EditTab(iea, team, project, path, rev) {
 		var a = fpath.split( "/", 2 );
 
 		if (a.length == 2 ) {
+			editpage.rename_tab(this.path, fpath);
 			this.project = a[1];
 			this.path = fpath;
 			this._commitMsg = commitMsg;
