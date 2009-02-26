@@ -18,20 +18,19 @@ function ProjPage() {
 
 	this.flist = null;
 	this.project = "";
+	
+	this.last_updated	= new Date();
 
 	// Member functions (declared below)
 	// Public:
 	//  - show: Show and activate the projects page
 	//  - hide: Hide the project page
-	//  - show_filelist: Show the file list
 	//  - hide_filelist: Hide the file list
 	//  - projects_exist: check that one, or more, projects exist
-	//  - change_project: Change to the named project
 	// Private:
 	//  - _init: Initialises members of the project page
 	//  - _rpane_show: Show the right-hand pane
 	//  - _rpane_hide: Hide the right-hand pane
-	//  - _project_exists: Returns true if the given project name exists
 	//  - _on_proj_change: Handler for when the selected project changes
 	//                     Hides/shows the right-hand pane as necessary
 }
@@ -82,11 +81,6 @@ ProjPage.prototype.show = function() {
 ProjPage.prototype.hide = function() {
 	logDebug( "Hiding the projects page" );
 	setStyle('projects-page', {'display':'none'});
-}
-
-ProjPage.prototype.show_filelist = function() {
-	logDebug( "Projpage.show_filelist: Current project is \"" + this.project + "\"" );
-	this.flist._show();
 }
 
 ProjPage.prototype.hide_filelist = function() {
