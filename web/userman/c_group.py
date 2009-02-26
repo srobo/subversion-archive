@@ -129,7 +129,12 @@ Usage:
             print "Group '%s' already exists" % ( gname )
             return
 
-        g.user_add( users )
+        f = g.user_add( users )
+
+        if len(f) > 0:
+            print "WARNING: The following users were not found and so were not added:"
+            print ", ".join(f)
+
         g.save()
 
     def delusers(self, args):
