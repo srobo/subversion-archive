@@ -31,6 +31,11 @@ function Tab(label) {
 		signal( this, "onclick", this );
 	}
 
+	// Called to tell find if the tab has focus
+	this.has_focus = function() {
+		return this._focus;			
+	}
+
 	// Called to tell the tab it has focus
 	this.got_focus = function() {
 		removeElementClass( this._a, "nofocus" );
@@ -146,28 +151,31 @@ function TabBar() {
 				break;
 			}
 		}
+		
+		if(tab.has_focus())	{	//we only need to change focus if the tab being removed has focus
 
-		index--;
-		if( index < 0 ) index = 0;
+			index--;
+			if( index < 0 ) index = 0;
 
-		// Try tabs to the left:
-		for( var i = index; i >= 0; i-- )
-			if( this.tabs[i].can_focus ) {
-				index = i;
-				break;
+			// Try tabs to the left:
+			for( var i = index; i >= 0; i-- )
+				if( this.tabs[i].can_focus ) {
+					index = i;
+					break;
+				}
+
+			// Try tabs to the right:
+			for( var i = index; i < this.tabs.length; i++ ) {
+				if( this.tabs[i].can_focus ) {
+					index = i;
+					break;
+				}
 			}
 
-		// Try tabs to the right:
-		for( var i = index; i < this.tabs.length; i++ ) {
 			if( this.tabs[i].can_focus ) {
-				index = i;
-				break;
+				logDebug( "Switching to tab index " + index );
+				this.switch_to( this.tabs[index] );
 			}
-		}
-
-		if( this.tabs[i].can_focus ) {
-			logDebug( "Switching to tab index " + index );
-			this.switch_to( this.tabs[index] );
 		}
 	}
 }
