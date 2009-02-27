@@ -96,6 +96,7 @@ function EditPage() {
 				if(this._open_files[i].is_modified() && override != true) {
 					logDebug(i+' is modified, logging');
 					mod_count	+= 1;
+					mod_file	= i;
 				} else {
 					logDebug('closing '+i);
 					this._open_files[i].close(override);
@@ -103,8 +104,11 @@ function EditPage() {
 			}
 		}
 		if(mod_count > 0) {
-			text	= mod_count+' file'+(mod_count > 1 ? 's have' : ' has');
-			status_button(text+' been modified!', LEVEL_WARN, 'Close Anyway', bind(this.close_all_tabs, this, true));
+			if(mod_count == 1) {
+				tabbar.switch_to(this._open_files[mod_file].tab);
+				this._open_files[mod_file].close(false);
+			} else
+				status_button(mod_count+' files have been modified!', LEVEL_WARN, 'Close Anyway', bind(this.close_all_tabs, this, true));
 			return false;
 		} else
 			return true;
