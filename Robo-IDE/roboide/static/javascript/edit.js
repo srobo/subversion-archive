@@ -321,7 +321,7 @@ function EditTab(iea, team, project, path, rev) {
 
 	//ajax event handler for saving to server
 	this._error_receive_svn_save = function() {
-		button_status("Error contacting server", LEVEL_ERROR, "retry", bind(this._svn_save, this));
+		status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this._svn_save, this));
 	}
 
 	//save file contents to server as new revision
