@@ -105,7 +105,9 @@ function EditPage() {
 		if(mod_count > 0) {
 			text	= mod_count+' file'+(mod_count > 1 ? 's have' : ' has');
 			status_button(text+' been modified!', LEVEL_WARN, 'Close Anyway', bind(this.close_all_tabs, this, true));
-		}
+			return false;
+		} else
+			return true;
 	}
 //*/
 	// Create a new tab that's one of ours
