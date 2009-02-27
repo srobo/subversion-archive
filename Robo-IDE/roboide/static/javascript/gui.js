@@ -97,13 +97,8 @@ function load_gui() {
 }
 
 function beforeunload(e) {
-	savecurrenttab();
-	for (var tab in open_files) {
-		if(!closetab(tab)){
-			e.confirmUnload("You should close tabs before closing this window");
-			break;
-		}
-	}
+	if(!editpage.close_all_tabs(false))
+		e.confirmUnload("You should close tabs before closing this window");
 }
 
 // **** Status Bar ****

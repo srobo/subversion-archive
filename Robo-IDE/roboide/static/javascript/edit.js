@@ -5,7 +5,8 @@ function EditPage() {
 	// Public functions:
 	//  - edit_file: Open the given team, project and file path.
 	//  - new_file: Create a new edit tab with no filename.
-	//  - rename_tab: Rename a tab's parent object
+	//  - rename_tab: Rename a tab's parent object.
+	//  - close_all_tabs: Close all the tabs, prompting for a save if needed.
 
 	// Private functions:
 	//  - _init: Initialises the edit page (called on instantiation)
@@ -87,6 +88,26 @@ function EditPage() {
 		this._open_files[old] = null;
 	}
 
+	this.close_all_tabs = function(override) {
+		mod_count	= 0;
+		for ( i in this._open_files ) {	//find which are modified and close the others
+			if(this._open_files[i] !== null) {
+				logDebug('checking '+i);
+				if(this._open_files[i].is_modified() && override != true) {
+					logDebug(i+' is modified, logging');
+					mod_count	+= 1;
+				} else {
+					logDebug('closing '+i);
+					this._open_files[i].close(override);
+				}
+			}
+		}
+		if(mod_count > 0) {
+			text	= mod_count+' file'+(mod_count > 1 ? 's have' : ' has');
+			status_button(text+' been modified!', LEVEL_WARN, 'Close Anyway', bind(this.close_all_tabs, this, true));
+		}
+	}
+//*/
 	// Create a new tab that's one of ours
 	// Doesn't load the tab
 	this._new_etab = function(team, project, path, rev) {
@@ -146,7 +167,8 @@ function EditPage() {
 function EditTab(iea, team, project, path, rev) {
 	// Member functions:
 	// Public:
-	//  None.
+	//  - close: Handler for when the tab is closed: check the contents of the file then close
+	//  - is_modified: are the contents of the file modified compared to the original.
 	// Private:
 	//  - _init: Constructor.
 	//  - _check_syntax: Handler for when the "check syntax" button is clicked
@@ -167,7 +189,7 @@ function EditTab(iea, team, project, path, rev) {
 	//  - _error_receive_svn_save: Handler for when a save fails.
 
 	//  ** Tab related **
-	//  - _close: Handler for when the tab is closed.
+	//  - _close: Actually close the tab.
 	//  - _onfocus: Handler for when the tab receives focus.
 	//  - _onblur: Handler for when the tab is blurred.
 
@@ -336,18 +358,28 @@ function EditTab(iea, team, project, path, rev) {
 	    d.addErrback( bind(this._error_receive_svn_save, this));
 	}
 
-	this._close = function(override) {
-		//update
-		this._capture_code();
-		var obj = this;
-		if( override != true && this.contents != this._original )
+	this.is_modified = function() {
+		if(this.tab.has_focus())	//if we have focus update the code
+			this._capture_code();
+
+		if(this.contents != this._original)	//compare to the original
+			return true;
+		else
+			return false;
+	}
+
+	this.close = function(override) {
+		if( override != true && this.is_modified() )
 			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", bind(this._close, this, true));
-		else {
-			signal( this, "onclose", this );
-			this.tab.close();
-			disconnectAll(this);
-			status_hide();
-		}
+		else
+			this._close();
+	}
+	
+	this._close = function() {
+		signal( this, "onclose", this );
+		this.tab.close();
+		disconnectAll(this);
+		status_hide();
 	}
 
 	// Handler for when the tab receives focus
@@ -355,7 +387,7 @@ function EditTab(iea, team, project, path, rev) {
 		// Close handler
 		this._signals.push( connect( $("close-edit-area"),
 					     "onclick",
-					     bind( this._close, this, false ) ) );
+					     bind( this.close, this, false ) ) );
 		// Check syntax handler
 		this._signals.push( connect( $("check-syntax"),
 					     "onclick",
@@ -592,5 +624,4 @@ function ea_loaded() {
 	// Rebroadcast the signal
 	signal(this, "ea_init_done", this);
 }
-
 
