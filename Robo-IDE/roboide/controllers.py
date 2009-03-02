@@ -166,11 +166,11 @@ class Root(controllers.RootController):
                     #If the file is in the root directory
                     if node == head:
                         #Add it named just its name
-                        zip.write(os.path.join(node, name), name)
+                        zip.write(os.path.join(node, name), name, compress_type = zipfile.ZIP_DEFLATED)
                     else:
                         #Add it with a suitable path
                         zip.write(os.path.join(node, name),
-                            node[len(root + "/code")+1:]+"/"+name)
+                            node[len(root + "/code")+1:]+"/"+name, compress_type = zipfile.ZIP_DEFLATED)
         
         add_dir_to_zip(root + "/code", zip)
         zip.close()
