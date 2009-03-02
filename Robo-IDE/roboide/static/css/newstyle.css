@@ -17,6 +17,7 @@ body {
 	overflow:hidden;
 	width:100%;
 	font-size: 1.35em;
+	height: 77px;
 }
 
 #topright, #topleft {
@@ -29,22 +30,24 @@ body {
 }
 
 #topleft {
-           float: left;
+	float: left;
 }
 #top ul {
-     display: inline;
+	margin: 21px;
+	padding: 0px;
 }
 
 #top ul li {
 	display: inline;
 	background-color:#253571;
+	line-height: 1.5em;
 }
 #top ul li a {
 	text-decoration: none;
 	font-weight: bold;
 	padding: 5px;
 	background-color: #253571;
-	color: #ffffff;	
+	color: #ffffff;
 	margin-right: 20px;
 }
 #top ul li a:hover {
@@ -80,17 +83,17 @@ body {
 	border: 1px solid #ffffff;
 	color: #253571;
 }
-#tabs li a.focus { 	background-color: #ffffff; }
+#tabs li a.focus { background-color: #ffffff; }
 #tabs li a.nofocus { background-color: #DFDBD8; }
 
-#tabs li a:hover { 
+#tabs li a:hover {
 	background-color: #253571;
-	color:#ffffff;	
+	color:#ffffff;
 }
 
 
 #status {
-	margin-left: auto;	
+	margin-left: auto;
 	margin-right: auto;
 	margin-top: 5px;
 	margin-bottom: 5px;
@@ -121,7 +124,7 @@ body {
       width: 100%;
 }
 
-#projects-page, #edit-mode { 
+#projects-page, #edit-mode {
   display: none;
 }
 
@@ -188,12 +191,12 @@ a.button:hover {
 	color: #253571;
 	background-color: #ffffff;
 }
-#edit-mode { 	
+#edit-mode {
 	text-align: center;
 	display: none;
 }
 
-#teamname { 
+#teamname {
   font-weight: bold;
   font-size: 1.5em;
   font-style: italic;
