@@ -97,7 +97,7 @@ function load_gui() {
 }
 
 function beforeunload(e) {
-	if(!editpage.close_all_tabs(false))
+	if(editpage != null && !editpage.close_all_tabs(false))
 		e.confirmUnload("You should close tabs before closing this window");
 }
 
