@@ -78,9 +78,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.54291411"
-     inkscape:cx="875.03278"
-     inkscape:cy="374.06686"
+     inkscape:zoom="0.38389825"
+     inkscape:cx="742.14826"
+     inkscape:cy="375.29207"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      width="744.09449px"
@@ -219,7 +219,7 @@
          sodipodi:role="line"
          id="tspan15996"
          x="690.68079"
-         y="476.2012">General purpose status LEDs</tspan></text>
+         y="476.2012">General purpose LEDs</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#00ffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial"
@@ -1169,5 +1169,241 @@
          id="tspan3323"
          x="691.53583"
          y="451.47195">Status LEDs</tspan></text>
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:3.40436435;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect2538"
+       width="22.955517"
+       height="10.571285"
+       x="684.26105"
+       y="169.8972"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:3.40436435;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect2540"
+       width="22.955517"
+       height="10.571285"
+       x="684.15869"
+       y="188.00514"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:3.40436435;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect2542"
+       width="22.955517"
+       height="10.571285"
+       x="684.0564"
+       y="206.11305"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:3.40436435;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect2544"
+       width="22.955517"
+       height="10.571285"
+       x="683.95404"
+       y="224.22098"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:3.40436435;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect2546"
+       width="22.955517"
+       height="10.571285"
+       x="683.85175"
+       y="242.3289"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:3.40436435;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.25"
+       id="rect2548"
+       width="22.955517"
+       height="10.571285"
+       x="683.74939"
+       y="260.43683"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:3.40436435;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2550"
+       width="22.955517"
+       height="10.571285"
+       x="685.2193"
+       y="306.14636"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:3.40436435;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2552"
+       width="22.955517"
+       height="10.571285"
+       x="685.11694"
+       y="324.2543"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:3.40436435;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2554"
+       width="22.955517"
+       height="10.571285"
+       x="685.01465"
+       y="342.36221"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:3.40436435;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2556"
+       width="22.955517"
+       height="10.571285"
+       x="684.91229"
+       y="360.47015"
+       inkscape:export-filename="/home/chris/srobo/docs/power/images/outline.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="720.1814"
+       y="180.03606"
+       id="text2558"><tspan
+         sodipodi:role="line"
+         id="tspan2560"
+         x="720.1814"
+         y="180.03606">0: Charge 1: Run</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="719.60132"
+       y="199.64429"
+       id="text2562"><tspan
+         sodipodi:role="line"
+         id="tspan2564"
+         x="719.60132"
+         y="199.64429">Master Power </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="721.92938"
+       y="318.06717"
+       id="text2566"><tspan
+         sodipodi:role="line"
+         id="tspan2568"
+         x="721.92938"
+         y="318.06717">GP LED 0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="721.92938"
+       y="336.2077"
+       id="text2570"><tspan
+         sodipodi:role="line"
+         id="tspan2572"
+         x="721.92938"
+         y="336.2077">GP LED 1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="721.92938"
+       y="354.34821"
+       id="text2574"><tspan
+         sodipodi:role="line"
+         id="tspan2576"
+         x="721.92938"
+         y="354.34821">GP LED 2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="721.92938"
+       y="372.48874"
+       id="text2578"><tspan
+         sodipodi:role="line"
+         id="tspan2580"
+         x="721.92938"
+         y="372.48874">GP LED 3</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="719.97925"
+       y="234.4576"
+       id="text2582"><tspan
+         sodipodi:role="line"
+         id="tspan2584"
+         x="719.97925"
+         y="234.4576">5V Slug Power</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="719.97925"
+       y="254.18456"
+       id="text2586"><tspan
+         sodipodi:role="line"
+         id="tspan2588"
+         x="719.97925"
+         y="254.18456">5V Servo Power</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="719.39038"
+       y="272.32507"
+       id="text2590"><tspan
+         sodipodi:role="line"
+         id="tspan2592"
+         x="719.39038"
+         y="272.32507">12V Motor Power</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="719.99683"
+       y="216.31705"
+       id="text2594"><tspan
+         sodipodi:role="line"
+         id="tspan2596"
+         x="719.99683"
+         y="216.31705">3.3V Logic Power</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="903.45782"
+       y="328.74335"
+       id="text2598"><tspan
+         sodipodi:role="line"
+         id="tspan2600"
+         x="906.32306"
+         y="328.74335">User </tspan><tspan
+         sodipodi:role="line"
+         x="903.45782"
+         y="351.24335"
+         id="tspan2602">Programmable</tspan></text>
+    <path
+       style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:5.25118112999999997;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:0;stroke-dasharray:none"
+       d="M 825.63704,303.87752 L 825.63704,372.94922"
+       id="path2604" />
+    <path
+       style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:6.5093236;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:0.6533333"
+       d="M 888.11759,167.7373 L 888.11759,273.87212"
+       id="path3388" />
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="951.60394"
+       y="214.0761"
+       id="text3390"><tspan
+         sodipodi:role="line"
+         x="951.60394"
+         y="214.0761"
+         id="tspan3394">Power</tspan><tspan
+         sodipodi:role="line"
+         x="951.60394"
+         y="236.5761"
+         id="tspan3398">Indicators</tspan></text>
   </g>
 </svg>
