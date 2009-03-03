@@ -138,6 +138,7 @@ body {
 	position:fixed;
 	top: 0;
  	display:none;
+ 	z-index: 999;
 }
 
 #login-box {
@@ -156,6 +157,9 @@ body {
 }
 #login-box em {
 	font-size: 0.7em;
+}
+
+#login-box #login-button {
 }
 
 #login-box a {
@@ -178,7 +182,7 @@ body {
 	width: 100%;
 }
 a.button {
-	margin: 10px 25% 10px 25%;
+	margin: 10px 25%;
 	border: 2px solid #ffffff;
 	padding: 2px 0 2px 0;
 	font-weight:bold;
@@ -186,6 +190,11 @@ a.button {
 	text-align:center;
 	display: block;
 	color: #ffffff;
+	white-space: nowrap;
+}
+* html #login-box a.button {
+	width: 50%;
+	margin: 10px auto;
 }
 a.button:hover {
 	color: #253571;
