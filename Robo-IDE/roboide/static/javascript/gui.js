@@ -283,8 +283,9 @@ function User() {
 		disconnectAll( "password" );
 		connect( "password", "onkeydown", bind( this._pwd_on_keypress, this ) );
 
-		// Show the dialog
+		// Show the dialog and hide the top bar, which IE6 has problems with
 		setStyle( "login-back", {"display":"block"} );
+		setStyle( "top", {"display":"none"} );
 
 		//clear box on focus, replace with 'username' on blur.
 		connect("username","onfocus",function(){if ($("username").value==$("username").defaultValue) $("username").value=''});
@@ -297,6 +298,7 @@ function User() {
 	this._hide_login = function() {
 		status_id = "status";
 		setStyle( "login-back", {"display" :"none"} );
+		setStyle( "top", {"display":""} );
 	}
 
 	// Grab the username and password from the login form and start the login
