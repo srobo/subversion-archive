@@ -135,7 +135,6 @@ body {
 	position:fixed;
 	top: 0;
  	display:none;
- 	z-index: 999;
 }
 
 #login-box {
