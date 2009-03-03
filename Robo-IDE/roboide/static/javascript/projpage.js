@@ -180,10 +180,7 @@ ProjPage.prototype.clickExportProject = function() {
 		return;
 	}
 	if( this._iframe == null ) {
-		this._iframe = createDOM( "iframe",
-					  { "style": "display:none" },
-					  "beards" );
-		appendChildNodes( document.body, this._iframe );
+		this._iframe = $('robot-zip');
 	}
 
 	this._iframe.src = "./checkout?team=" + team + "&project=" + this.project;
