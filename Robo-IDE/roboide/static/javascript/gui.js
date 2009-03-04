@@ -104,7 +104,7 @@ function beforeunload(e) {
 // **** Status Bar ****
 
 function status_clearclass() {
-	var classes = ["info", "ok", "warn", "error"];
+	var classes = ["status-info", "status-ok", "status-warn", "status-error"];
 	var s = $(status_id);
 
 	map( partial( removeElementClass, s ), classes );
@@ -145,17 +145,17 @@ function status_rich_show( obj, level ) {
 	status_clearclass();
 	switch(level) {
 	case LEVEL_INFO:
-		addElementClass( s, "info" );
+		addElementClass( s, "status-info" );
 		break;
 	case LEVEL_OK:
-		addElementClass( s, "ok" );
+		addElementClass( s, "status-ok" );
 		break;
 	case LEVEL_WARN:
-		addElementClass( s, "warn" );
+		addElementClass( s, "status-warn" );
 		break;
 	default:
 	case LEVEL_ERROR:
-		addElementClass( s, "error ");
+		addElementClass( s, "status-error ");
 		break;
 	}
 
