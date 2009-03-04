@@ -138,7 +138,7 @@ yield io.apin[2] < 2.5
 \subsection{Yielding on Power Board Events}
 The power board has a bank of four switches which you can yield on:
 \begin{verbatim}
-yield power.switch(x) == 0
+yield power.switch[x] == 0
 \end{verbatim}
 Where \texttt{x} can take the values: \{0, 1, 2, 3\}.
 
