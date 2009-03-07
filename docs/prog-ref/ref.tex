@@ -27,9 +27,9 @@
 robots. {\bf This is not intended to be an introduction to the Python programming language.} For more information on programming in Python and about how to bring all this together see the tutorials linked to from the website. 
 
 \section{Directory structure}
-The minimum  requirement to create a functioning program using the IDE, is to have a python file called \texttt{robot.py} in a `Project' . Exporting your Project from the IDE will generate a zip file containing your code packaged as a python module. This file can be saved to your memory stick and inserted into your robot.
+The minimum  requirement to create a functioning program using the IDE, is to have a python file called \texttt{robot.py} in a `project' . Exporting your project from the IDE will generate a zip file containing your code packaged as a python module. This file can be saved to your memory stick and inserted into your robot.
 
-To make your program easier to read and maintain you can split you code across multiple files within a Project. The export function of the IDE will package the zip file correctly.
+To make your program easier to read and maintain you can split you code across multiple files within a project. The export function of the IDE will package the zip file correctly.
 
 \subsection{robot.py}
 This file must at least contain the main function for the robot control
@@ -38,8 +38,8 @@ algorithm - see Listing \ref{py:main}:
 \begin{python}
 \begin{verbatimtab}
 def main( game, colour ):
-        #Where game is either GOLF or SQUIRREL
-        #colour is one of RED, BLUE, GREEN or YELLOW
+    #Where game is either GOLF or SQUIRREL
+    #colour is one of RED, BLUE, GREEN or YELLOW
 \end{verbatimtab}
   \caption{\label{py:main}Minimum contents of robot.py} 
 \end{python}
@@ -48,8 +48,8 @@ def main( game, colour ):
 Before you can control any of the student robotic kit e.g. motors, servos etc. you need to tell python to \textit{import} the Student Robotics interface (functions specific to the SR kit). Listing \ref{py:import} should appear at the top
 \begin{python}
 \begin{verbatimtab}
-#Import the Studnet Robotics Interface	
-from sr import * 
+#Import the Student Robotics Interface	
+from sr import *
 
 #rest of code follows...
 \end{verbatimtab}
@@ -57,29 +57,28 @@ from sr import *
 \end{python}
 
 \section{Main function}
-The function \texttt{main} in \texttt{robot.py} is the first part of your code to be executed. It makes the following two variables availible to your code:
+The function \texttt{main} in \texttt{robot.py} is the first part of your code to be executed. It makes the following two variables available to your code:
 \begin{description}
 \item[game] The type of competition round being played i.e. Squirrel or Golf
 \item[colour]The colour of \textit{your team's} balls.
 \end{description}
 
-This information is sent wirelessly to your robot at the start of each round. The game types are available as constants for use in your code, as in Listing \ref{py:gametype}
+This information is sent wirelessly to your robot at the start of each round. The game types are available as constants for use in your code, as in Listing \ref{py:gametype}.
 \begin{python}
 \begin{verbatimtab}
-#Import the Studnet Robotics Interface	
 from sr import * 
 
 def main( game, colour ):
-        #Where game is either GOLF or SQUIRREL
-        #colour is one of the colour constants from above
+    #Where game is either GOLF or SQUIRREL
+    #colour is one of the colour constants from above
 
-	if game == GOLF:
-		print "Playing Golf Game..."
-		run_golf()	#defined elsewhere
+    if game == GOLF:
+        print "Playing Golf Game..."
+        run_golf()	#defined elsewhere
 
-	elif game == SQUIRREL:
-		print "Playing Squirrel Game..."
-		run_squirrel()	#defined elsewhere
+    elif game == SQUIRREL:
+        print "Playing Squirrel Game..."
+        run_squirrel()	#defined elsewhere
 \end{verbatimtab}
   \caption{\label{py:gametype}} 
 \end{python}
@@ -113,10 +112,10 @@ The \texttt{yield} statement can be used to wait for an event to
 occur.  For example:
 
 \begin{verbatimtab}
-yield io
+yield io.pin[0]
 \end{verbatimtab}
 
-Causes the algorithm to wait until a dio (digital IO) event is received. If you are only interested in certain inputs or conditions, then you can specify this in the yield statement:
+Causes the algorithm to wait until pin 0 changes on the JointIO board.  If you are only interested in certain inputs or conditions, then you can specify this in the yield statement:
 \begin{python}
 \begin{verbatimtab}
 # Wait for input 3 to change digital value
@@ -154,7 +153,7 @@ The \texttt{yield} statement can be used to wait on a combination of events and
 a timeout, whichever occurs first:
 
 \begin{verbatimtab}
-yield io, 5
+yield io.pin[0], 5
 \end{verbatimtab}
 
 Causes the algorithm to wait until a digital IO event is received or 5 seconds,
@@ -166,7 +165,7 @@ Sometimes you may want to wait for event A to occur AND event B to occur before 
 \begin{python}
 \begin{verbatim}
 #wait for input pin 3 to be logic 1 and input pin 2 to be logic 0
-yield io.pin[3] == 1 & io.pin[2] == 0
+yield (io.pin[3] == 1) & (io.pin[2] == 0)
 
 #wait for pins 1 and 3 to change, and for pin 2 to be logic 1
 yield And(io.pin[1], io.pin[2] == 1, io.pin[3]) 
@@ -356,3 +355,5 @@ setled(0,1) #where the first argument is the LED number
 \end{verbatimtab}
 
 \end{document}
+
+% LocalWords:  IDE
