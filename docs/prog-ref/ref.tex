@@ -74,11 +74,11 @@ def main( game, colour ):
 
     if game == GOLF:
         print "Playing Golf Game..."
-        run_golf()	#defined elsewhere
+        yield run_golf	#function defined elsewhere
 
     elif game == SQUIRREL:
         print "Playing Squirrel Game..."
-        run_squirrel()	#defined elsewhere
+        yield run_squirrel  #function defined elsewhere
 \end{verbatimtab}
   \caption{\label{py:gametype}} 
 \end{python}
