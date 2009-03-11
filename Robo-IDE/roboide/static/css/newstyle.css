@@ -137,6 +137,13 @@ body {
  	display:none;
 }
 
+#login-back .status-info,
+#login-back .status-ok,
+#login-back .status-warn,
+#login-back .status-error {
+	background-color: transparent;
+}
+
 #login-box {
 	margin: 150px 25% 0 25%;
 	padding: 20px;
