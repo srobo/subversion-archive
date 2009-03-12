@@ -15,7 +15,7 @@ class Settings(SQLObject):
     # The setting description
     desc = StringCol()
 
-# Holds the settings 
+# Holds the settings
 class SettingValues(SQLObject):
     # The setting ID
     setting_id = IntCol()

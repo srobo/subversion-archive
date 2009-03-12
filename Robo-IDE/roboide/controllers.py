@@ -38,7 +38,7 @@ class Client:
         c.callback_get_login = get_login
         c.set_store_passwords(False)
         c.set_auth_cache(False)
-        
+
         #Using self.__dict__[] to avoid calling setattr in recursive death
         self.__dict__["client"] = c
         if not team in srusers.getteams():
@@ -146,11 +146,11 @@ class Root(controllers.RootController):
                       recurse=True)
 
 	# Check if __init__.py exists in user code, if it doesn't insert blank file before checkout
-	if not os.path.exists(root+"/code/__init__.py"):	
+	if not os.path.exists(root+"/code/__init__.py"):
 		f = open(root+"/code/__init__.py", 'w')
 		f.close()
-		
-		
+
+
         # (internal) robot.zip to contain the code
         zfile = tempfile.mktemp()
         zip = zipfile.ZipFile(zfile, "w")
@@ -171,7 +171,7 @@ class Root(controllers.RootController):
                         #Add it with a suitable path
                         zip.write(os.path.join(node, name),
                             node[len(root + "/code")+1:]+"/"+name, compress_type = zipfile.ZIP_DEFLATED)
-        
+
         add_dir_to_zip(root + "/code", zip)
         zip.close()
 
@@ -186,7 +186,7 @@ class Root(controllers.RootController):
             add_dir_to_zip(config.get("svn.packagedir"), syszip)
 
             syszip.write(zfile, ZIPNAME)
-            syszip.close() 
+            syszip.close()
 
             #Read the data in from the temporary zipfile
             zipdata = open(syszfile, "rb").read()
@@ -216,7 +216,7 @@ class Root(controllers.RootController):
         """
         curtime = time.time()
         client = Client(int(team))
-        
+
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
 
         rev = self.get_revision(revision)
@@ -271,7 +271,7 @@ class Root(controllers.RootController):
         for y in log:
             if y['author'] not in authors:
                 authors.append(y['author'])
-                
+
         #narrow results by user (if supplied)
         result = []
         if user != None:
@@ -281,11 +281,11 @@ class Root(controllers.RootController):
         else:
             result = log[:]
 
-        #if many results, split into pages of 10 and return appropriate 
+        #if many results, split into pages of 10 and return appropriate
         start = offset*10
         end = start + 10
         maxval = len(result)
-        if maxval%10 > 0:  
+        if maxval%10 > 0:
             overflow = maxval/10 +1
         else:
             overflow = maxval/10
@@ -347,7 +347,7 @@ class Root(controllers.RootController):
                 pass
 
         return dict(files=r, log=l)
-    
+
     @expose("json")
     @srusers.require(srusers.in_team())
     def delete(self, team, files):
@@ -366,7 +366,7 @@ class Root(controllers.RootController):
             client.callback_get_log_message = cb
 
             urls = [client.REPO + str(x) for x in files]
-            
+
             message = "Files deleted successfully: \n" + "\n".join(files)
 
             paths = list(set([os.path.dirname(file) for file in files]))
@@ -386,12 +386,12 @@ class Root(controllers.RootController):
                         log.debug("Deleting empty directory: " + client.REPO + dir)
                         client.remove(client.REPO + dir)
                         message += "\nRemove empty directory " + dir
-                    
+
             except pysvn.ClientError:
                 message = "Error deleting files."
 
             return dict(Message = message)
-    
+
     @expose("json")
     @srusers.require(srusers.in_team())
     def fulllog(self, team):
@@ -523,10 +523,10 @@ class Root(controllers.RootController):
                        kind : FOLDER or FILE
                        children : [list as above]
                        name : name of file}, ...]}
-        """    
+        """
         client = Client(int(team))
         target_rev = self.get_revision(rev)
-            
+
         if len(rootpath) == 0 or rootpath[0] != "/":
             rootpath = "/" + rootpath
 
@@ -537,7 +537,7 @@ class Root(controllers.RootController):
         except pysvn.ClientError, e:
             print str(e)
             return { "error" : "Error accessing repository" }
-        
+
         #Start off with a directory to represent the root of the path
         tree = dict( name = os.path.basename(rootpath),
                      path = rootpath,
@@ -550,7 +550,7 @@ class Root(controllers.RootController):
 
             # For some reason, pysvn returns "//" on the front of the paths
             if filename[0:2] == "//":
-                filename = filename[1:] 
+                filename = filename[1:]
 
             basename = os.path.basename(filename)  #/etc/bla - returns bla
 
@@ -588,7 +588,7 @@ class Root(controllers.RootController):
                 tree["children"] = tree["children"].values()
             except AttributeError:
                 return tree
-            
+
             #For each child node, try to apply this function to them
             for i in range(0, len(tree["children"])):
                 try:
@@ -596,7 +596,7 @@ class Root(controllers.RootController):
                 except AttributeError:
                     pass
             return tree
-        
+
         tree = dicttolist(tree)["children"]
         return dict(tree=tree)
 
@@ -670,7 +670,7 @@ class Root(controllers.RootController):
         try:
             tmpdir = self.checkoutintotmpdir(client, rev, path)
         except pysvn.ClientError:
-            try:    
+            try:
                 #wipe temp directory
                 shutil.rmtree(tmpdir)
             except:
@@ -690,10 +690,10 @@ class Root(controllers.RootController):
                 revertto, \
                 tmpdir)
         except pysvn.ClientError:
-                #wipe temp directory           
+                #wipe temp directory
                 shutil.rmtree(tmpdir)
                 print "ClientError, returning";
-                return dict();   
+                return dict();
         print "didn't throw merge exception"
         #2 1/2: use client.add if we're adding a new file, ready for checkin
         try:
@@ -702,14 +702,14 @@ class Root(controllers.RootController):
             else:
                 client.add(join(tmpdir, basename), recurse=False)
         except pysvn.ClientError:
-            try:    
+            try:
                 #wipe temp directory
                 shutil.rmtree(tmpdir)
             except:
                 pass
             return dict(new_revision="0", code = "",\
 			                success="Error reverting file(s) - Are you already at the current revision ")
-			                
+
         #3. Commit the new directory
         try:
             newrev = client.checkin([tmpdir], message)
@@ -730,7 +730,7 @@ class Root(controllers.RootController):
                 newrev = 0
             elif os.path.isdir(join(tmpdir, basename)) == True:
                 success = "Merge"
-                #Grab the merged text.                
+                #Grab the merged text.
                 mergedfile = open(join(tmpdir, basename), "rt")
                 code = mergedfile.read()
                 mergedfile.close()
@@ -742,7 +742,7 @@ class Root(controllers.RootController):
 
         return dict(new_revision=newrev, code = "",\
 		                success="Success !!!")
-		                
+
     @expose("json")
     @srusers.require(srusers.in_team())
     def calendar(self, mnth, yr, file, team):
@@ -757,7 +757,7 @@ class Root(controllers.RootController):
             logging.debug("Log failed for %s" % c.REPO+file)
             print "failed to retrieve log"
             return dict(path=file, history=[])
-        
+
         #get a list of users based on log authors
         start = datetime.datetime(year, month, 1, 0, 0, 0)
 
@@ -765,17 +765,17 @@ class Root(controllers.RootController):
             end = datetime.datetime(year+1, 1, 1, 0, 0, 0) #watchout for rollover
         else:
             end = datetime.datetime(year, month+1, 1, 0, 0, 0)
-        
+
         result = []
-        
+
         print "i'm here"
-                 
+
         for y in log:
             now = datetime.datetime(2000, 1, 1);    #create a dummy datetime
             now = now.fromtimestamp(y["date"]);
             if (start <= now < end):
                 result.append(y)
-                
+
 
         return dict(  path=file,\
                       history=[{"author":x["author"], \
@@ -783,7 +783,7 @@ class Root(controllers.RootController):
                       time.localtime(x["date"])), \
                       "message":x["message"], "rev":x["revision"].number} \
                       for x in result])
-                      
+
     @expose("json")
     @srusers.require(srusers.in_team())
     def move(self, team, src, dest, msg=""):
@@ -792,26 +792,26 @@ class Root(controllers.RootController):
         #   returns status = 0 on success
         client = Client(int(team))
         source = client.REPO +src
-        destination = client.REPO + dest        
-        
+        destination = client.REPO + dest
+
         #log message callback - needed by client.move
         def cb():
             return True, str(msg)
-            
-        client.callback_get_log_message = cb       
-        
+
+        client.callback_get_log_message = cb
+
         #message what gets returned to the browser
         message=""
-            
+
         if not client.is_url(os.path.dirname(source)):
             return dict(new_revision="0", status="1", message="Source file/folder doesn't exist: "+src)
-            
+
         if not client.is_url(os.path.dirname(destination)):
             return dict(new_revision="0", status="1", message="Destination file/folder doesn't exist: "+dest)
-            
+
         try:
             client.move(source, destination, force=True)
-            #TODO: Need to prune empty directories. 
+            #TODO: Need to prune empty directories.
             print "not failed yet\n"
             if len(client.ls(os.path.dirname(source))) == 0:
                 #The directory is empty, OK to delete it
@@ -819,44 +819,44 @@ class Root(controllers.RootController):
                 client.remove(os.path.dirname(source))
                 message += "\nRemove empty directory " + src
             message +="\n successfully moved file"
-                
+
         except pysvn.ClientError, e:
             message = "Error moving files. :: "+str(e)
-            return dict(new_revision="0", status="0", message=message) 
-                        
-        return dict(new_revision="0", status="0", message=message)                              
+            return dict(new_revision="0", status="0", message=message)
+
+        return dict(new_revision="0", status="0", message=message)
 
     @expose("json")
     @srusers.require(srusers.in_team())
     def copy(self, team, src="", dest="", msg="SVN Copy", rev="0"):
-        
-        src_rev = int(rev)                
-        
+
+        src_rev = int(rev)
+
         client = Client(int(team))
         source = client.REPO +src
-        destination = client.REPO + dest                 
-        
+        destination = client.REPO + dest
+
         def cb():
             return True, str(msg)
-            
-        client.callback_get_log_message = cb 
-        
+
+        client.callback_get_log_message = cb
+
         if src_rev == 0:
             source_rev = pysvn.Revision( pysvn.opt_revision_kind.head)
         else:
             source_rev = pysvn.Revision( pysvn.opt_revision_kind.number, src_rev)
-            
+
         if not client.is_url(os.path.dirname(source)):
             return dict(new_revision="0", status="1", msg="No Source file/folder specified");
         if not client.is_url(os.path.dirname(destination)):
             return dict(new_revision="0", status="1", msg="No Destination file/folder specified");
-            
+
         try:
             client.copy(source, destination, source_rev);
 
-        except pysvn.ClientError, e: 
+        except pysvn.ClientError, e:
             return dict(new_revision = "0", status="1", message="Copy Failed: "+str(e))
-        
+
         return dict(new_revision = "0", status="0", message="copy successful")
 
     @expose("json")
@@ -905,11 +905,11 @@ class Root(controllers.RootController):
                     subend = line.find(",", substart+7)
                     pylines.append( int(line[substart+7:subend]))
                 else:
-                    pylines.append(0) 
+                    pylines.append(0)
                 substart = line.rfind("File \"")
                 if substart > -1:
                     subend = line.find("\"", substart+6);
-                    pyfiles.append( line[substart+6 : subend])    
+                    pyfiles.append( line[substart+6 : subend])
                 else:
                     pyfiles.append("")
             return dict( messages = pyerrors, len = len(pyerrors), lines = pylines, files = pyfiles,
