@@ -229,6 +229,10 @@ function EditTab(iea, team, project, path, rev) {
 	this._stat_contents = null;
 	// the ide_editarea instance
 	this._iea = iea;
+	//this will host the delay for the autosave
+	this._timeout = null;
+	//the time in seconds to delay before saving
+	this._autosave_delay = 25;
 
 	this._init = function() {
 		this.tab = new Tab( this.path );
@@ -251,6 +255,9 @@ function EditTab(iea, team, project, path, rev) {
 		} else
 			// Existing file
 			this._load_contents();
+
+		connect( window, "ea_keydown",
+			 bind( this._on_keypress, this ) );
 	}
 
 	// Start load the file contents
@@ -364,6 +371,18 @@ function EditTab(iea, team, project, path, rev) {
 	    d.addErrback( bind(this._error_receive_svn_save, this));
 	}
 
+	this._on_keypress = function() {
+		if( this._timeout != null )
+			this._timeout.cancel();
+		this._timeout = wait(this._autosave_delay);
+		this._timeout.addCallback(this._autosave);
+	}
+
+	this._autosave = function() {
+		this._timeouut = null;
+//		alert("I'm autosaving now!");
+	}
+
 	this.is_modified = function() {
 		if(this.tab.has_focus())	//if we have focus update the code
 			this._capture_code();
@@ -380,7 +399,7 @@ function EditTab(iea, team, project, path, rev) {
 		else
 			this._close();
 	}
-	
+
 	this._close = function() {
 		signal( this, "onclose", this );
 		this.tab.close();
@@ -527,6 +546,7 @@ function ide_editarea(id) {
 	 		replace_tab_by_spaces : 4,
 			min_width: "100",   //NOTE: HAD TO EDIT 'edit_area_loader.js' line:573 to get % width
 			min_height:500,
+			plugins: "SRautosave",
 			EA_load_callback: "ea_loaded"
  		});
 
@@ -631,3 +651,8 @@ function ea_loaded() {
 	signal(this, "ea_init_done", this);
 }
 
+// Called when the editarea is due for an autosave
+function ea_autosave() {
+	// Rebroadcast the signal
+	signal(this, "ea_keydown", this);
+}
