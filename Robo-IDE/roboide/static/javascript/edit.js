@@ -255,9 +255,6 @@ function EditTab(iea, team, project, path, rev) {
 		} else
 			// Existing file
 			this._load_contents();
-
-		connect( window, "ea_keydown",
-			 bind( this._on_keypress, this ) );
 	}
 
 	// Start load the file contents
@@ -425,6 +422,10 @@ function EditTab(iea, team, project, path, rev) {
 		this._signals.push( connect( "history",
 					     "onclick",
 					     bind( this._change_revision, this, false ) ) );
+		// autosave handler
+		this._signals.push( connect( window,
+						"ea_keydown",
+						bind( this._on_keypress, this ) ) );
 		this._update_contents();
 	}
 
