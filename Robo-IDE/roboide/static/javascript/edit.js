@@ -380,7 +380,7 @@ function EditTab(iea, team, project, path, rev) {
 
 	this._autosave = function() {
 		this._timeouut = null;
-//		alert("I'm autosaving now!");
+		logDebug('EditTab: Autosaving '+this.path)
 	}
 
 	this.is_modified = function() {
