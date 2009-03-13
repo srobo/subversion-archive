@@ -79,8 +79,8 @@ void init(void)
 	P1OUT = P2OUT = P3OUT = P4OUT = 0x00;
 	P1SEL = P2SEL = P4SEL = 0x00;
 
-	/* Port 2: 2.0 =  vcc-detect; 2.1 = status LED */
-	P2DIR = 0xFE;
+	/* Port 2: 2.4 =  vcc-detect; 2.1 = status LED */
+	P2DIR = 0xEF;
 	
 	/* Port 3: 3.1 = I2C SDA; 3.2 = I2C SCL */
 	P3DIR = 0xFD;
