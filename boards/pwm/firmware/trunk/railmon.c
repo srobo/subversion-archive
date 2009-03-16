@@ -3,6 +3,9 @@
 
 void railmon_init( void )
 {
+	/* Configure pin as input  */
+	P2DIR &= ~RAIL_MONITOR_PIN;
+
 	/* Enable high->low interupt on VCC detect pin */
 	P2IES |= RAIL_MONITOR_PIN;
 	P2IE |= RAIL_MONITOR_PIN;

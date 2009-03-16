@@ -61,13 +61,14 @@ void init(void)
 	DCOCTL = CALDCO_12MHZ;
 	BCSCTL1 = CALBC1_12MHZ;
 
-	/* default output pins to 0 , default to GPIO function*/
-	P1OUT = P2OUT = P3OUT = P4OUT = 0x00;
+	/* Default to inputs */
+	P1DIR = P2DIR = P3DIR = P4DIR = 0;
+	P1OUT = P2OUT = P3OUT = P4OUT = 0;
 	P1SEL = P2SEL = P4SEL = 0x00;
 
-	/* Port 2: 2.4 =  vcc-detect; 2.1 = status LED */
-	P2DIR = 0xEF;
-	
+	/* Activity LED  */
+	P2DIR |= 0x20;
+
 	/* Port 3: 3.1 = I2C SDA; 3.2 = I2C SCL */
 	P3DIR = 0xFD;
 	P3SEL = 0x06;
