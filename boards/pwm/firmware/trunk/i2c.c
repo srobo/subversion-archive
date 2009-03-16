@@ -247,6 +247,9 @@ void i2c_init( void )
     /* Release from reset */
     UCB0CTL1 &= ~UCSWRST;
 
+    /* Let the peripheral use the pins */
+    P3SEL |= 0x06;
+
     /* Enable the receive and transmit interrupts */
     IE2 |=  UCB0RXIE | UCB0TXIE;
 
