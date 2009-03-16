@@ -24,6 +24,7 @@
 #include "timer-b.h"
 #include "flash430/i2c-flash.h"
 #include "lcd.h"
+#include "led.h"
 
 #define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x7063
@@ -191,7 +192,7 @@ interrupt (USCIAB0RX_VECTOR) usci_rx_isr( void )
 		/* Reset to beginning of register */
 		pos = 0;
 		at_start = TRUE;
-		FLAG();
+		led_activity_on();
 
 		/* Start the reset generator */
 		timer_b_start();
@@ -204,7 +205,7 @@ interrupt (USCIAB0RX_VECTOR) usci_rx_isr( void )
 	if( UCB0STAT & UCSTPIFG )
 	{
 		UCB0STAT &= ~UCSTPIFG;
-		FLAG_OFF();
+		led_activity_off();
 
 		/* We don't need to reset things */
 		timer_b_stop();
@@ -249,7 +250,7 @@ void i2c_init( void )
     /* Enable the receive and transmit interrupts */
     IE2 |=  UCB0RXIE | UCB0TXIE;
 
-    FLAG_OFF();
+    led_activity_off();
 }
 
 static uint8_t i2cr_identity( uint8_t *buf )

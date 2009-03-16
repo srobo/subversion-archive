@@ -16,9 +16,6 @@
 #include <msp430x22x4.h>
 #include <stddef.h>
 
-#define FLAG() P4OUT |= 0x80
-#define FLAG_OFF() P4OUT &= ~0x80
-
 /* These should be migrated to msp430 libc */
 #define UCSSEL_UCLKI UCSSEL_0
 #define UCSSEL_ACLK UCSSEL_1

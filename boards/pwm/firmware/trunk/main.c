@@ -27,6 +27,7 @@
 #include "lcd.h"
 #include "railmon.h"
 #include "watchdog.h"
+#include "led.h"
 
 #define USE_WATCHDOG 0
 
@@ -66,9 +67,6 @@ void init(void)
 	P1OUT = P2OUT = P3OUT = P4OUT = 0;
 	P1SEL = P2SEL = P4SEL = 0x00;
 
-	/* Activity LED  */
-	P2DIR |= 0x20;
-
 	/* Port 3: 3.1 = I2C SDA; 3.2 = I2C SCL */
 	P3DIR = 0xFD;
 	P3SEL = 0x06;
@@ -91,6 +89,7 @@ void init(void)
 	}
 
 	servo_init();
+	led_init();
 	flash_init();
 	i2c_flash_init();
 	i2c_init();
