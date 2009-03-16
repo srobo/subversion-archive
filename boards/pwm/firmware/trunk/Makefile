@@ -24,7 +24,7 @@ CFLAGS += -DUSE_CHECKSUMS=0
 endif
 
 H_FILES = servo.h sweep.h hardware.h common.h i2c.h smbus_pec.h timer-b.h lcd.h \
-	railmon.h
+	railmon.h watchdog.h
 C_FILES = main.c servo.c sweep.c i2c.c smbus_pec.c timer-b.c lcd.c \
 	railmon.c
 
