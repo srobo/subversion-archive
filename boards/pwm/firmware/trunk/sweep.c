@@ -26,7 +26,7 @@ void delay_MS(uint32_t d)
 }
 
 /* This function sweeps all servos between two hardcoded arbitrary positions */
-#if(1)
+#if(SWEEP_SERVOS)
 void sweepServo(void)
 {
 	uint8_t channel;

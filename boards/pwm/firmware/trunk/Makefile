@@ -9,6 +9,20 @@ CFLAGS += -I ./types
 # flash430
 LDFLAGS := -L ./flash430 -lflash430
 
+include .config
+
+ifeq ($(strip $(SWEEP_SERVOS)),y)
+CFLAGS += -DSWEEP_SERVOS=1
+else
+CFLAGS += -DSWEEP_SERVOS=0
+endif
+
+ifeq ($(strip $(USE_CHECKSUMS)),y)
+CFLAGS += -DUSE_CHECKSUMS=1
+else
+CFLAGS += -DUSE_CHECKSUMS=0
+endif
+
 H_FILES = servo.h sweep.h hardware.h common.h i2c.h smbus_pec.h timer-b.h lcd.h
 C_FILES = main.c servo.c sweep.c i2c.c smbus_pec.c timer-b.c lcd.c
 
