@@ -25,6 +25,7 @@
 #include "flash430/flash.h"
 #include "flash430/i2c-flash.h"
 #include "lcd.h"
+#include "railmon.h"
 
 #define USE_WATCHDOG 0
 
@@ -91,14 +92,9 @@ void init(void)
 	/* Pull-ups */
 	P3REN |= 0;
 
-	/* Enable high->low interupt on 2.1 vcc detect pin */
-	P2IES = 0x01;
-	P2IE = 0x01;
 	/* Disable interupts on port 1 (unconnected) */
 	P1IES = 0;
 	P1IE = 0;
-	/* clear all flags that might have been set */
-	P2IFG = 0x00; 
 
 	servo_init();
 
@@ -132,16 +128,9 @@ void init(void)
 	i2c_flash_init();
 	i2c_init();
 	timer_b_init();
+	railmon_init();
 	lcd_init();
 	eint();
-}
-
-/* ISR for IO interrupt */
-interrupt (PORT2_VECTOR) isr_port2(void)
-{
-	/* The rail has dropped - set the outputs to be low. */
-	P4OUT = 0x00;
-	P2IFG = 0x00;
 }
 
 /* ISR for TACCR0. 
@@ -159,7 +148,7 @@ interrupt (TIMERA0_VECTOR) isr_TACR0(void)
 inline void set_p1out(uint8_t p1)
 {
 	/* Only change the output if the rail is up */
-	if(P2IN & RAIL_MONITOR_PIN)
+	if( railmon_is_up() )
 		P4OUT = p1;
 }
 

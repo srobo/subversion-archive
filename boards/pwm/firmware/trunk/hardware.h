@@ -5,7 +5,4 @@
 #include <signal.h>
 #include <iomacros.h>
 
-//Interrupt capabilities of P1 and P2
-#define RAIL_MONITOR_PIN 0x10
-
 #endif //HARDWARE_H
