@@ -27,7 +27,6 @@
 #include "lcd.h"
 
 #define USE_WATCHDOG 0
-#define SWEEP_SERVOS 1
 
 /* ACLK, 512 counts */
 #define WATCHDOG_SETTINGS (WDTSSEL | WDTIS_2)
