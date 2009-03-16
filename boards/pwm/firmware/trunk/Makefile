@@ -23,6 +23,13 @@ else
 CFLAGS += -DUSE_CHECKSUMS=0
 endif
 
+ifeq ($(strip $(USE_LCD)),y)
+CFLAGS += -DUSE_LCD=1
+else
+CFLAGS += -DUSE_LCD=0
+endif
+
+
 H_FILES = servo.h sweep.h hardware.h common.h i2c.h smbus_pec.h timer-b.h lcd.h \
 	railmon.h watchdog.h led.h
 C_FILES = main.c servo.c sweep.c i2c.c smbus_pec.c timer-b.c lcd.c \

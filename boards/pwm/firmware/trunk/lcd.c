@@ -17,6 +17,13 @@
 #include "lcd.h"
 #include <stdint.h>
 
+#if USE_LCD
+static void lcd_delay(void);
+static void lcd_delay_long(uint16_t time);
+static void lcd_cmd4(uint8_t data);
+static void lcd_dat4(uint8_t data);
+static void lcd_address(uint8_t addr);
+static void lcd_char(uint8_t data);
 
 
 void lcd_init( void )
@@ -109,7 +116,7 @@ void lcd_init( void )
 
 }
 
-void lcd_delay(void)
+static void lcd_delay(void)
 {
 	nop();
 	nop();
@@ -124,7 +131,7 @@ void lcd_delay(void)
 	
 }
 
-void lcd_delay_long(uint16_t time)
+static void lcd_delay_long(uint16_t time)
 {
 	uint16_t in_tick;
 	uint16_t out_tick;
@@ -149,7 +156,7 @@ void lcd_set_buffer(uint8_t buffer_loc, uint8_t* data)
 		redraw =1;
 }
 
-void lcd_cmd4(uint8_t data)
+static void lcd_cmd4(uint8_t data)
 {
 	command_delay;
 	rs_lo;
@@ -160,7 +167,7 @@ void lcd_cmd4(uint8_t data)
 	e_lo;
 }
 
-void lcd_dat4(uint8_t data)
+static void lcd_dat4(uint8_t data)
 {
 	command_delay;
 	rs_hi;
@@ -172,14 +179,14 @@ void lcd_dat4(uint8_t data)
 }
 
 
-void lcd_address(uint8_t addr)
+static void lcd_address(uint8_t addr)
 {
 	lcd_cmd4( ( (addr&0x70)|0x80 )>>4 );
 	lcd_cmd4(addr&0x0f);
 	
 }
 
-void lcd_char(uint8_t data)
+static void lcd_char(uint8_t data)
 {
 	lcd_dat4( ( (data&0x70)|0x80 )>>4 );
 	lcd_dat4(data&0x0f);
@@ -217,3 +224,22 @@ uint8_t lcd_csum(uint8_t pos)
 	}
 	return total;
 }
+
+#else
+void lcd_init( void )
+{
+}
+
+void lcd_set_buffer(uint8_t buffer_loc, uint8_t* data)
+{
+}
+
+void lcd_service(void)
+{
+}
+
+uint8_t lcd_csum(uint8_t pos)
+{
+	return 0;
+}
+#endif

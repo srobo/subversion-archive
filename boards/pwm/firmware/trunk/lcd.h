@@ -50,17 +50,8 @@ uint8_t redraw;
 /* display buffers */
 uint8_t lcd_screens[buf_qty][lcd_buffer_len]; 
 
-
-
 void lcd_init( void );
 void lcd_set_buffer(uint8_t buffer_loc, uint8_t* data);
-void lcd_delay(void);
-void lcd_delay_long(uint16_t time);
-void lcd_set_buffer(uint8_t buffer_loc, uint8_t* data);
-void lcd_cmd4(uint8_t data);
-void lcd_dat4(uint8_t data);
-void lcd_address(uint8_t addr);
-void lcd_char(uint8_t data);
 void lcd_service(void);
 uint8_t lcd_csum(uint8_t pos);
 
