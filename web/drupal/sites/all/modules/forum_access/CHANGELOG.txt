@@ -3,6 +3,19 @@ CHANGELOG for Forum Access for Drupal 6
 forum_access 6.x-1.x-dev:
 
 
+forum_access 6.x-1.x-BETA3 (2009-03-18):
+  Enhancements:
+    - #310254, #163964: Implement comment moderation as well as advanced node moderation.
+    - Remove 'post' links from forum page if the user doesn't have the 'create' permission.
+    - Disable checkboxes for roles that have no or full access anyway.
+    - #213957: Implement the ability to use the settings of an existing forum as a template.
+    - Provide a choice of how/when to update the {node_access} table and only do it if necessary.
+    - Tune presentation of configuration information.
+    - Add extensive configuration information and trouble-shooting tips.
+    - Use View grant to control access to the forum's admin page (with the access settings!), too.
+    - Make forum_access_db_rewrite_sql() more resistant against name conflicts.
+    - Keep the checkboxes aligned even when the column titles wrap; improve the titles for containers.
+
 forum_access 6.x-1.x-BETA2 (2009-01-29):
   Enhancements:
     - Collapse Moderators fieldset if empty.

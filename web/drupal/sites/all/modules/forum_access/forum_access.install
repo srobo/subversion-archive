@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.install,v 1.8 2009/01/25 16:52:15 salvis Exp $
+// $Id: forum_access.install,v 1.11 2009/03/18 22:21:29 salvis Exp $
 
 /**
  * Implementation of hook_install().
@@ -73,6 +73,12 @@ function forum_access_schema() {
  */
 function forum_access_uninstall() {
   drupal_uninstall_schema('forum_access');
+  variable_del('forum_access_allowed_node_edit_elements');
+  variable_del('forum_access_allowed_node_edit_options');
+  variable_del('forum_access_batch_threshold');
+  variable_del('forum_access_default_template_tid');
+  variable_del('forum_access_new_template_tid');
+  variable_del('forum_access_provide_moderators_template_variable');
 }
 
 /**

@@ -6,6 +6,19 @@
   overflow: hide;
 }
 
+.forum-access-div#container {
+  width: 75%;
+}
+
 .forum-access-clearer {
   clear: both;
+}
+
+.forum-access-div > .form-checkboxes {
+  margin-top: -1ex;
+}
+
+div.forum-access-flowed > div.form-item {
+  display: inline;
+  margin-right: 1em;
 }
