@@ -24,6 +24,21 @@ class SettingValues(SQLObject):
     # The setting value
     value = StringCol()
 
+# Holds the autosaved files 
+class AutoSave(SQLObject):
+    # The full file name and path
+    file_name = StringCol()
+    # The revision that the file is based on
+    revision = IntCol()
+    # The team of the user that saved the file
+    team_id = IntCol()
+    # The user that saved the file
+    uname = StringCol()
+    # The date and time of the save
+    date = DateTimeCol()
+    # The setting value
+    value = StringCol()
+
 class FirmwareTargets(SQLObject):
     """Devices that we manage firmware for."""
     # The name of the device.
