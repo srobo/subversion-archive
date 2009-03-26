@@ -145,10 +145,10 @@ class Root(controllers.RootController):
                       revision=rev,
                       recurse=True)
 
-	# Check if __init__.py exists in user code, if it doesn't insert blank file before checkout
-	if not os.path.exists(root+"/code/__init__.py"):
-		f = open(root+"/code/__init__.py", 'w')
-		f.close()
+        # Check if __init__.py exists in user code, if it doesn't insert blank file before checkout
+        if not os.path.exists(root+"/code/__init__.py"):
+            f = open(root+"/code/__init__.py", 'w')
+            f.close()
 
 
         # (internal) robot.zip to contain the code
@@ -275,9 +275,9 @@ class Root(controllers.RootController):
         #narrow results by user (if supplied)
         result = []
         if user != None:
-    	    for x in log:
+            for x in log:
                 if(x['author'] == user) or (user == None):
-    	            result.append(x)
+                    result.append(x)
         else:
             result = log[:]
 
@@ -293,11 +293,11 @@ class Root(controllers.RootController):
         result = result[start:end]
 
         return dict(  path=file, overflow=overflow, offset=offset, authors=authors,\
-	                  history=[{"author":x["author"], \
-	                  "date":time.strftime("%H:%M:%S %d/%m/%Y", \
-	                  time.localtime(x["date"])), \
-	                  "message":x["message"], "rev":x["revision"].number} \
-	                  for x in result])
+                      history=[{"author":x["author"], \
+                      "date":time.strftime("%H:%M:%S %d/%m/%Y", \
+                      time.localtime(x["date"])), \
+                      "message":x["message"], "rev":x["revision"].number} \
+                      for x in result])
 
     def checkoutintotmpdir(self, client, revision, base):
         tmpdir = tempfile.mkdtemp()
@@ -379,9 +379,9 @@ class Root(controllers.RootController):
                     if len(client.ls(client.REPO + dir)) == 0:
                         #The directory is empty, OK to delete it
 
-			#jmorse - don't prune project dirs, this offends gui
-			if dir.encode("iso-8859-1").find('/', 1) == -1:
-				continue
+                        #jmorse - don't prune project dirs, this offends gui
+                        if dir.encode("iso-8859-1").find('/', 1) == -1:
+                            continue
 
                         log.debug("Deleting empty directory: " + client.REPO + dir)
                         client.remove(client.REPO + dir)
@@ -438,7 +438,7 @@ class Root(controllers.RootController):
                 self.create_svn_dir(client, path)
             except pysvn.ClientError:
                 return dict(new_revision="0", code = "",\
-			                success="Error creating new directory",
+                            success="Error creating new directory",
                             reloadfiles="false")
 
         try:
@@ -600,7 +600,7 @@ class Root(controllers.RootController):
         tree = dicttolist(tree)["children"]
         return dict(tree=tree)
 
-	#create a new directory
+    #create a new directory
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -612,10 +612,10 @@ class Root(controllers.RootController):
                 self.create_svn_dir(client, path, msg)
             except pysvn.ClientError:
                 return dict( success=0, newdir = path,\
-			                feedback="Error creating new directory")
+                            feedback="Error creating new directory")
 
         return dict( success=1, newdir = path,\
-	                feedback="Directory successfully created")
+                    feedback="Directory successfully created")
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -636,19 +636,19 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def createproj(self, name, team):
-	"""Creates new project directory"""
-	client = Client(int(team))
+        """Creates new project directory"""
+        client = Client(int(team))
 
-	print "create proj " + name + " in group " + team
+        print "create proj " + name + " in group " + team
 
-	if name.find(".") != -1:
-	    """No ../../ nastyness"""
-	    return nil
+        if name.find(".") != -1:
+            """No ../../ nastyness"""
+            return nil
 
-	url = srusers.get_svnrepo(team) + "/" + name
-	print url
-	client.mkdir(url, "Added project \"" + name + "\"")
-	return dict( )
+        url = srusers.get_svnrepo(team) + "/" + name
+        print url
+        client.mkdir(url, "Added project \"" + name + "\"")
+        return dict( )
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -665,7 +665,7 @@ class Root(controllers.RootController):
 
         if not client.is_url(client.REPO + path): #requested revision of dir that doesn't exist
             return dict(new_revision="0", code = "",\
-			                success="Error reverting file - file doesn't exist")
+                            success="Error reverting file - file doesn't exist")
 
         try:
             tmpdir = self.checkoutintotmpdir(client, rev, path)
@@ -677,7 +677,7 @@ class Root(controllers.RootController):
                 pass
 
             return dict(new_revision="0", code = "",\
-			                success="Error reverting file - could check out tmp dir")
+                        success="Error reverting file - could check out tmp dir")
         #2. Do a merge
         #revision we want to go back to
         revertto = pysvn.Revision( pysvn.opt_revision_kind.number, torev)
@@ -708,7 +708,7 @@ class Root(controllers.RootController):
             except:
                 pass
             return dict(new_revision="0", code = "",\
-			                success="Error reverting file(s) - Are you already at the current revision ")
+                        success="Error reverting file(s) - Are you already at the current revision ")
 
         #3. Commit the new directory
         try:
@@ -736,12 +736,12 @@ class Root(controllers.RootController):
                 mergedfile.close()
                 newrev = newrev.number
                 return dict(new_revision=newrev, code = "",\
-		                        success="Merge Issues")
+                            success="Merge Issues")
         #4. Wipe the directory
         shutil.rmtree(tmpdir)
 
         return dict(new_revision=newrev, code = "",\
-		                success="Success !!!")
+                    success="Success !!!")
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -899,7 +899,7 @@ class Root(controllers.RootController):
             pyfiles = []
 
             for line in output:
-		pyerrors.append(line)
+                pyerrors.append(line)
                 substart = line.rfind(", line ")
                 if substart > -1:
                     subend = line.find(",", substart+7)
@@ -918,4 +918,4 @@ class Root(controllers.RootController):
     @expose("json")
     def autocomplete(self, str, nocache):
         print str
-	return "{}"
+        return "{}"
