@@ -36,8 +36,8 @@ class AutoSave(SQLObject):
     uname = StringCol()
     # The date and time of the save
     date = DateTimeCol()
-    # The setting value
-    value = StringCol()
+    # The file contents
+    content = StringCol()
 
 class FirmwareTargets(SQLObject):
     """Devices that we manage firmware for."""
