@@ -934,11 +934,11 @@ class Root(controllers.RootController):
         files = model.AutoSave.select(exists_test)
 
         if files.count() > 0 :  #if it exists we're doing an update, else we need a new file
-            files[0].set(file_path = path, revision = src_rev, team_id = src_team, uname = user, content = content)
+            save = files[0].set(file_path = path, revision = src_rev, team_id = src_team, uname = user, content = content)
         else:
-            model.AutoSave(file_path = path, revision = src_rev, team_id = src_team, uname = user, content = content)
+            save = model.AutoSave(file_path = path, revision = src_rev, team_id = src_team, uname = user, content = content)
 
-        return dict( )
+        return { 'date' : save.date }
 
     @expose("json")
     @srusers.require(srusers.in_team())
