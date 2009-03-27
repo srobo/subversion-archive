@@ -372,12 +372,27 @@ function EditTab(iea, team, project, path, rev) {
 		if( this._timeout != null )
 			this._timeout.cancel();
 		this._timeout = wait(this._autosave_delay);
-		this._timeout.addCallback(this._autosave);
+		this._timeout.addCallback( bind(this._autosave, this));
 	}
 
 	this._autosave = function() {
 		this._timeouut = null;
+		//do an update and tell the log
+		this._capture_code();
 		logDebug('EditTab: Autosaving '+this.path)
+
+		var d = loadJSONDoc("./autosave", { team : team,
+							path : this.path,
+							rev : 0,
+							content : this.contents});
+
+		d.addCallback( bind(this._receive_autosave, this));
+	}
+
+	//ajax event handler for autosaving to server, based on the one for commits
+	this._receive_autosave = function(reply){
+		if(typeof reply.date != 'undefined')
+			status_msg("File AutoSaved successfully at "+reply.date, LEVEL_OK);
 	}
 
 	this.is_modified = function() {
