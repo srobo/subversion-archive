@@ -34,8 +34,8 @@ class AutoSave(SQLObject):
     team_id = IntCol()
     # The user that saved the file
     uname = StringCol()
-    # The date and time of the save
-    date = DateTimeCol()
+    # The date and time of the save, defaults to now
+    date = DateTimeCol(default = DateTimeCol.now)
     # The file contents
     content = StringCol()
 
