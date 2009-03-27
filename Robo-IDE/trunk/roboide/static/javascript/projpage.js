@@ -338,8 +338,7 @@ ProjFileList.prototype._dir = function( node, level ) {
 	var autosave_link = this._autosave_links( node, level );
 
 	if( node.kind == "FILE" ) {
-		var n = LI( null, link );
-		appendChildNodes( n, autosave_link );
+		var n = LI( null, link , autosave_link );
 		return n;
 	} else
 		var n = LI( null, [ link,
@@ -351,13 +350,14 @@ ProjFileList.prototype._dir = function( node, level ) {
 // Returns a DOM object for the given node's autosaves
 ProjFileList.prototype._autosave_links = function( node, level ) {
 	if( node.kind != "FILE" || node.autosave == 0 )
-		return '';
+		return null;
 
 	// Assemble the link with divs in it
 	var link = A( { "href" : "#",
+				"class" : 'autosave',
 				"ide_path" : node.path,
 				"ide_kind" : 'AUTOSAVE' },
-		this._nested_divs( level, 'AutoSave (r'+node.autosave.revision+' at '+node.autosave.date+')' ) );
+				'AutoSave (r'+node.autosave.revision+' at '+node.autosave.date+')' );
 	connect( link, "onclick", bind( this._onclick, this ) );
 	return link;
 }
@@ -376,11 +376,11 @@ ProjFileList.prototype._onclick = function(ev) {
 
 	if( mods["ctrl"] ) {
 		if( !this._is_file_selected( path ) ) {
-			addElementClass( src, "selected" );
+			addElementClass( src.parentNode, "selected" );
 
 			this._select_path( path, kind );
 		} else {
-			removeElementClass( src, "selected" );
+			removeElementClass( src.parentNode, "selected" );
 
 			this._deselect_path( path, kind );
 		}
