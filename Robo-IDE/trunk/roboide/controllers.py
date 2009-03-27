@@ -547,7 +547,6 @@ class Root(controllers.RootController):
                      children={} )
 
         autosave_data = self.get_autosave(team, rootpath)
-        print autosave_data
 
         #Go through each file, creating appropriate directories and files
         #In a tree structure based around dictionaries
@@ -973,12 +972,13 @@ class Root(controllers.RootController):
         files = model.AutoSave.select(test_set)
         files_data = {}
 
-        if content == 0:
-            for f in files:
-                files_data[f.file_path] =  { 'date' : f.date, 'user' : f.uname, 'revision' : f.revision }
-            return files_data
-        elif files.count() > 0: #if the file exists
-            return files[0].content
+        if files.count() > 0:   #if there's some files
+            if content == 0:
+                for f in files:
+                    files_data[f.file_path] =  { 'date' : f.date, 'user' : f.uname, 'revision' : f.revision }
+                return files_data
+            else:
+                return files[0].content
         else:
-            return { 'error' : 'no file at path '+path }
+            return {}
 
