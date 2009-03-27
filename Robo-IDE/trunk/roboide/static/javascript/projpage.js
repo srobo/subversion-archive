@@ -334,14 +334,32 @@ ProjFileList.prototype._dir = function( node, level ) {
 		this._nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
 	connect( link, "onclick", bind( this._onclick, this ) );
 
+	// Assemble links to available autosaved versions
+	var autosave_link = this._autosave_links( node, level );
+
 	if( node.kind == "FILE" ) {
 		var n = LI( null, link );
+		appendChildNodes( n, autosave_link );
 		return n;
 	} else
 		var n = LI( null, [ link,
 	    		UL( { "class" : "flist-l" },
 			map_1( bind(this._dir, this), level + 1, node["children"] ) ) ] );
 	return n;
+}
+
+// Returns a DOM object for the given node's autosaves
+ProjFileList.prototype._autosave_links = function( node, level ) {
+	if( node.kind != "FILE" || node.autosave == 0 )
+		return '';
+
+	// Assemble the link with divs in it
+	var link = A( { "href" : "#",
+				"ide_path" : node.path,
+				"ide_kind" : 'AUTOSAVE' },
+		this._nested_divs( level, 'AutoSave (r'+node.autosave.revision+' at '+node.autosave.date+')' ) );
+	connect( link, "onclick", bind( this._onclick, this ) );
+	return link;
 }
 
 // The onclick event for the filelist items
@@ -369,8 +387,11 @@ ProjFileList.prototype._onclick = function(ev) {
 	} else {
 		if( kind == "FOLDER" ) {
 			this._toggle_dir( src );
+		} else if( kind == 'AUTOSAVE' ) {
+			editpage.edit_file( this._team, this._project, path, this.rev, 'AUTOSAVE' );
+			//do something special
 		} else {
-			editpage.edit_file( this._team, this._project, path, this.rev );
+			editpage.edit_file( this._team, this._project, path, this.rev, 'SVN' );
 		}
 	}
 }

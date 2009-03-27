@@ -219,6 +219,9 @@ class Root(controllers.RootController):
 
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
 
+
+        autosaved_code = self.get_autosave(team, file, 1)
+
         rev = self.get_revision(revision)
 
         if file != None and file != "" and client.is_url(client.REPO + file):
@@ -248,7 +251,7 @@ class Root(controllers.RootController):
             code = "Error loading file: No filename was supplied by the IDE.  Contact an SR admin!"
             revision = 0
 
-        return dict(curtime=curtime, code=code, revision=revision, path=file,
+        return dict(curtime=curtime, code=code, autosaved_code=autosaved_code, revision=revision, path=file,
                 name=os.path.basename(file))
 
     @expose("json")
@@ -543,6 +546,9 @@ class Root(controllers.RootController):
                      path = rootpath,
                      children={} )
 
+        autosave_data = self.get_autosave(team, rootpath)
+        print autosave_data
+
         #Go through each file, creating appropriate directories and files
         #In a tree structure based around dictionaries
         for details in [x[0] for x in files]:
@@ -564,13 +570,19 @@ class Root(controllers.RootController):
                 if not top["children"].has_key( path ):
                     if details["kind"] == pysvn.node_kind.file:
                         kind = "FILE"
+                        if filename in autosave_data:
+                            autosave_info = autosave_data[filename]
+                        else:
+                            autosave_info = 0
                     else:
                         kind = "FOLDER"
+                        autosave_info = 0
 
                     top["children"][path] = dict( name = basename,
                                                   path = filename,
                                                   kind = kind,
                                                   rev = details["created_rev"].number,
+                                                  autosave = autosave_info,
                                                   children = {} )
                 top = top["children"][path]
 
@@ -922,7 +934,7 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def autosave(self, team, path, content, rev="0"):
+    def autosave(self, team, path, content, rev):
         src_rev = int(rev)
         src_team = int(team)
         user = str(srusers.get_curuser())
@@ -934,38 +946,36 @@ class Root(controllers.RootController):
         files = model.AutoSave.select(exists_test)
 
         if files.count() > 0 :  #if it exists we're doing an update, else we need a new file
-            save = files[0].set(file_path = path, revision = src_rev, team_id = src_team, uname = user, content = content)
+            save = files[0]
+            save.set(file_path = path, revision = src_rev, team_id = src_team, uname = user, content = content)
         else:
             save = model.AutoSave(file_path = path, revision = src_rev, team_id = src_team, uname = user, content = content)
 
-        return { 'date' : save.date }
+        return { 'date' : save.date, 'code' : save.content }
 
-    @expose("json")
     @srusers.require(srusers.in_team())
-    def get_autosaves(self, team, path, user = ""):
+    def get_autosave(self, team, path, content = 0):
+        user = str(srusers.get_curuser())
         src_team = int(team)
 
-        #build a test for things that match the path and team 
-        test_set = model.AND(model.AutoSave.q.team_id == src_team)
+        #build a test for things that match the user and team
+        test_set = model.AND(model.AutoSave.q.team_id == src_team, model.AutoSave.q.uname == user)
 
-        if user != "": #if user isn't set get all, otherwise we're after a specific file
-            test_set = model.AND(test_set,
-                                    model.AutoSave.q.file_path == path,
-                                    model.AutoSave.q.uname == user)
+        if content == 1: #if we're after a specific file
+            test_set = model.AND(test_set, model.AutoSave.q.file_path == path)
         else:
-            test_set = model.AND(test_set,
-                                    model.AutoSave.q.file_path.startswith(path))
+            test_set = model.AND(test_set, model.AutoSave.q.file_path.startswith(path))
 
 
         files = model.AutoSave.select(test_set)
         files_data = {}
 
-        if user == "":
+        if content == 0:
             for f in files:
                 files_data[f.file_path] =  { 'date' : f.date, 'user' : f.uname, 'revision' : f.revision }
             return files_data
         elif files.count() > 0: #if the file exists
-            return { 'content' : files[0].content }
+            return files[0].content
         else:
-            return { 'error' : 'no files at path '+path }
+            return { 'error' : 'no file at path '+path }
 

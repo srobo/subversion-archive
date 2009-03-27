@@ -59,13 +59,13 @@ function EditPage() {
 
 	// Open the given file and switch to the tab
 	// or if the file is already open, just switch to the tab
-	this.edit_file = function( team, project, path, rev ) {
+	this.edit_file = function( team, project, path, rev , mode) {
 		// TODO: We don't support files of the same path being open in
 		// different teams at the moment.
 		var etab = this._file_get_etab( path );
 
 		if( etab == null ) {
-			etab = this._new_etab( team, project, path, rev);
+			etab = this._new_etab( team, project, path, rev, mode );
 		}
 
 		tabbar.switch_to( etab.tab );
@@ -116,8 +116,8 @@ function EditPage() {
 //*/
 	// Create a new tab that's one of ours
 	// Doesn't load the tab
-	this._new_etab = function(team, project, path, rev) {
-		var etab = new EditTab(this._iea, team, project, path, rev);
+	this._new_etab = function(team, project, path, rev, mode) {
+		var etab = new EditTab(this._iea, team, project, path, rev, mode);
 
 		connect( etab, "onclose", bind( this._on_tab_close, this ) );
 
@@ -170,7 +170,7 @@ function EditPage() {
 
 // Represents a tab that's being edited
 // Managed by EditPage -- do not instantiate outside of EditPage
-function EditTab(iea, team, project, path, rev) {
+function EditTab(iea, team, project, path, rev, mode) {
 	// Member functions:
 	// Public:
 	//  - close: Handler for when the tab is closed: check the contents of the file then close
@@ -233,6 +233,10 @@ function EditTab(iea, team, project, path, rev) {
 	this._timeout = null;
 	//the time in seconds to delay before saving
 	this._autosave_delay = 25;
+	//the contents at the time of the last autosave
+	this._autosaved = "";
+	// whether we're loading from the svn or an autosave
+	this._mode = mode;
 
 	this._init = function() {
 		this.tab = new Tab( this.path );
@@ -274,8 +278,12 @@ function EditTab(iea, team, project, path, rev) {
 			this._stat_contents = null;
 		}
 
-		this.contents = nodes.code;
+		if(this._mode == 'AUTOSAVE')
+			this.contents = nodes.autosaved_code;
+		else
+			this.contents = nodes.code;
 		this._original = nodes.code;
+		this._autosaved = nodes.autosaved_code;
 		this._isNew = false;
 		this.rev = nodes.revision
 
@@ -377,22 +385,28 @@ function EditTab(iea, team, project, path, rev) {
 
 	this._autosave = function() {
 		this._timeouut = null;
-		//do an update and tell the log
+		//do an update and check to see if we need to autosave
 		this._capture_code();
+		if(this.contents == this._original || this.contents == this._autosaved)
+			return;
+
 		logDebug('EditTab: Autosaving '+this.path)
 
 		var d = loadJSONDoc("./autosave", { team : team,
 							path : this.path,
-							rev : 0,
+							rev : this.rev,
 							content : this.contents});
 
 		d.addCallback( bind(this._receive_autosave, this));
+		d.addErrback( bind(this._on_keypress, this));	//if it fails then set it up to try again
 	}
 
 	//ajax event handler for autosaving to server, based on the one for commits
 	this._receive_autosave = function(reply){
-		if(typeof reply.date != 'undefined')
+		if(typeof reply.date != 'undefined') {
 			status_msg("File AutoSaved successfully at "+reply.date, LEVEL_OK);
+			this.autosaved = reply.code;
+		}
 	}
 
 	this.is_modified = function() {
