@@ -770,6 +770,9 @@ class Root(controllers.RootController):
             print "failed to retrieve log"
             return dict(path=file, history=[])
 
+        if log[0]['revision'].number == 0: #if there's nothing there
+            return dict(path=file, history=[])
+
         #get a list of users based on log authors
         start = datetime.datetime(year, month, 1, 0, 0, 0)
 
