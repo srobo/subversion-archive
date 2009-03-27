@@ -919,3 +919,53 @@ class Root(controllers.RootController):
     def autocomplete(self, str, nocache):
         print str
         return "{}"
+
+    @expose("json")
+    @srusers.require(srusers.in_team())
+    def autosave(self, team, path, content, rev="0"):
+        src_rev = int(rev)
+        src_team = int(team)
+        user = str(srusers.get_curuser())
+
+        exists_test = model.AND(model.AutoSave.q.file_path == path,
+                        model.AutoSave.q.team_id == src_team,
+                        model.AutoSave.q.uname == user)
+
+        files = model.AutoSave.select(exists_test)
+
+        if files.count() > 0 :  #if it exists we're doing an update, else we need a new file
+            files[0].set(file_path = path, revision = src_rev, team_id = src_team, uname = user, content = content)
+        else:
+            model.AutoSave(file_path = path, revision = src_rev, team_id = src_team, uname = user, content = content)
+
+        return dict( )
+
+    @expose("json")
+    @srusers.require(srusers.in_team())
+    def get_autosaves(self, team, path, user = ""):
+        src_team = int(team)
+
+        #build a test for things that match the path and team 
+        test_set = model.AND(model.AutoSave.q.team_id == src_team)
+
+        if user != "": #if user isn't set get all, otherwise we're after a specific file
+            test_set = model.AND(test_set,
+                                    model.AutoSave.q.file_path == path,
+                                    model.AutoSave.q.uname == user)
+        else:
+            test_set = model.AND(test_set,
+                                    model.AutoSave.q.file_path.startswith(path))
+
+
+        files = model.AutoSave.select(test_set)
+        files_data = {}
+
+        if user == "":
+            for f in files:
+                files_data[f.file_path] =  { 'date' : f.date, 'user' : f.uname, 'revision' : f.revision }
+            return files_data
+        elif files.count() > 0: #if the file exists
+            return { 'content' : files[0].content }
+        else:
+            return { 'error' : 'no files at path '+path }
+
