@@ -3,23 +3,23 @@ import threading, Queue, sys
 #Can now bring in the trampiline which will import robot.py
 from trampoline import Trampoline
 from physics import World
-from simdisplay import SimDisplay
+from simserve import SimServe
 
 class SimThread(threading.Thread):
     def __init__(self, watchpath, fps):
         super(SimThread, self).__init__()
-        self.display = SimDisplay()
+        self.fromsimq = Queue.Queue()
+        self.tosimq = Queue.Queue()
+        self.display = SimServe(self.fromsimq)
         self.p = World(self.display, fps)
         self.t = Trampoline()
         self.t.addtask(self.p.physics_poll())
 
-        self.debugmode = True
+        self.debugmode = False
         self.watchpath = watchpath
 
         self.breakpoints = {}
         self.breaklock = threading.RLock()
-        self.fromsimq = Queue.Queue()
-        self.tosimq = Queue.Queue()
 
     def tracerobot(self, frame, event, arg):
         if event == "line":

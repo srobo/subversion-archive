@@ -1,7 +1,0 @@
-What you need to package the simulator:
-Python (2.4 should be OK, I used 2.5) - http://www.python.org/download/ and get the windows installer. Run it
-GTK+ with devel code - I used http://gladewin32.sourceforge.net/modules/wfdownloads/visit.php?cid=14&lid=110 (gtk+-dev-2.10.11-win32-1.exe). WARNING this conflicts with the GTK installed with gaim / pidgin. I removed the one that came with GAIM/Pidgin and they worked with this set of libraries after a reboot. Windows sucks.
-PYCairo, PyGObject and PyGTK from http://www.pygtk.org/downloads.html
-py2exe from http://www.py2exe.org/
-Pygame from http://www.pygame.org/download.shtml
-pyode from http://pyode.sourceforge.net/
