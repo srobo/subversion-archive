@@ -46,12 +46,12 @@ class Client:
 
         self.__dict__["REPO"] = srusers.get_svnrepo( team )
 
-    def is_url(self, url):
+    def is_url(self, url, rev=pysvn.Revision(pysvn.opt_revision_kind.head)):
         """Override the default is_url which just tells you if the url looks
         sane. This tries to get info on the file...
         """
         try:
-            self.client.info2(url)
+            self.client.info2(url, rev)
             return True
         except pysvn.ClientError:
             return False
@@ -224,7 +224,7 @@ class Root(controllers.RootController):
 
         rev = self.get_revision(revision)
 
-        if file != None and file != "" and client.is_url(client.REPO + file):
+        if file != None and file != "" and client.is_url(client.REPO + file, rev):
             #Load file from SVN
             mime = ""
             try:
@@ -240,7 +240,7 @@ class Root(controllers.RootController):
                 revision = 0
             else:
                 try:
-                    ver = client.log(client.REPO + file, limit=1, revision_start=rev)[0]["revision"]
+                    ver = client.log(client.REPO + file, limit=0, revision_start=rev, peg_revision=rev)[0]["revision"]
                     revision = ver.number
 
                     code = client.cat(client.REPO + file, revision=pysvn.Revision(pysvn.opt_revision_kind.number, ver.number))
@@ -986,7 +986,7 @@ class Root(controllers.RootController):
             else:
                 return files[0].content
         else:
-            return {}
+            return "" if content == 1 else {}
 
     @expose("json")
     @srusers.require(srusers.in_team())
