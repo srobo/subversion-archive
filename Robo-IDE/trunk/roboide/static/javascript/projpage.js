@@ -948,7 +948,7 @@ function ProjOps() {
 
     this.ops.push({ "name" : "Delete AutoSaves",
                         "action" : bind(this.rm_autosaves, this, false),
-                        "handle": $("op-del_autosave"),
+                        "handle": $("op-rm_autosaves"),
                         "event" : null });
 
     this.ops.push({ "name" : "View Log",
