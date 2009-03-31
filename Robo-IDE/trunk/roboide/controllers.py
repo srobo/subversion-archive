@@ -353,7 +353,7 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def delete(self, team, files):
+    def delete(self, team, files, kind = 'SVN'):
         """
         Delete files from the repository, and prune empty directories.
         inputs: files - comma seperated list of paths
@@ -371,6 +371,14 @@ class Root(controllers.RootController):
             urls = [client.REPO + str(x) for x in files]
 
             message = "Files deleted successfully: \n" + "\n".join(files)
+
+#            for f in files:
+#                self.delete_autosave(team, f)
+
+            autosaves = [self.delete_autosave(team, f) for f in files]
+
+            if kind == 'AUTOSAVE':
+                return dict(Message = message)
 
             paths = list(set([os.path.dirname(file) for file in files]))
 
@@ -981,4 +989,19 @@ class Root(controllers.RootController):
                 return files[0].content
         else:
             return {}
+
+    @expose("json")
+    @srusers.require(srusers.in_team())
+    def delete_autosave(self, team, path):
+        user = str(srusers.get_curuser())
+        src_team = int(team)
+
+        #find the file
+        files = model.AutoSave.select(model.AND(model.AutoSave.q.team_id == src_team, model.AutoSave.q.uname == user, model.AutoSave.q.file_path == path))
+
+        if files.count() > 0:   #if there's some files
+            files[0].destroySelf()
+            return {}
+        else:
+            return { 'error' : 'no file to delete' }
 

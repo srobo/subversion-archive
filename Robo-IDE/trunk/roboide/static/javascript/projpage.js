@@ -334,8 +334,8 @@ ProjFileList.prototype._dir = function( node, level ) {
 		this._nested_divs( level, node.name + (node.kind == "FOLDER"?"/":"") ) );
 	connect( link, "onclick", bind( this._onclick, this ) );
 
-	// Assemble links to available autosaved versions
-	var autosave_link = this._autosave_links( node, level );
+	// Assemble links to available autosave, if there is one
+	var autosave_link = this._autosave_link( node, level );
 
 	if( node.kind == "FILE" ) {
 		var n = LI( null, link , autosave_link );
@@ -347,8 +347,8 @@ ProjFileList.prototype._dir = function( node, level ) {
 	return n;
 }
 
-// Returns a DOM object for the given node's autosaves
-ProjFileList.prototype._autosave_links = function( node, level ) {
+// Returns a DOM link for the given node's autosave, if it exists
+ProjFileList.prototype._autosave_link = function( node, level ) {
 	if( node.kind != "FILE" || node.autosave == 0 )
 		return null;
 
@@ -851,8 +851,38 @@ function ProjOps() {
 
         logDebug("will delete: "+death_list);
 
-    	var d = loadJSONDoc("./delete", {team : team,
-				   files : death_list});
+    	var d = loadJSONDoc("./delete", { "team" : team,
+				   "files" : death_list
+				   "kind" : 'ALL'});
+	    d.addCallback( function(nodes) {
+		status_msg(nodes.Message, LEVEL_OK)
+                projpage.flist.refresh();
+	     });
+
+	    d.addErrback(function() { status_button("Error contacting server",
+			    LEVEL_ERROR, "retry", bind(this.rm, this, true));});
+    }
+
+    this.rm_autosaves = function(override) {
+        if(projpage.flist.selection.length == 0) {
+            status_msg("There are no files/folders selected for deletion", LEVEL_ERROR);
+            return;
+        }
+        if(override == false) {
+            status_button("Are you sure you want to delete "+projpage.flist.selection.length+" selected AutoSaves"+Auto, LEVEL_WARN, "delete", bind(this.rm_autosave, this, true));
+            return;
+        }
+        var death_list = "";
+        for(var x = 0; x< projpage.flist.selection.length; x++) {
+            death_list = death_list + projpage.flist.selection[x] + ",";
+        }
+        death_list = death_list.slice(0, death_list.length-1);
+
+        logDebug("will delete: "+death_list);
+
+    	var d = loadJSONDoc("./delete", { "team" : team,
+				   "files" : death_list
+				   "kind" : 'AUTOSAVES'});
 	    d.addCallback( function(nodes) {
 		status_msg(nodes.Message, LEVEL_OK)
                 projpage.flist.refresh();
@@ -914,6 +944,11 @@ function ProjOps() {
     this.ops.push({ "name" : "Undelete",
                         "action" : bind(this.undel, this),
                         "handle": $("op-undel"),
+                        "event" : null });
+
+    this.ops.push({ "name" : "Delete AutoSaves",
+                        "action" : bind(this.rm_autosaves, this, false),
+                        "handle": $("op-del_autosave"),
                         "event" : null });
 
     this.ops.push({ "name" : "View Log",
