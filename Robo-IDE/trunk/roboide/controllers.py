@@ -372,13 +372,11 @@ class Root(controllers.RootController):
 
             message = "Files deleted successfully: \n" + "\n".join(files)
 
-#            for f in files:
-#                self.delete_autosave(team, f)
-
-            autosaves = [self.delete_autosave(team, f) for f in files]
+            for f in files:
+                self.delete_autosaves(team, f)
 
             if kind == 'AUTOSAVE':
-                return dict(Message = message)
+                return dict(Message = "AutoSaves deleted successfully: \n" + "\n".join(files))
 
             paths = list(set([os.path.dirname(file) for file in files]))
 
@@ -992,12 +990,15 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def delete_autosave(self, team, path):
+    def delete_autosaves(self, team, path):
         user = str(srusers.get_curuser())
         src_team = int(team)
+        path_dir = str(path+"/")
 
-        #find the file
-        files = model.AutoSave.select(model.AND(model.AutoSave.q.team_id == src_team, model.AutoSave.q.uname == user, model.AutoSave.q.file_path == path))
+        #build the tests: match team, user and ( path match OR path begins with given path plus a / )
+        test_set = model.AND(model.AutoSave.q.team_id == src_team, model.AutoSave.q.uname == user,
+                    model.OR(model.AutoSave.q.file_path == path, model.AutoSave.q.file_path.startswith(path_dir)))
+        files = model.AutoSave.select(test_set)
 
         if files.count() > 0:   #if there's some files
             files[0].destroySelf()

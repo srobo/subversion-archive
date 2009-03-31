@@ -878,7 +878,7 @@ function ProjOps() {
         }
         death_list = death_list.slice(0, death_list.length-1);
 
-        logDebug("will delete: "+death_list);
+        logDebug("will delete autosaves: "+death_list);
 
     	var d = loadJSONDoc("./delete", { "team" : team,
 				   "files" : death_list
