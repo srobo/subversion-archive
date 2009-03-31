@@ -80,10 +80,10 @@
 
 #proj-filelist li a.autosave { 
   margin-top: -1.2em;
-  margin-right: 17%;
+/*  margin-right: 17%;*/
   margin-left: 27%;
   display: inline;
-  float: right;
+  float: left;
 }
 
 /* The vertical bar along the side of each directory */
