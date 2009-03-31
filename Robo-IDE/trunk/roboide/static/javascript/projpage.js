@@ -223,7 +223,7 @@ function ProjFileList() {
 	// the project revision we're displaying
 	// can be integer or "HEAD"
 	this.rev = "HEAD";
-	this._rev = "HEAD";
+
 
 	// The files/folders that are currently selected
 	this.selection = [];
@@ -242,9 +242,7 @@ function ProjFileList() {
 }
 
 ProjFileList.prototype.change_rev = function(revision) {
-	this.rev = revision;
-
-    this.update(this._project, this._team, this.rev);
+	this.update(this._project, this._team, revision);
 }
 
 // Request and update the project file listing
@@ -256,13 +254,15 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 		return;
 	}
 
-    if(rev == undefined || rev == null) {
-        this.rev = "HEAD";
-    } else {
-        this.rev = rev;
-    }
+	var curr_rev = this.rev;
 
-	if( pname != this._project || team != this._team || rev != this._rev ) {
+	if(rev == undefined || rev == null) {
+		this.rev = "HEAD";
+	} else {
+		this.rev = rev;
+	}
+
+	if( pname != this._project || team != this._team || rev != curr_rev ) {
 		// Hide the list whilst we're loading it
 		swapDOM( "proj-filelist",
 			 DIV( {"id": "proj-filelist",
@@ -272,7 +272,6 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 
 	this._project = pname;
 	this._team = team;
-	this._rev = rev;
 	this.refresh();
 }
 
