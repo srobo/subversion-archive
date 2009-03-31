@@ -852,8 +852,8 @@ function ProjOps() {
         logDebug("will delete: "+death_list);
 
     	var d = loadJSONDoc("./delete", { "team" : team,
-				   "files" : death_list
-				   "kind" : 'ALL'});
+				   "files" : death_list,
+				   "kind" : 'ALL' });
 	    d.addCallback( function(nodes) {
 		status_msg(nodes.Message, LEVEL_OK)
                 projpage.flist.refresh();
@@ -881,8 +881,8 @@ function ProjOps() {
         logDebug("will delete autosaves: "+death_list);
 
     	var d = loadJSONDoc("./delete", { "team" : team,
-				   "files" : death_list
-				   "kind" : 'AUTOSAVES'});
+				   "files" : death_list,
+				   "kind" : 'AUTOSAVES' });
 	    d.addCallback( function(nodes) {
 		status_msg(nodes.Message, LEVEL_OK)
                 projpage.flist.refresh();
