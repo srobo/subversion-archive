@@ -881,10 +881,14 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def checkcode(self, team, path):
+    def checkcode(self, team, path, code=0):
 
         client = Client(int(team))
         rev = self.get_revision("HEAD")
+        print path
+        if code != 0:
+            path = os.path.dirname(path)
+        print path
 
         # Directory to work in
         td = tempfile.mkdtemp()
@@ -896,11 +900,20 @@ class Root(controllers.RootController):
                       revision=rev,
                       recurse=True)
 
+        if code != 0: #either make a temporary file or grab the latest from the svn
+            tmpfile = tempfile.NamedTemporaryFile(dir=td+"/code", suffix='.py')
+            tmpfile.write(str(code))
+            file_name = os.path.basename(tmpfile.name)
+        else:
+            file_name = 'robot.py'
+        
+        print 'td: '+td+"\nfile_name: "+file_name
+
         # Check out the dummified SR library too
         shutil.copy( config.get("checker.file"), td + "/code" )
 
         # Run pychecker
-        p = subprocess.Popen( ["pychecker", "-e", "Error", "robot.py" ],
+        p = subprocess.Popen( ["pychecker", "-e", "Error", file_name ],
                               cwd = "%s/code" % td,
                               stdout = subprocess.PIPE,
                               stderr = subprocess.PIPE )
@@ -908,6 +921,9 @@ class Root(controllers.RootController):
 
         rval = p.wait()
 
+        #close the temporary file, if we had one
+        if path == 'FILE':
+            tmpfile.close()
         # Remove the temporary directory
         shutil.rmtree(td)
 

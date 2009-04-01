@@ -298,7 +298,15 @@ function EditTab(iea, team, project, path, rev, mode) {
 	}
 
 	this._check_syntax = function() {
-		status_msg( "Check syntax of " + this.path, LEVEL_WARN );
+		//tell the log and grab the latest contents
+		logDebug( "Checking syntax of " + this.path, LEVEL_WARN );
+		this._capture_code();
+
+		//throw the contents to the backend
+		var d = loadJSONDoc("./checkcode",{ team : team, path : this.path, code : this.contents });
+
+		d.addCallback(projpage.doneCheckCode);
+		d.addErrback(projpage.failCheckCode);
 	}
 
 	this._receive_new_fname = function(fpath, commitMsg) {
