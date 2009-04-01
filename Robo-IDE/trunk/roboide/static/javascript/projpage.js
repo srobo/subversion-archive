@@ -187,6 +187,11 @@ ProjPage.prototype.clickExportProject = function() {
 }
 
 ProjPage.prototype.clickCheckCode = function() {
+	if( !this.flist.robot ) {	//if there's no robot.py script then it's going to fail
+		status_msg( "A robot.py file is required for poject code checking", LEVEL_ERROR );
+		return false;
+	}
+
 	var d = loadJSONDoc("./checkcode",{ team : team, path : "/" + this.project });
 
 	d.addCallback(bind(this.doneCheckCode, this));
@@ -224,6 +229,8 @@ function ProjFileList() {
 	// can be integer or "HEAD"
 	this.rev = "HEAD";
 
+	// whether or not there's a robot.py file
+	this.robot = false;
 
 	// The files/folders that are currently selected
 	this.selection = [];
@@ -302,6 +309,7 @@ ProjFileList.prototype._show = function() {
 // Handler for receiving the file list
 ProjFileList.prototype._received = function(nodes) {
 	log( "filelist received" );
+	this.robot = false;	//reset it before a new filelist is loaded
 
 	swapDOM( "proj-filelist",
 		 UL( { "id" : "proj-filelist",
@@ -337,11 +345,14 @@ ProjFileList.prototype._dir = function( node, level ) {
 	var autosave_link = this._autosave_link( node, level );
 
 	if( node.kind == "FILE" ) {
+		var path_arr = node.path.split('/');
+		if( path_arr[path_arr.length-1] == 'robot.py' && level == 0 )
+			this.robot = true;
 		var n = LI( null, link , autosave_link );
 		return n;
 	} else
 		var n = LI( null, [ link,
-	    		UL( { "class" : "flist-l" },
+			UL( { "class" : "flist-l" },
 			map_1( bind(this._dir, this), level + 1, node["children"] ) ) ] );
 	return n;
 }
