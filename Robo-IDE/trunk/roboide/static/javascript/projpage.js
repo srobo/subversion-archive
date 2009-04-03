@@ -189,8 +189,13 @@ ProjPage.prototype.clickExportProject = function() {
 }
 
 ProjPage.prototype.clickCheckCode = function() {
+	if( this.project == null || this.project == "" ) {	//if there's no robot.py script then it's going to fail
+		status_msg( "Please select a project for code checking", LEVEL_INFO );
+		return false;
+	}
+
 	if( !this.flist.robot ) {	//if there's no robot.py script then it's going to fail
-		status_msg( "A robot.py file is required for poject code checking", LEVEL_ERROR );
+		status_msg( "A robot.py file is required for project code checking", LEVEL_ERROR );
 		return false;
 	}
 
