@@ -414,6 +414,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 		if(typeof reply.date != 'undefined') {
 			status_msg("File AutoSaved successfully at "+reply.date, LEVEL_OK);
 			this.autosaved = reply.code;
+			projpage.flist.refresh();
 		}
 	}
 
