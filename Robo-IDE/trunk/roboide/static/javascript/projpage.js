@@ -313,7 +313,7 @@ ProjFileList.prototype.refresh = function() {
 	if( this._project == "" )
 		return 'no_proj';
 
-	this._timeouut = null;
+	this._timeout = null;
 	this.selection = new Array();
 	var d = loadJSONDoc("./filelist", { 'team' : this._team,
 					'rootpath' : this._project,

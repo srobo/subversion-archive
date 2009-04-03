@@ -392,7 +392,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 	}
 
 	this._autosave = function() {
-		this._timeouut = null;
+		this._timeout = null;
 		//do an update and check to see if we need to autosave
 		this._capture_code();
 		if(this.contents == this._original || this.contents == this._autosaved)
