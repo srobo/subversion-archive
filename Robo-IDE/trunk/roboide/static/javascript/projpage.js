@@ -18,7 +18,7 @@ function ProjPage() {
 
 	this.flist = null;
 	this.project = "";
-	
+
 	this.last_updated	= new Date();
 
 	// Member functions (declared below)
@@ -225,6 +225,11 @@ function ProjFileList() {
 	this._project = "";
 	this._team = null;
 
+	//allow for an auto refresh
+	this._timeout = null;
+	this._refresh_delay = 25;
+	this._birth = null;
+
 	// the project revision we're displaying
 	// can be integer or "HEAD"
 	this.rev = "HEAD";
@@ -282,10 +287,27 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 	this.refresh();
 }
 
+ProjFileList.prototype._prepare_auto_refresh = function() {
+	logDebug('Preparing and automatic file list refresh');
+	if( this._timeout != null )
+		this._timeout.cancel();
+	this._timeout = wait(this._refresh_delay);
+	this._timeout.addCallback( bind(this._auto_refresh, this));
+}
+
+ProjFileList.prototype._auto_refresh = function() {
+	logDebug('Doing an automatic file list refresh');
+	//if it's already new, or it fails, run setup again
+	if( this._birth > 9999 || 'no_proj' == projpage.flist.refresh())
+		this._prepare_auto_refresh();
+}
+
 ProjFileList.prototype.refresh = function() {
+	logDebug('Doing a file list refresh');
 	if( this._project == "" )
-		return;
-		
+		return 'no_proj';
+
+	this._timeouut = null;
 	this.selection = new Array();
 	var d = loadJSONDoc("./filelist", {team : this._team,
 					   rootpath : this._project, rev : this.rev} );
@@ -308,6 +330,7 @@ ProjFileList.prototype._show = function() {
 
 // Handler for receiving the file list
 ProjFileList.prototype._received = function(nodes) {
+	this._prepare_auto_refresh();
 	log( "filelist received" );
 	this.robot = false;	//reset it before a new filelist is loaded
 
