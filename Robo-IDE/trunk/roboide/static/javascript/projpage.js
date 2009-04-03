@@ -304,9 +304,10 @@ ProjFileList.prototype._prepare_auto_refresh = function() {
 
 ProjFileList.prototype._auto_refresh = function() {
 	//do we want to setup another one?
-	if( tabbar.tabs[0].has_focus() && this.selection.length > 0	//are doing something with a selection
-		|| this._birth + this._refresh_freq > new Date().valueOf()	//is it already new enough
-		|| 'no_proj' == projpage.flist.refresh()	//did it fail
+	if( tabbar.tabs[0].has_focus() && this.selection.length > 0	//on projpage and something's selected
+		|| (this.rev != "HEAD" && this.rev != 0 && this.rev != null )	//not showing HEAD
+		|| this._birth + this._refresh_freq > new Date().valueOf()	//already new enough
+		|| 'no_proj' == projpage.flist.refresh()	//it failed
 	)
 		this._prepare_auto_refresh();
 }
