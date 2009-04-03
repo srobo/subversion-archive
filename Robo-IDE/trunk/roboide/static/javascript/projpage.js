@@ -234,6 +234,9 @@ function ProjFileList() {
 	//how old do we let it get before updating
 	this._refresh_freq = 25 * 1000;	//milliseconds
 
+	//prompt when it errors during an update
+	this._err_prompt = null;
+
 	// the project revision we're displaying
 	// can be integer or "HEAD"
 	this.rev = "HEAD";
@@ -313,6 +316,12 @@ ProjFileList.prototype.refresh = function() {
 	if( this._project == "" )
 		return 'no_proj';
 
+	//kill the error message, if it exists
+	if( this._err_prompt != null ) {
+		this._err_prompt.close();
+		this._err_prompt = null;
+	}
+
 	this._timeout = null;
 	this.selection = new Array();
 	var d = loadJSONDoc("./filelist", { 'team' : this._team,
@@ -323,7 +332,7 @@ ProjFileList.prototype.refresh = function() {
 	d.addCallback( bind( this._received, this ) );
 
 	d.addErrback( bind( function (){
-		status_button( "Error retrieving the project file listing", LEVEL_ERROR,
+		this._err_prompt = status_button( "Error retrieving the project file listing", LEVEL_ERROR,
 			       "retry", bind( this.refresh, this ) );
 	}, this ) );
 }
@@ -515,6 +524,9 @@ function ProjList() {
 	// The team
 	this._team = null;
 
+	//prompt when it errors while grabing the list
+	this._err_prompt = null;
+
 	// Member functions:
 	// Public:
 	//  - project_exists(pname): Returns true if the given project exists.
@@ -534,6 +546,13 @@ ProjList.prototype._grab_list = function(team) {
 		team = parseInt(team);
 	if(typeof team == 'number')
 		this._team = team;
+
+	//kill the error message, if it exists
+	if( this._err_prompt != null ) {
+		this._err_prompt.close();
+		this._err_prompt = null;
+	}
+
 	this.loaded = false;
 
 	var d = loadJSONDoc("./projlist", { 'team' : this._team });
@@ -541,7 +560,7 @@ ProjList.prototype._grab_list = function(team) {
 	d.addCallback( bind( this._got_list, this ) );
 
 	d.addErrback( bind( function() {
-		status_button( "Error retrieving the project list", LEVEL_ERROR,
+		this._err_prompt = status_button( "Error retrieving the project list", LEVEL_ERROR,
 			       "retry", bind( this._grab_list, this) );
 	}, this ) );
 }
