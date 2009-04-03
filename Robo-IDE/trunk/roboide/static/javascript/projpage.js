@@ -133,6 +133,8 @@ ProjPage.prototype._rpane_show = function() {
 ProjPage.prototype.clickNewProject = function() {
 	showElement($("new-project-box"));
 	showElement($("grey-out"));
+	$("new-project-input").value = '';
+	$("new-project-input").focus();
 
 	connect("new-project-cancel", "onclick",
 		bind(this.clickCancelNewProject, this));
