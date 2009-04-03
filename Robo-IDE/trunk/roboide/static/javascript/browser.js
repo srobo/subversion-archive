@@ -64,8 +64,7 @@ Browser.prototype._init = function() {
 	connect("new-commit-msg","onfocus", bind(this._msg_focus, this));
 	connect("new-file-name","onfocus", bind(this._fname_focus, this));
 
-	if(this.type == "isCommit")
-		$("new-commit-msg").focus();
+	$("new-commit-msg").focus();
 }
 
 Browser.prototype._receiveTree = function(nodes) {
