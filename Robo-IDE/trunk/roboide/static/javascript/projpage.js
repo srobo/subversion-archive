@@ -913,27 +913,30 @@ function ProjOps() {
             return;
         }
         if(override == false) {
-            status_button("Are you sure you want to delete "+projpage.flist.selection.length+" selected AutoSaves"+Auto, LEVEL_WARN, "delete", bind(this.rm_autosave, this, true));
+            status_button("Are you sure you want to delete "+projpage.flist.selection.length+" selected AutoSaves",
+                        LEVEL_WARN, "delete", bind(this.rm_autosaves, this, true));
             return;
         }
+
         var death_list = "";
         for(var x = 0; x< projpage.flist.selection.length; x++) {
             death_list = death_list + projpage.flist.selection[x] + ",";
         }
         death_list = death_list.slice(0, death_list.length-1);
 
-        logDebug("will delete autosaves: "+death_list);
+        log("Will delete autosaves: "+death_list);
 
     	var d = loadJSONDoc("./delete", { "team" : team,
 				   "files" : death_list,
 				   "kind" : 'AUTOSAVES' });
+
 	    d.addCallback( function(nodes) {
-		status_msg(nodes.Message, LEVEL_OK)
+				status_msg(nodes.Message, LEVEL_OK);
                 projpage.flist.refresh();
 	     });
 
-	    d.addErrback(function() { status_button("Error contacting server",
-			    LEVEL_ERROR, "retry", bind(this.rm, this, true));});
+	    d.addErrback( function() { status_button("Error contacting server",
+			    LEVEL_ERROR, "retry", bind(this.rm_autosaves, this, true));});
     }
 
     this._undel_callback = function(nodes) {
