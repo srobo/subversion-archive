@@ -32,6 +32,9 @@ function Browser(cback, options) {
 	this.fileList = new Array();
 	this.type = options.type;
 
+	//hold the ident for the escape catcher
+	this._esc_press = null;
+
 	this.fileTree = null;
 	this.callback = cback;
 	this._init();
@@ -56,15 +59,34 @@ Browser.prototype._init = function() {
 	//clear previous events
 	disconnectAll($("save-new-file"));
 	disconnectAll($("cancel-new-file"));
+	disconnectAll($("new-file-name"));
 	//set up event handlers
     disconnectAll("save-new-file");
     disconnectAll("cancel-new-file");
+    disconnectAll("new-file-name");
+    disconnect(this._esc_press);
+	this._esc_press = connect(window, 'onkeypress', bind(this._window_keypress, this));
+	connect("new-file-name", 'onkeypress', bind(this._new_file_keypress, this));
 	connect("save-new-file", 'onclick', bind(this.clickSaveFile, this, false));
 	connect("cancel-new-file", 'onclick', bind(this.clickCancelSave, this));
 	connect("new-commit-msg","onfocus", bind(this._msg_focus, this));
 	connect("new-file-name","onfocus", bind(this._fname_focus, this));
 
 	$("new-commit-msg").focus();
+}
+
+Browser.prototype._new_file_keypress = function(ev) {
+	if(ev._event.keyCode == 13 && ev._modifier == null) {
+		log('Enter pressed - browser saving')
+		signal("save-new-file", 'onclick');
+	}
+}
+
+Browser.prototype._window_keypress = function(ev) {
+	if(ev._event.keyCode == 27 && ev._modifier == null) {
+		log('Escape pressed - hiding browser')
+		signal("cancel-new-file", 'onclick');
+	}
 }
 
 Browser.prototype._receiveTree = function(nodes) {
@@ -214,6 +236,7 @@ Browser.prototype.hide = function() {
 	disconnectAll($("save-new-file"));
 	disconnectAll($("cancel-new-file"));
 	disconnectAll($("browser-status"));
+	disconnect(this._esc_press);
 	hideElement($("file-browser"));
 	hideElement($("grey-out"));
 	replaceChildNodes($("left-pane-list"));
