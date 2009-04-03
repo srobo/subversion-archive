@@ -189,7 +189,7 @@ ProjPage.prototype.clickExportProject = function() {
 }
 
 ProjPage.prototype.clickCheckCode = function() {
-	if( this.project == null || this.project == "" ) {	//if there's no robot.py script then it's going to fail
+	if( this.project == null || this.project == "" ) {	//if there's no project selected what's the point
 		status_msg( "Please select a project for code checking", LEVEL_INFO );
 		return false;
 	}
