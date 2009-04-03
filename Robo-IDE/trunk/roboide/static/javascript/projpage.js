@@ -314,8 +314,10 @@ ProjFileList.prototype.refresh = function() {
 
 	this._timeouut = null;
 	this.selection = new Array();
-	var d = loadJSONDoc("./filelist", {team : this._team,
-					   rootpath : this._project, rev : this.rev} );
+	var d = loadJSONDoc("./filelist", { 'team' : this._team,
+					'rootpath' : this._project,
+					'rev' : this.rev,
+					'date' : this._birth } );
 
 	d.addCallback( bind( this._received, this ) );
 

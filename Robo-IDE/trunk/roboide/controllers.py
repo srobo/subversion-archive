@@ -523,7 +523,7 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def filelist(self, team, rootpath="/", rev=0):
+    def filelist(self, team, rootpath="/", rev=0, date=0):
         """
         Returns a directory tree of the current repository.
         inputs: None
