@@ -65,7 +65,7 @@ Browser.prototype._init = function() {
     disconnectAll("cancel-new-file");
     disconnectAll("new-file-name");
     disconnect(this._esc_press);
-	this._esc_press = connect(window, 'onkeypress', bind(this._window_keypress, this));
+	this._esc_press = connect(document, 'onkeypress', bind(this._window_keypress, this));
 	connect("new-file-name", 'onkeypress', bind(this._new_file_keypress, this));
 	connect("save-new-file", 'onclick', bind(this.clickSaveFile, this, false));
 	connect("cancel-new-file", 'onclick', bind(this.clickCancelSave, this));
