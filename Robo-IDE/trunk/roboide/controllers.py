@@ -15,6 +15,7 @@ import subprocess
 import sr
 import user as srusers
 import fw
+import string
 
 log = logging.getLogger("roboide.controllers")
 
@@ -845,6 +846,8 @@ class Root(controllers.RootController):
             message = "Error moving files. :: "+str(e)
             return dict(new_revision="0", status="0", message=message)
 
+        self.move_autosave(team, src, dest)
+
         return dict(new_revision="0", status="0", message=message)
 
     @expose("json")
@@ -1004,6 +1007,24 @@ class Root(controllers.RootController):
                 return files[0].content
         else:
             return "" if content == 1 else {}
+
+    @srusers.require(srusers.in_team())
+    def move_autosave(self, team, src, dest):
+        user = str(srusers.get_curuser())
+        src_team = int(team)
+
+        #build a test for things that match the user and team
+        test_set = model.AND(model.AutoSave.q.team_id == src_team, model.AutoSave.q.uname == user,
+                                model.AutoSave.q.file_path.startswith(src))
+
+        files = model.AutoSave.select(test_set)
+
+        if files.count() > 0:   #if there's some files
+            for f in files:
+                new_path = string.replace(f.file_path, src, dest, 1)
+                f.set(file_path = new_path)
+
+        return ""
 
     @expose("json")
     @srusers.require(srusers.in_team())
