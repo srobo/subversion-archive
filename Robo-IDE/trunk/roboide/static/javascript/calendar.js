@@ -84,9 +84,12 @@ Calendar.prototype.drawCal = function() {
 	//highlight today's date (bold text only) if we are showing current month and current year
 	if( ( this.date.getMonth() == (new Date()).getMonth() ) && (this.date.getFullYear() == (new Date()).getFullYear() ) )
 		setStyle("cal"+(new Date()).getDate(), {"font-weight" : "bold", "border" : "1px solid #eee"});
-	
+
 	//clears date/revision select box
-	replaceChildNodes("cal-revs", OPTION({"value" : -1}, "Select a date"));   
+	replaceChildNodes("cal-revs",
+		OPTION({"value" : 'HEAD'}, "HEAD - the most recent version"),
+		OPTION({"value" : -1, "selected" : "selected"}, "Select a date")
+	);
 }
 
 //convert date string in log array into jscript date
@@ -170,7 +173,10 @@ Calendar.prototype.updateCal = function() {
 
 Calendar.prototype.changeMonth = function(dir) {
 	this.date.setMonth(this.date.getMonth() + dir);
-	replaceChildNodes("cal-revs", OPTION({"value" : -1}, "Select a date"));
+	replaceChildNodes("cal-revs",
+		OPTION({"value" : 'HEAD'}, "HEAD - the most recent version"),
+		OPTION({"value" : -1, "selected" : "selected"}, "Select a date")
+	);
 	this.init();
 }
 
@@ -178,7 +184,10 @@ Calendar.prototype.change_day = function(target) {
 	//set this.date's day to the current date (for message in drop-down)
 	this.date.setDate(target);
 	//alert user to select a revision
-	replaceChildNodes("cal-revs", OPTION({"value" : -1}, "Select a revision for "+this.date.getDate()+" "+MONTHS[this.date.getMonth()]));
+	replaceChildNodes("cal-revs",
+		OPTION({"value" : 'HEAD'}, "HEAD - the most recent version"),
+		OPTION({"value" : -1, "selected" : "selected"}, "Select a revision for "+this.date.getDate()+" "+MONTHS[this.date.getMonth()])
+	);
 
 	//clear the boxes from around all dates
 	for (var i=1; i<=this.dinm(); i++)
@@ -208,8 +217,10 @@ Calendar.prototype.change_day = function(target) {
 
 Calendar.prototype._load_new_rev = function() {
 	var target = $("cal-revs").value;
-	if(target >= 0)
+	if(target >= 0 || target == 'HEAD')
 		this._load_rev( target );
+	if(target == 'HEAD')
+		this.init();
 }
 
 Calendar.prototype._load_rev = function(rev) {
