@@ -375,7 +375,7 @@ class Root(controllers.RootController):
             for f in files:
                 self.delete_autosaves(team, f)
 
-            if kind == 'AUTOSAVE':
+            if kind == 'AUTOSAVES':
                 return dict(Message = "AutoSaves deleted successfully: \n" + "\n".join(files))
 
             paths = list(set([os.path.dirname(file) for file in files]))
