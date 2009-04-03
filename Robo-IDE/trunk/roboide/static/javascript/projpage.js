@@ -529,10 +529,13 @@ ProjList.prototype.update = function(team) {
 }
 
 ProjList.prototype._grab_list = function(team) {
+	if(typeof team == 'string')
+		team = parseInt(team);
+	if(typeof team == 'number')
+		this._team = team;
 	this.loaded = false;
-	this._team = team;
 
-	var d = loadJSONDoc("./projlist", {team : team});
+	var d = loadJSONDoc("./projlist", { 'team' : this._team });
 
 	d.addCallback( bind( this._got_list, this ) );
 
