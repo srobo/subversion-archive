@@ -227,8 +227,12 @@ function ProjFileList() {
 
 	//allow for an auto refresh
 	this._timeout = null;
-	this._refresh_delay = 25;
+	//how often to check to see if it's needed, in seconds
+	this._refresh_delay = 7;
+	//when was it 'born', milliseconds since epoch
 	this._birth = null;
+	//how old do we let it get before updating
+	this._refresh_freq = 25 * 1000;	//milliseconds
 
 	// the project revision we're displaying
 	// can be integer or "HEAD"
@@ -296,9 +300,10 @@ ProjFileList.prototype._prepare_auto_refresh = function() {
 }
 
 ProjFileList.prototype._auto_refresh = function() {
-	log('Doing an automatic file list refresh');
+	log('Calling an automatic file list refresh');
+
 	//if it's already new, or it fails, run setup again
-	if( this._birth > 9999 || 'no_proj' == projpage.flist.refresh())
+	if( this._birth + this._refresh_freq > new Date().valueOf() || 'no_proj' == projpage.flist.refresh())
 		this._prepare_auto_refresh();
 }
 
@@ -330,6 +335,7 @@ ProjFileList.prototype._show = function() {
 
 // Handler for receiving the file list
 ProjFileList.prototype._received = function(nodes) {
+	this._birth = new Date().valueOf();
 	log( "filelist received" );
 	this._prepare_auto_refresh();
 	this.robot = false;	//test for robot.py: reset before a new filelist is loaded
