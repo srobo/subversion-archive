@@ -26,23 +26,23 @@
 /* 	so appx 12048 clocks for 1ms */
 /*      but loop is more likely about 5 ticks */
 /*      so try 2400 */
-#define MS_SCALE 2400	
+#define MS_SCALE 12048	
 
 
 #define buf_qty 4
 #define lcd_buffer_len 32
 
-#define E 0x02
-#define RS 0x04
+#define E 0x04
+#define RS 0x08
 #define datapins 0xf0
 #define lcd_mask 0xfc
 /* all pins are PORT 1  */
 
-#define e_hi P1OUT |= E
-#define e_lo P1OUT &= ~E
+#define e_lo P1OUT |= E
+#define e_hi P1OUT &= ~E
 
-#define rs_hi P1OUT |= RS
-#define rs_lo P1OUT &= ~RS
+#define rs_lo P1OUT |= RS
+#define rs_hi P1OUT &= ~RS
 
 uint8_t current_screen;
 uint8_t requested_screen;

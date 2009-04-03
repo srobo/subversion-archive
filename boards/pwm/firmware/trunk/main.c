@@ -47,7 +47,7 @@ int main( void )
 	{
 		if( i2c_flash_received )
 				flash_switchover();
-		lcd_service();
+//		lcd_service();
 	}	
 }
 

@@ -45,33 +45,6 @@ void lcd_init( void )
 /* [after Vdd rises to 4.5v] */
 	lcd_delay_long(15);
 
-
-/* RS  R/W DB7 DB6 DB5 DB4  Can't check BF before this instruction */
-/*  0   0   0   0   1   1   Function set (8-bit interface) */
-	lcd_cmd4(0x03);
-
-/*     [Wait more than] */
-/*     [     4.1ms    ] */
-	lcd_delay_long(5);
-
-/* RS  R/W DB7 DB6 DB5 DB4  Can't check BF before this instruction */
-/*  0   0   0   0   1   1   Function set (8-bit interface) */
-	lcd_cmd4(0x03);
-
-/*     [Wait more than] */
-/*     [     100us    ] */
-	lcd_delay_long(1);
-
-/* RS  R/W DB7 DB6 DB5 DB4  Can't check BF before this instruction */
-/*  0   0   0   0   1   1   Function set (8-bit interface) */
-	lcd_cmd4(0x03);
-
-/*                          BF can be checked after the following */
-/*                          instructions. When BF is not checked, */
-/*                          the waiting time between instructions */
-/*                          is longer than the execution time. */
-/*                          (See Instruction set) */
-
 /* RS  R/W DB7 DB6 DB5 DB4 */
 /*  0   0   0   0   1   0   Function set (to 4-bit interface) */
 	lcd_cmd4(0x02);
@@ -79,26 +52,23 @@ void lcd_init( void )
 /* RS  R/W DB7 DB6 DB5 DB4 */
 /*  0   0   0   0   1   0 */
 	lcd_cmd4(0x02);
-/*  0   0   N   F   *   *   Function set  [4-bit Interface      ] */
+
+/*  0	0   0   0   N   F   *   *   Function set  [4-bit Interface      ] */
 /*                                        [Specify display lines] */
-	lcd_cmd4(0x04);
+	lcd_cmd4(0x03);
 
-
-
-/* RS  R/W DB7 DB6 DB5 DB4                [and character font   ] */
-/*  0   0   0   0   0   0                  These cannot be */
+/* RS  R/W DB7 DB6 DB5 DB4  	Display ON             */
+/*  0   0   0   0   0   0       */
 	lcd_cmd4(0x00);
-/*  0   0   1   0   0   0   Display OFF    changed afterwards */
-	lcd_cmd4(0x04); 
+/*  0   0   1   1   1   1   	Cursor, Blink, On */
+	lcd_cmd4(0x0f); 
 
-
-                             
 /* RS  R/W DB7 DB6 DB5 DB4 */
-/*  0   0   0   0   0   0    */
+/*  0   0   0   0   0   0    	Clear Display*/
 	lcd_cmd4(0x00);
-/*  0   0   0   0   0   1   Display ON */
+/*  0   0   0   0   0   1  	Clear Display cont.*/
 	lcd_cmd4(0x01);
-
+	lcd_delay_long(2);	
 
 /* RS  R/W DB7 DB6 DB5 DB4  */
 /*  0   0   0   0   0   0    */
@@ -106,13 +76,12 @@ void lcd_init( void )
 /*  0   0   0   1  I/D  S   entry mode set */
 	lcd_cmd4(0x03);
 
-
 	for (i=0;i<lcd_buffer_len;i++)
 		lcd_screens[0][i]=0;
 	lcd_screens[0][0]='S';
-	lcd_screens[0][0]='p';
-	lcd_screens[0][0]='a';
-	lcd_screens[0][0]='m';
+	lcd_screens[0][1]='p';
+	lcd_screens[0][2]='a';
+	lcd_screens[0][3]='m';
 
 }
 
@@ -160,7 +129,7 @@ static void lcd_cmd4(uint8_t data)
 {
 	command_delay;
 	rs_lo;
-	P1OUT = (P1OUT & ~datapins )| (data & datapins);
+	P1OUT = (P1OUT & 0x0f )| (~data << 4);
 	lcd_delay();		/* setup time */
 	e_hi;
 	lcd_delay();		/* data valid */
