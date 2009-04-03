@@ -288,7 +288,7 @@ ProjFileList.prototype.update = function( pname, team, rev ) {
 }
 
 ProjFileList.prototype._prepare_auto_refresh = function() {
-	logDebug('Preparing and automatic file list refresh');
+	log('Preparing an automatic file list refresh');
 	if( this._timeout != null )
 		this._timeout.cancel();
 	this._timeout = wait(this._refresh_delay);
@@ -296,14 +296,14 @@ ProjFileList.prototype._prepare_auto_refresh = function() {
 }
 
 ProjFileList.prototype._auto_refresh = function() {
-	logDebug('Doing an automatic file list refresh');
+	log('Doing an automatic file list refresh');
 	//if it's already new, or it fails, run setup again
 	if( this._birth > 9999 || 'no_proj' == projpage.flist.refresh())
 		this._prepare_auto_refresh();
 }
 
 ProjFileList.prototype.refresh = function() {
-	logDebug('Doing a file list refresh');
+	log('Doing a file list refresh');
 	if( this._project == "" )
 		return 'no_proj';
 
@@ -330,9 +330,9 @@ ProjFileList.prototype._show = function() {
 
 // Handler for receiving the file list
 ProjFileList.prototype._received = function(nodes) {
-	this._prepare_auto_refresh();
 	log( "filelist received" );
-	this.robot = false;	//reset it before a new filelist is loaded
+	this._prepare_auto_refresh();
+	this.robot = false;	//test for robot.py: reset before a new filelist is loaded
 
 	swapDOM( "proj-filelist",
 		 UL( { "id" : "proj-filelist",
