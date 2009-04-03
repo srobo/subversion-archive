@@ -298,14 +298,21 @@ ProjFileList.prototype._prepare_auto_refresh = function() {
 	log('Preparing an automatic file list refresh');
 	if( this._timeout != null )
 		this._timeout.cancel();
+
+	if( this.rev != "HEAD" && this.rev != 0 && this.rev != null )	//not showing HEAD
+		return;
+
 	this._timeout = wait(this._refresh_delay);
 	this._timeout.addCallback( bind(this._auto_refresh, this));
 }
 
 ProjFileList.prototype._auto_refresh = function() {
+	//do we want to run a refresh?
+	if( this.rev != "HEAD" && this.rev != 0 && this.rev != null )	//not showing HEAD
+		return;
+
 	//do we want to setup another one?
 	if( tabbar.tabs[0].has_focus() && this.selection.length > 0	//on projpage and something's selected
-		|| (this.rev != "HEAD" && this.rev != 0 && this.rev != null )	//not showing HEAD
 		|| this._birth + this._refresh_freq > new Date().valueOf()	//already new enough
 		|| 'no_proj' == projpage.flist.refresh()	//it failed
 	)
