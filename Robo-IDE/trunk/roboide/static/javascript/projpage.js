@@ -300,10 +300,11 @@ ProjFileList.prototype._prepare_auto_refresh = function() {
 }
 
 ProjFileList.prototype._auto_refresh = function() {
-	log('Calling an automatic file list refresh');
-
-	//if it's already new, or it fails, run setup again
-	if( this._birth + this._refresh_freq > new Date().valueOf() || 'no_proj' == projpage.flist.refresh())
+	//do we want to setup another one?
+	if( tabbar.tabs[0].has_focus() && this.selection.length > 0	//are doing something with a selection
+		|| this._birth + this._refresh_freq > new Date().valueOf()	//is it already new enough
+		|| 'no_proj' == projpage.flist.refresh()	//did it fail
+	)
 		this._prepare_auto_refresh();
 }
 
