@@ -500,8 +500,9 @@ class Root(controllers.RootController):
                 mergedfile.close()
                 newrev = newrev.number
 
-        #4. Wipe the directory
+        #4. Wipe the directory, remove the autosaves
         shutil.rmtree(tmpdir)
+        self.delete_autosaves(team, file)
 
         return dict(new_revision=str(newrev), code=code,
                     success=success, file=file, reloadfiles=reload)
