@@ -922,7 +922,7 @@ class Root(controllers.RootController):
         rval = p.wait()
 
         #close the temporary file, if we had one
-        if path == 'FILE':
+        if code != 0:
             tmpfile.close()
         # Remove the temporary directory
         shutil.rmtree(td)
