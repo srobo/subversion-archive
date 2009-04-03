@@ -103,7 +103,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.71173215"
      inkscape:cx="880.53394"
-     inkscape:cy="296.35329"
+     inkscape:cy="704.61178"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1186,11 +1186,11 @@
          sodipodi:role="line"
          x="1114.1832"
          y="547.3913"
-         id="tspan2744">3m middle section on one side of </tspan><tspan
+         id="tspan2744">3m middle sections on two opposite sides of </tspan><tspan
          sodipodi:role="line"
          x="1114.1832"
          y="567.3913"
-         id="tspan2935">the arena is replaced with the structure</tspan><tspan
+         id="tspan2935">the arena are replaced with the structure</tspan><tspan
          sodipodi:role="line"
          x="1114.1832"
          y="587.3913"
@@ -1574,5 +1574,15 @@
          id="tspan2928"
          x="805.65192"
          y="538.87451">viewing area</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="1264.5206"
+       y="543.7439"
+       id="text2640"><tspan
+         sodipodi:role="line"
+         id="tspan2642"
+         x="1264.5206"
+         y="543.7439" /></text>
   </g>
 </svg>
