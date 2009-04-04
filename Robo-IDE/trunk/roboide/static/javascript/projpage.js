@@ -150,12 +150,18 @@ ProjPage.prototype.clickCancelNewProject = function() {
 }
 
 ProjPage.prototype.clickCreateNewProject = function() {
+	var newProjName = $("new-project-input").value;
+
+	if(newProjName == null || newProjName == "") {	//change this to inform them of their mistake!
+		$("new-project-input").focus();
+		return;
+	}
+
 	hideElement($("new-project-box"));
 	hideElement($("grey-out"));
 	disconnectAll("new-project-cancel");
 	disconnectAll("new-project-create");
 
-	var newProjName = $("new-project-input").value;
 	/* Postback to create a new project - then what? */
 
 	var d = loadJSONDoc("./createproj",{ name : newProjName, team : team });

@@ -118,18 +118,23 @@ Browser.prototype.clickSaveFile = function(override) {
 	var fnameErrFlag = (findValue(this.fileList, this.newFname) > -1);
 	var commitErrFlag = ( ((this.commitMsg == "Commit message") || (this.commitMsg == "")) && !override);
 
-    if(fnameErrFlag && (this.type=='isFile')) {
+	if(this.newFname == null || this.newFname == "") {
+		$("browser-status").innerHTML = "Please specify a "+(this.type == 'isFile' ? 'file' : 'directory')+" name";
+		return;
+	}
+
+	if(fnameErrFlag && (this.type=='isFile')) {
 		$("browser-status").innerHTML = "\""+this.newFname+"\" already exists!";
 		return;
-    }
+	}
 
-    if(commitErrFlag) {
+	if(commitErrFlag) {
 		$("browser-status").innerHTML = "No commit message added - click to ignore";
 		connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
 		return;
-    }
+	}
 
-    disconnectAll("browser-status");
+	disconnectAll("browser-status");
 
     switch(this.type) {
         case 'isFile' :
