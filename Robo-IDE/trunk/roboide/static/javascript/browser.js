@@ -117,11 +117,13 @@ Browser.prototype._getFileTree = function(tm, rpath) {
 }
 
 Browser.prototype._badCommitMsg = function(msg) {
-	return /(^$)|(^\s+$)/.test(msg);
+	//test for is-nothing or is-only-whitespace
+	return this.commitMsg == this._DEFAULT_MSG || /^$|^\s+$/.test(msg);
 }
 
 Browser.prototype._badFname = function(name) {
-	return /(^$)|(^\s+$)/.test(name) || this._badCommitMsg(name);
+	//test for is-nothing or starts-with-whitespace or starts-with-a-dot
+	return /^$|^\s|^[.]/.test(name);
 }
 
 //when user clicks save
@@ -129,9 +131,10 @@ Browser.prototype.clickSaveFile = function(override) {
 	this.commitMsg = $("new-commit-msg").value;
 	this.newFname = $("new-file-name").value;
 
-	var fnameErrFlag = (findValue(this.fileList, this.newFname) > -1);
-	var commitErrFlag = ( !override && this.type != 'isProj' &&
-		(this.commitMsg == this._DEFAULT_MSG || this._badCommitMsg(this.commitMsg)) );
+	var fnameExists = (findValue(this.fileList, this.newFname) > -1);
+	var commitErrFlag = ( !override &&
+		this.type != 'isProj' &&
+		this._badCommitMsg(this.commitMsg) );
 
 	//don't allow null strings or pure whitespace
 	if(this._badFname(this.newFname)) {
@@ -147,17 +150,20 @@ Browser.prototype.clickSaveFile = function(override) {
 			break;
 		}
 		$("browser-status").innerHTML = "Please specify a valid "+type+" name:";
+		$("new-file-name").focus();
 		return;
 	}
 
-	if(fnameErrFlag && (this.type=='isFile')) {
+	if(fnameExists && (this.type=='isFile')) {
 		$("browser-status").innerHTML = "\""+this.newFname+"\" already exists!";
+		$("new-file-name").focus();
 		return;
 	}
 
 	if(commitErrFlag) {
 		$("browser-status").innerHTML = "No commit message added - click to ignore";
 		connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
+		$("new-commit-msg").focus();
 		return;
 	}
 
