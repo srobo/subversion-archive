@@ -27,6 +27,7 @@ function Browser(cback, options) {
 
 	this._DEFAULT_MSG = "Commit message";
 	this._DEFAULT_FNAME = "new.py";
+	this._DEFAULT_PNAME = "new-project";
 	this._DEFAULT_DNAME = "new-directory";
 
 	this.fileList = new Array();
@@ -45,6 +46,8 @@ Browser.prototype._init = function() {
 	$("new-commit-msg").value = this._DEFAULT_MSG;
 	if(this.type == 'isDir')
 		$("new-file-name").value = this._DEFAULT_DNAME;
+	else if(this.type == 'isProj')
+		$("new-file-name").value = this._DEFAULT_PNAME;
 	else
 		$("new-file-name").value = this._DEFAULT_FNAME;
 
@@ -52,7 +55,7 @@ Browser.prototype._init = function() {
 	this.display();
 
 	//get file listings - if not just commit message
-	if(this.type != 'isCommit') {
+	if(this.type != 'isCommit' &&   this.type != 'isProj') {
 		this._getFileTree(team, "");
 	}
 
@@ -72,7 +75,10 @@ Browser.prototype._init = function() {
 	connect("new-commit-msg","onfocus", bind(this._msg_focus, this));
 	connect("new-file-name","onfocus", bind(this._fname_focus, this));
 
-	$("new-commit-msg").focus();
+	if(this.type == 'isProj')
+		$("new-file-name").focus();
+	else
+		$("new-commit-msg").focus();
 }
 
 Browser.prototype._new_file_keypress = function(ev) {
@@ -110,17 +116,37 @@ Browser.prototype._getFileTree = function(tm, rpath) {
 
 }
 
+Browser.prototype._badCommitMsg = function(msg) {
+	return /(^$)|(^\s+$)/.test(msg);
+}
+
+Browser.prototype._badFname = function(name) {
+	return /(^$)|(^\s+$)/.test(name) || this._badCommitMsg(name);
+}
+
 //when user clicks save
 Browser.prototype.clickSaveFile = function(override) {
 	this.commitMsg = $("new-commit-msg").value;
 	this.newFname = $("new-file-name").value;
 
 	var fnameErrFlag = (findValue(this.fileList, this.newFname) > -1);
-	var commitErrFlag = ( ((this.commitMsg == "Commit message") || (this.commitMsg == "")) && !override);
+	var commitErrFlag = ( !override && this.type != 'isProj' &&
+		(this.commitMsg == this._DEFAULT_MSG || this._badCommitMsg(this.commitMsg)) );
 
 	//don't allow null strings or pure whitespace
-	if(/(^$)|(^\s+$)/.test(this.newFname)) {
-		$("browser-status").innerHTML = "Please specify a valid "+(this.type == 'isFile' ? 'file' : 'directory')+" name";
+	if(this._badFname(this.newFname)) {
+		switch(this.type) {
+		case 'isFile':
+			var type = 'file';
+			break;
+		case 'isDir':
+			var type = 'directory';
+			break;
+		case 'isProj':
+			var type = 'project';
+			break;
+		}
+		$("browser-status").innerHTML = "Please specify a valid "+type+" name:";
 		return;
 	}
 
@@ -137,18 +163,19 @@ Browser.prototype.clickSaveFile = function(override) {
 
 	disconnectAll("browser-status");
 
-    switch(this.type) {
-        case 'isFile' :
-            this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
-            break;
-        case 'isDir' :
-            this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
-            break;
-        case 'isCommit' :
-            this.callback(this.commitMsg);
-            break;
-    }
-    this.hide();
+	switch(this.type) {
+		case 'isFile' :
+		case 'isDir' :
+			this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
+			break;
+		case 'isProj' :
+			this.callback(this.newFname);
+			break;
+		case 'isCommit' :
+			this.callback(this.commitMsg);
+			break;
+	}
+	this.hide();
 }
 
 //cancel save operation
@@ -219,6 +246,7 @@ Browser.prototype.display = function() {
 			$("selected-dir").innerHTML = "File Save As:";
 			showElement("right-pane");
 			showElement("left-pane");
+			showElement("new-commit-msg");
 			showElement("new-file-name");
 			break;
 		case 'isDir' :
@@ -226,6 +254,7 @@ Browser.prototype.display = function() {
 			$("selected-dir").innerHTML = "New Directory:";
 			showElement("right-pane");
 			showElement("left-pane");
+			showElement("new-commit-msg");
 			showElement("new-file-name");
 			break;
 		case 'isCommit' :
@@ -233,7 +262,16 @@ Browser.prototype.display = function() {
 			$("selected-dir").innerHTML = "Commit Message:";
 			hideElement("right-pane");
 			hideElement("left-pane");
+			showElement("new-commit-msg");
 			hideElement("new-file-name");
+			break;
+		case 'isProj' :
+			$("browser-status").innerHTML = "Enter new project name:";
+			$("selected-dir").innerHTML = "New Project";
+			hideElement("right-pane");
+			hideElement("left-pane");
+			hideElement("new-commit-msg");
+			showElement("new-file-name");
 			break;
 	}
 }

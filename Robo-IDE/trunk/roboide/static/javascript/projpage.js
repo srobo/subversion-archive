@@ -131,38 +131,10 @@ ProjPage.prototype._rpane_show = function() {
 }
 
 ProjPage.prototype.clickNewProject = function() {
-	showElement($("new-project-box"));
-	showElement($("grey-out"));
-	$("new-project-input").value = '';
-	$("new-project-input").focus();
-
-	connect("new-project-cancel", "onclick",
-		bind(this.clickCancelNewProject, this));
-	connect("new-project-create", "onclick",
-		bind(this.clickCreateNewProject, this));
+	var b = new Browser(bind(this.CreateNewProject, this), {'type' : 'isProj'});
 }
 
-ProjPage.prototype.clickCancelNewProject = function() {
-	hideElement($("new-project-box"));
-	hideElement($("grey-out"));
-	disconnectAll("new-project-cancel");
-	disconnectAll("new-project-create");
-}
-
-ProjPage.prototype.clickCreateNewProject = function() {
-	var newProjName = $("new-project-input").value;
-
-	//don't allow null strings or pure whitespace
-	if(/(^$)|(^\s+$)/.test(newProjName)) {	//change this to inform them of their mistake!
-		$("new-project-input").focus();
-		return;
-	}
-
-	hideElement($("new-project-box"));
-	hideElement($("grey-out"));
-	disconnectAll("new-project-cancel");
-	disconnectAll("new-project-create");
-
+ProjPage.prototype.CreateNewProject = function(newProjName) {
 	/* Postback to create a new project - then what? */
 
 	var d = loadJSONDoc("./createproj",{ name : newProjName, team : team });
