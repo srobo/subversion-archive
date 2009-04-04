@@ -43,7 +43,8 @@ void lcd_init( void )
 
 /* [  Wait more than 15ms  ] */
 /* [after Vdd rises to 4.5v] */
-	lcd_delay_long(15);
+	lcd_delay_long(150);
+
 
 /* RS  R/W DB7 DB6 DB5 DB4 */
 /*  0   0   0   0   1   0   Function set (to 4-bit interface) */
@@ -55,20 +56,24 @@ void lcd_init( void )
 
 /*  0	0   0   0   N   F   *   *   Function set  [4-bit Interface      ] */
 /*                                        [Specify display lines] */
-	lcd_cmd4(0x03);
+	lcd_cmd4(0x8);
 
-/* RS  R/W DB7 DB6 DB5 DB4  	Display ON             */
+	lcd_delay();
+
+/* RS  R/W DB7 DB6 DB5 DB4  	Display OFF             */
 /*  0   0   0   0   0   0       */
 	lcd_cmd4(0x00);
 /*  0   0   1   1   1   1   	Cursor, Blink, On */
 	lcd_cmd4(0x0f); 
+
+	lcd_delay();
 
 /* RS  R/W DB7 DB6 DB5 DB4 */
 /*  0   0   0   0   0   0    	Clear Display*/
 	lcd_cmd4(0x00);
 /*  0   0   0   0   0   1  	Clear Display cont.*/
 	lcd_cmd4(0x01);
-	lcd_delay_long(2);	
+	lcd_delay_long(100);	
 
 /* RS  R/W DB7 DB6 DB5 DB4  */
 /*  0   0   0   0   0   0    */
@@ -76,15 +81,19 @@ void lcd_init( void )
 /*  0   0   0   1  I/D  S   entry mode set */
 	lcd_cmd4(0x03);
 
+	lcd_delay_long(100);
+
+	lcd_address(0x0);
+
 	for (i=0;i<lcd_buffer_len;i++)
-		lcd_screens[0][i]=0;
+		lcd_screens[0][i]=' ';
 	lcd_screens[0][0]='S';
 	lcd_screens[0][1]='p';
 	lcd_screens[0][2]='a';
 	lcd_screens[0][3]='m';
-
+	
+	redraw = 1;	
 }
-
 static void lcd_delay(void)
 {
 	nop();
@@ -108,7 +117,6 @@ static void lcd_delay_long(uint16_t time)
 	{
 		for(in_tick=0; in_tick < MS_SCALE ; in_tick++)
 			nop();
-		
 	}
 }
 
@@ -127,40 +135,38 @@ void lcd_set_buffer(uint8_t buffer_loc, uint8_t* data)
 
 static void lcd_cmd4(uint8_t data)
 {
-	command_delay;
 	rs_lo;
 	P1OUT = (P1OUT & 0x0f )| (~data << 4);
-	lcd_delay();		/* setup time */
+	lcd_delay_long(1);		/* setup time */
 	e_hi;
-	lcd_delay();		/* data valid */
+	lcd_delay_long(1);		/* data valid */
 	e_lo;
+	command_delay;
 }
 
 static void lcd_dat4(uint8_t data)
 {
-	command_delay;
 	rs_hi;
-	P1OUT = (P1OUT & ~datapins )| (data & datapins);
-	lcd_delay();		/* setup time */
+	P1OUT = (P1OUT & 0x0f )| (~data << 4);
+	lcd_delay_long(1);		/* setup time */
 	e_hi;
-	lcd_delay();		/* data valid */
+	lcd_delay_long(1);		/* data valid */
 	e_lo;
+	command_delay;
 }
 
 
 static void lcd_address(uint8_t addr)
 {
-	lcd_cmd4( ( (addr&0x70)|0x80 )>>4 );
-	lcd_cmd4(addr&0x0f);
-	
+	lcd_cmd4( ( (addr & 0x70)|0x80 )>>4 );
+	lcd_cmd4(addr & 0x0f);
 }
 
 static void lcd_char(uint8_t data)
 {
-	lcd_dat4( ( (data&0x70)|0x80 )>>4 );
-	lcd_dat4(data&0x0f);
+	lcd_dat4( data >> 4);
+	lcd_dat4(data & 0x0f);
 }
-
 
 void lcd_service(void)
 {
@@ -180,6 +186,7 @@ void lcd_service(void)
 			lcd_char(lcd_screens[requested_screen][i]);
 		}
 		current_screen = requested_screen;
+		redraw = 0;
 	}
 }
 
