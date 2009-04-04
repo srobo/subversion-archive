@@ -68,7 +68,7 @@ Log.prototype._errorReceiveHistory = function() {
     //handle failed request
 	logDebug("Log history retrieval failed");
 	this.history = new Array();
-	button_msg("Error retrieving history", LEVEL_WARN, "Retry", bind(this._receiveHistory, this));
+	status_button("Error retrieving history", LEVEL_WARN, "Retry", bind(this._receiveHistory, this));
 }
 
 Log.prototype._retrieveHistory = function() {

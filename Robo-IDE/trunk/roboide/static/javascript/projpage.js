@@ -791,7 +791,7 @@ function ProjOps() {
 
     this.error_receive_newfolder = function(new_name, new_message) {
         logDebug("Add new folder: ajax request failed");
-       	button_msg("Error contacting server", LEVEL_ERROR, "retry", bind(this.new_folder, this, new_name, new_msg) );
+       	status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.new_folder, this, new_name, new_msg) );
     }
 
     this.new_folder = function(new_name, new_msg) {
