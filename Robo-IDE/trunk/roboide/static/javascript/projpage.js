@@ -88,6 +88,10 @@ ProjPage.prototype.hide_filelist = function() {
 	this.flist._hide();
 }
 
+ProjPage.prototype.project_exists = function(pname) {
+	return this._list.project_exists(pname);
+}
+
 ProjPage.prototype.projects_exist = function() {
 	if(this._list.projects.length > 0)
 		return true;
@@ -567,10 +571,8 @@ ProjList.prototype._got_list = function(resp) {
 }
 
 ProjList.prototype.project_exists = function(pname) {
-	for( i in this.projects )
-		if( this.projects[i] == pname )
-			return true;
-	return false;
+	logDebug('Finding '+pname+' in '+this.projects+' : '+(findValue(this.projects, pname) > -1) );
+	return findValue(this.projects, pname) > -1;
 }
 
 // The project selector.
