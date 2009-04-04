@@ -18,6 +18,7 @@
 #include "i2c.h"
 #include "timer-b.h"
 #include "adc.h"
+#include "leds.h"
 #include "flash430/i2c-flash.h"
 #include <signal.h>
 
@@ -31,6 +32,7 @@ void init( void )
 	i2c_init();
 	timer_b_init();
 	adc_init();
+	leds_init();
 
 	eint();
 }

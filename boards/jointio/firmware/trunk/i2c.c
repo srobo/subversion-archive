@@ -288,14 +288,7 @@ static uint8_t i2cr_input_analogue( uint8_t *buf )
 
 static uint8_t i2cr_input_digital( uint8_t *buf )
 {
-	uint8_t i,b;
-
-	b=0;
-	for(i=0; i<8; i++)
-		if( adc_buffer[i] > INPUT_THRESHOLD )
-			b |= 1<<i;
-
-	*buf = b;
+	*buf = adc_digitise();
 
 	return 1;
 }

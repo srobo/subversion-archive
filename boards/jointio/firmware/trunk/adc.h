@@ -24,6 +24,9 @@ void adc_init ( void );
 /* Perform the ADC samples */
 void adc_sample(void);
 
+/* Return the ADC readings as values. */
+uint8_t adc_digitise( void );
+
 /* Buffer of ADC readings */
 extern uint16_t adc_buffer[8];
 

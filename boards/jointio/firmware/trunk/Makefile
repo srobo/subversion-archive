@@ -9,8 +9,8 @@ CFLAGS += -I ./types
 # flash430
 LDFLAGS += -L ./flash430 -lflash430
 
-H_FILES = common.h i2c.h init.h smbus_pec.h timer-b.h adc.h
-C_FILES = main.c i2c.c init.c smbus_pec.c timer-b.c adc.c
+H_FILES = common.h i2c.h init.h smbus_pec.h timer-b.h adc.h leds.h
+C_FILES = main.c i2c.c init.c smbus_pec.c timer-b.c adc.c leds.c
 
 world: jointio-top jointio-bottom
 

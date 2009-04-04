@@ -17,6 +17,7 @@
 #include "i2c.h"
 #include "init.h"
 #include "adc.h"
+#include "leds.h"
 #include "flash430/flash.h"
 #include "flash430/i2c-flash.h"
 
@@ -40,5 +41,7 @@ int main( void )
 
 		if( i2c_flash_received )
 			flash_switchover();
+
+		leds_set( adc_digitise() );
 	}
 }

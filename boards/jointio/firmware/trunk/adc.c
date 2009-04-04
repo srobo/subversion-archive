@@ -58,3 +58,15 @@ void adc_sample( void )
 		adc_buffer[y] = ADC10MEM;
 	}
 }
+
+uint8_t adc_digitise( void )
+{
+	uint8_t i,b;
+
+	b=0;
+	for(i=0; i<8; i++)
+		if( adc_buffer[i] > INPUT_THRESHOLD )
+			b |= 1<<i;
+
+	return b;
+}
