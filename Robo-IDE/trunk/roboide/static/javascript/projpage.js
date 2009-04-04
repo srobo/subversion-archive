@@ -152,7 +152,8 @@ ProjPage.prototype.clickCancelNewProject = function() {
 ProjPage.prototype.clickCreateNewProject = function() {
 	var newProjName = $("new-project-input").value;
 
-	if(newProjName == null || newProjName == "") {	//change this to inform them of their mistake!
+	//don't allow null strings or pure whitespace
+	if(/(^$)|(^\s+$)/.test(newProjName)) {	//change this to inform them of their mistake!
 		$("new-project-input").focus();
 		return;
 	}
