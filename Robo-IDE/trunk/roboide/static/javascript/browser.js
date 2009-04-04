@@ -118,8 +118,9 @@ Browser.prototype.clickSaveFile = function(override) {
 	var fnameErrFlag = (findValue(this.fileList, this.newFname) > -1);
 	var commitErrFlag = ( ((this.commitMsg == "Commit message") || (this.commitMsg == "")) && !override);
 
-	if(this.newFname == null || this.newFname == "") {
-		$("browser-status").innerHTML = "Please specify a "+(this.type == 'isFile' ? 'file' : 'directory')+" name";
+	//don't allow null strings or pure whitespace
+	if(/(^$)|(^\s+$)/.test(this.newFname)) {
+		$("browser-status").innerHTML = "Please specify a valid "+(this.type == 'isFile' ? 'file' : 'directory')+" name";
 		return;
 	}
 
