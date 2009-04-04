@@ -298,7 +298,7 @@ ProjFileList.prototype._auto_refresh = function() {
 		return;
 
 	//do we want to setup another one?
-	if( tabbar.tabs[0].has_focus() && this.selection.length > 0	//on projpage and something's selected
+	if( projtab.has_focus() && this.selection.length > 0	//on projpage and something's selected
 		|| this._birth + this._refresh_freq > new Date().valueOf()	//already new enough
 		|| 'no_proj' == projpage.flist.refresh()	//it failed
 	)
