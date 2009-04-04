@@ -581,9 +581,6 @@ function ProjSelect(plist, elem) {
 	this._elem = elem;
 	this._plist = plist;
 
-	// Project selection prompt
-	this._ps_prompt = null;
-
 	// The project that's selected
 	// Empty string means none selected
 	this.project = "";
@@ -640,7 +637,7 @@ ProjSelect.prototype._plist_onchange = function(team) {
 		var dp = this._get_default();
 		if( dp == null ) {
 			// Add "Please select..."
-			this._ps_prompt = status_msg( "Please select a project", LEVEL_INFO );
+			status_msg( "Please select a project", LEVEL_INFO );
 			items.unshift( OPTION( { "id" : "projlist-tmpitem",
 						 "selected" : "selected" }, "Select a project." ) );
 		} else
@@ -669,10 +666,8 @@ ProjSelect.prototype._plist_onchange = function(team) {
 
 // Handler for the onchange event of the select element
 ProjSelect.prototype._onchange = function(ev) {
-	if( this._ps_prompt != null ) {
-		this._ps_prompt.close();
-		this._ps_prompt = null;
-	}
+	//hide the status bar - anything there is now obselete
+	status_hide();
 
 	var src = ev.src();
 
