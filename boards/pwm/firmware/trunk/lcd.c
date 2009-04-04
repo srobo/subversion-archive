@@ -141,7 +141,7 @@ static void lcd_cmd4(uint8_t data)
 	e_hi;
 	lcd_delay_long(1);		/* data valid */
 	e_lo;
-	command_delay;
+	command_delay();
 }
 
 static void lcd_dat4(uint8_t data)
@@ -152,7 +152,7 @@ static void lcd_dat4(uint8_t data)
 	e_hi;
 	lcd_delay_long(1);		/* data valid */
 	e_lo;
-	command_delay;
+	command_delay();
 }
 
 

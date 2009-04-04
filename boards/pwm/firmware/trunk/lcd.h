@@ -19,7 +19,7 @@
 #include <stdint.h>
 #include "hardware.h"
 
-#define command_delay lcd_delay_long(5) /* should be 120us - write another delay later if problem*/
+#define command_delay() do { lcd_delay_long(5); } while(0) /* should be 120us - write another delay later if problem*/
 
 /* this is the length of the inner loop to get ms ticks */
 /* 	clock speed = 12MHz - 83ns */
