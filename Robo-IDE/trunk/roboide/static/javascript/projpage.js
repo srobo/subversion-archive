@@ -304,12 +304,12 @@ ProjFileList.prototype._auto_refresh = function() {
 	//do we want to setup another one?
 	if( projtab.has_focus() && this.selection.length > 0	//on projpage and something's selected
 		|| this._birth + this._refresh_freq > new Date().valueOf()	//already new enough
-		|| 'no_proj' == projpage.flist.refresh()	//it failed
+		|| 'no_proj' == projpage.flist.refresh(true)	//no project set, direct failure sets another anyway
 	)
 		this._prepare_auto_refresh();
 }
 
-ProjFileList.prototype.refresh = function() {
+ProjFileList.prototype.refresh = function(auto) {
 	log('Doing a file list refresh');
 	if( this._project == "" )
 		return 'no_proj';
@@ -328,10 +328,13 @@ ProjFileList.prototype.refresh = function() {
 
 	d.addCallback( bind( this._received, this ) );
 
-	d.addErrback( bind( function (){
-		this._err_prompt = status_button( "Error retrieving the project file listing", LEVEL_ERROR,
-			       "retry", bind( this.refresh, this ) );
-	}, this ) );
+	if(!auto)	//if it's an automatic call don't interrupt the user - just setup another
+		d.addErrback( bind( function (){
+			this._err_prompt = status_button( "Error retrieving the project file listing", LEVEL_ERROR,
+					   "retry", bind( this.refresh, this ) );
+		}, this ) );
+	else
+		d.addErrback( bind( this._prepare_auto_refresh, this ) );
 }
 
 ProjFileList.prototype._hide = function() {
