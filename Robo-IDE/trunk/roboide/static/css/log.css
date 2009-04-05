@@ -1,42 +1,23 @@
-#log-mode { display: none;}
+#log-mode { display: none; }
 
-#logmenu {
-	margin-bottom: 5px;
-	padding:5px 0 5px 0;
-	width: 100%;
-	background-color:#DFDBD8;
-	overflow:auto;
-	display:block;
-}
-
-#logmenu ul {
-	white-space:nowrap;
-	list-style-type:none;
-	padding: 0;
-	margin: 0;
-}
-
-#logmenu ul li{
-	display: inline;
-}
-#logmenu ul li div{
+#logmenu li div {
 	padding: 0 10px 0 10px;
 	font-size: 1.2em;
 }
-#logmenu li button, #logmenu li select{
+#logmenu li select {
 	padding: 0.2em 1em;
 	margin-right: 0.2em;
-	float: left;
 	font-weight: bold;
 	text-decoration: none;
 }
-#logmenu li.log-user{
+#logmenu li.log-user, #logmenu li.log-navigate {
 	float: right;
 }
 #logmenu li.log-user #svn-users {
     margin-left: 1em;
     margin-right: 1.5em;
 }
+
 #log-list  {
 	display:block;
 	background-color:#DFDBD8;
@@ -52,6 +33,7 @@
 #log-list input {
 	margin-right: 2em;
 }
+
 .commit-msg {
 	margin:0.5em 0.5em 0.5em 4em;
 	padding: 0.5em;

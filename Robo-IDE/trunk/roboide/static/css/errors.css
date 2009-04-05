@@ -1,28 +1,7 @@
-#errors-page {  width: 100%; }
-
-#errors-menu {
-	margin-bottom: 5px;
-	padding:5px 0 5px 0;
+#errors-page {
 	width: 100%;
-	background-color:#DFDBD8;
-	overflow:auto;
-	display:block;
-	white-space:nowrap;
-	list-style-type:none;
+	display: none;
 }
-
-#errors-menu ul li{
-	display: inline;
-}
-#errors-menu li button{
-	padding: 0.2em 1em;
-	margin-right: 0.2em;
-	float: left;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-#errors-page { display: none; }
 
 #errors-listing li{
 	list-style-type: decimal;

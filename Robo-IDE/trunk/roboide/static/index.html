@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="./static/css/log.css" type="text/css"/>
 <link rel="stylesheet" href="./static/css/calendar.css" type="text/css"/>
 <link rel="stylesheet" href="./static/css/errors.css" type="text/css"/>
+<link rel="stylesheet" href="./static/css/menubar.css" type="text/css"/>
 <!-- Javascript Source Files -->
 <script src="./static/javascript/MochiKit.js" type="text/javascript"></script>
 <script src="./static/javascript/gui.js" type="text/javascript"></script>
@@ -59,7 +60,7 @@
 
 <div id="top">
 	<ul id="topleft">
-	  	<li><a href="#" id="logout-button">Logout</a></li>
+		<li><a href="#" id="logout-button">Logout</a></li>
 		<li id="teaminfo">Loading...</li>
 	</ul>
 
@@ -70,20 +71,20 @@
 </div>
 
 <div id="tabs">
-  <ul id="tab-list"><li class="dummy"></li></ul>
+	<ul id="tab-list"><li class="dummy"></li></ul>
 </div>
 
 <div id="rotating-box"></div>
 
 <div id="status" >
-  <span id="status-span"></span>
+	<span id="status-span"></span>
 </div>
 
 <div id="page">
 
 	<div id="edit-mode">
-		<div id="filemenu">
-			<ul>
+		<div class="menu-bar">
+			<ul id="filemenu">
 				<li><button id="save-file" >Save</button></li>
 				<li><button id="check-syntax">Check Syntax</button></li>
 				<li><button id="close-edit-area">Close</button></li>
@@ -93,26 +94,29 @@
 					<option value="1" title="Log Msg: [commit msg]">hh:mm:ss dd/mm/yyyy [user]</option>
 				</select>
 				</li>
- </ul>
-</div>
-
+			</ul>
+			<div class="ie6-prop-clear" style="clear:both;"></div>
+		</div>
 	</div>
 
 	<div id="log-mode">
 		<!-- Log Viewer -->
-		<div id="logmenu">
-			<ul>
+		<div class="menu-bar">
+			<ul id="logmenu">
 				<li><button id="revert" title="Click to revert to the selected revision">Revert</button></li>
-				<li><button id="older">&lt;&lt;&lt; Older</button></li>
-				<li><button id="newer">Newer &gt;&gt;&gt;</button></li>
-				<li class= "log-user">
-				<select id="svn-users"><option>Dummy Option</option></select>
-                <button id="log-close">Close</button>
+				<li><button id="log-close">Close</button></li>
+				<li class="log-navigate">
+					<button id="older">&lt;&lt;&lt; Older</button>
+					<button id="newer">Newer &gt;&gt;&gt;</button>
+				</li>
+				<li class="log-user">
+					<select id="svn-users"><option>Dummy Option</option></select>
 				</li>
 			</ul>
+			<div class="ie6-prop-clear" style="clear:both;"></div>
 		</div>
 		<div id="logs">
-			<em id="log-summary"> Displaying 14 revisions between 2008-09-00 -> 2008-09-01 by user &lt;Any&gt;</em>
+			<em id="log-summary"> Displaying [n] revisions between [datetime] & [datetime] Page [n] of [n]</em>
 			<ul id="log-list"><li class="dummy"></li></ul>
 		</div>
 	</div><!-- end log viewer -->
@@ -176,7 +180,7 @@
     Click to Open<br/>
   </div>
 <ul id="proj-filelist"><li class="dummy"></li></ul>
-<div id="ie6-prop-clear" style="clear:both;"></div>
+<div class="ie6-prop-clear" style="clear:both;"></div>
 </div>
 
 
@@ -184,11 +188,14 @@
 
 <div id="errors-page">
 
-	<ul id="errors-menu">
-		<li><button id="close-errors-page" title="Click to close page">Close</button></li>
-		<li><button id="switch-errors-page" title="Switch to Code tab">Switch</button></li>
-	</ul>
-  <ul id="errors-listing"><li class="dummy"></li></ul>
+	<div class="menu-bar">
+		<ul id="errors-menu">
+			<li><button id="switch-errors-page" title="Switch to Code tab">Switch</button></li>
+			<li><button id="close-errors-page" title="Click to close page">Close</button></li>
+		</ul>
+		<div class="ie6-prop-clear" style="clear:both;"></div>
+	</div>
+	<ul id="errors-listing"><li class="dummy"></li></ul>
 </div>
 
 </div>

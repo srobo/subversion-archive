@@ -91,6 +91,7 @@ body {
 	color:#ffffff;
 }
 
+/* status bar */
 
 #status {
 	margin: 5px auto;
@@ -125,6 +126,7 @@ body {
   display: none;
 }
 
+/* menu bar - top of most tabs, below the status bar - in css/menubar.css */
 /* CSS for edit-mode should be place in css/editmode.css */
 /* CSS for file-mode should be place in css/filemode.css */
 
