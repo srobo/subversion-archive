@@ -30,7 +30,7 @@ function Browser(cback, options) {
 	this._DEFAULT_PNAME = "new-project";
 	this._DEFAULT_DNAME = "new-directory";
 
-	this.fileList = new Array();
+	this._List = new Array();
 	this.type = options.type;
 
 	//hold the ident for the escape catcher
@@ -97,7 +97,7 @@ Browser.prototype._window_keypress = function(ev) {
 
 Browser.prototype._receiveTree = function(nodes) {
 	this.fileTree = nodes.tree;
-	//default to root directory
+	//default to the first directory
 	this.newDirectory = this.fileTree[0].path;
 	replaceChildNodes($("left-pane-list"), null);
 	this._processTree($("left-pane-list"), this.fileTree, "");
@@ -131,14 +131,12 @@ Browser.prototype.clickSaveFile = function(override) {
 	this.commitMsg = $("new-commit-msg").value;
 	this.newFname = $("new-file-name").value;
 
-	var fnameExists = (findValue(this.fileList, this.newFname) > -1);
+//	var fnameExists = ();
 	var commitErrFlag = ( !override &&
 		this.type != 'isProj' &&
 		this._badCommitMsg(this.commitMsg) );
 
-	//don't allow null strings or pure whitespace
-	if(this._badFname(this.newFname)) {
-		switch(this.type) {
+	switch(this.type) {
 		case 'isFile':
 			var type = 'file';
 			break;
@@ -148,14 +146,27 @@ Browser.prototype.clickSaveFile = function(override) {
 		case 'isProj':
 			var type = 'project';
 			break;
-		}
+	}
+
+	//don't allow null strings or pure whitespace
+	if(this._badFname(this.newFname)) {
 		$("browser-status").innerHTML = "Please specify a valid "+type+" name:";
 		$("new-file-name").focus();
 		return;
 	}
 
-	if(fnameExists && (this.type=='isFile')) {
-		$("browser-status").innerHTML = "\""+this.newFname+"\" already exists!";
+	//file, dir or project name already exists
+	logDebug('Finding '+this.newFname+' in '+this._List+' : '+(findValue(this._List, this.newFname) > -1) );
+	if( ( ( this.type == 'isFile' || this.type == 'isDir' ) && findValue(this._List, this.newFname) > -1 ) ||
+		( this.type == 'isProj' && projpage.project_exists(this.newFname) )
+	) {
+		var warn = '"'+this.newFname+'" already exists';
+		if(this.type ==  'isProj')
+			warn = 'Project '+warn;
+		else
+			warn += ' in "'+this.newDirectory.substr(1)+'"';
+
+		$("browser-status").innerHTML = warn+"!";
 		$("new-file-name").focus();
 		return;
 	}
@@ -199,17 +210,9 @@ Browser.prototype._processTree = function(parentDOM, tree, pathSoFar) {
 			//create entry in folder list
 			var newPathSoFar = pathSoFar+"/"+tree[i].name;
 
-			//get just files contained within this directory
-			var filesWithin = "";
-			for (var j = 0; j < tree[i].children.length; j++) {
-					if(tree[i].children[j].kind == "FILE") {
-						filesWithin = filesWithin+"/"+tree[i].children[j].name;
-					}
-			}
-
 			var newLeaf = LI(null, tree[i].name+"/");
 
-			connect(newLeaf, 'onclick', bind(this.dirSelected, this, newPathSoFar, filesWithin));
+			connect(newLeaf, 'onclick', bind(this.dirSelected, this, newPathSoFar, tree[i].children));
 
 			//create new list for child folder
 			var newBranch = LI(null, "");
@@ -223,22 +226,24 @@ Browser.prototype._processTree = function(parentDOM, tree, pathSoFar) {
 	return parentDOM;
 }
 
-Browser.prototype.dirSelected = function(directory, files) {
+Browser.prototype.dirSelected = function(directory, thingsInside) {
 	logDebug("Folder selected :"+directory);
 	//update selected directory
 	this.newDirectory = directory;
 	$("selected-dir").innerHTML = "Save Directory: "+directory;
 
-	//populate left hand list
-	this.fileList = files.split("/");
-	var li = null;
 	//empty file list
 	replaceChildNodes($("right-pane-list"));
-	//populate file list
-	for(var k = 1; k < this.fileList.length; k++) {
-		li = LI(null, "");
-		li.innerHTML = this.fileList[k];
-		appendChildNodes($("right-pane-list"), li);
+
+	//populate file list with only files from all the things contained within this directory
+	this._List = new Array();
+	for (var j = 0; j < thingsInside.length; j++) {
+		if(thingsInside[j].kind == "FILE") {	//build li and append to pane
+			var li = LI(null, "");
+			li.innerHTML = thingsInside[j].name;
+			appendChildNodes($("right-pane-list"), li);
+		}
+		this._List.push(thingsInside[j].name);	//add to the list of all things regardless
 	}
 }
 
