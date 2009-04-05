@@ -33,11 +33,26 @@ int pecon(int fd);
 
 uint8_t crc8( uint8_t tempdata );
 
+/* Read the XBee reset pin state. 
+ * Args:
+ *  -  fd: The I2C file descriptor.
+ * Returns: 0 if the XBee is held in reset, 1 otherwise.
+ *          Negative values on error. */
+int8_t power_board_xbee_reset_get( int fd );
+
+/* Set the XBee reset pin state.
+ * Args:
+ *  -  fd: The I2C file descriptor.
+ *  - val: Reset pin state.  non-zero to assert reset pin.
+ * Returns 0 when successful. */
+int8_t power_board_xbee_reset_set( int fd, uint8_t val );
+
+static uint8_t value[BUFLEN];
+
 int main( int argc, char** argv )
 {
 	int fd =0;
 	int retval;
-	uint8_t value[BUFLEN];
 	uint8_t temp;
 
 	uint8_t *buf = value;
@@ -310,48 +325,23 @@ int main( int argc, char** argv )
 
 
 	case 'x':
-		if (argc == 2 )
-		{
-			retval = sr_read(fd, XBEE , value);
-			printf("xbee %d \n",value[0]);
-		     
-		}
-
-		else if (argc == 3){
-			if (atoi(argv[2])>0){
-				value[0] = 1;
-			}
-			else{
-				value[0] =0 ;
-			}
-
-			temp = value[0];
-			sr_write(fd,XBEE,1,value);
-			retval = sr_read(fd, XBEE , value);
-			if (value[2] == temp)
-				printf("written ok");
+		if (argc == 2 ) {
+			/* Read the XBee reset status */			
+			if( power_board_xbee_reset_get( fd ) == 0 )
+				printf( "XBee held in reset.\n" );
 			else
-			{
-				printf("Failed write");
-				return -1;
-			}
-		}
-	
-
-
-
-
-		else{
+				printf( "XBee reset pin not asserted.\n" );
+		} else if (argc == 3)
+			/* Set the XBee state. */
+			power_board_xbee_reset_set( fd, atoi(argv[2]) );
+		else {
 			printf("Usage:\n "
-			       "get alive stat: pwr_qual e\n"
-			       "     0= timer active,1=timer neutered\n"
-			       " pwr_qual e 1     # any arg sets timer off\n");
+			       "\tGet XBee reset status: pwr_qual x\n"
+			       "\tSet XBee reset pin: pwr_qual x N"
+			       "\t\tWhere N is zero to assert the reset pin." );
 			return -1;
 		}
 		break;
-
-
-
 
 	default:
 		printf("Sorry not recognised command try no args for usage\n");
@@ -512,4 +502,31 @@ uint8_t crc8( uint8_t tempdata )
 	}
 
 	return (data >> 8) & 0xFF;
+}
+
+int8_t power_board_xbee_reset_get( int fd )
+{
+	int r = sr_read( fd, XBEE, value );
+	assert( r == 1 );
+
+	return value[0];
+}
+
+int8_t power_board_xbee_reset_set( int fd, uint8_t val )
+{
+	int8_t r;
+
+	/* Clean up val to be 1 if non-zero */
+	if( val )
+		val = 1;
+	do
+	{
+		value[0] = val;
+		while( sr_write( fd, XBEE, 1, value) < 0 );
+
+		while( (r=power_board_xbee_reset_get(fd)) < 0 );
+	}
+	while( r != val );
+
+	return 0;	
 }
