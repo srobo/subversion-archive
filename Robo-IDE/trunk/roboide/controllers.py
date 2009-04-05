@@ -714,20 +714,6 @@ class Root(controllers.RootController):
                 print "ClientError, returning";
                 return dict();
         print "didn't throw merge exception"
-        #2 1/2: use client.add if we're adding a new file, ready for checkin
-        try:
-            if os.path.isdir(file) :
-                client.add(tmpdir, recurse=True)
-            else:
-                client.add(join(tmpdir, basename), recurse=False)
-        except pysvn.ClientError:
-            try:
-                #wipe temp directory
-                shutil.rmtree(tmpdir)
-            except:
-                pass
-            return dict(new_revision="0", code = "",\
-                        success="Error reverting file(s) - Are you already at the current revision ")
 
         #3. Commit the new directory
         try:
