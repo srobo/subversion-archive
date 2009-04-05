@@ -444,6 +444,18 @@ function TeamSelector() {
 
 		var src = ev.src();
 
+		//if it's not changed (webkit does weirdness)
+		if(src.value == team)
+			return;
+
+		//close tabs from other teams before changing
+		log('Team changed - closing all tabs');
+		if(editpage != null && !editpage.close_all_tabs(false)) {
+			src.value = team;
+			alert('Open files must be closed before changing teams');
+			return;
+		}
+
 		// Remove the "please select a team" item from the list
 		var tmpitem = $("teamlist-tmpitem");
 		if( tmpitem != null && src != tmpitem )
