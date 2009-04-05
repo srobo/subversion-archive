@@ -849,6 +849,12 @@ function ProjOps() {
             return;
         }
 
+        //the file must be closed!
+        if(!editpage.close_tab( projpage.flist.selection[0] )) {
+			log('Cannot move open file: '+projpage.flist.selection[0]);
+            return;
+        }
+
         var b = new Browser(bind(this._mv_cback, this), {'type' : 'isFile'});
         return;
 

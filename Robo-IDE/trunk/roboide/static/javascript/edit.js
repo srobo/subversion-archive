@@ -57,6 +57,11 @@ function EditPage() {
 		setStyle($("edit-mode"), {"display" : "none"});
 	}
 
+	//Is the given file open?
+	this.is_open = function( file ) {
+		return this._open_files[file] != null;
+	}
+
 	// Open the given file and switch to the tab
 	// or if the file is already open, just switch to the tab
 	this.edit_file = function( team, project, path, rev , mode) {
@@ -88,6 +93,14 @@ function EditPage() {
 		this._open_files[old] = null;
 	}
 
+	//close a tab, if it's open, return true if it's closed, false otherwise
+	this.close_tab = function(name, override) {
+		if(this.is_open(name))
+			return this._open_files[name].close(override);
+		else
+			return true;
+	}
+
 	this.close_all_tabs = function(override) {
 		mod_count	= 0;
 		for ( i in this._open_files ) {	//find which are modified and close the others
@@ -104,10 +117,9 @@ function EditPage() {
 			}
 		}
 		if(mod_count > 0) {
-			if(mod_count == 1) {
-				tabbar.switch_to(this._open_files[mod_file].tab);
+			if(mod_count == 1)
 				this._open_files[mod_file].close(false);
-			} else
+			else
 				status_button(mod_count+' files have been modified!', LEVEL_WARN, 'Close Anyway', bind(this.close_all_tabs, this, true));
 			return false;
 		} else
@@ -427,11 +439,16 @@ function EditTab(iea, team, project, path, rev, mode) {
 			return false;
 	}
 
+	//try to close a file, checking for modifications, return true if it's closed, false if not
 	this.close = function(override) {
-		if( override != true && this.is_modified() )
+		if( override != true && this.is_modified() ) {
+			tabbar.switch_to(this.tab);
 			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", bind(this._close, this, true));
-		else
+			return false;
+		} else {
 			this._close();
+			return true;
+		}
 	}
 
 	this._close = function() {
