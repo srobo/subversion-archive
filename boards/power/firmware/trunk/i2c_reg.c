@@ -345,9 +345,9 @@ uint8_t i2cr_rts( uint8_t *data )
 void i2cw_rts( uint8_t* data, uint8_t len )
 {
 	if (data[0])
-		startRTS;
+		startRTS();
 	else
-		stopRTS;
+		stopRTS();
 }
 
 /* CTS Handler */

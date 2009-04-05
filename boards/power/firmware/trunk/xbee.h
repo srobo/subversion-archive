@@ -11,9 +11,9 @@ void xbee_init(void);
 
 #define CTSOK (!(P5IN& CTS ) )      /*  ok to send data when this evaluates true */
 
-#define startRTS P5OUT &= ~ RTS
-#define stopRTS P5OUT |= RTS
-#define RTS_state P5OUT & RTS
+#define startRTS() do { P5OUT &= ~ RTS; } while (0)
+#define stopRTS() do { P5OUT |= RTS; } while (0)
+#define RTS_state (P5OUT & RTS)
 
 #define xbee_on() do { P5OUT |= XBRESET; } while (0)
 #define xbee_off() do { P5OUT &= ~XBRESET; } while (0)
