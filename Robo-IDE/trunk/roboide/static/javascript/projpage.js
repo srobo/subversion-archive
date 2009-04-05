@@ -59,9 +59,11 @@ ProjPage.prototype._init = function() {
 	connect(this._selector, "onchange", bind( this._calendar.change_proj, this._calendar ) );
 
 	// Connect up the project management buttons
-	connect("new-project", 'onclick', bind(this.clickNewProject, this));
-	connect("export-project", 'onclick', bind(this.clickExportProject, this));
-	connect("check-code", "onclick", bind(this.clickCheckCode, this));
+	connect("new-project",		'onclick', bind(this.clickNewProject, this));
+	connect("archive-project",	'onclick', bind(this.clickArchiveProject, this));
+	connect("copy-project",		'onclick', bind(this.clickCopyProject, this));
+	connect("export-project",	'onclick', bind(this.clickExportProject, this));
+	connect("check-code",		'onclick', bind(this.clickCheckCode, this));
 
 	// We have to synthesize the first "onchange" event from the ProjSelect,
 	// as these things weren't connected to it when it happened
@@ -134,6 +136,47 @@ ProjPage.prototype._rpane_show = function() {
 	setStyle( "proj-rpane", {'display':''} );
 }
 
+ProjPage.prototype.clickArchiveProject = function() {
+	return;
+}
+
+ProjPage.prototype.clickCopyProject = function() {
+	if( this.project == null || this.project == "" )
+		status_msg( "Please select a project to copy", LEVEL_INFO );
+	else
+		var b = new Browser(bind(this.CreateCopyProject, this), {'type' : 'isProj', 'title' : 'Copy Project'});
+}
+
+ProjPage.prototype.CreateCopyProject = function(newProjName) {
+	cMsg = 'Copying project '+this.project+' to '+newProjName;
+	log(cMsg);
+
+	var d = loadJSONDoc("./copy", { 'team' : team,
+				'src' : '/'+this.project,
+				'dest' : '/'+newProjName,
+				'msg' : cMsg,
+				'rev' : 0  });
+	d.addCallback( bind( partial(this._CopyProjectSuccess, newProjName), this));
+	d.addErrback( bind( function() {
+		status_button( "Copy Project: Error contacting server", LEVEL_ERROR, "retry",
+			bind(this.CreateCopyProject, this, newProjName) );
+	}, this ) );
+}
+
+ProjPage.prototype._CopyProjectSuccess = function(newProjName, nodes) {
+	if(nodes.status > 0)
+		status_msg("ERROR COPYING: "+nodes.message, LEVEL_ERROR);
+	else {
+		status_msg("Project copy successful", LEVEL_OK);
+		if(projtab.has_focus()) {
+			log('Project Copied, need to update the list...');
+			// Transition to the new project once the project list has loaded
+			this._selector.trans_project = newProjName;
+			this._list.update(team);
+		}
+	}
+}
+
 ProjPage.prototype.clickNewProject = function() {
 	var b = new Browser(bind(this.CreateNewProject, this), {'type' : 'isProj'});
 }
@@ -142,19 +185,19 @@ ProjPage.prototype.CreateNewProject = function(newProjName) {
 	/* Postback to create a new project - then what? */
 
 	var d = loadJSONDoc("./createproj",{ name : newProjName, team : team });
-	d.addCallback(bind(this.createProjectSuccess, this, newProjName));
-	d.addErrback(bind(this.createProjectFailure, this));
+	d.addCallback(bind(this._createProjectSuccess, this, newProjName));
+	d.addErrback(bind(this._createProjectFailure, this));
 }
 
-ProjPage.prototype.createProjectSuccess = function(newProjName) {
+ProjPage.prototype._createProjectSuccess = function(newProjName) {
 	status_msg("Created project successfully", LEVEL_OK);
 	update(team)
 	// Transition to the new project once the project list has loaded
 	this._selector.trans_project = newProjName;
-	this._list.update(team)
+	this._list.update(team);
 }
 
-ProjPage.prototype.createProjectFailure = function() {
+ProjPage.prototype._createProjectFailure = function() {
 	/* XXX - check for preexisting projects perhaps */
 	status_msg("Create project failed - svn error", LEVEL_ERROR);
 }
@@ -530,7 +573,8 @@ function ProjList() {
 
 	// Member functions:
 	// Public:
-	//  - project_exists(pname): Returns true if the given project exists.
+	//  - project_exists: Returns true if the given project exists.
+	//  - update: mask of _grab_list
 	// Private:
 	//  - _init
 	//  - _grab_list: Grab the project list and update.
@@ -884,7 +928,10 @@ function ProjOps() {
 				   msg : cmsg,
 				   rev : 0  });
 	    d.addCallback( bind(this._cp_callback1, this));
-	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this._cp_callback2, this, true));});
+	    d.addErrback( bind( function() {
+			status_button("Error contacting server", LEVEL_ERROR, "retry",
+				bind(this._cp_callback2, this, fname, cmsg));
+		} ), this );
     }
     this.cp = function() {
         if(projpage.flist.selection.length == 0) {
