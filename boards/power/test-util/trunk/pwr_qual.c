@@ -16,12 +16,22 @@
 #define BUFLEN 30
 
 int init_i2c(void);
-int32_t sr_read( int fd, uint8_t reg, uint8_t *buf );
-int32_t sr_write( int fd, uint8_t command, uint8_t len, uint8_t *buf );
-int pecoff(int fd);
-int pecon(int fd);
-uint8_t crc8( uint8_t tempdata );
 
+/* Read from register.
+ * Arguments:
+ *  -  fd: The file descriptor
+ *  - reg: The register number to read.
+ *  - buf: Pointer to buffer to read data into.  Must be BUFLEN long.
+ * Returns: The length of data read. */
+int32_t sr_read( int fd, uint8_t reg, uint8_t *buf );
+
+int32_t sr_write( int fd, uint8_t command, uint8_t len, uint8_t *buf );
+
+int pecoff(int fd);
+
+int pecon(int fd);
+
+uint8_t crc8( uint8_t tempdata );
 
 int main( int argc, char** argv )
 {
@@ -60,13 +70,13 @@ int main( int argc, char** argv )
 	switch( *argv[1]){
 	case 'i':
 		retval = sr_read(fd, IDENTIFY , value);
-		printf("Read ID as %x %x\n", value[3],value[2]);
+		printf("Read ID as %x %x\n", value[1],value[0]);
 		break;
 	case 'l':
 		if (argc == 2 )
 		{ 
 			retval = sr_read(fd, LED , value);
-			printf("Leds = %d \n",value[2]);
+			printf("Leds = %d \n",value[0]);
 		     
 		}
 		else if (argc == 3){
@@ -86,19 +96,19 @@ int main( int argc, char** argv )
 
 	case 'd':
 		retval = sr_read(fd, DIPSWITCH , value);
-		printf("Read dips as %d \n",value[2]);
+		printf("Read dips as %d \n",value[0]);
 		break;
 
 	case 'b':
 		retval = sr_read(fd, BUTTON , value);
-		printf("Button history is %d\n", value[2]);
+		printf("Button history is %d\n", value[0]);
 		break;
 
        	case 's':
 		if (argc == 2 )
 		{
 			retval = sr_read(fd, SLUG_POWER , value);
-			printf("Slug power = %d \n",value[2]);
+			printf("Slug power = %d \n",value[0]);
 		     
 		}
 		else if (argc == 3){
@@ -125,7 +135,7 @@ int main( int argc, char** argv )
 		{
 			retval = sr_read(fd, SERVO_POWER , value);
 			printf("retva: %d\n",retval);
-			printf("Servo power = %d \n",value[2]);
+			printf("Servo power = %d \n",value[0]);
 		     
 		}
 		else if (argc == 3){
@@ -151,7 +161,7 @@ int main( int argc, char** argv )
 		if (argc == 2 )
 		{
 			retval = sr_read(fd, MOTOR_POWER , value);
-			printf("Motor power = %d \n",value[2]);
+			printf("Motor power = %d \n",value[0]);
 		     
 		}
 		else if (argc == 3){
@@ -174,18 +184,18 @@ int main( int argc, char** argv )
 		    
    	case 'c':
 		retval = sr_read(fd, BATTERY , value);
-		printf("Battery status: %d\n",value[2]);
+		printf("Battery status: %d\n",value[0]);
 		break;	
 
 
 
 	case 'v':
 		retval = sr_read(fd, VOLT , value);
-		printf("%d\n", ((value[3]<<8) | value[2]));
+		printf("%d\n", ((value[3]<<8) | value[0]));
 		break;
 	case 'a':
 		retval = sr_read(fd, AMP , value);
-		printf("%d\n", ((value[3]<<8) | value[2]));
+		printf("%d\n", ((value[3]<<8) | value[0]));
 		break;
 
 
@@ -193,13 +203,13 @@ int main( int argc, char** argv )
 		if (argc == 2 )
 		{
 			retval = sr_read(fd, BEEGEES , value);
-			printf("slug alive? 0 = timer,1= safe: %d \n",value[2]);
+			printf("slug alive? 0 = timer,1= safe: %d \n",value[0]);
 		     
 		}
 		else if (argc == 3){
 			sr_write(fd,BEEGEES,1,value);
 			retval = sr_read(fd, BEEGEES , value);
-			if (value[2])
+			if (value[0])
 				printf("Ah Ah Ah Ah, stayin' alive!\n");
 			else
 				printf("Failed to disable timer");
@@ -225,7 +235,7 @@ int main( int argc, char** argv )
 		if (argc == 2 )
 		{ 
 			retval = sr_read(fd, TEST , value);
-			printf("test = %d %d\n",value[3],value[2]);
+			printf("test = %d %d\n",value[1],value[0]);
 		     
 		}
 		else if (argc == 4){
@@ -252,7 +262,7 @@ int main( int argc, char** argv )
 		if (argc == 2 )
 		{
 			retval = sr_read(fd, RTS , value);
-			printf("RTS: %d \n",value[2]);
+			printf("RTS: %d \n",value[0]);
 		     
 		}
 		else if (argc == 3){
@@ -287,7 +297,7 @@ int main( int argc, char** argv )
 		if (argc == 2 )
 		{
 			retval = sr_read(fd, CTS , value);
-			printf(" CTS %d \n",value[2]);
+			printf(" CTS %d \n",value[0]);
 		     
 		}
 		else{
@@ -303,7 +313,7 @@ int main( int argc, char** argv )
 		if (argc == 2 )
 		{
 			retval = sr_read(fd, XBEE , value);
-			printf("xbee %d \n",value[2]);
+			printf("xbee %d \n",value[0]);
 		     
 		}
 
@@ -351,9 +361,6 @@ int main( int argc, char** argv )
 	return 0;
 
 }
-
-
-
 
 
 int32_t sr_write( int fd, uint8_t command, uint8_t len, uint8_t *buf ){
@@ -437,7 +444,9 @@ int32_t sr_read( int fd, uint8_t reg, uint8_t *buf )
 
 	pecon(fd);
 
-	return len+1;
+	/* Copy the data to the beginning of the buffer. */
+	memmove( buf, buf + 2, len );
+	return len;
 
 error0:
 	pecon(fd);
