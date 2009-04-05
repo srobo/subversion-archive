@@ -68,7 +68,7 @@ Browser.prototype._init = function() {
     disconnectAll("cancel-new-file");
     disconnectAll("new-file-name");
     disconnect(this._esc_press);
-	this._esc_press = connect(document, 'onkeypress', bind(this._window_keypress, this));
+	this._esc_press = connect(document, 'onkeydown', bind(this._window_keydown, this));
 	connect("new-file-name", 'onkeypress', bind(this._new_file_keypress, this));
 	connect("save-new-file", 'onclick', bind(this.clickSaveFile, this, false));
 	connect("cancel-new-file", 'onclick', bind(this.clickCancelSave, this));
@@ -88,7 +88,7 @@ Browser.prototype._new_file_keypress = function(ev) {
 	}
 }
 
-Browser.prototype._window_keypress = function(ev) {
+Browser.prototype._window_keydown = function(ev) {
 	if(ev._event.keyCode == 27 && ev._modifier == null) {
 		log('Escape pressed - hiding browser')
 		signal("cancel-new-file", 'onclick');
