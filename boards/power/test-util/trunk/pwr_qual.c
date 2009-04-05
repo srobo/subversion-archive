@@ -81,7 +81,6 @@ int main( int argc, char** argv )
 		return -1;
 	}
 
-
 	switch( *argv[1]){
 	case 'i':
 		retval = sr_read(fd, IDENTIFY , value);
@@ -337,8 +336,8 @@ int main( int argc, char** argv )
 		else {
 			printf("Usage:\n "
 			       "\tGet XBee reset status: pwr_qual x\n"
-			       "\tSet XBee reset pin: pwr_qual x N"
-			       "\t\tWhere N is zero to assert the reset pin." );
+			       "\tSet XBee reset pin: pwr_qual x N\n"
+			       "\tWhere N is zero to assert the reset pin.\n" );
 			return -1;
 		}
 		break;
