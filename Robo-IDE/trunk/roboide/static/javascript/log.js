@@ -121,13 +121,10 @@ Log.prototype._populateList = function() {
 	//now populate log list
 	for(var x=0; x <this.history.length; x++) {
 		var logtxt = SPAN("r"+this.history[x].rev+" | "+this.history[x].author+" | "+this.history[x].date);
-		var item = LI(null, logtxt);
-		var radio = INPUT({'type' : 'radio', 'name' : 'log', 'class' : 'log-radio', 'value' : this.history[x].rev });
+		var radio = INPUT({'type' : 'radio', 'id' : 'log', 'name' : 'log', 'class' : 'log-radio', 'value' : this.history[x].rev });
+		var label = LABEL( null, radio, logtxt );
 		var commitMsg = DIV({'class' : 'commit-msg'}, this.history[x].message);
-		appendChildNodes(item, radio);
-		appendChildNodes(item, logtxt);
-		appendChildNodes(item, commitMsg);
-		appendChildNodes($("log-list"), item);
+		appendChildNodes($("log-list"), LI(null, label, commitMsg));
 	}
 	//make selected user selected in drop down box (visual clue that filter is applied)
 	if(this.user != null) {
