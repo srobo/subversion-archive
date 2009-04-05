@@ -53,13 +53,14 @@ Log.prototype._init = function() {
 	this._retrieveHistory();
 }
 
-Log.prototype._receiveHistory = function(revisions) {
+Log.prototype._receiveHistory = function(opt, revisions) {
 	logDebug("Log history received ok");
     //extract data from query response
 	update(this.history, revisions.history);
     update(this.userList, revisions.authors);
 	this.overflow = revisions.overflow;
-	status_msg("File history loaded successfully", LEVEL_OK);
+	if(opt == null || opt != 'quiet')
+		status_msg("File history loaded successfully", LEVEL_OK);
     //present data
 	this._populateList();
 }
@@ -71,13 +72,13 @@ Log.prototype._errorReceiveHistory = function() {
 	status_button("Error retrieving history", LEVEL_WARN, "Retry", bind(this._receiveHistory, this));
 }
 
-Log.prototype._retrieveHistory = function() {
+Log.prototype._retrieveHistory = function(opt) {
 	var d = loadJSONDoc("./gethistory", { team : team,
 					    file : this.file,
 					    user : this.user,
 					    offset : this.offset});
 
-	d.addCallback( bind(this._receiveHistory, this));
+	d.addCallback( bind(this._receiveHistory, this, opt));
 	d.addErrback( bind(this._errorReceiveHistory, this));
 }
 //processess log data and formats into list. connects up related event handlers,
@@ -184,26 +185,26 @@ Log.prototype._update = function() {
 }
 
 Log.prototype._receiveRevert = function(nodes) {
-    if(nodes.new_revision > 0) {
-        status_msg("Successfully reverted to version "+this.selectedRevision+" (New Revision: "+nodes.new_revision+")", LEVEL_OK);
-    }
-    else {
-        status_msg("Failed to revert: "+nodes.success, LEVEL_ERROR);
-    }
+	if(nodes.new_revision > 0)
+		status_msg("Successfully reverted to version "+this.selectedRevision+" (New Revision: "+nodes.new_revision+")", LEVEL_OK);
+	else
+		status_msg("Failed to revert: "+nodes.success, LEVEL_ERROR);
+	//in either case update the history
+	this._retrieveHistory('quiet');
 }
 
-Log.prototype._errorReceiveRevision = function() {
-    button_status("Unable to contact server", LEVEL_ERROR, "retry", bind(this._revert, this));
+Log.prototype._errorReceiveRevision = function(commitMsg) {
+	status_button("Unable to contact server to revert file", LEVEL_ERROR, "retry", bind(this._do_revert, this, commitMsg));
 }
 Log.prototype._do_revert = function(commitMsg) {
 	var d = loadJSONDoc("./revert", {
-	                    team : team,
-					    file : this.file,
-					    torev : this.selectedRevision,
-					    message : commitMsg});
+						team : team,
+						file : this.file,
+						torev : this.selectedRevision,
+						message : commitMsg});
 
 	d.addCallback( bind(this._receiveRevert, this));
-	d.addErrback( bind(this._errorReceiveRevision, this));
+	d.addErrback( bind(this._errorReceiveRevision, this, commitMsg));
 }
 
 //revert to selected revision. override = true to skip user confirmation
@@ -222,7 +223,7 @@ Log.prototype._revert = function(override) {
     }
     else if(override){
         //user has confirmed revert, proceed
-        status_msg("Reverting to revision: "+this.selectedRevision+"...", LEVEL_OK);
+        status_msg("Reverting to revision: "+this.selectedRevision+"...", LEVEL_INFO);
         var b = new Browser(bind(this._do_revert, this), {'type' : 'isCommit'});
     }
     else {
@@ -231,8 +232,6 @@ Log.prototype._revert = function(override) {
     }
 
 }
-
-
 
 //tab gets focus
 Log.prototype._onfocus = function() {
