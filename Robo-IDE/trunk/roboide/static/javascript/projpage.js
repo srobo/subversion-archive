@@ -321,7 +321,6 @@ ProjFileList.prototype.refresh = function() {
 	}
 
 	this._timeout = null;
-	this.selection = new Array();
 	var d = loadJSONDoc("./filelist", { 'team' : this._team,
 					'rootpath' : this._project,
 					'rev' : this.rev,
@@ -345,6 +344,7 @@ ProjFileList.prototype._show = function() {
 
 // Handler for receiving the file list
 ProjFileList.prototype._received = function(nodes) {
+	this.selection = new Array();
 	this._birth = new Date().valueOf();
 	log( "filelist received" );
 	this._prepare_auto_refresh();
