@@ -32,6 +32,7 @@ function Browser(cback, options) {
 
 	this._List = new Array();
 	this.type = options.type;
+	this.title = options.title;
 
 	//hold the ident for the escape catcher
 	this._esc_press = null;
@@ -254,7 +255,7 @@ Browser.prototype.display = function() {
 	switch(this.type) {
 		case 'isFile':
 			$("browser-status").innerHTML = "Please Select a save directory & new file name";
-			$("selected-dir").innerHTML = "File Save As:";
+			$("selected-dir").innerHTML = this.title || "File Save As:";
 			showElement("right-pane");
 			showElement("left-pane");
 			showElement("new-commit-msg");
@@ -262,7 +263,7 @@ Browser.prototype.display = function() {
 			break;
 		case 'isDir' :
 			$("browser-status").innerHTML = "Please Select a save directory & new directory name";
-			$("selected-dir").innerHTML = "New Directory:";
+			$("selected-dir").innerHTML = this.title || "New Directory:";
 			showElement("right-pane");
 			showElement("left-pane");
 			showElement("new-commit-msg");
@@ -278,7 +279,7 @@ Browser.prototype.display = function() {
 			break;
 		case 'isProj' :
 			$("browser-status").innerHTML = "Enter new project name:";
-			$("selected-dir").innerHTML = "New Project";
+			$("selected-dir").innerHTML = this.title || "New Project";
 			hideElement("right-pane");
 			hideElement("left-pane");
 			hideElement("new-commit-msg");
