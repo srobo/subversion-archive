@@ -15,8 +15,8 @@ void xbee_init(void);
 #define stopRTS P5OUT |= RTS
 #define RTS_state P5OUT & RTS
 
-#define xbee_on() P5OUT |= XBRESET
-#define xbee_off() P5OUT &= ~XBRESET
+#define xbee_on() do { P5OUT |= XBRESET; } while (0)
+#define xbee_off() do { P5OUT &= ~XBRESET; } while (0)
 #define xbee_state (P5OUT & XBRESET)
 
 #endif	/* __XBEE_H */
