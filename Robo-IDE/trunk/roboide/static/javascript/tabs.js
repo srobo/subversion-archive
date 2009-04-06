@@ -43,10 +43,9 @@ function Tab(label) {
 
 		if( !this._focus ) {
 			logDebug( "tab \"" + this.label + "\" focussed" );
+			this._focus = true;
 			signal( this, "onfocus", this );
 		}
-
-		this._focus = true;
 	}
 
 	// Called to tell the tab it no longer has focus
@@ -55,10 +54,9 @@ function Tab(label) {
 
 		if( this._focus ) {
 			logDebug( "tab \"" + this.label + "\" blurred" );
+			this._focus = false;
 			signal( this, "onblur", this );
 		}
-
-		this._focus = false;
 	}
 
 	this.close = function() {
