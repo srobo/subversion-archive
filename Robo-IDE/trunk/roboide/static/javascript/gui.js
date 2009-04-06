@@ -188,7 +188,7 @@ function status_click() {
 //      bfunc: The function to call when the button is clicked.
 function status_button( message, level, btext, bfunc ) {
 	var b = createDOM( "A", { "href" : "#" }, btext );
-	connect( b, "onclick", bfunc );
+	connect( b, "onclick", function() { status_click(); bfunc(); } );
 
 	var m = [ message, " -- ", b ]
 
