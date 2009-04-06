@@ -360,7 +360,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 		switch(nodes.success){
 			case "True":
-				status_msg("File Saved successfully (New Revision: "+nodes.new_revision+")", LEVEL_OK);
+				status_msg("File "+this.path+" Saved successfully (Now at r"+nodes.new_revision+")", LEVEL_OK);
 				this._original = this.contents;
 				this._autosaved = "";
 				this._isNew = false;
@@ -368,7 +368,7 @@ function EditTab(iea, team, project, path, rev, mode) {
  				this._update_contents();
 				break;
 			case "Merge":
-				status_msg("File Merge successful (New Revision: "+nodes.new_revision+")", LEVEL_OK);
+				status_msg("File "+this.path+" Merge successful (Now at r"+nodes.new_revision+")", LEVEL_OK);
 				this._original = this.contents;
 				this._autosaved = "";
 				this._isNew = false;
