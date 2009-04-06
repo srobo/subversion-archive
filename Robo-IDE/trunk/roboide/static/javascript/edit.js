@@ -362,6 +362,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 			case "True":
 				status_msg("File Saved successfully (New Revision: "+nodes.new_revision+")", LEVEL_OK);
 				this._original = this.contents;
+				this._autosaved = "";
 				this._isNew = false;
 				this.rev = nodes.new_revision;
  				this._update_contents();
@@ -369,6 +370,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 			case "Merge":
 				status_msg("File Merge successful (New Revision: "+nodes.new_revision+")", LEVEL_OK);
 				this._original = this.contents;
+				this._autosaved = "";
 				this._isNew = false;
 				this.rev = nodes.new_revision;
  				this._update_contents();
@@ -497,6 +499,10 @@ function EditTab(iea, team, project, path, rev, mode) {
 	}
 
 	this._update_contents = function() {
+		//if we don't have focus then don't try to change things - we'll get called again when we get focus
+		if(!this.tab.has_focus())
+			return;
+
 		this._iea.setValue( this.contents );
 
 	 	this._get_revisions();
