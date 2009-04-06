@@ -125,7 +125,7 @@ function EditPage() {
 		} else
 			return true;
 	}
-//*/
+
 	// Create a new tab that's one of ours
 	// Doesn't load the tab
 	this._new_etab = function(team, project, path, rev, mode) {
@@ -250,6 +250,9 @@ function EditTab(iea, team, project, path, rev, mode) {
 	// whether we're loading from the svn or an autosave
 	this._mode = mode;
 
+	// hold a reference to our status prompts
+	this._prompt = null;
+
 	this._init = function() {
 		this.tab = new Tab( this.path );
 		tabbar.add_tab( this.tab );
@@ -309,6 +312,15 @@ function EditTab(iea, team, project, path, rev, mode) {
 						     "retry", bind( this._load_contents, this ) );
 	}
 
+	this._recieve_check_syntax = function(info) {
+		if( info["errors"] == 1 ) {
+			errorspage.load(info, {'switch_to':false});
+			this._prompt = status_button( info.messages.length+" errors found!", LEVEL_WARN, 'view errors',
+				bind( function() { tabbar.switch_to(errorspage.tab); this._prompt.close(); }, this ) );
+		} else
+			status_msg( "No errors found", LEVEL_OK );
+	}
+
 	this._check_syntax = function() {
 		//tell the log and grab the latest contents
 		logDebug( "Checking syntax of " + this.path, LEVEL_WARN );
@@ -317,9 +329,9 @@ function EditTab(iea, team, project, path, rev, mode) {
 		//throw the contents to the backend
 		var d = loadJSONDoc("./checkcode",{ team : team, path : this.path, code : this.contents });
 
-		d.addCallback(projpage.doneCheckCode);
+		d.addCallback( bind(this._recieve_check_syntax, this) );
 		d.addErrback( bind( function() {
-			status_button( "Syntax Check: error contacting server", LEVEL_ERROR,
+			status_button( "during Syntax Check", LEVEL_ERROR,
 					"retry", bind( this._check_syntax, this ) );
 		}, this) );
 	}

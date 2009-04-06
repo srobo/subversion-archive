@@ -233,7 +233,7 @@ ProjPage.prototype.clickCheckCode = function() {
 
 ProjPage.prototype.doneCheckCode = function(info) {
 	if( info["errors"] == 1 )
-		errorspage.load(info);
+		errorspage.load(info, {'switch_to':true});
 	else
 		status_msg( "No errors found", LEVEL_OK );
 }
