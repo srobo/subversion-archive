@@ -1,8 +1,3 @@
-cur_path = ""; //TODO: Replace these with cur_tab
-
-open_files = {}; //A dictionary (hash table) of the currently open
-//files - one for each tab
-
 // Initialise to an invalid team number
 team = 0; /*The current team number*/
 
@@ -28,6 +23,9 @@ var projtab = null;
 
 // The edit page
 var editpage = null;
+
+// The errors tab
+var errorspage = null;
 
 // The user
 var user;
@@ -84,8 +82,11 @@ function load_gui() {
 	// Edit page
 	editpage = new EditPage();
 
+	// Errors Tab
+	errorspage = new ErrorsPage();
+
 	// The "new" tab button
-	var ntab = new Tab( "+ New + " );
+	var ntab = new Tab( "+ New +" );
 	ntab.can_focus = false;
 	connect( ntab, "onclick", bind(editpage.new_file, editpage) );
 	tabbar.add_tab( ntab );
