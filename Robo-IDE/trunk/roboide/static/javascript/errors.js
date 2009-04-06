@@ -58,6 +58,8 @@ ErrorsPage = function () {
 			}
 			
 			if(info.whole) {	//if it was called from a code tab
+				//get a line of the file from the tab
+			}
 
 			logDebug('file: '+file+'| line: '+line+'| indent: '+indent+'| marker: '+marker+'|');
 
