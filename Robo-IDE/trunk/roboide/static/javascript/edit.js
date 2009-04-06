@@ -318,7 +318,10 @@ function EditTab(iea, team, project, path, rev, mode) {
 		var d = loadJSONDoc("./checkcode",{ team : team, path : this.path, code : this.contents });
 
 		d.addCallback(projpage.doneCheckCode);
-		d.addErrback(projpage.failCheckCode);
+		d.addErrback( bind( function() {
+			status_button( "Syntax Check: error contacting server", LEVEL_ERROR,
+					"retry", bind( this._check_syntax, this ) );
+		}, this) );
 	}
 
 	this._receive_new_fname = function(fpath, commitMsg) {
