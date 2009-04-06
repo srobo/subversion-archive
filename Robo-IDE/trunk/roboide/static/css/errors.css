@@ -3,11 +3,29 @@
 	display: none;
 }
 
-#errors-listing li{
-	list-style-type: decimal;
+#errors-listing {
+	margin: 0;
+}
+
+#errors-listing dt {
+	font-size: 1.3em;
+	font-weight: bold;
+	margin-top: 15px;
+	margin-left: 10px;
+}
+
+#errors-listing dd {
+}
+
+#errors-listing ul {
+	padding: 0;
+}
+
+#errors-listing ul li {
+	list-style-type: none;
 	background-color: #DFDBD8;
 	font-family: monospace;
 	padding: 0.8em;
 	margin: 0.8em;
-	white-space:pre;
+	white-space: pre;
 }

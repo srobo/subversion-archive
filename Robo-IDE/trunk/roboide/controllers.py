@@ -875,10 +875,14 @@ class Root(controllers.RootController):
 
         client = Client(int(team))
         rev = self.get_revision("HEAD")
-        print path
+        file_name = 'robot.py'
+
         if code != 0:
+            file_name = os.path.basename(path)
             path = os.path.dirname(path)
-        print path
+            whole = True
+        else:
+            whole = False
 
         # Directory to work in
         td = tempfile.mkdtemp()
@@ -890,14 +894,12 @@ class Root(controllers.RootController):
                       revision=rev,
                       recurse=True)
 
-        if code != 0: #either make a temporary file or grab the latest from the svn
-            tmpfile = tempfile.NamedTemporaryFile(dir=td+"/code", suffix='.py')
+        if code != 0: #overwrite the version from the svn
+            tmpfile = open(td+"/code"+file_name, 'w')
             tmpfile.write(str(code))
-            file_name = os.path.basename(tmpfile.name)
-        else:
-            file_name = 'robot.py'
-        
-        print 'td: '+td+"\nfile_name: "+file_name
+            tmpfile.close()
+
+        print 'temp_dir: '+td+"\nfile_name: "+file_name
 
         # Check out the dummified SR library too
         shutil.copy( config.get("checker.file"), td + "/code" )
@@ -911,35 +913,28 @@ class Root(controllers.RootController):
 
         rval = p.wait()
 
-        #close the temporary file, if we had one
-        if code != 0:
-            tmpfile.close()
         # Remove the temporary directory
         shutil.rmtree(td)
 
         if rval == 0:
             return dict( errors = 0 )
         else:
-            pyerrors = []
-            pylines = []
-            pyfiles = []
+            chk_warnings = []
+            chk_errors = []
 
-            for line in output:
-                pyerrors.append(line)
-                substart = line.rfind(", line ")
-                if substart > -1:
-                    subend = line.find(",", substart+7)
-                    pylines.append( int(line[substart+7:subend]))
-                else:
-                    pylines.append(0)
-                substart = line.rfind("File \"")
-                if substart > -1:
-                    subend = line.find("\"", substart+6);
-                    pyfiles.append( line[substart+6 : subend])
-                else:
-                    pyfiles.append("")
-            return dict( messages = pyerrors, len = len(pyerrors), lines = pylines, files = pyfiles,
-                         errors = 1 )
+            #pychecker outputs two parts: one warnings, one the processing resuls
+            warn_part = output[0].split('\n')
+            proc_part = output[1].split('\n')
+
+            for line in warn_part: #simply grab the lines of interest - we can do more in JS
+                if not line in ['', '\n', 'Warnings...']:
+                    chk_warnings.append(line)
+
+            for line in proc_part:
+                if not line in ['', '\n', 'Processing '+os.path.splitext(file_name)[0]+'...']:
+                    chk_errors.append(line)
+
+            return dict( messages = chk_warnings, err = chk_errors, path = path, file = file_name, errors = 1, whole = whole )
 
     @expose("json")
     def autocomplete(self, str, nocache):
