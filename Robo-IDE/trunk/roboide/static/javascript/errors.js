@@ -48,7 +48,7 @@ ErrorsPage = function () {
 				case 'Syntax':
 					var file = info.err[0].split('(')[1].split(', line ')[0];
 					var line = info.err[0].split(', line ')[1].split(')')[0];
-					var indent = info.err[1];
+					var code = info.err[1];
 					var marker = info.err[2];
 					break;
 				case 'Import':
@@ -58,10 +58,10 @@ ErrorsPage = function () {
 			}
 			
 			if(info.whole) {	//if it was called from a code tab
-				//get a line of the file from the tab
+				code += '';
 			}
 
-			logDebug('file: '+file+'| line: '+line+'| indent: '+indent+'| marker: '+marker+'|');
+			logDebug('file: '+file+'| line: '+line+'| code: '+code+'| marker: '+marker+'|');
 
 			if(this.eflist[file] == null)
 				this.eflist[file] = new ErrorFile(file);
@@ -174,7 +174,7 @@ function ErrorFile(name) {
 		this._name_elem = createDOM('dt', null, this.label);
 		this._warn_elem = UL(null, null);
 		this._err_elem = UL(null, null);
-		this._msgs_elem = createDOM('dd', {'file':this.label}, this._warn_elem, this._err_elem)
+		this._msgs_elem = createDOM('dd', {'file':this.label}, this._warn_elem, this._err_elem);
 
 		//add the html to the page
 		appendChildNodes("errors-listing", this._name_elem);
@@ -191,7 +191,7 @@ function ErrorFile(name) {
 	}
 
 	this.load_error = function(type, line, code, marker) {
-		appendChildNodes( this._err_elem, LI(null, type+'\n'line+': '+code+'\n'+marker) );
+		appendChildNodes( this._err_elem, LI(null, type+'\n'+line+': '+code+'\n'+marker) );
 		this.show_msgs();
 	}
 
