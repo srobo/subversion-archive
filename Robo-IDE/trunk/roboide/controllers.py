@@ -366,7 +366,7 @@ class Root(controllers.RootController):
 
             #This is called to get a log message for the deletion
             def cb():
-                return True, "Files deleted"
+                return True, "Files deleted: "+', '.join(files)
             client.callback_get_log_message = cb
 
             urls = [client.REPO + str(x) for x in files]
