@@ -1023,7 +1023,7 @@ function ProjOps() {
     	var d = loadJSONDoc("./copy", {team : team,
 				   src : projpage.flist.selection[0],
 				   dest : projpage.flist.selection[0],
-				   msg : "Undelete File",
+				   msg : "Undelete File "+projpage.flist.selection[0],
 				   rev : projpage.flist.rev  });
 	    d.addCallback( bind(this._undel_callback, this));
 	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.undel, this, true));});
