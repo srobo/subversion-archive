@@ -1,4 +1,4 @@
-ErrorsPage = function () {
+function ErrorsPage() {
 
 	//hold the tab object
 	this.tab = null;
@@ -25,7 +25,7 @@ ErrorsPage = function () {
 		tabbar.add_tab( this.tab );
 
 		this.signals.push(connect("close-errors-page", "onclick", bind(this._close, this) ));
-		this.signals.push(connect("switch-errors-page", "onclick", bind(this._switch, this) ));
+	//	this.signals.push(connect("switch-errors-page", "onclick", bind(this._switch, this) ));
 
 		this._inited = true;
 	}
@@ -38,28 +38,39 @@ ErrorsPage = function () {
 		log('Loading the ErrorPage');
 
 		//if we've simply got an import or syntax error, not a dud function etc
-		logDebug(this._module_name(info.file)+' | '+(info.messages[0] == this._module_name(info.file)+":1: NOT PROCESSED UNABLE TO IMPORT"));
 		if(info.messages[0] == this._module_name(info.file)+":1: NOT PROCESSED UNABLE TO IMPORT") {
 			//grab the error type
 			var type = info.err[0].split(':')[0].slice(2, -5);
 			logDebug('type:'+type+'|');
 
+			//set the most likely values
+			var code = info.err[1].substr(4);
+			var marker = info.err[2].substr(4);
+			var file = info.file;
+
 			switch(type) {
 				case 'Syntax':
 					var file = info.err[0].split('(')[1].split(', line ')[0];
 					var line = info.err[0].split(', line ')[1].split(')')[0];
-					var code = info.err[1];
-					var marker = info.err[2];
 					break;
 				case 'Import':
+					var file = info.file;
+					var line = info.err[0].split(', line ')[1].split(')')[0];
+					break;
+				case 'Caught exception importing module '.substr(0,type.length):
+					var file = info.err[3].split('(')[1].split(', line ')[0];
+					var line = info.err[3].split(', line ')[1].split(')')[0];
+					var type = info.err[3].split(':')[0].slice(2, -5);
+					var code = info.err[3].split(':')[1].split('(')[0];
+					var marker = null;
 					break;
 				default:
-					return;
+					var line = 0;
+					break;
 			}
-			
-			if(info.whole) {	//if it was called from a code tab
-				code += '';
-			}
+
+			file = path+file;
+			type += ' Error:\n';
 
 			logDebug('file: '+file+'| line: '+line+'| code: '+code+'| marker: '+marker+'|');
 
@@ -87,8 +98,13 @@ ErrorsPage = function () {
 			}
 		}
 
-		if(opts['switch_to'])
-			tabbar.switch_to(this.tab);
+		if(opts != null) {
+			if(opts.switch_to)
+				tabbar.switch_to(this.tab);
+			if(opts.alert)
+				status_button( info.messages.length+" errors found!", LEVEL_WARN, 'view errors',
+					bind( tabbar.switch_to, tabbar, this.tab ) );
+		}
 	}
 
 	this._module_name = function(n) {
@@ -105,6 +121,35 @@ ErrorsPage = function () {
 		setStyle( $("errors-page"), {"display":"none"} );
 	}
 
+	this._clear_file = function(file) {
+		if(this.eflist[file] != null) {
+			this.eflist[file].remove();
+			this.eflist[file] = null;
+		}
+	}
+
+	this.check = function(file, opts) {
+		var d = loadJSONDoc("./checkcode", { 'team' : team, 'path' : file });
+
+		d.addCallback( partial(bind(this._done_check, this), file, opts) );
+		d.addErrback( bind(this._fail_check, this, file, opts) );
+	}
+
+	this._done_check = function(file, opts, info) {
+		console.dir(info);
+		if( info.errors == 1 ) {
+			this.load(info, opts);
+		} else {
+			status_msg( "No errors found", LEVEL_OK );
+			this._clear_file(file);
+		}
+	}
+
+	this._fail_check = function(file, opts) {
+		status_button( "Failed to check code", LEVEL_ERROR,
+				   "retry", bind( this.check, this, file, opts ) );
+	}
+
 	this._close = function() {
 		for( i in this.eflist ) {
 			this.eflist[i].remove();
@@ -119,18 +164,6 @@ ErrorsPage = function () {
 		if(this._prompt != null)
 			this._prompt.close();
 		this._inited = false;
-	}
-
-	this._switch = function(filename) {
-		for(var i=0; i < tabbar.tabs.length; i++)
-		{
-			if(tabbar.tabs[i].label == "robot.py") {
-				tabbar.switch_to(tabbar.tabs[i]);
-				return;
-			}
-		}
-		this._prompt = status_msg("Couldn't switch to selected file: "+filename, LEVEL_ERROR);
-		return;
 	}
 
 	this.show_only = function(file) {
@@ -171,7 +204,10 @@ function ErrorFile(name) {
 		logDebug('initing file: '+this.label);
 
 		//make the html
-		this._name_elem = createDOM('dt', null, this.label);
+		this._view_link = A({"title":'click to view file', 'href':'#'} , this.label);
+		this._expand_elem = createDOM('button', {'file':this.label}, 'Collapse');
+		this._refresh_elem = createDOM('button', {'file':this.label}, 'Check Again');
+		this._name_elem = createDOM('dt', null, this._view_link, this._refresh_elem, this._expand_elem );
 		this._warn_elem = UL(null, null);
 		this._err_elem = UL(null, null);
 		this._msgs_elem = createDOM('dd', {'file':this.label}, this._warn_elem, this._err_elem);
@@ -181,7 +217,9 @@ function ErrorFile(name) {
 		appendChildNodes("errors-listing", this._msgs_elem);
 
 		//hook up the signal
-		this._signals.push(connect( this._name_elem, 'onclick', bind(this._name_onclick, this) ));
+		this._signals.push(connect( this._view_link, 'onclick', bind(this._view_onclick, this) ));
+		this._signals.push(connect( this._expand_elem, 'onclick', bind(this._expand_onclick, this) ));
+		this._signals.push(connect( this._refresh_elem, 'onclick', bind(errorspage.check, errorspage, this.label, null) ));
 	}
 
 	this.add_warn = function(w) {
@@ -191,59 +229,77 @@ function ErrorFile(name) {
 	}
 
 	this.load_error = function(type, line, code, marker) {
-		appendChildNodes( this._err_elem, LI(null, type+'\n'+line+': '+code+'\n'+marker) );
+		//build up the html output
+		var title = SPAN(null, type);
+		var code_num = createDOM('dt', null, line);
+		var code_line = createDOM('dd', null, code);
+		code = createDOM('dl', null, code_num, code_line);
+
+		if(marker != null) {
+			var mark_num = createDOM('dt', null, '');
+			var mark_line = createDOM('dd', null, marker);
+			appendChildNodes(code, mark_num, mark_line);
+		}
+
+		//throw the html to the screen
+		replaceChildNodes( this._err_elem, LI(null, title, code) );
 		this.show_msgs();
 	}
 
 	this.reset = function() {
-		log('reseting: '+this.label);
-		this.remove();
-		this.init();
+		this.clear_errors();
+		this.clear_warns();
 	}
 
 	this.remove = function() {
-		this.clear_msgs();
-		removeElement(this._name_elem);
+		this.reset();
+		if(this._name_elem != null)
+			removeElement(this._name_elem);
+		if(this._msgs_elem != null)
+			removeElement(this._msgs_elem);
+		this._msgs_elem = null;
 		this._name_elem = null;
+		for( var i in this._signals ) {
+			disconnectAll(this._signals[i]);
+		}
 	}
 
 	this.clear_warns = function() {
-		removeElement(this._warn_elem);
-		this._warn_elem = null;
+		if(this._warn_elem != null)
+			replaceChildNodes(this._warn_elem, null);
 		this.warns = new Array();
 	}
 
 	this.clear_errors = function() {
-		removeElement(this._err_elem);
-		this._err_elem = null;
+		if(this._err_elem != null)
+			replaceChildNodes(this._err_elem, null);
 		this.errors = new Array();
 	}
 
-	this.clear_msgs = function() {
-		this.clear_errors();
-		this.clear_warns();
-		removeElement(this._msgs_elem);
-		this._msgs_elem = null;
+	this._view_onclick = function() {
+		editpage.edit_file( team, projpage.project, this.label, 'HEAD', 'SVN' );
 	}
 
-	this._name_onclick = function() {
-		if(!this.msgs_shown)
+	this._expand_onclick = function() {
+		if(!this._msgs_shown)
 			this.show_msgs();
 		else
 			this.hide_msgs();
 	}
 
 	this.show_msgs = function() {
-		if(!this.msgs_shown) {
+		if(!this._msgs_shown) {
 			setStyle( this._msgs_elem, {"display":''} );
-			this.msgs_shown = true;
+			this._expand_elem.innerHTML = 'Collapse';
+			this._msgs_shown = true;
 		}
 	}
 
 	this.hide_msgs = function() {
-		if(this.msgs_shown) {
+		if(this._msgs_shown) {
 			setStyle( this._msgs_elem, {"display":'none'} );
-			this.msgs_shown = false;
+			this._expand_elem.innerHTML = 'Expand';
+			this._msgs_shown = false;
 		}
 	}
 

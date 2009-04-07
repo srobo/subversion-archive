@@ -875,14 +875,8 @@ class Root(controllers.RootController):
 
         client = Client(int(team))
         rev = self.get_revision("HEAD")
-        file_name = 'robot.py'
-
-        if code != 0:
-            file_name = os.path.basename(path)
-            path = os.path.dirname(path)
-            whole = True
-        else:
-            whole = False
+        file_name = os.path.basename(path)
+        path = os.path.dirname(path)
 
         # Directory to work in
         td = tempfile.mkdtemp()
@@ -895,7 +889,8 @@ class Root(controllers.RootController):
                       recurse=True)
 
         if code != 0: #overwrite the version from the svn
-            tmpfile = open(td+"/code"+file_name, 'w')
+            print td+"/code/"+file_name
+            tmpfile = open(td+"/code/"+file_name, 'w')
             tmpfile.write(str(code))
             tmpfile.close()
 
@@ -934,7 +929,7 @@ class Root(controllers.RootController):
                 if not line in ['', '\n', 'Processing '+os.path.splitext(file_name)[0]+'...']:
                     chk_errors.append(line)
 
-            return dict( messages = chk_warnings, err = chk_errors, path = path, file = file_name, errors = 1, whole = whole )
+            return dict( messages = chk_warnings, err = chk_errors, path = path, file = file_name, errors = 1 )
 
     @expose("json")
     def autocomplete(self, str, nocache):

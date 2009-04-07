@@ -314,7 +314,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 	this._recieve_check_syntax = function(info) {
 		if( info["errors"] == 1 ) {
-			errorspage.load(info, {'switch_to':false});
+			errorspage.load(info, null);
 			this._prompt = status_button( info.messages.length+" errors found!", LEVEL_WARN, 'view errors',
 				bind( function() { tabbar.switch_to(errorspage.tab); this._prompt.close(); }, this ) );
 		} else
@@ -325,9 +325,12 @@ function EditTab(iea, team, project, path, rev, mode) {
 		//tell the log and grab the latest contents
 		logDebug( "Checking syntax of " + this.path, LEVEL_WARN );
 		this._capture_code();
-
-		//throw the contents to the backend
-		var d = loadJSONDoc("./checkcode",{ team : team, path : this.path, code : this.contents });
+		
+		//throw the contents to the backend, if needed
+		if(this._original != this.contents)
+			var d = loadJSONDoc("./checkcode",{ 'team' : team, 'path' : this.path, 'code' : this.contents });
+		else
+			var d = loadJSONDoc("./checkcode",{ 'team' : team, 'path' : this.path });
 
 		d.addCallback( bind(this._recieve_check_syntax, this) );
 		d.addErrback( bind( function() {

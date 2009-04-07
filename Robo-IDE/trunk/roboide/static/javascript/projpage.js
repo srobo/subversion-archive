@@ -225,7 +225,7 @@ ProjPage.prototype.clickCheckCode = function() {
 		return false;
 	}
 
-	var d = loadJSONDoc("./checkcode",{ team : team, path : "/" + this.project });
+	var d = loadJSONDoc("./checkcode",{ team : team, path : "/"+this.project+"/robot.py" });
 
 	d.addCallback(bind(this.doneCheckCode, this));
 	d.addErrback(bind(this.failCheckCode, this));
