@@ -43,8 +43,6 @@ addLoadEvent( function() {
 	//Hook up the save file button
 	connect(window, 'onbeforeunload', beforeunload);
 
-	cur_path = "";
-
 	user = new User();
 	var d = user.load();
 	// Wait for the user information to come back
