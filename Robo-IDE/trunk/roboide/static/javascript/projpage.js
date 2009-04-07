@@ -953,11 +953,8 @@ function ProjOps() {
             status_button("Are you sure you want to delete "+projpage.flist.selection.length+" selected files/folders", LEVEL_WARN, "delete", bind(this.rm, this, true));
             return;
         }
-        var death_list = "";
-        for(var x = 0; x< projpage.flist.selection.length; x++) {
-            death_list = death_list + projpage.flist.selection[x] + ",";
-        }
-        death_list = death_list.slice(0, death_list.length-1);
+
+        var death_list = projpage.flist.selection.join(',');
 
         logDebug("will delete: "+death_list);
 
@@ -984,11 +981,7 @@ function ProjOps() {
             return;
         }
 
-        var death_list = "";
-        for(var x = 0; x< projpage.flist.selection.length; x++) {
-            death_list = death_list + projpage.flist.selection[x] + ",";
-        }
-        death_list = death_list.slice(0, death_list.length-1);
+        var death_list = projpage.flist.selection.join(',');
 
         log("Will delete autosaves: "+death_list);
 
