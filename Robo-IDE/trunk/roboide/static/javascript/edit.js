@@ -626,6 +626,7 @@ function ide_editarea(id) {
 			min_width: "100",   //NOTE: HAD TO EDIT 'edit_area_loader.js' line:573 to get % width
 			min_height:500,
 			plugins: "SRautosave",
+			show_line_colors: true,
 			EA_load_callback: "ea_loaded"
  		});
 
