@@ -89,8 +89,8 @@ function load_gui() {
 	connect( ntab, "onclick", bind(editpage.new_file, editpage) );
 	tabbar.add_tab( ntab );
 
-    //The selection operations
-    sel_operations = new ProjOps();
+	//The selection operations
+	sel_operations = new ProjOps();
 
 	tabbar.switch_to( projtab );
 }
