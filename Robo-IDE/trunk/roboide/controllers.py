@@ -358,6 +358,7 @@ class Root(controllers.RootController):
         """
         Delete files from the repository, and prune empty directories.
         inputs: files - comma seperated list of paths
+                kind - one of 'SVN' or 'AUTOSAVES'
         returns (json): Message - a message to show the user
         """
         if files != "":
@@ -401,6 +402,38 @@ class Root(controllers.RootController):
                 message = "Error deleting files."
 
             return dict(Message = message)
+
+    @expose("json")
+    @srusers.require(srusers.in_team())
+    def undelete(self, team, files, rev='0'):
+        """
+        UnDelete files from the repository - basically grabs a list of them,
+        then uses copy to re-instate them, one by one
+        TODO: do all files in one go
+        inputs: files - comma seperated list of paths
+                rev - the revision to undelete from
+        returns (json): Message - a message to show the user
+        """
+        if files != "":
+            files = files.split(",")
+            client = Client(int(team))
+            fail = {}
+            success = []
+            status = 0
+
+            for f in files:
+                result = self.cp(team, f, f, 'Undelete file '+f, rev)
+                print result
+                if int(result['status']) > 0:
+                    fail[f] = result['message']
+                    status = status + 1
+                else:
+                    success.append(f)
+
+            return dict(fail = fail, success = ','.join(success), status = status)
+
+        else:
+            return dict(Message = 'Undeleted failed - no files specified', status = 1)
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -839,6 +872,10 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def copy(self, team, src="", dest="", msg="SVN Copy", rev="0"):
+        return self.cp(team, src, dest, msg, rev)
+
+    @srusers.require(srusers.in_team())
+    def cp(self, team, src="", dest="", msg="SVN Copy", rev="0"):
 
         src_rev = int(rev)
 

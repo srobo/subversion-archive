@@ -998,25 +998,23 @@ function ProjOps() {
 			    LEVEL_ERROR, "retry", bind(this.rm_autosaves, this, true));});
     }
 
-    this._undel_callback = function(nodes) {
-        if(nodes.status > 0) {
-            status_msg("ERROR Undeleting: "+nodes.message, LEVEL_ERROR);
-        }
-        else {
-            status_msg("Successful Undelete", LEVEL_OK);
-            projpage.flist.refresh();
-        }
-    }
+	this._undel_callback = function(nodes) {
+		num_success = nodes.success.split(',').length
+		if(nodes.status > 0) {
+			status_msg(' '+nodes.status+' files could not be undeleted, '+num_success+' succeeded', LEVEL_ERROR);
+		} else {
+			status_button("Successfully undeleted "+num_success+' file(s)',
+			LEVEL_OK, 'goto HEAD', bind(projpage.flist.change_rev, projpage.flist, 'HEAD'));
+		}
+	}
     this.undel = function() {
         if(projpage.flist.selection.length == 0) {
             status_msg("There are no files/folders selected for undeletion", LEVEL_ERROR);
             return;
         }
 
-    	var d = loadJSONDoc("./copy", {team : team,
-				   src : projpage.flist.selection[0],
-				   dest : projpage.flist.selection[0],
-				   msg : "Undelete File "+projpage.flist.selection[0],
+		var d = loadJSONDoc("./undelete", {team : team,
+				   files : projpage.flist.selection.join(','),
 				   rev : projpage.flist.rev  });
 	    d.addCallback( bind(this._undel_callback, this));
 	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.undel, this, true));});
