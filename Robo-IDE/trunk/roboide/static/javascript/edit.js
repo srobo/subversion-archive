@@ -625,7 +625,7 @@ function ide_editarea(id) {
 	 		replace_tab_by_spaces : 4,
 			min_width: "100",   //NOTE: HAD TO EDIT 'edit_area_loader.js' line:573 to get % width
 			min_height:500,
-			plugins: "SRautosave",
+			plugins: "SRkeydown",
 			show_line_colors: true,
 			EA_load_callback: "ea_loaded"
  		});
@@ -732,7 +732,7 @@ function ea_loaded() {
 }
 
 // Called when the editarea is due for an autosave
-function ea_autosave() {
+function ea_autosave(e) {
 	// Rebroadcast the signal
 	signal(this, "ea_keydown", this);
 }
