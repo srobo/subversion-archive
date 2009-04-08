@@ -33,7 +33,7 @@ function Tab(label) {
 
 	// Called to tell find if the tab has focus
 	this.has_focus = function() {
-		return this._focus;			
+		return this._focus;
 	}
 
 	// Called to tell the tab it has focus
@@ -105,7 +105,7 @@ function TabBar() {
 	this.switch_to = function( tab ) {
 		// Don't do anything if the tab can't focus
 		if( !tab.can_focus )
-			return;
+			return false;
 
 		if( tab != this._curtab ) {
 			if( this._curtab != null )
@@ -118,7 +118,9 @@ function TabBar() {
 			signal( this, "onswitch", fromtab, tab );
 
 			tab.got_focus();
+			return true;
 		}
+		return false;
 	}
 
 	// Force the tab to be unfocussed and then focussed
@@ -131,6 +133,41 @@ function TabBar() {
 			tab._curtab = null;
 
 		this.switch_to( tab );
+	}
+
+	// find the list number of the current tab
+	this._find_curtab_id = function() {
+		for( var i=0; i<this.tabs.length; i++) {
+			if( this.tabs[i].has_focus() )
+				return i;
+		}
+		return -1;
+	}
+
+	// go to the next tab along, if possible
+	this.next_tab = function() {
+		log('switching to the next tab');
+		var curtab_id = this._find_curtab_id();
+		if(curtab_id > -1) {
+			for(curtab_id++; curtab_id<this.tabs.length; curtab_id++) {
+				logDebug('curtab_id:'+curtab_id);
+				if(this.switch_to(this.tabs[curtab_id]))
+					break;
+			}
+		}
+	}
+
+	// go to the previous tab along, if possible
+	this.prev_tab = function() {
+		log('switching to the previous tab');
+		var curtab_id = this._find_curtab_id();
+		if(curtab_id > 0) {
+			for(curtab_id--; curtab_id>-1; curtab_id--) {
+				logDebug('curtab_id:'+curtab_id);
+				if(this.switch_to(this.tabs[curtab_id]))
+					break;
+			}
+		}
 	}
 
 	// Handler for tab onclick events
@@ -149,7 +186,7 @@ function TabBar() {
 				break;
 			}
 		}
-		
+
 		if(tab.has_focus())	{	//we only need to change focus if the tab being removed has focus
 
 			index--;

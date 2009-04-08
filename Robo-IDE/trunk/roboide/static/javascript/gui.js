@@ -43,6 +43,9 @@ addLoadEvent( function() {
 	//Hook up the save file button
 	connect(window, 'onbeforeunload', beforeunload);
 
+	//hook up the keyboard shortcuts handler
+	connect(document, 'onkeydown', on_doc_keydown);
+
 	user = new User();
 	var d = user.load();
 	// Wait for the user information to come back
@@ -93,6 +96,31 @@ function load_gui() {
 	sel_operations = new ProjOps();
 
 	tabbar.switch_to( projtab );
+}
+
+function on_doc_keydown(ev) {
+//	console.dir(ev);
+	if( ev._event.altKey ) {
+		var stop;
+		switch(ev.key()["string"]) {
+			case "KEY_PAGE_DOWN":
+				tabbar.next_tab();
+				stop = true;
+				break;
+			case "KEY_PAGE_UP":
+				tabbar.prev_tab();
+				stop = true;
+				break;
+			default:
+				stop = false;
+				break;
+		}
+	}
+	if(stop) {
+		// Prevent the browser doing something else
+		ev.preventDefault();
+		ev.stopPropagation();
+	}
 }
 
 function beforeunload(e) {
