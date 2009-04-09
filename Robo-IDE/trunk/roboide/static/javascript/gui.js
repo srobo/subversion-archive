@@ -99,16 +99,21 @@ function load_gui() {
 }
 
 function on_doc_keydown(ev) {
-//	console.dir(ev);
-	if( ev._event.altKey ) {
+	//since this call could come from EditArea we have to disregard mochikit nicities
+	if(typeof ev._event == 'object')
+		var e = ev._event;
+	else
+		var e = ev;
+
+	if( e.altKey ) {
 		var stop;
-		switch(ev.key()["string"]) {
-			case "KEY_PAGE_DOWN":
-				tabbar.next_tab();
+		switch(e.keyCode) {
+			case 33://PageUp
+				tabbar.prev_tab();
 				stop = true;
 				break;
-			case "KEY_PAGE_UP":
-				tabbar.prev_tab();
+			case 34://PageDown
+				tabbar.next_tab();
 				stop = true;
 				break;
 			default:
@@ -117,10 +122,20 @@ function on_doc_keydown(ev) {
 		}
 	}
 	if(stop) {
-		// Prevent the browser doing something else
-		ev.preventDefault();
-		ev.stopPropagation();
+		// try to prevent the browser doing something else
+		kill_event(ev);
 	}
+}
+
+/* contain all these in one place:
+  - we've now got things that deal with raw events
+  - they only work on some events
+ */
+function kill_event(e) {
+	if(typeof e.preventDefault == 'function')
+		e.preventDefault();
+	if(typeof e.stopPropagation == 'function')
+		e.stopPropagation();
 }
 
 function beforeunload(e) {

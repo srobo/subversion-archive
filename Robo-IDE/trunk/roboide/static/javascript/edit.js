@@ -325,7 +325,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 		//tell the log and grab the latest contents
 		logDebug( "Checking syntax of " + this.path, LEVEL_WARN );
 		this._capture_code();
-		
+
 		//throw the contents to the backend, if needed
 		if(this._original != this.contents)
 			var d = loadJSONDoc("./checkcode",{ 'team' : team, 'path' : this.path, 'code' : this.contents });
@@ -416,11 +416,27 @@ function EditTab(iea, team, project, path, rev, mode) {
 	    d.addErrback( bind(this._error_receive_svn_save, this));
 	}
 
-	this._on_keypress = function() {
-		if( this._timeout != null )
-			this._timeout.cancel();
-		this._timeout = wait(this._autosave_delay);
-		this._timeout.addCallback( bind(this._autosave, this));
+	this._on_keydown = function(ev) {
+		//since this call could come from EditArea we have to disregard mochikit nicities
+		if(typeof ev._event == 'object')
+			var e = ev._event;
+		else
+			var e = ev;
+
+		//Ctrl+s: do a save
+		if( e.ctrlKey && e.keyCode == 83 ) {
+			this._save();
+			// try to prevent the browser doing something else
+			kill_event(ev);
+		}
+
+		//any alpha or number key: think about autosave
+		if( (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 48 && e.keyCode <= 57) ) {
+			if( this._timeout != null )
+				this._timeout.cancel();
+			this._timeout = wait(this._autosave_delay);
+			this._timeout.addCallback( bind(this._autosave, this));
+		}
 	}
 
 	this._autosave = function() {
@@ -496,10 +512,14 @@ function EditTab(iea, team, project, path, rev, mode) {
 		this._signals.push( connect( "history",
 					     "onclick",
 					     bind( this._change_revision, this, false ) ) );
-		// autosave handler
+		// keyboard shortcuts when the cursor is inside editarea
 		this._signals.push( connect( window,
 						"ea_keydown",
-						bind( this._on_keypress, this ) ) );
+						bind( this._on_keydown, this ) ) );
+		// keyboard shortcuts
+		this._signals.push( connect( document,
+						"onkeydown",
+						bind( this._on_keydown, this ) ) );
 		this._update_contents();
 	}
 
@@ -734,5 +754,6 @@ function ea_loaded() {
 // Called when the editarea is due for an autosave
 function ea_autosave(e) {
 	// Rebroadcast the signal
-	signal(this, "ea_keydown", this);
+	on_doc_keydown(e);
+	signal(this, "ea_keydown", e);
 }
