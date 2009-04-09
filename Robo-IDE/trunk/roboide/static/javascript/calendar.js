@@ -173,6 +173,7 @@ Calendar.prototype.updateCal = function() {
 
 Calendar.prototype.changeMonth = function(dir) {
 	this.date.setMonth(this.date.getMonth() + dir);
+	this.date.setDate(1);
 	replaceChildNodes("cal-revs",
 		OPTION({"value" : 'HEAD'}, "HEAD - the most recent version"),
 		OPTION({"value" : -1, "selected" : "selected"}, "Select a date")
