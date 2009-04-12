@@ -32,6 +32,7 @@
 #define USE_WATCHDOG 0
 
 static uint8_t i = 0;
+static uint8_t lcd_inited = 0;
 
 void init(void);
 
@@ -47,7 +48,18 @@ int main( void )
 	{
 		if( i2c_flash_received )
 				flash_switchover();
-		lcd_service();
+
+		if( !lcd_inited && railmon_is_up())	/* try to initialise screen only when 5v present */
+		{
+			lcd_init();
+			lcd_inited = 1;
+			lcd_service();
+		}
+		else if (lcd_inited)			
+		{
+			lcd_service();
+			lcd_button_press();
+		}
 	}	
 }
 
@@ -90,8 +102,7 @@ void init(void)
 	i2c_flash_init();
 	i2c_init();
 	timer_b_init();
-	railmon_init();
-	lcd_init();
+	railmon_init();		/* don't initialise LCD here. see main() */
 	eint();
 }
 

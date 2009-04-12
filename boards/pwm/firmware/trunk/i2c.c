@@ -42,7 +42,7 @@ static uint8_t pos = 0;
 static uint8_t buf[I2C_BUF_LEN];
 static uint8_t checksum;
 
-static uint8_t screen_pos;
+static uint8_t screen_pos = 0;
 
 
 typedef struct
@@ -102,7 +102,7 @@ const i2c_cmd_t cmds[] =
 	/* get last screen pos set */
 	{0, NULL, i2cr_screen_pos},
         /* set screen string */
-	{ 32, i2cw_screen_string, NULL},
+	{ 33, i2cw_screen_string, NULL},
 	/* get last screen data checksum */
 	{ 0, NULL, i2cr_screen_csum}
 };
@@ -133,17 +133,23 @@ interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 		}
 		else if( cmd != NULL && cmd->rx != NULL )
 		{
-			if( pos < cmd->rx_size )
+			if( pos < cmd->rx_size)
 			{
-				buf[pos] = tmp;
+				if(cmd != &cmds[8])
+					buf[pos] = tmp;
+				else		/* for cmd 8, ignore first byte,which is the no. tx'd bytes buffer */
+				{
+					if(pos > 0)
+						buf[pos-1] = tmp;
+				}
 				checksum = crc8( checksum ^ tmp );
 			}
-			
+
 			pos++;
-			
+						
 			if( pos == cmd->rx_size + (USE_CHECKSUMS?1:0) )
 			{
-				if( !USE_CHECKSUMS || checksum == tmp )
+				if( !USE_CHECKSUMS || checksum == tmp)
 					cmd->rx( buf );
 			}
 		}
