@@ -249,6 +249,9 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this._autosaved = "";
 	// whether we're loading from the svn or an autosave
 	this._mode = mode;
+	//the cursor selection
+	this._selection_start = 0;
+	this._selection_end = 0;
 
 	// hold a reference to our status prompts
 	this._prompt = null;
@@ -539,6 +542,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 			return;
 
 		this._iea.setValue( this.contents );
+		this._iea.setSelectionRange( this._selection_start, this._selection_end );
 
 	 	this._get_revisions();
 
@@ -552,9 +556,13 @@ function EditTab(iea, team, project, path, rev, mode) {
 		this.tab.set_label( this.path );
 	}
 
-	//call this to update this.contents with the current contents of the edit area
+	//call this to update this.contents with the current contents of the edit area and to grab the current cursor position
 	this._capture_code = function() {
 		this.contents = this._iea.getValue();
+
+		var selection = this._iea.getSelectionRange();
+		this._selection_start = selection.start;
+		this._selection_end = selection.end;
 	}
 
 	this._change_revision = function(override) {
@@ -618,8 +626,10 @@ function EditTab(iea, team, project, path, rev, mode) {
 //  - onload: Emitted when the editarea has finished loading
 function ide_editarea(id) {
 	// Public functions:
-	//  - show() -- won't break horribly if the editarea hasn't finished loading
-	//  - hide() -- won't break horribly if the editarea hasn't finished loading
+	//  - show() -- won't break horribly if the editarea hasn't finished loading (load safe)
+	//  - hide() -- load safe hide()
+	//  - getSelectionRange() -- get the cursor selection range, no need to pass the id, load safe
+	//  - setSelectionRange() -- set the cursor selection range, no need to pass the id, load safe
 
 	// Public properties:
 	this.loaded = false;
@@ -667,6 +677,8 @@ function ide_editarea(id) {
 
 		this._proc_open_queue();
 		this._proc_close_queue();
+		//focus to the top of the file
+		this.setSelectionRange(0,0);
 
 		signal( this, "onload" );
 	}
@@ -701,6 +713,21 @@ function ide_editarea(id) {
 
 		if( this.loaded )
 			editAreaLoader.hide( this._id );
+	}
+
+	this.getSelectionRange = function() {
+		if( this.loaded ) {
+			log('editArea: getting selection');
+			return editAreaLoader.getSelectionRange( this._id );
+		} else
+			return {start : 0, end : 0};
+	}
+
+	this.setSelectionRange = function(start, end) {
+		if( this.loaded ) {
+			editAreaLoader.setSelectionRange( this._id, start, end);
+			logDebug('editArea: setting selection - start:'+start+':end:'+end+':');
+		}
 	}
 
 	this.openFile = function( inf ) {
