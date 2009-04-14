@@ -134,22 +134,24 @@ Log.prototype._populateList = function() {
 	//connect event handler for when user applies filter to results
 	connect($("svn-users"), 'onchange', bind(this._update, this));
 
-    //if older results are available, enable the 'older' button
+	//disconnect the older/newer buttons
+	disconnectAll($("older"));
+	disconnectAll($("newer"));
+
+	//if older results are available, enable the 'older' button and hook it up
 	if(this.offset < (this.overflow-1)) {
- 		disconnectAll($("older"));
+		$("older").disabled = "";
 		connect($("older"), 'onclick', bind(this._nextview, this, +1));
-	}
-	else {
-		disconnectAll($("older"));
-	}
-    //if newer results are available, enable the 'newer' button
+	} else
+		$("older").disabled = "disabled";
+
+	//if newer results are available, enable the 'newer' button and hook it up
 	if(this.offset > 0) {
- 		disconnectAll($("newer"));
+		$("newer").disabled = "";
 		connect($("newer"), 'onclick', bind(this._nextview, this, -1));
-	}
-	else {
-		disconnectAll($("newer"));
-	}
+	} else
+		$("newer").disabled = "disabled";
+
     //connect up the 'Revert' button to event handler
     disconnectAll($("revert"));
     connect($("revert"), 'onclick', bind(this._revert, this, false));
