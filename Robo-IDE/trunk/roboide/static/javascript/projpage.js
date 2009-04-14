@@ -334,8 +334,7 @@ ProjFileList.prototype._prepare_auto_refresh = function() {
 	if( this.rev != "HEAD" && this.rev != 0 && this.rev != null )	//not showing HEAD
 		return;
 
-	this._timeout = wait(this._refresh_delay);
-	this._timeout.addCallback( bind(this._auto_refresh, this));
+	this._timeout = callLater(this._refresh_delay, bind(this._auto_refresh, this));
 }
 
 ProjFileList.prototype._auto_refresh = function() {

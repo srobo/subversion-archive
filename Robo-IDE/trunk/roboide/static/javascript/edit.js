@@ -437,8 +437,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 		if( (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 48 && e.keyCode <= 57) ) {
 			if( this._timeout != null )
 				this._timeout.cancel();
-			this._timeout = wait(this._autosave_delay);
-			this._timeout.addCallback( bind(this._autosave, this));
+			this._timeout = callLater(this._autosave_delay, bind(this._autosave, this));
 		}
 	}
 
