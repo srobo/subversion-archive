@@ -63,7 +63,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.34872825"
      inkscape:cx="826.92306"
-     inkscape:cy="1507.9126"
+     inkscape:cy="922.65023"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1360,7 +1360,7 @@
        width="39.090794"
        height="62.031292"
        x="-39.557655"
-       y="-159.85876"
+       y="242.14124"
        transform="scale(-1,-1)" />
     <text
        xml:space="preserve"
@@ -1377,8 +1377,8 @@
          y="185.93927"
          id="tspan3788">Server</tspan></text>
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:5.42506456;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 32.940498,161.84796 L 32.940498,1019.5213"
+       style="fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:6.59644461;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 32.940498,-249.79835 L 32.940498,1018.2387"
        id="path3790" />
     <g
        id="g3810">
@@ -1473,13 +1473,9 @@
        d="M 1617.3052,-8.057807 L 1617.3052,-80.903043"
        id="path3843" />
     <path
-       style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:3.56961274;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 15.207548,154.01881 L 15.207548,230.7321"
+       style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:8.82938957;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 15.207548,-247.32647 L 15.207548,222.01596"
        id="path3848" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:3.92381406;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 33.456605,-52.751016 L 33.456605,113.58117"
-       id="path3850" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.46628881px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:url(#Arrow2Lstart);stroke-opacity:1"
        d="M 625.14423,-540.48305 C 625.14423,-481.85094 625.14423,-409.95405 625.14423,-346.57801 C 625.14423,-346.12916 625.14423,-347.47571 625.14423,-347.92457"
