@@ -25,7 +25,8 @@ function ErrorsPage() {
 		tabbar.add_tab( this.tab );
 
 		this.signals.push(connect("close-errors-page", "onclick", bind(this._close, this) ));
-	//	this.signals.push(connect("switch-errors-page", "onclick", bind(this._switch, this) ));
+		this.signals.push(connect("collapse-errors-page", "onclick", bind(this._collapse_all, this) ));
+		this.signals.push(connect("expand-errors-page", "onclick", bind(this._expand_all, this) ));
 
 		this._inited = true;
 	}
@@ -34,35 +35,47 @@ function ErrorsPage() {
 	this.load = function(info, opts) {
 		var path = info.path+'/';
 		var filelist = new Array();
+		var module_name = this._module_name(info.file);
 		this._init();
 		log('Loading the ErrorPage');
+		logDebug('module_name:'+module_name+'|');
 
 		//if we've simply got an import or syntax error, not a dud function etc
-		if(info.messages[0] == this._module_name(info.file)+":1: NOT PROCESSED UNABLE TO IMPORT") {
+		if(info.messages[0].split(':')[0] == module_name && info.messages[0].split(':')[2] == " NOT PROCESSED UNABLE TO IMPORT") {
 			//grab the error type
-			var type = info.err[0].split(':')[0].slice(2, -5);
+			var type = info.err[0].split(':')[0].replace(new RegExp("^\\s*", 'g'),'').split(' ')[0];
 			logDebug('type:'+type+'|');
 
 			//set the most likely values
+			var useful_line = info.err[info.err.length-3];
 			var code = info.err[1].substr(4);
 			var marker = info.err[2].substr(4);
 			var file = info.file;
+			var line = useful_line.split(', line ')[1].split(')')[0];
 
+			if( type == 'Caught') {	//an exception whlie loading module
+				type = info.err[info.err.length-1].split(':')[0].substr(2);
+				marker = null;
+			}
+
+			var type = type.slice(0, -5);
+			logDebug('type:'+type+'|');
 			switch(type) {
 				case 'Syntax':
-					var file = info.err[0].split('(')[1].split(', line ')[0];
-					var line = info.err[0].split(', line ')[1].split(')')[0];
+					file = useful_line.split('(')[1].split(', line ')[0];
 					break;
 				case 'Import':
-					var file = info.file;
-					var line = info.err[0].split(', line ')[1].split(')')[0];
 					break;
-				case 'Caught exception importing module '.substr(0,type.length):
-					var file = info.err[3].split('(')[1].split(', line ')[0];
-					var line = info.err[3].split(', line ')[1].split(')')[0];
-					var type = info.err[3].split(':')[0].slice(2, -5);
-					var code = info.err[3].split(':')[1].split('(')[0];
-					var marker = null;
+				case 'Indentation':
+					useful_line = info.err[info.err.length-1];
+					file = useful_line.split('(')[1].split(', line')[0];
+					line = useful_line.split(', line ')[1].split(')')[0];
+					code = useful_line.split(':')[1].split(' (')[0];
+					break;
+				case 'Name':
+					file = useful_line.split('File "')[1].split('", line ')[0];
+					line = useful_line.split(', line ')[1].split(', in ')[0];
+					code = info.err[info.err.length-1].split(':')[1];
 					break;
 				default:
 					var line = 0;
@@ -111,6 +124,18 @@ function ErrorsPage() {
 		if(n.substr(-3) == '.py')
 			return n.slice(0, -3);
 		return n;
+	}
+
+	this._expand_all = function() {
+		for( var i in this.eflist ) {
+			this.eflist[i].show_msgs();
+		}
+	}
+
+	this._collapse_all = function() {
+		for( var i in this.eflist ) {
+			this.eflist[i].hide_msgs();
+		}
 	}
 
 	this._onfocus = function() {
@@ -206,7 +231,7 @@ function ErrorFile(name) {
 		//make the html
 		this._view_link = A({"title":'click to view file', 'href':'#'} , this.label);
 		this._expand_elem = createDOM('button', {'file':this.label}, 'Collapse');
-		this._refresh_elem = createDOM('button', {'file':this.label}, 'Check Again');
+		this._refresh_elem = createDOM('button', {'file':this.label, 'title':'Click to re-check the current saved version of the file'}, 'Check Again');
 		this._name_elem = createDOM('dt', null, this._view_link, this._refresh_elem, this._expand_elem );
 		this._warn_elem = UL(null, null);
 		this._err_elem = UL(null, null);
