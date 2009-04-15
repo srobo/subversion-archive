@@ -1,0 +1,16 @@
+Network cable (CAT5)
+
+Length 	Quantity	Description
+22m	1		Terminal -> 24/s
+5m	6		South Side Wings (4) + East Side South Wing (2)
+1.5m	4		South Side Middle (2) + East Side North Wing (2)
+20m	1		24/s -> 5/s
+
+Power cable
+
+Length	Ways	Quantity	Description
+13m	4	2		West Side to South Side (1) + East Side to South Side(1)
+1.5m	4	4		South Side (2) + East Side (2)
+4m	4	2		South Side (2)
+2m	4	1		East Side (1)
+8m	4	1		North Side to East Side (1)

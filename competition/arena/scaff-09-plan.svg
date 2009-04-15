@@ -103,12 +103,12 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.71173215"
      inkscape:cx="880.53394"
-     inkscape:cy="704.61178"
+     inkscape:cy="367.40627"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1274"
-     inkscape:window-height="722"
+     inkscape:window-width="1280"
+     inkscape:window-height="725"
      inkscape:window-x="0"
      inkscape:window-y="25"
      showguides="true"
@@ -901,16 +901,13 @@
          style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.74293393;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          transform="matrix(0,1,-1,0,0,0)" />
     </g>
-    <text
-       xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
-       x="1163.2909"
-       y="844.37805"
-       id="text7154"><tspan
-         sodipodi:role="line"
-         id="tspan7156"
-         x="1163.2909"
-         y="844.37805">Access </tspan></text>
+    <rect
+       style="fill:#03fc00;fill-opacity:0.27459017;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2945"
+       width="110.56084"
+       height="200.85269"
+       x="1125.7517"
+       y="710.27191" />
     <text
        xml:space="preserve"
        style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
@@ -1209,18 +1206,22 @@
          id="tspan2943">removing an entire 3m horizontal piece </tspan></text>
     <rect
        style="fill:#03fc00;fill-opacity:0.27459017;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect2945"
-       width="139.6066"
-       height="95.47596"
-       x="1125.8712"
-       y="710.27191" />
-    <rect
-       style="fill:#03fc00;fill-opacity:0.27459017;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect2947"
-       width="145.22668"
+       width="169.99992"
        height="198.04263"
-       x="1270.5886"
+       x="1243.8477"
        y="715.18951" />
+    <text
+       xml:space="preserve"
+       style="font-size:16.01844025px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="1457.775"
+       y="760.17572"
+       id="text7154"
+       transform="scale(0.8899133,1.1237049)"><tspan
+         sodipodi:role="line"
+         id="tspan7156"
+         x="1457.775"
+         y="760.17572">Access </tspan></text>
     <rect
        style="opacity:1;fill:#ffebcd;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect2949"
@@ -1247,8 +1248,8 @@
          style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.85392153;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     </g>
     <path
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.32609546;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Lstart);marker-mid:none;marker-end:url(#Arrow1Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 1136.2058,985.61974 L 1260.8785,982.46753"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.17490065;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Lstart);marker-mid:none;marker-end:url(#Arrow1Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 1136.1302,985.63833 L 1232.8536,982.44894"
        id="path2814" />
     <text
        xml:space="preserve"
@@ -1259,10 +1260,10 @@
          sodipodi:role="line"
          x="1182.366"
          y="1019.3169"
-         id="tspan2818">1.5m</tspan></text>
+         id="tspan2818">1.2m</tspan></text>
     <g
        id="g2820"
-       transform="matrix(0.5032493,0,0,0.6514654,1012.8497,482.75606)">
+       transform="matrix(0.5890952,0,0,0.6514654,942.14278,482.75606)">
       <rect
          y="345.72299"
          x="800.75"
@@ -1280,7 +1281,7 @@
     </g>
     <g
        id="g2826"
-       transform="matrix(0.8857894,0,0,0.5261261,1285.2102,413.12661)">
+       transform="matrix(0.7014971,0,0,0.5261261,1251.9396,413.12661)">
       <g
          transform="translate(-247.9273,241.2878)"
          id="g2828">
@@ -1312,7 +1313,7 @@
     </g>
     <g
        id="g2846"
-       transform="matrix(0.8857894,0,0,0.5261261,1285.3868,261.99664)">
+       transform="matrix(0.7014971,0,0,0.5261261,1252.0794,261.99664)">
       <g
          transform="translate(-247.9273,241.2878)"
          id="g2848">
@@ -1344,7 +1345,7 @@
     </g>
     <g
        id="g2856"
-       transform="matrix(0.8857894,0,0,0.5261261,1285.3868,211.41581)">
+       transform="matrix(0.7014971,0,0,0.5261261,1252.0794,211.41581)">
       <g
          transform="translate(-247.9273,241.2878)"
          id="g2858">
@@ -1376,7 +1377,7 @@
     </g>
     <g
        id="g2866"
-       transform="matrix(0.4994181,0,0,0.6519902,1140.6782,482.35397)">
+       transform="matrix(0.5846104,0,0,0.6519902,1091.7767,482.35397)">
       <rect
          y="345.72299"
          x="250.75"
@@ -1394,7 +1395,7 @@
     </g>
     <g
        id="g2872"
-       transform="matrix(0.8857894,0,0,0.5261261,1432.322,412.43629)">
+       transform="matrix(1.0368902,0,0,0.5261261,1433.17,412.43629)">
       <g
          transform="translate(-247.9273,241.2878)"
          id="g2874">
@@ -1426,7 +1427,7 @@
     </g>
     <g
        id="g2882"
-       transform="matrix(0.8857894,0,0,0.5261261,1431.2822,359.65792)">
+       transform="matrix(0.6765351,0,0,0.5261261,1250.905,359.65792)">
       <g
          transform="translate(-247.9273,241.2878)"
          id="g2884">
@@ -1458,7 +1459,7 @@
     </g>
     <g
        id="g2892"
-       transform="matrix(0.8857894,0,0,0.5261261,1434.4986,261.30632)">
+       transform="matrix(1.0368902,0,0,0.5261261,1435.7179,261.30632)">
       <g
          transform="translate(-247.9273,241.2878)"
          id="g2894">
@@ -1490,7 +1491,7 @@
     </g>
     <g
        id="g2902"
-       transform="matrix(0.8857894,0,0,0.5261261,1432.4986,210.72549)">
+       transform="matrix(1.0368902,0,0,0.5261261,1433.3767,210.72549)">
       <g
          transform="translate(-247.9273,241.2878)"
          id="g2904">
@@ -1521,8 +1522,8 @@
       </g>
     </g>
     <path
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.32609546;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Lstart);marker-mid:none;marker-end:url(#Arrow1Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 1283.2094,988.11728 L 1407.8821,984.96507"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.44053149;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Lstart);marker-mid:none;marker-end:url(#Arrow1Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 1259.3812,988.10321 L 1407.8249,984.97914"
        id="path2912" />
     <text
        xml:space="preserve"
@@ -1533,7 +1534,7 @@
          sodipodi:role="line"
          x="1319.9021"
          y="1016.645"
-         id="tspan2916">1.5m</tspan></text>
+         id="tspan2916">1.8m</tspan></text>
     <g
        id="g2918"
        transform="matrix(0.9411784,0,0,0.5261261,740.97626,128.98921)">
