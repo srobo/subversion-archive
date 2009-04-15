@@ -253,9 +253,6 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this._selection_start = 0;
 	this._selection_end = 0;
 
-	// hold a reference to our status prompts
-	this._prompt = null;
-
 	this._init = function() {
 		this.tab = new Tab( this.path );
 		tabbar.add_tab( this.tab );
@@ -318,15 +315,15 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this._recieve_check_syntax = function(info) {
 		if( info["errors"] == 1 ) {
 			errorspage.load(info, null);
-			this._prompt = status_button( info.messages.length+" errors found!", LEVEL_WARN, 'view errors',
-				bind( function() { tabbar.switch_to(errorspage.tab); this._prompt.close(); }, this ) );
+			status_button( info.messages.length+" errors found!", LEVEL_WARN, 'view errors',
+				bind( tabbar.switch_to, tabbar, errorspage.tab ) );
 		} else
 			status_msg( "No errors found", LEVEL_OK );
 	}
 
 	this._check_syntax = function() {
 		//tell the log and grab the latest contents
-		logDebug( "Checking syntax of " + this.path, LEVEL_WARN );
+		logDebug( "Checking syntax of " + this.path );
 		this._capture_code();
 
 		//throw the contents to the backend, if needed
