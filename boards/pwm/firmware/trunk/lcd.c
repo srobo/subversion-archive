@@ -233,4 +233,9 @@ uint8_t lcd_csum(uint8_t pos)
 {
 	return 0;
 }
+
+void lcd_button_press( void )
+{
+
+}
 #endif
