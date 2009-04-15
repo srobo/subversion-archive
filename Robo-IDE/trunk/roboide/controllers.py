@@ -1019,7 +1019,10 @@ class Root(controllers.RootController):
             else:
                 return files[0].content
         else:
-            return "" if content == 1 else {}
+            if content == 1:
+                return ""
+            else:
+                return {}
 
     @srusers.require(srusers.in_team())
     def move_autosave(self, team, src, dest):
