@@ -156,7 +156,7 @@ function ErrorsPage() {
 	}
 
 	this.check = function(file, opts) {
-		if(opts.code != null) {
+		if(opts != null && opts.code != null) {
 			var d = loadJSONDoc("./checkcode", { 'team' : team, 'path' : file, 'date': new Date().getTime(), 'code' : opts.code });
 			opts.code = '';	//no need for it later on, so save the memory
 		} else

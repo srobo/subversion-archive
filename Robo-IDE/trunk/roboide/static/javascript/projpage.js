@@ -225,22 +225,7 @@ ProjPage.prototype.clickCheckCode = function() {
 		return false;
 	}
 
-	var d = loadJSONDoc("./checkcode",{ team : team, path : "/"+this.project+"/robot.py" });
-
-	d.addCallback(bind(this.doneCheckCode, this));
-	d.addErrback(bind(this.failCheckCode, this));
-}
-
-ProjPage.prototype.doneCheckCode = function(info) {
-	if( info["errors"] == 1 )
-		errorspage.load(info, {'switch_to':true});
-	else
-		status_msg( "No errors found", LEVEL_OK );
-}
-
-ProjPage.prototype.failCheckCode = function() {
-	status_button( "Failed to check code", LEVEL_ERROR,
-		       "retry", bind( this.clickCheckCode, this ) );
+	errorspage.check("/"+this.project+"/robot.py", {'switch_to':true});
 }
 
 // ***** Project Page File Listing *****
