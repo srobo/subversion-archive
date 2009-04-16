@@ -1004,6 +1004,21 @@ function ProjOps() {
 	    d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.undel, this, true));});
     }
 
+	this.check_code = function() {
+		if(projpage.flist.selection.length == 0) {
+			status_msg("There are no files selected for checking", LEVEL_ERROR);
+			return;
+		}
+
+		for( var i=0; i<projpage.flist.selection.length; i++) {
+			if(projpage.flist.selection[i].substr(-3) == '.py')
+				errorspage.check(projpage.flist.selection[i], {switch_to : true});
+			else
+				status_msg("Please select valid individual files, not folders", LEVEL_WARN);
+				
+		}
+	}
+
     this.ops.push({ "name" : "New File",
                         "action" : bind(editpage.new_file, editpage),
                         "handle" : $("op-newfile"),
@@ -1037,6 +1052,11 @@ function ProjOps() {
     this.ops.push({ "name" : "Delete AutoSaves",
                         "action" : bind(this.rm_autosaves, this, false),
                         "handle": $("op-rm_autosaves"),
+                        "event" : null });
+
+    this.ops.push({ "name" : "Check Files' Code",
+                        "action" : bind(this.check_code, this),
+                        "handle": $("op-check"),
                         "event" : null });
 
     this.ops.push({ "name" : "View Log",
