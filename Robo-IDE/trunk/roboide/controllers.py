@@ -908,7 +908,7 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def checkcode(self, team, path, code=0):
+    def checkcode(self, team, path, code=0, date=None):
 
         client = Client(int(team))
         rev = self.get_revision("HEAD")
