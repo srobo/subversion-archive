@@ -62,8 +62,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.49317622"
-     inkscape:cx="1171.5752"
-     inkscape:cy="525.36269"
+     inkscape:cx="918.1161"
+     inkscape:cy="1591.2834"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1577,5 +1577,69 @@
          id="tspan6768"
          x="253.52567"
          y="1437.519">Please look at cabling-bom.txt in parent dir for more information</tspan></text>
+    <rect
+       style="font-size:56px;opacity:1;fill:#00bfff;fill-opacity:0.51229505;fill-rule:evenodd;stroke:#0000ff;stroke-width:6.0571599;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect6770"
+       width="27.716944"
+       height="18.477962"
+       x="-893.01111"
+       y="741"
+       transform="scale(-1,-1)" />
+    <text
+       xml:space="preserve"
+       style="font-size:48px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="929.23749"
+       y="-734.37207"
+       id="text6772"><tspan
+         sodipodi:role="line"
+         id="tspan6774"
+         x="929.23749"
+         y="-734.37207">Power socket</tspan></text>
+    <rect
+       style="fill:#00bfff;fill-opacity:0.51229505;fill-rule:evenodd;stroke:#0000ff;stroke-width:9.21086311;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect6776"
+       width="77.28273"
+       height="15.32426"
+       x="-891.43427"
+       y="667.55292"
+       transform="scale(-1,-1)" />
+    <text
+       xml:space="preserve"
+       style="font-size:48px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="927.54938"
+       y="-668.05585"
+       id="text6782"><tspan
+         sodipodi:role="line"
+         id="tspan6784"
+         x="927.54938"
+         y="-668.05585">4-way extension</tspan></text>
+    <path
+       style="fill:#0000ff;fill-rule:evenodd;stroke:#0000ff;stroke-width:25.08138084;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 771.08199,-827.29049 L 883.49901,-827.2905"
+       id="path6786" />
+    <text
+       xml:space="preserve"
+       style="font-size:48px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="931.2652"
+       y="-807.36829"
+       id="text6788"><tspan
+         sodipodi:role="line"
+         id="tspan6790"
+         x="931.2652"
+         y="-807.36829">Power Cable</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:48px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Sans;-inkscape-font-specification:Sans"
+       x="937.34821"
+       y="-882.39221"
+       id="text6796"><tspan
+         sodipodi:role="line"
+         id="tspan6798"
+         x="937.34821"
+         y="-882.39221">Network Cable</tspan></text>
+    <path
+       style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:25.08138084;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 771.08199,-900.28672 L 883.49901,-900.28673"
+       id="path6800" />
   </g>
 </svg>
