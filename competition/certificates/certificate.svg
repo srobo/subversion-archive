@@ -15,7 +15,10 @@
    sodipodi:version="0.32"
    inkscape:version="0.46"
    sodipodi:docname="certificate.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/chris/srobo/competition/certificates/certificate.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -26,9 +29,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.5"
-     inkscape:cx="290.60312"
-     inkscape:cy="264.16968"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="357.28236"
+     inkscape:cy="771.30762"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -128,22 +131,6 @@
          style="stop-color:#ffffff;stop-opacity:1"
          offset="1"
          id="stop3441" />
-    </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient3608">
-      <stop
-         style="stop-color:#0d1f61;stop-opacity:1;"
-         offset="0"
-         id="stop3610" />
-      <stop
-         id="stop3612"
-         offset="0.50077045"
-         style="stop-color:#0d1f61;stop-opacity:0.36862745;" />
-      <stop
-         style="stop-color:#0d1f61;stop-opacity:0;"
-         offset="1"
-         id="stop3614" />
     </linearGradient>
     <linearGradient
        id="linearGradient3390">
@@ -365,16 +352,6 @@
        inkscape:vp_z="744.09448 : 526.18109 : 1"
        inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
        id="perspective3564" />
-    <linearGradient
-       gradientTransform="translate(1.14e-5,-9.8e-6)"
-       y2="793.76318"
-       x2="535.3808"
-       y1="1026.0981"
-       x1="705.08643"
-       gradientUnits="userSpaceOnUse"
-       id="linearGradient3606"
-       xlink:href="#linearGradient3608"
-       inkscape:collect="always" />
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
        inkscape:vp_x="0 : 526.18109 : 1"
@@ -575,29 +552,13 @@
          transform="translate(17.424402,-329.25543)" />
     </g>
     <image
-       xlink:href="/home/chris/srobo/sponsors/uni/ecs_black.jpg"
-       sodipodi:absref="/home/chris/srobo/sponsors/uni/ecs_black.jpg"
-       width="222.77602"
-       height="88.58268"
-       id="image3516"
-       x="476.6434"
-       y="928.66522" />
-    <image
        xlink:href="/home/chris/srobo/sponsors/bitbox/bitbox-logo.jpg"
        sodipodi:absref="/home/chris/srobo/sponsors/bitbox/bitbox-logo.jpg"
        width="215.1702"
        height="88.58268"
        id="image3566"
-       x="240.3708"
-       y="928.66522" />
-    <image
-       xlink:href="/home/chris/srobo/sponsors/SCA/SCA.jpg"
-       sodipodi:absref="/home/chris/srobo/sponsors/SCA/SCA.jpg"
-       width="194.72784"
-       height="141.73228"
-       id="image3699"
-       x="28.015482"
-       y="876.09039" />
+       x="476.37082"
+       y="796.66522" />
     <text
        xml:space="preserve"
        style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Eurostile;-inkscape-font-specification:Eurostile"
@@ -610,42 +571,26 @@
          x="146.47212"
          y="212.92542">This certificate is awarded to:</tspan></text>
     <image
-       y="813.34802"
-       x="389.62912"
+       y="788.70251"
+       x="65.573204"
        id="image4032"
-       height="88.58268"
-       width="294.09451"
+       height="106.29921"
+       width="352.91339"
        sodipodi:absref="/home/chris/srobo/sponsors/motorola/motofoundation.png"
        xlink:href="/home/chris/srobo/sponsors/motorola/motofoundation.png" />
-    <image
-       y="802.14001"
-       x="199.37939"
-       id="image4082"
-       height="110.99867"
-       width="179.99785"
-       sodipodi:absref="/home/chris/srobo/sponsors/roke/logo.gif"
-       xlink:href="/home/chris/srobo/sponsors/roke/logo.gif" />
     <text
        xml:space="preserve"
-       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Eurostile;-inkscape-font-specification:Eurostile"
-       x="80.182747"
-       y="807.68188"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#323232;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Eurostile;-inkscape-font-specification:Eurostile"
+       x="66.324875"
+       y="779.39758"
        id="text4086"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4088"
-         x="80.182747"
-         y="807.68188">2009 Sponsors:</tspan></text>
+         x="66.324875"
+         y="779.39758">Platinum Sponsor</tspan></text>
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 139.40105,359.39754 C 142.09479,359.39754 142.09479,359.39754 139.40105,359.39754 z"
-       id="path4090" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 167.68532,294.74777 C 168.35876,294.74777 169.03219,294.74777 167.68532,294.74777 z"
-       id="path4092" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#808080;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;fill-rule:evenodd;stroke:#808080;stroke-width:1.77165353;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.77165353,7.08661413;stroke-opacity:1;opacity:0.50000000000000000;marker-start:none;stroke-dashoffset:0"
        d="M 544.78333,320.8696 L 199.31116,320.8696"
        id="path4094" />
     <flowRoot
@@ -675,17 +620,6 @@
          style="font-size:32px">Student Robotics Competiton 2009</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Eurostile;-inkscape-font-specification:Eurostile"
-       x="282.86462"
-       y="415.84131"
-       id="text4108"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan4110"
-         x="282.86462"
-         y="415.84131">For winning:</tspan></text>
-    <text
-       xml:space="preserve"
        style="font-size:48px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#0d1f61;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:URW Chancery L;-inkscape-font-specification:URW Chancery L Bold Italic"
        x="230.96849"
        y="739.36218"
@@ -712,5 +646,74 @@
        style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient3489);stroke-width:17.71653557000000134;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 718.42046,1034.6416 L 718.42046,698.64163"
        id="path3485" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#323232;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Eurostile;-inkscape-font-specification:Eurostile"
+       x="478.78491"
+       y="778.39758"
+       id="text3767"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3769"
+         x="478.78491"
+         y="778.39758">Gold Sponsor</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#323232;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Eurostile;-inkscape-font-specification:Eurostile"
+       x="302.46472"
+       y="915.04279"
+       id="text3771"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3773"
+         x="302.46472"
+         y="915.04279">Silver Sponsors:</tspan></text>
+    <image
+       xlink:href="/home/chris/srobo/sponsors/uni/ecs_black.jpg"
+       sodipodi:absref="/home/chris/srobo/sponsors/uni/ecs_black.jpg"
+       width="178.22081"
+       height="70.866142"
+       id="image3516"
+       x="507.47131"
+       y="946.38177" />
+    <image
+       y="921.79688"
+       x="58.402351"
+       id="image4082"
+       height="110.99867"
+       width="179.99785"
+       sodipodi:absref="/home/chris/srobo/sponsors/roke/logo.gif"
+       xlink:href="/home/chris/srobo/sponsors/roke/logo.gif" />
+    <g
+       id="g3781"
+       transform="translate(-521.84737,471.07316)">
+      <image
+         y="457.48318"
+         x="827.09155"
+         id="image3699"
+         height="97.891663"
+         width="134.49464"
+         sodipodi:absref="/home/chris/srobo/sponsors/SCA/SCA.jpg"
+         xlink:href="/home/chris/srobo/sponsors/SCA/SCA.jpg" />
+      <rect
+         y="546.67798"
+         x="835.69739"
+         height="5.1554866"
+         width="108.74664"
+         id="rect3779"
+         style="opacity:1;fill:#ffffff;fill-opacity:0.76507449;fill-rule:evenodd;stroke:#ffffff;stroke-width:11.14683533;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3775"
+         y="550.35797"
+         x="817.53674"
+         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Nimbus Roman No9 L;-inkscape-font-specification:Nimbus Roman No9 L"
+         xml:space="preserve"><tspan
+           style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Nimbus Roman No9 L;-inkscape-font-specification:Nimbus Roman No9 L"
+           y="550.35797"
+           x="817.53674"
+           id="tspan3777"
+           sodipodi:role="line">Student Community Action</tspan></text>
+    </g>
   </g>
 </svg>
