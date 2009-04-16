@@ -28,7 +28,7 @@
 
 <div id="login-back">
 	<!-- This will produce the greyed out background for login/filename prompts -->
-	<div id="login-box">	
+	<div id="login-box">
 		<strong>Student Robotics IDE Login:</strong>
 		<em id="login-feedback">You must be logged in to use the IDE</em>
 		<input type="text" name="username" value="username" id="username" />
@@ -36,7 +36,7 @@
 		<a href="Login" id="login-button" class="button" >Log In</a>
 		<br /><a href="http://www.srobo.org/user/password">&raquo; Forgotten password</a>
 	</div>
-</div>	
+</div>
 <!-- File Browser  -->
 <div id="file-browser">
 	<div style="clear: both">&nbsp;</div>
@@ -125,69 +125,68 @@
 <div id="proj-sidebar">
 
   <div id="proj-options">
-    <div>Project:<select id="project-select"><option>loading...</option></select></div>
-      <button id="new-project">New Project</button>
-      <button id="archive-project" disabled="disabled">Archive Project</button>
-      <button id="copy-project">Copy Project</button>
-      <button id="check-code">Check Code</button>
-      <button id="export-project">Export Project</button>
+	<div>Project:<select id="project-select"><option>loading...</option></select></div>
+	<button id="new-project">New Project</button>
+	<button id="archive-project" disabled="disabled">Archive Project</button>
+	<button id="copy-project">Copy Project</button>
+	<button id="check-code">Check Code</button>
+	<button id="export-project">Export Project</button>
   </div>
 
   <div id="proj-revselect">
-    <select id="cal-revs">
-		<option value="v1">Select a date: </option>      
-    </select>
-    <table id="calendar">
-    <tr><td id="cal-prev-month">&lt;&lt;</td><td colspan="5" id="cal-header" class="calendar-month"> September </td><td id="cal-next-month">&gt;&gt;</td></tr>
-    <tr class="calendar-days">
-        <td title="Sunday">S</td>
-        <td title="Monday">M</td>
-        <td title="Tuesday">T</td>
-        <td title="Wednesday">W</td>
-        <td title="Thursday">T</td>
-        <td title="Friday">F</td>
-        <td title="Saturday">S</td>
-    </tr>
-    <tr id="cal-row-0"><td>&nbsp;</td></tr>
-    <tr id="cal-row-1"><td>&nbsp;</td></tr>
-    <tr id="cal-row-2"><td>&nbsp;</td></tr>
-    <tr id="cal-row-3"><td>&nbsp;</td></tr>
-    <tr id="cal-row-4"><td>&nbsp;</td></tr>
-    <tr id="cal-row-5"><td>&nbsp;</td></tr>
-</table>
+	<select id="cal-revs">
+		<option value="v1">Select a date: </option>
+	</select>
+	<table id="calendar">
+		<tr><td id="cal-prev-month">&lt;&lt;</td><td colspan="5" id="cal-header" class="calendar-month"> September </td><td id="cal-next-month">&gt;&gt;</td></tr>
+		<tr class="calendar-days">
+			<td title="Sunday">S</td>
+			<td title="Monday">M</td>
+			<td title="Tuesday">T</td>
+			<td title="Wednesday">W</td>
+			<td title="Thursday">T</td>
+			<td title="Friday">F</td>
+			<td title="Saturday">S</td>
+		</tr>
+		<tr id="cal-row-0"><td>&nbsp;</td></tr>
+		<tr id="cal-row-1"><td>&nbsp;</td></tr>
+		<tr id="cal-row-2"><td>&nbsp;</td></tr>
+		<tr id="cal-row-3"><td>&nbsp;</td></tr>
+		<tr id="cal-row-4"><td>&nbsp;</td></tr>
+		<tr id="cal-row-5"><td>&nbsp;</td></tr>
+	</table>
 
   </div>
 
   <div id="proj-fileops">
-    Selection operations:
-    <ul>
-      <li><a id="op-newfile"    href="#"    >New File</a></li>
-      <li><a id="op-mkdir"      href="#"    >New Directory</a></li>
-      <li><a id="op-mv"         href="#"    >Move (including rename)</a></li>
-      <li><a id="op-cp"         href="#"    >Copy</a></li>
-      <li><a id="op-rm"         href="#"    >Delete</a></li>
-      <li><a id="op-undel"      href="#"    >Undelete</a></li>
-      <li><a id="op-rm_autosaves" href="#"  >Delete Autosaves</a></li>
-      <li><a id="op-log"        href="#"    >View Log</a></li>
-    </ul>
+	Selection operations:
+	<ul>
+	<li><a id="op-newfile"       href="#">New File</a></li>
+	<li><a id="op-mkdir"         href="#">New Directory</a></li>
+	<li><a id="op-mv"            href="#">Move (including rename)</a></li>
+	<li><a id="op-cp"            href="#">Copy</a></li>
+	<li><a id="op-rm"            href="#">Delete</a></li>
+	<li><a id="op-undel"         href="#">Undelete</a></li>
+	<li><a id="op-rm_autosaves"  href="#">Delete Autosaves</a></li>
+	<li><a id="op-log"           href="#">View Log</a></li>
+	</ul>
   </div>
 </div>
 
 <div id="proj-rpane">
-  <div id="proj-rpane-header">
-    <div id="proj-name"></div>
-    Ctrl+Click to Select<br/>
-    Click to Open<br/>
-  </div>
-<ul id="proj-filelist"><li class="dummy"></li></ul>
-<div class="ie6-prop-clear" style="clear:both;"></div>
+	<div id="proj-rpane-header">
+		<div id="proj-name"></div>
+		Ctrl+Click to Select<br/>
+		Click to Open<br/>
+	</div>
+	<ul id="proj-filelist"><li class="dummy"></li></ul>
+	<div class="ie6-prop-clear" style="clear:both;"></div>
 </div>
 
 
 </div>
 
 <div id="errors-page">
-
 	<div class="menu-bar">
 		<ul id="errors-menu">
 			<li><button id="collapse-errors-page" title="Click to collapse all files">Collapse All</button></li>
