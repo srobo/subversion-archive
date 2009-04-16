@@ -8,9 +8,24 @@ Length 	Quantity	Description
 
 Power cable
 
-Length	Ways	Quantity	Description
-13m	4	2		West Side to South Side (1) + East Side to South Side(1)
-1.5m	4	4		South Side (2) + East Side (2)
-4m	4	2		South Side (2)
-2m	4	1		East Side (1)
-8m	4	1		North Side to East Side (1)
+Length	Ways	Quant	Status	Description
+13m	4	2	|buy 1	|West Side to South Side (1) + East Side to South Side(1)
+1/1.5m	4	4	|got	|South Side (2) + East Side (2)
+4m	4	2	|buy 2	|South Side (2)
+2m	4	1	|got	|East Side (1)
+8m	4	1	|buy	|North Side to East Side (1)
+
+Already have
+length 		way	Quantity	Owner
+50m 		4	1		rds
+1m		5	3		rds (3) ccross (1) plaw (1)
+3m		4	1		plaw (1)
+4m		4	1		plaw (1)
+2m		6	1		jmorse (1)
+2m		4	1		jmorse (1)
+
+Product Codes
+15m 1way	Asda	http://direct.asda.com/Masterplug-15m-1-Gang-Socket/001125767,default,pd.html
+2m  4way	Asda	http://direct.asda.com/Masterplug-4-Socket-2m-Extension-Lead/001125760,default,pd.html 
+10m 2way	Asda	http://direct.asda.com/Asda-2-Socket-10m-Cable-Reel/001125445,default,pd.html
+
