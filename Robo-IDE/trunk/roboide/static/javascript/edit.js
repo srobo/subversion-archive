@@ -312,15 +312,6 @@ function EditTab(iea, team, project, path, rev, mode) {
 						     "retry", bind( this._load_contents, this ) );
 	}
 
-	this._recieve_check_syntax = function(info) {
-		if( info["errors"] == 1 ) {
-			errorspage.load(info, null);
-			status_button( info.messages.length+" errors found!", LEVEL_WARN, 'view errors',
-				bind( tabbar.switch_to, tabbar, errorspage.tab ) );
-		} else
-			status_msg( "No errors found", LEVEL_OK );
-	}
-
 	this._check_syntax = function() {
 		//tell the log and grab the latest contents
 		logDebug( "Checking syntax of " + this.path );
@@ -328,15 +319,12 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 		//throw the contents to the backend, if needed
 		if(this._original != this.contents)
-			var d = loadJSONDoc("./checkcode",{ 'team' : team, 'path' : this.path, 'code' : this.contents });
+			opts = {'alert' : true, 'code' : this.contents }
 		else
-			var d = loadJSONDoc("./checkcode",{ 'team' : team, 'path' : this.path });
+			opts = {'alert' : true}
 
-		d.addCallback( bind(this._recieve_check_syntax, this) );
-		d.addErrback( bind( function() {
-			status_button( "during Syntax Check", LEVEL_ERROR,
-					"retry", bind( this._check_syntax, this ) );
-		}, this) );
+		//get the errors page to run the check
+		errorspage.check(this.path, opts);
 	}
 
 	this._receive_new_fname = function(fpath, commitMsg) {

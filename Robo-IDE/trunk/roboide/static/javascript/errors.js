@@ -98,17 +98,19 @@ function ErrorsPage() {
 				var file = path+msg[0];
 
 				//if we've not seen this file before, but it has a listing already, reset it
-				if(findValue(filelist, file) == -1 && this.eflist[file] != null)
+				if(findValue(filelist, file) == -1 && this.eflist[file] != null) {
+					log('Resetting '+file);
 					this.eflist[file].reset();
-				else {	//add it to our list, if it's null the initialise it
-					filelist.push(file);
-					if(this.eflist[file] == null)
-						this.eflist[file] = new ErrorFile(file);
-					log('file '+file+' has been pushed');
+				} else if(this.eflist[file] == null) {	//if it's null the initialise it
+					this.eflist[file] = new ErrorFile(file);
+					log('file '+file+' has been added');
 				}
+				if(findValue(filelist, file) == -1)	//add it to our list if it's not there
+					filelist.push(file);
 
 				this.eflist[file].add_warn({ 'line' : msg[1], 'comment' : msg[2] });
 			}
+			this.eflist[file].load_warns();
 		}
 
 		if(opts != null) {
@@ -154,14 +156,17 @@ function ErrorsPage() {
 	}
 
 	this.check = function(file, opts) {
-		var d = loadJSONDoc("./checkcode", { 'team' : team, 'path' : file });
+		if(opts.code != null) {
+			var d = loadJSONDoc("./checkcode", { 'team' : team, 'path' : file, 'date': new Date().getTime(), 'code' : opts.code });
+			opts.code = '';	//no need for it later on, so save the memory
+		} else
+			var d = loadJSONDoc("./checkcode", { 'team' : team, 'path' : file, 'date': new Date().getTime() });
 
 		d.addCallback( partial(bind(this._done_check, this), file, opts) );
 		d.addErrback( bind(this._fail_check, this, file, opts) );
 	}
 
 	this._done_check = function(file, opts, info) {
-		console.dir(info);
 		if( info.errors == 1 ) {
 			this.load(info, opts);
 		} else {
@@ -204,12 +209,13 @@ function ErrorsPage() {
 }
 
 function ErrorFile(name) {
-	//object for the errors in a file
-	this.errors = new Array();
-	//object for the warnings in a file
-	this.warns = new Array();
 	//the path of this file
 	this.label = name;
+
+	//array for the errors in a file
+	this._errors = new Array();
+	//array for the warnings in a file
+	this._warns = new Array();
 
 	//the HTML element for the title
 	this._name_elem = null;
@@ -248,8 +254,14 @@ function ErrorFile(name) {
 	}
 
 	this.add_warn = function(w) {
-		this.warns[w.line] = w.comment;
-		appendChildNodes( this._warn_elem, LI({"line" : w.line}, ''+w.line+':'+w.comment) );
+		this._warns.push(w)
+	}
+
+	this.load_warns = function() {
+		for( var i=0; i<this._warns.length; i++ ) {
+			var w = this._warns[i];
+			appendChildNodes( this._warn_elem, LI({"line" : w.line}, ''+w.line+':'+w.comment) );
+		}
 		this.show_msgs();
 	}
 
@@ -292,7 +304,7 @@ function ErrorFile(name) {
 	this.clear_warns = function() {
 		if(this._warn_elem != null)
 			replaceChildNodes(this._warn_elem, null);
-		this.warns = new Array();
+		this._warns = new Array();
 	}
 
 	this.clear_errors = function() {
