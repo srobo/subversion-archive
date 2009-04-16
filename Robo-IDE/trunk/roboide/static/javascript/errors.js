@@ -121,7 +121,7 @@ function ErrorsPage() {
 	}
 
 	this._module_name = function(n) {
-		if(n.substr(-3) == '.py')
+		if(n.substr(n.length-3) == '.py')
 			return n.slice(0, -3);
 		return n;
 	}

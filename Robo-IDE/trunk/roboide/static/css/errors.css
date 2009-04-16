@@ -43,6 +43,7 @@
 	width: 30px;
 	text-align: right;
 	padding-right: 8px;
+	clear: both;
 }
 
 #errors-listing dl dd {
