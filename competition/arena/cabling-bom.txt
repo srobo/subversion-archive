@@ -1,12 +1,23 @@
-Network cable (CAT5)
+#####		Network cable (CAT5)		#####
 
-Length 	Quantity	Description
-22m	1		Terminal -> 24/s
-5m	6		South Side Wings (4) + East Side South Wing (2)
-1.5m	4		South Side Middle (2) + East Side North Wing (2)
-20m	1		24/s -> 5/s
+Length 	Quantity	Status	Description
+22m	1		got	Terminal -> 24/s
+5m	6			South Side Wings (4) + East Side South Wing (2)
+1.5m	4		got	South Side Middle (2) + East Side North Wing (2)
+20m	1		got	24/s -> 5/s
 
-Power cable
+Already have:
+Length 	Quantity	Notes	
+1.5m	7+	x	Teminated
+2m	1		Terminated
+3m	2		Terminated
+8.5m	1	x	Terminated
+9m	1	split	Unterminated
+12m	1	split	Terminated
+13m	1	split	Terminated
+27m	2	x	Terminated
+
+#####		Power cable			#####
 
 Length	Ways	Quant	Status	Description
 13m	4	2	|buy 1	|West Side to South Side (1) + East Side to South Side(1)
