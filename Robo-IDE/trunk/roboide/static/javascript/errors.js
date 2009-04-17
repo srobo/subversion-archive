@@ -2,15 +2,11 @@ function ErrorsPage() {
 
 	//hold the tab object
 	this.tab = null;
-	//hold signals for the page
-	this.signals = new Array();
 	//Array of ErrorFiles
 	this.eflist = new Array();
-	//status prompt ref
-	this._prompt = null;
 
-	//the info we're going to use to load with
-	this._info = null;
+	//hold signals for the page
+	this._signals = new Array();
 
 	this._inited = false;
 
@@ -24,9 +20,9 @@ function ErrorsPage() {
 
 		tabbar.add_tab( this.tab );
 
-		this.signals.push(connect("close-errors-page", "onclick", bind(this._close, this) ));
-		this.signals.push(connect("collapse-errors-page", "onclick", bind(this._collapse_all, this) ));
-		this.signals.push(connect("expand-errors-page", "onclick", bind(this._expand_all, this) ));
+		this._signals.push(connect("close-errors-page", "onclick", bind(this._close, this) ));
+		this._signals.push(connect("collapse-errors-page", "onclick", bind(this._collapse_all, this) ));
+		this._signals.push(connect("expand-errors-page", "onclick", bind(this._expand_all, this) ));
 
 		this._inited = true;
 	}
@@ -157,11 +153,22 @@ function ErrorsPage() {
 		setStyle( $("errors-page"), {"display":"none"} );
 	}
 
+	this._file_count = function() {
+		var count = 0;
+		for( f in this.eflist ) {
+			if(this.eflist[f] != null)
+				count++;
+		}
+		return count;
+	}
+
 	this._clear_file = function(file) {
 		if(this.eflist[file] != null) {
 			this.eflist[file].remove();
 			this.eflist[file] = null;
 		}
+		if(this._file_count() == 0)
+			this._close();
 	}
 
 	this.check = function(file, opts) {
@@ -198,11 +205,11 @@ function ErrorsPage() {
 
 		this.tab.close();
 
-		for(var i = 0; i < this.signals; i++) {
-			disconnect(this.signals[i]);
+		for(var i = 0; i < this._signals; i++) {
+			disconnect(this._signals[i]);
 		}
-		if(this._prompt != null)
-			this._prompt.close();
+		this._signals = new Array();
+
 		this._inited = false;
 	}
 
