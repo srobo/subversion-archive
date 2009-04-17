@@ -86,7 +86,8 @@ GtkWidget *b_start = NULL,
 	*hbox1 = NULL,
 	*countdown = NULL,
 	*golf = NULL,
-	*squirrel = NULL;
+	*squirrel = NULL, 
+	*spin_duration = NULL;
 
 /* The spins for the different colours */
 GtkWidget *spin_colours[4];
@@ -132,6 +133,8 @@ int main( int argc, char** argv )
 
 	golf = glade_xml_get_widget(xml, "golfbutton");
 	squirrel = glade_xml_get_widget(xml, "squirrelbutton");
+	spin_duration = glade_xml_get_widget(xml, "spin_duration");
+	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_duration), 180.0 );
 
 	if( !comp_xbee_init() ) {
 		fprintf( stderr, "Error connecting to xbd\n" );
@@ -260,6 +263,8 @@ void change_state( state_t n )
 		gtk_widget_set_sensitive( spin_match, TRUE );
 		gtk_widget_set_sensitive( golf, TRUE );
 		gtk_widget_set_sensitive( squirrel, TRUE );
+		gtk_widget_set_sensitive( squirrel, TRUE );
+		gtk_widget_set_sensitive( spin_duration, TRUE );
 
 		for( i=0; i<4; i++ )
 			gtk_widget_set_sensitive( spin_colours[i], TRUE );
@@ -275,6 +280,7 @@ void change_state( state_t n )
 
 		gtk_widget_set_sensitive( golf, FALSE );
 		gtk_widget_set_sensitive( squirrel, FALSE );
+		gtk_widget_set_sensitive( spin_duration, FALSE );
 
 		for( i=0; i<4; i++ )
 			gtk_widget_set_sensitive( spin_colours[i], FALSE );
