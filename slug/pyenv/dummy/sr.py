@@ -70,14 +70,14 @@ def And(*args):
 # PWM
 
 # set servo SERVO_NUMBER to position 0.0 <= POS <= 100.0
-def setpos(SERVO_NUMBER, POS):
+def setpos(n, pos):
 	pass
 
 # read servo position - returns servo position
-def readpos(SERVO_NUMBER):
+def readpos(n):
 	pass
 
-def setlcd(a, message):
+def setlcd(n, msg=''):
 	pass
 
 lcd = [0,1,2,3]
