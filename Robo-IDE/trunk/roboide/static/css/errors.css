@@ -27,14 +27,9 @@
 #errors-listing dd {
 }
 
-#errors-listing ul {
-	padding: 0;
-}
-
 #errors-listing dl {
 	margin: 0;
 }
-
 #errors-listing dl dt {
 	float: left;
 	margin: 0;
@@ -45,7 +40,6 @@
 	padding-right: 8px;
 	clear: both;
 }
-
 #errors-listing dl dd {
 	margin-left: 43px;
 }

@@ -91,7 +91,7 @@ function ErrorsPage() {
 			file = path+file;
 			type += ' Error:\n';
 
-			logDebug('file: '+file+'| line: '+line+'| code: '+code+'| marker: '+marker+'|');
+			logDebug('file:'+file+'| line:'+line+'| code:'+code+'| marker:'+marker+'|');
 
 			if(this.eflist[file] == null)
 				this.eflist[file] = new ErrorFile(file);
@@ -294,6 +294,8 @@ function ErrorFile(name) {
 	}
 
 	this.load_error = function(type, line, code, marker, orig) {
+		if(code == null || code == '')
+			code = ' ';
 		//build up the html output
 		var title = SPAN(null, type);
 		var code_num = createDOM('dt', null, line);
