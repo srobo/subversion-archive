@@ -229,15 +229,6 @@ ProjPage.prototype.clickCheckCode = function() {
 }
 
 // ***** Project Page File Listing *****
-function map_1( func, arg, arr ) {
-	var a = function( item ) {
-		return func( item, arg );
-	}
-
-	return map( a, arr );
-}
-
-// Project page file list
 function ProjFileList() {
 	this._project = "";
 	this._team = null;
@@ -382,7 +373,7 @@ ProjFileList.prototype._received = function(nodes) {
 	swapDOM( "proj-filelist",
 		 UL( { "id" : "proj-filelist",
 		       "style" : "display:none" },
-		     map_1( bind(this._dir, this), 0, nodes["tree"] ) ) );
+		     map( bind(this._dir, this, 0), nodes["tree"] ) ) );
 
 	this._show();
 }
@@ -401,7 +392,7 @@ ProjFileList.prototype._nested_divs = function( level, inner ) {
 }
 
 // Returns a DOM object for the given node
-ProjFileList.prototype._dir = function( node, level ) {
+ProjFileList.prototype._dir = function( level, node ) {
 	// Assemble the link with divs in it
 	var link = A( { "href" : "#",
 			"ide_path" : node.path,
@@ -421,7 +412,7 @@ ProjFileList.prototype._dir = function( node, level ) {
 	} else
 		var n = LI( null, [ link,
 			UL( { "class" : "flist-l" },
-			map_1( bind(this._dir, this), level + 1, node["children"] ) ) ] );
+			map( bind(this._dir, this, level + 1), node["children"] ) ) ] );
 	return n;
 }
 
