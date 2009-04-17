@@ -22,8 +22,8 @@ def readpower(a):
 	pass
 
 # We shall be implementing this in future releases:
-def setspeed(a, b=0):
-	pass
+#def setspeed(a, b=0):
+#	pass
 
 # JointIO
 
