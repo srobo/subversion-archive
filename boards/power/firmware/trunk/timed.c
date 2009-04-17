@@ -16,10 +16,12 @@ void user_enable(void){
 void game_enable(void){
 	if(cutoff_state != USER) /* so an errant rail on command doesnt disable user mode */
 		cutoff_state = GAME;
+	safe_count = 0;
 }
 
 void reset_cutoff(void){
 	pinged=1;
+	safe_count =0;
 }
 
 void safe_service(void){	/* called every 0.1s by ccpa2 */
@@ -31,6 +33,7 @@ void safe_service(void){	/* called every 0.1s by ccpa2 */
 		{
 			pwr_set_motor(0);
 			safe_count =0;
+			pinged = 0;
 			return;
 		}
 		else{

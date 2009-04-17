@@ -61,9 +61,11 @@ void pwr_set_motor(uint8_t val)
 {
   if (val == 0) 
 	  P2OUT &= ~0x04;
-  else
+  else{
+	  game_enable();
 	  pwr_set_servo(1);
 	  P2OUT |= 0x04;
+  }
 }
 
 uint8_t pwr_get_motor(void)
