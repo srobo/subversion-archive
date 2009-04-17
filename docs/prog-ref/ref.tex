@@ -327,16 +327,9 @@ readpos(n)	#n = servo number
 If you attempt to read the position of a servo which has not previously been set, readpos() will return \(-1\).
 
 \subsection{Controlling the JointIO Board Outputs}
-The outputs and inputs of the JointIO board can be controlled using the following functions:
+The outputs of the JointIO board can be controlled using the following function:
 \begin{verbatimtab}
-yield io.apin[1] > 1.6, (io.pin[2] == 1) & (io.pin[3] == 0)
-if 2 in event.io.pins:
-    # event.io.vals is an array of the pin values
-    # e.g. event.io.vals[2] gives the value of the pin when the event happened
-    # the value of event.io.vals[0] is meaningless
-    # (and may later throw an error if read at the wrong time)
-elif 1 in event.io.pins:
-    # event.io.vals[1] is a voltage (float)
+io.pin[n] = val		#can only take the values 0 or 1
 \end{verbatimtab}
 
 This will set output $0<n<4$ to the value val, which is either 0 or 1.  If value is 1 then the output will be 3.3V, otherwise it will be 0V.
