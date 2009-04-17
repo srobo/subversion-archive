@@ -12,7 +12,6 @@
 #include "adc.h"
 #include "xbee.h"
 #include "flash430/i2c-flash.h"
-
 /* Register functions:
  * i2ct: The type of the register.
  * i2cr: Read from the register.
@@ -101,6 +100,7 @@ const reg_access_t dev_regs[] =
 	I2C_REG_ENTRY( flash_fw_chunk_next ),
 	I2C_REG_ENTRY( flash_fw_confirm_crc ),
 };
+
 
 uint16_t i2cs_identify( void )
 {
@@ -276,12 +276,12 @@ uint16_t i2cs_beegees( void )
 
 void i2cw_beegees( uint8_t *data, uint8_t len )
 {
-	stayingalive();
+	//stayingalive();
 }
 
 uint8_t i2cr_beegees( uint8_t *data )
 {
-	data[0]= alive;
+	data[0]= 0xAA;
 	return 1;
 }
 
@@ -319,7 +319,7 @@ uint16_t i2cs_fakebutton( void )
 
 uint8_t i2cr_fakebutton( uint8_t *data )
 {
-	data[0]= override;
+	data[0]= 0x55 ;//override;
 	return 1;
 }
 

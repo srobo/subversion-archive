@@ -64,7 +64,7 @@ void rx_byte( uint8_t b )
 	if( safe[pos].flags & XB_END ) {
 		/* Evaluate checksum and mark as valid */
 		if( checksum + b == 0xff )
-			make_safe();
+			reset_cutoff();
 
 		pos = 0;
 		return;

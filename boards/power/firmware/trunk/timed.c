@@ -4,52 +4,38 @@
 #include "timed.h"
 #include "power.h"
 
-uint8_t alive = 1;
+
 static uint16_t safe_count =0;
-uint8_t override=0;	/* button override */
+uint8_t pinged=0;	/* button override */
+uint8_t cutoff_state= STANDBY;
 
-void stayingalive(void)
-{
-	alive = 1;		/* set by slug on start of python code */
-	return;
+void user_enable(void){
+	cutoff_state = USER;
 }
 
-void alive_service(void){	/* called every 0.1s by ccpa2 */
-//	static uint16_t alive_count =0;
-	/* dissabled as we now have more confidence in !modeb */
-/* 	if (alive==0){ */
-/* 		if (alive_count >= BOOT_TIME){ */
-/* 			slug_boot(1);	/\* power cycle the slug *\/ */
-/* 			alive_count =0; */
-/* 		} */
-/* 		else */
-/* 			alive_count++; */
-/* 	} */
+void game_enable(void){
+	if(cutoff_state != USER) /* so an errant rail on command doesnt disable user mode */
+		cutoff_state = GAME;
 }
 
-void timer_override(void){
-	override =1;		/* buton pressed so override the serial timout routine */
-	pwr_set_motor(1);	/* enable user test mode */
-}
-
-
-
-void make_safe(void){
-	if(override != 1){	/* not user test mode */
-		safe_count =0;
-		pwr_set_motor(1);
-	}
+void reset_cutoff(void){
+	pinged=1;
 }
 
 void safe_service(void){	/* called every 0.1s by ccpa2 */
-	if (override !=1){	/* not user test mode */
-		if(safe_count>=SAFE_TIMEOUT){
+	if(pinged)
+		safe_count =0;
+	if(cutoff_state ==GAME)
+	{
+		if(safe_count>=SAFE_TIMEOUT)
+		{
+			pwr_set_motor(0);
 			safe_count =0;
-			pwr_set_motor(0);	
+			return;
 		}
-		else
+		else{
 			safe_count++;
-		
-		return;
+			pwr_set_motor(1);
+		}
 	}
 }

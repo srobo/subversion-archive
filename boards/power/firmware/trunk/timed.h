@@ -7,12 +7,20 @@
 #define SAFE_TIMEOUT 30		/* 3 sec */
 
 extern uint8_t override;
-extern uint8_t alive;
 
-void stayingalive(void);
+
+
+enum {
+	STANDBY = 0,
+	USER = 1,
+	GAME = 2,
+	END = 4
+};
+
+void reset_cutoff(void);
 void alive_service(void);
-void make_safe(void);
+void game_enable(void);
 void safe_service(void);
-void timer_override(void);
+void user_enable(void);
 
 #endif

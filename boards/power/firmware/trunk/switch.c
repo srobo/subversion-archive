@@ -2,7 +2,7 @@
 #include"device.h"
 #include <signal.h>
 #include "timed.h"
-
+#include "power.h"
 uint8_t button_pressed =0;
 
 void switch_init(void)
@@ -27,7 +27,8 @@ interrupt (PORT2_VECTOR) port2_isr(void){
 	uint8_t p2ifg_l;
 	p2ifg_l = P2IFG; 	/* read only once just to be safe */
 	if (p2ifg_l &  0x08){ /* p2.3 interrupt hit  */
-		timer_override();
+		user_enable();
+		pwr_set_motor(1);
 		button_pressed = 1;
 		P2IFG &= ~0x08;	/* clear interrupt flag */
 	}else

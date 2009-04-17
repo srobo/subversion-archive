@@ -20,7 +20,6 @@ interrupt (TIMERA1_VECTOR) timera_service( void )
 		break;
 	case TAIV_CCR2:
 		TACCR2 += PERIOD2;
-		alive_service();
 		safe_service();
 		break;
 		
