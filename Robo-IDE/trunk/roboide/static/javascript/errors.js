@@ -22,6 +22,7 @@ function ErrorsPage() {
 
 		this._signals.push(connect("close-errors-page", "onclick", bind(this._close, this) ));
 		this._signals.push(connect("collapse-errors-page", "onclick", bind(this._collapse_all, this) ));
+		this._signals.push(connect("check-errors-page", "onclick", bind(this._check_all, this) ));
 		this._signals.push(connect("expand-errors-page", "onclick", bind(this._expand_all, this) ));
 
 		this._inited = true;
@@ -171,6 +172,13 @@ function ErrorsPage() {
 			this._close();
 	}
 
+	this._check_all = function() {
+		for( f in this.eflist ) {
+			if(this.eflist[f] != null)
+				this.check(f);
+		}
+	}
+
 	this.check = function(file, opts) {
 		if(opts != null && opts.code != null) {
 			var d = loadJSONDoc("./checkcode", { 'team' : team, 'path' : file, 'date': new Date().getTime(), 'code' : opts.code });
@@ -197,6 +205,9 @@ function ErrorsPage() {
 	}
 
 	this._close = function() {
+		if(!this._inited)
+			return;
+
 		for( i in this.eflist ) {
 			if(this.eflist[i] != null)
 				this.eflist[i].remove();
