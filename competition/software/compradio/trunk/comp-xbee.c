@@ -11,7 +11,8 @@ static XbeeConn *xbc;
 const xb_conn_callbacks_t xb_callbacks = 
 {
 	.rx_frame = NULL,
-	.chan_set = NULL
+	.chan_set = NULL,
+	.info_ready = NULL       
 };
 
 gboolean comp_xbee_init( void )
