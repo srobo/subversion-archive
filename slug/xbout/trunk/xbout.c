@@ -15,21 +15,29 @@ enum
 };
 
 /* Receive callback */
-static void rx_frame( uint8_t *data, uint16_t len, xbee_conn_info_t *info );
+static void rx_frame( XbeeConn *conn,
+		      uint8_t *data,
+		      uint16_t len,
+		      xbee_conn_info_t *info,
+		      gpointer userdata );
 
 /* Channel request response callback */
-static void chan_set( uint8_t channel );
+static void chan_set( XbeeConn *conn, uint8_t channel, gpointer userdata );
 
-static const xb_conn_callbacks_t callbacks = 
-{
-	.rx_frame = rx_frame,
-	.chan_set = chan_set
-};
+/* info_ready callback */
+static void info_ready (XbeeConn *conn, uint8_t* snum, gpointer userdata);
 
 int main( int argc, char** argv )
 {
 	XbeeConn *xbc = NULL;
 	GMainLoop* ml;
+	xb_conn_callbacks_t callbacks = 
+		{
+			.userdata = NULL,
+			.rx_frame = rx_frame,
+			.chan_set = chan_set,
+			.info_ready = info_ready
+		};
 
 	g_type_init();
 	ml = g_main_loop_new( NULL, FALSE );
@@ -42,15 +50,16 @@ int main( int argc, char** argv )
 
 	xbee_conn_register_callbacks( xbc, &callbacks );
 
-	/* Channel 1 please */
-	xbee_conn_set_channel( xbc, 1 );
-
 	g_main_loop_run( ml );
 
 	return 0;
 }
 
-static void rx_frame( uint8_t *data, uint16_t len, xbee_conn_info_t *info )
+static void rx_frame( XbeeConn *conn, 
+		      uint8_t *data, 
+		      uint16_t len, 
+		      xbee_conn_info_t *info, 
+		      gpointer userdata )
 {
 	/* First byte of the incoming frame is the command */
 
@@ -79,15 +88,27 @@ static void rx_frame( uint8_t *data, uint16_t len, xbee_conn_info_t *info )
 		/* Ignore pings */
 		break;
 
-	case CMD_PING_RESP:
+	case CMD_PING_RESP: {
+		uint8_t d[] = {0x00};
+		xbee_conn_transmit( conn, info->src_addr, d, 1, 10 );
 		break;
+	}
+
 	}
 
 	fflush(stdout);
 }
 
-static void chan_set( uint8_t channel )
+static void chan_set( XbeeConn *conn, uint8_t channel, gpointer userdata )
 {
 	if( channel == 0 )
 		printf("ERROR: Could not listen on channel 1\n");
+}
+
+static void info_ready (XbeeConn *conn, uint8_t* snum, gpointer userdata)
+{
+	/* Channel 1 please */
+	xbee_conn_set_channel( conn, 1 );
+
+	printf( "xbee address received\n" );
 }
