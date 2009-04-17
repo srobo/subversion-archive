@@ -441,7 +441,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 							content : this.contents});
 
 		d.addCallback( bind(this._receive_autosave, this));
-		d.addErrback( bind(this._on_keypress, this));	//if it fails then set it up to try again
+		d.addErrback( bind(this._on_keydown, this));	//if it fails then set it up to try again
 	}
 
 	//ajax event handler for autosaving to server, based on the one for commits
