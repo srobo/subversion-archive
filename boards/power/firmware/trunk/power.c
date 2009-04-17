@@ -62,6 +62,7 @@ void pwr_set_motor(uint8_t val)
   if (val == 0) 
 	  P2OUT &= ~0x04;
   else
+	  pwr_set_servo(1);
 	  P2OUT |= 0x04;
 }
 
