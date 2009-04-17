@@ -44,27 +44,36 @@ function ErrorsPage() {
 		if(info.messages[0].split(':')[0] == module_name && info.messages[0].split(':')[2] == " NOT PROCESSED UNABLE TO IMPORT") {
 			//grab the error type
 			var type = info.err[0].split(':')[0].replace(new RegExp("^\\s*", 'g'),'').split(' ')[0];
+			var orig = info.err.join('\n\r');
 			logDebug('type:'+type+'|');
 
-			//set the most likely values
-			var useful_line = info.err[info.err.length-3];
-			var code = info.err[1].substr(4);
-			var marker = info.err[2].substr(4);
+			//prep the variables
+			useful_line = null;
+			var code = null;
+			var marker = null;
 			var file = info.file;
-			var line = useful_line.split(', line ')[1].split(')')[0];
+			var line = 0;
 
-			if( type == 'Caught') {	//an exception whlie loading module
-				type = info.err[info.err.length-1].split(':')[0].substr(2);
-				marker = null;
+			if( type == 'Caught' ) {	//an exception whlie loading module
+				var new_type = info.err[info.err.length-1].split(':')[0].substr(2);
+				if( new_type == 'IndentationError' )
+				type = new_type;
 			}
 
-			var type = type.slice(0, -5);
+			type = type.slice(0, -5);
 			logDebug('type:'+type+'|');
 			switch(type) {
 				case 'Syntax':
-					file = useful_line.split('(')[1].split(', line ')[0];
+					useful_line = info.err[info.err.length-3];
+					code	= info.err[1].substr(4);
+					marker	= info.err[2].substr(4);
+					line	= useful_line.split(', line ')[1].split(')')[0];
+					file	= useful_line.split('(')[1].split(', line ')[0];
 					break;
 				case 'Import':
+					useful_line = info.err[0];
+					code = useful_line.split(':')[1];
+					file = info.file;
 					break;
 				case 'Indentation':
 					useful_line = info.err[info.err.length-1];
@@ -72,13 +81,13 @@ function ErrorsPage() {
 					line = useful_line.split(', line ')[1].split(')')[0];
 					code = useful_line.split(':')[1].split(' (')[0];
 					break;
-				case 'Name':
+				default:
+					type = info.err[info.err.length-1].split(':')[0].substr(2);
+					useful_line = info.err[info.err.length-3];
 					file = useful_line.split('File "')[1].split('", line ')[0];
 					line = useful_line.split(', line ')[1].split(', in ')[0];
-					code = info.err[info.err.length-1].split(':')[1];
-					break;
-				default:
-					var line = 0;
+					code = info.err[info.err.length-2];
+					marker = info.err[info.err.length-1].split(':')[1];
 					break;
 			}
 
@@ -90,7 +99,7 @@ function ErrorsPage() {
 			if(this.eflist[file] == null)
 				this.eflist[file] = new ErrorFile(file);
 
-			this.eflist[file].load_error(type, line, code, marker);
+			this.eflist[file].load_error(type, line, code, marker, orig);
 
 		} else {
 			for(var i = 0; i < info.messages.length; i++) {
@@ -182,7 +191,8 @@ function ErrorsPage() {
 
 	this._close = function() {
 		for( i in this.eflist ) {
-			this.eflist[i].remove();
+			if(this.eflist[i] != null)
+				this.eflist[i].remove();
 		}
 		this.eflist = new Array();
 
@@ -212,8 +222,6 @@ function ErrorFile(name) {
 	//the path of this file
 	this.label = name;
 
-	//array for the errors in a file
-	this._errors = new Array();
 	//array for the warnings in a file
 	this._warns = new Array();
 
@@ -230,6 +238,8 @@ function ErrorFile(name) {
 
 	//hold signals for the page
 	this._signals = new Array();
+	//hold the signal for showing the error original
+	this._err_orig_signal = null;
 
 	this._init = function() {
 		logDebug('initing file: '+this.label);
@@ -265,7 +275,7 @@ function ErrorFile(name) {
 		this.show_msgs();
 	}
 
-	this.load_error = function(type, line, code, marker) {
+	this.load_error = function(type, line, code, marker, orig) {
 		//build up the html output
 		var title = SPAN(null, type);
 		var code_num = createDOM('dt', null, line);
@@ -278,8 +288,13 @@ function ErrorFile(name) {
 			appendChildNodes(code, mark_num, mark_line);
 		}
 
+		var li = LI({'title':'click to show/hide original'}, title, code);
+
+		disconnect(this._err_orig_signal);
+		this._err_orig_signal = connect( li, 'onclick', bind(this._toggle_show_error_orig, this) );
+
 		//throw the html to the screen
-		replaceChildNodes( this._err_elem, LI(null, title, code) );
+		replaceChildNodes( this._err_elem, li, LI( {'class' : 'orig hide'}, orig) );
 		this.show_msgs();
 	}
 
@@ -313,6 +328,10 @@ function ErrorFile(name) {
 		this.errors = new Array();
 	}
 
+	this._toggle_show_error_orig = function() {
+		toggleElementClass( 'hide', getFirstElementByTagAndClassName('li', 'orig',  this._err_elem));
+	}
+
 	this._view_onclick = function() {
 		editpage.edit_file( team, projpage.project, this.label, 'HEAD', 'SVN' );
 	}
@@ -326,7 +345,7 @@ function ErrorFile(name) {
 
 	this.show_msgs = function() {
 		if(!this._msgs_shown) {
-			setStyle( this._msgs_elem, {"display":''} );
+			showElement( this._msgs_elem );
 			this._expand_elem.innerHTML = 'Collapse';
 			this._msgs_shown = true;
 		}
@@ -334,7 +353,7 @@ function ErrorFile(name) {
 
 	this.hide_msgs = function() {
 		if(this._msgs_shown) {
-			setStyle( this._msgs_elem, {"display":'none'} );
+			hideElement( this._msgs_elem );
 			this._expand_elem.innerHTML = 'Expand';
 			this._msgs_shown = false;
 		}

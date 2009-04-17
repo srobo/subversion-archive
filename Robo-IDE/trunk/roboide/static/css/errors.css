@@ -53,7 +53,6 @@
 #errors-listing ul {
 	padding: 0;
 }
-
 #errors-listing ul li {
 	list-style-type: none;
 	background-color: #DFDBD8;
@@ -61,4 +60,7 @@
 	padding: 0.5em;
 	margin: 0.8em;
 	white-space: pre;
+}
+#errors-listing ul li.orig.hide {
+	display: none;
 }
