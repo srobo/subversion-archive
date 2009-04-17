@@ -90,7 +90,12 @@ static void rx_frame( XbeeConn *conn,
 
 	case CMD_PING_RESP: {
 		uint8_t d[] = {0x00};
-		xbee_conn_transmit( conn, info->src_addr, d, 1, 10 );
+		uint8_t channel = 10;
+
+		if( len > 1 )
+			channel = data[1];
+
+		xbee_conn_transmit( conn, info->src_addr, d, 1, channel );
 		break;
 	}
 
