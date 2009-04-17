@@ -2,6 +2,7 @@
 #include "usart.h"
 #include <signal.h>
 #include "timed.h"
+#include "led.h"
 
 #define HOWSAFE 17 		/* I guess these should maby live somewhere else? */
 
@@ -13,7 +14,8 @@ const uint8_t safe[HOWSAFE]={
 	0, //rssi -ignoored
 	0xff, // options -- ignoored
 	0x01,0x02, // the actuall data!!!
-	0x00};//last one is checksum
+	0x00};//last one is checksum 
+        /* csum is actially 0x61!!!!! */
 
 interrupt (USART1TX_VECTOR) uart_tx_isr(void)
 {
@@ -57,6 +59,8 @@ void xbee_handler(uint8_t rxbuf)
 	static uint8_t place=0;
 	static uint8_t xbchecksum=0;
 	static uint8_t delim=0;
+	
+	static uint8_t temp[100];
 
 	if(rxbuf==0x7e )//is it a sentinel if so resart
 	{
@@ -81,7 +85,7 @@ void xbee_handler(uint8_t rxbuf)
 	/* is value within the areas we care about, if so, is it the same as the buffer */
 	if(((place>STARTIG)&&(place<STOPIG))||(safe[place]==rxbuf)||(place>HOWSAFE-2))//
 	{ //      in the ignoor zone                 char corret           checksum???
-		/* temp[place]=rxbuf; */
+		temp[place]=rxbuf; 
 		if (place==HOWSAFE-1) /* reached end of string */
 		{		       
 			if(rxbuf+xbchecksum==0xff)

@@ -9,7 +9,7 @@ void switch_init(void)
 {
   P1DIR &= 0x0f;
 
-  /* init theh button and its interrupts */
+  /* init the button and its interrupts */
   P2DIR &= ~0x08;		/* pin 2.3 as input */
   P2IFG &= ~0x08;		/* check int flag clear */
   P2IES &= ~0x08;		/* int on rising edge */

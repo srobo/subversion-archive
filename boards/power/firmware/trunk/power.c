@@ -6,11 +6,9 @@ void delay(int16_t time);
 
 void pwr_init(void)
 {
-	//led_set(0);
 	P2DIR |= 0x07;		/* power rail enable control pins as out */
-  
-  //led_set(1);
-  slug_boot(0);
+	P2OUT &= ~0x07;
+	slug_boot(0);
 }
 
 void slug_boot(uint8_t reboot){
