@@ -115,8 +115,10 @@ static void rx_frame( XbeeConn *conn,
 		char *s;
 		addrtostr( &info->src_addr, &s );
 
-		if( cmp_address( &ping_addr, &info->src_addr ) )
+		if( cmp_address( &ping_addr, &info->src_addr ) ) {
 			printf( "Ping response from %s\n", s );
+			exit(0);
+		}
 		else
 			printf( "Unexpected response from different host (%s)\n", s );
 		free(s);
