@@ -17,7 +17,4 @@ gboolean sr_match_info( uint16_t N, match_t* m );
 /* Get a team's XBee address */
 gboolean sr_team_get_addr( uint16_t number, xb_addr_t* addr );
 
-/* Convert a string into an xbee address */
-void strtoaddr( char* str, xb_addr_t* addr );
-
 #endif	/* __COMP_MYSQL_H */

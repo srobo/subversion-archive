@@ -1,5 +1,6 @@
 #define _GNU_SOURCE
 #include "comp-mysql.h"
+#include "comp-xbee.h"
 #include <mysql/mysql.h>
 #include <assert.h>
 #include <stdio.h>
@@ -79,14 +80,6 @@ void sr_mysql_init( void )
 	}
 }
 
-void strtoaddr( char* str, xb_addr_t* addr )
-{
-	sscanf(str, "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",
-	       &addr->addr[0], &addr->addr[1], &addr->addr[2], &addr->addr[3],
-	       &addr->addr[4], &addr->addr[5], &addr->addr[6], &addr->addr[7] );
-}
-
-
 gboolean sr_team_get_addr( uint16_t number, xb_addr_t* addr )
 {
 	char *q = NULL;
@@ -120,7 +113,7 @@ gboolean sr_team_get_addr( uint16_t number, xb_addr_t* addr )
 		for(i=0; i<n_fields; i++) {
 			/* printf("%s = %s\n", fields[i].name, row[i]); */
 			if( strcmp(fields[i].name,"address") == 0 )
-				strtoaddr( row[i], addr );
+				comp_xbee_strtoaddr( row[i], addr );
 		}
 	}
 	mysql_free_result(res);

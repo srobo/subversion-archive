@@ -195,7 +195,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkCheckButton" id="checkbutton1">
+              <widget class="GtkCheckButton" id="redping">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
@@ -211,7 +211,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkCheckButton" id="checkbutton2">
+              <widget class="GtkCheckButton" id="blueping">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
@@ -227,7 +227,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkCheckButton" id="checkbutton3">
+              <widget class="GtkCheckButton" id="greenping">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
@@ -243,7 +243,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkCheckButton" id="checkbutton4">
+              <widget class="GtkCheckButton" id="yellowping">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>

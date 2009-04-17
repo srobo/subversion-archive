@@ -57,6 +57,12 @@ void set_player( uint16_t colour, uint16_t team );
 /* Transmits the ping signal */
 gboolean tx_ping( gpointer nothing );
 
+/* Callback for when the xbee's ready */
+void compradio_xbee_ready ( void );
+
+/* Callback for xbee ping responses */
+void compradio_xbee_response( xb_addr_t* addr );
+
 /* Whether we're currently pinging: */
 gboolean pinging = FALSE;
 
@@ -91,6 +97,11 @@ GtkWidget *b_start = NULL,
 
 /* The spins for the different colours */
 GtkWidget *spin_colours[4];
+
+/* Whether the ping response was received last time around */
+gboolean ping_responses[4];
+/* Ping response checkboxes */
+GtkWidget *ping_boxes[4];
 
 xb_addr_t team_addresses[4];
 /* Whether there's a valid address */
@@ -129,6 +140,11 @@ int main( int argc, char** argv )
 	spin_colours[GREEN] = glade_xml_get_widget(xml, "spin_green");
 	spin_colours[YELLOW] = glade_xml_get_widget(xml, "spin_yellow");
 
+	ping_boxes[RED] = glade_xml_get_widget(xml, "redping");
+	ping_boxes[BLUE] = glade_xml_get_widget(xml, "blueping");
+	ping_boxes[GREEN] = glade_xml_get_widget(xml, "greenping");
+	ping_boxes[YELLOW] = glade_xml_get_widget(xml, "yellowping");
+
 	hbox1 = glade_xml_get_widget(xml, "hbox1");
 
 	golf = glade_xml_get_widget(xml, "golfbutton");
@@ -136,6 +152,7 @@ int main( int argc, char** argv )
 	spin_duration = glade_xml_get_widget(xml, "spin_duration");
 	gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_duration), 180.0 );
 
+	comp_xbee_ready = compradio_xbee_ready;
 	if( !comp_xbee_init() ) {
 		fprintf( stderr, "Error connecting to xbd\n" );
 		return 1;
@@ -150,8 +167,8 @@ int main( int argc, char** argv )
 		set_player( i, cur_match_info.teams[i] );
 	}
 
-	/* The ping timeout */
-	g_timeout_add(100, (GSourceFunc)tx_ping, NULL);
+	/* The ping_response timeout callback */
+	comp_xbee_response = compradio_xbee_response;
 
 	gtk_main();
 
@@ -202,6 +219,8 @@ void on_b_stop_clicked( GtkButton *button,
 
 gboolean tx_ping( gpointer nothing )
 {
+	static uint8_t num = 0;
+ 
 	/* Channel 1 */
 	if( pinging ) {
 		uint8_t i;
@@ -212,6 +231,24 @@ gboolean tx_ping( gpointer nothing )
 			}
 		}
 	}
+
+	/* Send a request for a response every so often */
+	num ++;
+	if( num == 10 ) {
+		uint8_t i;
+		for(i=0; i<4; i++) {
+			gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(ping_boxes[i]), ping_responses[i] );
+
+			if( cur_match_info.teams[i] != 0 && addr_valid[i] ) {
+				comp_xbee_ping_req_resp( &team_addresses[i] );
+				printf("PING RESP REQUEST\n");
+			}
+
+			ping_responses[i] = FALSE;
+		}
+		num = 0;
+	}
+
 
 	/* Do the match timing stuff */
 	if( match_duration != 0 && state == S_STARTED ) {
@@ -383,6 +420,9 @@ void set_player( uint16_t colour, uint16_t team )
 		addr_valid[colour] = sr_team_get_addr( team, &team_addresses[colour] );
 	else
 		addr_valid[colour] = FALSE;
+
+	gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(ping_boxes[colour]), FALSE );
+	ping_responses[colour] = FALSE;
 }
 
 void spin_duration_value_changed( GtkSpinButton *spinbutton,
@@ -398,4 +438,32 @@ void golf_toggled( GtkToggleButton *b,
 		cur_match_info.type = GOLF;
 	else
 		cur_match_info.type = SQUIRREL;	
+}
+
+void compradio_xbee_response( xb_addr_t* addr )
+{
+	uint8_t i;
+
+	/* Find out which of our currently selected teams the response was from */
+	for( i=0; i<4; i++ )
+		if( cur_match_info.teams[i] != 0 
+		    && addr_valid[i]
+		    && cmp_address( addr, team_addresses + i ) )
+			break;
+
+	if( i == 4 ) {
+		g_debug( "Ignoring ping from someone we don't care about\n" );
+		return;
+	}
+
+	g_debug( "Response received from player %hhu\n", i );
+	ping_responses[i] = TRUE;
+}
+
+void compradio_xbee_ready ( void )
+{
+	g_debug( "XBEE READY" );
+
+	/* The ping timeout */
+	g_timeout_add(100, (GSourceFunc)tx_ping, NULL);
 }
