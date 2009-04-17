@@ -15,7 +15,7 @@ void stayingalive(void)
 }
 
 void alive_service(void){	/* called every 0.1s by ccpa2 */
-	static uint16_t alive_count =0;
+//	static uint16_t alive_count =0;
 	/* dissabled as we now have more confidence in !modeb */
 /* 	if (alive==0){ */
 /* 		if (alive_count >= BOOT_TIME){ */
