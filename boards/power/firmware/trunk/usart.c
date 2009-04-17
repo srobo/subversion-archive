@@ -40,9 +40,9 @@ void usart_init(void) {
 	U1RCTL = 0;
 
 	/* set for 57800 */
-	U1BR0 = 0x0d;		/* baud hi and lo */
+	U1BR0 = 0x8a;		/* baud hi and lo */
 	U1BR1 = 0x00;
-	U1MCTL = 0xf7;		/* modulation factor */
+	U1MCTL = 0xef;		/* modulation factor */
 
 	ME2 |= UTXE1;	// enable transmitter
 	ME2 |= URXE1;	// enable receiver
