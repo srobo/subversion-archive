@@ -7,11 +7,25 @@ import sys
 port=sys.argv[1]#"/dev/ttyUSB0"
 tty = serial.Serial(port, baudrate=57600, rtscts=0, xonxoff=0, timeout=5)
 
-ping = 	\x7E\x00\x0D\x80\x00\x01\x02\x03\x04\x05\x06\x07\x00\xff\x01\x02\x00
+ping = 	'\x7E\x00\x0D\x80\x00\x01\x02\x03\x04\x05\x06\x07\x00\xff\x01\x02\x61'
+
 
 while 1:
-    time.sleep(0.5)
+    
+    raw_input()
     tty.write(ping)
+    time.sleep(0.5)
+
+
+
+while 1:
+    
+    for loc in ping:
+        raw_input()
+        print hex(ord(loc))
+        tty.write(loc)
+        time.sleep(0.5)
+
 
 tty.close()
 
