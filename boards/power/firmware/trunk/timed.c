@@ -6,8 +6,8 @@
 
 
 static uint16_t safe_count =0;
-uint8_t pinged=0;	/* button override */
-uint8_t cutoff_state= STANDBY;
+static uint8_t pinged=0;	/* button override */
+static uint8_t cutoff_state= STANDBY;
 
 void user_enable(void){
 	cutoff_state = USER;
