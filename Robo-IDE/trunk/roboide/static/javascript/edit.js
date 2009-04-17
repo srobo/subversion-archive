@@ -245,6 +245,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this._timeout = null;
 	//the time in seconds to delay before saving
 	this._autosave_delay = 25;
+	this._autosave_retry_delay = 7;
 	//the contents at the time of the last autosave
 	this._autosaved = "";
 	// whether we're loading from the svn or an autosave
@@ -406,23 +407,28 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 	this._on_keydown = function(ev) {
 		//since this call could come from EditArea we have to disregard mochikit nicities
-		if(typeof ev._event == 'object')
+		if(ev != 'auto' && typeof ev._event == 'object')
 			var e = ev._event;
 		else
 			var e = ev;
 
 		//Ctrl+s: do a save
-		if( e.ctrlKey && e.keyCode == 83 ) {
+		if( e != 'auto' && e.ctrlKey && e.keyCode == 83 ) {
 			this._save();
 			// try to prevent the browser doing something else
 			kill_event(ev);
 		}
 
-		//any alpha or number key: think about autosave
-		if( (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 48 && e.keyCode <= 57) ) {
+		//any alpha or number key or a retry: think about autosave
+		if( e == 'auto' || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 48 && e.keyCode <= 57) ) {
+			log(e.keyCode);
 			if( this._timeout != null )
 				this._timeout.cancel();
-			this._timeout = callLater(this._autosave_delay, bind(this._autosave, this));
+			if( e == 'auto' )
+				var delay = this._autosave_retry_delay;
+			else
+				var delay = this._autosave_delay;
+			this._timeout = callLater(delay, bind(this._autosave, this));
 		}
 	}
 
@@ -441,7 +447,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 							content : this.contents});
 
 		d.addCallback( bind(this._receive_autosave, this));
-		d.addErrback( bind(this._on_keydown, this));	//if it fails then set it up to try again
+		d.addErrback( bind(this._on_keydown, this, 'auto'));	//if it fails then set it up to try again
 	}
 
 	//ajax event handler for autosaving to server, based on the one for commits
