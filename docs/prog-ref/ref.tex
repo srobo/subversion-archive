@@ -145,7 +145,7 @@ Where \texttt{x} can take the values: \{0, 1, 2, 3\}.
 \subsection{Yielding on Vision Events}
 The following command will cause a new image to be captured by the webcam and processed by the slug. Your algorithm will resume when the image has been processed and all the blobs of colours have been extracted from it.
 \begin{verbatimtab}
-yield vision
+yield vision()
 \end{verbatimtab}
 
 \subsection{Combinations of events and timeout}
@@ -181,7 +181,7 @@ A logical OR operation can be used to wait for any one of a list of events to oc
 \begin{python}
 \begin{verbatim}
 #wait for pin 1 to change or pin 3 to go above 2V:
-yield io.pin[1] | io.apin[3]>2
+yield io.pin[1] | (io.apin[3] >2)
 
 #wait for pin 1 or pin 2 or pin 3 to change:
 yield Or(io.pin[1], io.pin[2], io.pin[3])
@@ -277,7 +277,7 @@ To aid with processing the list of blobs, the following constants are provided:
 
 \begin{python}
 \begin{verbatimtab}
-yield vision    #This will always return as soon as
+yield vision()   #This will always return as soon as
                 #a frame has been processed
 
 if event == vision:
@@ -352,6 +352,96 @@ power.led[0] = 1
 #or
 setled(0,1) #where the first argument is the LED number
 
+\end{verbatimtab}
+
+\section{Coroutines}
+Coroutines enable you to run multiple tasks or `routines' simultaneously. For example, you may want to navigate your robot at the same time as triggering/monitoring a ball collection mechanism. Without coroutines your code may look something like Listing \ref{list:noco}. In this program, main() alternates between navigating and collecting balls. It does this by handing control of the robot back and forth between navigate() and collect(). If no io events occur during a call to navigate(), this will result in a delay of 5 seconds. If a ball arrives at the detector during this time it will be ignored because the navigate() function still has control of the robot.
+\begin{python}
+\begin{verbatimtab}
+from sr import *
+
+def main(game, colour):
+    
+    while True:
+        navigate()
+        collect()
+ 
+def navigate():
+    setpower(100, 100)
+    yield io.pin[0], 5
+    if event == io and 0 in event.io.pins:    #check front bump sensor
+        setpower(-10,-100)    #turn around
+        yield 3  
+        setpower(100, 100)      
+    return
+    
+def collect():
+    yield (io.apin[3] > 3.1), 4    #check ball detector#
+    if event == io:
+        setpos(0, 100)    #sweep ball into robot
+        yield 2
+        setpos(0, 0)
+    return
+\end{verbatimtab}
+\caption{\label{list:noco} Without coroutines}
+\end{python}
+
+Now consider Listing \ref{list:co}. navigate() and collect() have been made coroutines by decorating them with @coroutine:
+\begin{verbatimtab}
+@coroutine
+def	function_name():
+\end{verbatimtab}
+
+This tells the robot to run navigate() and collect() and main() simultaneously! This is possible because whenever a yield statement occurs within a coroutine function, control of the robot is handed over to the next coroutine. This ensures that each coroutine gets a chance to be executed. If for example you add the following coroutine:
+
+\begin{verbatimtab}
+@coroutine
+def block():
+	while True:
+		pass 
+\end{verbatimtab}
+
+which never yields, then none of the other coroutines will ever execute and your robot will be stuck in this while loop. When a coroutine returns it will not restart. If you want a coroutine to run forever, you must add a while True loop.
+
+\begin{python}
+\begin{verbatimtab}
+from sr import *
+
+def main(game, colour):
+    
+    while True:    #flash an led on the power board
+        setled(0,1)
+        yield 5
+        setled(0, 0)
+        yield 5
+
+@coroutine
+def navigate():
+    while True:
+        setpower(100, 100)
+        yield io.pin[0], 2
+        if event == io and 0 in event.io.pins:    #check front bump sensor
+            setpower(-10,-100)    #turn around
+            yield 3  
+            setpower(100, 100)      
+    
+@coroutine
+def collect():
+    while True:
+        yield (io.apin[3] > 1.3), 4    #check ball detector#
+        if event == io:
+            setpos(0, 100)    #sweep ball into robot
+            yield 2
+            setpos(0, 0)
+\end{verbatimtab}
+\caption{\label{list:co} Without coroutines}
+\end{python}
+
+Listing \ref{list:co} simultaneously monitors and reacts to a bump switch and the ball detector. The number of coroutines you can add is unlimited but, be sure to add a least one yield statement in each.
+
+Finally, you do not have to have all of your coroutines starting at the same time as main(). Instead you can use the following function to add them when necessary. NOTE: function\_name should be typed without the `()'s.
+\begin{verbatimtab}
+add_coroutine(function_name)
 \end{verbatimtab}
 
 \end{document}
