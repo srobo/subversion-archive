@@ -1,7 +1,7 @@
 #include "power.h"
-#include"device.h"
-#include"led.h"
-
+#include "device.h"
+#include "led.h"
+#include "timed.h"
 void delay(int16_t time);
 
 void pwr_init(void)

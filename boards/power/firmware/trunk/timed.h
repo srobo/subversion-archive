@@ -17,6 +17,7 @@ enum {
 	END = 4
 };
 
+void timed_init(void);
 void reset_cutoff(void);
 void alive_service(void);
 void game_enable(void);

@@ -14,6 +14,7 @@
 #include "xbee.h"
 #include "flash430/i2c-flash.h"
 #include "flash430/flash.h"
+#include "timed.h"
 
 int dummy =0; 			/* dummy variable to fix gdb bug */
 
@@ -28,6 +29,7 @@ int main(void)
 	isense_init();
 	usart_init();
 	xbee_init();
+	timed_init();
 	timera_init();
 	flash_init();
 	i2c_flash_init();
