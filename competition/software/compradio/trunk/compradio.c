@@ -333,8 +333,16 @@ void update_match( void )
 		cur_match_info.time = 0;
 	}
 		
+	/* Update the team number spin boxes  */
 	for( i=0; i<4; i++ )
 		gtk_spin_button_set_value( GTK_SPIN_BUTTON(spin_colours[i]), (gdouble)cur_match_info.teams[i] );
+
+	/* Update the game type */
+	if( cur_match_info.type == GOLF )
+		gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(golf), TRUE );
+	else
+		gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(squirrel), TRUE );
+
 }
 
 void spin_red_value_changed( GtkSpinButton *spinbutton,

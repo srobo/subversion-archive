@@ -52,6 +52,8 @@ gboolean sr_match_info( uint16_t N, match_t* m )
 				m->teams[GREEN] = strtoul(row[i], NULL, 10);
 			else if (strcmp(fields[i].name,"yellow")==0)
 				m->teams[YELLOW] = strtoul(row[i], NULL, 10);
+			else if (strcmp(fields[i].name,"matchType")==0)
+				m->type = strtoul(row[i], NULL, 10);
 		}
 	}
 	mysql_free_result(res);
