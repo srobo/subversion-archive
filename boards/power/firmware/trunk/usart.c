@@ -39,9 +39,10 @@ void usart_init(void) {
 	U1TCTL = SSEL_SMCLK;	/* Aclk 8MHz */
 	U1RCTL = 0;
 
-	U1BR0 = 0x45;		/* baud hi and lo */
+	/* set for 57800 */
+	U1BR0 = 0x0d;		/* baud hi and lo */
 	U1BR1 = 0x00;
-	U1MCTL = 0xAA;		/* modulation factor */
+	U1MCTL = 0xf7;		/* modulation factor */
 
 	ME2 |= UTXE1;	// enable transmitter
 	ME2 |= URXE1;	// enable receiver
