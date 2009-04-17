@@ -48,6 +48,9 @@ void spin_yellow_value_changed( GtkSpinButton *spinbutton,
 void spin_duration_value_changed( GtkSpinButton *spinbutton,
 				  gpointer user_data );
 
+void golf_toggled( GtkToggleButton *togglebutton,
+		   gpointer user_data );
+
 /* Update a player to a team */
 void set_player( uint16_t colour, uint16_t team );
 
@@ -69,6 +72,9 @@ typedef enum {
 	S_STARTED
 } state_t;
 
+const char *COLOURS[] = { "RED", "GREEN", "BLUE", "YELLOW" };
+const char *MATCHES[] = { "GOLF", "SQUIRREL" };
+
 state_t state = S_IDLE;
 
 void change_state( state_t n );
@@ -78,7 +84,9 @@ GtkWidget *b_start = NULL,
 	*check_ping = NULL,
 	*spin_match = NULL,
 	*hbox1 = NULL,
-	*countdown = NULL;
+	*countdown = NULL,
+	*golf = NULL,
+	*squirrel = NULL;
 
 /* The spins for the different colours */
 GtkWidget *spin_colours[4];
@@ -121,6 +129,9 @@ int main( int argc, char** argv )
 	spin_colours[YELLOW] = glade_xml_get_widget(xml, "spin_yellow");
 
 	hbox1 = glade_xml_get_widget(xml, "hbox1");
+
+	golf = glade_xml_get_widget(xml, "golfbutton");
+	squirrel = glade_xml_get_widget(xml, "squirrelbutton");
 
 	if( !comp_xbee_init() ) {
 		fprintf( stderr, "Error connecting to xbd\n" );
@@ -234,6 +245,8 @@ gboolean tx_ping( gpointer nothing )
 
 void change_state( state_t n )
 {
+	uint8_t i;
+
 	state = n;
 	printf("Switching to: ");
 
@@ -244,6 +257,13 @@ void change_state( state_t n )
 
 		gtk_widget_set_sensitive( b_start, FALSE );
 		gtk_widget_set_sensitive( b_stop, FALSE );
+		gtk_widget_set_sensitive( spin_match, TRUE );
+		gtk_widget_set_sensitive( golf, TRUE );
+		gtk_widget_set_sensitive( squirrel, TRUE );
+
+		for( i=0; i<4; i++ )
+			gtk_widget_set_sensitive( spin_colours[i], TRUE );
+
 		gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(check_ping), FALSE );
 		break;
 
@@ -251,7 +271,14 @@ void change_state( state_t n )
 		printf("S_INIT\n");
 		gtk_widget_set_sensitive( b_start, TRUE );
 		gtk_widget_set_sensitive( b_stop, FALSE );
-		
+		gtk_widget_set_sensitive( spin_match, FALSE );
+
+		gtk_widget_set_sensitive( golf, FALSE );
+		gtk_widget_set_sensitive( squirrel, FALSE );
+
+		for( i=0; i<4; i++ )
+			gtk_widget_set_sensitive( spin_colours[i], FALSE );
+
 		break;
 
 	case S_STARTED: {
@@ -266,8 +293,9 @@ void change_state( state_t n )
 				char* s = NULL;
 
 				asprintf( &s,
-					  "corner=%u, colour=%u, game=%u",
-					  i, i, 0 );
+					  "colour=%s, game=%s",
+					  COLOURS[i], MATCHES[ cur_match_info.type ] );
+				printf( "Match start message to team %hu: \"%s\"\n", cur_match_info.teams[i], s );
 
 				comp_xbee_start( &team_addresses[i], s );
 				free(s);
@@ -347,4 +375,13 @@ void spin_duration_value_changed( GtkSpinButton *spinbutton,
 				  gpointer user_data )
 {
 	match_duration = gtk_spin_button_get_value_as_int(spinbutton);
+}
+
+void golf_toggled( GtkToggleButton *b,
+		   gpointer user_data )
+{
+	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(golf)) )
+		cur_match_info.type = GOLF;
+	else
+		cur_match_info.type = SQUIRREL;	
 }
