@@ -124,8 +124,8 @@ yield io.pin[3]
 # Wait for input 3 to become digital '1' (threshold 512)
 yield io.pin[3] == 1
         
-# Wait for input 3 readings to exceed 1V
-yield io.apin[1] > 1
+# Wait for input 2 readings to exceed 1V
+yield io.apin[2] > 1
         
 # Wait for input 2 readings to go below 2.5V
 yield io.apin[2] < 2.5
