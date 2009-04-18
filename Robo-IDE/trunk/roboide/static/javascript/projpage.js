@@ -238,7 +238,7 @@ function ProjFileList() {
 	//how often to check to see if it's needed, in seconds
 	this._refresh_delay = 7;
 	//when was it 'born', milliseconds since epoch
-	this._birth = null;
+	this._birth = new Date().valueOf();
 	//how old do we let it get before updating
 	this._refresh_freq = 25 * 1000;	//milliseconds
 
