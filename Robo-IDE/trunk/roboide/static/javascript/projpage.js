@@ -362,6 +362,13 @@ ProjFileList.prototype._show = function() {
 	setStyle( "proj-filelist", {"display":""} );
 }
 
+//compare filelist items for use in sorting it
+function flist_cmp(a,b) {
+	if(a.name.toLowerCase() > b.name.toLowerCase())
+		return 1;
+	return -1;
+}
+
 // Handler for receiving the file list
 ProjFileList.prototype._received = function(nodes) {
 	this.selection = new Array();
@@ -373,11 +380,10 @@ ProjFileList.prototype._received = function(nodes) {
 	swapDOM( "proj-filelist",
 		 UL( { "id" : "proj-filelist",
 		       "style" : "display:none" },
-		     map( bind(this._dir, this, 0), nodes["tree"] ) ) );
+		     map( bind(this._dir, this, 0), nodes.tree.sort(flist_cmp) ) ) );
 
 	this._show();
 }
-
 
 // Produce an object consisted of "level" levels of nested divs
 // the final div contains the DOM object inner
@@ -412,7 +418,7 @@ ProjFileList.prototype._dir = function( level, node ) {
 	} else
 		var n = LI( null, [ link,
 			UL( { "class" : "flist-l" },
-			map( bind(this._dir, this, level + 1), node["children"] ) ) ] );
+			map( bind(this._dir, this, level + 1), node.children.sort(flist_cmp) ) ) ] );
 	return n;
 }
 
