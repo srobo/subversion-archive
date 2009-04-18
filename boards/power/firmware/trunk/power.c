@@ -7,7 +7,8 @@ void delay(int16_t time);
 void pwr_init(void)
 {
 	P2DIR |= 0x07;		/* power rail enable control pins as out */
-	P2OUT &= ~0x07;
+	/* Don't touch the slug rail -- will result in oscillations */
+	P2OUT &= ~0x06;
 	slug_boot(0);
 }
 

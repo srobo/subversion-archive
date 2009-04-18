@@ -22,9 +22,12 @@ void init_cpu(void)
 
 
   P1DIR = P3DIR = P4DIR = P5DIR = P6DIR = 0;
-  P1OUT = P2OUT = P3OUT =  P4OUT =  P5OUT =  P6OUT = 0x00;
+  P1OUT = P3OUT =  P4OUT =  P5OUT =  P6OUT = 0x00;
 
-  P2DIR &= 0x02;			/* try and keep slug alive */
+  /* Don't touch bit 0 of P2OUT */
+  P2DIR &= 1;
+  P2OUT &= 1;
+
   P3SEL |= 0x0A;
 }
 

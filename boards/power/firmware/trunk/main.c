@@ -20,6 +20,10 @@ int dummy =0; 			/* dummy variable to fix gdb bug */
 
 int main(void)
 {
+	/* Make sure that the slug rail is always on */
+	P2DIR |= 1;
+	P2OUT |= 1;
+
 	init_cpu();
 	led_init();
 	switch_init();
