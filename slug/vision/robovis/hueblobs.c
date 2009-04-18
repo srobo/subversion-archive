@@ -37,10 +37,10 @@ const unsigned int CUTOFF = 2;
 IplImage *frame = NULL, *hsv, *hue, *sat, *val,
             *satthresh, *huethresh, *huemasked;
 
-unsigned int huebins[4][4] = {{1, 20, 80, 256},  //red
-                              {21, 38, 80, 256}, //yellow
-                              {39, 78, 80, 256}, //green
-                              {110, 140, 80, 256}}; //blue
+unsigned int huebins[4][2] = {{1, 20},  //red
+                              {21, 38}, //yellow
+                              {39, 78}, //green
+                              {100, 149}}; //blue
 
 /* Wait for a newline on stdin */
 char *wait_trigger(void)
@@ -170,6 +170,15 @@ int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minar
 
 }
 
+void Hoo(int event, int x, int y, int flags, void *param){
+    unsigned char *data;
+    CvSize size;
+    int step, c;
+    cvGetRawData(val, &data, &step, &size);
+    c = data[y*step+x];
+    printf("Val %d,%d - %d\n", x, y, c);
+}
+
 void Goo(int event, int x, int y, int flags, void* param){
     unsigned char *data;
     CvSize size;
@@ -198,14 +207,15 @@ int main(int argc, char **argv){
     
     CvMemStorage *contour_storage;
     CvSeq *cont;
-    char *req_tag;
+    char *req_tag = NULL;
     int num_contours, i;
     double area;
 
 #ifdef DEBUGDISPLAY
     //No idea what this returns on fail.
     cvNamedWindow("testcam", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("filled", CV_WINDOW_AUTOSIZE);
+    cvNamedWindow("val", CV_WINDOW_AUTOSIZE);
+    cvSetMouseCallback("val", Hoo, val);
     cvNamedWindow("sat", CV_WINDOW_AUTOSIZE);
     cvSetMouseCallback("sat", Goo, sat);
     cvNamedWindow("hue", CV_WINDOW_AUTOSIZE);
@@ -214,7 +224,6 @@ int main(int argc, char **argv){
     cvNamedWindow("g", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("b", CV_WINDOW_AUTOSIZE);
     cvNamedWindow("y", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("debug_window", CV_WINDOW_AUTOSIZE);
 #endif
 
 //Get a frame to find the image size
@@ -275,32 +284,34 @@ int main(int argc, char **argv){
 #ifdef DEBUGDISPLAY
 
         cvShowImage("hue", hue);
-
-        cvInRangeS(hue, cvScalarAll(0), cvScalarAll(22), val); //red
-        cvShowImage("r", val);
-
-        cvInRangeS(hue, cvScalarAll(100), cvScalarAll(140), val); //blue
-        cvShowImage("b", val);
-
-        cvInRangeS(hue, cvScalarAll(39), cvScalarAll(78), val); //green
-        cvShowImage("g", val);
-
-        cvInRangeS(hue, cvScalarAll(23), cvScalarAll(38), val); //yellow
-        cvShowImage("y", val);
-
 #endif
+
+            cvInRangeS(sat, cvScalarAll(80),
+                            cvScalarAll(256),
+                            satthresh);
+
+            cvAnd(satthresh, hue, hue, NULL);
+
+	    /* To stop black lines on the floor and other robots being visible,
+	     * clober anything with a variance under 60. This is a measure of
+	     * where the colour lies on a greyscale, so lower is black, higher
+	     * is whiter. At 60, we risk also removing parts of objects that are
+	     * far away, most notably the corners of the arena. However, some
+	     * reduction in their size is better than being distracted by the 
+	     * lines and / or other robots 
+	     */
+
+	    /* re-use satthresh */
+	    cvInRangeS(val, cvScalarAll(60), cvScalarAll(256), satthresh);
+
+	    cvAnd(satthresh, hue, hue, NULL);
 
         for(i = 0; i<4; i++){
 #ifdef DEBUGMODE
             printf("Looking for %d %d\n", huebins[i][0], huebins[i][1]);
 #endif
-            cvInRangeS(sat, cvScalarAll(huebins[i][2]),
-                            cvScalarAll(huebins[i][3]),
-                            satthresh);
 
-            cvAnd(satthresh, hue, huethresh, NULL);
-
-            cvInRangeS(huethresh, cvScalarAll(huebins[i][0]),
+            cvInRangeS(hue, cvScalarAll(huebins[i][0]),
                             cvScalarAll(huebins[i][1]),
                             huemasked);
 
@@ -309,19 +320,21 @@ int main(int argc, char **argv){
 		/* wraps around the hue address space. There is also purplish */
 		/* red in the 160+ range, which should be included too        */
 
-		cvInRangeS(huethresh, cvScalarAll(155), cvScalarAll(185),
+		cvInRangeS(hue, cvScalarAll(150), cvScalarAll(185),
 			red_second_step);
 
 		cvOr(red_second_step, huemasked, huemasked, NULL);
 	}
 
+#ifdef DEBUGDISPLAY
+	if (i == 0) cvShowImage("r", huemasked);
+	if (i == 1) cvShowImage("y", huemasked);
+	if (i == 2) cvShowImage("g", huemasked);
+	if (i == 3) cvShowImage("b", huemasked);
+#endif 
+
 	    cvCopy(huemasked, huemask_backup, NULL);
 		//cvFindContours writes over the original
-
-#ifdef DEBUGDISPLAY
-	    cvShowImage("debug_window", huemasked);
-	    cvWaitKey(2000);
-#endif
 
             num_contours = cvFindContours(huemasked, contour_storage, &cont,
                         sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE,
@@ -344,11 +357,6 @@ int main(int argc, char **argv){
 
         fputs("BLOBS\n", stdout);
         fflush(stdout);
-
-#ifdef DEBUGDISPLAY
-        cvCvtColor(dsthsv, dstrgb, CV_HSV2RGB);        
-        srshow("filled", dsthsv);
-#endif
 
         cvReleaseMemStorage(&contour_storage);
 #ifdef DEBUGMODE
