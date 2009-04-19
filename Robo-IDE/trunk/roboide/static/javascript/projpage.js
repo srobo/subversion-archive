@@ -1009,7 +1009,7 @@ function ProjOps() {
 
 		for( var i=0; i<projpage.flist.selection.length; i++) {
 			if(projpage.flist.selection[i].substr(projpage.flist.selection[i].length-3) == '.py')
-				errorspage.check(projpage.flist.selection[i], {switch_to : true});
+				errorspage.check(projpage.flist.selection[i], {switch_to : true, projpage_multifile : true});
 			else
 				status_msg("Please select valid individual files, not folders", LEVEL_WARN);
 				

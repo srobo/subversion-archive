@@ -8,6 +8,9 @@ function ErrorsPage() {
 	//hold signals for the page
 	this._signals = new Array();
 
+	//hold status message for the page
+	this._prompt = null;
+
 	this._inited = false;
 
 	this._init = function() {
@@ -30,6 +33,10 @@ function ErrorsPage() {
 
 	//load a new set of errors
 	this.load = function(info, opts) {
+		if(this._prompt != null) {
+			this._prompt.close();
+			this._prompt = null;
+		}
 		var path = info.path+'/';
 		var filelist = new Array();
 		var module_name = this._module_name(info.file);
@@ -123,7 +130,7 @@ function ErrorsPage() {
 			if(opts.switch_to)
 				tabbar.switch_to(this.tab);
 			if(opts.alert)
-				status_button( info.messages.length+" errors found!", LEVEL_WARN, 'view errors',
+				this._prompt = status_button( info.messages.length+" errors found!", LEVEL_WARN, 'view errors',
 					bind( tabbar.switch_to, tabbar, this.tab ) );
 		}
 	}
@@ -194,13 +201,15 @@ function ErrorsPage() {
 		if( info.errors == 1 ) {
 			this.load(info, opts);
 		} else {
-			status_msg( "No errors found", LEVEL_OK );
+			//if not (a mulifile call from the projpage and no errors yet and this is not the last one to check)
+			if( !(opts != null && opts.projpage_multifile && projtab.has_focus() && async_count > 1) )
+				this._prompt = status_msg( "No errors found", LEVEL_OK );
 			this._clear_file(file);
 		}
 	}
 
 	this._fail_check = function(file, opts) {
-		status_button( "Failed to check code", LEVEL_ERROR,
+		this._prompt = status_button( "Failed to check code", LEVEL_ERROR,
 				   "retry", bind( this.check, this, file, opts ) );
 	}
 
