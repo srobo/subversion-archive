@@ -90,7 +90,7 @@ class FwServe(object):
                                     version = version,
                                     firmware = "JAM",
                                     revision = revision,
-                                    desc = desc )
+                                    description = desc )
 
 
         self.__add_state( fw_id = nver.id,
@@ -176,7 +176,7 @@ class FwServe(object):
                           "message": entry.message,
                           "state": entry.state } )
 
-        info = { "desc": fw.desc,
+        info = { "desc": fw.description,
                  "state": r[-1].state,
                  "log" : log }
 

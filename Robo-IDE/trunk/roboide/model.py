@@ -13,7 +13,7 @@ class Settings(SQLObject):
     # The setting name
     name = StringCol()
     # The setting description
-    desc = StringCol()
+    description = StringCol()
 
 # Holds the settings
 class SettingValues(SQLObject):
@@ -60,7 +60,7 @@ class FirmwareBlobs(SQLObject):
     revision = StringCol()
 
     # A description of the firmware.  Could contain a changelog.
-    desc = StringCol()
+    description = StringCol()
 
 class FirmwareState(SQLObject):
     # The firmware this relates to. (ForeignKey doesn't work in the sqlobject on button)
