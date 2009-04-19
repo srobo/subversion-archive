@@ -15,6 +15,18 @@ class Settings(SQLObject):
     # The setting description
     description = StringCol()
 
+class RoboPresent(SQLObject):
+    team = ForeignKey('TeamNames')
+    present = BoolCol()
+
+class RoboLogs(SQLObject):
+    #The team
+    team = ForeignKey('TeamNames')
+    #Time log was written
+    date = DateTimeCol(default = DateTimeCol.now)
+    #Value written
+    value = StringCol()
+
 # Holds the settings
 class SettingValues(SQLObject):
     # The setting ID

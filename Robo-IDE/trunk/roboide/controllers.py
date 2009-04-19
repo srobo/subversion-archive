@@ -1,6 +1,7 @@
 from turbogears import controllers, expose, config
 from turbogears.feed import FeedController
 import cherrypy, model
+from sqlobject import sqlbuilder
 import logging
 import pysvn
 import time, datetime
@@ -1059,4 +1060,76 @@ class Root(controllers.RootController):
             return {}
         else:
             return { 'error' : 'no file to delete' }
+    
+    @expose("json")
+    @srusers.require(srusers.in_team())
+    def robolog(self, team, last_received_ping=0):
+        """
+        Return the log being appended direct from the robot.
+        offset is the position to stream from.
+        """
+        try:
+            team = int(team)
+        except ValueError:
+            log.error("Invalid team value")
+            return {"ping" : 0,
+                    "data" : "",
+                    "present" : 0}
 
+        try:
+            last_received_ping = int(last_received_ping)
+        except ValueError:
+            log.error("Invalid last_received_ping")
+            return {"ping" : 0,
+                    "data" : "",
+                    "present" : 0}
+
+        log.debug("RoboIde team = %d", team)
+        log.debug("RoboIde last_received_ping = %d", last_received_ping)
+
+        if not (team in srusers.getteams()):
+            log.error("Team not in the users teams")
+            log.error(srusers.getteams())
+            return {"ping" : 0,
+                    "data" : "",
+                    "present" : 0}
+        
+        try:
+            team = model.TeamNames.get(id=team)
+        except:
+            #Fake team!
+            log.debug("Team not found")
+            return {"ping" : 0,
+                    "data" : "",
+                    "present" : 0}
+ 
+
+        try:
+            present = model.RoboPresent.selectBy(team=team)[0].present
+        except:
+            present = False
+
+        most_recent_ping = 0
+        most_recent_ping_date = None
+
+        robologs = model.RoboLogs.selectBy(team=team)
+        robologs = robologs.orderBy(sqlbuilder.DESC(model.RoboLogs.q.id))
+        most_recent_ping = robologs[0].id
+
+        log.debug("Robot presence is: %d" % present)
+
+        last_received_ping = int(last_received_ping)
+        logs = model.RoboLogs.select(sqlbuilder.AND(model.RoboLogs.q.team == team,
+                                         model.RoboLogs.q.id > last_received_ping))
+        
+        data = "\n".join([l.value for l in logs])
+
+        data = data.replace('&', '&amp;')
+        data = data.replace('"', '&quot;')
+        data = data.replace("'", '&#39;')
+        data = data.replace(">", '&gt;')
+        data = data.replace("<", '&lt;')
+
+        return {"data" : data,
+                "present" : int(present),
+                "ping" : most_recent_ping}

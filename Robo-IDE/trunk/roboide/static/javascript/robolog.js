@@ -6,10 +6,9 @@ function RoboLog() {
 	this.UPDATE_INTERVAL = 0.3;
 
 	// TODO: Change this to point to dynamic things
-	this.LOG_URL = "/static/robolog";
+	this.LOG_URL = "/robolog";
 
-	// The time of the last update that we received
-	this._last_time = 0.0;
+	this._ping = 0;
 
 	// Whether the robot was connected or not on our last query
 	this._robo_state = false;
@@ -37,7 +36,8 @@ function RoboLog() {
 		// Explicitly use MochiKit's loadJSONDoc
 		// We don't want the rotating box to be displayed for these requests
 		var d = MochiKit.Async.loadJSONDoc( this.LOG_URL, 
-						    { "last_time": this._last_time } );
+						    { "last_received_ping": this._ping ,
+							  "team" : team } );
 
 		d.addCallback( bind( this._recv_update, this ) );
 		d.addErrback( bind( this._update_fail, this ) );
@@ -72,9 +72,10 @@ function RoboLog() {
 		this._robo_state = resp["present"];
 
 		if( this.tab != null ) {
-			this._last_time = resp["time"];
+			this._ping = resp["ping"];
 
 			$("robolog-pre").innerHTML = $("robolog-pre").innerHTML + resp["data"];
+			$("robolog-page").scrollTop = $("robolog-page").scrollHeight;
 		}
 
 		callLater( t,
