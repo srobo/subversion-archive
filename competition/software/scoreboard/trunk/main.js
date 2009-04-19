@@ -92,7 +92,7 @@ function changeSlide()
 // Start the timer to the next slide
 function startTimer()
 {
-	sTimeOut = setTimeout("changeSlide();", 3000);
+	sTimeOut = setTimeout("changeSlide();", 15000);
 }
 
 // Update the clock
