@@ -54,23 +54,24 @@ body
  border-spacing: 0px;
 }
 
-.matchNum, .matchTeam {
+.matchNum, .matchTeam, .matchTime {
  border-style: none none dotted none;
  border-color: rgb(136,122,109);
  text-align: center;
 }
-.matchTime {
+.matchType {
  border-style: none double dotted none; 
  border-color: red rgb(13,31,97) rgb(136,122,109) black;
  font-weight: bold;
 }
 
-.matchTime, #matchTimeHeader {
+.matchType, #matchTypeHeader {
+ text-align: center;
  padding-left: 0.5em;
  padding-right: 0.5em;
 }
 
-#matchMatchHeader, #matchTimeHeader
+#matchMatchHeader, #matchTimeHeader, #matchTypeHeader
 {
  font-weight: bold;
  border-style: none none double none;
@@ -79,6 +80,7 @@ body
 {
  font-weight: bold;
 }
+
 .colourHeader {
  font-weight: bold;
  border-style: none none double none;

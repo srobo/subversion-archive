@@ -25,7 +25,8 @@ foreach( $matches as $match ) {
 ?>
 	{ "number" : <?=$match["number"]?>,
           "time" : "<?=$match["time"]?>",
-  	  "teams" : [ <?=implode(", ", $match["teams"])?> ] }
+  	  "teams" : [ <?=implode(", ", $match["teams"])?> ],
+	  "matchType" : <?=$match["matchType"]?> }
 <?			
 }
 ?>
@@ -43,7 +44,8 @@ if( !$res ) die( "Couldn't list matches" );
 while( $match = mysql_fetch_assoc($res) ) {
   $m = array( "number" => $match["number"],
 	      "time" => date( "H:i", $match["time"] ),
-	      "teams" => array( $match["red"], $match["green"], $match["blue"], $match["yellow"] ) );
+	      "teams" => array( $match["red"], $match["green"], $match["blue"], $match["yellow"] ),
+		  "matchType" => $match["matchType"] );
   array_push( $matches, $m );  
  }
 

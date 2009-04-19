@@ -92,7 +92,7 @@ function changeSlide()
 // Start the timer to the next slide
 function startTimer()
 {
-	sTimeOut = setTimeout("changeSlide();", 15000);
+	sTimeOut = setTimeout("changeSlide();", 3000);
 }
 
 // Update the clock
@@ -165,9 +165,11 @@ function upcoming_matches_cb(slide,res)
 
 		r.push( TD({"class":"matchNum"}, match.number) );
 		r.push( TD({"class":"matchTime"}, match.time) );
+		r.push( TD({"class":"matchType"}, match.matchType ? "Squirrel" : "Golf") );
 		
 		for( var j = 0; j < 4; j++ )
 			r.push( TD({"class":"matchTeam"}, match.teams[j]) );
+			
 		
 		rows.push(TR(null, r));
 	}
@@ -179,11 +181,13 @@ function upcoming_matches_cb(slide,res)
 			    [ TR( {"class":"header"},
 				  [ TH( null, " " ),
 				    TH( null, " " ),
+				    TH( null, " " ),
 				    TH( {"colspan":4, "id":"matchTeamsHeader"},  "Teams" ) ] ),
 			      TR( {"class":"header"},
 				  [ TH( {"id":"matchMatchHeader"}, "Match" ), 
 				    TH( {"id":"matchTimeHeader"}, "Time" ), 
-				    TH( {"class":"colourHeader"}, "Red" ), 
+				    TH( {"id":"matchTypeHeader"}, "Type"),
+					TH( {"class":"colourHeader"}, "Red" ), 
 				    TH( {"class":"colourHeader"}, "Green" ), 
 				    TH( {"class":"colourHeader"}, "Blue" ), 
 				    TH( {"class":"colourHeader"}, "Yellow" ) ] ) ] ),
