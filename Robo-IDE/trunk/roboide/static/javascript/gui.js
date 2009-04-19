@@ -27,6 +27,9 @@ var editpage = null;
 // The errors tab
 var errorspage = null;
 
+// The robot log page
+var robolog = null;
+
 // The user
 var user;
 
@@ -85,6 +88,8 @@ function load_gui() {
 
 	// Errors Tab
 	errorspage = new ErrorsPage();
+
+	robolog = new RoboLog();
 
 	// The "new" tab button
 	var ntab = new Tab( "+ New +" );

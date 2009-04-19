@@ -230,3 +230,13 @@ a.button:hover {
 	opacity:.75;
 	filter: alpha(opacity=75);
 }
+
+#robolog-page {
+    display: none;
+}
+
+
+#robolog-pre {
+    height: 30em;
+    overflow: scroll;
+}
