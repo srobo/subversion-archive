@@ -1,0 +1,7 @@
+schematics power.sch
+output-name power
+elements-dir ./symbols/xbee
+#elements-dir ./symbols/xbee
+
+
+
