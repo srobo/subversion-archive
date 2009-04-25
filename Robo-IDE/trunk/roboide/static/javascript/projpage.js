@@ -207,6 +207,16 @@ ProjPage.prototype.clickExportProject = function() {
 		status_msg( "No project selected, please select a project", LEVEL_ERROR );
 		return;
 	}
+
+	if( !this.flist.robot ) {	//if there's no robot.py script then it's going to fail
+		status_msg( "A robot.py file is required for project code export", LEVEL_ERROR );
+		return false;
+	}
+
+	errorspage.check("/"+this.project+"/robot.py", {'switch_to':true, 'alert':true, 'quietpass':true, 'passCallBack':bind(this._exportProject, this)});
+}
+
+ProjPage.prototype._exportProject = function() {
 	if( this._iframe == null ) {
 		this._iframe = $('robot-zip');
 	}
