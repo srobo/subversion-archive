@@ -214,12 +214,11 @@ class Root(controllers.RootController):
         Returns the contents of the file.
         Turns out the action parameter can be edit. Not sure how this is
         useful - won't it always be edit?
-        TODO: Cope with revision other than head.
         """
         curtime = time.time()
         client = Client(int(team))
 
-        #TODO: Need to security check here! No ../../ or /etc/passwd nautiness
+        #TODO: Need to security check here! No ../../ or /etc/passwd nautiness trac#208
 
 
         autosaved_code = self.get_autosave(team, file, 1)
@@ -385,8 +384,7 @@ class Root(controllers.RootController):
 
             try:
                 client.remove(urls)
-                #TODO: Need to prune empty directories. Get data from filelist
-                #and then build a list of empty directories.
+                #Prune empty directories. Get data from filelist and then build a list of empty directories.
                 for dir in paths:
                     if len(client.ls(client.REPO + dir)) == 0:
                         #The directory is empty, OK to delete it
@@ -410,7 +408,7 @@ class Root(controllers.RootController):
         """
         UnDelete files from the repository - basically grabs a list of them,
         then uses copy to re-instate them, one by one
-        TODO: do all files in one go
+        TODO: do all files in one go trac#335
         inputs: files - comma seperated list of paths
                 rev - the revision to undelete from
         returns (json): Message - a message to show the user
@@ -464,13 +462,11 @@ class Root(controllers.RootController):
         2. Dump in the new file data
         3. Commit that directory with the new data and the message
         4. Wipe the directory
-
-        TODO: Usernames.
         """
         client = Client(int(team))
         reload = "false"
         #1. SVN checkout of file's directory
-        #TODO: Check for path naugtiness
+        #TODO: Check for path naugtiness trac#208
         path = os.path.dirname(file)
         basename = os.path.basename(file)
         rev = self.get_revision("HEAD") #Always check in over the head to get
@@ -636,7 +632,7 @@ class Root(controllers.RootController):
             returns: That data changed into lists
             """
             try:
-                #TODO: Need to sort here?
+                #No need to sort here - it's done by the client
                 #try and pull out child nodes into a list
                 tree["children"] = tree["children"].values()
             except AttributeError:
@@ -710,7 +706,7 @@ class Root(controllers.RootController):
         client = Client(int(team))
 
         #1. SVN checkout of file's directory
-        #TODO: Check for path naugtiness
+        #TODO: Check for path naugtiness trac#208
         path = os.path.dirname(file)
         basename = os.path.basename(file)
         rev = self.get_revision("HEAD") #Always check in over the head to get
@@ -853,7 +849,7 @@ class Root(controllers.RootController):
 
         try:
             client.move(source, destination, force=True)
-            #TODO: Need to prune empty directories.
+            #Prune empty directories.
             print "not failed yet\n"
             if len(client.ls(os.path.dirname(source))) == 0:
                 #The directory is empty, OK to delete it

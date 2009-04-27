@@ -815,10 +815,6 @@ function ProjOps() {
 	    }
     }
 
-    this.newfile = function() {
-        status_msg("TODO: Implement add file");
-    }
-
     this._mv_success = function(nodes) {
         logDebug("_mv_success()");
         logDebug(nodes.status);
