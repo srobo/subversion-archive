@@ -37,7 +37,8 @@ function EditPage() {
 		connect( tabbar, "onswitch", bind( this._tab_switch, this ) );
 
 		this.textbox = TEXTAREA({"id" : "editpage-editarea",
-					 "value" : "" });
+					"style" : 'width: 99%; height: 500px;',
+					"value" : "" });
 		appendChildNodes($("edit-mode"), this.textbox);
 
 		this._iea = new ide_editarea("editpage-editarea");
@@ -643,8 +644,6 @@ function ide_editarea(id) {
 	 		allow_resize : "no",
 			display : 'onload',
 	 		replace_tab_by_spaces : 4,
-			min_width: "100",   //NOTE: HAD TO EDIT 'edit_area_loader.js' line:573 to get % width
-			min_height:500,
 			plugins: "SRkeydown",
 			show_line_colors: true,
 			EA_load_callback: "ea_loaded"

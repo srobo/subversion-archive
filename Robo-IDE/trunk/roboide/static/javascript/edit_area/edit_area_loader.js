@@ -593,7 +593,7 @@ EditAreaLoader.prototype ={
 			height= elem.style.height;
 		//alert("h: "+height+" w: "+width);
 	
-		frame.style.width= "100%";
+		frame.style.width= width;
 		frame.style.height= height;
 	},
 		
