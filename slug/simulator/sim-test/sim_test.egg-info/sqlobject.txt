@@ -1,0 +1,2 @@
+db_module=simtest.model
+history_dir=$base/simtest/sqlobject-history

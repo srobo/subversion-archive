@@ -1,365 +1,232 @@
-import pygame
-import ode
-import time
-from math import sqrt, floor, ceil, asin, pi, acos
-from poly import poly
+import pymunk as pm
+from pymunk import Vec2d
+import ctypes
+import math
 import random
-import sys
-import threading
+import time
+X,Y = 0,1
+### Physics collision types
+COLLTYPE_DEFAULT = 0
+COLLTYPE_MOUSE = 1
 
-BLACK = 0, 0, 0
-WHITE = 255, 255, 255
-WIDTH = 8
-METRE = 640/WIDTH
-SCALE = 25
-WHEELFORCE = 50
+CAM_ANGLE=0.5
+CAM_DISTANCE = 300
 
+ROLLING_FRICTION = 2
+ROBOT_MASS = 10
+ROBOT_WIDTH = 20
+
+BALL_MASS = 1
+BALL_RADIUS = 2
+BALL_COUNT = 20
+
+ROBOT_TYPE = 100
+BALL_TYPE = 101
+WALL_TYPE = 102
+
+WIDTH = 500
+HEIGHT = 500
+
+STEP = 1.0/60.0
+
+VISION_WIDTH = 320
+HALF_VISION_WIDTH = 160
+VISION_HEIGHT = 240
+
+BUMPER_SIZE = 1 #Offset from bumper position where a wall hit causes the bumper to trigger
+
+motora = 100
+motorb = 100
+   
 class World:
-    motorleft = 0
-    motorright = 0
-    bumpers = {}
-    blobs = []
-    time = 0
+    def __init__(self):
+        #Startup physics engine
+        pm.init_pymunk()
+        self.space = pm.Space()
+        self.space.gravity = Vec2d(0.0, 0)
 
-    class Box:
-        def __init__(self, density, width, x, y, z, world, space, geoms = None,
-                ident = None):
-            self.box = ode.Body(world)
-            self.box.container = self
-            self.width = width
+        self.setupBodyResetForces()
+        self.addBalls()
+        self.addRobot()
+        self.addWalls()
+        self.addBumpers()
 
-            M = ode.Mass()
-            M.setBox(density, width, width, width) #Density, lx, ly, lz
-            self.box.setMass(M)
+    def setupBodyResetForces(self):
+        #Don't have reset_forces() in pymunk
+        self.cpBodyResetForces = pm._chipmunk.chipmunk_lib.cpBodyResetForces
+        self.cpBodyResetForces.restype = None
+        self.cpBodyResetForces.argtypes = [ctypes.POINTER(pm._chipmunk.cpBody)]
+ 
+    def addBalls(self):
+        ## Balls
+        def randomBall():
+            body = pm.Body(BALL_MASS, BALL_MASS)
+            body.position = Vec2d(random.randint(100+BALL_RADIUS, 500-BALL_RADIUS-1),
+                                random.randint(100+BALL_RADIUS, 500-BALL_RADIUS-1))
+            shape = pm.Circle(body, BALL_RADIUS, Vec2d(0, 0))
+            shape.collision_type = BALL_TYPE
+            shape.friction = 0.5
+            self.space.add(body, shape)
+            return shape
 
-            self.box.shape = "box"
-            self.box.boxsize = (width, width, width)
-            
-            if geoms == None:
-                geoms = [ode.GeomBox(space, lengths=self.box.boxsize)]
-                if ident != None:
-                    geoms[0].ident = ident
-
-            for geom in geoms:
-                geom.setBody(self.box)
-
-            self.geoms = geoms
-
-            self.box.setPosition((x, y, z))
-
-            self.rect = pygame.Rect(0,0,0,0)
-
-        def getpoly(self):
-            hw = self.width/2
-            p0 = [x*METRE for x in self.box.getRelPointPos((-hw, -hw, -hw))[:2]]
-            p1 = [x*METRE for x in self.box.getRelPointPos((hw, -hw, -hw))[:2]]
-            p2 = [x*METRE for x in self.box.getRelPointPos((hw, hw, -hw))[:2]]
-            p3 = [x*METRE for x in self.box.getRelPointPos((-(hw), hw, -hw))[:2]]
-            
-            p = poly([p0, p1, p2, p3], (0,0), WHITE, 0)
-            self.rect = p.get_rect()
-            
-            if self.__class__ == World.Robot:
-                if self.box.getRotation()[8] > 0:
-                    p0 = [x*METRE for x in self.box.getRelPointPos((-0.05, 0.25, 0))[:2]]
-                    p1 = [x*METRE for x in self.box.getRelPointPos((0.05, 0.25, 0))[:2]]
-                    p2 = [x*METRE for x in self.box.getRelPointPos((0.05, 0.15, 0))[:2]]
-                    p3 = [x*METRE for x in self.box.getRelPointPos((-0.05, 0.15, 0))[:2]]
-                    c = poly([p0, p1, p2, p3], (0,0), BLACK, 0)
-                    return [p, c]
-
-            return [p]
-
-        def getdirty(self):
-            return self.rect
-
-        def addRelForceAtRelPos(self, force, position):
-            self.box.addRelForceAtRelPos(force, position)
-
-        def getRelPointPos(self, pos):
-            return self.box.getRelPointPos(pos)
+        self.balls = [randomBall() for x in range(BALL_COUNT)]
         
-        def getRotation(self):
-            return self.box.getRotation()
-
-        def getPosition(self):
-            return self.box.getPosition()
-
-    class Robot(Box):
-        def __init__(self, world, space):
-
-            def genplane(space, size, pos, transparant = False, ident = ""):
-                plane = ode.GeomBox(None, size)
-                plane.setPosition(pos)
-                planet = ode.GeomTransform(space)
-                planet.setGeom(plane)
-                
-                planet.trans = transparant
-                planet.ident = ident
-                return planet
+    def addRobot(self):
+        def create_poly(points, mass = 5.0, pos = (0,0)):
+            moment = pm.moment_for_poly(mass,points, Vec2d(0,0))
+            #moment = 1000
+            body = pm.Body(mass, moment)
+            body.position = Vec2d(pos)
             
-            def genwheel(world, space, box, position):
-                WHEELRAD = 0.04
-                WHEELLENGTH = 0.01
-                body = ode.Body(world)
+            shape = pm.Poly(body, points, Vec2d(0,0))
+            shape.friction = 1
+            return body, shape
 
-                M = ode.Mass()
-                #Arguments:
-                #Mass, Axis(1=x), Radius, Length
-                M.setCappedCylinderTotal(0.03, 1, WHEELRAD, WHEELLENGTH)
-                body.setMass(M)
-                body.setPosition(position)
+        def create_box(pos, size = 10, mass = 5.0):
+            box_points = map(Vec2d, [(-size, -size), (-size, size), (size,size), (size, -size)])
+            return create_poly(box_points, mass = mass, pos = pos)
 
-                geom = ode.GeomCapsule(space, radius=WHEELRAD, length=WHEELLENGTH)
-                geom.setBody(body)
+        self.robotbody, self.robotshape = create_box(Vec2d(300,300), ROBOT_WIDTH, ROBOT_MASS)
+        self.robotshape.collision_type = ROBOT_TYPE
+        self.space.add(self.robotbody, self.robotshape)
 
-                joint = ode.HingeJoint(world)
-                joint.attach(box, body)
-                joint.setAnchor(position)
-                #Rotates on X axis
-                joint.setAxis( (1, 0, 0) )
+        self.wheels = [Vec2d(-10, 6), Vec2d(10, 6)]
 
-                joint.setParam(ode.ParamVel, 0)
-                joint.setParam(ode.ParamFMax, WHEELFORCE)
+        #Enable callback for collisions between robot and balls
+        self.space.add_collisionpair_func(ROBOT_TYPE, BALL_TYPE, self.robotHitBall)
+        #Enable callback for collisions between robot and walls
+        self.space.add_collisionpair_func(ROBOT_TYPE, WALL_TYPE, self.robotHitWall)
 
-                return body, joint
+    def addWalls(self):
+        def create_line(start, end):
+            body = pm.Body(pm.inf, pm.inf)
+            shape = pm.Segment(body, start, end, 0.0)
+            shape.friction = 0.99
+            shape.collision_type = WALL_TYPE
+            self.space.add_static(shape)
+            return shape
 
-            def gencastor(world, space, box, abspos):
-                CASTORRADIUS = 0.008
+        ### Static line
+        self.static_lines = [ create_line(Vec2d(0, 0), Vec2d(WIDTH, 0)),
+                              create_line(Vec2d(WIDTH, 0), Vec2d(WIDTH, HEIGHT)),
+                              create_line(Vec2d(WIDTH, HEIGHT), Vec2d(0, HEIGHT)),
+                              create_line(Vec2d(0, HEIGHT), Vec2d(0, 0)) ]
 
-                body = ode.Body(world)
-                M = ode.Mass()
-                M.setSphere(2000, CASTORRADIUS)
-                body.setMass(M)
-                body.setPosition(abspos)
-            
-                s = ode.GeomSphere(space, CASTORRADIUS)
-                s.setBody(body)
-            
-                j = ode.BallJoint(world)
-                j.attach(box, body)
-                j.setAnchor(abspos)
+    def addBumpers(self):
+        self.bumpers = [{"x" : -20, "y" : 20, "hit" : False},
+                        {"x" : 20, "y" : 20, "hit" : False}]
 
-            geoms = []
-
-            #genplane arguments: space, size, position
-            topplane = genplane(space, (0.5, 0.2, 0.01), (0, 0.15, -0.240),
-                    ident="topplane")
-            geoms.append(topplane)
-
-            botplane = genplane(space, (0.5, 0.2, 0.01), (0, -0.15, -0.240),
-                    ident="botplane")
-            geoms.append(botplane)
-
-            bumpl = genplane(space, (0.1, 0.1, 0.01), (-0.245, 0.255, -0.240),
-                    True, "bumpl")
-            geoms.append(bumpl)
-
-            bumpr = genplane(space, (0.1, 0.1, 0.01), (0.245, 0.255, -0.240),
-                    True, "bumpr")
-            geoms.append(bumpr)
-
-            bumpeat = genplane(space, (0.2, 0.1, 0.01), (0, 0.255, -0.240),
-                    True, "bumpeat")
-            geoms.append(bumpeat)
-
-            World.Box.__init__(self, 500, 0.5, 1, 2, 0.255, world, space, geoms)
-            
-            #genwheel arguments: world, space, container, absolute pos
-            #returns a wheel body and a joint object
-            self.lw, self.lwj = genwheel(world, space, self.box,
-                    self.box.getRelPointPos((-0.245, 0, -0.215)))
-            self.rw, self.rwj = genwheel(world, space, self.box,
-                    self.box.getRelPointPos((+0.245, 0, -0.215)))
-
-            #gencaster arguments: world, space, box, absolute pos
-            #returns the castor body
-            self.bf = gencastor(world, space, self.box,
-                    (0, 0.2, -0.245))
-            self.bb = gencastor(world, space, self.box,
-                    (0, -0.2, -0.245)) 
-
-        def setspeed(self, l, r):
-            self.lwj.setParam(ode.ParamVel, float(l)/100 * SCALE)
-            self.rwj.setParam(ode.ParamVel, float(r)/100 * SCALE)
-
-    class Token(Box):
-        def __init__(self, world, space, x, y):
-            World.Box.__init__(self, 470, 0.044, x, y, 0.05, world, space,
-                    ident="token")
-
-    def createtokens(self, world, space, number):
-        tokens = []
-
-        for i in range(number):
-            x = random.random() * WIDTH
-            y = random.random() * WIDTH
-            token = self.Token(world, space, x, y)
-            tokens.append(token)
-
-        return tokens
-
-    def __init__(self, draw, fps):
-
-        self.draw = draw
-        self.fps = fps
-
-        self.world = ode.World()
-        self.world.setGravity( (0, 0, -9.81) )
-        #world.setERP(0.8) #Error correction per time step
-        self.world.setCFM(1E-5) #Global constraint force mixing value
-        #TODO: Figure out why this isn't -8
-
-        self.space = ode.Space() 
-
-        floor = ode.GeomPlane(self.space, (0, 0, 1), 0) #Plane perpendicular to the normal
-        floor.ident = "floor"
-        wall1 = ode.GeomPlane(self.space, (1, 0, 0), 0)
-        wall1.ident = "wall1"
-        wall2 = ode.GeomPlane(self.space, (-1, 0, 0), -WIDTH)
-        wall2.ident = "wall2"
-        wall3 = ode.GeomPlane(self.space, (0, 1, 0), 0)
-        wall3.ident = "wall3"
-        wall4 = ode.GeomPlane(self.space, (0, -1, 0), -WIDTH)
-        wall4.ident = "wall4"
-
-        self.bodies = []
-
-        self.contactgroup = ode.JointGroup()
-
-        self.robot = self.Robot(self.world, self.space)
-        self.tokens = self.createtokens(self.world, self.space, 10)
-    
-    def near_callback(self, args, geom1, geom2):
-        if geom1.__class__ == ode.GeomPlane and geom2.__class__ == ode.GeomPlane:
-            return
-
-        mu = 10
-
-        try:
-            if geom1.ident == "bumpl" or geom2.ident == "bumpl":
-                if geom2.ident != "floor":
-                    World.bumpers["bumpl"] = True
-            if geom1.ident == "bumpr" or geom2.ident == "bumpr":
-                if geom2.ident != "floor":
-                    World.bumpers["bumpr"] = True
-        except:
-            pass
-
-        try:
-            eaten = None
-            if geom1.ident == "token" and geom2.ident == "bumpeat":
-                eaten = geom1.getBody().container
-            if geom2.ident == "token" and geom1.ident == "bumpeat":
-                eaten = geom2.getBody().container
-            
-            if eaten != None:
-                eaten.box.disable()
-                for geom in eaten.geoms:
-                    self.space.remove(geom)
-                self.tokens.remove(eaten)
-                return
-        except:
-            pass
-
-        try:
-            if geom1.trans or geom2.trans:
-                return
-        except:
-            pass
+    def applyWheelforce(self, position, force):
+        #Working in a coordinate system based on the body
+        #1. Get the velocity in terms of the body
+        bvelocity = self.robotbody.velocity.cpvrotate(self.robotbody.rotation_vector)
         
-        try:
-            if (geom1.ident == "token" and geom2.ident == "floor") or \
-              (geom2.ident == "token" and geom1.ident == "floor"):
-                mu = 1
-        except:
-            pass
+        #2. Find the tangential velocity of this wheel based on the rotation
+        #Tangential Velocity = r x w Where w = angular speed * n
+        #and Where n = unit vector in z direction
+        tv = Vec2d(position.y * self.robotbody.angular_velocity * -1,
+                   position.x * self.robotbody.angular_velocity)
+        
+        #Overall velocity
+        v = bvelocity + tv
+        #Velocity in the direction the motors are pushing
+        vd = v.dot(Vec2d(0, 1)) * Vec2d(0, 1)
+        #3. Friction term based on velocity
+        friction = ROLLING_FRICTION * vd
+        #4. Find a net force
+        force = Vec2d(0, force)
+        nforce = force - friction
+        
+        #5. Convert back to world coordinates to apply the force
+        wforce = nforce.cpvrotate(self.robotbody.rotation_vector)
+        #Docs say convert to world coordinates here - they mean rotate only!
+        wpos = position.cpvrotate(self.robotbody.rotation_vector)
+        self.robotbody.apply_force(wforce, wpos)
 
-        contacts = ode.collide(geom1, geom2)
 
-        world, contactgroup = args #Passed in through a tuple - can probably pass
-            #anything in
+    def robotHitBall(self, shapeA, shapeB, contacts, normal_coef, data):
+        """
+        Called on a collision. Must not remove shapes or bodies from
+        the space as Bad Things will happen.
+        """
+        for contact in contacts:
+            position = self.robotbody.world_to_local(contact.position)
+            #Is position on top axis?
+            if position.y > ROBOT_WIDTH * 0.8:
+                if isinstance(shapeA, pm.Circle):
+                    self.toremove.append(shapeA)
+                else:
+                    self.toremove.append(shapeB)
 
-        for c in contacts:
-            c.setBounce(0.001)
-            c.setMu(mu)
-            j = ode.ContactJoint(world, contactgroup, c)
-            j.attach(geom1.getBody(), geom2.getBody())
+        #Return true if they hit
+        return True
+
+    def robotHitWall(self, shapeA, shapeB, contacts, normal_coef, data):
+        """
+        Called on collision between the robot and a wall.
+        """
+        for contact in contacts:
+            position = self.robotbody.world_to_local(contact.position)
+            for bumper in self.bumpers:
+                if abs(position.y - bumper["y"]) <= BUMPER_SIZE and \
+                        abs(position.x - bumper["x"]) <= BUMPER_SIZE:
+                    #Hit the bumper
+                    bumper["hit"] = True
+                else:
+                    bumper["hit"] = False
+        return True
+
+    def getPositions(self):
+        return {"robot" : {"x" : self.robotbody.position.x,
+                           "y" : self.robotbody.position.y,
+                           "angle" : self.robotbody.angle},
+                "balls" : [{"x" : b.body.position.x,
+                            "y" : b.body.position.y} for b in self.balls]}
+
+    def getBlobs(self):
+        blobs = [] #List of blobs in the robots view.
+        for ball in self.balls:
+            pos = ball.body.position
+            bpos = self.robotbody.world_to_local(pos)
+            
+            dot = bpos.dot(Vec2d(0, 1)) #Distance
+            angle = math.acos(dot/bpos.get_length()) #Angle
+            if abs(angle) < CAM_ANGLE:
+                blob = {"centrex" : HALF_VISION_WIDTH + \
+                                angle / CAM_ANGLE * HALF_VISION_WIDTH,
+                        "centrey" : dot/CAM_DISTANCE * VISION_HEIGHT,
+                        "mass" : dot / VISION_HEIGHT * 100,
+                        "colour" : 0}
+                blobs.append(blob)
+
+        return blobs
+
+    def getBumpers(self):
+        return self.bumpers
 
     def physics_poll(self):
-        clk = pygame.time.Clock()
-                
         while True:
-            yield None
-            dt = 1.0/self.fps
-            clk.tick(self.fps)
+            self.cpBodyResetForces(self.robotbody._body)
+            self.applyWheelforce(self.wheels[0], motora)
+            self.applyWheelforce(self.wheels[1], motorb)
 
-            self.robot.setspeed(World.motorleft, World.motorright)
+            ### Update physics
+            self.toremove = []
+            for bumper in self.bumpers:
+                bumper["hit"] = False
 
-            #Emulate camera
-            campos = self.robot.getRelPointPos((0, 0.2, 0))
-            camrot = self.robot.getRotation()[3:6]
-
-            def subvec(a, b):
-                return (b[0]-a[0],
-                        b[1]-a[1],
-                        b[2]-a[2])
-
-            def cross(a, b):
-                return (a[1] * b[2] - a[2] * b[1],
-                        a[2] * b[0] - a[0] * b[2],
-                        a[0] * b[1] - a[1] * b[0])
-
-            def dot(a, b):
-                return (a[0]*b[0]+
-                        a[1]*b[1]+
-                        a[2]*b[2])
-            def mag(a):
-                return sqrt(a[0]**2+a[1]**2+a[2]**2)
+            self.space.step(STEP)
             
-            World.blobs = []
+            for ball in self.toremove:
+                self.space.remove(ball)
+                self.space.remove(ball.body)
+                self.balls.remove(ball)
 
-            for token in self.tokens:
-                pos = token.getPosition()
-                relvec = subvec(campos, pos)
-                relvec = (relvec[0] * -1,
-                          relvec[1],
-                          relvec[2])
-                adotb = dot(relvec, camrot)
-                
-                cc = cross(relvec, camrot)
-                
-                angle = adotb / (mag(relvec) * mag(camrot))
-                angle = (acos(angle) / pi) * 180
-
-                if adotb > 0.2 and adotb < 6 and angle < 20:
-                    mass =  (1/adotb) * 20
-                    if cc[2] > 0:
-                        World.blobs.append((angle/20, adotb/6, mass))
-                    else:
-                        World.blobs.append((angle/20, adotb/6, mass))
-
-            World.bumpers = {}
-            self.space.collide((self.world, self.contactgroup), self.near_callback)
-
-            self.world.step(dt)
-            World.time = World.time + dt
-
-            todraw = []
-            todraw.extend(self.robot.getpoly())
-
-            for token in self.tokens:
-                todraw.extend(token.getpoly())
-
-            #As the queue size is 1 this blocks on the drawing thread
-            self.draw.draw(todraw)
-
-            self.contactgroup.empty()
+            yield 
 
 if __name__ == "__main__":
-    w = World()
-    gen = w.physics_poll()
-
+    world = World()
+    poll = world.physics_poll()
     while True:
-        gen.next()
-        w.clk.tick(FPS)
+        print poll.next()
+        time.sleep(0.1)
