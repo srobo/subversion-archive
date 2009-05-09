@@ -460,15 +460,11 @@ ProjFileList.prototype._onclick = function(ev) {
 	path = getNodeAttribute( src, "ide_path" );
 
 	if( mods["ctrl"] || mods["meta"] ) {	//meta is the mac command button, which they use like Win/Linux uses ctrl
-		if( !this._is_file_selected( path ) ) {
-			addElementClass( src.parentNode, "selected" );
+		if( !this._is_file_selected(path) )
+			this._select_path( path, src.parentNode );
+		else
+			this._deselect_path( path, src.parentNode );
 
-			this._select_path( path, kind );
-		} else {
-			removeElementClass( src.parentNode, "selected" );
-
-			this._deselect_path( path, kind );
-		}
 	} else {
 		if( kind == "FOLDER" ) {
 			this._toggle_dir( src );
@@ -481,6 +477,20 @@ ProjFileList.prototype._onclick = function(ev) {
 	}
 }
 
+ProjFileList.prototype.select_all = function() {
+	var files = $('proj-filelist').getElementsByTagName('li');
+	for(var i=0; i<files.length; i++) {
+		this._select_path(getNodeAttribute(files[i].firstChild, "ide_path"), files[i]);
+	}
+}
+
+ProjFileList.prototype.select_none = function() {
+	this.selection = [];
+	var selected = getElementsByTagAndClassName('li', "selected", $('proj-filelist'));
+	for(var i=0; i<selected.length; i++)
+		removeElementClass( selected[i], "selected" );
+}
+
 ProjFileList.prototype._is_file_selected = function( path ) {
 	for( var i in this.selection )
 		if( this.selection[i] == path )
@@ -488,11 +498,13 @@ ProjFileList.prototype._is_file_selected = function( path ) {
 	return false;
 }
 
-ProjFileList.prototype._select_path = function(path, kind) {
+ProjFileList.prototype._select_path = function(path, node) {
+	addElementClass( node, "selected" );
 	this.selection.push( path );
 }
 
-ProjFileList.prototype._deselect_path = function(path, kind) {
+ProjFileList.prototype._deselect_path = function(path, node) {
+	removeElementClass( node, "selected" );
 	var i = findValue( this.selection, path );
 	if( i >= 0 ) {
 		// Remove from the listn
@@ -1021,6 +1033,16 @@ function ProjOps() {
 				
 		}
 	}
+
+    this.ops.push({ "name" : "Select None",
+                        "action" : bind(projpage.flist.select_none, projpage.flist),
+                        "handle" : $("proj-select-none"),
+                        "event" : null});
+
+    this.ops.push({ "name" : "Select All",
+                        "action" : bind(projpage.flist.select_all, projpage.flist),
+                        "handle": $("proj-select-all"),
+                        "event" : null});
 
     this.ops.push({ "name" : "New File",
                         "action" : bind(editpage.new_file, editpage),
