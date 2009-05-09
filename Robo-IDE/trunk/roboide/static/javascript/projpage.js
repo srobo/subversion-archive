@@ -459,7 +459,7 @@ ProjFileList.prototype._onclick = function(ev) {
 	kind = getNodeAttribute( src, "ide_kind" );
 	path = getNodeAttribute( src, "ide_path" );
 
-	if( mods["ctrl"] ) {
+	if( mods["ctrl"] || mods["meta"] ) {	//meta is the mac command button, which they use like Win/Linux uses ctrl
 		if( !this._is_file_selected( path ) ) {
 			addElementClass( src.parentNode, "selected" );
 
