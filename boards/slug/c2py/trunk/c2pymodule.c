@@ -90,7 +90,7 @@ static PyObject* c2py_smbuswritebyte( PyObject *self,
     if( ioctl( fd, I2C_PEC, usepec) < 0)
     {
         PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
-        return;
+        return NULL;
     }
 
     if(i2c_smbus_access(fd, I2C_SMBUS_WRITE, data, I2C_SMBUS_BYTE, NULL) < 0){
@@ -108,10 +108,9 @@ static PyObject* c2py_smbusreadbyte( PyObject *self,
 {
     unsigned char address, usepec = 1; //Address of device
     union i2c_smbus_data datablock;
-    PyObject *retstr = NULL;
 
-	if (!PyArg_ParseTuple(args,"B|B", &address, &usepec)){
-	    return NULL;
+    if (!PyArg_ParseTuple(args,"B|B", &address, &usepec)){
+	return NULL;
     }
     
     if(ioctl( fd, I2C_SLAVE, address)){
@@ -122,7 +121,7 @@ static PyObject* c2py_smbusreadbyte( PyObject *self,
     if( ioctl( fd, I2C_PEC, usepec) < 0)
     {
         PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
-        return;
+        return NULL;
     }
 
     if(i2c_smbus_access(fd, I2C_SMBUS_READ, 0, I2C_SMBUS_WRITE, &datablock)){
@@ -151,7 +150,7 @@ static PyObject* c2py_smbuswritebyte_data( PyObject *self,
     if( ioctl( fd, I2C_PEC, usepec) < 0)
     {
         PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
-        return;
+        return NULL;
     }
     
     datablock.byte = data;
@@ -183,7 +182,7 @@ static PyObject* c2py_smbusreadbyte_data( PyObject *self,
     if( ioctl( fd, I2C_PEC, usepec) < 0)
     {
         PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
-        return;
+        return NULL;
     }
     
     if(i2c_smbus_access(fd, I2C_SMBUS_READ, command, I2C_SMBUS_BYTE_DATA, &datablock)){
@@ -213,7 +212,7 @@ static PyObject* c2py_smbusreadblock_data( PyObject *self,
     if( ioctl( fd, I2C_PEC, 0) < 0)
     {
         PyErr_SetString(I2CError, "Could not disable checksumming on i2c.\n");
-        return;
+        return NULL;
     }
     
     if(i2c_smbus_write_byte(fd, command) < 0){
@@ -272,7 +271,7 @@ static PyObject* c2py_smbuswriteword_data( PyObject *self,
     if( ioctl( fd, I2C_PEC, usepec) < 0)
     {
         PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
-        return;
+        return NULL;
     }
     
     datablock.word = data;
@@ -304,7 +303,7 @@ static PyObject* c2py_smbusreadword_data( PyObject *self,
     if( ioctl( fd, I2C_PEC, usepec) < 0)
     {
         PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
-        return;
+        return NULL;
     }
     
     if(i2c_smbus_access(fd, I2C_SMBUS_READ, command, I2C_SMBUS_WORD_DATA, &datablock)){
@@ -323,7 +322,7 @@ static PyObject* c2py_powerread_data( PyObject *self,
 {
 	const uint8_t BUFLEN = 30; /* see gumsense docs for explanation */
 	uint8_t address, command;
-	uint8_t *buf;
+	uint8_t *buf = NULL;
 	PyObject *retval;
 
 	int32_t len,r;
@@ -471,7 +470,7 @@ static PyObject* c2py_powerwrite_data( PyObject *self,
 	if( ioctl( fd, I2C_PEC, usepec) < 0)
 	{
 		PyErr_SetString(I2CError, "Could not configure checksumming on i2c.\n");
-		return;
+		return NULL;
 	}
     
 	if( i2c_smbus_write_block_data(fd,command,buf_len,buf) != 0 )
