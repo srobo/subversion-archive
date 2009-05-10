@@ -1,3 +1,8 @@
+CFLAGS := -Wall
+
+CFLAGS += `python-config --cflags`
+LDFLAGS += `python-config --libs`
+
 c2pymodule.so: c2pymodule.o smbus.o
 	$(CC) -shared c2pymodule.o smbus.o $(CFLAGS) $(LDFLAGS) -o $@
 
