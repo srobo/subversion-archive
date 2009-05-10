@@ -40,7 +40,7 @@ interrupt (PORT2_VECTOR) port2_isr(void){
 		user_enable();
 		P1OUT |= 2;
 		pwr_set_motor(1);
-//		button_pressed = 1;
+		button_pressed = 1;
 		P2IFG &= ~0x08;	/* clear interrupt flag */
 	}else
 		P2IFG =0;	/* must have been another, that we dont care about */
