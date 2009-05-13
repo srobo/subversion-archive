@@ -48,7 +48,7 @@ char *wait_trigger(void)
 	char *req_tag;
 	int r = 0;
 
-	req_tag = malloc(129);
+	req_tag = (char*)malloc(129);
 
 	req_tag = fgets(req_tag, 128, stdin);
 	if (req_tag == NULL) /*EOF*/
