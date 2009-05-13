@@ -6,8 +6,8 @@
 #include <time.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "cv.h"
-#include "highgui.h"
+#include <cv.h>
+#include <highgui.h>
 
 #define DEBUG 0
 #define ERROR 1
