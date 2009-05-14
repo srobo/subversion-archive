@@ -1,7 +1,7 @@
 CBFLAGS = `pkg-config --cflags blobslib`
 LDBFLAGS = `pkg-config --libs blobslib`
-CFLAGS += `pkg-config --cflags opencv` -Wall
-LDFLAGS += `pkg-config --libs opencv`
+OPENCV_CFLAGS += `pkg-config --cflags opencv` -Wall
+OPENCV_LDFLAGS += `pkg-config --libs opencv`
 
 # Python 2.4 doesn't support pkg-config; bodge this to your own include path
 PY_CFLAGS += -I/usr/include/python2.4
@@ -19,19 +19,19 @@ dispcam: dispcam.cpp
 	$(CXX) -ggdb  -o dispcam $(CBFLAGS) dispcam.cpp $(LDBFLAGS)
 
 hueblobs: hueblobs.c
-	$(CXX) -ggdb -o $@ $(CFLAGS) $< $(LDFLAGS)
+	$(CXX) -ggdb -o $@ $(OPENCV_CFLAGS) $< $(OPENCV_LDFLAGS)
 
 getblobs: getblobs.c
-	$(CC) -ggdb -o $@ $(CFLAGS) $< $(LDFLAGS)
+	$(CC) -ggdb -o $@ $(OPENCV_CFLAGS) $< $(OPENCV_LDFLAGS)
 
 testcam: testcam.c
-	$(CC) -ggdb -o $@ $(CFLAGS) $< $(LDFLAGS)
+	$(CC) -ggdb -o $@ $(OPENCV_CFLAGS) $< $(OPENCV_LDFLAGS)
 
 satthresh: satthresh.c
-	$(CC) -ggdb -o $@ $(CFLAGS) $< $(LDFLAGS)
+	$(CC) -ggdb -o $@ $(OPENCV_CFLAGS) $< $(OPENCV_LDFLAGS)
 
 testhough: testhough.c
-	$(CC) -ggdb -o $@ $(CFLAGS) $< $(LDFLAGS)
+	$(CC) -ggdb -o $@ $(OPENCV_CFLAGS) $< $(OPENCV_LDFLAGS)
 
 .PHONY: clean
 
