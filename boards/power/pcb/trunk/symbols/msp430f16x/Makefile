@@ -1,4 +1,4 @@
-NAME=msp430f169
+NAME=msp430f16x
 #SMD = ../pcbfoot/smd-ic.py
 #ODSTOOL= ./ods2trag.py
 all: footprint symbol
