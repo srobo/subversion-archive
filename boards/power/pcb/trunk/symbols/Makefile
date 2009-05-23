@@ -17,4 +17,5 @@ msp:
 
 clean::
 	$(MAKE) clean -C xbee/
+	$(MAKE) clean -C msp430f16x/
 	
