@@ -9,4 +9,3 @@ symbol:
 clean:
 	-rm -f $(NAME)*.sym
 	-rm -f $(NAME)*.src
-	-rm -f $(NAME).fp
