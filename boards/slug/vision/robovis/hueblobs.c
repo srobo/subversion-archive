@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -12,15 +13,11 @@
 #define DEBUG 0
 #define ERROR 1
 
-//#define USEFILE
 #define FILENAME "out.jpg"
 
 /* NB: if you use USEFILE, disable the call to cvSaveFile near the end of     */
 /* this program. Otherwise, it repeatedly opens and saves out.jpg, causing a  */
 /* mass of jpeg compression roundings.*/
-
-//#define DEBUGMODE
-//#define DEBUGDISPLAY
 
 #define ADAPTIVESATTHRESH
 
@@ -42,6 +39,22 @@ unsigned int huebins[4][2] = {{1, 20},  //red
                               {39, 78}, //green
                               {100, 149}}; //blue
 
+int USEFILE = 0;
+int DEBUGOUTPUT = 0;
+int DEBUGDISPLAY = 0;
+
+//grab the command line options and set them where appropriate
+void get_command_line_opts(int argc, char **argv){
+	for(int i = 1; i < argc; i++) {  // Skip argv[0] - this is the program name
+		if (strcmp(argv[i], "-debug") == 0) {
+			DEBUGOUTPUT = 1;
+		} else if (strcmp(argv[i], "-display") == 0) {
+			DEBUGDISPLAY = 1;
+		}
+	}
+	return;
+}
+
 /* Wait for a newline on stdin */
 char *wait_trigger(void)
 {
@@ -58,34 +71,32 @@ char *wait_trigger(void)
 }
 
 void srlog(char level, char *m){
-#ifdef DEBUGMODE
-    struct tm * tm;
-    struct timeval tv;
-    struct timezone tz;
+    if(DEBUGOUTPUT) {
+        struct tm * tm;
+        struct timeval tv;
+        struct timezone tz;
 
-    gettimeofday(&tv, &tz);
-    tm = localtime(&tv.tv_sec);
-    printf("%02d:%02d:%02d.%d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int) tv.tv_usec);
+        gettimeofday(&tv, &tz);
+        tm = localtime(&tv.tv_sec);
+        printf("%02d:%02d:%02d.%d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int) tv.tv_usec);
 
-    switch(level){
-        case DEBUG:
-            printf(" - DEBUG - %s\n", m);
-            break;
-        case ERROR:
-            printf(" - ERROR - %s\n", m);
-    }
-#endif
-#ifndef DEBUGMODE
-    if(level == ERROR)
+        switch(level){
+            case DEBUG:
+                printf(" - DEBUG - %s\n", m);
+                break;
+            case ERROR:
+                printf(" - ERROR - %s\n", m);
+        }
+    } else if(level == ERROR) {
         printf("%s\n", m);
-#endif
+    }
 }
 
 void srshow(char *window, IplImage *frame){
-#ifdef DEBUGMODE
-    cvShowImage(window, frame);
-    cvWaitKey(0);
-#endif
+    if(DEBUGOUTPUT) {
+        cvShowImage(window, frame);
+        cvWaitKey(0);
+    }
 }
 
 CvCapture *get_camera(){
@@ -150,9 +161,9 @@ int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minar
     count = cvCountNonZero( blobmask );
     if(count < minarea)
         return 0;
-#ifdef DEBUGMODE
-    printf("%d\n", count);
-#endif
+    if(DEBUGOUTPUT) { //print the count if debug output requested
+        printf("%d\n", count);
+    }
 
     avghue = cvScalarAll(colour*20+50);
 
@@ -162,10 +173,10 @@ int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minar
                                 outline.height,
                                 count, colour);
 
-#ifdef DEBUGDISPLAY
-    cvAddS(out, avghue, out, blobmask);
-#endif
- 
+    if(DEBUGDISPLAY) {
+        cvAddS(out, avghue, out, blobmask);
+    }
+
     return 1;
 
 }
@@ -198,9 +209,8 @@ void Foo(int event, int x, int y, int flags, void* param){
 }
 
 int main(int argc, char **argv){
-#ifndef USEFILE
-    CvCapture *capture = NULL;
-#endif
+    get_command_line_opts(argc, argv);
+
     IplImage *dsthsv, *dstrgb, *huemask_backup, *red_second_step;
     CvSize framesize;
     IplConvKernel *k;
@@ -210,35 +220,36 @@ int main(int argc, char **argv){
     char *req_tag = NULL;
     int num_contours, i;
     double area;
+    CvCapture *capture = NULL;
 
-#ifdef DEBUGDISPLAY
-    //No idea what this returns on fail.
-    cvNamedWindow("testcam", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("val", CV_WINDOW_AUTOSIZE);
-    cvSetMouseCallback("val", Hoo, val);
-    cvNamedWindow("sat", CV_WINDOW_AUTOSIZE);
-    cvSetMouseCallback("sat", Goo, sat);
-    cvNamedWindow("hue", CV_WINDOW_AUTOSIZE);
-    cvSetMouseCallback("hue", Foo, hue);
-     cvNamedWindow("r", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("g", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("b", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("y", CV_WINDOW_AUTOSIZE);
-#endif
+    if(DEBUGDISPLAY) {
+        //No idea what this returns on fail.
+        cvNamedWindow("testcam", CV_WINDOW_AUTOSIZE);
+        cvNamedWindow("val", CV_WINDOW_AUTOSIZE);
+        cvSetMouseCallback("val", Hoo, val);
+        cvNamedWindow("sat", CV_WINDOW_AUTOSIZE);
+        cvSetMouseCallback("sat", Goo, sat);
+        cvNamedWindow("hue", CV_WINDOW_AUTOSIZE);
+        cvSetMouseCallback("hue", Foo, hue);
+        cvNamedWindow("r", CV_WINDOW_AUTOSIZE);
+        cvNamedWindow("g", CV_WINDOW_AUTOSIZE);
+        cvNamedWindow("b", CV_WINDOW_AUTOSIZE);
+        cvNamedWindow("y", CV_WINDOW_AUTOSIZE);
+    }
 
 //Get a frame to find the image size
-#ifdef USEFILE
-    frame = cvLoadImage(FILENAME, CV_LOAD_IMAGE_COLOR);
-#else
-    capture = get_camera();
-    frame = get_frame(capture);
-#endif
+    if(USEFILE) {
+        frame = cvLoadImage(FILENAME, CV_LOAD_IMAGE_COLOR);
+    } else {
+        capture = get_camera();
+        frame = get_frame(capture);
+    }
 
     framesize = cvGetSize(frame);
-#ifdef DEBUGMODE
-    printf("Framesize %dx%d.\n", framesize.width, framesize.height);
-#endif
-    
+    if(DEBUGOUTPUT) { //print the framesize if debug output requested
+        printf("Framesize %dx%d.\n", framesize.width, framesize.height);
+    }
+
     srlog(DEBUG, "Allocating scratchpads");
     hsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
     huemasked = allo_frame(framesize, IPL_DEPTH_8U, 1);
@@ -254,37 +265,43 @@ int main(int argc, char **argv){
 
     k = cvCreateStructuringElementEx( 5, 5, 0, 0, CV_SHAPE_RECT, NULL);
 
+    srlog(DEBUG, "Beginning looping");
     while (1){
-#ifndef USEFILE
-    #ifndef DEBUGDISPLAY
-	    req_tag = wait_trigger();
-    #endif
-#endif
+        srlog(DEBUG, "Beginning new loop - press enter to grab a frame:");
+
+        if(!USEFILE && !DEBUGDISPLAY) {
+            req_tag = wait_trigger();
+        }
+
+        srlog(DEBUG, "Allocating contour stroage");
         contour_storage = cvCreateMemStorage(0); //TODO: Look this up
         
         srlog(DEBUG, "Grabbing frame");
-#ifdef USEFILE
-        frame = cvLoadImage(FILENAME, CV_LOAD_IMAGE_COLOR);
-#else
-        frame = get_frame(capture);
-#endif
+        if(USEFILE) {
+            frame = cvLoadImage(FILENAME, CV_LOAD_IMAGE_COLOR);
+        } else {
+            frame = get_frame(capture);
+        }
 
-#ifdef DEBUGDISPLAY
-        cvShowImage("testcam", frame);
-#endif
+        if(DEBUGDISPLAY) {
+            cvShowImage("testcam", frame);
+        }
+
         srlog(DEBUG, "Converting to HSV");
         cvCvtColor(frame, hsv, CV_BGR2HSV);
 
         srlog(DEBUG, "Splitting into H, S and V");
         cvSplit(hsv, hue, sat, val, NULL);
-#ifdef DEBUGDISPLAY
-        cvShowImage("sat", sat);
-#endif
 
-#ifdef DEBUGDISPLAY
+        if(DEBUGDISPLAY) {
+            cvShowImage("sat", sat);
+        }
 
-        cvShowImage("hue", hue);
-#endif
+
+        if(DEBUGDISPLAY) {
+            cvShowImage("hue", hue);
+        }
+
 
             cvInRangeS(sat, cvScalarAll(80),
                             cvScalarAll(256),
@@ -307,9 +324,10 @@ int main(int argc, char **argv){
 	    cvAnd(satthresh, hue, hue, NULL);
 
         for(i = 0; i<4; i++){
-#ifdef DEBUGMODE
-            printf("Looking for %d %d\n", huebins[i][0], huebins[i][1]);
-#endif
+            if(DEBUGOUTPUT) {
+                printf("Looking for %d %d\n", huebins[i][0], huebins[i][1]);
+            }
+
 
             cvInRangeS(hue, cvScalarAll(huebins[i][0]),
                             cvScalarAll(huebins[i][1]),
@@ -326,12 +344,12 @@ int main(int argc, char **argv){
 		cvOr(red_second_step, huemasked, huemasked, NULL);
 	}
 
-#ifdef DEBUGDISPLAY
-	if (i == 0) cvShowImage("r", huemasked);
-	if (i == 1) cvShowImage("y", huemasked);
-	if (i == 2) cvShowImage("g", huemasked);
-	if (i == 3) cvShowImage("b", huemasked);
-#endif 
+            if(DEBUGDISPLAY) {
+                if (i == 0) cvShowImage("r", huemasked);
+                if (i == 1) cvShowImage("y", huemasked);
+                if (i == 2) cvShowImage("g", huemasked);
+                if (i == 3) cvShowImage("b", huemasked);
+            }
 
 	    cvCopy(huemasked, huemask_backup, NULL);
 		//cvFindContours writes over the original
@@ -345,7 +363,7 @@ int main(int argc, char **argv){
                 area = fabs(cvContourArea(cont, CV_WHOLE_SEQ));
                 if(area < MINMASS)
                     continue;
-                
+
                 add_blob(cont, framesize, dsthsv, i, MINMASS, huemask_backup);
             }
         }
@@ -359,9 +377,8 @@ int main(int argc, char **argv){
         fflush(stdout);
 
         cvReleaseMemStorage(&contour_storage);
-#ifdef DEBUGMODE
         srlog(DEBUG, "Saving frame to out.jpg");
-#endif
+
         cvSaveImage("out.jpg", frame);
     }
     return 0;
