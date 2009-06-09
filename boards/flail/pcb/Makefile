@@ -1,7 +1,7 @@
 #board name
 BOARD=flail
 
-all: bom 
+all: bom pcb
 
 bom: 
 	gnetlist -g bom -o $(BOARD).bom $(BOARD).sch	
@@ -14,3 +14,5 @@ pcb:
 
 clean: 
 	-rm -f $(BOARD).bom	
+	-rm -f $(BOARD).{net,cmd,new.pcb}
+	-rm -f gnetlist.log

@@ -200,7 +200,7 @@ refdes=U1
 T 44400 47050 5 10 0 0 0 0 1
 device=MAX1627
 T 44400 47250 5 10 0 0 0 0 1
-footprint=MAX1627
+footprint=MAX1627.pcb
 }
 N 43600 47100 41950 47100 4
 {
