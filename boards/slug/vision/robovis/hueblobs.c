@@ -70,7 +70,7 @@ char *wait_trigger(void)
 	return req_tag;
 }
 
-void srlog(char level, char *m){
+void srlog(char level, const char *m){
     if(DEBUGOUTPUT) {
         struct tm * tm;
         struct timeval tv;
