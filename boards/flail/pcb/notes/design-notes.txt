@@ -1,0 +1,5 @@
+The design notes alongside parts list can be found on the trac page:
+
+http://trac.srobo.org/wiki/FlailBoard/
+
+
