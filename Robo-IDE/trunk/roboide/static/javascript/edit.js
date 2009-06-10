@@ -277,7 +277,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 		} else {
 			// Existing file
 			this._load_contents();
-			$("check-syntax").disabled = "";
+			$("check-syntax").disabled = null;
 		}
 	}
 
@@ -373,7 +373,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 				this._autosaved = "";
 				this._isNew = false;
 				this.rev = nodes.new_revision;
-				$("check-syntax").disabled = "";
+				$("check-syntax").disabled = null;
  				this._update_contents();
 				break;
 			case "Merge":
@@ -382,7 +382,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 				this._autosaved = "";
 				this._isNew = false;
 				this.rev = nodes.new_revision;
-				$("check-syntax").disabled = "";
+				$("check-syntax").disabled = null;
  				this._update_contents();
 				break;
 			case "Error creating new directory":
