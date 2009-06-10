@@ -503,7 +503,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 		if(this._isNew)
 			$("check-syntax").disabled = "disabled";
 		else {
-			$("check-syntax").disabled = "";
+			$("check-syntax").disabled = null;
 			this._signals.push( connect( $("check-syntax"),
 					     "onclick",
 					     bind( this._check_syntax, this ) ) );
