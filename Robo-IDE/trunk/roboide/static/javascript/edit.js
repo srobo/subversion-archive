@@ -273,11 +273,11 @@ function EditTab(iea, team, project, path, rev, mode) {
 			this._isNew = true;
 			this.contents = "";
 			this._original = "";
-			$("check-syntax").disabled = "disabled";
+			$("check-syntax").disabled = true;
 		} else {
 			// Existing file
 			this._load_contents();
-			$("check-syntax").disabled = null;
+			$("check-syntax").disabled = false;
 		}
 	}
 
@@ -373,7 +373,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 				this._autosaved = "";
 				this._isNew = false;
 				this.rev = nodes.new_revision;
-				$("check-syntax").disabled = null;
+				$("check-syntax").disabled = false;
  				this._update_contents();
 				break;
 			case "Merge":
@@ -382,7 +382,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 				this._autosaved = "";
 				this._isNew = false;
 				this.rev = nodes.new_revision;
-				$("check-syntax").disabled = null;
+				$("check-syntax").disabled = false;
  				this._update_contents();
 				break;
 			case "Error creating new directory":
@@ -501,9 +501,9 @@ function EditTab(iea, team, project, path, rev, mode) {
 					     bind( this.close, this, false ) ) );
 		// Check syntax handler
 		if(this._isNew)
-			$("check-syntax").disabled = "disabled";
+			$("check-syntax").disabled = true;
 		else {
-			$("check-syntax").disabled = null;
+			$("check-syntax").disabled = false;
 			this._signals.push( connect( $("check-syntax"),
 					     "onclick",
 					     bind( this._check_syntax, this ) ) );

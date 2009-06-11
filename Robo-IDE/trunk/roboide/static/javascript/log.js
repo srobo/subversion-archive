@@ -140,17 +140,17 @@ Log.prototype._populateList = function() {
 
 	//if older results are available, enable the 'older' button and hook it up
 	if(this.offset < (this.overflow-1)) {
-		$("older").disabled = "";
+		$("older").disabled = false;
 		connect($("older"), 'onclick', bind(this._nextview, this, +1));
 	} else
-		$("older").disabled = "disabled";
+		$("older").disabled = true;
 
 	//if newer results are available, enable the 'newer' button and hook it up
 	if(this.offset > 0) {
-		$("newer").disabled = "";
+		$("newer").disabled = false;
 		connect($("newer"), 'onclick', bind(this._nextview, this, -1));
 	} else
-		$("newer").disabled = "disabled";
+		$("newer").disabled = true;
 
     //connect up the 'Revert' button to event handler
     disconnectAll($("revert"));
