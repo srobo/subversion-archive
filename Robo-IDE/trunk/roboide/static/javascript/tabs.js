@@ -1,6 +1,9 @@
 // Tab: A single tab.
-function Tab(label) {
+function Tab(label, title) {
 	this.label = label;
+	this.title = title;
+	if( title == null )
+		this.title = 'Show the '+this.label+' tab';
 
 	// Whether this tab can be focussed
 	// Setting this to false prevents focus being shifted to the tab,
@@ -16,7 +19,7 @@ function Tab(label) {
 	this._focus = false;
 
 	this._init = function() {
-		this._a = A( {"class": "nofocus"}, this.label );
+		this._a = A( {"class": "nofocus", "title": this.title }, this.label );
 		this._li = LI(null, this._a );
 
 		appendChildNodes($("tab-list"), this._li);
