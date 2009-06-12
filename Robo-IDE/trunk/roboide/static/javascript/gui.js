@@ -18,6 +18,9 @@ var tabbar = null;
 // The project page
 var projpage = null;
 
+// The simulator page
+var simpage = null;
+
 // The project tab
 var projtab = null;
 
@@ -82,6 +85,13 @@ function load_gui() {
 	connect( projtab, "onfocus", bind( projpage.show, projpage ) );
 	connect( projtab, "onblur", bind( projpage.hide, projpage ) );
 	tabbar.add_tab( projtab );
+
+	// Simulator tab
+	simtab = new Tab( "Simulator" );
+	simpage = new SimPage();
+	connect( simtab, "onfocus", bind( simpage.show, simpage ) );
+	connect( simtab, "onblur", bind( simpage.hide, simpage ) );
+	tabbar.add_tab( simtab );
 
 	// Edit page
 	editpage = new EditPage();

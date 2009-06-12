@@ -3,7 +3,7 @@ function RoboLog() {
 	this.tab = null;
 
 	// Number of seconds between updates
-	this.UPDATE_INTERVAL = 0.3;
+	this.UPDATE_INTERVAL = 3;
 
 	// TODO: Change this to point to dynamic things
 	this.LOG_URL = "/robolog";

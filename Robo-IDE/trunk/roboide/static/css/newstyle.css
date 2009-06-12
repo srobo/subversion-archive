@@ -122,7 +122,7 @@ body {
       width: 100%;
 }
 
-#projects-page, #edit-mode {
+#projects-page, #edit-mode, #simulator-page {
   display: none;
 }
 

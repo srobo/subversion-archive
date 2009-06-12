@@ -806,8 +806,6 @@ class Root(controllers.RootController):
 
         result = []
 
-        print "i'm here"
-
         for y in log:
             now = datetime.datetime(2000, 1, 1);    #create a dummy datetime
             now = now.fromtimestamp(y["date"]);
