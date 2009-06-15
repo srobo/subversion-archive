@@ -890,7 +890,7 @@ function ProjOps() {
     this.mv = function() {
         //we can only deal with one file/folder at a time, so ignore all but the first
         if(projpage.flist.selection.length == 0 || projpage.flist.selection.length > 1) {
-            status_msg("You must sellect a single file/folder", LEVEL_ERROR);
+            status_msg("You must select a single file/folder", LEVEL_ERROR);
             return;
         }
 
