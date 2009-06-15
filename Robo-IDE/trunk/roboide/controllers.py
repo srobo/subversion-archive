@@ -1062,6 +1062,14 @@ class Root(controllers.RootController):
         Return the log being appended direct from the robot.
         offset is the position to stream from.
         """
+        # First check to see if live robot logging is enabled on the server
+        # If it isn't enabled then return "disabled" to tell client not to poll
+        if not config.get("robolog.enabled"):
+            return {"ping" : 0,
+                    "data" : "",
+                    "present" : 0,
+                    "disabled" : True}
+ 
         try:
             team = int(team)
         except ValueError:

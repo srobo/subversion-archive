@@ -46,6 +46,11 @@ function RoboLog() {
 	this._recv_update = function(resp) {
 		t = this.UPDATE_INTERVAL;
 
+		// First check to see whether the server has responded that robologging is currently disabled
+		if ( resp["disabled"] ) {
+			return;	// live robot logging not running: return and do not ping
+		}
+
 		if( resp["present"] ) {
 			if( this.tab == null ) {
 				this.tab = new Tab("Robot Log");
