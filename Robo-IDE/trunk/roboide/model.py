@@ -29,8 +29,8 @@ class RoboLogs(SQLObject):
 
 # Holds the settings
 class SettingValues(SQLObject):
-    # The setting name
-    sname = StringCol()
+    # The setting ID
+    setting_id = IntCol()
     # The user that this setting is for
     uname = StringCol()
     # The setting value

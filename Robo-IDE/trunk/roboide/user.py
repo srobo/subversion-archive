@@ -47,10 +47,11 @@ class User(object):
         # Get the setting values
         svals = model.SettingValues.select( model.SettingValues.q.uname == user )
         settings = {}
-        for sval in svals:
-            settings[sval.sname] = sval.value
+        for sval in svals.lazyIter():
+            sname = model.Settings.get(sval.id).name
+            settings[sname] = sval.value
         return { "user" : user,
-                 "teams" : teams, 
+                 "teams" : teams,
                  "settings": settings}
 
     @expose("json")
@@ -94,9 +95,27 @@ class User(object):
         cherrypy.session.clear()
         return {}
 
-    def set_setting(self, name, value):
-        model.SettingValues(uname = str(get_curuser()), sname = name, value = value)
+    def set_setting(self, name, value, description=""):
+        """set one of the user settngs as specified by name."""
+        sids = model.Settings.select(model.Settings.q.name == name)
+        if sids.count() > 0:
+            sid = sids[0].id
+        else:
+            sid = self.add_setting(name, description)
+        user = str(get_curuser())
+        settings = model.SettingValues.select(
+            model.AND(model.SettingValues.q.uname == user,
+                model.SettingValues.q.setting_id == sid)
+            )
+        if(settings.count() > 0):  #if it exists update it
+            settings[0].set(value = value)
+        else:
+            model.SettingValues(uname = user, setting_id = sid, value = value)
         return
+
+    def add_setting(self, name, description):
+        """add a possible user settng as specified by name."""
+        return model.Settings(name = name, description = description).id
 
 def dev_env():
     """Returns True if we're in a development environment"""
