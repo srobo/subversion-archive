@@ -6,7 +6,7 @@ function RoboLog() {
 	this.UPDATE_INTERVAL = 0.3;
 
 	// TODO: Change this to point to dynamic things
-	this.LOG_URL = "/robolog";
+	this.LOG_URL = "./robolog";
 
 	this._ping = 0;
 
