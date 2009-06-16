@@ -567,6 +567,7 @@ class Root(controllers.RootController):
         """
         client = Client(int(team))
         target_rev = self.get_revision(rev)
+        self.user.set_setting('project.last', rootpath)
 
         if len(rootpath) == 0 or rootpath[0] != "/":
             rootpath = "/" + rootpath
@@ -671,6 +672,7 @@ class Root(controllers.RootController):
     def projlist(self, team):
         """Returns a list of projects"""
         client = Client(int(team))
+        self.user.set_setting('team.last', team)
 
         dirs = client.list( client.REPO, recurse = False)
         projects = []

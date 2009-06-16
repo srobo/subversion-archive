@@ -47,9 +47,8 @@ class User(object):
         # Get the setting values
         svals = model.SettingValues.select( model.SettingValues.q.uname == user )
         settings = {}
-        for sval in svals.lazyIter():
-            sname = model.Settings.get(sval.id).name
-            settings[sname] = sval.value
+        for sval in svals:
+            settings[sval.sname] = sval.value
         return { "user" : user,
                  "teams" : teams, 
                  "settings": settings}
@@ -95,6 +94,10 @@ class User(object):
         cherrypy.session.clear()
         return {}
 
+    def set_setting(self, name, value):
+        model.SettingValues(uname = str(get_curuser()), sname = name, value = value)
+        return
+
 def dev_env():
     """Returns True if we're in a development environment"""
     return config.get("server.environment" ) == "development"
@@ -135,7 +138,5 @@ def get_svnrepo( team ):
     """Return the subversion repository URL for the current user and given team.
     Given team must be an integer."""
     return config.get( "svn.repos" ).replace( "TEAM", str(team) )
-    
 
 
-    
