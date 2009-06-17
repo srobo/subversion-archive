@@ -87,11 +87,7 @@ function load_gui() {
 	tabbar.add_tab( projtab );
 
 	// Simulator tab
-	simtab = new Tab( "Simulator" );
 	simpage = new SimPage();
-	connect( simtab, "onfocus", bind( simpage.show, simpage ) );
-	connect( simtab, "onblur", bind( simpage.hide, simpage ) );
-	tabbar.add_tab( simtab );
 
 	// Edit page
 	editpage = new EditPage();
