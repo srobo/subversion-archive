@@ -92,6 +92,7 @@ function EditPage() {
 	this.rename_tab = function(old, New) {
 		this._open_files[New] = this._open_files[old];
 		this._open_files[old] = null;
+		this._open_files[New].tab.set_label( New );
 	}
 
 	//close a tab, if it's open, return true if it's closed, false otherwise
@@ -481,7 +482,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this.close = function(override) {
 		if( override != true && this.is_modified() ) {
 			tabbar.switch_to(this.tab);
-			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", bind(this._close, this, true));
+			status_button(this.path+" has been modified!", LEVEL_WARN, "Close Anyway", bind(this._close, this));
 			return false;
 		} else {
 			this._close();
@@ -489,6 +490,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 		}
 	}
 
+	//actually close the tab
 	this._close = function() {
 		signal( this, "onclose", this );
 		this.tab.close();
@@ -557,7 +559,6 @@ function EditTab(iea, team, project, path, rev, mode) {
 		else if( this.rev != 0 )
 			t = t + " - r" + this.rev;
 		replaceChildNodes( $("tab-filename"), t );
-		this.tab.set_label( this.path );
 	}
 
 	//call this to update this.contents with the current contents of the edit area and to grab the current cursor position
