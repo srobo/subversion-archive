@@ -88,15 +88,6 @@ body {
 	color: #253571;
 }
 
-#tabs li a.close {
-	padding: 0;
-	border: none;
-	font-size: 0.5em;
-	margin-left: -1.8em;
-	margin-right: 1em;
-	vertical-align: 90%;
-}
-
 #tabs li.focus a { background-color: #ffffff; }
 #tabs li.nofocus a { background-color: #DFDBD8; }
 
