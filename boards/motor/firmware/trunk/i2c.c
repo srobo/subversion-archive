@@ -14,7 +14,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "common.h"
-#include "msp430/usci.h"
+#include <msp430/usci.h>
 #include <signal.h>
 #include <bool.h>
 #include "i2c.h"
