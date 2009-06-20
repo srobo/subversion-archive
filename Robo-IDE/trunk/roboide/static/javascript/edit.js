@@ -401,14 +401,16 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 	//save file contents to server as new revision
 	this._svn_save = function() {
-	    var d = loadJSONDoc("./savefile", { team : team,
-					        file : this.path,
-						    rev : 0,				//TODO: make this dynamic
-					        message : this._commitMsg,
-						    code: this.contents});
+		var d = postJSONDoc("./savefile", {
+						queryString : { team : team,
+							file : this.path,
+							rev : 0,				//TODO: make this dynamic
+							message : this._commitMsg },
+						sendContent : {code : this.contents}
+					});
 
-	    d.addCallback( bind(this._receive_svn_save, this));
-	    d.addErrback( bind(this._error_receive_svn_save, this));
+		d.addCallback( bind(this._receive_svn_save, this));
+		d.addErrback( bind(this._error_receive_svn_save, this));
 	}
 
 	this._on_keydown = function(ev) {
@@ -427,7 +429,6 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 		//any alpha or number key or a retry: think about autosave
 		if( e == 'auto' || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 48 && e.keyCode <= 57) ) {
-			log(e.keyCode);
 			if( this._timeout != null )
 				this._timeout.cancel();
 			if( e == 'auto' )
@@ -447,10 +448,12 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 		logDebug('EditTab: Autosaving '+this.path)
 
-		var d = loadJSONDoc("./autosave", { team : team,
+		var d = postJSONDoc("./autosave", {
+						queryString : { team : team,
 							path : this.path,
-							rev : this.rev,
-							content : this.contents});
+							rev : this.rev },
+						sendContent : {content : this.contents}
+					});
 
 		d.addCallback( bind(this._receive_autosave, this));
 		d.addErrback( bind(this._on_keydown, this, 'auto'));	//if it fails then set it up to try again

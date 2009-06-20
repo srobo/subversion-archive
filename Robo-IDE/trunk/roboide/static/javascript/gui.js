@@ -538,6 +538,36 @@ function TeamSelector() {
 // Count of outstanding asynchronous requests
 var async_count = 0;
 
+function postJSONDoc( url, qa ) {
+	async_count += 1;
+	showElement( $("rotating-box") );
+
+	var d = new Deferred();
+	var r;
+
+	if( qa == undefined )	//it shouldn't ever be, but if that's what they want...
+		r = doXHR( url );
+	else {	//throw in some defaults, then run the call
+		qa.method = 'post';
+		qa.headers = {"Content-Type":"application/x-www-form-urlencoded"};
+		qa.sendContent = queryString(qa.sendContent);
+		r = doXHR( url, qa );
+	}
+
+	r.addCallback( partial( load_postedJSONDoc, d, 0 ) );
+	r.addErrback( partial( load_postedJSONDoc, d, 1 ) );
+
+	return d;
+}
+
+function load_postedJSONDoc( d, fail, XHR ) {
+	var res = evalJSONRequest(XHR);
+	if( fail == 0 )	//success
+		ide_json_cb( d, res );
+	else
+		ide_json_err( d, res );
+}
+
 function loadJSONDoc( url, qa ) {
 	async_count += 1;
 	showElement( $("rotating-box") );
