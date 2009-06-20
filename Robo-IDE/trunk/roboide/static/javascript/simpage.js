@@ -14,7 +14,7 @@ SimPage.prototype._init = function() {
 	this.tab = new Tab( "Simulator" );
 	connect( this.tab, "onfocus", bind( simpage.show, simpage ) );
 	connect( this.tab, "onblur", bind( simpage.hide, simpage ) );
-	tabbar.add_tab( this.tab, {super:true} );
+	tabbar.add_tab( this.tab );
 
 	logDebug( "Simulator page initialised" );
 	this._initted = true;
