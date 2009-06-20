@@ -70,9 +70,13 @@ body {
 	font-size: 1.2em;
 }
 
-#tabs ul li{
+#tabs ul li {
 	display: inline;
 	cursor: pointer;
+}
+
+#tabs ul li.dummy {
+	display: none;
 }
 
 #tabs li a {
@@ -83,8 +87,18 @@ body {
 	border: 1px solid #ffffff;
 	color: #253571;
 }
-#tabs li a.focus { background-color: #ffffff; }
-#tabs li a.nofocus { background-color: #DFDBD8; }
+
+#tabs li a.close {
+	padding: 0;
+	border: none;
+	font-size: 0.5em;
+	margin-left: -1.8em;
+	margin-right: 1em;
+	vertical-align: 90%;
+}
+
+#tabs li.focus a { background-color: #ffffff; }
+#tabs li.nofocus a { background-color: #DFDBD8; }
 
 #tabs li a:hover {
 	background-color: #253571;

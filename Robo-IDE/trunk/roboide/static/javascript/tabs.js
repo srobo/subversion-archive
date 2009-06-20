@@ -19,8 +19,8 @@ function Tab(label, title) {
 	this._focus = false;
 
 	this._init = function() {
-		this._a = A( {"class": "nofocus", "title": this.title }, this.label );
-		this._li = LI(null, this._a );
+		this._a = A( {"title": this.title }, this.label );
+		this._li = LI({"class": "nofocus"}, this._a );
 
 		appendChildNodes($("tab-list"), this._li);
 
@@ -41,8 +41,8 @@ function Tab(label, title) {
 
 	// Called to tell the tab it has focus
 	this.got_focus = function() {
-		removeElementClass( this._a, "nofocus" );
-		addElementClass( this._a, "focus" );
+		removeElementClass( this._li, "nofocus" );
+		addElementClass( this._li, "focus" );
 
 		if( !this._focus ) {
 			logDebug( "tab \"" + this.label + "\" focussed" );
@@ -53,8 +53,8 @@ function Tab(label, title) {
 
 	// Called to tell the tab it no longer has focus
 	this.lost_focus = function() {
-		removeElementClass( this._a, "focus" );
-		addElementClass( this._a, "nofocus" );
+		removeElementClass( this._li, "focus" );
+		addElementClass( this._li, "nofocus" );
 
 		if( this._focus ) {
 			logDebug( "tab \"" + this.label + "\" blurred" );
@@ -191,7 +191,7 @@ function TabBar() {
 			}
 		}
 
-		if(tab.has_focus())	{	//we only need to change focus if the tab being removed has focus
+		if(tab.has_focus()) {	//we only need to change focus if the tab being removed has focus
 
 			index--;
 			if( index < 0 ) index = 0;
