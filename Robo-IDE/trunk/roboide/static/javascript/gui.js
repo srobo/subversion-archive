@@ -98,7 +98,7 @@ function load_gui() {
 	robolog = new RoboLog();
 
 	// The "new" tab button
-	var ntab = new Tab( "+ New +", "Open a new file" );
+	var ntab = new Tab( "+ New +", {title:"Open a new file"} );
 	ntab.can_focus = false;
 	connect( ntab, "onclick", bind(editpage.new_file, editpage) );
 	tabbar.add_tab( ntab );

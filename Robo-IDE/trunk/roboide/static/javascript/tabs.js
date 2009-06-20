@@ -1,9 +1,19 @@
 // Tab: A single tab.
-function Tab(label, title) {
+function Tab(label, opts) {
+	//some tab properties, set the defaults here
 	this.label = label;
-	this.title = title;
-	if( title == null )
-		this.title = 'Show the '+this.label+' tab';
+	this.title = 'Show the '+this.label+' tab';
+	//whether the tab gets a close button on it
+	this.can_close = true;
+
+	//see if we've been given any options
+	if(opts != null) {
+		if( opts.title != null )	//the tab title
+			this.title = opts.title;
+
+		if( opts.can_close != null )	//can the tab be closed
+			this.can_close = opts.can_close;
+	}
 
 	// Whether this tab can be focussed
 	// Setting this to false prevents focus being shifted to the tab,
