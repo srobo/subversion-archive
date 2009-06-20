@@ -53,6 +53,7 @@ function Tab(label, title) {
 
 	// Called to tell the tab it no longer has focus
 	this.lost_focus = function() {
+		removeElementClass( this._a, "focus" );
 		addElementClass( this._a, "nofocus" );
 
 		if( this._focus ) {
