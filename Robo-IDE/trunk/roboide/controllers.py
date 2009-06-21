@@ -166,13 +166,14 @@ class Root(controllers.RootController):
                     if ".svn" in node:
                         continue
                     #If the file is in the root directory
+                    src = os.path.join(node, name)
                     if node == head:
                         #Add it named just its name
-                        zip.write(os.path.join(node, name), name, compress_type = zipfile.ZIP_DEFLATED)
+                        zip.write(src, name, compress_type = zipfile.ZIP_DEFLATED)
                     else:
                         #Add it with a suitable path
-                        zip.write(os.path.join(node, name),
-                            node[len(root + "/code")+1:]+"/"+name, compress_type = zipfile.ZIP_DEFLATED)
+                        archname = node[len(head):]+'/'+name
+                        zip.write(src, archname, compress_type = zipfile.ZIP_DEFLATED)
 
         add_dir_to_zip(root + "/code", zip)
         zip.close()
