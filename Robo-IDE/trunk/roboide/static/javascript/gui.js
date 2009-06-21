@@ -150,7 +150,7 @@ function kill_event(e) {
 }
 
 function beforeunload(e) {
-	if(editpage != null && !editpage.close_all_tabs(false))
+	if(tabbar != null && !tabbar.close_all_tabs())
 		e.confirmUnload("You should close tabs before closing this window");
 }
 
@@ -503,7 +503,7 @@ function TeamSelector() {
 
 		//close tabs from other teams before changing
 		log('Team changed - closing all tabs');
-		if(editpage != null && !editpage.close_all_tabs(false)) {
+		if(tabbar != null && !tabbar.close_all_tabs()) {
 			src.value = team;
 			alert('Open files must be closed before changing teams');
 			return;
