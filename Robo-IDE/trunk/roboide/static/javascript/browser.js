@@ -2,9 +2,9 @@
 // Arguments:
 //  - cback: Callback for when things happen.
 //  - options: Dictionary of settings:
-// 		- "type" 	'isFile' 	- renders file browser with file name box
-// 				'isDir' 	- renders file browser with folder name box
-// 				'isCommit' 	- renders file browser without file view, just commit box
+//  - "type" 	'isFile'	- renders file browser with file name box
+//				'isDir' 	- renders file browser with folder name box
+//				'isCommit'	- renders file browser without file view, just commit box
 
 function Browser(cback, options) {
 	// Public functions:
@@ -65,10 +65,10 @@ Browser.prototype._init = function() {
 	disconnectAll($("cancel-new-file"));
 	disconnectAll($("new-file-name"));
 	//set up event handlers
-    disconnectAll("save-new-file");
-    disconnectAll("cancel-new-file");
-    disconnectAll("new-file-name");
-    disconnect(this._esc_press);
+	disconnectAll("save-new-file");
+	disconnectAll("cancel-new-file");
+	disconnectAll("new-file-name");
+	disconnect(this._esc_press);
 	this._esc_press = connect(document, 'onkeydown', bind(this._window_keydown, this));
 	connect("new-file-name", 'onkeypress', bind(this._new_file_keypress, this));
 	connect("save-new-file", 'onclick', bind(this.clickSaveFile, this, false));
@@ -110,7 +110,7 @@ Browser.prototype._errorReceiveTree = function() {
 
 Browser.prototype._getFileTree = function(tm, rpath) {
 	var d = loadJSONDoc("./filelist", { team : tm,
-					    rootpath : rpath});
+						rootpath : rpath});
 
 	d.addCallback( bind(this._receiveTree, this));
 	d.addErrback( bind(this._errorReceiveTree, this));
