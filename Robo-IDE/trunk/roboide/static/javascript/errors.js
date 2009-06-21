@@ -20,6 +20,7 @@ function ErrorsPage() {
 		this.tab = new Tab( "Errors" );
 		connect( this.tab, "onfocus", bind( this._onfocus, this ) );
 		connect( this.tab, "onblur", bind( this._onblur, this ) );
+		connect( this.tab, "onclickclose", bind( this._close, this ) );
 
 		tabbar.add_tab( this.tab );
 
@@ -226,6 +227,9 @@ function ErrorsPage() {
 		this.eflist = new Array();
 
 		this.tab.close();
+
+		if(this._prompt != null)
+			this._prompt.close();
 
 		for(var i = 0; i < this._signals; i++) {
 			disconnect(this._signals[i]);

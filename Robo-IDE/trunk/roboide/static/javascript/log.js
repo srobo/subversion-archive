@@ -14,6 +14,7 @@ function Log(file) {
     this.tab = new Tab("Log: "+this.file.toString());
     connect(this.tab, 'onfocus', bind(this._onfocus, this));
     connect(this.tab, 'onblur', bind(this._onblur, this));
+    connect(this.tab, 'onclickclose', bind(this.close, this));
     tabbar.add_tab(this.tab);
     tabbar.switch_to(this.tab);
     //start initialisation

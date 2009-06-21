@@ -73,6 +73,7 @@ body {
 #tabs ul li {
 	display: inline;
 	cursor: pointer;
+	position: relative;
 }
 
 #tabs ul li.dummy {
@@ -86,14 +87,30 @@ body {
 	text-decoration: none;
 	border: 1px solid #ffffff;
 	color: #253571;
+	position: relative;
 }
 
-#tabs li.focus a { background-color: #ffffff; }
-#tabs li.nofocus a { background-color: #DFDBD8; }
+#tabs li a.close {
+	border: none;
+	font-size: 0.5em;
+	font-weight: bolder;
+	margin: 0;
+	padding: 1px;
+	position: absolute;
+	top: 0;
+	right: 0;
+}
 
-#tabs li a:hover {
+#tabs li.focus a, #tabs li.focus a a.close:hover { background-color: #ffffff; }
+#tabs li.nofocus a, #tabs li.nofocus a a.close:hover { background-color: #DFDBD8; }
+
+#tabs li a:hover, #tabs li a:hover a.close {
 	background-color: #253571;
 	color:#ffffff;
+}
+
+#tabs li a a.close:hover {
+	color: red;
 }
 
 /* status bar */

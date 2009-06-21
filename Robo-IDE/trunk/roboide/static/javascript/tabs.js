@@ -5,7 +5,6 @@ function Tab(label, opts) {
 	this.title = 'Show the '+this.label+' tab';
 	//whether the tab gets a close button on it
 	this.can_close = true;
-
 	//see if we've been given any options
 	if(opts != null) {
 		if( opts.title != null )	//the tab title
@@ -29,8 +28,13 @@ function Tab(label, opts) {
 	this._focus = false;
 
 	this._init = function() {
-		this._a = A( {"title": this.title }, this.label );
-		this._li = LI({"class": "nofocus"}, this._a );
+		if(this.can_close) {
+			this._a_close = A( {"class":'close', "title":'Close this tab'}, 'X' );
+			connect(this._a_close, 'onclick', bind(this._clickClose,this) );
+		} else
+			this._a_close = null;
+		this._a = A( {"title": this.title}, this.label, this._a_close );
+		this._li = LI({"class": 'nofocus'}, this._a );
 
 		appendChildNodes($("tab-list"), this._li);
 
@@ -38,10 +42,14 @@ function Tab(label, opts) {
 	}
 
 	this._onclick = function(ev) {
-		ev.preventDefault();
-		ev.stopPropagation();
-
+		kill_event(ev);
 		signal( this, "onclick", this );
+	}
+
+	//someone clicked the close button on the tab
+	this._clickClose = function(ev) {
+		kill_event(ev);
+		signal(this, "onclickclose", this);
 	}
 
 	// Called to tell find if the tab has focus
@@ -73,6 +81,7 @@ function Tab(label, opts) {
 		}
 	}
 
+	//close the tab
 	this.close = function() {
 		signal( this, "onclose", this );
 
@@ -94,7 +103,7 @@ function Tab(label, opts) {
 
 	this.set_label = function( l ) {
 		this.label = l;
-		replaceChildNodes(this._a, l);
+		replaceChildNodes(this._a, l, this._a_close);
 	}
 
 	this._init();

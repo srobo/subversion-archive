@@ -81,7 +81,7 @@ function load_gui() {
 	tabbar = new TabBar();
 
 	// Projects tab
-	projtab = new Tab( "Projects" );
+	projtab = new Tab( "Projects", {can_close:false} );
 	connect( projtab, "onfocus", bind( projpage.show, projpage ) );
 	connect( projtab, "onblur", bind( projpage.hide, projpage ) );
 	tabbar.add_tab( projtab );
@@ -98,7 +98,7 @@ function load_gui() {
 	robolog = new RoboLog();
 
 	// The "new" tab button
-	var ntab = new Tab( "+ New +", {title:"Open a new file"} );
+	var ntab = new Tab( "+ New +", {title:"Open a new file", can_close:false} );
 	ntab.can_focus = false;
 	connect( ntab, "onclick", bind(editpage.new_file, editpage) );
 	tabbar.add_tab( ntab );

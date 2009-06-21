@@ -268,6 +268,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 		connect( this.tab, "onfocus", bind( this._onfocus, this ) );
 		connect( this.tab, "onblur", bind( this._onblur, this ) );
+		connect( this.tab, "onclickclose", bind( this.close, this, false ) );
 
 		if( this.project == null ) {
 			// New file
