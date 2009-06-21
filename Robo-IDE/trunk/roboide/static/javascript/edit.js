@@ -14,7 +14,7 @@ function EditPage() {
 	//			Triggers initialisation of the editarea if necessary
 	//  - _hide: Hide the edit page.
 	//  - _new_etab: Creates a new instance of an EditTab and wire it
-	// 	up to a Tab
+	//				up to a Tab
 	//				TODO: Can we get EditTab to do this for us?
 	//  - _file_get_etab: Given a file path, returns the tab for it.
 	//					If the file isn't currently open, return null.

@@ -1,14 +1,14 @@
 function Log(file) {
 	//class properties
 	this.tab = null;					//holds reference to tab in tabbar
-	this.selectedRevision = -1;		 //Selected revision, -1 indicates no revision set
+	this.selectedRevision = -1;			//Selected revision, -1 indicates no revision set
 	this.team = team;					//team number TODO: get this from elsewhere
 	this.user = null;					//holds author name
-	this.userList = new Array();		//List of	users attributed to file(s)
-	this.history = new Array();		 //array of log entries returned by server
+	this.userList = new Array();		//List of users attributed to file(s)
+	this.history = new Array();		//array of log entries returned by server
 	this.file = file;					//the file/directory for which we are interested
 	this.offset = 0;					//which results page we want to retrieve from the server
-	this.overflow = 0;					//stores	total number of results pages (retrieved from server)
+	this.overflow = 0;					//stores total number of results pages (retrieved from server)
 
 	//do this only once: add a new tab to the tabbar and link it to this log page
 	this.tab = new Tab("Log: "+this.file.toString());
@@ -40,7 +40,7 @@ function Log(file) {
 							if int > 0 an older page of	results is retrieved, if int <0 a later page of results is retrieved
 	_onfocus()				event handler for tab click
 	_onblur()				event handler for tab looses focus
-	close()				 completely close the tab and log page
+	close()					completely close the tab and log page
 */
 }
 

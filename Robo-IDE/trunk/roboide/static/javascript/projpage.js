@@ -123,7 +123,7 @@ ProjPage.prototype.set_team = function(team) {
 	this._init();
 
 	// Start the chain of updates
- 	this._list.update(team);
+	this._list.update(team);
 	// The selector and filelist are connected to onchange on the list,
 	// so they will update when it's updated
 }
@@ -372,7 +372,7 @@ ProjFileList.prototype.refresh = function(auto) {
 	if(!auto)	//if it's an automatic call don't interrupt the user - just setup another
 		d.addErrback( bind( function (){
 			this._err_prompt = status_button( "Error retrieving the project file listing", LEVEL_ERROR,
-					   "retry", bind( this.refresh, this ) );
+						"retry", bind( this.refresh, this ) );
 		}, this ) );
 	else
 		d.addErrback( bind( this._prepare_auto_refresh, this ) );
@@ -543,8 +543,8 @@ ProjFileList.prototype._toggle_dir = function(src) {
 
 		var div = this._get_innerdiv( src );
 		appendChildNodes( div,
-				  SPAN({"class":"proj-filelist-dir-collapse"},
-					   " [ " + nc + c + " hidden ]"));
+					SPAN({"class":"proj-filelist-dir-collapse"},
+						" [ " + nc + c + " hidden ]"));
 
 	} else {
 		removeElement( getFirstElementByTagAndClassName( "SPAN", null, src ) );
@@ -935,10 +935,10 @@ function ProjOps() {
 			return;
 
 		var d = loadJSONDoc("./copy", {team : team,
-				   src : projpage.flist.selection[0],
-				   dest : fname,
-				   msg : cmsg,
-				   rev : 0  });
+					src : projpage.flist.selection[0],
+					dest : fname,
+					msg : cmsg,
+					rev : 0  });
 		d.addCallback( bind(this._cp_callback1, this));
 		d.addErrback( bind( function() {
 			status_button("Error contacting server", LEVEL_ERROR, "retry",
@@ -972,8 +972,8 @@ function ProjOps() {
 		logDebug("will delete: "+death_list);
 
 		var d = loadJSONDoc("./delete", { "team" : team,
-				   "files" : death_list,
-				   "kind" : 'ALL' });
+					"files" : death_list,
+					"kind" : 'ALL' });
 		d.addCallback( function(nodes) {
 		status_msg(nodes.Message, LEVEL_OK)
 				projpage.flist.refresh();
@@ -999,8 +999,8 @@ function ProjOps() {
 		log("Will delete autosaves: "+death_list);
 
 		var d = loadJSONDoc("./delete", { "team" : team,
-				   "files" : death_list,
-				   "kind" : 'AUTOSAVES' });
+					"files" : death_list,
+					"kind" : 'AUTOSAVES' });
 
 		d.addCallback( function(nodes) {
 				status_msg(nodes.Message, LEVEL_OK);
@@ -1027,8 +1027,8 @@ function ProjOps() {
 		}
 
 		var d = loadJSONDoc("./undelete", {team : team,
-				   files : projpage.flist.selection.join(','),
-				   rev : projpage.flist.rev  });
+					files : projpage.flist.selection.join(','),
+					rev : projpage.flist.rev  });
 		d.addCallback( bind(this._undel_callback, this));
 		d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.undel, this, true));});
 	}
