@@ -29,11 +29,11 @@ function Tab(label, opts) {
 
 	this._init = function() {
 		if(this.can_close) {
-			this._a_close = A( {"class":'close', "title":'Close this tab'}, 'X' );
+			this._a_close = A( {"href":'#', "class":'close', "title":'Close this tab'}, 'X' );
 			connect(this._a_close, 'onclick', bind(this._clickClose,this) );
 		} else
 			this._a_close = null;
-		this._a = A( {"title": this.title}, this.label, this._a_close );
+		this._a = A( {"href":'#', "title": this.title}, this.label, this._a_close );
 		this._li = LI({"class": 'nofocus'}, this._a );
 
 		appendChildNodes($("tab-list"), this._li);
