@@ -7,17 +7,17 @@ function Calendar() {
 	this.date = new Date();
 	this.date.setDate(1);
 
-	this.logs = new Array();	   //will hold complete month of log entries
-	this.logdays = new Array();	//will hold max of one log entry (the last) for each day in month
+	this.logs = new Array();       //will hold complete month of log entries
+	this.logdays = new Array();    //will hold max of one log entry (the last) for each day in month
 
 	//event signals
 	this._signals = new Array();
 }
 
 var MONTHS = new Array("January", "February", "March",
-		"April", "May", "June", "July",
-		"August","September", "October",
-		"November", "December");
+        "April", "May", "June", "July",
+        "August","September", "October",
+        "November", "December");
 
 
 Calendar.prototype.init = function() {
@@ -33,11 +33,11 @@ Calendar.prototype.init = function() {
 	this._signals = [];
 
 	this._signals.push( connect("cal-prev-month",
-									'onclick',
-									bind(this.changeMonth, this, -1) ) );
+                                    'onclick',
+                                    bind(this.changeMonth, this, -1) ) );
 	this._signals.push( connect("cal-next-month",
-									'onclick',
-									bind(this.changeMonth, this, +1) ) );
+                                    'onclick',
+                                    bind(this.changeMonth, this, +1) ) );
 }
 
 Calendar.prototype.drawCal = function() {
@@ -60,7 +60,8 @@ Calendar.prototype.drawCal = function() {
 	for(td= 0; td < 7; td++) {
 		if(td < this.date.getDay()) {
 			appendChildNodes($("cal-row-"+tr), TD({'class':'null'}, ""));
-		} else {
+		}
+		else {
 			appendChildNodes($("cal-row-"+tr), TD({'id' : 'cal'+day}, day));
 			day++;
 		}
@@ -72,7 +73,8 @@ Calendar.prototype.drawCal = function() {
 			if(day <= this.dinm() ) {
 				appendChildNodes($("cal-row-"+tr), TD({'id' : 'cal'+day}, day));
 				day++;
-			} else {
+			}
+			else {
 				//appendChildNodes($("cal-row-"+tr), TD(null, " "));
 			}
 			td++;
@@ -110,9 +112,9 @@ Calendar.prototype._receiveDates = function(nodes) {
 			var parts = x.date.split("/");
 			var jsdate = new Date(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
 			return { "date" : jsdate,
-						"message" : x.message,
-						"rev" : x.rev,
-						"author" : x.author};
+                                 "message" : x.message,
+                                 "rev" : x.rev,
+                                 "author" : x.author};
 		}, nodes.history);
 
 
@@ -134,7 +136,7 @@ Calendar.prototype._errorReceiveDates = function() {
 //get month of logs messages from server
 Calendar.prototype.getDates = function() {
 	var d = loadJSONDoc("./calendar", {
-			team : this.team,
+	        team : this.team,
 		file : "/"+this.proj,
 		mnth : this.date.getMonth(),
 		yr : this.date.getFullYear() } );
@@ -199,11 +201,11 @@ Calendar.prototype.change_day = function(target) {
 	for(var i = 0; i < this.logs.length; i++) {
 		if(this.logs[i].date.getDate() == target) {
 			appendChildNodes("cal-revs", OPTION({ "value" : this.logs[i].rev},
-								this.logs[i].rev + " " +
-								this.logs[i].author+": "+
-								this.logs[i].message.slice(0, 20)+" ("+
-								this.logs[i].date.getHours()+":"+
-								this.logs[i].date.getMinutes()+")"));
+							    this.logs[i].rev + " " +
+							    this.logs[i].author+": "+
+							    this.logs[i].message.slice(0, 20)+" ("+
+							    this.logs[i].date.getHours()+":"+
+							    this.logs[i].date.getMinutes()+")"));
 		}
 	}
 

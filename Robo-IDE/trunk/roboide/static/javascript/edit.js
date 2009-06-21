@@ -11,15 +11,15 @@ function EditPage() {
 	// Private functions:
 	//  - _init: Initialises the edit page (called on instantiation)
 	//  - _show: Show the edit page.
-	//			Triggers initialisation of the editarea if necessary
+	//           Triggers initialisation of the editarea if necessary
 	//  - _hide: Hide the edit page.
 	//  - _new_etab: Creates a new instance of an EditTab and wire it
-	//				up to a Tab
-	//				TODO: Can we get EditTab to do this for us?
+	// 	up to a Tab
+	//               TODO: Can we get EditTab to do this for us?
 	//  - _file_get_etab: Given a file path, returns the tab for it.
-	//					If the file isn't currently open, return null.
+	//                    If the file isn't currently open, return null.
 	//  - _tab_switch: Handler for the onswitch event of the tab bar.
-	//			TODO: Make this remove the tab from our list.
+	//		   TODO: Make this remove the tab from our list.
 	//  - _is_edit: Returns try if the given tab is an edit tab
 
 	// Private properties:
@@ -173,7 +173,7 @@ function EditPage() {
 	// Return true if the given tab is an edit tab
 	this._is_edit = function(tab) {
 		if( tab !== null && tab !== undefined
-			&& tab.__edit === true )
+		    && tab.__edit === true )
 			return true;
 		return false;
 	}
@@ -215,9 +215,9 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 	// *** Public Properties ***
 	if(rev == null || rev == undefined)
-		this.rev = 0;
+	    this.rev = 0;
 	else
-		this.rev = rev;
+	    this.rev = rev;
 
 	// The team
 	this.team = team;
@@ -286,8 +286,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 	// Start load the file contents
 	this._load_contents = function() {
 		var d = loadJSONDoc("./filesrc", { team : this.team,
-							file : this.path,
-							revision : this.rev});
+						   file : this.path,
+						   revision : this.rev});
 
 		d.addCallback( bind(this._recv_contents, this));
 		d.addErrback( bind(this._recv_contents_err, this));
@@ -315,8 +315,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 	// Handler for errors in receiving the file contents
 	this._recv_contents_err = function() {
 		this._stat_contents = status_button( "Failed to load contents of file " + this.path,
-							LEVEL_ERROR,
-							"retry", bind( this._load_contents, this ) );
+						     LEVEL_ERROR,
+						     "retry", bind( this._load_contents, this ) );
 	}
 
 	this._check_syntax = function() {
@@ -503,25 +503,25 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this._onfocus = function() {
 		// Close handler
 		this._signals.push( connect( $("close-edit-area"),
-						"onclick",
-						bind( this.close, this, false ) ) );
+					     "onclick",
+					     bind( this.close, this, false ) ) );
 		// Check syntax handler
 		if(this._isNew)
 			$("check-syntax").disabled = true;
 		else {
 			$("check-syntax").disabled = false;
 			this._signals.push( connect( $("check-syntax"),
-						"onclick",
-						bind( this._check_syntax, this ) ) );
+					     "onclick",
+					     bind( this._check_syntax, this ) ) );
 		}
 		// Save handler
 		this._signals.push( connect( $("save-file"),
-						"onclick",
-						bind( this._save, this ) ) );
+					     "onclick",
+					     bind( this._save, this ) ) );
 		// change revision handler
 		this._signals.push( connect( "history",
-						"onclick",
-						bind( this._change_revision, this, false ) ) );
+					     "onclick",
+					     bind( this._change_revision, this, false ) ) );
 		// keyboard shortcuts when the cursor is inside editarea
 		this._signals.push( connect( window,
 						"ea_keydown",
@@ -551,7 +551,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 		this._iea.setValue( this.contents );
 		this._iea.setSelectionRange( this._selection_start, this._selection_end );
 
-		this._get_revisions();
+	 	this._get_revisions();
 
 		// Display file path
 		var t = this.path;
@@ -598,8 +598,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 			replaceChildNodes("history", OPTION({'value' : -1}, "Select File Revision"));
 			for(var i=0; i < nodes.history.length; i++)
 				appendChildNodes("history", OPTION( {'value' : nodes.history[i].rev,
-									'title' : nodes.history[i].message },
-									"r" + nodes.history[i].rev + " " + nodes.history[i].date + " [" +nodes.history[i].author + "]"));
+								     'title' : nodes.history[i].message },
+								    "r" + nodes.history[i].rev + " " + nodes.history[i].date + " [" +nodes.history[i].author + "]"));
 
 			appendChildNodes("history", OPTION({'value' : -2}, "--View Full History--"));
 		}
@@ -612,9 +612,9 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this._get_revisions = function() {
 		logDebug("retrieving file history");
 		var d = loadJSONDoc("./gethistory", { team : team,
-							file : this.path,
-							user : null,
-							offset : 0});
+						      file : this.path,
+						      user : null,
+						      offset : 0});
 		d.addCallback( bind(this._receive_revisions, this));
 		d.addErrback( bind(this._error_receive_revisions, this));
 	}
@@ -651,21 +651,21 @@ function ide_editarea(id) {
 	this._init_start = function() {
 		//initialize new instance of editArea
 		editAreaLoader.init({
-			id : this._id,
-			syntax : "python",
-			language : "en",
-			start_highlight : true,
-			allow_toggle : false,
-			allow_resize : "no",
+	 		id : this._id,
+	 		syntax : "python",
+	 		language : "en",
+	 		start_highlight : true,
+	 		allow_toggle : false,
+	 		allow_resize : "no",
 			display : 'onload',
-			replace_tab_by_spaces : 4,
+	 		replace_tab_by_spaces : 4,
 			plugins: "SRkeydown",
 			show_line_colors: true,
 			EA_load_callback: "ea_loaded"
  		});
 
 		connect( window, "ea_init_done",
-			bind( this._on_init_done, this ) );
+			 bind( this._on_init_done, this ) );
 
 		this._init_started = true;
 	}
@@ -693,7 +693,7 @@ function ide_editarea(id) {
 		for( var i in this._open_queue ) {
 			logDebug( this._open_queue[i].id + " -- " + this._open_queue[i].text  );
 			editAreaLoader.openFile( this._id,
-						this._open_queue[i] );
+						 this._open_queue[i] );
 		}
 		this._open_queue = [];
 	}
@@ -744,7 +744,7 @@ function ide_editarea(id) {
 	this._proc_close_queue = function() {
 		for( var i in this._close_queue )
 			editAreaLoader.closeFile( this._id,
-						this._close_queue[i] );
+						  this._close_queue[i] );
 		this._close_queue = [];
 	}
 
