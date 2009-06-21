@@ -378,10 +378,12 @@ function User() {
 			// Logged in -- grab user information
 			this._hide_login();
 			this._request_info();
-		}
-		else
+		} else {
 			// Something was wrong with username/password
 			status_msg( "Incorrect username or password", LEVEL_WARN );
+			$("password").value = '';
+			$("password").focus();
+		}
 	}
 
 	this._logout_click = function(ev) {
