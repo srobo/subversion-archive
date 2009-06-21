@@ -97,15 +97,20 @@ body {
 	padding: 1px 2px;
 	position: absolute;
 	top: 0;
-	right: 0;
+	left: 0;
 }
 
 #tabs li.focus a, #tabs li.focus a a.close:hover { background-color: #ffffff; }
 #tabs li.nofocus a, #tabs li.nofocus a a.close:hover { background-color: #DFDBD8; }
 
-#tabs li a:hover, #tabs li a:hover a.close {
+#tabs li a:hover {
 	background-color: #253571;
-	color:#ffffff;
+	color: #ffffff;
+}
+
+#tabs li a:hover a.close {
+	background-color: transparent;
+	color: #ffffff;
 }
 
 #tabs li a a.close:hover {
