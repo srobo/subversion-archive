@@ -171,8 +171,8 @@ body {
 }
 
 #tabs li a a.close:hover {
-	color: red;
-	background: #DFDBD8;	/* for benefit of IE6 */
+	color: #FFFFFF;
+	background: #999694;
 }
 
 /* status bar */
