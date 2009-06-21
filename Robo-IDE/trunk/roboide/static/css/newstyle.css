@@ -84,12 +84,60 @@ body {
 	padding: 0.2em 1em;
 	font-weight: bold;
 	text-decoration: none;
-	border: 1px solid #ffffff;
+	border: none;
 	color: #253571;
 	position: relative;
 }
 
+#dropShortcuts {
+	position: absolute;
+	left:0;		/* move to far left */
+	z-index: 100;	/* in front of everything */
+}
+
+#dropShortcuts ul {
+	margin: 0em;
+	padding: 0em;
+	text-align:left;
+	list-style-type: none;
+	border: 0.3em solid #253571;
+	border-top: none;
+}
+
+#dropShortcuts li {
+	background: #DFDBD8;
+	padding: 0.3em;
+}
+
+#dropShortcuts li:hover {
+	background: #FFFFFF;
+	cursor: pointer;
+}
+
+#dropShortcuts ul li a {
+	text-decoration: none;
+	color: #253571;
+	font-weight: bold;
+}
+
+.hidden {
+	display: none;
+}
+
+#tabs li.focus a {
+	background: #ffffff url(../images/tabcorner_focus.png) no-repeat top right;
+}
+#tabs li.nofocus a {
+	background: #DFDBD8 url(../images/tabcorner_nofocus.png) no-repeat top right;
+}
+
+#tabs li a:hover {
+	background: #ffffff url(../images/tabcorner_focus.png) no-repeat top right;
+}
+
+
 #tabs li a.close {
+	background: none;
 	border: none;
 	font-size: 0.5em;
 	font-weight: bolder;
@@ -100,21 +148,31 @@ body {
 	left: 0;
 }
 
-#tabs li.focus a, #tabs li.focus a a.close:hover { background-color: #ffffff; }
-#tabs li.nofocus a, #tabs li.nofocus a a.close:hover { background-color: #DFDBD8; }
-
-#tabs li a:hover {
-	background-color: #253571;
-	color: #ffffff;
+.shortcutButton {
 }
 
-#tabs li a:hover a.close {
-	background-color: transparent;
-	color: #ffffff;
+#tabs li a.shortcutButton {
+	padding-left: 0.6em;
+	padding-right: 0.6em;
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
+	margin-right: 0.4em;
+	background: #DFDBD8;
+	font-size: 80%;
+	font-weight: normal;
+}
+
+#tabs li a.shortcutButton:hover {
+	background: #FFFFFF;
+}
+
+#tabs li a:hover a.close {	/* styling of close button when the tab it is in is moused over */
+	background-color: #DFDBD8;
 }
 
 #tabs li a a.close:hover {
 	color: red;
+	background: #DFDBD8;	/* for benefit of IE6 */
 }
 
 /* status bar */

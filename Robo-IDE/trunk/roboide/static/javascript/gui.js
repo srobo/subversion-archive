@@ -72,6 +72,41 @@ function load_select_team() {
 	team_selector.load();
 }
 
+function dropDownBox (id) {	// takes id of existing hidden div to make into appearing box
+	this._init = function() {
+		this.id = getElement(id);
+		connect( this.id, "onmouseenter", bind( this._clearTimeout, this) );	// when mouse is inside the dropbox disable timeout
+		connect( this.id, "onmouseleave", bind( this.hideBox, this ) );		// when mouse leaves dropbox hide it
+		this._timer = null;	// timeout for box	
+	}
+	this.showBox = function() {	// show the box and set a timeout to make it go away
+		removeElementClass( this.id, "hidden" );
+		var xid = this.id;	// local to allow us to pass it inside setTimeout
+		this._timer = setTimeout(function(){addElementClass(xid, "hidden");} ,1500);
+	}
+	this.hideBox = function() {
+		addElementClass( this.id, "hidden" );
+	}
+
+	this.toggleBox = function() {
+		if ( hasElementClass( this.id, "hidden" ) ) {	// is the box visible?
+			this.showBox();
+			}
+		else {
+			this.hideBox();
+			}
+	}
+
+	this._clearTimeout = function() {
+		if (this._timer) {
+		clearTimeout(this._timer);
+		this._timer = null;
+		}
+	}
+
+	this._init(id);
+}
+
 // 2) Executed once we have team
 function load_gui() {
 	logDebug( "load_gui" );
@@ -79,6 +114,30 @@ function load_gui() {
 	disconnect( tabchange_ident );
 
 	tabbar = new TabBar();
+
+	// Edit page
+	editpage = new EditPage();
+
+	// Create drop down list TODO: make this a separate, sane function
+	var short1_a = A( {"title": "Create a new file"}, "Create new file" );
+	var short1_li = LI(null, short1_a);
+	connect( short1_li, "onclick", bind(editpage.new_file, editpage) );
+
+	var short2_a = A( {"title": "Change user settings" }, "User settings" );
+	var short2_li = LI(null, short2_a);
+
+	var new_ul = UL(null, short1_li, short2_li);
+
+	appendChildNodes($("dropShortcuts"), new_ul);
+
+	// Shortcut button
+	var shortcuts = new dropDownBox("dropShortcuts");
+	var sbutton = new Tab( "v", {can_close:false} ); // TODO: find something like ⇓
+	sbutton.can_focus = false;
+	connect( sbutton, "onclick", function(){shortcuts.toggleBox();} ) ;
+	removeElementClass(sbutton._a ,"nofocus"); /* remove nofocus class */
+	addElementClass(sbutton._a ,"shortcutButton"); /* add its own class so it can be styled indivdually */
+	tabbar.add_tab( sbutton );
 
 	// Projects tab
 	projtab = new Tab( "Projects", {can_close:false} );
@@ -89,19 +148,17 @@ function load_gui() {
 	// Simulator tab
 	simpage = new SimPage();
 
-	// Edit page
-	editpage = new EditPage();
-
 	// Errors Tab
 	errorspage = new ErrorsPage();
 
 	robolog = new RoboLog();
 
-	// The "new" tab button
+/*	// The "new" tab button
 	var ntab = new Tab( "+ New +", {title:"Open a new file", can_close:false} );
 	ntab.can_focus = false;
 	connect( ntab, "onclick", bind(editpage.new_file, editpage) );
 	tabbar.add_tab( ntab );
+*/
 
 	//The selection operations
 	sel_operations = new ProjOps();
