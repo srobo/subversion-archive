@@ -228,8 +228,10 @@ function ErrorsPage() {
 
 		this.tab.close();
 
-		if(this._prompt != null)
+		if( this._prompt != null ) {
 			this._prompt.close();
+			this._prompt = null;
+		}
 
 		for(var i = 0; i < this._signals; i++) {
 			disconnect(this._signals[i]);
