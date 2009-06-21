@@ -5,17 +5,18 @@
 // 		- "type" 	'isFile' 	- renders file browser with file name box
 // 				'isDir' 	- renders file browser with folder name box
 // 				'isCommit' 	- renders file browser without file view, just commit box
+// 				'isProj' 	- renders file browser without file view, just commit box
 
 function Browser(cback, options) {
 	// Public functions:
 	//  - clickSaveFile(bool):	event handler for when save is clicked, if bool is true, ignore lack of commit msg
 	//  - clickCancelSave(): cancel and close browser
-	//  - dirSelected(): event handler for when a directory is selected  in the left hand pane
+	//  - dirSelected(): event handler for when a directory is selected in the left hand pane
 	//  - display(): show all browser css
 	//  - hide():hide all browser css
 
 	// Private functions:
-	//  - _init:	Constructor.  Displays filebrowser, grabs file tree and connects up events.
+	//  - _init:	Constructor. Displays filebrowser, grabs file tree and connects up events.
 	//  - _receiveTree: AJAX success callback
 	//  - _errorReceiveTree: AJAX fail callback
 	//  - _getFileTree: Grab file tree from server
@@ -56,7 +57,7 @@ Browser.prototype._init = function() {
 	this.display();
 
 	//get file listings - if not just commit message
-	if(this.type != 'isCommit' &&   this.type != 'isProj') {
+	if(this.type != 'isCommit' && this.type != 'isProj') {
 		this._getFileTree(team, "");
 	}
 
@@ -65,10 +66,10 @@ Browser.prototype._init = function() {
 	disconnectAll($("cancel-new-file"));
 	disconnectAll($("new-file-name"));
 	//set up event handlers
-    disconnectAll("save-new-file");
-    disconnectAll("cancel-new-file");
-    disconnectAll("new-file-name");
-    disconnect(this._esc_press);
+	disconnectAll("save-new-file");
+	disconnectAll("cancel-new-file");
+	disconnectAll("new-file-name");
+	disconnect(this._esc_press);
 	this._esc_press = connect(document, 'onkeydown', bind(this._window_keydown, this));
 	connect("new-file-name", 'onkeypress', bind(this._new_file_keypress, this));
 	connect("save-new-file", 'onclick', bind(this.clickSaveFile, this, false));
@@ -162,7 +163,7 @@ Browser.prototype.clickSaveFile = function(override) {
 		( this.type == 'isProj' && projpage.project_exists(this.newFname) )
 	) {
 		var warn = '"'+this.newFname+'" already exists';
-		if(this.type ==  'isProj')
+		if(this.type == 'isProj')
 			warn = 'Project '+warn;
 		else
 			warn += ' in "'+this.newDirectory.substr(1)+'"';
