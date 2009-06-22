@@ -310,6 +310,7 @@ a.button:hover {
 	width: 100%;
 	position: fixed;
 	top: 0;
+	z-index: 99;
 	-moz-opacity: 0.75;
 	opacity: .75;
 	filter: alpha(opacity=75);
