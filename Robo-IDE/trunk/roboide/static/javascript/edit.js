@@ -779,7 +779,7 @@ function ea_loaded() {
 	ea_has_loaded = true;
 
 	// Rebroadcast the signal
-	signal(this, "ea_init_done", this);
+	signal(window, "ea_init_done");
 }
 
 // Called when the editarea is due for an autosave
