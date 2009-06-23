@@ -450,7 +450,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 		logDebug('EditTab: Autosaving '+this.path)
 
-		var d = postJSONDoc("./autosave", {
+		var d = postJSONDoc("./autosave/savefile", {
 						queryString : { team : team,
 							path : this.path,
 							rev : this.rev },
