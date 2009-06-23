@@ -108,13 +108,6 @@ function load_gui() {
 
 	robolog = new RoboLog();
 
-/*	// The "new" tab button
-	var ntab = new Tab( "+ New +", {title:"Open a new file", can_close:false} );
-	ntab.can_focus = false;
-	connect( ntab, "onclick", bind(editpage.new_file, editpage) );
-	tabbar.add_tab( ntab );
-*/
-
 	//The selection operations
 	sel_operations = new ProjOps();
 
@@ -219,6 +212,7 @@ function dropDownBox (id) {
 		this.id = getElement(id);
 		connect( this.id, "onmouseenter", bind( this._clearTimeout, this) );	// when mouse is inside the dropbox disable timeout
 		connect( this.id, "onmouseleave", bind( this.hideBox, this ) );		// when mouse leaves dropbox hide it
+		connect( this.id, "onclick", bind( this.hideBox, this ) );
 		this._timer = null;	// timeout for box	
 	}
 	this.showBox = function() {	// show the box and set a timeout to make it go away
