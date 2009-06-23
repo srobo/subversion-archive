@@ -99,6 +99,10 @@ class Root(controllers.RootController):
     autosave = srautosave.Autosave()
     #feed = Feed()
 
+    if config.get("simulator.enabled"):    # if simulation is enabled import the simulator controller
+        import sim
+        sim = sim.Sim()
+
     @expose()
     def index(self):
         """
