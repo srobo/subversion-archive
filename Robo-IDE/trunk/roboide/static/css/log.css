@@ -1,7 +1,7 @@
 #log-mode { display: none; }
 
 #logmenu li div {
-	padding: 0 10px 0 10px;
+	padding: 0 10px;
 	font-size: 1.2em;
 }
 #logmenu li select {
@@ -14,28 +14,28 @@
 	float: right;
 }
 #logmenu li.log-user #svn-users {
-    margin-left: 1em;
-    margin-right: 1.5em;
+	margin-left: 1em;
+	margin-right: 1.5em;
 }
 
-#log-list  {
-	display:block;
-	background-color:#DFDBD8;
+#log-list {
+	display: block;
+	background-color: #DFDBD8;
 	list-style-type: none;
 	padding: 0px;
-	margin: 1em 0 0 0;
+	margin: 1em 0 0;
 }
 #log-list li {
-	margin: 0.5em 0 0.5em 0;
-	padding: 0.5em 0 0.5em 0;
-	background-color:#eeeeee;
+	margin: 0.5em 0;
+	padding: 0.5em 0;
+	background-color: #eeeeee;
 }
 #log-list input {
 	margin-right: 2em;
 }
 
 .commit-msg {
-	margin:0.5em 0.5em 0.5em 4em;
+	margin: 0.5em 0.5em 0.5em 4em;
 	padding: 0.5em;
-	background-color:#ffffff;
+	background-color: #ffffff;
 }

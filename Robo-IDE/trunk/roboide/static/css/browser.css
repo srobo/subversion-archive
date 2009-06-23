@@ -4,8 +4,8 @@
 	position: absolute;
 	left: 20%;
 	top: 20%;
-	padding: 0px;
-	margin: 0px;
+	padding: 0;
+	margin: 0;
 	width: 60%;
 	display: none;
 	text-align: left;
@@ -18,7 +18,7 @@
 	font-weight: bold;
 	margin: 1%;
 	padding: 1%;
-	width:96%;
+	width: 96%;
 }
 #left-pane, #right-pane {
 	display: block;
@@ -27,28 +27,24 @@
 	overflow-y: scroll;
 	overflow-x: hidden;
 	background-color: #DFDBD8;
-	margin-left:2.5%;
-	margin-right:2.5%;
-	margin-top:10px;
-	margin-bottom:10px;
+	margin: 10px 2.5%;
 	border: 5px solid #ffffff;
 	float: left;
 }
 
-#right-pane ul, #left-pane ul{
+#right-pane ul, #left-pane ul {
 	background-color: #EEEEEE;
 	color: #000;
 	list-style-type: none;
-	margin-left: 0px;
-	padding-left: 0px;
-	margin-top: 0px;
+	margin: 0;
+	padding: 0;
 }
 #left-pane ul {
 	padding-left: 15px;
 	cursor: pointer;
 }
 #left-pane li, #right-pane li {
-	padding:1px 0 1px 5px;
+	padding: 1px 0 1px 5px;
 	border-bottom: 1px dashed #DFDBD8;
 }
 #left-pane li:hover {
@@ -74,7 +70,7 @@
 	/* color: #000000; */
 	margin: 10px;
 	width: 250px;
-	float: left;	
+	float: left;
 }
 #save-new-file, #cancel-new-file {
 	display: block;
@@ -82,18 +78,15 @@
 	font-weight: bold;
 	/* color: #000000; */
 	margin: 10px;
-	float: left;	
+	float: left;
 }
 #new-commit-msg {
-	display:block;
+	display: block;
 	width: 87.5%;
 	height: 50px;
 	background-color: #DFDBD8;
 	color: #000;
-	margin-top:10px;
-	margin-bottom: 10px;
-	margin-left:2.5%;
-	margin-right:2.5%;
+	margin: 10px 2.5%;
 	border: 5px solid #ffffff;
-	float: left;	
+	float: left;
 }

@@ -34,7 +34,7 @@ body {
 }
 #top ul {
 	margin: 21px;
-	padding: 0px;
+	padding: 0;
 }
 
 #top ul li {
@@ -96,8 +96,8 @@ body {
 }
 
 #dropShortcuts ul {
-	margin: 0em;
-	padding: 0em;
+	margin: 0;
+	padding: 0;
 	text-align: left;
 	list-style-type: none;
 	border: 0.3em solid #253571;
@@ -152,10 +152,7 @@ body {
 }
 
 #tabs li a.shortcutButton {
-	padding-left: 0.6em;
-	padding-right: 0.6em;
-	padding-top: 0.2em;
-	padding-bottom: 0.2em;
+	padding: 0.2em 0.6em;
 	margin-right: 0.4em;
 	background: #DFDBD8;
 	font-size: 80%;
@@ -267,7 +264,7 @@ body {
 	padding: 5px;
 	display: block;
 	border: none;
-	margin: 10px 0 10px 0;
+	margin: 10px 0;
 	width: 100%;
 }
 a.button {
