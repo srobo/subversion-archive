@@ -1,11 +1,10 @@
-from turbogears import controllers, expose
+from turbogears import controllers, expose, config
 import sys
 import traceback
 import socket
 import simplejson
 from threading import Thread, Lock
 import cherrypy
-
 import logging
 
 #logging.basicConfig(level=logging.DEBUG,
@@ -25,8 +24,12 @@ sims = {}
 
 class SocketController:
     def __init__(self):
+        if config.get( "simulator.manager_host" ) == None or config.get( "simulator.manager_port" ) == None:
+            raise "Simulator manager's port or host not configured"
+
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect(("localhost", 10006))
+        self.socket.connect(( config.get( "simulator.manager_host" ),
+                              config.get( "simulator.manager_port" ) ))
         self.todraw = {}
         self.readThread = Thread(target=self.readSocket)
         self.readThread.start()
