@@ -227,16 +227,15 @@ function dropDownBox (id) {
 	this.toggleBox = function() {
 		if ( hasElementClass( this.id, "hidden" ) ) {	// is the box visible?
 			this.showBox();
-			}
-		else {
+		} else {
 			this.hideBox();
 			}
 	}
 
 	this._clearTimeout = function() {
 		if (this._timer) {
-		clearTimeout(this._timer);
-		this._timer = null;
+			clearTimeout(this._timer);
+			this._timer = null;
 		}
 	}
 
@@ -603,9 +602,9 @@ function postJSONDoc( url, qa ) {
 	var d = new Deferred();
 	var r;
 
-	if( qa == undefined )	//it shouldn't ever be, but if that's what they want...
+	if( qa == undefined ) {	//it shouldn't ever be, but if that's what they want...
 		r = doXHR( url );
-	else {	//throw in some defaults, then run the call
+	} else {	//throw in some defaults, then run the call
 		qa.method = 'post';
 		qa.headers = {"Content-Type":"application/x-www-form-urlencoded"};
 		qa.sendContent = queryString(qa.sendContent);

@@ -213,7 +213,7 @@ function ErrorsPage() {
 
 	this._fail_check = function(file, opts) {
 		this._prompt = status_button( "Failed to check code", LEVEL_ERROR,
-				   "retry", bind( this.check, this, file, opts ) );
+					"retry", bind( this.check, this, file, opts ) );
 	}
 
 	this._close = function() {

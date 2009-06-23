@@ -11,13 +11,13 @@ function EditPage() {
 	// Private functions:
 	//  - _init: Initialises the edit page (called on instantiation)
 	//  - _show: Show the edit page.
-	//           Triggers initialisation of the editarea if necessary
+	//	     Triggers initialisation of the editarea if necessary
 	//  - _hide: Hide the edit page.
 	//  - _new_etab: Creates a new instance of an EditTab and wire it
-	// 	up to a Tab
-	//               TODO: Can we get EditTab to do this for us?
+	//		 up to a Tab
+	//		 TODO: Can we get EditTab to do this for us?
 	//  - _file_get_etab: Given a file path, returns the tab for it.
-	//                    If the file isn't currently open, return null.
+	//		      If the file isn't currently open, return null.
 	//  - _tab_switch: Handler for the onswitch event of the tab bar.
 	//		   TODO: Make this remove the tab from our list.
 	//  - _is_edit: Returns try if the given tab is an edit tab
@@ -215,9 +215,9 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 	// *** Public Properties ***
 	if(rev == null || rev == undefined)
-	    this.rev = 0;
+		this.rev = 0;
 	else
-	    this.rev = rev;
+		this.rev = rev;
 
 	// The team
 	this.team = team;
@@ -404,12 +404,12 @@ function EditTab(iea, team, project, path, rev, mode) {
 	//save file contents to server as new revision
 	this._svn_save = function() {
 		var d = postJSONDoc("./savefile", {
-						queryString : { team : team,
-							file : this.path,
-							rev : 0,				//TODO: make this dynamic
-							message : this._commitMsg },
-						sendContent : {code : this.contents}
-					});
+					queryString : { team : team,
+						file : this.path,
+						rev : 0,				//TODO: make this dynamic
+						message : this._commitMsg },
+					sendContent : {code : this.contents}
+				});
 
 		d.addCallback( bind(this._receive_svn_save, this));
 		d.addErrback( bind(this._error_receive_svn_save, this));
@@ -451,11 +451,11 @@ function EditTab(iea, team, project, path, rev, mode) {
 		logDebug('EditTab: Autosaving '+this.path)
 
 		var d = postJSONDoc("./autosave/savefile", {
-						queryString : { team : team,
-							path : this.path,
-							rev : this.rev },
-						sendContent : {content : this.contents}
-					});
+					queryString : { team : team,
+						path : this.path,
+						rev : this.rev },
+					sendContent : {content : this.contents}
+				});
 
 		d.addCallback( bind(this._receive_autosave, this));
 		d.addErrback( bind(this._on_keydown, this, 'auto'));	//if it fails then set it up to try again
@@ -506,9 +506,9 @@ function EditTab(iea, team, project, path, rev, mode) {
 					     "onclick",
 					     bind( this.close, this, false ) ) );
 		// Check syntax handler
-		if(this._isNew)
+		if(this._isNew) {
 			$("check-syntax").disabled = true;
-		else {
+		} else {
 			$("check-syntax").disabled = false;
 			this._signals.push( connect( $("check-syntax"),
 					     "onclick",
@@ -524,12 +524,12 @@ function EditTab(iea, team, project, path, rev, mode) {
 					     bind( this._change_revision, this, false ) ) );
 		// keyboard shortcuts when the cursor is inside editarea
 		this._signals.push( connect( window,
-						"ea_keydown",
-						bind( this._on_keydown, this ) ) );
+					    "ea_keydown",
+					    bind( this._on_keydown, this ) ) );
 		// keyboard shortcuts
 		this._signals.push( connect( document,
-						"onkeydown",
-						bind( this._on_keydown, this ) ) );
+					    "onkeydown",
+					    bind( this._on_keydown, this ) ) );
 		this._update_contents();
 	}
 
@@ -651,14 +651,14 @@ function ide_editarea(id) {
 	this._init_start = function() {
 		//initialize new instance of editArea
 		editAreaLoader.init({
-	 		id : this._id,
-	 		syntax : "python",
-	 		language : "en",
-	 		start_highlight : true,
-	 		allow_toggle : false,
-	 		allow_resize : "no",
+			id : this._id,
+			syntax : "python",
+			language : "en",
+			start_highlight : true,
+			allow_toggle : false,
+			allow_resize : "no",
 			display : 'onload',
-	 		replace_tab_by_spaces : 4,
+			replace_tab_by_spaces : 4,
 			plugins: "SRkeydown",
 			show_line_colors: true,
 			EA_load_callback: "ea_loaded"

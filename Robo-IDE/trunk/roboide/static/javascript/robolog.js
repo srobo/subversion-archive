@@ -37,7 +37,7 @@ function RoboLog() {
 		// We don't want the rotating box to be displayed for these requests
 		var d = MochiKit.Async.loadJSONDoc( this.LOG_URL, 
 						    { "last_received_ping": this._ping ,
-							  "team" : team } );
+						      "team" : team } );
 
 		d.addCallback( bind( this._recv_update, this ) );
 		d.addErrback( bind( this._update_fail, this ) );
