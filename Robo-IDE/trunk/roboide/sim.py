@@ -136,6 +136,7 @@ class Sim(object):
                         "lineno" : 0,
                         "current" : {}}
 
-        command = "[{\"team\" : 1, \"command\" : \"start\"}]"
+        command = simplejson.dumps( [{ "team": 1,
+                                       "command": "start" }] )
         sc.sendall(command)
         return {"result" : 0}
