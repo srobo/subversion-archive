@@ -169,11 +169,12 @@ class Manager:
 if __name__ == "__main__":
     #create an INET, STREAMing socket
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # allow rebinding to socket immediately after process killed (development sanity)
     serversocket.bind(("127.0.0.1", 10006))
     serversocket.listen(5)
 
     while True:
         clientsocket, address = serversocket.accept()
-        print "Conncted to client"
+        print "Connected to client"
         m = Manager(clientsocket)
         m.run()
