@@ -845,7 +845,7 @@ function ProjOps() {
 			status_msg("Move successful!", LEVEL_OK);
 			projpage.flist.refresh();
 		} else {
-			status_msg("ERROR: "+nodes.message, LEVEL_ERROR);
+			status_msg(nodes.message, LEVEL_ERROR);
 		}
 	}
 
@@ -918,8 +918,7 @@ function ProjOps() {
 	this._cp_callback1 = function(nodes) {
 		if(nodes.status > 0) {
 			status_msg("ERROR COPYING: "+nodes.message, LEVEL_ERROR);
-		}
-		else {
+		} else {
 			status_msg("Successful Copy: "+nodes.message, LEVEL_OK);
 			projpage.flist.refresh();
 		}
