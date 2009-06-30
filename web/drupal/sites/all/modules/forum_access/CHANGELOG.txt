@@ -3,6 +3,23 @@ CHANGELOG for Forum Access for Drupal 6
 forum_access 6.x-1.x-dev:
 
 
+forum_access 6.x-1.x-RC1 (2009-06-03):
+  Bugs fixed:
+    - #472494: check_plain() the role names.
+
+forum_access 6.x-1.x-BETA4 (2009-05-22):
+  Enhancements:
+    - #243076: Major update of Swedish translation.
+  Bugs fixed:
+    - Fix minor structural bug.
+    - #410930: Work around a core bug that puts wrong values into $node->tid.
+    - Tune the behavior of the administrative interface.
+    - #413708: Make forums visible to users with 'administer nodes' permission.
+    - #408560: Grants still not saved under some circumstances.
+    - #426498: Potential conflict with pre-existing 'Forum Moderator' role.
+    - #407080: Remove the 'reply' links if the user does not have the 'Post' grant.
+    - #408560: Grants not saved for newly created forums.
+
 forum_access 6.x-1.x-BETA3 (2009-03-18):
   Enhancements:
     - #310254, #163964: Implement comment moderation as well as advanced node moderation.

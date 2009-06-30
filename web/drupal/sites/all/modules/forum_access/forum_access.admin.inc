@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.admin.inc,v 1.13 2009/03/18 22:21:29 salvis Exp $
+// $Id: forum_access.admin.inc,v 1.20 2009/05/30 19:44:44 salvis Exp $
 
 /**
  * @file forum_access.admin.inc
@@ -14,14 +14,11 @@
  */
 function _forum_access_forum_form(&$form, &$form_state, $is_container) {
   $tid = (isset($form['tid']['#value']) ? $form['tid']['#value'] : NULL);
-  if (isset($tid) && !forum_access_access($tid, 'view')) {
-    return;  // Deny access to (i.e. hide) the FA controls if the user doesn't have View access to the forum.
-  }
 
-  $rids = array();
+  $roles = array();
   $result = db_query("SELECT r.rid, r.name FROM {role} r ORDER BY r.name");
   while ($obj = db_fetch_object($result)) {
-    $rids[$obj->rid] = $obj->name;
+    $roles[$obj->rid] = check_plain($obj->name);
   }
 
   if (isset($tid)) {  // edit
@@ -68,7 +65,7 @@ function _forum_access_forum_form(&$form, &$form_state, $is_container) {
       '#value' => '<div>'. t('Note that users need') .'<ul style="margin-top: 0"><li>'.
                            t('the !access_content and !access_comments permissions <strong>AND <em>View</em></strong> to be able to see content at all,', $variables) .'</li><li>'.
                            t('the !create_forum_topics (and similar) permissions <strong>AND <em>Post</em></strong> to be able to create forum content, and', $variables) .'</li><li>'.
-                           t('the !post_comments or !post_comments_without_approval permission <strong>AND <em>Post</em></strong> to be able to post comments/replies;', $variables) .'</li><li>'.
+                           t('the !post_comments and (probably) !post_comments_without_approval permission <strong>AND <em>Post</em></strong> to be able to post comments/replies;', $variables) .'</li><li>'.
                            t('the !edit_own_forum_topics or !edit_any_forum_topics (and similar) permissions (<strong>OR <em>Edit</em></strong>) can be added if desired, <strong>plus</strong>', $variables) .'</li><li>'.
                            t('the !delete_own_forum_topics or !delete_any_forum_topics (and similar) permissions (<strong>OR <em>Delete</em></strong>) if desired;', $variables) .'</li><li>'.
                            t('the !administer_comments (global!) permission <strong>OR <em>Edit</em>/<em>Delete</em></strong> to be able to edit/delete comments;', $variables) .'</li><li>'.
@@ -152,7 +149,7 @@ function _forum_access_forum_form(&$form, &$form_state, $is_container) {
     '#type' => 'checkboxes',
     '#prefix' => '<div class="forum-access-div">',
     '#suffix' => '</div>',
-    '#options' => $rids,
+    '#options' => $roles,
     '#default_value' => $settings['view'],
     '#process' => array('expand_checkboxes', '_forum_access_forum_form_disable_checkboxes'),
   );
@@ -160,7 +157,7 @@ function _forum_access_forum_form(&$form, &$form_state, $is_container) {
     '#type' => 'checkboxes',
     '#prefix' => '<div class="forum-access-div">',
     '#suffix' => '</div>',
-    '#options' => $rids,
+    '#options' => $roles,
     '#default_value' => $settings['create'],
     '#process' => array('expand_checkboxes', '_forum_access_forum_form_disable_checkboxes'),
   );
@@ -169,7 +166,7 @@ function _forum_access_forum_form(&$form, &$form_state, $is_container) {
       '#type' => 'checkboxes',
       '#prefix' => '<div class="forum-access-div">',
       '#suffix' => '</div>',
-      '#options' => $rids,
+      '#options' => $roles,
       '#default_value' => $settings['update'],
       '#process' => array('expand_checkboxes', '_forum_access_forum_form_disable_checkboxes'),
     );
@@ -177,13 +174,16 @@ function _forum_access_forum_form(&$form, &$form_state, $is_container) {
       '#type' => 'checkboxes',
       '#prefix' => '<div class="forum-access-div">',
       '#suffix' => '</div>',
-      '#options' => $rids,
+      '#options' => $roles,
       '#default_value' => $settings['delete'],
       '#process' => array('expand_checkboxes', '_forum_access_forum_form_disable_checkboxes'),
     );
   }
   $form['forum_access']['clearer'] = array(
-    '#value' => '<div class="forum-access-clearer"></div>',
+    '#type' => 'item',
+    '#prefix' => '<div class="forum-access-clearer">',
+    '#suffix' => '</div>',
+    '#description' => t('For explanations of special cases, hover your mouse over role names.'),
   );
   if ($is_container) {
     $form['forum_access']['container_note'] = array(
@@ -396,41 +396,42 @@ function _forum_access_forum_form(&$form, &$form_state, $is_container) {
 
 function _forum_access_forum_form_disable_checkboxes($element) {
   global $user;
-  static $role_permissions = array();
-  $element_children = element_children($element);
-  if (empty($role_permissions)) {
-    $auth_permissions = '';
-    foreach ($element_children as $rid) {
-      $result = db_query('SELECT r.rid, p.perm FROM {role} r LEFT JOIN {permission} p ON r.rid = p.rid WHERE r.rid = %d', $rid);
-      while ($role = db_fetch_object($result)) {
-        $role_permissions[$role->rid] = $role->perm .', '. ($role->rid == DRUPAL_ANONYMOUS_RID ? '' : $auth_permissions);
-        if ($role->rid == DRUPAL_AUTHENTICATED_RID) {
-          $auth_permissions = $role->perm .', ';
-        }
-      }
+  static $permissions_by_rid = array();
+  if (empty($permissions_by_rid)) {
+    $permissions_by_rid[DRUPAL_AUTHENTICATED_RID] = '';
+    $result = db_query('SELECT r.rid, p.perm FROM {role} r LEFT JOIN {permission} p ON r.rid = p.rid ORDER BY r.rid');
+    while ($role = db_fetch_object($result)) {
+      $permissions_by_rid[$role->rid] = $role->perm .', '. ($role->rid != DRUPAL_ANONYMOUS_RID ? $permissions_by_rid[DRUPAL_AUTHENTICATED_RID] : '');
     }
   }
   $tr = 't';
   $moderator_rid = variable_get('forum_access_moderator_rid', NULL);
-  
+
+  $element_children = element_children($element);
   foreach ($element_children as $rid) {
-    if (strstr($role_permissions[$rid], 'access content,') === FALSE) {
+    if ($rid == $moderator_rid) {
+      $element[$rid]['#prefix'] = '<span title="'. t("This is the (temporary) @Forum_Moderator role; it has the '@administer_nodes' and '@administer_comments' permissions and is only used temporarily by @Forum_Access &mdash; do NOT give this role to any user!", array('@Forum_Moderator' => t('Forum Moderator'), '@administer_nodes' => $tr('administer nodes'), '@administer_comments' => $tr('administer comments'), '@Forum_Access' => 'Forum Access')) .'">';
+      $element[$rid]['#suffix'] = "</span>";
+      $element[$rid]['#default_value'] = TRUE;
       $element[$rid]['#disabled'] = TRUE;
-      $element[$rid]['#default_value'] = FALSE;
-      $element[$rid]['#prefix'] = '<span title="'. t("This role does not have the '@perm' permission.", array('@perm' => $tr('access content'))) .'">';
-      $element[$rid]['#suffix'] = "</span>";
     }
-    if ($element['#parents'][1] == 'view' && strstr($role_permissions[$rid], 'administer forums,') !== FALSE) {
+    elseif ($element['#parents'][1] == 'create') {
+      // Do nothing (Post is always mutable).
+    }
+    elseif ($element['#parents'][1] == 'view' && strstr($permissions_by_rid[$rid], 'administer forums,') !== FALSE) {
       $element[$rid]['#title'] = '<em>'. $element[$rid]['#title'] .'</em>';
-      $element[$rid]['#prefix'] = '<span title="'. t("This role has the '@perm' permission, and granting '@View' enables the role holders to change the settings on this page, including @Access_control!", array('@perm' => $tr('administer forums'), '@View' => t('View'), '@Access_control' => t('Access control'))) .'">';
+      $element[$rid]['#prefix'] = '<span title="'. t("This role has the '@administer_forums' permission, and granting '@View' enables the role holders to change the settings on this page, including @Access_control!", array('@administer_forums' => $tr('administer forums'), '@View' => t('View'), '@Access_control' => t('Access control'))) .'">';
+      if (strstr($permissions_by_rid[$rid], 'administer nodes,') !== FALSE) {
+        $element[$rid]['#prefix'] = str_replace('">', ' '. t("Because the role also has the '@administer_nodes' permission, it has full access to all nodes either way.", array('@administer_nodes' => $tr('administer nodes'))) .'">', $element[$rid]['#prefix']);
+      }
       $element[$rid]['#suffix'] = "</span>";
     }
-    elseif (strstr($role_permissions[$rid], 'administer nodes,') !== FALSE) {
+    elseif (strstr($permissions_by_rid[$rid], 'administer nodes,') !== FALSE) {
       $element[$rid]['#disabled'] = TRUE;
       $element[$rid]['#default_value'] = TRUE;
       $element[$rid]['#prefix'] = '<span title="'. ($rid != $moderator_rid
-                                                    ? t("This role has the '@perm' permission and thus full access to all nodes.", array('@perm' => $tr('administer nodes')))
-                                                    : t("This is the !Forum_Moderator role; it has the '@perm1' and '@perm2' permissions and thus full access to all nodes and comments.", array('!Forum_Moderator' => t('Forum Moderator'), '@perm1' => $tr('administer nodes'), '@perm2' => $tr('administer comments')))) .'">';
+                                                    ? t("This role has the '@administer_nodes' permission and thus full access to all nodes.", array('@administer_nodes' => $tr('administer nodes')))
+                                                    : t("This is the @Forum_Moderator role; it has the '@administer_nodes' and '@administer_comments' permissions and thus full access to all nodes and comments.", array('@Forum_Moderator' => t('Forum Moderator'), '@administer_nodes' => $tr('administer nodes'), '@administer_comments' => $tr('administer comments')))) .'">';
       $element[$rid]['#suffix'] = "</span>";
     }
   }
@@ -525,9 +526,11 @@ function _forum_access_form_submit($form, &$form_state) {
   elseif (variable_get('forum_access_new_template_tid', 0) == $template_tid) {
     variable_del('forum_access_new_template_tid');
   }
+  module_load_include('node.inc', 'forum_access');
+  $moderator_rid = _forum_access_get_moderator_rid(TRUE);  // create the moderators role if it doesn't exist
 
   // check for changes
-  $is_changed = FALSE;
+  $is_changed = $is_new = strpos($_GET['q'], 'admin/content/forum/add/') === 0;
   foreach (array('view', 'create', 'update', 'delete') as $grant_type) {
     if (isset($form['forum_access'][$grant_type])) {
       $defaults = $form['forum_access'][$grant_type]['#default_value'];
@@ -547,14 +550,10 @@ function _forum_access_form_submit($form, &$form_state) {
   $fa_priority = isset($access['interference']['advanced']['priority']) ? $access['interference']['advanced']['priority'] : 0;
   if (array_key_exists('acl', $access)) {
     $moderators = unserialize($access['acl']['user_list']);
-    if (!empty($moderators)) {
-      module_load_include('node.inc', 'forum_access');
-      _forum_access_get_moderator_rid(TRUE);  // create the moderators role if it doesn't exist
-    }
     acl_save_form($access['acl'], $fa_priority);
   }
   foreach ($access['view'] as $rid => $checked) {
-    if (!empty($form['forum_access']['view'][$tid]['#disabled'])) {
+    if ($rid == $moderator_rid) {
       continue;
     }
     $grants[] = array(
@@ -571,7 +570,7 @@ function _forum_access_form_submit($form, &$form_state) {
   $link = l(t('edit'), 'admin/content/forum/edit/forum/'. $tid);
   watchdog('access', 'Changed grants for %forum forum.', array('%forum' => $form_state['values']['name']), WATCHDOG_NOTICE, $link);
 
-  if ($form_state['values']['form_id'] != 'forum_form_container') {
+  if (!$is_new && $form_state['values']['form_id'] != 'forum_form_container') {
     if (!isset($access['update_choice']) || $access['update_choice'] == 2) {
       node_access_needs_rebuild(TRUE);
     }
@@ -761,28 +760,36 @@ function _forum_access_content_access_admin_form() {
  */
 function _forum_access_create_moderator_rid($verbose = FALSE) {  
   $tr = 't';
+  $variables = array('!Forum_Access' => 'Forum Access', '%administer_comments' => $tr('administer comments'), '%administer_nodes' => $tr('administer nodes'));
+  $role_name = t('Forum Moderator');
   $role = new stdClass();
-  $role->name = t('Forum Moderator');
-  $variables = array('!Forum_Access' => 'Forum Access', '%administer_comments' => $tr('administer comments'), '%administer_nodes' => $tr('administer nodes'), '%role' => $role->name);
-  if (drupal_write_record('role', $role))
-  {
-    $rid = $role->rid;
-    variable_set('forum_access_moderator_rid', $rid);
-    $permission = new stdClass();
-    $permission->rid = $rid;
-    $permission->perm = 'administer comments, administer nodes';
-    drupal_write_record('permission', $permission);
-    $msg = t('!Forum_Access has created a new role named %role and given it the %administer_nodes and %administer_comments permissions. This role is temporarily assigned to users when they access nodes or comments to which they have <strong><em>Edit</em></strong> access. You can change the name of the role as you like, but you must keep it unmodified otherwise.', $variables);
-    if ($verbose) {
-      drupal_set_message($msg, 'warning');
+  $role->name = $role_name;
+  for ($i = 2; $i <= 12; ++$i) {
+    $variables['%role'] = $role->name;
+    if (!db_result(db_query("SELECT COUNT(rid) FROM {role} WHERE name = '%s'", $role->name)) &&
+        drupal_write_record('role', $role)) {
+      $rid = $role->rid;
+      variable_set('forum_access_moderator_rid', $rid);
+      $permission = new stdClass();
+      $permission->rid = $rid;
+      $permission->perm = 'administer comments, administer nodes';
+      drupal_write_record('permission', $permission);
+      $msg = t('!Forum_Access has created a new role named %role and given it the %administer_nodes and %administer_comments permissions. This role is used internally by !Forum_Access. You can change the name of the role as you like, but you must keep it unmodified otherwise.', $variables);
+      if ($verbose) {
+        drupal_set_message($msg, 'warning');
+      }
+      watchdog('user', $msg, NULL, WATCHDOG_NOTICE);
+      return $rid;
     }
-    watchdog('user', $msg, NULL, WATCHDOG_NOTICE);
-    return $rid;
+    else {
+      $msg = t('!Forum_Access cannot create the %role role!', $variables);
+      watchdog('user', $msg, NULL, WATCHDOG_WARNING);
+      drupal_set_message($msg .' '. t('Is it already in use?'), 'error');
+      $role->name = $role_name ." $i";
+    }
   }
-  else {
-    $msg = t('!Forum_Access cannot create the moderator role!', $variables);
-    drupal_set_message($msg, 'error');
-    watchdog('user', $msg, NULL, WATCHDOG_ERROR);
-  }
+  $msg = t('!Forum_Access has given up and will not work correctly! Rename one of the roles listed above, so that !Forum_Access can use its name.', $variables);
+  drupal_set_message($msg, 'error');
+  watchdog('user', $msg, NULL, WATCHDOG_CRITICAL);
 }
 

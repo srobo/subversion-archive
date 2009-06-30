@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.module,v 1.42 2009/03/18 22:21:29 salvis Exp $
+// $Id: forum_access.module,v 1.45 2009/05/22 21:56:01 salvis Exp $
 
 /**
  * @file forum_access.module
@@ -32,8 +32,7 @@ function forum_access_node_access_records($node) {
   }
 
   static $grants = array();
-  if (isset($node->tid) || isset($node->forum_tid)) {
-    $tid = (isset($node->tid) ? $node->tid : $node->forum_tid);
+  if ($tid = _forum_access_get_tid($node)) {
     if (!isset($grants[$tid])) {
       $result = db_query('SELECT * FROM {forum_access} WHERE tid = %d', $tid);
       while ($grant = db_fetch_object($result)) {
@@ -118,15 +117,14 @@ function forum_access_init() {
   }
   if (isset($nid)) {
     $node = node_load($nid);
-  }
-  if (isset($node->tid)) {
-    $tid = $node->tid;
-    foreach ($access as $a) {
-      if (forum_access_access($tid, $a)) {
-        module_load_include('node.inc', 'forum_access');
-        $user->_forum_access_moderator = TRUE;
-        if (arg(0) == 'comment' || arg(0) == 'node' && arg(2) == 'edit') {
-          _forum_access_enable_moderator();
+    if ($tid = _forum_access_get_tid($node)) {
+      foreach ($access as $a) {
+        if (forum_access_access($tid, $a)) {
+          module_load_include('node.inc', 'forum_access');
+          $user->_forum_access_moderator = TRUE;
+          if (arg(0) == 'comment' || arg(0) == 'node' && arg(2) == 'edit') {
+            _forum_access_enable_moderator();
+          }
         }
       }
     }
@@ -178,7 +176,7 @@ function forum_access_form_alter(&$form, &$form_state, $form_id) {
  */
 function forum_access_db_rewrite_sql($query, $primary_table, $primary_field, $args) {
   global $user;
-  if ($primary_field == 'tid' && $user->uid != 1 && !($_GET['q'] == 'admin/content/forum' && user_access('administer forums'))) {
+  if ($primary_field == 'tid' && $user->uid != 1 && !(strstr($_GET['q'], 'admin/content/forum') !== FALSE && user_access('administer forums'))) {
     $roles = _forum_access_get_roles($user);
     $sql['join'] = "LEFT JOIN {forum_access} fa ON $primary_table.tid = fa.tid
                     LEFT JOIN {acl} acl_fa ON acl_fa.name = ". ($GLOBALS['db_type'] == 'pgsql' ? 'CAST(' : '')
@@ -294,7 +292,7 @@ function forum_access_preprocess_forums(&$variables) {
 function forum_access_link_alter(&$links, $node)
 {
   global $user;
-  if ($user->uid != 1 && isset($node->tid) && isset($links['comment_add']) && !forum_access_access($node->tid, 'create')) {
+  if ($user->uid != 1 && ($tid = _forum_access_get_tid($node)) && isset($links['comment_add']) && !forum_access_access($tid, 'create')) {
     unset($links['comment_add']);
   }
 }
@@ -360,13 +358,13 @@ function forum_access_disable() {
  */
 function forum_access_access($tid, $type, $account = NULL) {
   static $cache = array();
-
   if (!$account) {
     global $user;
     $account = $user;
   }
 
-  if ($account->uid == 1) {
+  if ($account->uid == 1 ||
+      user_access('administer nodes') && array_search($type, array('view', 'update', 'delete')) !== FALSE) {
     return TRUE;
   }
 
@@ -397,6 +395,13 @@ function forum_access_access($tid, $type, $account = NULL) {
  */
 function _forum_access_get_roles($user) {
   return implode(', ', array_keys($user->roles));
+}
+
+/**
+ * Return the forum tid or FALSE.
+ */
+function _forum_access_get_tid($node) {
+  return (isset($node->forum_tid) ? $node->forum_tid : (isset($node->tid) ? $node->tid : FALSE));
 }
 
 /**

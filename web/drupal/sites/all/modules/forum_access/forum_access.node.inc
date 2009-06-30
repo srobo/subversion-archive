@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.node.inc,v 1.3 2009/03/18 22:21:29 salvis Exp $
+// $Id: forum_access.node.inc,v 1.5 2009/04/30 22:31:21 salvis Exp $
 
 /**
  * @file forum_access.node.inc
@@ -117,8 +117,8 @@ function _forum_access_comment_form(&$form, &$form_state) {
   global $user;
   if ($user->uid != 1 && isset($form['nid']['#value'])) {
     $node = node_load($form['nid']['#value']);
-    if (isset($node->tid)) {
-      if (!forum_access_access($node->tid, 'create')) {
+    if ($tid = _forum_access_get_tid($node)) {
+      if (!forum_access_access($tid, 'create')) {
         switch (arg(0))
         {
           case 'node':
@@ -144,13 +144,23 @@ function _forum_access_comment_form(&$form, &$form_state) {
 }
 
 /*
- * Give the user the 'administer comments' permission for this request.
+ * Give the user the 'administer nodes' and 'administer comments' permissions for this request.
  */
 function _forum_access_enable_moderator() {
   global $user;
   $rid = _forum_access_get_moderator_rid();
   $user->roles[$rid] = '(forum_access temporary)';
-  user_access('administer comments', $user, TRUE);
+  user_access('', NULL, TRUE);  // clear the permissions cache to activate the new role
+}
+
+/*
+ * Remove the moderator permissions.
+ */
+function _forum_access_disable_moderator() {
+  global $user;
+  $rid = _forum_access_get_moderator_rid();
+  unset($user->roles[$rid]);
+  user_access('', NULL, TRUE);  // clear the permissions cache to revert to normal
 }
 
 /*
@@ -187,11 +197,10 @@ function _forum_access_get_all_roles() {
  */
 function _forum_access_preprocess_comment(&$variables) {
   global $user;
-  if (empty($user->_forum_access_moderator)) {
-    return;
+  if (!empty($user->_forum_access_moderator)) {
+    _forum_access_enable_moderator();  // this allows us to retrieve the comment links (without setting precedent!)
   }
 
-  _forum_access_enable_moderator();  // this allows us to retrieve the comment links (without setting precedent!)
   $tid = $variables['node']->tid;
   $links = module_invoke_all('link', 'comment', $variables['comment'], 0);
   if (isset($links['comment_reply']) && (!preg_match('#<li class="[^"]*comment_reply[^"]*".*</li>#U', $variables['links']) || !forum_access_access($tid, 'create'))) {
@@ -215,4 +224,9 @@ function _forum_access_preprocess_comment(&$variables) {
     );
   }
   $variables['links'] = theme('links', $links);
+  
+  if (!empty($user->_forum_access_moderator) && arg(0) == 'node' && arg(2) == NULL) {
+    // Remove the permissions again to avoid confusing devel_node_access.module.
+    _forum_access_disable_moderator();
+  }
 }
