@@ -8,5 +8,5 @@
 	<div class="content">
 	<?php print $content; ?>
 	</div>
-	<!-- div class="reply-links"><?php print $links; ?></div -->
+	<div class="reply-links"><?php print $links; ?></div>
 </div>
