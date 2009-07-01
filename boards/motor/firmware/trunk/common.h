@@ -15,7 +15,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 #ifndef __COMMON_H
 #define __COMMON_H
-#include <msp430x22x4.h>
+#include <io.h>
 #include <stddef.h>
 
 #define FLAG() P4OUT |= 0x80
