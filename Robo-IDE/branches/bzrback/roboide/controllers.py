@@ -3,7 +3,8 @@ from turbogears.feed import FeedController
 import cherrypy, model
 from sqlobject import sqlbuilder
 import logging
-import pysvn
+import bzrlib.branch
+import pysvn    # TODO BZRPORT: remove once all pysvn code removed
 import time, datetime
 import re
 import tempfile, shutil
@@ -25,39 +26,21 @@ ZIPNAME = "robot.zip"
 
 class Client:
     """
-    A wrapper around a pysvn client. This creates a client and wraps calls to
+    A wrapper around a bzr branch. This creates a branch object associated with a bzr branch and wraps calls to
     its functions.
     """
     client = None
     def __init__(self, team):
         """
-        Create a pysvn client and use it
+        Create a bzr branch object and associate it with a user
         """
-        def get_login(realm, username, may_save):
-            u = str(srusers.get_curuser())
-            return True, u, "", False
-
-        c = pysvn.Client()
-        c.callback_get_login = get_login
-        c.set_store_passwords(False)
-        c.set_auth_cache(False)
-
-        #Using self.__dict__[] to avoid calling setattr in recursive death
-        self.__dict__["client"] = c
-        if not team in srusers.getteams():
-            raise RuntimeError("User can not access team %d" % team)
 
         self.__dict__["REPO"] = srusers.get_svnrepo( team )
 
-    def is_url(self, url, rev=pysvn.Revision(pysvn.opt_revision_kind.head)):
-        """Override the default is_url which just tells you if the url looks
-        sane. This tries to get info on the file...
-        """
-        try:
-            self.client.info2(url, rev)
-            return True
-        except pysvn.ClientError:
-            return False
+        b = bzrlib.branch.Branch.open(self.__dict__["REPO"])
+
+        #Using self.__dict__[] to avoid calling setattr in recursive death
+        self.__dict__["client"] = b
 
     def __setattr__(self, name, val):
         """
@@ -75,6 +58,18 @@ class Client:
         is wrapping.
         """
         return getattr(self.client, name)
+
+    def is_url(self, url, rev=pysvn.Revision(pysvn.opt_revision_kind.head)):
+        """Override the default is_url which just tells you if the url looks
+        sane. This tries to get info on the file...
+        """
+        pass    #TODO BZRPORT: implement
+        try:
+            self.client.info2(url, rev)
+            return True
+        except pysvn.ClientError:
+            return False
+
 
 class Feed(FeedController):
     def get_feed_data(self):
@@ -112,22 +107,52 @@ class Root(controllers.RootController):
         loc = os.path.join(os.path.dirname(__file__), "static/index.html")
         return serveFile(loc)
 
-    def get_revision(self, revision):
+    def get_rev_object(self, team, rev_id=""):
         """
-        Get a revision object.
+        Get a revision object for a given bzr revision id.
+        If no revision id is provided, get latest revision.
         inputs:
-            revision - revision number (convertable with int()). If can not be
-            converted, returns HEAD revision
+            rev_id - str in bzr rev_id format, ie returned by get_rev_id()
         returns:
-            revision object for revision number"""
+            revision object for given revision id."""
+
+        b = Client( int(team) )
+
+        if rev_id == "":
+            rev_id = b.last_revision()
 
         try:
-            if revision == 0 or revision == "0":
-                revision = "HEAD"
-            rev = pysvn.Revision(pysvn.opt_revision_kind.number, int(revision))
-        except (pysvn.ClientError, ValueError, TypeError):
-            rev = pysvn.Revision(pysvn.opt_revision_kind.head)
+            rev = b.repository.get_revision(rev_id)
+        except: #TODO BZRPORT: implement exception properly, revision number failure etc
+            print "Get revision failed, returned latest revision object"
+            rev = b.repository.get_revision( b.last_revision() )
+
         return rev
+
+    def get_rev_id(self, team, revno=-1):
+        """
+        Get revision ID string from revision number.
+        inputs:
+            revno - revision number convertable with int().
+                    if revno is -1 or not supplied, get latest revision id.
+        returns:
+            revision id string
+        """
+
+        b = Client( int(team) )
+
+        try:
+            if revno == -1 or revno == "-1" or revno == "HEAD": #TODO BZRPORT: stop anything calling "HEAD" string
+                rev_id = b.last_revision()
+            else:
+                rev_id = b.get_rev_id( int(revno) )
+
+        except (TypeError):     # TODO BZRPORT: add bzr exception
+            print "Getting ID for revno: %s failed, returning latest revision id."  % revno
+            rev_id = b.last_revision()
+
+        return rev_id
+
 
     @expose()
     @srusers.require(srusers.in_team())
@@ -141,6 +166,8 @@ class Root(controllers.RootController):
             A zip file as a downloadable file with appropriate HTTP headers
             sent.
         """
+        pass    #TODO BZRPORT: Implement!
+
         client = Client(int(team))
         rev = self.get_revision("HEAD")
 
@@ -216,51 +243,45 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def filesrc(self, team, file=None, revision="HEAD"):
+    def filesrc(self, team, file=None, revision=-1):
         """
         Returns the contents of the file.
         Turns out the action parameter can be edit. Not sure how this is
         useful - won't it always be edit?
         """
         curtime = time.time()
-        client = Client(int(team))
+        b = Client( int(team) )
 
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness trac#208
 
-
         autosaved_code = self.autosave.getfilesrc(team, file, 1)
 
-        rev = self.get_revision(revision)
+#        rev = self.get_revision(revision) #TODO BZRPORT
 
-        if file != None and file != "" and client.is_url(client.REPO + file, rev):
-            #Load file from SVN
-            mime = ""
+        if file != None and file != "":  #TODO BZRPORT: URL checking
+            #Load file from bzr
+            # TODO BZRPORT: mime checking. Bzr doesn't have a mime property so the file will need to be checked with python
             try:
-                mime = client.propget("svn:mime-type", client.REPO+file, revision=rev).values()[0]
-            except pysvn.ClientError:
-                code = "Error getting mime type"
+#                revno, rev_id = b.last_revision_info()  #TODO BZRPORT: getting latest revision info
+                branch_tree = b.basis_tree()    #TODO BZRPORT: This is taking most recent tree. Allow other revisions!
+                file_id = branch_tree.path2id(file)
+                b.lock_read()
+                code = branch_tree.get_file_text(file_id)
+                revision = 0 #TODO BZRPORT: actual revsion
+            except: #TODO BZRPORT: Catch bzr exception
+                code = "Error loading file '%s' at revision %s." % (file, revision)
                 revision = 0
-            except IndexError:
-                pass
+            # always unlock:
+            finally:
+                b.unlock()
 
-            if mime == "application/octet-stream":
-                code = "Binary File:  You can't edit these in the IDE."
-                revision = 0
-            else:
-                try:
-                    ver = client.log(client.REPO + file, limit=0, revision_start=rev, peg_revision=rev)[0]["revision"]
-                    revision = ver.number
-
-                    code = client.cat(client.REPO + file, revision=pysvn.Revision(pysvn.opt_revision_kind.number, ver.number))
-                except pysvn.ClientError:
-                    code = "Error loading file '%s' at revision %s." % (file, revision)
-                    revision = 0
         else:
             code = "Error loading file: No filename was supplied by the IDE.  Contact an SR admin!"
             revision = 0
 
         return dict(curtime=curtime, code=code, autosaved_code=autosaved_code, revision=revision, path=file,
                 name=os.path.basename(file))
+
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -270,6 +291,8 @@ class Root(controllers.RootController):
         #a maximum of 10 results are sent to the browser, if there are more than 10
         #results available, overflow > 0.
         #supply an offset to view older results: 0<offset < overflow; offset = 0 is the most recent logs
+        pass    #TODO BZRPORT: Implement!
+
         offset = int(offset)
         c = Client(int(team))
         try:
@@ -311,6 +334,8 @@ class Root(controllers.RootController):
                       for x in result])
 
     def checkoutintotmpdir(self, client, revision, base):
+        pass    #TODO BZRPORT: Implement!
+
         tmpdir = tempfile.mkdtemp()
         client.checkout(client.REPO + base, tmpdir, recurse=False, revision=revision)
         return tmpdir
@@ -325,6 +350,8 @@ class Root(controllers.RootController):
             the key). Each value is a dictionary with information. The only key
             is revision, with a value of an integer of the current revision
             number in the repo"""
+        pass    #TODO BZRPORT: Implement!
+
         #Default data
         r = {}
         l = {}
@@ -368,6 +395,8 @@ class Root(controllers.RootController):
                 kind - one of 'SVN' or 'AUTOSAVES'
         returns (json): Message - a message to show the user
         """
+        pass    #TODO BZRPORT: Implement!
+
         if files != "":
             files = files.split(",")
             client = Client(int(team))
@@ -420,6 +449,8 @@ class Root(controllers.RootController):
                 rev - the revision to undelete from
         returns (json): Message - a message to show the user
         """
+        pass    #TODO BZRPORT: Implement!
+
         if files != "":
             files = files.split(",")
             client = Client(int(team))
@@ -451,6 +482,8 @@ class Root(controllers.RootController):
                     changed_paths is a list of dicts:
                         action, path
         """
+        pass    #TODO BZRPORT: Implement!
+
         client = Client(int(team))
         log = client.log(client.REPO, discover_changed_paths=True)
 
@@ -470,6 +503,8 @@ class Root(controllers.RootController):
         3. Commit that directory with the new data and the message
         4. Wipe the directory
         """
+        pass    #TODO BZRPORT: Implement!
+
         client = Client(int(team))
         reload = "false"
         #1. SVN checkout of file's directory
@@ -552,6 +587,7 @@ class Root(controllers.RootController):
             path - path to the directory to be created
         returns: None, may through a pysvn.ClientError
         """
+        pass    #TODO BZRPORT: Implement!
 
         if not client.is_url(client.REPO + path):
             upperpath = os.path.dirname(path)
@@ -562,7 +598,7 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def filelist(self, team, rootpath="/", rev=0, date=0):
+    def filelist(self, team, rootpath="/", rev=-1, date=0):
         """
         Returns a directory tree of the current repository.
         inputs: None
@@ -572,20 +608,27 @@ class Root(controllers.RootController):
                        children : [list as above]
                        name : name of file}, ...]}
         """
-        client = Client(int(team))
-        target_rev = self.get_revision(rev)
+
+        b = Client( int(team) )
+        target_rev_id = self.get_rev_id(team, rev)
         self.user.set_setting('project.last', rootpath)
 
         if len(rootpath) == 0 or rootpath[0] != "/":
             rootpath = "/" + rootpath
 
-        #This returns a flat list of files
-        #This is sorted, so a directory is defined before the files in it
         try:
-            files = client.list(client.REPO + rootpath, revision=target_rev, recurse=True)
-        except pysvn.ClientError, e:
-            print str(e)
-            return { "error" : "Error accessing repository" }
+            revtree = b.repository.revision_tree(target_rev_id)
+        except:
+            return { "error" : "Error getting revision tree" }
+
+        try:
+            revtree.lock_read()
+            files = revtree.list_files(include_root=False)
+        except: # TODO BZRPORT: Proper error handling
+            return { "error" : "Error getting file list" }
+        # Always unlock tree:
+        finally:
+            revtree.unlock()
 
         #Start off with a directory to represent the root of the path
         tree = dict( name = os.path.basename(rootpath),
@@ -596,12 +639,13 @@ class Root(controllers.RootController):
 
         #Go through each file, creating appropriate directories and files
         #In a tree structure based around dictionaries
-        for details in [x[0] for x in files]:
-            filename = details["repos_path"]
+        for f_path, c, f_type, file_id, entry in files:
 
-            # For some reason, pysvn returns "//" on the front of the paths
-            if filename[0:2] == "//":
-                filename = filename[1:]
+            filename = f_path
+
+#            # For some reason, pysvn returns "//" on the front of the paths #TODO BZRPORT: remove
+#            if filename[0:2] == "//":
+#                filename = filename[1:]
 
             basename = os.path.basename(filename)  #/etc/bla - returns bla
 
@@ -613,7 +657,7 @@ class Root(controllers.RootController):
                 #directories. If they don't exist, create them
 
                 if not top["children"].has_key( path ):
-                    if details["kind"] == pysvn.node_kind.file:
+                    if f_type == "file":
                         kind = "FILE"
                         if filename in autosave_data:
                             autosave_info = autosave_data[filename]
@@ -626,7 +670,7 @@ class Root(controllers.RootController):
                     top["children"][path] = dict( name = basename,
                                                   path = filename,
                                                   kind = kind,
-                                                  rev = details["created_rev"].number,
+                                                  rev = "-1",   # TODO BZRPORT: What is this field for? can we use entry.revision?
                                                   autosave = autosave_info,
                                                   children = {} )
                 top = top["children"][path]
@@ -662,6 +706,8 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def newdir(self, team, path, msg):
+        pass    #TODO BZRPORT: Implement!
+
         client = Client(int(team))
 
         if not client.is_url(client.REPO + path):
@@ -678,16 +724,22 @@ class Root(controllers.RootController):
     @srusers.require(srusers.in_team())
     def projlist(self, team):
         """Returns a list of projects"""
-        client = Client(int(team))
+
+        b = Client( int(team) )
+        latest_tree = b.basis_tree()
+
         self.user.set_setting('team.last', team)
 
-        dirs = client.list( client.REPO, recurse = False)
         projects = []
 
-        for details in [x[0] for x in dirs]:
-            name = os.path.basename( details["repos_path"] )
-            if name != "" and details["kind"] == pysvn.node_kind.dir:
-                projects.append(name)
+        # TODO: replace this with inventory.iter_entries() and Recursive=False once we have Bzr 1.16.1+
+        for path, entry in latest_tree.iter_entries_by_dir():
+            # If we've progressed beyond root contents, stop.
+            if path.find("/") != -1:
+                break
+        # check it is a directory and ignore root
+            if type(entry) == bzrlib.inventory.InventoryDirectory and path != "":   # TODO: we could avoid this type comparison if we used list_files
+                projects.append(path)
 
         return dict( projects = projects )
 
@@ -695,6 +747,8 @@ class Root(controllers.RootController):
     @srusers.require(srusers.in_team())
     def createproj(self, name, team):
         """Creates new project directory"""
+        pass    #TODO BZRPORT: Implement!
+
         client = Client(int(team))
 
         print "create proj " + name + " in group " + team
@@ -711,6 +765,8 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def revert(self, team, file, torev, message):
+        pass    #TODO BZRPORT: Implement!
+
         torev=int(torev)
         client = Client(int(team))
 
@@ -791,6 +847,7 @@ class Root(controllers.RootController):
     @srusers.require(srusers.in_team())
     def calendar(self, mnth, yr, file, team):
         #returns data for calendar function
+        pass    #TODO BZRPORT: Implement!
 
         month = int(mnth)+1
         year = int(yr)
@@ -835,6 +892,8 @@ class Root(controllers.RootController):
         #   the source and destination arguments may be directories or files
         #   directories rendered empty as a result of the move are automatically 'pruned'
         #   returns status = 0 on success
+        pass    #TODO BZRPORT: Implement!
+
         client = Client(int(team))
         source = client.REPO +src
         destination = client.REPO + dest
@@ -880,6 +939,7 @@ class Root(controllers.RootController):
 
     @srusers.require(srusers.in_team())
     def cp(self, team, src="", dest="", msg="SVN Copy", rev="0"):
+        pass    #TODO BZRPORT: Implement!
 
         src_rev = int(rev)
 
@@ -913,6 +973,7 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def checkcode(self, team, path, code=0, date=None):
+        pass    #TODO BZRPORT: Implement!
 
         client = Client(int(team))
         rev = self.get_revision("HEAD")
