@@ -1,3 +1,5 @@
+default: check
+
 motor_bom.htm: motor.sch
 	sr create_bom motor.sch motor_bom.htm
 
