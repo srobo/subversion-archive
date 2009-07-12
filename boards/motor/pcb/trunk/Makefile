@@ -8,3 +8,9 @@ check:
 
 stock:
 	sr stockcheck motor.sch
+
+gerbers: gerbers/.built
+
+gerbers/.built: motor.brd
+	sr export-gerber gerbers.conf motor.brd
+	touch -m gerbers/.built
