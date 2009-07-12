@@ -166,7 +166,7 @@ function Simulation(surface) {
 
 	// get latest data and display
 	this.update = function () {
-		var data = loadJSONDoc("/sim/getdata", {"teamno":1});
+		var data = loadJSONDoc("./sim/getdata", {"teamno":1});
 		data.addCallback( bind(this._draw, this) );
 	}
 
