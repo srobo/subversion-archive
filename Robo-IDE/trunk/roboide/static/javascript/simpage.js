@@ -168,6 +168,12 @@ function Simulation(surface) {
 	this.update = function () {
 		var data = loadJSONDoc("./sim/getdata", {"teamno":1});
 		data.addCallback( bind(this._draw, this) );
+		data.addErrback( bind( function(r) {
+				this.pause();
+				this._prompt = status_button( "Could not load simulation", LEVEL_ERROR,
+							      "retry", bind( this.run, this ) )
+			}, this )
+		);
 	}
 
 }
