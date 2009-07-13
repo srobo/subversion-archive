@@ -1,9 +1,11 @@
 default: check
 
-motor_bom.htm: motor.sch
-	sr create_bom motor.sch motor_bom.htm
+.PHONY: check stock bom
 
-.PHONY: check stock
+bom: bom.htm
+
+bom.htm: motor.sch
+	sr create_bom motor.sch bom.htm
 
 check:
 	sr pcb_lint motor.sch
