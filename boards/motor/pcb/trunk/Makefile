@@ -1,6 +1,6 @@
 default: check
 
-.PHONY: check stock bom
+.PHONY: check stock bom clean
 
 bom: bom.htm
 
@@ -18,3 +18,7 @@ gerbers: gerbers/.built
 gerbers/.built: motor.brd
 	sr export-gerber gerbers.conf motor.brd
 	touch -m gerbers/.built
+
+clean:
+	-rm -rf gerbers
+	-rm -f bom.htm
