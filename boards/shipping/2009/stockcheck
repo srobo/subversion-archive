@@ -1,6 +1,7 @@
 #!/bin/bash
-
+NUM_BOARDS=20
 schematics=`ls ../../{motor,jointio,pwm}/pcb/trunk/*.sch ../../power/pcb/branch/0910/PWR1.sch`
+with_num=""
 
 # Check we're being run from the right place:
 for sch in $schematics
@@ -18,9 +19,9 @@ do
 	exit 1
     fi
 
+    with_num="$with_num -$NUM_BOARDS $sch"
 done
-
 
 # Check stock:
 echo '*** Stock checking ***'
-sr stockcheck $schematics
+sr stockcheck $with_num
