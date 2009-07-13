@@ -1,9 +1,11 @@
 default: check
 
-pwm_bom.htm: pwm-board.sch
-	sr create_bom pwm-board.sch pwm_bom.htm
+.PHONY: check stock bom
 
-.PHONY: check stock
+bom: bom.htm
+
+bom.htm: pwm-board.sch
+	sr create_bom pwm-board.sch bom.htm
 
 check:
 	sr pcb_lint pwm-board.sch
