@@ -1,0 +1,9 @@
+Pin Number   	Description   	Colour
+1		GND		Grey
+2		SCL		Violet
+3		SDA		Blue
+4		XBee -> Slug	Green
+5		Slug -> XBee	Yellow
+6		SLUG-BOOT	Orange
+7		VREGSLUG2	Red
+Not Present	Unused		Brown
