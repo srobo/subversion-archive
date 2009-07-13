@@ -17,14 +17,22 @@ do
 	echo pcb_lint failed on `basename $sch` -- aborting.
 	exit 1
     fi
-
 done
 
-# Generate BOMs:
+[ -f gerbers ] && rm -rf gerbers
+mkdir gerbers
+
+# Generate BOMs and gerbers
 for sch in $schematics
 do
     d=`dirname $sch`
-    make -C $d bom gerbers
+    make -C $d bom gerbers || ( echo fail -- see above && exit 1 ; )
+
+    gd=gerbers/`basename $sch .sch`
+    mkdir $gd
+
+    cp $d/bom.htm $gd
+    cp $d/gerbers/* $gd
 done
 
 
