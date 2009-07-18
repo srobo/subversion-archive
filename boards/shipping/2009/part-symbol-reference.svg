@@ -4,12 +4,38 @@
 <svg
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    version="1.0"
    width="744.09448"
    height="1052.3622"
    id="svg2">
   <defs
-     id="defs4" />
+     id="defs4">
+    <marker
+       refX="0"
+       refY="0"
+       orient="auto"
+       id="Arrow1Lend"
+       style="overflow:visible">
+      <path
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         id="path1383"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none" />
+    </marker>
+    <marker
+       refX="0"
+       refY="0"
+       orient="auto"
+       id="Arrow1Lend-4"
+       style="overflow:visible">
+      <path
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         id="path1383-4"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none" />
+    </marker>
+  </defs>
   <g
      id="layer1">
     <rect
@@ -169,5 +195,73 @@
          x="102.3102"
          y="363.82315"
          id="tspan868-4">sr-d-bzx384c3v3</tspan></text>
+    <rect
+       width="53.737915"
+       height="136.65823"
+       x="338.85306"
+       y="518.52905"
+       id="rect1087"
+       style="fill:none;stroke:#000000;stroke-width:2.58344388;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <path
+       d="m 364.28571,549.50507 a 14.285714,14.285714 0 1 1 -28.57142,0 14.285714,14.285714 0 1 1 28.57142,0 z"
+       transform="matrix(0.8828125,0,0,0.8828125,64.587054,103.68085)"
+       id="path1169"
+       style="fill:none;stroke:#008000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <path
+       d="m 364.28571,549.50507 a 14.285714,14.285714 0 1 1 -28.57142,0 14.285714,14.285714 0 1 1 28.57142,0 z"
+       transform="matrix(0.8046875,0,0,0.8046875,91.930805,98.039467)"
+       id="path1169-4"
+       style="fill:none;stroke:#008000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <path
+       d="m 366.42857,688.07647 0,-58.57143"
+       id="path1193"
+       style="fill:#000000;stroke:#000000;stroke-width:1.79999995;stroke-miterlimit:4;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Lend)" />
+    <image
+       xlink:href="file:///home/chris/srobo/boards/shipping/2009/inkscape_pasted_image_20090718_185202.png"
+       x="481.49997"
+       y="490.2193"
+       width="227"
+       height="200"
+       id="image1844" />
+    <text
+       x="282.14285"
+       y="663.79077"
+       id="text1848"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"><tspan
+         x="282.14285"
+         y="663.79077"
+         id="tspan1852">Front</tspan></text>
+    <text
+       x="284.28574"
+       y="528.07648"
+       id="text1856"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"><tspan
+         x="284.28574"
+         y="528.07648"
+         id="tspan1858">Back</tspan></text>
+    <text
+       x="604.04645"
+       y="702.67535"
+       id="text1856-0"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"><tspan
+         x="604.04645"
+         y="702.67535"
+         id="tspan1858-8">Back</tspan></text>
+    <text
+       x="488.23593"
+       y="509.51065"
+       id="text1848-5"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"><tspan
+         x="488.23593"
+         y="509.51065"
+         id="tspan1852-9">Front</tspan></text>
+    <path
+       d="m 451.33641,519.60999 41.6129,41.21867"
+       id="path1193-5"
+       style="fill:#000000;stroke:#000000;stroke-width:1.79999995;stroke-miterlimit:4;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Lend)" />
   </g>
 </svg>
