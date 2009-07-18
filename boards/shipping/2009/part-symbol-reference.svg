@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.0"
+   width="744.09448"
+   height="1052.3622"
+   id="svg2">
+  <defs
+     id="defs4" />
+  <g
+     id="layer1">
+    <rect
+       width="105.71429"
+       height="152.85715"
+       ry="0"
+       x="340.71429"
+       y="38.790756"
+       id="rect12"
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <rect
+       width="102.966"
+       height="21.537424"
+       ry="0"
+       x="342.08844"
+       y="19.450611"
+       id="rect14"
+       style="fill:#000000;stroke:#000000;stroke-width:2.8911469;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <rect
+       width="101.55605"
+       height="21.556046"
+       ry="0"
+       x="342.07913"
+       y="189.4413"
+       id="rect14-4"
+       style="fill:#000000;stroke:#000000;stroke-width:2.87252498;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <rect
+       width="31.010084"
+       height="31.724369"
+       ry="0"
+       x="380.78067"
+       y="51.85714"
+       id="rect810"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.41848779;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <rect
+       width="14.880178"
+       height="32.737324"
+       ry="0"
+       x="341.48846"
+       y="50.993526"
+       id="rect810-2"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.40553522;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <rect
+       width="14.880178"
+       height="32.737324"
+       ry="0"
+       x="429.70276"
+       y="50.279236"
+       id="rect810-2-4"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.40553522;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <rect
+       width="103.60127"
+       height="157.88698"
+       x="527.84222"
+       y="33.061543"
+       id="rect856"
+       style="fill:none;stroke:#000000;stroke-width:2.97014761;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <path
+       d="m 621.42856,145.36195 -81.42857,0 38.9874,-72.999767 42.44117,72.999767 z"
+       id="path858"
+       style="stroke-width:1px" />
+    <text
+       x="524.28571"
+       y="214.50504"
+       id="text860"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"><tspan
+         x="524.28571"
+         y="214.50504"
+         id="tspan862">Base of LED</tspan></text>
+    <text
+       x="154.28572"
+       y="132.36218"
+       id="text864"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"><tspan
+         x="154.28572"
+         y="132.36218"
+         id="tspan868">sr-led-red</tspan></text>
+  </g>
+</svg>
