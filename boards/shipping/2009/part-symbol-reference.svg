@@ -89,5 +89,85 @@
          x="154.28572"
          y="132.36218"
          id="tspan868">sr-led-red</tspan></text>
+    <g
+       transform="matrix(0,1,-1,0,926.63587,195.51711)"
+       id="g1025">
+      <rect
+         width="25.88689"
+         height="31.60117"
+         ry="0"
+         x="-356.13794"
+         y="228.42532"
+         transform="matrix(0,-1,1,0,0,0)"
+         id="rect14-5-1"
+         style="fill:#000000;stroke:#000000;stroke-width:1.7559731;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         width="105.71429"
+         height="152.85715"
+         ry="0"
+         x="-396.64792"
+         y="-233.57144"
+         transform="matrix(0,-1,-1,0,0,0)"
+         id="rect12-6"
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         width="25.88689"
+         height="31.60117"
+         ry="0"
+         x="-355.12701"
+         y="53.663689"
+         transform="matrix(0,-1,1,0,0,0)"
+         id="rect14-5"
+         style="fill:#000000;stroke:#000000;stroke-width:1.7559731;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         width="98.120079"
+         height="38.120075"
+         ry="0"
+         x="-393.02939"
+         y="84.689949"
+         transform="matrix(0,-1,1,0,0,0)"
+         id="rect810-2-4-2"
+         style="fill:#696969;fill-opacity:1;fill-rule:evenodd;stroke:#696969;stroke-width:6.66564035;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <text
+       x="538.2345"
+       y="399.81824"
+       id="text860-5"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"><tspan
+         x="538.2345"
+         y="399.81824"
+         id="tspan862-4">Top View</tspan><tspan
+         x="538.2345"
+         y="424.81824"
+         id="tspan1023" /></text>
+    <g
+       transform="matrix(-1,0,0,-1,638.91085,714.89768)"
+       id="g1057">
+      <rect
+         width="131.42857"
+         height="192.85715"
+         x="180"
+         y="259.50504"
+         id="rect1031"
+         style="fill:none;stroke:#000000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <path
+         d="m 180,406.6479 128.57143,0"
+         id="path1033"
+         style="fill:#000000;stroke:#000000;stroke-width:7.9000001;stroke-miterlimit:4;stroke-dasharray:none" />
+      <path
+         d="m 200.71218,329.96872 81.42857,0 -38.9874,72.99976 -42.44117,-72.99976 z"
+         id="path858-4"
+         style="stroke-width:1px" />
+    </g>
+    <text
+       x="102.3102"
+       y="363.82315"
+       id="text864-3"
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"><tspan
+         x="102.3102"
+         y="363.82315"
+         id="tspan868-4">sr-d-bzx384c3v3</tspan></text>
   </g>
 </svg>
