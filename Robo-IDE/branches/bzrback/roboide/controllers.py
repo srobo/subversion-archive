@@ -613,96 +613,100 @@ class Root(controllers.RootController):
         target_rev_id = self.get_rev_id(team, rev)
         self.user.set_setting('project.last', rootpath)
 
-        if len(rootpath) == 0 or rootpath[0] != "/":
-            rootpath = "/" + rootpath
-
         try:
-            revtree = b.repository.revision_tree(target_rev_id)
+            rev_tree = b.repository.revision_tree(target_rev_id)
         except:
             return { "error" : "Error getting revision tree" }
 
+        # Get id of root folder from which to list files. if it is not found it will return None
+        rootid = rev_tree.path2id(rootpath)
+
         try:
-            revtree.lock_read()
-            files = revtree.list_files(include_root=False)
+            rev_tree.lock_read()
+            # Get generator object containing file information from base rootid. If rootid=None, will return from root.
+            files = rev_tree.inventory.iter_entries(rootid)
         except: # TODO BZRPORT: Proper error handling
             return { "error" : "Error getting file list" }
         # Always unlock tree:
         finally:
-            revtree.unlock()
-
-        #Start off with a directory to represent the root of the path
-        tree = dict( name = os.path.basename(rootpath),
-                     path = rootpath,
-                     children={} )
+            rev_tree.unlock()
 
         autosave_data = self.autosave.getfilesrc(team, rootpath)
 
-        #Go through each file, creating appropriate directories and files
-        #In a tree structure based around dictionaries
-        for f_path, c, f_type, file_id, entry in files:
-
-            filename = f_path
-
-#            # For some reason, pysvn returns "//" on the front of the paths #TODO BZRPORT: remove
-#            if filename[0:2] == "//":
-#                filename = filename[1:]
-
-            basename = os.path.basename(filename)  #/etc/bla - returns bla
-
-            short_fname = filename[len(rootpath):]
-            top = tree
-
-            for path in [x for x in short_fname.split("/") if len(x) > 0]:
-                #Go through each section of the path, trying to go down into
-                #directories. If they don't exist, create them
-
-                if not top["children"].has_key( path ):
-                    if f_type == "file":
-                        kind = "FILE"
-                        if filename in autosave_data:
-                            autosave_info = autosave_data[filename]
-                        else:
-                            autosave_info = 0
-                    else:
-                        kind = "FOLDER"
-                        autosave_info = 0
-
-                    top["children"][path] = dict( name = basename,
-                                                  path = filename,
-                                                  kind = kind,
-                                                  rev = "-1",   # TODO BZRPORT: What is this field for? can we use entry.revision?
-                                                  autosave = autosave_info,
-                                                  children = {} )
-                top = top["children"][path]
-
-        def dicttolist(tree):
-            """Recursively change a dict containing values into a list of those
-            values, and the same again for the dict contained in the children
-            value.
-            inputs: A dictionary of dictionaries. Each sub-dictionary to have a
-            children dictionary (or at least a children : None)
-            returns: That data changed into lists
+        def branch_recurse(path, entry, files, given_parent_id):
             """
-            try:
-                #No need to sort here - it's done by the client
-                #try and pull out child nodes into a list
-                tree["children"] = tree["children"].values()
-            except AttributeError:
-                return tree
+            Travels recursively through a generator object provided by revision_tree.inventory.iter_items.
+            Iter_items returns child items immediately after their parents, so by checking the parent_id field of the item with the actual id of the directory item that called it, we can check if we are still within that directory and therefore need to add the item as a child.
+            This function will return a list of all children of a particular branch, along with the next items for analysis.
+            Whenever it encounters a directory it will call itself to find the children.
+            inputs: path - path of item to be analysed first
+                    entry - InventoryEntry-derived object of item to be analysed first
+                    files - generator object created by iter_items
+                    given_parent_id - id (string) of calling directory
+            returns: entry_list - list of children. if given_parent_id does not match entry.parent_id, this will be an empty list.
+                     path - path of item that has not yet been added to the tree
+                     entry - the entry object that has not yet been added to the tree.
+                             if given_parent_id did not match entry.parent_id, then path and entry returned will be the same as path and entry called.
+            """
 
-            #For each child node, try to apply this function to them
-            for i in range(0, len(tree["children"])):
-                try:
-                    tree["children"][i] = dicttolist(tree["children"][i])
-                except AttributeError:
-                    pass
-            return tree
+            entry_list = []
 
-        tree = dicttolist(tree)["children"]
-        return dict(tree=tree)
+            while entry.parent_id == given_parent_id: # is a child of parent
+
+                if entry.kind == "directory":
+                    try:
+                        next_path, next_entry = files.next()
+                    except StopIteration: # No more files to iterate through
+                        break
+                    children_list, next_path, next_entry = branch_recurse(next_path, next_entry, files, entry.file_id)
+
+                    entry_list.append({
+                                        "name": entry.name,
+                                        "path": path,
+                                        "kind": "FOLDER",
+                                        "autosave": 0,  # No autosave data for directories
+                                        "rev": "-1", #TODO BZRPORT: what's this show/for? yes, i know revision, i mean, current, or when it was created?
+                                        "children": children_list})
+
+                    path = next_path
+                    entry = next_entry  # now we'll use the returned entry
+
+                else:
+                    if path in autosave_data:
+                        autosave_info = autosave_data[path]
+                    else:
+                        autosave_info = 0
+                    entry_list.append({
+                                        "name": entry.name,
+                                        "path": path,
+                                        "kind": "FILE",
+                                        "autosave": autosave_info,
+                                        "rev": "-1", #TODO BZRPORT: what's this show/for? yes, i know revision, i mean, current, or when it was created?
+                                        "children": []})
+
+                    try:
+                        path, entry = files.next()  # grab next entry
+                    except StopIteration: # No more files to iterate through
+                        break
+
+            return entry_list, path, entry
+
+        # Determine tree_root string to pass to recursing function as a parent id
+        if rootid == None:
+            tree_root = "TREE_ROOT"
+        else:
+            tree_root = rootid
+
+        try:
+            first_path, first_entry = files.next()  # grab next entry
+        except StopIteration:
+            return { "error" : "File list iteration error. This should never happen!" }
+
+        tree, last_path, last_entry = branch_recurse(first_path, first_entry, files, tree_root)
+
+        return dict(tree = tree)
 
     #create a new directory
-
     @expose("json")
     @srusers.require(srusers.in_team())
     def newdir(self, team, path, msg):
