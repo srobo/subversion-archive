@@ -1,7 +1,5 @@
 This is the firmware for the motor controllers.
 
-Builds with msp430-gcc 3.2.3, with binutils 2.16.
-
 Control states:
  
 With the fets arrange like so:
