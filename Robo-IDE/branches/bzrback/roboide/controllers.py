@@ -782,8 +782,6 @@ class Root(controllers.RootController):
 
         r = Repo(int(team))
 
-        print "create proj " + name + " in group " + team # TODO: remove this statement
-
         if name.find(".") != -1:
             """No ../../ nastyness"""
             return nil
@@ -791,7 +789,6 @@ class Root(controllers.RootController):
 #        url = srusers.get_svnrepo(team) + "/" + name
         url = r.REPO + "/" + name
 
-        print url # TODO: remove this statement
         r.bzrdir.create_branch_convenience(base=url,force_new_tree=False)
         return dict( )
 
