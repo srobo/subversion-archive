@@ -287,6 +287,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this._load_contents = function() {
 		var d = loadJSONDoc("./filesrc", { team : this.team,
 						   file : this.path,
+						   project: this.project,
 						   revision : this.rev});
 
 		d.addCallback( bind(this._recv_contents, this));

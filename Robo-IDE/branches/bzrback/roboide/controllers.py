@@ -274,14 +274,15 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def filesrc(self, team, file=None, revision=-1):
+    def filesrc(self, team, project, file=None, revision=-1):
         """
         Returns the contents of the file.
         Turns out the action parameter can be edit. Not sure how this is
         useful - won't it always be edit?
         """
+
         curtime = time.time()
-        b = Branch( int(team) )
+        b = Branch( int(team), project )
 
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness trac#208
 
