@@ -779,19 +779,20 @@ class Root(controllers.RootController):
     @srusers.require(srusers.in_team())
     def createproj(self, name, team):
         """Creates new project directory"""
-        pass    #TODO BZRPORT: Implement!
 
-        client = Client(int(team))
+        r = Repo(int(team))
 
-        print "create proj " + name + " in group " + team
+        print "create proj " + name + " in group " + team # TODO: remove this statement
 
         if name.find(".") != -1:
             """No ../../ nastyness"""
             return nil
 
-        url = srusers.get_svnrepo(team) + "/" + name
-        print url
-        client.mkdir(url, "Added project \"" + name + "\"")
+#        url = srusers.get_svnrepo(team) + "/" + name
+        url = r.REPO + "/" + name
+
+        print url # TODO: remove this statement
+        r.bzrdir.create_branch_convenience(base=url,force_new_tree=False)
         return dict( )
 
     @expose("json")
