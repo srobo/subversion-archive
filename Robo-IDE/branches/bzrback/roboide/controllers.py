@@ -37,9 +37,6 @@ class Branch:
 
         self.__dict__["REPO"] = srusers.get_svnrepo( team ) # TODO BZRPORT: do we want Repo to be a string?
 
-        print "REPO:"
-        print self.__dict__["REPO"]
-
         branchloc = self.__dict__["REPO"] + "/" + project
 
         b = bzrlib.branch.Branch.open(branchloc)
@@ -632,10 +629,11 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def filelist(self, team, rootpath="/", rev=-1, date=0):
+    def filelist(self, team, project, rootpath="/", rev=-1, date=0):
         """
         Returns a directory tree of the current repository.
-        inputs: None
+        inputs: project - the bzr branch
+                rootpath - to return file from a particular directory within the branch (recursive)
         returns: A tree as a list of files/directory objects:
             { tree : [{path : filepath
                        kind : FOLDER or FILE
@@ -643,9 +641,10 @@ class Root(controllers.RootController):
                        name : name of file}, ...]}
         """
 
-        b = Branch( int(team), rootpath )
-        target_rev_id = self.get_rev_id(team, rev)
-        self.user.set_setting('project.last', rootpath)
+        b = Branch( int(team), project )
+
+        target_rev_id = self.get_rev_id(team, project ,rev)
+        self.user.set_setting('project.last', project)
 
         try:
             rev_tree = b.repository.revision_tree(target_rev_id)
@@ -665,7 +664,7 @@ class Root(controllers.RootController):
         finally:
             rev_tree.unlock()
 
-        autosave_data = self.autosave.getfilesrc(team, rootpath)
+        autosave_data = self.autosave.getfilesrc(team, project)
 
         def branch_recurse(path, entry, files, given_parent_id):
             """
@@ -733,8 +732,8 @@ class Root(controllers.RootController):
 
         try:
             first_path, first_entry = files.next()  # grab next entry
-        except StopIteration:
-            return { "error" : "File list iteration error. This should never happen!" }
+        except StopIteration:   # StopIteration caught on first pass: project tree must be empty
+            return dict(tree = [])
 
         tree, last_path, last_entry = branch_recurse(first_path, first_entry, files, tree_root)
 

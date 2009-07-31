@@ -363,7 +363,7 @@ ProjFileList.prototype.refresh = function(auto) {
 
 	this._timeout = null;
 	var d = loadJSONDoc("./filelist", { 'team' : this._team,
-					'rootpath' : this._project,
+					'project' : this._project,
 					'rev' : this.rev,
 					'date' : this._birth } );
 
