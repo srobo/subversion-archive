@@ -3,7 +3,7 @@ from turbogears.feed import FeedController
 import cherrypy, model
 from sqlobject import sqlbuilder
 import logging
-import bzrlib.branch
+import bzrlib.branch, bzrlib.repository
 import pysvn    # TODO BZRPORT: remove once all pysvn code removed
 import time, datetime
 import re
@@ -24,20 +24,25 @@ log = logging.getLogger("roboide.controllers")
 
 ZIPNAME = "robot.zip"
 
-class Client:
+class Branch:
     """
     A wrapper around a bzr branch. This creates a branch object associated with a bzr branch and wraps calls to
     its functions.
     """
     client = None
-    def __init__(self, team):
+    def __init__(self, team, project):
         """
         Create a bzr branch object and associate it with a user
         """
 
-        self.__dict__["REPO"] = srusers.get_svnrepo( team )
+        self.__dict__["REPO"] = srusers.get_svnrepo( team ) # TODO BZRPORT: do we want Repo to be a string?
 
-        b = bzrlib.branch.Branch.open(self.__dict__["REPO"])
+        print "REPO:"
+        print self.__dict__["REPO"]
+
+        branchloc = self.__dict__["REPO"] + "/" + project
+
+        b = bzrlib.branch.Branch.open(branchloc)
 
         #Using self.__dict__[] to avoid calling setattr in recursive death
         self.__dict__["client"] = b
@@ -45,7 +50,7 @@ class Client:
     def __setattr__(self, name, val):
         """
         This special method is called when setting a value that isn't found
-        elsewhere. It sets the same named value of the pysvn client
+        elsewhere. It sets the same named value of the bzrlib class.
         """
         #BE CAREFUL - assigning class-scope variables anywhere in this class
         #causes instant setattr recursion death
@@ -54,7 +59,7 @@ class Client:
     def __getattr__(self, name):
         """
         This special method is called when something isn't found in the class
-        normally. It returns the named attribute of the pysvn client this class
+        normally. It returns the named attribute of the bzrlib class this class
         is wrapping.
         """
         return getattr(self.client, name)
@@ -70,6 +75,35 @@ class Client:
         except pysvn.ClientError:
             return False
 
+class Repo:
+    """
+    A wrapper around a bzr repository.
+    """
+    def __init__(self, team):
+
+        self.__dict__["REPO"] = srusers.get_svnrepo( team )
+
+        r = bzrlib.repository.Repository.open(self.__dict__["REPO"])
+
+        #Using self.__dict__[] to avoid calling setattr in recursive death
+        self.__dict__["client"] = r
+
+    def __setattr__(self, name, val):
+        """
+        This special method is called when setting a value that isn't found
+        elsewhere. It sets the same named value of the bzrlib class.
+        """
+        #BE CAREFUL - assigning class-scope variables anywhere in this class
+        #causes instant setattr recursion death
+        setattr(self.client, name, val)
+
+    def __getattr__(self, name):
+        """
+        This special method is called when something isn't found in the class
+        normally. It returns the named attribute of the bzrlib class this class
+        is wrapping.
+        """
+        return getattr(self.client, name)
 
 class Feed(FeedController):
     def get_feed_data(self):
@@ -116,7 +150,7 @@ class Root(controllers.RootController):
         returns:
             revision object for given revision id."""
 
-        b = Client( int(team) )
+        b = Branch( int(team) )
 
         if rev_id == "":
             rev_id = b.last_revision()
@@ -129,7 +163,7 @@ class Root(controllers.RootController):
 
         return rev
 
-    def get_rev_id(self, team, revno=-1):
+    def get_rev_id(self, team, project, revno=-1):
         """
         Get revision ID string from revision number.
         inputs:
@@ -139,7 +173,7 @@ class Root(controllers.RootController):
             revision id string
         """
 
-        b = Client( int(team) )
+        b = Branch( int(team), project )
 
         try:
             if revno == -1 or revno == "-1" or revno == "HEAD": #TODO BZRPORT: stop anything calling "HEAD" string
@@ -250,7 +284,7 @@ class Root(controllers.RootController):
         useful - won't it always be edit?
         """
         curtime = time.time()
-        b = Client( int(team) )
+        b = Branch( int(team) )
 
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness trac#208
 
@@ -609,7 +643,7 @@ class Root(controllers.RootController):
                        name : name of file}, ...]}
         """
 
-        b = Client( int(team) )
+        b = Branch( int(team), rootpath )
         target_rev_id = self.get_rev_id(team, rev)
         self.user.set_setting('project.last', rootpath)
 
@@ -729,21 +763,16 @@ class Root(controllers.RootController):
     def projlist(self, team):
         """Returns a list of projects"""
 
-        b = Client( int(team) )
-        latest_tree = b.basis_tree()
+        r = Repo( int(team) )
 
         self.user.set_setting('team.last', team)
 
         projects = []
 
-        # TODO: replace this with inventory.iter_entries() and Recursive=False once we have Bzr 1.16.1+
-        for path, entry in latest_tree.iter_entries_by_dir():
-            # If we've progressed beyond root contents, stop.
-            if path.find("/") != -1:
-                break
-        # check it is a directory and ignore root
-            if type(entry) == bzrlib.inventory.InventoryDirectory and path != "":   # TODO: we could avoid this type comparison if we used list_files
-                projects.append(path)
+        branches = r.find_branches()
+
+        for branch in branches:
+            projects.append(branch.nick)
 
         return dict( projects = projects )
 
