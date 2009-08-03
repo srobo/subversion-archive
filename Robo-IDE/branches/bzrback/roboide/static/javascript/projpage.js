@@ -830,6 +830,7 @@ function ProjOps() {
 			var browser = new Browser(bind(this.new_folder, this), {'type' : 'isDir'});
 		} else {
 			var d = loadJSONDoc("./newdir", { team : team,
+						  project : projpage.project,
 						  path : new_name,
 						  msg : new_msg});
 

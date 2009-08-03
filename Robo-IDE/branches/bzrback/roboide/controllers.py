@@ -3,7 +3,7 @@ from turbogears.feed import FeedController
 import cherrypy, model
 from sqlobject import sqlbuilder
 import logging
-import bzrlib.branch, bzrlib.repository
+import bzrlib.branch, bzrlib.repository, bzrlib.workingtree
 import pysvn    # TODO BZRPORT: remove once all pysvn code removed
 import time, datetime
 import re
@@ -35,14 +35,14 @@ class Branch:
         Create a bzr branch object and associate it with a user
         """
 
-        self.__dict__["REPO"] = srusers.get_svnrepo( team ) # TODO BZRPORT: do we want Repo to be a string?
+        repoloc = srusers.get_svnrepo( team ) # TODO BZRPORT: do we want Repo to be a string?
 
-        branchloc = self.__dict__["REPO"] + "/" + project
+        branchloc = repoloc + "/" + project
 
         b = bzrlib.branch.Branch.open(branchloc)
 
         #Using self.__dict__[] to avoid calling setattr in recursive death
-        self.__dict__["client"] = b
+        self.__dict__["branch"] = b
 
     def __setattr__(self, name, val):
         """
@@ -51,7 +51,7 @@ class Branch:
         """
         #BE CAREFUL - assigning class-scope variables anywhere in this class
         #causes instant setattr recursion death
-        setattr(self.client, name, val)
+        setattr(self.branch, name, val)
 
     def __getattr__(self, name):
         """
@@ -59,7 +59,7 @@ class Branch:
         normally. It returns the named attribute of the bzrlib class this class
         is wrapping.
         """
-        return getattr(self.client, name)
+        return getattr(self.branch, name)
 
     def is_url(self, url, rev=pysvn.Revision(pysvn.opt_revision_kind.head)):
         """Override the default is_url which just tells you if the url looks
@@ -78,12 +78,12 @@ class Repo:
     """
     def __init__(self, team):
 
-        self.__dict__["REPO"] = srusers.get_svnrepo( team )
+        self.__dict__["REPOLOC"] = srusers.get_svnrepo( team )
 
-        r = bzrlib.repository.Repository.open(self.__dict__["REPO"])
+        r = bzrlib.repository.Repository.open(self.__dict__["REPOLOC"])
 
         #Using self.__dict__[] to avoid calling setattr in recursive death
-        self.__dict__["client"] = r
+        self.__dict__["repo"] = r
 
     def __setattr__(self, name, val):
         """
@@ -92,7 +92,7 @@ class Repo:
         """
         #BE CAREFUL - assigning class-scope variables anywhere in this class
         #causes instant setattr recursion death
-        setattr(self.client, name, val)
+        setattr(self.repo, name, val)
 
     def __getattr__(self, name):
         """
@@ -100,7 +100,48 @@ class Repo:
         normally. It returns the named attribute of the bzrlib class this class
         is wrapping.
         """
-        return getattr(self.client, name)
+        return getattr(self.repo, name)
+
+class WorkingTree:
+    """
+    A wrapper around the WorkingTree class that checks out a working copy into a temp directory.
+    """
+    def __init__(self, team, project):
+
+        # First open the branch
+        repo = srusers.get_svnrepo( team ) # TODO BZRPORT: do we want Repo to be a string?
+        branchloc = repo + "/" + project
+        b = bzrlib.branch.Branch.open(branchloc)
+
+        # Create a temporary directory
+        tmpdir = tempfile.mkdtemp()
+
+        # Lightweight checkout into the temp directory
+        b.create_checkout(tmpdir, lightweight=True)
+
+        # Open checkout as working tree object
+        wt = bzrlib.workingtree.WorkingTree.open(tmpdir)
+
+        #Using self.__dict__[] to avoid calling setattr in recursive death
+        self.__dict__["workingtree"] = wt
+        self.__dict__["tmpdir"] = tmpdir
+
+    def __setattr__(self, name, val):
+        """
+        This special method is called when setting a value that isn't found
+        elsewhere. It sets the same named value of the bzrlib class.
+        """
+        #BE CAREFUL - assigning class-scope variables anywhere in this class
+        #causes instant setattr recursion death
+        setattr(self.workingtree, name, val)
+
+    def __getattr__(self, name):
+        """
+        This special method is called when something isn't found in the class
+        normally. It returns the named attribute of the bzrlib class this class
+        is wrapping.
+        """
+        return getattr(self.workingtree, name)
 
 class Feed(FeedController):
     def get_feed_data(self):
@@ -365,12 +406,12 @@ class Root(controllers.RootController):
                       "message":x["message"], "rev":x["revision"].number} \
                       for x in result])
 
-    def checkoutintotmpdir(self, client, revision, base):
-        pass    #TODO BZRPORT: Implement!
-
-        tmpdir = tempfile.mkdtemp()
-        client.checkout(client.REPO + base, tmpdir, recurse=False, revision=revision)
-        return tmpdir
+#    def checkoutintotmpdir(self, branch, revision, base): # TODO BZRDIR: replace with WorkingTree object
+#
+#        tmpdir = tempfile.mkdtemp()
+#        client.checkout(client.REPO + base, tmpdir, recurse=False, revision=revision)
+#        branch.create_checkout(tmpdir, lightweight=True)
+#        return tmpdir
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -549,7 +590,7 @@ class Root(controllers.RootController):
         if not client.is_url(client.REPO + path): #new dir needed...
             reload = "true"
             try:
-                self.create_svn_dir(client, path)
+                self.create_dir(client, path)
             except pysvn.ClientError:
                 return dict(new_revision="0", code = "",\
                             success="Error creating new directory",
@@ -612,21 +653,26 @@ class Root(controllers.RootController):
         return dict(new_revision=str(newrev), code=code,
                     success=success, file=file, reloadfiles=reload)
 
-    def create_svn_dir(self, client, path, msg=""):
+    def create_dir(self, wt, path, msg=""): # TODO BZRPORT: error checking
         """Creates an svn directory if one doesn't exist yet
         inputs:
-            client - a pysvn client
-            path - path to the directory to be created
+            wt - a workingtree object (a checkout in a tmp dir)
+            path - path to the directory to be created, relative to tree root
         returns: None, may through a pysvn.ClientError
         """
-        pass    #TODO BZRPORT: Implement!
 
-        if not client.is_url(client.REPO + path):
-            upperpath = os.path.dirname(path)
-            #Recurse to ensure folder parents exist
-            self.create_svn_dir(client, upperpath)
+#        if not client.is_url(client.REPO + path): TODO BZRPORT: check if folder exists first!
+        if (1 == 1): # TEMPORARY!
 
-            client.mkdir(client.REPO + path, "New Directory: " + path + " Notes: " + msg)
+#            client.mkdir(client.REPO + path, "New Directory: " + path + " Notes: " + msg)
+            fullpath = wt.tmpdir + path
+            print "Fullpath: " + fullpath
+            print os.listdir(wt.tmpdir)
+            os.makedirs(fullpath) # makedirs will generate any intermediate required directories needed for the leaf dir.
+            print os.listdir(wt.tmpdir)
+            wt.add(path)
+            wt.commit("New directory " + path + " created. Notes: " + msg)
+            
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -690,9 +736,10 @@ class Root(controllers.RootController):
                 if entry.kind == "directory":
                     try:
                         next_path, next_entry = files.next()
-                    except StopIteration: # No more files to iterate through
-                        break
-                    children_list, next_path, next_entry = branch_recurse(next_path, next_entry, files, entry.file_id)
+                        children_list, next_path, next_entry = branch_recurse(next_path, next_entry, files, entry.file_id)
+                    except StopIteration: # No more files to iterate through after this one
+                        next_entry = None # break after adding this entry
+                        children_list = [] # no more items, so there can't be any children
 
                     entry_list.append({
                                         "name": entry.name,
@@ -702,8 +749,12 @@ class Root(controllers.RootController):
                                         "rev": "-1", #TODO BZRPORT: what's this show/for? yes, i know revision, i mean, current, or when it was created?
                                         "children": children_list})
 
-                    path = next_path
-                    entry = next_entry  # now we'll use the returned entry
+                    if next_entry is None:
+                        break # there are no more iterations so break
+                    else:
+                        path = next_path
+                        entry = next_entry  # now we'll use the returned entry
+
 
                 else:
                     if path in autosave_data:
@@ -743,17 +794,15 @@ class Root(controllers.RootController):
     #create a new directory
     @expose("json")
     @srusers.require(srusers.in_team())
-    def newdir(self, team, path, msg):
-        pass    #TODO BZRPORT: Implement!
+    def newdir(self, team, project, path, msg):
 
-        client = Client(int(team))
+        wt = WorkingTree(int(team), project)
 
-        if not client.is_url(client.REPO + path):
-            try:
-                self.create_svn_dir(client, path, msg)
-            except pysvn.ClientError:
-                return dict( success=0, newdir = path,\
-                            feedback="Error creating new directory")
+        try:
+            self.create_dir(wt, path, msg)
+        except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
+            return dict( success=0, newdir = path,\
+                        feedback="Error creating new directory")
 
         return dict( success=1, newdir = path,\
                     feedback="Directory successfully created")
