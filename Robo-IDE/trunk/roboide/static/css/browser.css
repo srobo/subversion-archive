@@ -11,14 +11,20 @@
 	text-align: left;
 	z-index: 100;
 }
-#selected-dir {
-	display: block;
+#selected-dir, #browser-title {
 	color: #ffffff;
-	font-size: 1.6em;
+	display: block;
 	font-weight: bold;
-	margin: 1%;
 	padding: 1%;
+}
+#browser-title {
+	font-size: 1.6em;
+	margin: 0 1%;
 	width: 96%;
+}
+#selected-dir {
+	font-size: 1.35em;
+	margin: 3px 1% 3px 2%;
 }
 #left-pane, #right-pane {
 	display: block;

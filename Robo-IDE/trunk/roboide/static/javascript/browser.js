@@ -256,7 +256,7 @@ Browser.prototype.display = function() {
 	switch(this.type) {
 		case 'isFile':
 			$("browser-status").innerHTML = "Please Select a save directory & new file name";
-			$("selected-dir").innerHTML = this.title || "File Save As:";
+			$("browser-title").innerHTML = this.title || "File Save As";
 			showElement("right-pane");
 			showElement("left-pane");
 			showElement("new-commit-msg");
@@ -264,7 +264,7 @@ Browser.prototype.display = function() {
 			break;
 		case 'isDir' :
 			$("browser-status").innerHTML = "Please Select a save directory & new directory name";
-			$("selected-dir").innerHTML = this.title || "New Directory:";
+			$("browser-title").innerHTML = this.title || "New Directory";
 			showElement("right-pane");
 			showElement("left-pane");
 			showElement("new-commit-msg");
@@ -272,7 +272,7 @@ Browser.prototype.display = function() {
 			break;
 		case 'isCommit' :
 			$("browser-status").innerHTML = "Please add a commit message before saving";
-			$("selected-dir").innerHTML = "Commit Message:";
+			$("browser-title").innerHTML = "Commit Message:";
 			hideElement("right-pane");
 			hideElement("left-pane");
 			showElement("new-commit-msg");
@@ -280,13 +280,14 @@ Browser.prototype.display = function() {
 			break;
 		case 'isProj' :
 			$("browser-status").innerHTML = "Enter new project name:";
-			$("selected-dir").innerHTML = this.title || "New Project";
+			$("browser-title").innerHTML = this.title || "New Project";
 			hideElement("right-pane");
 			hideElement("left-pane");
 			hideElement("new-commit-msg");
 			showElement("new-file-name");
 			break;
 	}
+	$("selected-dir").innerHTML = "Save Directory: /";
 }
 Browser.prototype.hide = function() {
 	logDebug("Hiding File Browser");
