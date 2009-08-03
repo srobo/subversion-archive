@@ -379,13 +379,12 @@ function EditTab(iea, team, project, path, rev, mode) {
  				this._update_contents();
 				break;
 			case "Merge":
-				status_msg("File "+this.path+" Merge successful (Now at r"+nodes.new_revision+")", LEVEL_OK);
-				this._original = this.contents;
-				this._autosaved = "";
+				status_msg("File "+this.path+" Merge failed (Now at r"+nodes.new_revision+")", LEVEL_ERROR);
+				this.contents = nodes.code;
 				this._isNew = false;
 				this.rev = nodes.new_revision;
 				$("check-syntax").disabled = false;
- 				this._update_contents();
+				this._update_contents();
 				break;
 			case "Error creating new directory":
 				status_msg("Error creating new directory (New Revision: "+nodes.new_revision+")", LEVEL_ERROR);
@@ -406,7 +405,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 		var d = postJSONDoc("./savefile", {
 					queryString : { team : team,
 						file : this.path,
-						rev : 0,				//TODO: make this dynamic
+						rev : this.rev,
 						message : this._commitMsg },
 					sendContent : {code : this.contents}
 				});

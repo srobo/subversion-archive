@@ -476,7 +476,7 @@ class Root(controllers.RootController):
         #TODO: Check for path naugtiness trac#208
         path = os.path.dirname(file)
         basename = os.path.basename(file)
-        rev = self.get_revision("HEAD") #Always check in over the head to get
+        rev = self.get_revision(rev) #Always check in over the head to get
         #old revisions to merge over new ones
 
         if not client.is_url(client.REPO + path): #new dir needed...
