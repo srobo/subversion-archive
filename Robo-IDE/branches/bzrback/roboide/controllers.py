@@ -61,17 +61,6 @@ class Branch:
         """
         return getattr(self.branch, name)
 
-    def is_url(self, url, rev=pysvn.Revision(pysvn.opt_revision_kind.head)):
-        """Override the default is_url which just tells you if the url looks
-        sane. This tries to get info on the file...
-        """
-        pass    #TODO BZRPORT: implement
-        try:
-            self.client.info2(url, rev)
-            return True
-        except pysvn.ClientError:
-            return False
-
 class Repo:
     """
     A wrapper around a bzr repository.
@@ -658,20 +647,18 @@ class Root(controllers.RootController):
         inputs:
             wt - a workingtree object (a checkout in a tmp dir)
             path - path to the directory to be created, relative to tree root
-        returns: None, may through a pysvn.ClientError
+        returns: True if directory created, false if it already existed
         """
 
-#        if not client.is_url(client.REPO + path): TODO BZRPORT: check if folder exists first!
-        if (1 == 1): # TEMPORARY!
-
-#            client.mkdir(client.REPO + path, "New Directory: " + path + " Notes: " + msg)
+        # check if path already exists - if it doesn't path2id will return None
+        if wt.path2id(path) is None:
             fullpath = wt.tmpdir + path
-            print "Fullpath: " + fullpath
-            print os.listdir(wt.tmpdir)
             os.makedirs(fullpath) # makedirs will generate any intermediate required directories needed for the leaf dir.
-            print os.listdir(wt.tmpdir)
             wt.add(path)
             wt.commit("New directory " + path + " created. Notes: " + msg)
+            return True
+        else:
+            return False
             
 
     @expose("json")
@@ -799,13 +786,17 @@ class Root(controllers.RootController):
         wt = WorkingTree(int(team), project)
 
         try:
-            self.create_dir(wt, path, msg)
+            created = self.create_dir(wt, path, msg)
         except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
             return dict( success=0, newdir = path,\
-                        feedback="Error creating new directory")
+                        feedback="Error creating directory: " + path)
 
-        return dict( success=1, newdir = path,\
+        if created: # directory was created
+            return dict( success=1, newdir = path,\
                     feedback="Directory successfully created")
+        else: # directory wasn't created because it already existed
+            return dict( success=0, newdir = path,\
+                    feedback="Directory " + path + " already exists")
 
     @expose("json")
     @srusers.require(srusers.in_team())

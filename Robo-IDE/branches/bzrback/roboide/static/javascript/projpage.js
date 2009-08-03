@@ -810,11 +810,11 @@ function ProjOps() {
 		logDebug("Add new folder: ajax request successful");
 		switch(nodes.success) {
 			case 1:
-				status_msg("New Directory successfully added", LEVEL_OK);
+				status_msg(nodes.feedback, LEVEL_OK);
 				projpage.flist.refresh();
 				break;
 			case 0:
-				status_msg("Failed to create new Directory", LEVEL_ERROR);
+				status_msg(nodes.feedback, LEVEL_ERROR);
 				break;
 		}
 	}
