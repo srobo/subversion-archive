@@ -406,6 +406,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this._svn_save = function() {
 		var d = postJSONDoc("./savefile", {
 					queryString : { team : team,
+                        project : projpage.project, //TODO: Currently assumes same project as selected on projects page. NEEDS CHANGING!
 						file : this.path,
 						rev : 0,				//TODO: make this dynamic
 						message : this._commitMsg },

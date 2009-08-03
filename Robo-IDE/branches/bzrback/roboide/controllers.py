@@ -3,7 +3,7 @@ from turbogears.feed import FeedController
 import cherrypy, model
 from sqlobject import sqlbuilder
 import logging
-import bzrlib.branch, bzrlib.repository, bzrlib.workingtree
+import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.errors
 import pysvn    # TODO BZRPORT: remove once all pysvn code removed
 import time, datetime
 import re
@@ -131,6 +131,12 @@ class WorkingTree:
         is wrapping.
         """
         return getattr(self.workingtree, name)
+
+    def destroy(self):
+        """
+        Delete temporary directory.
+        """
+        shutil.rmtree(self.tmpdir)
 
 class Feed(FeedController):
     def get_feed_data(self):
@@ -558,65 +564,60 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def savefile(self, team, file, rev, message, code):
+    def savefile(self, team, project, file, rev, message, code): # TODO: why is rev specified here?
         """Write a commit of one file.
         1. SVN checkout the file's directory
         2. Dump in the new file data
         3. Commit that directory with the new data and the message
         4. Wipe the directory
         """
-        pass    #TODO BZRPORT: Implement!
 
-        client = Client(int(team))
+        #1. Get working tree of branch in temp dir
+        wt = WorkingTree(int(team), project)
         reload = "false"
-        #1. SVN checkout of file's directory
+
         #TODO: Check for path naugtiness trac#208
         path = os.path.dirname(file)
         basename = os.path.basename(file)
-        rev = self.get_revision("HEAD") #Always check in over the head to get
-        #old revisions to merge over new ones
+        fullpath = wt.tmpdir + "/" + file
 
-        if not client.is_url(client.REPO + path): #new dir needed...
+        if wt.path2id(path) is None: # directory doesn't exist, new dir needed...
             reload = "true"
             try:
                 self.create_dir(client, path)
-            except pysvn.ClientError:
+            except pysvn.ClientError: # TODO BZRPORT: bzr error needed
                 return dict(new_revision="0", code = "",\
                             success="Error creating new directory",
                             reloadfiles="false")
 
-        try:
-            tmpdir = self.checkoutintotmpdir(client, rev, path)
-        except pysvn.ClientError:
-            try:
-                shutil.rmtree(tmpdir)
-            except:
-                pass
+#        try:
+#            tmpdir = self.checkoutintotmpdir(client, rev, path)
+#        except pysvn.ClientError:
+#            try:
+#                shutil.rmtree(tmpdir)
+#            except:
+#                pass
+#            return dict(new_revision="0", code="", success="Invalid filename",
+#                        reloadfiles="false")
 
-            return dict(new_revision="0", code="", success="Invalid filename",
-                        reloadfiles="false")
+        existing_file = wt.path2id(file) # if it is a new file this will return None
 
         #2. Dump in the new file data
-        target = open(join(tmpdir, basename), "wt")
+        target = open(fullpath, "wt")
         target.write(code)
         target.close()
 
-        #2 1/2: use client.add if we're adding a new file, ready for checkin
-        try:
-            client.add([join(tmpdir, basename)],
-                       recurse=False)
+        # If file doesn't exist it needs to be added
+        if existing_file is None:
+            wt.add(file)
             reload = "true"
-        except pysvn.ClientError:
-            pass
 
         #3. Commit the new directory
         try:
-            newrev = client.checkin([tmpdir], message)
-            if newrev == None:
-                raise pysvn.ClientError
-            newrev = newrev.number
+            newrev = wt.commit(message)
             success = "True"
-        except pysvn.ClientError:
+        except bzrlib.errors.OutOfDateTree:
+            pass # TODO BZRPORT: this needs discussion. Will this ever happen?
             #Can't commit - merge issues
             #Need to bring local copy up to speed
             #Hopefully this means a merge!
@@ -635,8 +636,8 @@ class Root(controllers.RootController):
                 mergedfile.close()
                 newrev = newrev.number
 
-        #4. Wipe the directory, remove the autosaves
-        shutil.rmtree(tmpdir)
+        #4. Destroy working tree checkout, remove the autosaves
+        wt.destroy()
         self.autosave.delete(team, file)
 
         return dict(new_revision=str(newrev), code=code,
@@ -790,6 +791,8 @@ class Root(controllers.RootController):
         except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
             return dict( success=0, newdir = path,\
                         feedback="Error creating directory: " + path)
+        finally: # always destroy tree (deleting temp dir)
+            wt.destroy()
 
         if created: # directory was created
             return dict( success=1, newdir = path,\
