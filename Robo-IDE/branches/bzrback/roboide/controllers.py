@@ -3,7 +3,7 @@ from turbogears.feed import FeedController
 import cherrypy, model
 from sqlobject import sqlbuilder
 import logging
-import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.errors
+import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.memorytree, bzrlib.errors
 import pysvn    # TODO BZRPORT: remove once all pysvn code removed
 import time, datetime
 import re
@@ -137,6 +137,43 @@ class WorkingTree:
         Delete temporary directory.
         """
         shutil.rmtree(self.tmpdir)
+
+class MemoryTree:
+    """
+    A wrapper around the MemoryTree class.
+    """
+    def __init__(self, team, project, revid=None):
+
+        # First open the branch
+        repo = srusers.get_svnrepo( team ) # TODO BZRPORT: do we want Repo to be a string?
+        branchloc = repo + "/" + project
+        b = bzrlib.branch.Branch.open(branchloc)
+
+        if revid==None:
+            # If no revid was specified, use latest
+            revid = b.last_revision()
+
+        mt = bzrlib.memorytree.MemoryTree(b, revid)
+
+        #Using self.__dict__[] to avoid calling setattr in recursive death
+        self.__dict__["memorytree"] = mt
+
+    def __setattr__(self, name, val):
+        """
+        This special method is called when setting a value that isn't found
+        elsewhere. It sets the same named value of the bzrlib class.
+        """
+        #BE CAREFUL - assigning class-scope variables anywhere in this class
+        #causes instant setattr recursion death
+        setattr(self.memorytree, name, val)
+
+    def __getattr__(self, name):
+        """
+        This special method is called when something isn't found in the class
+        normally. It returns the named attribute of the bzrlib class this class
+        is wrapping.
+        """
+        return getattr(self.memorytree, name)
 
 class Feed(FeedController):
     def get_feed_data(self):
@@ -643,23 +680,39 @@ class Root(controllers.RootController):
         return dict(new_revision=str(newrev), code=code,
                     success=success, file=file, reloadfiles=reload)
 
-    def create_dir(self, wt, path, msg=""): # TODO BZRPORT: error checking
+    def create_dir(self, memtree, path, msg=""): # TODO BZRPORT: error checking
         """Creates an svn directory if one doesn't exist yet
         inputs:
-            wt - a workingtree object (a checkout in a tmp dir)
+            memtree - a memorytree object
             path - path to the directory to be created, relative to tree root
         returns: True if directory created, false if it already existed
         """
 
         # check if path already exists - if it doesn't path2id will return None
-        if wt.path2id(path) is None:
-            fullpath = wt.tmpdir + path
-            os.makedirs(fullpath) # makedirs will generate any intermediate required directories needed for the leaf dir.
-            wt.add(path)
-            wt.commit("New directory " + path + " created. Notes: " + msg)
+        # if branch has no revisions yet revision_history will return an empty list
+        if memtree.path2id(path) is None or len(memtree.branch.revision_history()) == 0:
+            upperpath = os.path.dirname(path)
+            #Recurse to ensure folder parents exist
+            if not upperpath == "/":
+                self.create_dir(memtree, upperpath)
+
+            memtree.lock_write() # lock tree for modification
+            try:
+                # first perform special dance in the case that branch has no commits yet
+                if len(memtree.branch.revision_history()) == 0:
+                    memtree.add("") # special dance
+
+                # make directory (added automatically)
+                memtree.mkdir(path)
+
+                # commit
+                memtree.commit("New directory " + path + " created. Notes: " + msg)
+
+            finally: # always unlock tree
+                memtree.unlock()
             return True
         else:
-            return False
+            return False # directory already existed
             
 
     @expose("json")
@@ -784,15 +837,13 @@ class Root(controllers.RootController):
     @srusers.require(srusers.in_team())
     def newdir(self, team, project, path, msg):
 
-        wt = WorkingTree(int(team), project)
+        memtree = MemoryTree(int(team), project)
 
         try:
-            created = self.create_dir(wt, path, msg)
+            created = self.create_dir(memtree, path, msg)
         except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
             return dict( success=0, newdir = path,\
                         feedback="Error creating directory: " + path)
-        finally: # always destroy tree (deleting temp dir)
-            wt.destroy()
 
         if created: # directory was created
             return dict( success=1, newdir = path,\
@@ -830,10 +881,10 @@ class Root(controllers.RootController):
             """No ../../ nastyness"""
             return nil
 
-#        url = srusers.get_svnrepo(team) + "/" + name
-        url = r.REPO + "/" + name
+        url = r.REPOLOC + "/" + name
 
         r.bzrdir.create_branch_convenience(base=url,force_new_tree=False)
+
         return dict( )
 
     @expose("json")
