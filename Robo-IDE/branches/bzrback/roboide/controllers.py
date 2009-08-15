@@ -857,7 +857,11 @@ class Root(controllers.RootController):
     def projlist(self, team):
         """Returns a list of projects"""
 
-        r = Repo( int(team) )
+        try:
+            r = Repo( int(team) )
+        except:
+            #No repository present
+            return dict(projects = [])
 
         self.user.set_setting('team.last', team)
 
