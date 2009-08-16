@@ -570,28 +570,6 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def fulllog(self, team):
-        """Get a full log of file changes
-            inputs: None
-            returns (JSON): log - a list of dictionaries of:
-                date, message, author, changed_paths, revision
-                    changed_paths is a list of dicts:
-                        action, path
-        """
-        pass    #TODO BZRPORT: Implement!
-
-        client = Client(int(team))
-        log = client.log(client.REPO, discover_changed_paths=True)
-
-        return dict(log=[{"author":x["author"], \
-                      "date":time.strftime("%H:%M:%S %d/%m/%Y", \
-                      time.localtime(x["date"])), \
-                      "message":x["message"], "rev":x["revision"].number,
-                      "changed_paths":[(c.action, c.path) for c in \
-                          x.changed_paths]} for x in log])
-
-    @expose("json")
-    @srusers.require(srusers.in_team())
     def savefile(self, team, project, file, rev, message, code): # TODO: why is rev specified here?
         """Write a commit of one file.
         1. SVN checkout the file's directory
