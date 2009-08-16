@@ -275,7 +275,7 @@ class Root(controllers.RootController):
 
         #Avoid using /tmp by writing into a memory based file
         zipData = StringIO.StringIO()
-        zip = zipfile.ZipFile(zipData, "w")
+        zip = zipfile.ZipFile(zipData, "w", zipfile.ZIP_DEFLATED)
         #Need to lock_read before reading any file contents
         mt.lock_read()
         try:
@@ -337,8 +337,6 @@ class Root(controllers.RootController):
     def filesrc(self, team, project, file=None, revision=-1):
         """
         Returns the contents of the file.
-        Turns out the action parameter can be edit. Not sure how this is
-        useful - won't it always be edit?
         """
 
         curtime = time.time()
@@ -377,58 +375,59 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def gethistory(self, team, file, user = None, offset = 0):
+    def gethistory(self, team, project, file, user = None, offset = 0):
         #This function retrieves the svn log output for the given file(s)
         #to restrict logs to particular user, supply a user parameter
         #a maximum of 10 results are sent to the browser, if there are more than 10
         #results available, overflow > 0.
         #supply an offset to view older results: 0<offset < overflow; offset = 0 is the most recent logs
-        return dict(path=file,
-                    overflow=0,
-                    offset=0,
-                    authors=[],
-                    history=[])
+        b = Branch(int(team), project)
+        revisions = [b.repository.get_revision(r) for r in b.revision_history()]
 
-
-        offset = int(offset)
-        c = Client(int(team))
-        try:
-            log = c.log(c.REPO+file)
-        except:
-            logging.debug("Log failed for %s" % c.REPO+file)
-            return dict(path=file,history=[])
-        authors = []
-        #get a list of users based on log authors
-        for y in log:
-            if y['author'] not in authors:
-                authors.append(y['author'])
-
-        #narrow results by user (if supplied)
-        result = []
+        #Get a list of authors
+        authors = list(set([r.committer for r in revisions]))
+        
+        #If a user is passed, only show revisions committed by that user
         if user != None:
-            for x in log:
-                if(x['author'] == user) or (user == None):
-                    result.append(x)
-        else:
-            result = log[:]
+            revisions = [r for r in revisions if r.committer == user]
+    
+        #Only show revisions where the delta touches file
+        fileid = b.basis_tree().path2id(file)
+        if fileid == None:
+            #File not found
+            return dict()
 
-        #if many results, split into pages of 10 and return appropriate
+        def revisionTouchesFile(revision):
+            """
+            Return true if the revision changed a the file referred to in fileid.
+            """
+            delta = b.get_revision_delta(b.revision_id_to_revno(revision.revision_id))
+            return delta.touches_file_id(fileid)
+        revisions = filter(revisionTouchesFile, revisions)
+
+        #Calculate offsets for paging
+        try:
+            offset = int(offset)
+        except ValueError:
+            #Someone passed a string
+            return dict()
         start = offset*10
         end = start + 10
-        maxval = len(result)
+        maxval = len(revisions)
         if maxval%10 > 0:
             overflow = maxval/10 +1
         else:
             overflow = maxval/10
 
-        result = result[start:end]
+        revisions = revisions[start:end]
 
-        return dict(  path=file, overflow=overflow, offset=offset, authors=authors,\
-                      history=[{"author":x["author"], \
-                      "date":time.strftime("%H:%M:%S %d/%m/%Y", \
-                      time.localtime(x["date"])), \
-                      "message":x["message"], "rev":x["revision"].number} \
-                      for x in result])
+        return dict(  path=file, overflow=overflow, offset=offset, authors=authors,
+                      history=[{"author" : r.committer,
+                                "date" : time.strftime("%H:%M:%S %d/%m/%Y",
+                                                       time.localtime(r.timestamp)),
+                                "message" : r.message,
+                                "rev" : b.revision_id_to_revno(r.revision_id)}
+                              for r in revisions])
 
 #    def checkoutintotmpdir(self, branch, revision, base): # TODO BZRDIR: replace with WorkingTree object
 #
