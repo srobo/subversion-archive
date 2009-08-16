@@ -5,7 +5,7 @@ from sqlobject import sqlbuilder
 import logging
 import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.memorytree, bzrlib.errors
 import pysvn    # TODO BZRPORT: remove once all pysvn code removed
-import time, datetime
+import time, datetime, StringIO
 import re
 import tempfile, shutil
 import os, sys, os.path
@@ -265,77 +265,64 @@ class Root(controllers.RootController):
         This function grabs a set of files and makes a zip available. Should be
         linked to directly.
         inputs:
-            files - a comma seperated list of files to do the method on
+            team & project - code to retrieve
+            simulator - true if code is being delivered to a simulator.
         returns:
             A zip file as a downloadable file with appropriate HTTP headers
             sent.
         """
-        pass    #TODO BZRPORT: Implement!
+        mt = MemoryTree(int(team), project)
 
-        client = Client(int(team))
-        rev = self.get_revision("HEAD")
+        #Avoid using /tmp by writing into a memory based file
+        zipData = StringIO.StringIO()
+        zip = zipfile.ZipFile(zipData, "w")
+        #Need to lock_read before reading any file contents
+        mt.lock_read()
+        try:
+            #Get a list of files in the tree
+            files = [f for f in mt.iter_entries_by_dir() if f[1].kind == "file"]
+            for filename, file in files:
+                #Set external_attr on a ZipInfo to make sure the files are
+                #created with the right permissions
+                info = zipfile.ZipInfo(filename.encode("ascii"))
+                info.external_attr = 0666 << 16L
+                #Read the file contents and add to zip
+                zip.writestr(info, mt.get_file(file.file_id).read())
 
-        # Directory to work in
-        root = tempfile.mkdtemp()
+            #Need a __init__ in the root of all code exports
+            if not "__init__.py" in [f[0].encode("ascii") for f in files]:
+                info = zipfile.ZipInfo("__init__.py")
+                info.external_attr = 0666 << 16L
+                zip.writestr(info, "")
 
-        # Checkout the code
-        client.export(client.REPO + "/%s" % project,
-                      root + "/code",
-                      revision=rev,
-                      recurse=True)
-
-        # Check if __init__.py exists in user code, if it doesn't insert blank file before checkout
-        if not os.path.exists(root+"/code/__init__.py"):
-            f = open(root+"/code/__init__.py", 'w')
-            f.close()
-
-
-        # (internal) robot.zip to contain the code
-        zfile = tempfile.mktemp()
-        zip = zipfile.ZipFile(zfile, "w")
-
-        def add_dir_to_zip(head, zip):
-            #Walk through the tree of files checked out and add them
-            #to the zipfile
-            for node, dirs, files in os.walk(head):
-                for name in files:
-                    #Skip .svn directories
-                    if ".svn" in node:
-                        continue
-                    #If the file is in the root directory
-                    src = os.path.join(node, name)
-                    if node == head:
-                        #Add it named just its name
-                        zip.write(src, name, compress_type = zipfile.ZIP_DEFLATED)
-                    else:
-                        #Add it with a suitable path
-                        archname = node[len(head):]+'/'+name
-                        zip.write(src, archname, compress_type = zipfile.ZIP_DEFLATED)
-
-        add_dir_to_zip(root + "/code", zip)
+        except:
+            return "Error exporting project"
+        finally:
+            #Always unlock or get GC related errors
+            mt.unlock()
         zip.close()
-
-        # Remove the temporary dir
-        shutil.rmtree(root)
+        #Seek back to start of file so read() works later on
+        zipData.seek(0)
 
         if not simulator:
-            """The robot expects a zipfile containing libraries, with another zipfile inside."""
-            #Create a second zip file placing the user zip in the system zip
-            syszfile = tempfile.mktemp()
-            syszip = zipfile.ZipFile(syszfile, "w")
-            add_dir_to_zip(config.get("svn.packagedir"), syszip)
+            """
+            The zipfile delivered to the robot is the contents of the
+            repository as a zip inside another zip that contains firmware.
+            """
+            #Get a copy of the firmware zip, drop the code zip (in zipData)
+            #in it and then put the resulting zip back into zipData
+            sysZipData = open(config.get("robot.packagezip")).read()
+            sysZipBuffer = StringIO.StringIO(sysZipData)
+            
+            sysZip = zipfile.ZipFile(sysZipBuffer, "a")
+            info = zipfile.ZipInfo(ZIPNAME)
+            info.external_attr = 0666 << 16L
+            sysZip.writestr(info, zipData.read())
+            sysZip.close()
 
-            syszip.write(zfile, ZIPNAME)
-            syszip.close()
-
-            #Read the data in from the temporary zipfile
-            zipdata = open(syszfile, "rb").read()
-            os.unlink(syszfile)
-        else:
-            zipdata = open(zfile, "rb").read()
-
-        os.unlink(zfile)
-
+            sysZipBuffer.seek(0)
+            zipData = StringIO.StringIO(sysZipBuffer.read())
+        
         #Set up headers for correctly serving a zipfile
         cherrypy.response.headers['Content-Type'] = \
                 "application/x-download"
@@ -343,7 +330,7 @@ class Root(controllers.RootController):
                 'attachment; filename="' + ZIPNAME + '"'
 
         #Return the data
-        return zipdata
+        return zipData.read()
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -396,7 +383,12 @@ class Root(controllers.RootController):
         #a maximum of 10 results are sent to the browser, if there are more than 10
         #results available, overflow > 0.
         #supply an offset to view older results: 0<offset < overflow; offset = 0 is the most recent logs
-        pass    #TODO BZRPORT: Implement!
+        return dict(path=file,
+                    overflow=0,
+                    offset=0,
+                    authors=[],
+                    history=[])
+
 
         offset = int(offset)
         c = Client(int(team))
@@ -976,7 +968,8 @@ class Root(controllers.RootController):
     @srusers.require(srusers.in_team())
     def calendar(self, mnth, yr, file, team):
         #returns data for calendar function
-        pass    #TODO BZRPORT: Implement!
+        return dict(path = file,
+                    history = []) #TODO BZRPORT: Implement!
 
         month = int(mnth)+1
         year = int(yr)
@@ -1102,7 +1095,7 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def checkcode(self, team, path, code=0, date=None):
-        pass    #TODO BZRPORT: Implement!
+        return dict( errors = 0)
 
         client = Client(int(team))
         rev = self.get_revision("HEAD")
