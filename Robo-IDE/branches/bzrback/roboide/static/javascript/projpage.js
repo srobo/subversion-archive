@@ -1,3 +1,4 @@
+// vim: noexpandtab
 // The project page
 function ProjPage() {
 	// Whether _init has run
@@ -801,7 +802,7 @@ function ProjOps() {
 			if(test > -1) {
 				tabbar.tabs[test].flash();
 			} else { //not present, open it
-				var cow = new Log(projpage.flist.selection[i]);
+				var cow = new Log(projpage.flist.selection[i], projpage.project);
 			}
 		}
 	}
