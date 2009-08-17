@@ -24,72 +24,37 @@ log = logging.getLogger("roboide.controllers")
 
 ZIPNAME = "robot.zip"
 
-class Branch:
+def open_branch(team, project):
     """
-    A wrapper around a bzr branch. This creates a branch object associated with a bzr branch and wraps calls to
-    its functions.
+    Open the project branch for the team.
+
+    TODO: Check the logged in user has permission to do this!
     """
-    client = None
-    def __init__(self, team, project):
-        """
-        Create a bzr branch object and associate it with a user
-        """
+    repoloc = srusers.get_svnrepo( team )
+    branchloc = repoloc + "/" + project
+    return bzrlib.branch.Branch.open(branchloc)
 
-        repoloc = srusers.get_svnrepo( team ) # TODO BZRPORT: do we want Repo to be a string?
-
-        branchloc = repoloc + "/" + project
-
-        b = bzrlib.branch.Branch.open(branchloc)
-
-        #Using self.__dict__[] to avoid calling setattr in recursive death
-        self.__dict__["branch"] = b
-
-    def __setattr__(self, name, val):
-        """
-        This special method is called when setting a value that isn't found
-        elsewhere. It sets the same named value of the bzrlib class.
-        """
-        #BE CAREFUL - assigning class-scope variables anywhere in this class
-        #causes instant setattr recursion death
-        setattr(self.branch, name, val)
-
-    def __getattr__(self, name):
-        """
-        This special method is called when something isn't found in the class
-        normally. It returns the named attribute of the bzrlib class this class
-        is wrapping.
-        """
-        return getattr(self.branch, name)
-
-class Repo:
+def open_repo(team):
     """
-    A wrapper around a bzr repository.
+    Open the team repository.
+
+    TODO: Check the logged in user has permission to do this.
     """
-    def __init__(self, team):
+    repoLoc = srusers.get_svnrepo( team )
+    return bzrlib.repository.Repository.open(repoLoc)
 
-        self.__dict__["REPOLOC"] = srusers.get_svnrepo( team )
+def open_memory_tree(team, project, revid=None):
+    """
+    Open an in-memory tree for the project.
+    """
+    # First open the branch
+    b = open_branch(team, project)
 
-        r = bzrlib.repository.Repository.open(self.__dict__["REPOLOC"])
+    if revid == None:
+        # If no revid was specified, use latest
+        revid = b.last_revision()
 
-        #Using self.__dict__[] to avoid calling setattr in recursive death
-        self.__dict__["repo"] = r
-
-    def __setattr__(self, name, val):
-        """
-        This special method is called when setting a value that isn't found
-        elsewhere. It sets the same named value of the bzrlib class.
-        """
-        #BE CAREFUL - assigning class-scope variables anywhere in this class
-        #causes instant setattr recursion death
-        setattr(self.repo, name, val)
-
-    def __getattr__(self, name):
-        """
-        This special method is called when something isn't found in the class
-        normally. It returns the named attribute of the bzrlib class this class
-        is wrapping.
-        """
-        return getattr(self.repo, name)
+    return bzrlib.memorytree.MemoryTree(b, revid)
 
 class WorkingTree:
     """
@@ -138,43 +103,6 @@ class WorkingTree:
         """
         shutil.rmtree(self.tmpdir)
 
-class MemoryTree:
-    """
-    A wrapper around the MemoryTree class.
-    """
-    def __init__(self, team, project, revid=None):
-
-        # First open the branch
-        repo = srusers.get_svnrepo( team ) # TODO BZRPORT: do we want Repo to be a string?
-        branchloc = repo + "/" + project
-        b = bzrlib.branch.Branch.open(branchloc)
-
-        if revid==None:
-            # If no revid was specified, use latest
-            revid = b.last_revision()
-
-        mt = bzrlib.memorytree.MemoryTree(b, revid)
-
-        #Using self.__dict__[] to avoid calling setattr in recursive death
-        self.__dict__["memorytree"] = mt
-
-    def __setattr__(self, name, val):
-        """
-        This special method is called when setting a value that isn't found
-        elsewhere. It sets the same named value of the bzrlib class.
-        """
-        #BE CAREFUL - assigning class-scope variables anywhere in this class
-        #causes instant setattr recursion death
-        setattr(self.memorytree, name, val)
-
-    def __getattr__(self, name):
-        """
-        This special method is called when something isn't found in the class
-        normally. It returns the named attribute of the bzrlib class this class
-        is wrapping.
-        """
-        return getattr(self.memorytree, name)
-
 class Feed(FeedController):
     def get_feed_data(self):
         entries = [dict(author    = {"name" : x["author"]},
@@ -220,7 +148,7 @@ class Root(controllers.RootController):
         returns:
             revision object for given revision id."""
 
-        b = Branch( int(team) )
+        b = open_branch( int(team) )
 
         if rev_id == "":
             rev_id = b.last_revision()
@@ -243,7 +171,7 @@ class Root(controllers.RootController):
             revision id string
         """
 
-        b = Branch( int(team), project )
+        b = open_branch( int(team), project )
 
         try:
             if revno == -1 or revno == "-1" or revno == "HEAD": #TODO BZRPORT: stop anything calling "HEAD" string
@@ -279,7 +207,7 @@ class Root(controllers.RootController):
             A zip file as a downloadable file with appropriate HTTP headers
             sent.
         """
-        mt = MemoryTree(int(team), project)
+        mt = open_memory_tree(int(team), project)
 
         #Avoid using /tmp by writing into a memory based file
         zipData = StringIO.StringIO()
@@ -348,7 +276,7 @@ class Root(controllers.RootController):
         """
 
         curtime = time.time()
-        b = Branch( int(team), project )
+        b = open_branch( int(team), project )
 
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness trac#208
 
@@ -385,12 +313,14 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def gethistory(self, team, project, file, user = None, offset = 0):
-        #This function retrieves the svn log output for the given file(s)
-        #to restrict logs to particular user, supply a user parameter
-        #a maximum of 10 results are sent to the browser, if there are more than 10
-        #results available, overflow > 0.
-        #supply an offset to view older results: 0<offset < overflow; offset = 0 is the most recent logs
-        b = Branch(int(team), project)
+        """
+        This function retrieves the bzr history for the given file(s)
+        to restrict logs to particular user, supply a user parameter
+        a maximum of 10 results are sent to the browser, if there are more than 10
+        results available, overflow > 0.
+        supply an offset to view older results: 0<offset < overflow; offset = 0 is the most recent logs
+        """
+        b = open_branch(int(team), project)
         revisions = [b.repository.get_revision(r) for r in b.revision_history()]
 
         #Get a list of authors
@@ -591,7 +521,7 @@ class Root(controllers.RootController):
                 rev - revision of file when it was checked out by client.
         """
 
-        b = Branch(int(team),project)
+        b = open_branch(int(team),project)
 
         # Get the latest tree for the branch
         basis_tree = b.basis_tree()
@@ -687,7 +617,7 @@ class Root(controllers.RootController):
         print "savefile: going down MemoryTree route."
 
         reload = "false"
-        memtree = MemoryTree(int(team), project)
+        memtree = open_memory_tree(int(team), project)
 
         memtree.lock_write()
         try:
@@ -758,7 +688,7 @@ class Root(controllers.RootController):
                        name : name of file}, ...]}
         """
 
-        b = Branch( int(team), project )
+        b = open_branch( int(team), project )
 
         target_rev_id = self.get_rev_id(team, project ,rev)
         self.user.set_setting('project.last', project)
@@ -865,8 +795,7 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def newdir(self, team, project, path, msg):
-
-        memtree = MemoryTree(int(team), project)
+        memtree = open_memory_tree(int(team), project)
 
         try:
             created = self.create_dir(memtree, path, msg)
@@ -887,7 +816,7 @@ class Root(controllers.RootController):
         """Returns a list of projects"""
 
         try:
-            r = Repo( int(team) )
+            r = open_repo( int(team) )
         except:
             #No repository present
             return dict(projects = [])
@@ -908,7 +837,7 @@ class Root(controllers.RootController):
     def createproj(self, name, team):
         """Creates new project directory"""
 
-        r = Repo(int(team))
+        r = open_repo(int(team))
 
         if name.find(".") != -1:
             """No ../../ nastyness"""
