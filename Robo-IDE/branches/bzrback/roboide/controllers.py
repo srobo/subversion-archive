@@ -3,7 +3,7 @@ from turbogears.feed import FeedController
 import cherrypy, model
 from sqlobject import sqlbuilder
 import logging
-import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.memorytree, bzrlib.errors
+import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.memorytree, bzrlib.tree, bzrlib.errors
 import pysvn    # TODO BZRPORT: remove once all pysvn code removed
 import time, datetime, StringIO
 import re
@@ -257,6 +257,14 @@ class Root(controllers.RootController):
 
         return rev_id
 
+    def get_file_revision(self, tree, fileid):
+        """
+        Get the id of the revision when the file was last modified.
+        inputs: tree - a bzrlib tree of some kind
+                fileid - file id of file in tree
+        outputs: revid - revision id
+        """
+        return bzrlib.tree.Tree._file_revision(tree, fileid) # static method for some reason
 
     @expose()
     @srusers.require(srusers.in_team())
@@ -357,8 +365,9 @@ class Root(controllers.RootController):
                 file_id = branch_tree.path2id(file)
                 b.lock_read()
                 code = branch_tree.get_file_text(file_id)
-                revision = 0 #TODO BZRPORT: actual revsion
-            except: #TODO BZRPORT: Catch bzr exception
+                file_revid = self.get_file_revision(branch_tree, file_id) # get revision the file was last modified
+                file_revno = b.revision_id_to_revno(file_revid)
+            except:
                 code = "Error loading file '%s' at revision %s." % (file, revision)
                 revision = 0
             # always unlock:
@@ -369,7 +378,7 @@ class Root(controllers.RootController):
             code = "Error loading file: No filename was supplied by the IDE.  Contact an SR admin!"
             revision = 0
 
-        return dict(curtime=curtime, code=code, autosaved_code=autosaved_code, revision=revision, path=file,
+        return dict(curtime=curtime, code=code, autosaved_code=autosaved_code, revision=str(file_revno), path=file,
                 name=os.path.basename(file))
 
 
@@ -570,84 +579,135 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def savefile(self, team, project, file, rev, message, code): # TODO: why is rev specified here?
-        """Write a commit of one file.
-        1. SVN checkout the file's directory
-        2. Dump in the new file data
-        3. Commit that directory with the new data and the message
-        4. Wipe the directory
+    def savefile(self, team, project, filepath, rev, message, code):
         """
+        Create/update contents of a file and attempt to commit.
+        If file has been updated since submitted text was checked out,
+            call update_merge to attempt to merge the changes.
+        If file has not been updated since client checked it out,
+            call commit_file_simple to commit the new version.
+
+        inputs: path - path of file relative to project root.
+                rev - revision of file when it was checked out by client.
+        """
+
+        b = Branch(int(team),project)
+
+        # Get the latest tree for the branch
+        basis_tree = b.basis_tree()
+
+        try: # convert unicode to normal string required by put_file_bytes_non_atomic
+            code = code.encode()
+        except: # couldn't convert from unicode
+            return dict(code=code, success="False", file=filepath, reloadfiles="false")
+
+        # get the fileid:
+        fileid = basis_tree.path2id(filepath)
+
+        # if fileid returned None then file doesn't exist yet
+        if fileid == None:
+            return self.commit_file_simple(team, project, filepath, rev, message, code, fileid)
+
+        current_file_revid = self.get_file_revision(basis_tree,fileid)
+        current_file_revno = b.revision_id_to_revno(current_file_revid)
+
+        if str(current_file_revno) == str(rev):
+        # File has not been modified since the client opened it
+            return self.commit_file_simple(team, project, filepath, rev, message, code, fileid)
+        else:
+            return self.update_merge(team, project, filepath, rev, message, code)
+
+    def update_merge(self, team, project, filepath, rev, message, code):
+        """Attempt to merge some file data with latest revision.
+        1. Checkout the branch into a temporary directory
+        2. Dump in the new file data
+        3. Update file in working copy
+        Then either:
+        4. Return merge-flagged text if manual merge required
+        or
+        4. Commit file
+        then always:
+        5. Delete the temp directory
+        """
+        print "savefile: going down checkout2tmpdir route."
 
         #1. Get working tree of branch in temp dir
         wt = WorkingTree(int(team), project)
         reload = "false"
 
         #TODO: Check for path naugtiness trac#208
-        path = os.path.dirname(file)
-        basename = os.path.basename(file)
-        fullpath = wt.tmpdir + "/" + file
-
-        if wt.path2id(path) is None: # directory doesn't exist, new dir needed...
-            reload = "true"
-            try:
-                self.create_dir(client, path)
-            except pysvn.ClientError: # TODO BZRPORT: bzr error needed
-                return dict(new_revision="0", code = "",\
-                            success="Error creating new directory",
-                            reloadfiles="false")
-
-#        try:
-#            tmpdir = self.checkoutintotmpdir(client, rev, path)
-#        except pysvn.ClientError:
-#            try:
-#                shutil.rmtree(tmpdir)
-#            except:
-#                pass
-#            return dict(new_revision="0", code="", success="Invalid filename",
-#                        reloadfiles="false")
-
-        existing_file = wt.path2id(file) # if it is a new file this will return None
+        path = os.path.dirname(filepath)
+        basename = os.path.basename(filepath)
+        fullpath = wt.tmpdir + "/" + filepath
 
         #2. Dump in the new file data
         target = open(fullpath, "wt")
         target.write(code)
         target.close()
 
-        # If file doesn't exist it needs to be added
-        if existing_file is None:
-            wt.add(file)
-            reload = "true"
-
-        #3. Commit the new directory
+        # try to update
         try:
-            newrev = wt.commit(message)
-            success = "True"
-        except bzrlib.errors.OutOfDateTree:
-            pass # TODO BZRPORT: this needs discussion. Will this ever happen?
-            #Can't commit - merge issues
-            #Need to bring local copy up to speed
-            #Hopefully this means a merge!
+            conflicts = wt.update()
+        except:
+            wt.destroy()
+            return dict(code=code, success="false", file=filepath, reloadfiles=reload)
+
+#        print "conflicts: " + str(conflicts)
+        if conflicts == 0:
+            try:
+                newrevid = wt.commit(message)
+                success = "True"
+            except:
+                wt.destroy()
+                return dict(code=code, success="false", file=filepath, reloadfiles=reload)
+        else:
             #Throw the new contents of the file back to the client for
             #tidying, then they can resubmit
-            newrev = client.update(tmpdir)[0] #This comes back as a list.
-            if newrev == None:
-                #No update to be made.
-                success = "True"
-                newrev = 0
-            else:
-                success = "Merge"
-                #Grab the merged text.
-                mergedfile = open(join(tmpdir, basename), "rt")
-                code = mergedfile.read()
-                mergedfile.close()
-                newrev = newrev.number
+            success = "Merge"
+            #Grab the merged text.
+            mergedfile = open(join(wt.tmpdir, basename), "rt")
+            code = mergedfile.read()
+            mergedfile.close()
+
+        # find revision number from id
+        newrevno = wt.branch.revision_id_to_revno(newrevid)
 
         #4. Destroy working tree checkout, remove the autosaves
         wt.destroy()
-        self.autosave.delete(team, file)
+        self.autosave.delete(team, filepath)
 
-        return dict(new_revision=str(newrev), code=code,
-                    success=success, file=file, reloadfiles=reload)
+        return dict(new_revision=str(newrevno), code=code,
+                    success=success, file=filepath, reloadfiles=reload)
+
+
+    def commit_file_simple(self,team, project, filepath, rev, message, code, fileid):
+        """
+        Modify contents of a file, or create a new one, in non-merge situations only.
+        """
+        print "savefile: going down MemoryTree route."
+
+        reload = "false"
+        memtree = MemoryTree(int(team), project)
+
+        memtree.lock_write()
+        try:
+            # check to see if file exists
+            if fileid == None:
+                directory = os.path.dirname(filepath)
+                self.create_dir(memtree, directory) # create dir if it doesn't exist
+                memtree.add([filepath], kinds=['file'])
+                fileid = memtree.path2id(filepath)
+                reload = "true"
+            memtree.put_file_bytes_non_atomic(fileid,code)
+            newrevid = memtree.commit(message)
+        finally:
+            memtree.unlock()
+
+        newrevno = memtree.branch.revision_id_to_revno(newrevid)
+
+        return dict(new_revision=str(newrevno), code=code,
+                    success="True", file=filepath, reloadfiles=reload)
+
 
     def create_dir(self, memtree, path, msg=""): # TODO BZRPORT: error checking
         """Creates an svn directory if one doesn't exist yet

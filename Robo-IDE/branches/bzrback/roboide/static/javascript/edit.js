@@ -408,8 +408,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 		var d = postJSONDoc("./savefile", {
 					queryString : { team : team,
                         project : projpage.project, //TODO: Currently assumes same project as selected on projects page. NEEDS CHANGING!
-						file : this.path,
-						rev : 0,				//TODO: make this dynamic
+						filepath : this.path,
+						rev : this.rev,
 						message : this._commitMsg },
 					sendContent : {code : this.contents}
 				});
