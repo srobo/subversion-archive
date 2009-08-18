@@ -54,6 +54,10 @@ int main( void )
 
 void init( void )
 {
+	/* Run at 16 MHz */
+	DCOCTL = CALDCO_16MHZ;
+	BCSCTL1 = CALBC1_16MHZ;
+
 	init_gpio();
 	leds_init();
 	pwm_init();
