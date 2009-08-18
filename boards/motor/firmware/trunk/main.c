@@ -60,6 +60,7 @@ void init( void )
 
 	init_gpio();
 	leds_init();
+	h_bridge_init();
 	pwm_init();
 	motor_init();
 	timer_b_init();

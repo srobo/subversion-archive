@@ -18,7 +18,7 @@
 
 typedef struct 
 {
-	motor_state_t state;
+	h_bridge_state_t state;
 	speed_t speed;
 } motor_t;
 
@@ -26,7 +26,7 @@ typedef struct
 motor_t motors[2];
 
 /* Set the speed/state of a motor */
-void motor_set( uint8_t channel, speed_t speed,  motor_state_t state )
+void motor_set( uint8_t channel, speed_t speed, h_bridge_state_t state )
 {
 	if( motors[channel].speed != speed )
 	{
@@ -37,31 +37,7 @@ void motor_set( uint8_t channel, speed_t speed,  motor_state_t state )
 	/* Only set the state if it's changed */
 	if( motors[channel].state != state )
 	{
-		uint8_t v = 0;
-		uint8_t p;
-
-		switch( state )
-		{
-		case M_OFF:
-			v = 3; break;
-		case M_FORWARD:
-			v = 0; break;
-		case M_BACKWARD:
-			v = 1; break;
-		default:
-		case M_BRAKE:
-			v = 2; break;
-		}
-
-		/* Calculate the shift necessary */
-		if( channel == 0 )
-			p = 3;
-		else
-			p = 5;
-
-		P3OUT &= ~( 3 << p );
-		P3OUT |= v << p;
-
+		h_bridge_set( channel, state );
 		motors[channel].state = state;
 	}
 
@@ -74,7 +50,7 @@ speed_t motor_get_speed( uint8_t channel )
 }
 
 /* Get the state of a motor */
-motor_state_t motor_get_state( uint8_t channel )
+h_bridge_state_t motor_get_state( uint8_t channel )
 {
 	return motors[channel].state;
 }
@@ -86,6 +62,7 @@ void motor_init( void )
 
 	for( i=0; i<2; i++ )
 	{
+		/* Tease motor_set into actually making the changes we request */
 		motors[i].state = M_BRAKE;
 		motors[i].speed = 1;
 		motor_set( i, 0, M_OFF );

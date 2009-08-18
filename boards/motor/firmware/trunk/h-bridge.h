@@ -1,4 +1,5 @@
-/*   Copyright (C) 2007 Robert Spanton
+/*  Copyright (C) 2009 Robert Spanton
+    Routines for controlling the h-bridges 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -13,26 +14,22 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
-/* This is the motor layer. 
-   It sits on top of the PWM layer - handles feedback etc. */
-#ifndef __MOTOR_H
-#define __MOTOR_H
-#include "pwm.h"
-#include "h-bridge.h"
+#ifndef __H_BRIDGE_H
+#define __H_BRIDGE_H
+#include <stdint.h>
 
-/* At the moment it just sets the pwm ratio equal to speed */
-typedef pwm_ratio_t speed_t;
+/* States a motor can be in */
+typedef enum
+{
+	M_OFF = 0,
+	M_FORWARD,
+	M_BACKWARD,
+	M_BRAKE
+} h_bridge_state_t;
 
-/* Set the speed/state of a motor */
-void motor_set( uint8_t channel, speed_t speed, h_bridge_state_t state );
+/* Initialise the h-bridges */
+void h_bridge_init( void );
 
-/* Get the speed of a motor */
-speed_t motor_get_speed( uint8_t channel );
+void h_bridge_set( uint8_t channel, h_bridge_state_t state );
 
-/* Get the state of a motor */
-h_bridge_state_t motor_get_state( uint8_t channel );
-
-/* Initialise the motors */
-void motor_init( void );
-
-#endif	/* __PWM_H */
+#endif	/* __H_BRIDGE_H */
