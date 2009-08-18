@@ -17,7 +17,6 @@
 #define __ADC_10_H
 
 /* adc buffer, pointer */
-extern uint8_t adc_channel;
 extern uint16_t currents[2];
 
 void adc10_init( void );
