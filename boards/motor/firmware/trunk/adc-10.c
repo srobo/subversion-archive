@@ -4,8 +4,8 @@
 #include <stdint.h>
 
 /* adc buffer, pointer */
-extern uint8_t adc_channel;
-extern uint16_t currents[2]; 
+uint8_t adc_channel;
+uint16_t currents[2]; 
 
 void adc10_init( void )
 {

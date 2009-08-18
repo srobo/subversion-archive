@@ -22,15 +22,11 @@
 #include "smbus_pec.h"
 #include "timer-b.h"
 #include "flash430/i2c-flash.h"
+#include "adc-10.h"
 
 #define I2C_BUF_LEN 32
 #define MODULE_IDENTITY 0x0201
 #define FIRMWARE_REV 0x0304
-
-
-/* adc buffer, pointer */
-extern uint8_t adc_channel;
-extern uint16_t currents[2]; 
 
 static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
 					MODULE_IDENTITY & 0xFF, 
