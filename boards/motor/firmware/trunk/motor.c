@@ -19,14 +19,14 @@
 typedef struct 
 {
 	h_bridge_state_t state;
-	speed_t speed;
+	pwm_ratio_t speed;
 } motor_t;
 
 /* The motors */
 motor_t motors[2];
 
 /* Set the speed/state of a motor */
-void motor_set( uint8_t channel, speed_t speed, h_bridge_state_t state )
+void motor_set( uint8_t channel, pwm_ratio_t speed, h_bridge_state_t state )
 {
 	if( motors[channel].speed != speed )
 	{
@@ -44,7 +44,7 @@ void motor_set( uint8_t channel, speed_t speed, h_bridge_state_t state )
 }
 
 /* Get the speed of a motor */
-speed_t motor_get_speed( uint8_t channel )
+pwm_ratio_t motor_get_speed( uint8_t channel )
 {
 	return motors[channel].speed;
 }
