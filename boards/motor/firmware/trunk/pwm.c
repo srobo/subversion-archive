@@ -16,13 +16,6 @@
 #include "pwm.h"
 #include "common.h"
 
-
-inline void taccr_conf( uint8_t* reg )
-{
-	/*** Configure TACCTL1 ***/
-	/* Compare mode */
-}
-
 void pwm_init( void )
 {
 	/* Configure the timer peripheral */
