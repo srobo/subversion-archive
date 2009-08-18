@@ -19,19 +19,19 @@
 typedef struct 
 {
 	h_bridge_state_t state;
-	pwm_ratio_t speed;
+	pwm_ratio_t power;
 } motor_t;
 
 /* The motors */
 motor_t motors[2];
 
-/* Set the speed/state of a motor */
-void motor_set( uint8_t channel, pwm_ratio_t speed, h_bridge_state_t state )
+/* Set the power/state of a motor */
+void motor_set( uint8_t channel, pwm_ratio_t power, h_bridge_state_t state )
 {
-	if( motors[channel].speed != speed )
+	if( motors[channel].power != power )
 	{
-		pwm_set( channel, (pwm_ratio_t)speed );
-		motors[channel].speed = speed;
+		pwm_set( channel, (pwm_ratio_t)power );
+		motors[channel].power = power;
 	}
 
 	/* Only set the state if it's changed */
@@ -43,10 +43,10 @@ void motor_set( uint8_t channel, pwm_ratio_t speed, h_bridge_state_t state )
 
 }
 
-/* Get the speed of a motor */
-pwm_ratio_t motor_get_speed( uint8_t channel )
+/* Get the power of a motor */
+pwm_ratio_t motor_get_power( uint8_t channel )
 {
-	return motors[channel].speed;
+	return motors[channel].power;
 }
 
 /* Get the state of a motor */
@@ -64,7 +64,7 @@ void motor_init( void )
 	{
 		/* Tease motor_set into actually making the changes we request */
 		motors[i].state = M_BRAKE;
-		motors[i].speed = 1;
+		motors[i].power = 1;
 		motor_set( i, 0, M_OFF );
 	}
 }

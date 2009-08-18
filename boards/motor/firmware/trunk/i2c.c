@@ -256,15 +256,15 @@ void i2c_init( void )
 static void i2cw_motor_set( uint8_t *buf )
 {
 	uint8_t channel;
-	pwm_ratio_t speed;
+	pwm_ratio_t power;
 	h_bridge_state_t state;
 
 	channel = (buf[1]&0x08)?1:0;
-	speed = ((uint16_t)buf[0]) 
+	power = ((uint16_t)buf[0]) 
 		| ((uint16_t)(buf[1]&1) << 8);
 	state = (buf[1] >> 1) & 0x3;
 
-	motor_set( channel, speed, state );
+	motor_set( channel, power, state );
 }
 
 static uint8_t i2cr_identity( uint8_t *buf )
@@ -280,13 +280,13 @@ static uint8_t i2cr_identity( uint8_t *buf )
 static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor )
 {
 	h_bridge_state_t state = motor_get_state(motor);
-	pwm_ratio_t speed = motor_get_speed(motor);
+	pwm_ratio_t power = motor_get_power(motor);
 
 	/* Bits:
-	    8-0: Speed
+	    8-0: Power
 	   9-10: Direction */
-	buf[0] = speed & 0xff;
-	buf[1] = ((speed >> 8)&1);
+	buf[0] = power & 0xff;
+	buf[1] = ((power >> 8)&1);
 
 	buf[1] |= (state & 0x3) << 1;
 

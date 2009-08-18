@@ -20,11 +20,11 @@
 #include "pwm.h"
 #include "h-bridge.h"
 
-/* Set the speed/state of a motor */
-void motor_set( uint8_t channel, pwm_ratio_t speed, h_bridge_state_t state );
+/* Set the power/state of a motor */
+void motor_set( uint8_t channel, pwm_ratio_t power, h_bridge_state_t state );
 
-/* Get the speed of a motor */
-pwm_ratio_t motor_get_speed( uint8_t channel );
+/* Get the power of a motor */
+pwm_ratio_t motor_get_power( uint8_t channel );
 
 /* Get the state of a motor */
 h_bridge_state_t motor_get_state( uint8_t channel );
