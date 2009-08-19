@@ -56,7 +56,7 @@ void pwm_init( void )
 	/* Enable the outputs */
 	P1SEL |= 0x0C;
 
-	/* Up/down mode - enables the timer*/
+	/* Up mode - enables the timer */
 	TACTL &= ~MC_3;
 	TACTL |= MC_UPTO_CCR0;
 }
