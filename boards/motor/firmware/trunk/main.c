@@ -23,6 +23,7 @@
 #include "leds.h"
 #include <signal.h>
 #include "adc-10.h"
+#include "control.h"
 
 static int i = 0;
 
@@ -40,9 +41,6 @@ int main( void )
 	WDTCTL = WDTHOLD | WDTPW;
 
 	init();
-
-	motor_set( 0, 0, M_OFF );
-	motor_set( 1, 0, M_OFF );
 
 	while(1) {
 		if( i2c_flash_received )
@@ -68,6 +66,7 @@ void init( void )
 	i2c_flash_init();
 	i2c_init();
 	adc10_init();
+	control_init();
 
 	eint();
 }

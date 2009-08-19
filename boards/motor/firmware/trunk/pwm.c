@@ -15,6 +15,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "pwm.h"
 #include "common.h"
+#include "control.h"
+#include <signal.h>
 
 void pwm_init( void )
 {
@@ -37,7 +39,7 @@ void pwm_init( void )
 	TACTL |= ID_DIV1;
 
 	/* No timer interrupt */
-	TACTL &= ~TAIFG;
+	TACTL |= TAIE;
 	
 	/*** Configure TACCTL0 ***/
 	/* Compare mode */
@@ -59,6 +61,13 @@ void pwm_init( void )
 	/* Up mode - enables the timer */
 	TACTL &= ~MC_3;
 	TACTL |= MC_UPTO_CCR0;
+}
+
+interrupt (TIMERA1_VECTOR) timer_a_isr1( void )
+{
+	uint16_t _taiv = TAIV;
+	if( _taiv == TAIV_OVERFLOW )
+		control_step();
 }
 
 void pwm_set( uint8_t channel, pwm_ratio_t r )

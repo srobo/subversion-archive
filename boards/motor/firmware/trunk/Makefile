@@ -9,9 +9,11 @@ CFLAGS += -I ./types
 LDFLAGS := -L ./flash430 -lflash430
 
 H_FILES = common.h i2c.h motor.h pwm.h smbus_pec.h timer-b.h leds.h adc-10.h \
-	h-bridge.h
+	h-bridge.h sensors/sensor.h controllers/controllers.h \
+	controllers/unity.h sensors/null.h control.h
 C_FILES = main.c i2c.c motor.c pwm.c smbus_pec.c timer-b.c leds.c adc-10.c \
-	h-bridge.c
+	h-bridge.c controllers/unity.c sensors/null.c \
+	control.c
 
 world: motor-bottom motor-top
 

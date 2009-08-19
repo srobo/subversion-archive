@@ -1,0 +1,9 @@
+#ifndef __CONTROL_H
+#define __CONTROL_H
+
+void control_init( void );
+
+/* Step the control routines */
+void control_step( void );
+
+#endif	/* __CONTROL_H */

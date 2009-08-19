@@ -68,3 +68,13 @@ void motor_init( void )
 		motor_set( i, 0, M_OFF );
 	}
 }
+
+void motor_set_n( uint8_t channel, int16_t power )
+{
+	if( power > 0 )
+		motor_set( channel, power, M_FORWARD );
+	else if( power == 0 )
+		motor_set( channel, 0, M_OFF );
+	else
+		motor_set( channel, 0-power, M_BACKWARD );
+}

@@ -20,6 +20,10 @@
 #include "pwm.h"
 #include "h-bridge.h"
 
+/* Set the power of the motor.
+   power can be positive or negative for forwards and backwards. */
+void motor_set_n( uint8_t channel, int16_t power );
+
 /* Set the power/state of a motor */
 void motor_set( uint8_t channel, pwm_ratio_t power, h_bridge_state_t state );
 
