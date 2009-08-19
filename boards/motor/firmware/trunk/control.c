@@ -3,7 +3,9 @@
 #include "controllers/controllers.h"
 #include <stdint.h>
 #include "sensors/null.h"
+#include "sensors/ads5030.h"
 #include "controllers/unity.h"
+#include "controllers/pid.h"
 #include "motor.h"
 
 typedef struct
@@ -25,8 +27,13 @@ void control_init( void )
 
 		c->target = 120;
 
-		null_init( &c->sensor );
-		unity_init( &c->controller );
+		if( i==1 ) {
+			null_init( &c->sensor );
+			unity_init( &c->controller );
+		} else {
+			ads_5030_init( &c->sensor, 0, 1 );
+			pid_init( &c->controller );
+		}
 	}
 }
 

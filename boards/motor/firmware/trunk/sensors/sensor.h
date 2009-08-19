@@ -2,6 +2,7 @@
 #ifndef __SENSOR_H
 #define __SENSOR_H
 #include <stdint.h>
+#include "ads5030_state.h"
 
 struct sensor;
 typedef struct sensor sensor_t;
@@ -12,6 +13,7 @@ struct sensor {
 
 	union {
 		/* null sensor has no state */
+		ads_5030_state_t ads5030;
 	} state;
 };
 

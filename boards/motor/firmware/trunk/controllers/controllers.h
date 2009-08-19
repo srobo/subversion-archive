@@ -2,6 +2,7 @@
 #ifndef __CONTROLLERS_H
 #define __CONTROLLERS_H
 #include <stdint.h>
+#include "pid_state.h"
 
 struct controller;
 typedef struct controller controller_t;
@@ -15,6 +16,7 @@ struct controller {
 
 	union {
 		/* unity controller doesn't have any state */
+		pid_state_t pid;
 	};
 };
 
