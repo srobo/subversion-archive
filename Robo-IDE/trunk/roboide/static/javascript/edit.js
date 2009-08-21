@@ -355,11 +355,18 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this._save = function() {
 		//do an update
 		this._capture_code();
+
+		//no point saving an unmodified file
+		if(this._original == this.contents) {
+			log('File not modified!');
+			status_msg("File not modified!", LEVEL_WARN);
+			return;
+		}
+
 		//if new file	-- TODO
 		if(this._isNew) {
 			var fileBrowser = new Browser(bind(this._receive_new_fname, this), {'type' : 'isFile'});
-		}
-		else {
+		} else {
 			var fileBrowser = new Browser(bind(this._receive_commit_msg, this), {'type' : 'isCommit'});
 		}
 	}
