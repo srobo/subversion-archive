@@ -11,7 +11,7 @@
 	text-align: left;
 	z-index: 100;
 }
-#selected-dir, #browser-title {
+#save-path, #browser-title {
 	color: #ffffff;
 	display: block;
 	font-weight: bold;
@@ -22,9 +22,12 @@
 	margin: 0 1%;
 	width: 96%;
 }
-#selected-dir {
+#save-path {
 	font-size: 1.35em;
 	margin: 3px 1% 3px 2%;
+}
+#save-path select {
+	font-size: 0.9em;
 }
 #left-pane, #right-pane {
 	display: block;

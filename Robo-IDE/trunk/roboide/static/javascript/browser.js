@@ -40,6 +40,7 @@ function Browser(cback, options) {
 
 	this.fileTree = null;
 	this.callback = cback;
+	this._selector = null;
 	this._init();
 }
 
@@ -58,7 +59,11 @@ Browser.prototype._init = function() {
 
 	//get file listings - if not just commit message
 	if(this.type != 'isCommit' && this.type != 'isProj') {
-		this._getFileTree(team, "");
+		var projlist = new ProjList();
+		projlist.update(team);
+		// The selection box for selecting a project
+		this._selector = new ProjSelect(projlist, $("browser-project-select"));
+		connect( this._selector, "onchange", bind( this._getFileTree, this, team ) );
 	}
 
 	//clear previous events
@@ -76,6 +81,7 @@ Browser.prototype._init = function() {
 	connect("cancel-new-file", 'onclick', bind(this.clickCancelSave, this));
 	connect("new-commit-msg","onfocus", bind(this._msg_focus, this));
 	connect("new-file-name","onfocus", bind(this._fname_focus, this));
+	connect("left-pane","onclick", bind(this.rootSelected, this));
 
 	if(this.type == 'isProj')
 		$("new-file-name").focus();
@@ -102,20 +108,26 @@ Browser.prototype._receiveTree = function(nodes) {
 	//default to the first directory
 	this.newDirectory = this.fileTree[0].path;
 	replaceChildNodes($("left-pane-list"), null);
+	replaceChildNodes($("right-pane-list"), null);
 	this._processTree($("left-pane-list"), this.fileTree, "");
+	//fake a click on the LHS root to show the root files on the RHS
+	signal("left-pane", 'onclick');
 }
 
-Browser.prototype._errorReceiveTree = function() {
-	$("browser-status").innerHTML = "ERROR :: Unable to retrieve file list";
+Browser.prototype._errorReceiveTree = function(a) {
+	$("browser-status").innerHTML = "ERROR :: Unable to retrieve file list for "+a;
 }
 
-Browser.prototype._getFileTree = function(tm, rpath) {
+Browser.prototype._getFileTree = function(tm) {
+	if($("browser-project-select").value == 'projlist-tmpitem')
+		return;
+
 	var d = loadJSONDoc("./filelist", { team : tm,
-					    rootpath : rpath});
+					    rootpath : '/'+$("browser-project-select").value
+					  });
 
 	d.addCallback( bind(this._receiveTree, this));
-	d.addErrback( bind(this._errorReceiveTree, this));
-
+	d.addErrback( bind(this._errorReceiveTree, this, $("browser-project-select").value));
 }
 
 Browser.prototype._badCommitMsg = function(msg) {
@@ -185,7 +197,7 @@ Browser.prototype.clickSaveFile = function(override) {
 	switch(this.type) {
 		case 'isFile' :
 		case 'isDir' :
-			this.callback(this.newDirectory+"/"+this.newFname, this.commitMsg);
+			this.callback("/"+this._selector.project+this.newDirectory+"/"+this.newFname, this.commitMsg);
 			break;
 		case 'isProj' :
 			this.callback(this.newFname);
@@ -228,11 +240,17 @@ Browser.prototype._processTree = function(parentDOM, tree, pathSoFar) {
 	return parentDOM;
 }
 
+Browser.prototype.rootSelected = function(e) {
+	//only fire if a signal or a cliack actually on the div (ie no bubbling)
+	if(e._event == undefined || e._event.originalTarget == $('left-pane'))
+		this.dirSelected('/', this.fileTree);
+}
+
 Browser.prototype.dirSelected = function(directory, thingsInside) {
 	logDebug("Folder selected :"+directory);
 	//update selected directory
 	this.newDirectory = directory;
-	$("selected-dir").innerHTML = "Save Directory: "+directory;
+	$("selected-dir").innerHTML = directory;
 
 	//empty file list
 	replaceChildNodes($("right-pane-list"));
@@ -257,6 +275,7 @@ Browser.prototype.display = function() {
 		case 'isFile':
 			$("browser-status").innerHTML = "Please Select a save directory & new file name";
 			$("browser-title").innerHTML = this.title || "File Save As";
+			showElement("save-path");
 			showElement("right-pane");
 			showElement("left-pane");
 			showElement("new-commit-msg");
@@ -265,6 +284,7 @@ Browser.prototype.display = function() {
 		case 'isDir' :
 			$("browser-status").innerHTML = "Please Select a save directory & new directory name";
 			$("browser-title").innerHTML = this.title || "New Directory";
+			showElement("save-path");
 			showElement("right-pane");
 			showElement("left-pane");
 			showElement("new-commit-msg");
@@ -273,6 +293,7 @@ Browser.prototype.display = function() {
 		case 'isCommit' :
 			$("browser-status").innerHTML = "Please add a commit message before saving";
 			$("browser-title").innerHTML = "Commit Message:";
+			hideElement("save-path");
 			hideElement("right-pane");
 			hideElement("left-pane");
 			showElement("new-commit-msg");
@@ -281,13 +302,13 @@ Browser.prototype.display = function() {
 		case 'isProj' :
 			$("browser-status").innerHTML = "Enter new project name:";
 			$("browser-title").innerHTML = this.title || "New Project";
+			hideElement("save-path");
 			hideElement("right-pane");
 			hideElement("left-pane");
 			hideElement("new-commit-msg");
 			showElement("new-file-name");
 			break;
 	}
-	$("selected-dir").innerHTML = "Save Directory: /";
 }
 Browser.prototype.hide = function() {
 	logDebug("Hiding File Browser");
