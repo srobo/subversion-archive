@@ -119,7 +119,7 @@ Browser.prototype._errorReceiveTree = function(a) {
 }
 
 Browser.prototype._getFileTree = function(tm) {
-	if($("browser-project-select").value == 'projlist-tmpitem')
+	if($("browser-project-select").options[$("browser-project-select").selectedIndex].id == 'projlist-tmpitem')
 		return;
 
 	var d = loadJSONDoc("./filelist", { team : tm,
