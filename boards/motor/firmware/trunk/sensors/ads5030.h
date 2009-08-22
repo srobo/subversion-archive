@@ -17,7 +17,4 @@ void ads_5030_init( sensor_t* sensor,
 		    uint8_t clk_n, 
 		    uint8_t dio_n );
 
-/* Returns the angular position */
-int32_t ads_5030_read( sensor_t* sensor );
-
 #endif	/* __ADS_5030_H */

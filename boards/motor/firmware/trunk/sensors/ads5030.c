@@ -8,6 +8,12 @@
 
 #define get_bit(s) ((P2IN & (s->dio))?1:0)
 
+/* Returns the angular position */
+/* Returns 0xffff on fail */
+static uint16_t ads5030_read_angle( ads_5030_state_t* s );
+
+static int32_t ads_5030_read( sensor_t* sensor );
+
 void ads_5030_init( sensor_t* sensor,
 		    uint8_t clk_n, 
 		    uint8_t dio_n )
@@ -18,6 +24,10 @@ void ads_5030_init( sensor_t* sensor,
 
 	s->clk = 1 << clk_n;
 	s->dio = 1 << dio_n;
+	s->shr = 2;
+
+	s->last_read = 0;
+	s->pos = 0;
 
 	/* CLK is an output */
 	P2DIR |= s->clk;
@@ -26,9 +36,36 @@ void ads_5030_init( sensor_t* sensor,
 	P2DIR &= ~(s->dio);
 }
 
-int32_t ads_5030_read( sensor_t* sensor )
+static int32_t ads_5030_read( sensor_t* sensor )
 {
 	ads_5030_state_t *s = &(sensor->state.ads5030);
+	uint16_t r = ads5030_read_angle( s );
+	const int32_t max = (255 >> s->shr);
+	int32_t x;
+
+	/* Nothing we can do with failed comms with sensor :-( */
+	if( r == 0xffff )
+		return s->pos;
+
+	x = ((int16_t)r) - ((int16_t)s->last_read);
+
+	/* Compensate for the discontinuity */
+	/* We assume that the wheel hasn't turned more than half a turn */
+	if( x > (max/2) )
+		x -= max;
+	else if ( x < (0-(max/2)) )
+		x += max;
+
+	/* No discontinuity to deal with */
+	s->pos += x;
+
+	s->last_read = r;
+
+	return s->pos;
+}
+
+static uint16_t ads5030_read_angle( ads_5030_state_t* s )
+{
 	uint8_t i;
 	uint16_t d = 0;
 
@@ -56,10 +93,10 @@ int32_t ads_5030_read( sensor_t* sensor )
 	set_clk(s, 0);
 
 	eint();
-	s->last_read = d;
 
-	/* TODO: For the moment, just return 0 if the reading is invalid */
 	if ( d & 0x4000 )
-		return d & 0xff;
-	return 0;
+		return (d & 0xff) >> s->shr;
+
+	/* Reading invalid. */
+	return 0xffff;
 }
