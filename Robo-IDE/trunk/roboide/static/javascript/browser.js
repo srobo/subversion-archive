@@ -197,7 +197,7 @@ Browser.prototype.clickSaveFile = function(override) {
 	switch(this.type) {
 		case 'isFile' :
 		case 'isDir' :
-			this.callback("/"+this._selector.project+this.newDirectory+"/"+this.newFname, this.commitMsg);
+			this.callback("/"+this._selector.project+this.newDirectory+this.newFname, this.commitMsg);
 			break;
 		case 'isProj' :
 			this.callback(this.newFname);
@@ -226,7 +226,7 @@ Browser.prototype._processTree = function(parentDOM, tree, pathSoFar) {
 
 			var newLeaf = LI(null, tree[i].name+"/");
 
-			connect(newLeaf, 'onclick', bind(this.dirSelected, this, newPathSoFar, tree[i].children));
+			connect(newLeaf, 'onclick', bind(this.dirSelected, this, newPathSoFar+"/", tree[i].children));
 
 			//create new list for child folder
 			var newBranch = LI(null, "");
