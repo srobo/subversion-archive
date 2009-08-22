@@ -58,6 +58,7 @@
 	margin: 0px;
 	background: #87ED87;
 	height: 20px;
+	width:0px;
 }
 
 .timeline-bar-event {
@@ -72,13 +73,18 @@
 }
 
 #timeline-window{
-	width: 300px;
 	border: 2px dashed #BBBBBB;
 	padding: 5px;
+	overflow: hidden;
 }
 
 #timeline-photo{
 	width: 100%;
 	border: 0px;
 	padding: 0px;
+}
+
+#timeline-description strong
+{
+	color:#FF0000;
 }

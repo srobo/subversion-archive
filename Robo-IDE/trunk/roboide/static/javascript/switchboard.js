@@ -17,8 +17,15 @@ function Switchboard()
 	connect( this.tab, "onclickclose", bind( this._close, this ) );
 	tabbar.add_tab( this.tab );
 
+	//hold the dictionary of timeline events
+	this.events = null;
+
 }
 
+Switchboard.prototype.changeEvent = function(id)
+{
+	$("timeline-description").innerHTML = "<strong>"+this.events[id].title+": </strong>"+this.events[id].desc;
+}
 /* Tab events */
 Switchboard.prototype._onfocus = function()
 {
@@ -88,10 +95,16 @@ Switchboard.prototype.receiveTimeline = function(nodes)
  */
 	logDebug("Generating Timeline..");		
 
+	/* Store the events in object */
+	this.events = nodes.events;
+
 	/* Date manipulation */
-	var start_date = Date.parse(nodes.start);
-	var end_date = Date.parse(nodes.end);
+	var start_date = new Date(nodes.start);
+	logDebug("Timeline start: "+ start_date);
+	var end_date = new Date(nodes.end);
+	logDebug("Timeline end: "+ end_date);
 	var duration = end_date - start_date;
+	logDebug("Timeline Duration: "+duration);	
 
 	/* get the maximum progress bar width in pixels */
 	var bar_width = rstrip(getStyle($("timeline-bar-out"), 'width'), "px");
@@ -99,8 +112,24 @@ Switchboard.prototype.receiveTimeline = function(nodes)
 	/* Convert a date into a pixel offset */
 	function getOffset(event_date) 
 		{
-			return Math.floor(((Date.parse(event_date) - start_date)/duration)*bar_width)+"px";
+			d = new Date(event_date);
+			o = Math.floor(((d - start_date)/duration)*bar_width)+"px";
+			return o;
 		}
+	
+	/* set the progress bar width */
+	var today = new Date();
+	if(today < start_date)
+	{
+		//not yet at timeline - default to arbitrary date 
+		today = new Date("November 12, 2009");
+	}
+	else if(today > end_date)
+	{
+		//past the end, default to 100%
+		today = end_date;
+	}
+	setStyle($("timeline-bar-in"), {'width': Math.floor(((today-start_date)/duration)*bar_width)+"px"});
 	
 
 	/* Add the events */
@@ -109,11 +138,11 @@ Switchboard.prototype.receiveTimeline = function(nodes)
 		var e = DIV({"class":"timeline-bar-event", 
 				"id":"timeline-ev-"+m,
 				"title":nodes.events[m].title}, "");
+		connect( e, "onmouseover", bind( this.changeEvent, this, m) );
 		appendChildNodes($("timeline-bar-in"), e);
 		setStyle(e,
 			{'margin-left': getOffset(nodes.events[m].date)});
 	}
-	// TODO: hook up hover event on timeline dates to change kickstart photo
 }
 
 Switchboard.prototype.errorReceiveTimeline = function()
