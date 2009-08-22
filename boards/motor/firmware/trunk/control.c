@@ -7,6 +7,7 @@
 #include "controllers/unity.h"
 #include "controllers/pid.h"
 #include "motor.h"
+#include "types/bool.h"
 
 typedef struct
 {
@@ -14,6 +15,20 @@ typedef struct
 	controller_t controller;
 
 	int32_t target;
+
+	/* Speed incrementer */
+	struct {
+		bool enabled;
+
+		/* How much to increment the position by */
+		uint8_t inc;
+		/* How often to increment the position */
+		uint16_t period;
+
+		/* How long since last increment */
+		uint16_t counter;
+	} speed;
+
 } channel_t;
 
 channel_t channels[2];
@@ -25,7 +40,11 @@ void control_init( void )
 	for( i=0; i<2; i++ ) {
 		channel_t *c = channels + i;
 
-		c->target = 120;
+		c->target = 2;
+		c->speed.enabled = FALSE;
+		c->speed.inc = 32;
+		c->speed.period = 1000;
+		c->speed.counter = 0;
 
 		if( i==1 ) {
 			null_init( &c->sensor );
@@ -33,6 +52,7 @@ void control_init( void )
 		} else {
 			ads_5030_init( &c->sensor, 0, 1 );
 			pid_init( &c->controller );
+			c->speed.enabled = TRUE;
 		}
 	}
 }
@@ -45,6 +65,14 @@ void control_step( void )
 		channel_t *c = channels + i;
 		int32_t r;
 		int16_t o;
+
+		if( c->speed.enabled ) {
+			c->speed.counter++;
+			if( c->speed.counter == c->speed.period ) {
+				c->target += c->speed.inc;
+				c->speed.counter = 0;
+			}
+		}
 
 		/* Read the sensor */
 		r = c->sensor.read( &c->sensor );
