@@ -22,7 +22,6 @@ void pwm_init( void )
 {
 	/* Configure the timer peripheral */
 	/* Clock off crystal */
-	/* Frequency ~200Hz */
 
 	/* Clear the timer */
 	TACTL |= TACLR;
