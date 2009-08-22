@@ -10,16 +10,23 @@ sr_timeline_events = [{"date":"September 19, 2009", "title":"Kickstart", "desc":
 sr_timeline_start = "September 19, 2009"
 sr_timeline_end = "April 20, 2010"
 
+#We want to sanitize <div>s from feeds
+feedparser._HTMLSanitizer.acceptable_elements.remove("a")
+
+# The maximum number of messages to display 
+MAX_MESSAGES = 5
+# The maixum length of a message to display (in chars)
+MAX_MESSAGE_LENGTH = 100
+
 class SRMessageFeed():
 	def __init__(self):
 		self.fd = feedparser.parse(sr_message_feed)	
 
 	def GetMessages(self):
-		msglist = []
-		for e in self.fd.entries:
-			msglist.append({"title":e.title, "link":e.link, "author":e.author_detail.name,
-					"date":e.date, "body":e.description[0:100]})
-		return dict(msgs=msglist)
+		msglist = [{"title":e.title, "link":e.link, "author":e.author_detail.name,
+					"date":e.date, "body":e.description[0:MAX_MESSAGE_LENGTH].strip()}
+				for e in self.fd.entries]
+		return dict(msgs=msglist[0:MAX_MESSAGES])
 
 # Single instance of the message feed shared by all users
 sfd =  SRMessageFeed()	
@@ -33,3 +40,4 @@ class Switchboard(object):
 	def timeline(self):
 		#TOOD: get this dynamically, perhaps from an xml file? 
 		return dict(start=sr_timeline_start, end=sr_timeline_end, events=sr_timeline_events)
+

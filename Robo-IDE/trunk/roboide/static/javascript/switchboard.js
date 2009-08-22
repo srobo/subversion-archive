@@ -9,6 +9,9 @@ function Switchboard()
 	//hold status message for the page
 	this._prompt = null;
 
+	//hold the currently selected milestone
+	this.milestone = null;
+
 	/* Initialize a new tab for switchboard - Do this only once */
 	logDebug("Switchboard: Initializing");
 	this.tab = new Tab( "Switchboard" );
@@ -22,9 +25,15 @@ function Switchboard()
 
 }
 
-Switchboard.prototype.changeEvent = function(id)
-{
-	$("timeline-description").innerHTML = "<strong>"+this.events[id].title+": </strong>"+this.events[id].desc;
+Switchboard.prototype.changeMilestone = function(id)
+{	/* de-highlight previous milestone and highlight new one */
+	if(this.milestone != null)
+	{
+		setStyle("timeline-ev-"+this.milestone, {'background':'#FF0000'});
+	}
+	this.milestone = id;
+	setStyle("timeline-ev-"+id, {'background':'#FFFC00'});
+	$("timeline-description").innerHTML = "<strong>"+this.events[id].title+": </strong>"+this.events[id].desc+" ("+this.events[id].date+")";
 }
 /* Tab events */
 Switchboard.prototype._onfocus = function()
@@ -48,26 +57,18 @@ Switchboard.prototype._close = function()
 /* Message Feed code */ 
 Switchboard.prototype.receiveMessages = function(nodes)
 {
-/*	message-list
- *		|----li ('t')
- *			| ---- Blog title link ('a')
- *			| ---- UL ('u')
- *				| ---- LI ('l')
- *					| ----  Blog post body
- */
-	// TODO: Remove existing messages before adding new ones
+	// Remove any existing messages before adding new ones
+	appendChildNodes($("message-list"));	
 	for(m in nodes.msgs)
 	{
 		item = nodes.msgs[m];
-		var a = A({'href':item.link}, item.title);		
-		var t = LI({},"");				
-		appendChildNodes(t, a);				
-		var u = UL({},"");					
-		var l = LI({'class':'null'},"");			
-		l.innerHTML = item.body+" [by "+item.author+"]";
-		u = appendChildNodes(u, l);		
-		appendChildNodes(t, u);
-		var p = appendChildNodes($("message-list"),t);	
+		var a = A({'href':item.link, 'target':'_blank'}, item.title); 	//Write message title link
+		var s = SPAN({}, "");			
+		s.innerHTML = ": "+item.body+" [by "+item.author+"]";		//message body
+		var l = LI({},"");				
+		appendChildNodes(l, a);						//Add the title to the list element
+		appendChildNodes(l, s);						//Add the message to the list element
+		appendChildNodes($("message-list"),l);				//Add the whole list to the message window
 	}
 }
 
@@ -138,7 +139,7 @@ Switchboard.prototype.receiveTimeline = function(nodes)
 		var e = DIV({"class":"timeline-bar-event", 
 				"id":"timeline-ev-"+m,
 				"title":nodes.events[m].title}, "");
-		connect( e, "onmouseover", bind( this.changeEvent, this, m) );
+		connect( e, "onclick", bind( this.changeMilestone, this, m) );
 		appendChildNodes($("timeline-bar-in"), e);
 		setStyle(e,
 			{'margin-left': getOffset(nodes.events[m].date)});

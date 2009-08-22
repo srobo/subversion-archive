@@ -11,16 +11,7 @@
 	overflow: hidden;
 	margin-bottom: 5px;
 }
-#message-list {
-	list-style-type: none;
-	margin:0px;
-	padding:0px;
-}
-#message-window li {
-	width: 100%;
-}
-
-#message-window ul{
+#message-list, #message-list li {
 	list-style-type: none;
 	margin:0px;
 	padding:0px;
@@ -50,7 +41,7 @@
 	width: 500px;
 	border: 1px solid gray;
 	padding:0px 5px 0px 0px; 
-	background: #ffffff;
+	background: #dddddd;
 	overflow: hidden;
 }
 
