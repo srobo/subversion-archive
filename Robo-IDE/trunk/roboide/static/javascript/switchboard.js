@@ -23,7 +23,7 @@ function Switchboard()
 Switchboard.prototype._onfocus = function()
 {
 	setStyle($("switchboard-page"), {'display':'block'});
-	this.GetMessages();
+	this.GetMessages();	//TODO: Only do this if we are focing a reload
 	this.GetTimeline();
 }
 
@@ -48,6 +48,7 @@ Switchboard.prototype.receiveMessages = function(nodes)
  *				| ---- LI ('l')
  *					| ----  Blog post body
  */
+	// TODO: Remove existing messages before adding new ones
 	for(m in nodes.msgs)
 	{
 		item = nodes.msgs[m];
@@ -65,6 +66,7 @@ Switchboard.prototype.receiveMessages = function(nodes)
 
 Switchboard.prototype.errorReceiveMessages = function()
 {
+	status_msg("Unable to load messages", LEVEL_ERROR);
 	logDebug("Switchboard: Failed to retrieve messages");
 }
 
@@ -78,7 +80,6 @@ Switchboard.prototype.GetMessages = function()
 }
 
 /* Timeline Code */
-
 Switchboard.prototype.receiveTimeline = function(nodes)
 {
 /*	Overview: build the timeline showing key milestones
@@ -86,34 +87,43 @@ Switchboard.prototype.receiveTimeline = function(nodes)
  *	with an offset from the parent proportional to its date.
  */
 	logDebug("Generating Timeline..");		
-	
+
+	/* Date manipulation */
+	var start_date = Date.parse(nodes.start);
+	var end_date = Date.parse(nodes.end);
+	var duration = end_date - start_date;
+
 	/* get the maximum progress bar width in pixels */
 	var bar_width = rstrip(getStyle($("timeline-bar-out"), 'width'), "px");
 
-	/* set the progress bar width accordingly*/
-	$("timeline-bar-in").style.width = nodes.progress+"%";
+	function getOffset(event_date) 
+		{
+			return Math.floor(((Date.parse(event_date) - start_date)/duration)*bar_width)+"px";
+		}
 	
+
 	/* Add the events */
-	for(m in nodes.dates)
+	for(m in nodes.events)
 	{	/* create and position a new <div> for each timeline event */
 		var e = DIV({"class":"timeline-bar-event", 
 				"id":"timeline-ev-"+m,
-				"title":nodes.dates[m].title}, "");
-		logDebug(Math.floor((nodes.dates[m].date/100)*bar_width)+"px");
+				"title":nodes.events[m].title}, "");
 		appendChildNodes($("timeline-bar-in"), e);
 		setStyle(e,
-			{'margin-left': Math.floor((nodes.dates[m].date/100)*bar_width)+"px"});
+			{'margin-left': getOffset(nodes.events[m].date)});
 	}
+	// TODO: hook up hover event on timeline dates to change kickstart photo
 }
 
 Switchboard.prototype.errorReceiveTimeline = function()
 {
+	status_msg("Unable to load timeline", LEVEL_ERROR);
 	logDebug("Switchboard: Failed to load timeline data");
 }
 
 Switchboard.prototype.GetTimeline = function()
 {
-	logDebug("Switchboard: Retrieving SR message feed");
+	logDebug("Switchboard: Retrieving SR timeline");
 	var d = loadJSONDoc("../switchboard/timeline", {});
 
 	d.addCallback( bind(this.receiveTimeline, this));

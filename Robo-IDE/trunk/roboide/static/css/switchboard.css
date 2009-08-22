@@ -1,5 +1,7 @@
 #switchboard-page {
-	width: 100%;
+	width: 90%;
+	padding-left: 5%;
+	padding-right: 5%;
 	display: none;
 }
 
@@ -11,7 +13,6 @@
 	margin:0px;
 	padding:0px;
 }
-
 #message-window li {
 	background-color:#FFFFFF;
 	width: 100%;
@@ -19,7 +20,7 @@
 
 #message-window ul{
 	list-style-type: none;
-	margin:0px 0px 0px 1em;
+	margin:0px;
 	padding:0px;
 	font-size: 15px;
 }
@@ -42,17 +43,6 @@
 	width: 100px;
 	color: #ffffff;
 	padding:2px 5px 2px 5px;
-}
-
-.timeline-past {
-	background-color: yellow;
-}
-
-.timeline-present{
-	background-color: red;
-}
-.timeline-future {
-	background-color: green;
 }
 
 #timeline-bar-out {
