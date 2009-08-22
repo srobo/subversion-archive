@@ -39,6 +39,9 @@ var user;
 // The team selector
 var team_selector;
 
+// The switchboard page 
+var switchboardpage = null;
+
 // The initial onchange event ident connected to the tabbar
 // Gets disconnected as soon as a team is selected
 var tabchange_ident = null;
@@ -107,6 +110,9 @@ function load_gui() {
 	errorspage = new ErrorsPage();
 
 	robolog = new RoboLog();
+
+	//The switchboard page
+	switchboardpage = new Switchboard();	
 
 	//The selection operations
 	sel_operations = new ProjOps();

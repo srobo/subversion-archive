@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="./static/css/calendar.css" type="text/css"/>
         <link rel="stylesheet" href="./static/css/errors.css" type="text/css"/>
         <link rel="stylesheet" href="./static/css/menubar.css" type="text/css"/>
+        <link rel="stylesheet" href="./static/css/switchboard.css" type="text/css"/>
         <!-- Javascript Source Files -->
         <script src="./static/javascript/MochiKit.js" type="text/javascript"></script>
         <script src="static/javascript/dojoroot/dojo/dojo.js" type="text/javascript"></script>
@@ -24,6 +25,7 @@
         <script src="./static/javascript/calendar.js" type="text/javascript"></script>
         <script src="./static/javascript/errors.js" type="text/javascript"></script>
         <script src="./static/javascript/robolog.js" type="text/javascript"></script>
+        <script src="./static/javascript/switchboard.js" type="text/javascript"></script>
         <script src="static/javascript/edit_area/edit_area_loader.js" type="text/javascript"></script><!-- editarea can die in ie6 if there is a leading ./ on the src line -->
         <title>Robotics IDE</title>
     </head>
@@ -229,6 +231,23 @@
                     <dd class="dummy"></dd>
                 </dl>
             </div>
+
+	<div id="switchboard-page">
+		<div id="message-window">
+			<ul id="message-list">
+			</ul>
+		</div>
+		<div id="timeline-desc-window">
+		</div>
+		<div id="timeline-window">
+			<img id="timeline-photo" src="http://www.srobo.org/sites/all/themes/robogrid/photos/kickstart.jpg" />
+			<span id="timeline-description"> Timeline Description</span>
+		</div>
+		<div id="timeline-bar-out">
+			<div id="timeline-bar-in">
+			</div>
+		</div>
+	</div> <!-- end of "switchboard-page" -->
 
         <div id="simulator-page">
             <div id="graphics"></div>

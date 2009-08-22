@@ -16,7 +16,7 @@ import subprocess
 import sr
 import autosave as srautosave
 import user as srusers
-import fw
+import fw, switchboard
 import string
 
 log = logging.getLogger("roboide.controllers")
@@ -98,6 +98,7 @@ class Root(controllers.RootController):
     fw = fw.FwServe()
     autosave = srautosave.Autosave()
     #feed = Feed()
+    switchboard = switchboard.Switchboard()
 
     if config.get("simulator.enabled"):    # if simulation is enabled import the simulator controller
         import sim
