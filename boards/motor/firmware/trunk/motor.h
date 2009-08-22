@@ -20,6 +20,9 @@
 #include "pwm.h"
 #include "h-bridge.h"
 
+#define MOTOR_MAX PWM_MAX
+#define MOTOR_MIN (0-PWM_MAX)
+
 /* Set the power of the motor.
    power can be positive or negative for forwards and backwards. */
 void motor_set_n( uint8_t channel, int16_t power );
