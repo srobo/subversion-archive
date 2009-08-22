@@ -6,7 +6,7 @@ sr_timeline_events = [{"date":"19/9/2009", "title":"Kickstart", "desc":"Kickstar
 			{"date":"30/11/2009", "title":"Build Chasis", "desc":"You should have the chasis of the robot built"},
 			{"date":"11/1/2009", "title":"Build Ramp", "desc":"You should have built a practice ramp by now"},
 			{"date":"15/2/2010", "title":"Tech Day", "desc":"A chance to get help with the programming/electronics"},
-			{"date":"19/4/2009", "title":"Competition", "desc":"The culmination of all your hard work"}]
+			{"date":"19/4/2010", "title":"Competition", "desc":"The culmination of all your hard work"}]
 sr_timeline_start = "19/9/2009"
 sr_timeline_end = "20/4/2010"
 

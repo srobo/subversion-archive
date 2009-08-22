@@ -96,6 +96,7 @@ Switchboard.prototype.receiveTimeline = function(nodes)
 	/* get the maximum progress bar width in pixels */
 	var bar_width = rstrip(getStyle($("timeline-bar-out"), 'width'), "px");
 
+	/* Convert a date into a pixel offset */
 	function getOffset(event_date) 
 		{
 			return Math.floor(((Date.parse(event_date) - start_date)/duration)*bar_width)+"px";
