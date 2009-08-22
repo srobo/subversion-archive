@@ -5,16 +5,18 @@
 	display: none;
 }
 
+#message-window{
+	border: 2px dashed #BBBBBB;
+	padding: 5px;
+	overflow: hidden;
+	margin-bottom: 5px;
+}
 #message-list {
-	width: 50%;
-	background-color: #EEEEEE;
-	border: 1px solid #000000;
 	list-style-type: none;
 	margin:0px;
 	padding:0px;
 }
 #message-window li {
-	background-color:#FFFFFF;
 	width: 100%;
 }
 
@@ -22,7 +24,6 @@
 	list-style-type: none;
 	margin:0px;
 	padding:0px;
-	font-size: 15px;
 }
 
 #message-window a:visited, #message-window a:active, #message-window a:link, #message-window a:hover {
@@ -76,6 +77,7 @@
 	border: 2px dashed #BBBBBB;
 	padding: 5px;
 	overflow: hidden;
+	margin-bottom: 5px;
 }
 
 #timeline-photo{
@@ -88,3 +90,25 @@
 {
 	color:#FF0000;
 }
+#links-window{
+	margin-bottom: 5px;
+	border: 2px dashed #BBBBBB;
+	padding: 5px;
+	overflow: hidden;
+}
+.switch-link {
+	display: block;
+	float: left;
+	text-align: center;
+	margin: 5px;
+}
+.switch-link a {
+	text-decoration: none;
+	color:#253571;
+	font-size: 200%;
+}
+.switch-link img {
+	border:0px;
+	display: block;
+}
+
