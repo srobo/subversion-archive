@@ -35,7 +35,7 @@ static int16_t pid_next( controller_t* con,
 	   Only include the I term when the output isn't saturated */
 	if( c < MOTOR_MAX && c > MOTOR_MIN ) {
 		pid->i += e;
-		c += (pid->i * pid->ki) / 100 ; //pid->ki_div;
+		c += (pid->i * pid->ki) / 128;
 	} else
 		pid->i = 0;
 
