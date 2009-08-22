@@ -54,6 +54,11 @@ void control_step( void )
 					c->target,
 					r );
 
+		if( o > MOTOR_MAX )
+			o = MOTOR_MAX;
+		else if( o < MOTOR_MIN )
+			o = MOTOR_MIN;
+
 		/* Set the motor */
 		/* TODO: Negation needs to be configurable. */
 		motor_set_n( i, 0-o );
