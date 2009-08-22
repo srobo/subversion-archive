@@ -934,20 +934,19 @@ class Root(controllers.RootController):
     @srusers.require(srusers.in_team())
     def calendar(self, mnth, yr, file, team):
         #returns data for calendar function
-        return dict(path = file,
-                    history = []) #TODO BZRPORT: Implement!
 
         month = int(mnth)+1
         year = int(yr)
-        c = Client(int(team))
+        b = open_branch(team, file)
+
         try:
-            log = c.log(c.REPO+file)
+            log = b.repository.get_revisions(b.revision_history())
         except:
-            logging.debug("Log failed for %s" % c.REPO+file)
+            logging.debug("Log failed for %s" % file)
             print "failed to retrieve log"
             return dict(path=file, history=[])
 
-        if log[0]['revision'].number == 0: #if there's nothing there
+        if len(log) == 0: #if there's nothing there
             return dict(path=file, history=[])
 
         #get a list of users based on log authors
@@ -962,16 +961,16 @@ class Root(controllers.RootController):
 
         for y in log:
             now = datetime.datetime(2000, 1, 1);    #create a dummy datetime
-            now = now.fromtimestamp(y["date"]);
+            now = now.fromtimestamp(y.timestamp);
             if (start <= now < end):
                 result.append(y)
 
 
         return dict(  path=file,\
-                      history=[{"author":x["author"], \
+                      history=[{"author":x.get_apparent_author(), \
                       "date":time.strftime("%Y/%m/%d/%H/%M/%S", \
-                      time.localtime(x["date"])), \
-                      "message":x["message"], "rev":x["revision"].number} \
+                      time.localtime(x.timestamp)), \
+                      "message":x.message, "rev":42} \
                       for x in result])
 
     @expose("json")
