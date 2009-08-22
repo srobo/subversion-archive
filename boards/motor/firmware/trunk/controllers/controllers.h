@@ -17,7 +17,7 @@ struct controller {
 	union {
 		/* unity controller doesn't have any state */
 		pid_state_t pid;
-	};
+	} state;
 };
 
 #endif	/* __CONTROLLERS_H */
