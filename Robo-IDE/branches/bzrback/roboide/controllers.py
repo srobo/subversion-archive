@@ -1061,45 +1061,34 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def checkcode(self, team, path, code=0, date=None):
-        return dict( errors = 0)
 
-        client = Client(int(team))
-        rev = self.get_revision("HEAD")
-        file_name = os.path.basename(path)
-        path = os.path.dirname(path)
-
-        # Directory to work in
-        td = tempfile.mkdtemp()
+        root,project,file_path = path.split('/',2)
+        path,file_name = os.path.split(path)
 
         # Check out the code
-        print "Checking out %s" % (client.REPO + path)
-        client.export(client.REPO + path,
-                      td + "/code",
-                      revision=rev,
-                      recurse=True)
+        wt = WorkingTree(int(team), project)
+        # Directory we're working in
+        td = wt.tmpdir
 
-        if code != 0: #overwrite the version from the svn
-            print td+"/code/"+file_name
-            tmpfile = open(td+"/code/"+file_name, 'w')
+        if code != 0: #overwrite the version from the repo
+            print td+file_path
+            tmpfile = open(td+file_path, 'w')
             tmpfile.write(str(code))
             tmpfile.close()
 
-        print 'temp_dir: '+td+"\nfile_name: "+file_name
+        print 'temp_dir: '+td+"\nfile_path: "+file_path
 
         # Check out the dummified SR library too
-        shutil.copy( config.get("checker.file"), td + "/code" )
+        shutil.copy( config.get("checker.file"), td )
 
         # Run pychecker
-        p = subprocess.Popen( ["pychecker", "-e", "Error", file_name ],
-                              cwd = "%s/code" % td,
+        p = subprocess.Popen( ["pychecker", "-e", "Error", file_path ],
+                              cwd = td,
                               stdout = subprocess.PIPE,
                               stderr = subprocess.PIPE )
         output = p.communicate()
 
         rval = p.wait()
-
-        # Remove the temporary directory
-        shutil.rmtree(td)
 
         if rval == 0:
             return dict( errors = 0 )
@@ -1116,7 +1105,7 @@ class Root(controllers.RootController):
                     chk_warnings.append(line)
 
             for line in proc_part:
-                if not line in ['', '\n', 'Processing '+os.path.splitext(file_name)[0]+'...']:
+                if not line in ['', '\n', 'Processing '+os.path.splitext(file_path)[0]+'...']:
                     chk_errors.append(line)
 
             return dict( messages = chk_warnings, err = chk_errors, path = path, file = file_name, errors = 1 )
