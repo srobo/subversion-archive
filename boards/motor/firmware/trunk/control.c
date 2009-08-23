@@ -68,7 +68,7 @@ void control_step( void )
 
 		if( c->speed.enabled ) {
 			c->speed.counter++;
-			if( c->speed.counter == c->speed.period ) {
+			if( c->speed.counter > c->speed.period ) {
 				c->target += c->speed.inc;
 				c->speed.counter = 0;
 			}
