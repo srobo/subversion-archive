@@ -23,7 +23,7 @@ typedef struct
 		bool enabled;
 
 		/* How much to increment the position by */
-		uint16_t inc;
+		int16_t inc;
 		/* How often to increment the position */
 		uint16_t period;
 
