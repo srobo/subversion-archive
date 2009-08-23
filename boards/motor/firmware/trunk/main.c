@@ -22,7 +22,6 @@
 #include "flash430/i2c-flash.h"
 #include "leds.h"
 #include <signal.h>
-#include "adc-10.h"
 #include "control.h"
 
 static int i = 0;
@@ -45,8 +44,6 @@ int main( void )
 	while(1) {
 		if( i2c_flash_received )
 			flash_switchover();
-
-		adc10_proc();
 	}
 }
 
@@ -65,7 +62,6 @@ void init( void )
 	flash_init();
 	i2c_flash_init();
 	i2c_init();
-	adc10_init();
 	control_init();
 
 	eint();

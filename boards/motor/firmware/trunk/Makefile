@@ -8,11 +8,11 @@ CFLAGS += -I ./types
 # flash430
 LDFLAGS := -L ./flash430 -lflash430
 
-H_FILES = common.h i2c.h motor.h pwm.h smbus_pec.h timer-b.h leds.h adc-10.h \
+H_FILES = common.h i2c.h motor.h pwm.h smbus_pec.h timer-b.h leds.h \
 	h-bridge.h sensors/sensor.h controllers/controllers.h \
 	controllers/unity.h sensors/null.h control.h sensors/ads5030.h \
 	sensors/ads5030_state.h controllers/pid.h controllers/pid_state.h
-C_FILES = main.c i2c.c motor.c pwm.c smbus_pec.c timer-b.c leds.c adc-10.c \
+C_FILES = main.c i2c.c motor.c pwm.c smbus_pec.c timer-b.c leds.c \
 	h-bridge.c controllers/unity.c sensors/null.c control.c \
 	sensors/ads5030.c controllers/pid.c
 
