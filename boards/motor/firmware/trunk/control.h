@@ -1,5 +1,6 @@
 #ifndef __CONTROL_H
 #define __CONTROL_H
+#include <stdint.h>
 
 void control_init( void );
 

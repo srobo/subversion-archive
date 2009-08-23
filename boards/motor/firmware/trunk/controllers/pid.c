@@ -1,6 +1,13 @@
 #include "pid.h"
 #include "pid_state.h"
 #include "../motor.h"
+#include "../i2c_desc.h"
+
+static const i2c_setting_t pid_settings[] = {
+	I2C_DESC_SETTING( ST_I16, pid_state_t, kp ),
+	I2C_DESC_SETTING( ST_I16, pid_state_t, ki ),
+	I2C_DESC_SETTING( ST_I16, pid_state_t, kd )
+};	
 
 static int16_t pid_next( controller_t* con,
 			 int32_t target,
@@ -18,6 +25,9 @@ void pid_init( controller_t *con )
 	pid->kp = 0;
 	pid->ki = 0;
 	pid->kd = 0;
+
+	con->i2c_tbl = pid_settings;
+	con->i2c_tblen = sizeof( pid_settings ) / sizeof( i2c_setting_t );
 }
 
 static int16_t pid_next( controller_t* con,
@@ -39,6 +49,7 @@ static int16_t pid_next( controller_t* con,
 	} else
 		pid->i = 0;
 
+	/* TODO: Move above I */
 	/* D */
 	c += (e - pid->last_e) * pid->kd;
 	pid->last_e = e;

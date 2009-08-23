@@ -15,34 +15,30 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 #ifndef __I2C_H
 #define __I2C_H
+#include "i2c_desc.h"
 
 #define I2C_ADDRESS 0x12
-
-/* The commands */
-enum {
-	/* Identify the device */
-	M_IDENTIFY,
-	/* Set the motor power/direction */
-	M_CONF,
-
-	/* Send the motor 1 setting to the master */
-	M_GET0,
-	/* Send the motor 2 setting to the master */
-	M_GET1,
-
-	/* Firmware version */
-	M_FIRMWARE_VER,
-	/* Firmware chunk reception, and next-address transmission */
-	M_FIRMWARE_CHUNK,
-	/* Firmware CRC transmission and confirmation */
-	M_FIRMWARE_CRC,
-
-	M_LAST_COMMAND
-};
 
 void i2c_init( void );
 
 /* Reset the I2C device */
 void i2c_reset( void );
+
+typedef struct {
+	const i2c_setting_t *settings;
+
+	/* Table length */
+	uint8_t tblen;
+
+	/* Base pointer for the setting offset */
+	void *base;
+} i2c_bank_entry_t;
+
+extern i2c_bank_entry_t i2c_banks[];
+
+/* Mild hack -- 
+   This has to be available so that the controller and sensor
+   switching functions know which to switch */
+extern uint8_t cmd_n;
 
 #endif	/* __I2C_H */

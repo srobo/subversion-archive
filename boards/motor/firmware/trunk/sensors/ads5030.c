@@ -1,4 +1,5 @@
 #include "ads5030.h"
+#include "../i2c_desc.h"
 #include <io.h>
 #include <signal.h>
 
@@ -8,23 +9,28 @@
 
 #define get_bit(s) ((P2IN & (s->dio))?1:0)
 
+static const i2c_setting_t ads5030_settings[] = {
+	/* clk and dio are bit *masks* */
+	I2C_DESC_SETTING( ST_U8, ads_5030_state_t, clk ),
+	I2C_DESC_SETTING( ST_U8, ads_5030_state_t, dio ),
+	I2C_DESC_SETTING( ST_U8, ads_5030_state_t, shr )
+};
+
 /* Returns the angular position */
 /* Returns 0xffff on fail */
 static uint16_t ads5030_read_angle( ads_5030_state_t* s );
 
 static int32_t ads_5030_read( sensor_t* sensor );
 
-void ads_5030_init( sensor_t* sensor,
-		    uint8_t clk_n, 
-		    uint8_t dio_n )
+void ads_5030_init( sensor_t* sensor )
 {
 	ads_5030_state_t *s = &(sensor->state.ads5030);
 
 	sensor->read = ads_5030_read;
 
-	s->clk = 1 << clk_n;
-	s->dio = 1 << dio_n;
-	s->shr = 2;
+	s->clk = 0;
+	s->dio = 0;
+	s->shr = 0;
 
 	s->last_read = 0;
 	s->pos = 0;
@@ -34,6 +40,9 @@ void ads_5030_init( sensor_t* sensor,
 
 	/* DIO is an input */
 	P2DIR &= ~(s->dio);
+
+	sensor->i2c_tbl = ads5030_settings;
+	sensor->i2c_tblen = sizeof( ads5030_settings ) / sizeof( i2c_setting_t );
 }
 
 static int32_t ads_5030_read( sensor_t* sensor )
@@ -68,6 +77,14 @@ static uint16_t ads5030_read_angle( ads_5030_state_t* s )
 {
 	uint8_t i;
 	uint16_t d = 0;
+
+	/*** Set up the IO ***/
+	/* TODO: Do this when the values are configured */
+	/* CLK is an output */
+	P2DIR |= s->clk;
+
+	/* DIO is an input */
+	P2DIR &= ~(s->dio);
 
 	/* In 2-wire mode, the device times out after 20us,
 	   so avoid any nasty things happening */

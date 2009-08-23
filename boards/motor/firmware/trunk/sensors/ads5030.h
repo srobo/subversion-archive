@@ -9,12 +9,7 @@
 /* Populates the sensor_t structure,
  * including the function pointers.
  * Args:
- *  - sensor: The structure to populate.
- *  -  clk_n: The clk pin number on port 2 (P2.clk_n)
- *  -  dio_n: The dio pin number on port 2 (P2.dio_n)
- */
-void ads_5030_init( sensor_t* sensor,
-		    uint8_t clk_n, 
-		    uint8_t dio_n );
+ *  - sensor: The structure to populate. */
+void ads_5030_init( sensor_t* sensor );
 
 #endif	/* __ADS_5030_H */

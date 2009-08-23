@@ -22,53 +22,67 @@
 #include "smbus_pec.h"
 #include "timer-b.h"
 #include "flash430/i2c-flash.h"
+#include "types/bool.h"
 
 #define I2C_BUF_LEN 32
-#define MODULE_IDENTITY 0x0201
-#define FIRMWARE_REV 0x0304
+#define MODULE_IDENTITY 0x00000001
 
-static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
-					MODULE_IDENTITY & 0xFF, 
-					(FIRMWARE_REV >> 8) & 0xFF,
-					FIRMWARE_REV & 0xFF };
+typedef struct {
+	uint32_t id;
+} i2c_info_t;
 
-typedef struct
-{
-	/* The receive size - 0 if receive not supported*/
-	uint8_t rx_size;
-
-	/* Receive function - processes buf data */
-	void (*rx) ( uint8_t* buf );
-
-	/* Transmit function - fills buf with data.
-	   Returns length of the data. */
-	uint8_t (*tx) ( uint8_t* buf );
-} i2c_cmd_t;
-
-/* Transmit (read) functions */
-static uint8_t i2cr_identity( uint8_t *buf );
+static const i2c_info_t i2c_info = { .id = 0x12345678 };
 
 /* send back the feedback info */
 static uint8_t i2cr_motor_fback(uint8_t *buf);
 
-const i2c_cmd_t cmds[] = 
+static const i2c_setting_t cmds_bank_0[] = 
 {
-	/* Send the identity to the master */
-	{ 0, NULL, i2cr_identity },
+	/* 0: Send the identity to the master */
+	I2C_DESC_SETTING( ST_U32, i2c_info_t, id ),
 
-	/* Firmware version */
-	{ 0, NULL, i2c_flashr_fw_ver },
-	/* Firmware chunk reception, and next-address transmission */
-	{ 20, i2c_flashw_fw_chunk, i2c_flashr_fw_next },
-	/* Firmware CRC transmission and confirmation */
-	{ 4, i2c_flashw_confirm, i2c_flashr_crc },
+	/* 1: Firmware version */
+	I2C_DESC_FUNC( 0, NULL, i2c_flashr_fw_ver ),
 
-	/* Feedback info */
-	{0, NULL, i2cr_motor_fback}
-}; 
+	/* 2: Firmware chunk reception, and next-address transmission */
+	I2C_DESC_FUNC( 20, i2c_flashw_fw_chunk, i2c_flashr_fw_next ),
+
+	/* 3: Firmware CRC transmission and confirmation */
+	I2C_DESC_FUNC( 4, i2c_flashw_confirm, i2c_flashr_crc ),
+
+	/* 4: Feedback info */
+	I2C_DESC_FUNC( 0, NULL, i2cr_motor_fback )
+};
+
+i2c_bank_entry_t i2c_banks[7] = 
+{
+	/* 0: 0-15: General/Misc */
+	{ cmds_bank_0, sizeof(cmds_bank_0)/sizeof(i2c_setting_t), (void*)&i2c_info },
+
+	/* 1: 16-31: Controller 0 */
+	{ NULL, 0, NULL },
+	/* 2: 32-47: Sensor 0 */
+	{ NULL, 0, NULL },
+	/* 3: 48-63: Control loop 0 */
+	{ NULL, 0, NULL },
+
+	/* 4: 64-79: Controller 1 */
+	{ NULL, 0, NULL },
+	/* 5: 80-95: Sensor 1 */
+	{ NULL, 0, NULL },
+	/* 6: 96-102: Control loop 1 */
+	{ NULL, 0, NULL },
+};
+
+#define N_BANKS (sizeof(i2c_banks) / sizeof(i2c_bank_entry_t))
+#define CMD_GET_BANK(n) ( n >> 4 )
+#define CMD_GET_OFFSET(n) ( n & 0x0f )
+#define CMD_GET_BASE(n) ( i2c_banks[ CMD_GET_BANK(n) ].base )
 
 /* The current command */
-static const i2c_cmd_t *cmd = NULL;
+static const i2c_setting_t *cmd = NULL;
+uint8_t cmd_n = 0;
+
 /* Whether we just got a start bit */
 static bool at_start = FALSE;
 
@@ -76,28 +90,50 @@ static uint8_t pos = 0;
 static uint8_t buf[I2C_BUF_LEN];
 static uint8_t checksum;
 
+/* Finds settings structure representing the given command */
+/* NULL if the command doesn't exist */
+static const i2c_setting_t *find_cmd( uint8_t n )
+{
+	uint8_t bank, off;
+	const i2c_bank_entry_t *entry;
+
+	/* Chop off lower bits to find bank */
+	bank = CMD_GET_BANK(n);
+	if( bank > N_BANKS )
+		return NULL;
+
+	entry = &i2c_banks[bank];
+
+	/* Use lower bits for offset in second table */
+	off = CMD_GET_OFFSET(n);
+	if( off > entry->tblen )
+		return NULL;
+
+	return &entry->settings[off];
+}
+
 interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 {
 	if( IFG2 & UCB0RXIFG )
 	{
 		uint8_t tmp = UCB0RXBUF;
+		static uint8_t rx_size = 0;
 
 		/* Command? */
 		if( at_start )
 		{
-			if( tmp < sizeof(cmds) )
-				cmd = &cmds[tmp];
-			else
-				cmd = NULL;
+			cmd = find_cmd(tmp);
+			cmd_n = tmp;
+			rx_size = i2c_desc_get_rx_size( cmd );
 
 			checksum = crc8( I2C_ADDRESS << 1 );
 			checksum = crc8( checksum ^ tmp );
 
 			at_start = FALSE;
 		}
-		else if( cmd != NULL && cmd->rx != NULL )
+		else if( cmd != NULL && rx_size != 0 )
 		{
-			if( pos < cmd->rx_size )
+			if( pos < rx_size )
 			{
 				buf[pos] = tmp;
 				checksum = crc8( checksum ^ tmp );
@@ -105,11 +141,11 @@ interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 			
 			pos++;
 			
-			if( pos == cmd->rx_size + (USE_CHECKSUMS?1:0) )
-			{
-				if( !USE_CHECKSUMS || checksum == tmp )
-					cmd->rx( buf );
-			}
+			if( pos == rx_size + (USE_CHECKSUMS?1:0)
+			    && ( !USE_CHECKSUMS || checksum == tmp ) )
+				i2c_desc_write( buf,
+						cmd,
+						CMD_GET_BASE(cmd_n) );
 		}
 	}
 
@@ -118,11 +154,13 @@ interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 		static uint8_t size = 0;
 		uint8_t tmp = 0;
 
-		if( cmd != NULL && cmd->tx != NULL )
+		if( cmd != NULL )
 		{
 			if( pos == 0 ) 
 			{
-				size = cmd->tx( buf );
+				size = i2c_desc_read( buf,
+						      cmd,
+						      CMD_GET_BASE(cmd_n) );
 				checksum = crc8( checksum ^ ((I2C_ADDRESS << 1)|1) );
 			}
 	
@@ -218,16 +256,6 @@ void i2c_init( void )
     IE2 |=  UCB0RXIE | UCB0TXIE;
 
     FLAG_OFF();
-}
-
-static uint8_t i2cr_identity( uint8_t *buf )
-{
-	uint8_t i;
-
-	for(i=0; i<4; i++)
-		buf[i] = i2c_identity[i];
-
-	return 4;
 }
 
 /* send back the feedback info */
