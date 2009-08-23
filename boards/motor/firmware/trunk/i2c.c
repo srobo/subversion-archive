@@ -49,17 +49,8 @@ typedef struct
 	uint8_t (*tx) ( uint8_t* buf );
 } i2c_cmd_t;
 
-/* Receive (write) functions */
-static void i2cw_motor_set( uint8_t *buf );
-
 /* Transmit (read) functions */
 static uint8_t i2cr_identity( uint8_t *buf );
-
-/* Send the motor 0 setting to the master */
-static uint8_t i2cr_motor_get0( uint8_t *buf );
-
-/* Send the motor 1 setting to the master */
-static uint8_t i2cr_motor_get1( uint8_t *buf );
 
 /* send back the feedback info */
 static uint8_t i2cr_motor_fback(uint8_t *buf);
@@ -68,15 +59,6 @@ const i2c_cmd_t cmds[] =
 {
 	/* Send the identity to the master */
 	{ 0, NULL, i2cr_identity },
-
-	/* Read the motor setting from the master */
-	{ 2, i2cw_motor_set, NULL },
-
-	/* Send the motor 1 setting to the master */
-	{ 0, NULL, i2cr_motor_get0 },
-
-	/* Send the motor 2 setting to the master */
-	{ 0, NULL, i2cr_motor_get1 },
 
 	/* Firmware version */
 	{ 0, NULL, i2c_flashr_fw_ver },
@@ -88,10 +70,6 @@ const i2c_cmd_t cmds[] =
 	/* Feedback info */
 	{0, NULL, i2cr_motor_fback}
 }; 
-
-/* Used by i2cr_motor_get0 and i2cr_motor_get1.
-   Fills the buffer with the info about motor. */
-static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor );
 
 /* The current command */
 static const i2c_cmd_t *cmd = NULL;
@@ -242,20 +220,6 @@ void i2c_init( void )
     FLAG_OFF();
 }
 
-static void i2cw_motor_set( uint8_t *buf )
-{
-	uint8_t channel;
-	pwm_ratio_t power;
-	h_bridge_state_t state;
-
-	channel = (buf[1]&0x08)?1:0;
-	power = ((uint16_t)buf[0]) 
-		| ((uint16_t)(buf[1]&1) << 8);
-	state = (buf[1] >> 1) & 0x3;
-
-	motor_set( channel, power, state );
-}
-
 static uint8_t i2cr_identity( uint8_t *buf )
 {
 	uint8_t i;
@@ -265,33 +229,6 @@ static uint8_t i2cr_identity( uint8_t *buf )
 
 	return 4;
 }
-
-static uint8_t i2cr_motor_get( uint8_t *buf, uint8_t motor )
-{
-	h_bridge_state_t state = motor_get_state(motor);
-	pwm_ratio_t power = motor_get_power(motor);
-
-	/* Bits:
-	    8-0: Power
-	   9-10: Direction */
-	buf[0] = power & 0xff;
-	buf[1] = ((power >> 8)&1);
-
-	buf[1] |= (state & 0x3) << 1;
-
-	return 2;
-}
-
-static uint8_t i2cr_motor_get0( uint8_t *buf )
-{
-	return i2cr_motor_get(buf, 0);
-}
-
-static uint8_t i2cr_motor_get1( uint8_t *buf )
-{
-	return i2cr_motor_get(buf, 1);
-}
-
 
 /* send back the feedback info */
 static uint8_t i2cr_motor_fback(uint8_t *buf)
