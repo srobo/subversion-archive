@@ -969,6 +969,7 @@ function ProjOps() {
 		logDebug("will delete: "+death_list);
 
 		var d = loadJSONDoc("./delete", { "team" : team,
+						  "project" : projpage.project,
 						  "files" : death_list,
 						  "kind" : 'ALL' });
 		d.addCallback( function(nodes) {
@@ -996,6 +997,7 @@ function ProjOps() {
 		log("Will delete autosaves: "+death_list);
 
 		var d = loadJSONDoc("./delete", { "team" : team,
+				    "project" : projpage.project,
 				    "files" : death_list,
 				    "kind" : 'AUTOSAVES' });
 

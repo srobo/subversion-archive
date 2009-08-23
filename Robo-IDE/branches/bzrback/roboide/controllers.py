@@ -423,53 +423,28 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def delete(self, team, files, kind = 'SVN'):
+    def delete(self, team, project, files, kind = 'SVN'):
         """
         Delete files from the repository, and prune empty directories.
         inputs: files - comma seperated list of paths
                 kind - one of 'SVN' or 'AUTOSAVES'
         returns (json): Message - a message to show the user
         """
-        pass    #TODO BZRPORT: Implement!
 
         if files != "":
             files = files.split(",")
-            client = Client(int(team))
-
-            #This is called to get a log message for the deletion
-            def cb():
-                return True, "Files deleted: "+', '.join(files)
-            client.callback_get_log_message = cb
-
-            urls = [client.REPO + str(x) for x in files]
+            wt = WorkingTree(int(team), project)
 
             message = "Files deleted successfully: \n" + "\n".join(files)
 
             for f in files:
-                self.autosave.delete(team, f)
+                self.autosave.delete(team, '/'+project+'/'+f)
 
             if kind == 'AUTOSAVES':
                 return dict(Message = "AutoSaves deleted successfully: \n" + "\n".join(files))
 
-            paths = list(set([os.path.dirname(file) for file in files]))
-
-            try:
-                client.remove(urls)
-                #Prune empty directories. Get data from filelist and then build a list of empty directories.
-                for dir in paths:
-                    if len(client.ls(client.REPO + dir)) == 0:
-                        #The directory is empty, OK to delete it
-
-                        #jmorse - don't prune project dirs, this offends gui
-                        if dir.encode("iso-8859-1").find('/', 1) == -1:
-                            continue
-
-                        log.debug("Deleting empty directory: " + client.REPO + dir)
-                        client.remove(client.REPO + dir)
-                        message += "\nRemove empty directory " + dir
-
-            except pysvn.ClientError:
-                message = "Error deleting files."
+            wt.remove(files)
+            wt.commit('Remove files: '+', '.join(files))
 
             return dict(Message = message)
 
