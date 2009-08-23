@@ -41,11 +41,16 @@ $Pancake_Day_Date	= date("m-d", strtotime($Easter_DATE." -47 days"));
 $then	= strtotime("$Kick_DATE, +$i days");	//the 'current' date: the one that the page is showing
 $now	= strtotime("now");
 $time_left	= strtotime($Kick_DATE) - $now;
+if($time_left <= 0)
+	$then = $Comp_time;
 
 $long_date_format	= "Y-m-d; l j F Y H:i:s (a)";
-$debug_info	.= "\$then=$then (".date($long_date_format, $then)."),	\$now=$now (".date($long_date_format, $now)."),	\$Comp_days=$Comp_days,	\$days_left=$days_left\n<br />\n";
+$debug_info	.= "\$then=$then (".date($long_date_format, $then)."),<br />
+	\$now=$now (".date($long_date_format, $now)."),<br />
+	\$Comp_days=$Comp_days,<br />
+	\$days_left=$days_left\n<br />\n";
 
-$time_per_slide = round($time_left / $days_left);
+$time_per_slide = round($time_left / ($days_left+1) );
 
 $print_date = date("l j F", $then);
 
@@ -56,9 +61,9 @@ if($no)
 
 $image_array = array("Autumn0.jpg","Autumn1.jpg","Autumn2.jpg","Autumn3.jpg","Autumn4.jpg",
 			"Autumn5.jpg","Autumn6.jpg","Autumn7.jpg","Autumn8.jpg","Autumn9.jpg","Autumn10.jpg",
-			"Winter0.jpg","Xmas1.gif","Winter1.jpg","Winter2.jpg","Exam0.jpg","Find_X.jpg","Exam1.jpg",
+			"Winter0.jpg","Winter1.jpg","Winter2.jpg","Xmas1.gif","Exam0.jpg","Find_X.jpg","Exam1.jpg",
 			"Spring0.jpg","Spring1.jpg","Half_Term.jpg","Exam_Results.gif","Spring2.jpg","Spring3.jpg",
-			"Spring4.jpg","Easter.jpg","Spring5.jpg","Spring6.jpg","Spring7.jpg","Spring8.jpg");
+			"Spring4.jpg","Spring5.jpg","Spring6.jpg","Easter.jpg","Spring7.jpg","Spring8.jpg","Spring9.jpg");
 
 $image = $image_array[floor($i/7)];
 
@@ -73,6 +78,7 @@ switch ($date)
 		break;
 	case "11-05":
 		$addon	= " (Bonfire Night)";
+		$image = "Bonfire.jpg";
 		break;
 	case "12-24":
 		$addon	= " (Christmas Eve)";
@@ -124,7 +130,7 @@ list($width, $height, $type, $attr) = getimagesize($image);
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <?	$i++;
-if(!$no && $i < $Comp_days)
+if(!$no && $i <= $Comp_days)
 { ?>
 <meta http-equiv="REFRESH" content="<?php echo ($fast ? (1/$fast) : $time_per_slide); ?>; URL=?i=<?php echo $i.($fast ? "&fast=$fast" : "").($debug ? "&debug=$debug" : ""); ?>" />
 <? }//	One Day is 21 seconds	?>
