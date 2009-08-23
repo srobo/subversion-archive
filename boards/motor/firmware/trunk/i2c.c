@@ -32,10 +32,6 @@ static const uint8_t i2c_identity[] = { (MODULE_IDENTITY >> 8) & 0xFF,
 					(FIRMWARE_REV >> 8) & 0xFF,
 					FIRMWARE_REV & 0xFF };
 
-static uint8_t pos = 0;
-static uint8_t buf[I2C_BUF_LEN];
-static uint8_t checksum;
-
 typedef struct
 {
 	/* The receive size - 0 if receive not supported*/
@@ -75,6 +71,10 @@ const i2c_cmd_t cmds[] =
 static const i2c_cmd_t *cmd = NULL;
 /* Whether we just got a start bit */
 static bool at_start = FALSE;
+
+static uint8_t pos = 0;
+static uint8_t buf[I2C_BUF_LEN];
+static uint8_t checksum;
 
 interrupt (USCIAB0TX_VECTOR) usci_tx_isr( void )
 {
