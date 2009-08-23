@@ -68,6 +68,7 @@ Switchboard.prototype._onfocus = function()
 	this.GetMessages();	//TODO: Only do this if we are focing a reload
 	this.GetTimeline();
 	this.getFeed();
+	this.GetBlogPosts();
 }
 
 Switchboard.prototype._onblur = function()
@@ -85,7 +86,7 @@ Switchboard.prototype._close = function()
 Switchboard.prototype.receiveMessages = function(nodes)
 {
 	// Remove any existing messages before adding new ones
-	appendChildNodes($("message-list"));	
+	replaceChildNodes($("message-list"));	
 	for(m in nodes.msgs)
 	{
 		item = nodes.msgs[m];
@@ -188,3 +189,34 @@ Switchboard.prototype.GetTimeline = function()
 	d.addErrback( bind(this.errorReceiveTimeline, this));
 }
 
+Switchboard.prototype.receiveBlogPosts = function(nodes)
+{
+	// Remove any existing messages before adding new ones
+	replaceChildNodes($("student-blogs-list"));	
+	for(m in nodes.msgs)
+	{
+		item = nodes.msgs[m];
+		var a = A({'href':item.link, 'target':'_blank'}, item.title); 	//Write message title link
+		var s = SPAN({}, "");			
+		s.innerHTML = ": "+item.body+" [by "+item.author+"]";		//message body
+		var l = LI({},"");				
+		appendChildNodes(l, a);						//Add the title to the list element
+		appendChildNodes(l, s);						//Add the message to the list element
+		appendChildNodes($("student-blogs-list"),l);				//Add the whole list to the message window
+	}
+}
+
+Switchboard.prototype.errorReceiveBlogPosts = function()
+{
+	status_msg("Unable to load competitors' blog posts", LEVEL_ERROR);
+	logDebug("Switchboard: Failed to retrieve competitors blog posts");
+}
+
+Switchboard.prototype.GetBlogPosts = function()
+{
+	logDebug("Switchboard: Retrieving competitors' blog posts ");
+	var d = loadJSONDoc("../switchboard/getmessages", {});
+
+	d.addCallback( bind(this.receiveBlogPosts, this));
+	d.addErrback( bind(this.errorReceiveBlogPosts, this));
+}

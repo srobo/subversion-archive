@@ -4,8 +4,7 @@
 	padding-right: 5%;
 	display: none;
 }
-
-#message-window{
+.switchboard-window {
 	border: 2px dashed #BBBBBB;
 	padding: 5px;
 	overflow: hidden;
@@ -64,13 +63,6 @@
 	cursor: pointer;
 }
 
-#timeline-window{
-	border: 2px dashed #BBBBBB;
-	padding: 5px;
-	overflow: hidden;
-	margin-bottom: 5px;
-}
-
 #timeline-photo{
 	width: 100%;
 	border: 0px;
@@ -80,12 +72,6 @@
 #timeline-description strong
 {
 	color:#FF0000;
-}
-#links-window{
-	margin-bottom: 5px;
-	border: 2px dashed #BBBBBB;
-	padding: 5px;
-	overflow: hidden;
 }
 .switch-link {
 	display: block;
@@ -103,16 +89,18 @@
 	display: block;
 }
 
-#user-feed-box {
-	margin-bottom: 5px;
-	border: 2px dashed #BBBBBB;
-	padding: 5px;
-	overflow: hidden;
-}
-#user-feed-form {
-}
-
 #user-feed-url {
 	color: #0000FF;
 	width: 100%;
 }
+#student-blogs-list, #student-blogs-list li {
+	list-style-type: none;
+	margin:0px;
+	padding:0px;
+}
+
+#kickstart-photo {
+	display: block;
+	width: 150px;
+}
+

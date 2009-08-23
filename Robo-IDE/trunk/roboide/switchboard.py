@@ -53,3 +53,7 @@ class Switchboard(object):
 	@expose("json")
 	def getblogfeed(self):
 		return dict(feedurl=self.feedurl)
+	
+	@expose("json")
+	def getblogposts(self):
+		return sfd.GetMessages()

@@ -233,12 +233,12 @@
             </div>
 
 	<div id="switchboard-page">
-		<div id="message-window">
+		<div id="message-window" class="switchboard-window">
 			<strong>Important Messages for Competitors</strong>
 			<ul id="message-list">
 			</ul>
 		</div>
-		<div id="timeline-window">
+		<div id="timeline-window" class="switchboard-window">
 			<strong>Student Robotics Milestones 2010</strong>
 			<div id="timeline-bar-out">
 				<div id="timeline-bar-in">
@@ -246,7 +246,7 @@
 			</div>
 			<span id="timeline-description">Click on a milestone for details</span>
 		</div>
-		<div id="links-window">
+		<div id="links-window" class="switchboard-window">
 		<strong> Sources of Information </strong>
 			<div>
 			<span class="switch-link"><a href="#bee"><img src="http://www.srobo.org/sites/all/themes/robogrid/images/Forums.png" />Forum</a></span>
@@ -254,12 +254,23 @@
 			<span class="switch-link"><a href="#bee"><img src="http://www.srobo.org/sites/all/themes/robogrid/images/Forums.png" />Docs</a></span>
 			</div>
 		</div>
-		<div id="user-feed-box">
+		<div id="user-feed-box" class="switchboard-window">
 		<form name="user_feed_form" method="post" onSubmit="return false;">
 			<strong>Your Student Robotics Blog feed</strong>
 			<input type="text" name="user_feed_input" id="user-feed-url" />
 			If you enter the URL of your blog's RSS/Atom feed here, then other teams can read about your progress. You can enter a maximum of 1 blog feed but can change it using the box above. If you do not have a blog you can set one up for free at <a href="http://www.blogger.com" target="_blank">Blogger</a> or <a href="http://wordpress.com/" target="_blank">Wordpress</a> amongst many other sites.	
 		</form>
+		</div>
+		<div id="student-blogs-window" class="switchboard-window">
+			<strong>Competitors' Blog Posts</strong>
+			<ul id="student-blogs-list">
+				
+			</ul>
+		</div>
+		<div id="kickstart-window" class="switchboard-window">
+			<strong>Where I was this time at Kickstart</strong>
+			<img src="http://www.johnbgrimes.com/blog/bees.jpg" id="kickstart-photo" />
+			At this point in the 'year' during the Kickstart challenge you were...covered in bees
 		</div>
 	</div> <!-- end of "switchboard-page" -->
 
