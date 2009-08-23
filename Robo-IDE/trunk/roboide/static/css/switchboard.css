@@ -103,3 +103,16 @@
 	display: block;
 }
 
+#user-feed-box {
+	margin-bottom: 5px;
+	border: 2px dashed #BBBBBB;
+	padding: 5px;
+	overflow: hidden;
+}
+#user-feed-form {
+}
+
+#user-feed-url {
+	color: #0000FF;
+	width: 100%;
+}

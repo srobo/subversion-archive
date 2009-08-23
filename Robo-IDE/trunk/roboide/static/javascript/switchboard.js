@@ -22,7 +22,33 @@ function Switchboard()
 
 	//hold the dictionary of timeline events
 	this.events = null;
+	connect( document.user_feed_form, "onsubmit", bind(this.submitFeed, this));
+}
 
+
+
+Switchboard.prototype.submitFeed = function()
+{
+	logDebug("Switchboard: Setting blog feed");
+	var d = loadJSONDoc("../switchboard/setblogfeed", 
+		{'feedurl':document.user_feed_form.user_feed_input.value});
+
+	d.addCallback( function(nodes){status_msg("Blog feed updated", LEVEL_OK); 
+					document.user_feed_form.user_feed_input.value = nodes.feedurl;});
+	d.addErrback( function(){status_msg("Unable to update blog feed", LEVEL_ERROR); 
+					document.user_feed_form.user_feed_input.value = "";});
+	return false;
+}
+
+Switchboard.prototype.getFeed = function()
+{
+	logDebug("Switchboard: Retrieving blog feed");
+	var d = loadJSONDoc("../switchboard/getblogfeed", {});
+
+	d.addCallback( function(nodes){document.user_feed_form.user_feed_input.value = nodes.feedurl;});
+	d.addErrback( function(){status_msg("Unable to retrieve blog feed", LEVEL_ERROR); 
+					document.user_feed_form.user_feed_input.value = "";});
+	return false;
 }
 
 Switchboard.prototype.changeMilestone = function(id)
@@ -41,6 +67,7 @@ Switchboard.prototype._onfocus = function()
 	setStyle($("switchboard-page"), {'display':'block'});
 	this.GetMessages();	//TODO: Only do this if we are focing a reload
 	this.GetTimeline();
+	this.getFeed();
 }
 
 Switchboard.prototype._onblur = function()

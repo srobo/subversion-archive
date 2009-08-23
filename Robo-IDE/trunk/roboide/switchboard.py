@@ -32,6 +32,10 @@ class SRMessageFeed():
 sfd =  SRMessageFeed()	
 
 class Switchboard(object):
+	
+	def __init__(self):
+		self.feedurl = "default.rss"
+
 	@expose("json")
 	def getmessages(self):
 		return sfd.GetMessages()
@@ -41,3 +45,11 @@ class Switchboard(object):
 		#TOOD: get this dynamically, perhaps from an xml file? 
 		return dict(start=sr_timeline_start, end=sr_timeline_end, events=sr_timeline_events)
 
+	@expose("json")
+	def setblogfeed(self, feedurl):
+		self.feedurl = feedurl
+		return dict(feedurl=self.feedurl)
+		
+	@expose("json")
+	def getblogfeed(self):
+		return dict(feedurl=self.feedurl)
