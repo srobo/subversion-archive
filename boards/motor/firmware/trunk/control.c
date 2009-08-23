@@ -11,6 +11,8 @@
 
 typedef struct
 {
+	/* Whether the controller is enabled */
+	bool enabled;
 	sensor_t sensor;
 	controller_t controller;
 
@@ -41,6 +43,7 @@ void control_init( void )
 		channel_t *c = channels + i;
 
 		c->target = 2;
+		c->enabled = FALSE;
 		c->speed.enabled = FALSE;
 		c->speed.inc = 32;
 		c->speed.period = 1000;
@@ -65,6 +68,11 @@ void control_step( void )
 		channel_t *c = channels + i;
 		int32_t r;
 		int16_t o;
+
+		if( !c->enabled ) {
+			motor_set_n( i, 0 );
+			continue;
+		}
 
 		if( c->speed.enabled ) {
 			c->speed.counter++;
