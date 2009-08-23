@@ -15,9 +15,9 @@ void pid_init( controller_t *con )
 	pid->i = 0;
 	pid->last_e = 0;
 
-	pid->kp = 25;
-	pid->ki = 3;
-	pid->kd = 120;
+	pid->kp = -40;
+	pid->ki = -1;
+	pid->kd = -200;
 }
 
 static int16_t pid_next( controller_t* con,

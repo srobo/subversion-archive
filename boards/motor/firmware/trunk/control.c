@@ -88,7 +88,6 @@ void control_step( void )
 			o = MOTOR_MIN;
 
 		/* Set the motor */
-		/* TODO: Negation needs to be configurable. */
-		motor_set_n( i, 0-o );
+		motor_set_n( i, o );
 	}
 }
