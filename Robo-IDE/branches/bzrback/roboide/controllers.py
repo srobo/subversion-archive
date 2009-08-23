@@ -954,45 +954,29 @@ class Root(controllers.RootController):
         #   the source and destination arguments may be directories or files
         #   directories rendered empty as a result of the move are automatically 'pruned'
         #   returns status = 0 on success
-        pass    #TODO BZRPORT: Implement!
 
-        client = Client(int(team))
-        source = client.REPO +src
-        destination = client.REPO + dest
+        r,src_proj,src_path = src.split('/',2)
+        r,dest_proj,dest_path = dest.split('/',2)
+        if src_proj != dest_proj:
+            return dict(new_revision="0", status="1", message="Source and destination projects must match")
 
-        #log message callback - needed by client.move
-        def cb():
-            return True, str(msg)
+        wt = WorkingTree(int(team), src_proj)
 
-        client.callback_get_log_message = cb
-
-        #message what gets returned to the browser
-        message=""
-
-        if not client.is_url(os.path.dirname(source)):
+        if not wt.has_filename(src_path):
             return dict(new_revision="0", status="1", message="Source file/folder doesn't exist: "+src)
 
-        if not client.is_url(os.path.dirname(destination)):
-            return dict(new_revision="0", status="1", message="Destination file/folder doesn't exist: "+dest)
+        if not wt.has_filename(os.path.dirname(dest_path)):
+            return dict(new_revision="0", status="1", message="Destination folder doesn't exist: "+os.path.dirname(dest))
 
-        try:
-            client.move(source, destination, force=True)
-            #Prune empty directories.
-            print "not failed yet\n"
-            if len(client.ls(os.path.dirname(source))) == 0:
-                #The directory is empty, OK to delete it
-                log.debug("Deleting empty directory: " + source)
-                client.remove(os.path.dirname(source))
-                message += "\nRemove empty directory " + src
-            message +="\n successfully moved file"
+        if wt.has_filename(dest_path):
+            return dict(new_revision="0", status="1", message="Destination already exists: "+dest)
 
-        except pysvn.ClientError, e:
-            message = "Error moving files. :: "+str(e)
-            return dict(new_revision="0", status="0", message=message)
+        wt.rename_one(src_path, dest_path)
+        wt.commit('Move '+src_path+' to '+dest_path)
 
         self.autosave.move(team, src, dest)
 
-        return dict(new_revision="0", status="0", message=message)
+        return dict(new_revision="0", status="0", message='Sucessfully moved file '+src+' to '+dest)
 
     @expose("json")
     @srusers.require(srusers.in_team())
