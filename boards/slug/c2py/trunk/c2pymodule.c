@@ -36,6 +36,9 @@ static PyObject* c2py_powerread_data( PyObject *self,
 static PyObject* c2py_powerwrite_data( PyObject *self, 
 				       PyObject *args );
 
+static PyObject* c2py_motor_reg_read( PyObject *self, 
+				      PyObject *args );
+
 static PyObject *I2CError;
 
 static PyMethodDef c2pyMethods[] = {
@@ -47,7 +50,8 @@ static PyMethodDef c2pyMethods[] = {
 	{"readworddata",c2py_smbusreadword_data,METH_VARARGS,"Read a word from the SMBus with a command"},
 	{"writeworddata",c2py_smbuswriteword_data,METH_VARARGS,"Write a word to the SMBus with a command"},
 	{"powerread",c2py_powerread_data,METH_VARARGS,"Read data block from power board with gumsense format"},
-	{"powerwrite",c2py_powerwrite_data,METH_VARARGS,"Write  data block from power board with gumsense format"},
+	{"powerwrite",c2py_powerwrite_data,METH_VARARGS,"Write data block from power board with gumsense format"},
+	{"motor_reg_read", c2py_motor_reg_read, METH_VARARGS, "Read register from motor board."},
 	{NULL,NULL,0,NULL}
 };
 
@@ -469,4 +473,66 @@ static PyObject* c2py_powerwrite_data( PyObject *self,
 	Py_INCREF(Py_None);
     
 	return Py_None;
+}
+
+static PyObject* c2py_motor_reg_read( PyObject *self, 
+				      PyObject *args )
+{
+	unsigned char address, reg, len;
+ 	int r;
+	uint8_t checksum, i;
+	PyObject *retval;
+
+	/* TODO: Grab reg num and data */
+	if (!PyArg_ParseTuple(args,"BBB", &address, &reg, &len))
+		return NULL;
+	uint8_t b[len + 1];
+
+	/* Turn PEC off for this -- we calculate it ourselves */
+	if( ioctl( fd, I2C_PEC, 0) < 0) {
+		PyErr_SetString(I2CError, "Could not disable PEC.");
+		return NULL;
+	}
+
+	if(ioctl( fd, I2C_SLAVE, address)) {
+		PyErr_SetString(I2CError, "Error setting I2C address.");
+		return NULL;
+	}
+
+	/* Send the command */
+	r = i2c_smbus_write_byte(fd, reg);
+	if( r < 0 ) {
+		PyErr_SetString( I2CError, "c2py_motor_read_reg: Write command failed." );
+		return NULL;
+	}
+
+	/* Read the data and checksum */
+	r = read( fd, b, len + 1 );
+	if( r < len + 1 ) {
+		PyErr_SetString( I2CError, "Failed to read correct number of bytes from register." );
+		return NULL;
+	}
+
+	checksum = crc8( address << 1 );
+	checksum = crc8( checksum ^ reg );
+	checksum = crc8( checksum ^ ((address << 1) | 1) );
+
+	for( i=0; i<len; i++ )
+		checksum = crc8( checksum ^ b[i] );
+
+	if( checksum != b[len] ) {
+		PyErr_SetString( I2CError, "Checksum failed." );
+		return NULL;
+	}
+
+	retval = PyList_New(len);
+	if( retval == NULL ) {
+		PyErr_SetString( I2CError, "Couldn't create list." );
+		return NULL;
+	}
+
+	for( i=0; i<len; i++ )
+		PyList_SetItem( retval, i, PyInt_FromLong((long)b[i]) );
+
+	return retval;
 }
