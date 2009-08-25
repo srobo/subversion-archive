@@ -69,7 +69,7 @@ initc2py(void)
 	Py_INCREF(I2CError);
 	PyModule_AddObject(m, "I2CError", I2CError);
 
-	fd = open("/dev/i2c-3", O_RDWR);
+	fd = open("/dev/i2c-0", O_RDWR);
 	if( fd < 0 ){
 		//Don't need to incref the ioerror object
 		PyErr_SetString(PyExc_IOError, "Could not open /dev/i2c-0.\n");
