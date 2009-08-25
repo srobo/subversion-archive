@@ -39,6 +39,9 @@ static PyObject* c2py_powerwrite_data( PyObject *self,
 static PyObject* c2py_motor_reg_read( PyObject *self, 
 				      PyObject *args );
 
+static PyObject* c2py_motor_reg_write( PyObject *self, 
+				       PyObject *args );
+
 static PyObject *I2CError;
 
 static PyMethodDef c2pyMethods[] = {
@@ -51,7 +54,8 @@ static PyMethodDef c2pyMethods[] = {
 	{"writeworddata",c2py_smbuswriteword_data,METH_VARARGS,"Write a word to the SMBus with a command"},
 	{"powerread",c2py_powerread_data,METH_VARARGS,"Read data block from power board with gumsense format"},
 	{"powerwrite",c2py_powerwrite_data,METH_VARARGS,"Write data block from power board with gumsense format"},
-	{"motor_reg_read", c2py_motor_reg_read, METH_VARARGS, "Read register from motor board."},
+	{"motor_reg_read", c2py_motor_reg_read, METH_VARARGS, "Read register in motor board format."},
+	{"motor_reg_write", c2py_motor_reg_write, METH_VARARGS, "Write register in motor board format."},
 	{NULL,NULL,0,NULL}
 };
 
@@ -65,7 +69,7 @@ initc2py(void)
 	Py_INCREF(I2CError);
 	PyModule_AddObject(m, "I2CError", I2CError);
 
-	fd = open("/dev/i2c-0", O_RDWR);
+	fd = open("/dev/i2c-3", O_RDWR);
 	if( fd < 0 ){
 		//Don't need to incref the ioerror object
 		PyErr_SetString(PyExc_IOError, "Could not open /dev/i2c-0.\n");
@@ -535,4 +539,66 @@ static PyObject* c2py_motor_reg_read( PyObject *self,
 		PyList_SetItem( retval, i, PyInt_FromLong((long)b[i]) );
 
 	return retval;
+}
+
+static PyObject* c2py_motor_reg_write( PyObject *self, 
+				       PyObject *args )
+{
+	unsigned char address, reg, len;
+	int w;
+	uint8_t checksum, i;
+	PyObject *data;
+
+	/* TODO: Grab reg num and data */
+	if (!PyArg_ParseTuple(args,"BBO", &address, &reg, &data))
+		return NULL;
+
+	if( !PyList_Check(data) ) {
+		PyErr_SetString( PyExc_TypeError, "Data must be a list of unsigned integers" );
+		return NULL;
+	}
+
+	len = PyList_Size(data);
+	uint8_t lbuf[len + 2];
+
+	/* Turn PEC off for this -- we calculate it ourselves */
+	if( ioctl( fd, I2C_PEC, 0) < 0) {
+		PyErr_SetString(I2CError, "Could not disable PEC.");
+		return NULL;
+	}
+
+	if(ioctl( fd, I2C_SLAVE, address)) {
+		PyErr_SetString(I2CError, "Error setting I2C address.");
+		return NULL;
+	}
+
+	lbuf[0] = reg;
+	for( i=0; i<len; i++ ) {
+		PyObject *li = PyList_GetItem(data, i);
+
+		if( !PyInt_Check(li) ) {
+			PyErr_SetString( PyExc_TypeError, "Data list must only contain unsigned integers." );
+			return NULL;
+		}
+
+		lbuf[i+1] = (uint8_t)PyInt_AsUnsignedLongMask(li);
+	}
+
+	/* Calculate the PEC */
+	checksum = crc8( address<<1 );
+	for( i=0; i<len+1; i++ )
+		checksum = crc8( checksum ^ lbuf[i] );
+
+	lbuf[len+1] = checksum;
+
+	w = write( fd, lbuf, len+2 );
+
+	if( w != len + 2 ) {
+		PyErr_SetString( I2CError, "Couldn't write to I2C bus.");
+		return NULL;
+	}
+
+	Py_INCREF(Py_None);
+    
+	return Py_None;
 }
