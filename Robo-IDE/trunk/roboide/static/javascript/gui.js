@@ -86,6 +86,9 @@ function load_gui() {
 	// Edit page
 	editpage = new EditPage();
 
+	//The switchboard page - this must happen before populate_shortcuts_box is called
+	switchboardpage = new Switchboard();	
+
 	populate_shortcuts_box();
 
 	// Shortcut button
@@ -109,10 +112,10 @@ function load_gui() {
 	// Errors Tab
 	errorspage = new ErrorsPage();
 
-	robolog = new RoboLog();
+	// Switchboard tab
+	switchboardpage.init()
 
-	//The switchboard page
-	switchboardpage = new Switchboard();	
+	robolog = new RoboLog();
 
 	//The selection operations
 	sel_operations = new ProjOps();
@@ -207,7 +210,11 @@ function populate_shortcuts_box() {
 	var short2_a = A( {"title": "Change user settings" }, "User settings" );
 	var short2_li = LI(null, short2_a);
 
-	var new_ul = UL(null, short1_li, short2_li);
+	var short3_a = A( {"title": "Messages, docs and helpful information"},  "View Switchboard" );
+	var short3_li = LI(null, short3_a);
+	connect( short3_li, "onclick", bind(switchboardpage.init, switchboardpage) );
+
+	var new_ul = UL(null, short1_li, short2_li, short3_li);
 
 	appendChildNodes($("dropShortcuts"), new_ul);
 }

@@ -31,6 +31,30 @@ class SRMessageFeed():
 # Single instance of the message feed shared by all users
 sfd =  SRMessageFeed()	
 
+class StudentBlogPosts():
+	def __init__(self):
+		self.feeds = ["http://xgoat.com/wp/feed/", "http://hackaday.com/feed/", "http://groups.google.com/group/srobo/feed/rss_v2_0_msgs.xml"]
+		self.msgs = []
+		
+		# Grab the latest blog post from each feed, display a truncated version of it
+		for f in self.feeds:
+			fd = feedparser.parse(f)
+			try:
+				e = fd.entries[0]
+				self.msgs.append({"title":e.title, "link":e.link, "author":"TODO:",
+					"date":e.date, "body":e.description[0:MAX_MESSAGE_LENGTH].strip()})
+			except IndexError:
+				pass
+		
+
+	def GetBlogPosts(self):
+		print self.msgs
+		return dict(msgs=self.msgs)
+
+# Single instance of the message feed shared by all users
+sfd =  SRMessageFeed()	
+sbp = StudentBlogPosts()
+
 class Switchboard(object):
 	
 	def __init__(self):
@@ -41,7 +65,7 @@ class Switchboard(object):
 		return sfd.GetMessages()
 
 	@expose("json")
-	def timeline(self):
+	def milestones(self):
 		#TOOD: get this dynamically, perhaps from an xml file? 
 		return dict(start=sr_timeline_start, end=sr_timeline_end, events=sr_timeline_events)
 
@@ -56,4 +80,4 @@ class Switchboard(object):
 	
 	@expose("json")
 	def getblogposts(self):
-		return sfd.GetMessages()
+		return sbp.GetBlogPosts()

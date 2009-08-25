@@ -12,77 +12,117 @@ function Switchboard()
 	//hold the currently selected milestone
 	this.milestone = null;
 
-	/* Initialize a new tab for switchboard - Do this only once */
-	logDebug("Switchboard: Initializing");
-	this.tab = new Tab( "Switchboard" );
-	connect( this.tab, "onfocus", bind( this._onfocus, this ) );
-	connect( this.tab, "onblur", bind( this._onblur, this ) );
-	connect( this.tab, "onclickclose", bind( this._close, this ) );
-	tabbar.add_tab( this.tab );
-
 	//hold the dictionary of timeline events
 	this.events = null;
-	connect( document.user_feed_form, "onsubmit", bind(this.submitFeed, this));
+	
+	//keep track of whether object is initialised
+	this._inited = false;
+
+	//connect up the submit event for the 'submit-your-blogs-rss' form
+	this._signals.push(connect( document.user_feed_form, "onsubmit", bind(this.submitFeed, this)));
+
 }
 
+/* ***** 	Initialization code 	***** */
+Switchboard.prototype.init = function()
+{
+	if(this._inited == false)
+	{
+		logDebug("Switchboard: Initializing");
 
+		/* Initialize a new tab for switchboard - Do this only once */
+		this.tab = new Tab( "Switchboard" );
+		connect( this.tab, "onfocus", bind( this._onfocus, this ) );
+		connect( this.tab, "onblur", bind( this._onblur, this ) );
+		connect( this.tab, "onclickclose", bind( this._close, this ) );
+		tabbar.add_tab( this.tab );
 
+		/* Initialise indiviual page elements */
+		this.GetMessages();	
+		this.GetMilestones();
+		this.getFeed();
+		this.GetBlogPosts();
+
+		/* remember that we are initialised */
+		this._inited = true;
+	}
+
+	/* now switch to it */
+	tabbar.switch_to(this.tab);
+}
+/* ***** 	End Initialization Code 	***** */
+
+/* ***** Tab events: onfocus, onblur and close 	***** */
+Switchboard.prototype._onfocus = function()
+{
+	setStyle($("switchboard-page"), {'display':'block'});
+}
+
+Switchboard.prototype._onblur = function()
+{
+	/* Clear any prompts */
+	if( this._prompt != null ) {
+		this._prompt.close();
+		this._prompt = null;
+	}
+	setStyle($("switchboard-page"), {'display':'none'});
+}
+
+Switchboard.prototype._close = function()
+{
+	/* Clear any prompts */
+	if( this._prompt != null ) {
+		this._prompt.close();
+		this._prompt = null;
+	}
+	/* Clear class variables */ 
+	this.milestone = null;
+	this.events = null;
+
+	/* Disconnect all signals */
+	for(var i = 0; i < this._signals; i++) {
+		disconnect(this._signals[i]);
+	}
+	this._signals = new Array();
+
+	/* Close tab */
+	this.tab.close();
+	this._inited = false;
+	
+	/* hide switchboard page */
+	setStyle($("switchboard-page"), {'display':'none'});
+}
+/* ***** 	End Tab events 		***** */
+
+/* *****    RSS feed url submit code 	***** */
 Switchboard.prototype.submitFeed = function()
 {
 	logDebug("Switchboard: Setting blog feed");
 	var d = loadJSONDoc("./switchboard/setblogfeed", 
 		{'feedurl':document.user_feed_form.user_feed_input.value});
 
-	d.addCallback( function(nodes){status_msg("Blog feed updated", LEVEL_OK); 
+	d.addCallback( function(nodes){this._prompt = status_msg("Blog feed updated", LEVEL_OK); 
 					document.user_feed_form.user_feed_input.value = nodes.feedurl;});
-	d.addErrback( function(){status_msg("Unable to update blog feed", LEVEL_ERROR); 
+	d.addErrback( function(){this._prompt = this._prompt = status_msg("Unable to update blog feed", LEVEL_ERROR); 
 					document.user_feed_form.user_feed_input.value = "";});
 	return false;
 }
+/* *****   End RSS feed url submit code ***** */
 
+/* ***** 	Student blog feed code 	***** */	
 Switchboard.prototype.getFeed = function()
 {
 	logDebug("Switchboard: Retrieving blog feed");
 	var d = loadJSONDoc("./switchboard/getblogfeed", {});
 
 	d.addCallback( function(nodes){document.user_feed_form.user_feed_input.value = nodes.feedurl;});
-	d.addErrback( function(){status_msg("Unable to retrieve blog feed", LEVEL_ERROR); 
+	d.addErrback( function(){this._prompt = this._prompt = status_msg("Unable to retrieve blog feed", LEVEL_ERROR); 
 					document.user_feed_form.user_feed_input.value = "";});
 	return false;
 }
+/* *****    End	Student blog feed code 	***** */	
 
-Switchboard.prototype.changeMilestone = function(id)
-{	/* de-highlight previous milestone and highlight new one */
-	if(this.milestone != null)
-	{
-		setStyle("timeline-ev-"+this.milestone, {'background':'#FF0000'});
-	}
-	this.milestone = id;
-	setStyle("timeline-ev-"+id, {'background':'#FFFC00'});
-	$("timeline-description").innerHTML = "<strong>"+this.events[id].title+": </strong>"+this.events[id].desc+" ("+this.events[id].date+")";
-}
-/* Tab events */
-Switchboard.prototype._onfocus = function()
-{
-	setStyle($("switchboard-page"), {'display':'block'});
-	this.GetMessages();	//TODO: Only do this if we are focing a reload
-	this.GetTimeline();
-	this.getFeed();
-	this.GetBlogPosts();
-}
-
-Switchboard.prototype._onblur = function()
-{
-	setStyle($("switchboard-page"), {'display':'none'});
-}
-
-Switchboard.prototype._close = function()
-{
-	setStyle($("switchboard-page"), {'display':'none'});
-}
-/* End Tab events */
-
-/* Message Feed code */ 
+/* *****	Message Feed code	***** */
 Switchboard.prototype.receiveMessages = function(nodes)
 {
 	// Remove any existing messages before adding new ones
@@ -102,7 +142,7 @@ Switchboard.prototype.receiveMessages = function(nodes)
 
 Switchboard.prototype.errorReceiveMessages = function()
 {
-	status_msg("Unable to load messages", LEVEL_ERROR);
+	this._prompt = this._prompt = this._prompt = status_msg("Unable to load messages", LEVEL_ERROR);
 	logDebug("Switchboard: Failed to retrieve messages");
 }
 
@@ -114,9 +154,21 @@ Switchboard.prototype.GetMessages = function()
 	d.addCallback( bind(this.receiveMessages, this));
 	d.addErrback( bind(this.errorReceiveMessages, this));
 }
+/* *****	End Message Feed code	***** */
 
-/* Timeline Code */
-Switchboard.prototype.receiveTimeline = function(nodes)
+/* ***** 	Milestones Code		***** */
+Switchboard.prototype.changeMilestone = function(id)
+{	/* de-highlight previous milestone and highlight new one */
+	if(this.milestone != null)
+	{
+		setStyle("timeline-ev-"+this.milestone, {'background':'#FF0000'});
+	}
+	this.milestone = id;
+	setStyle("timeline-ev-"+id, {'background':'#FFFC00'});
+	$("timeline-description").innerHTML = "<strong>"+this.events[id].title+": </strong>"+this.events[id].desc+" ("+this.events[id].date+")";
+}
+
+Switchboard.prototype.receiveMilestones = function(nodes)
 {
 /*	Overview: build the timeline showing key milestones
  *	Description: Each milestone event is converted into a <div>
@@ -167,28 +219,30 @@ Switchboard.prototype.receiveTimeline = function(nodes)
 		var e = DIV({"class":"timeline-bar-event", 
 				"id":"timeline-ev-"+m,
 				"title":nodes.events[m].title}, "");
-		connect( e, "onclick", bind( this.changeMilestone, this, m) );
+		this._signals.push( connect( e, "onclick", bind( this.changeMilestone, this, m) ) );
 		appendChildNodes($("timeline-bar-in"), e);
 		setStyle(e,
 			{'margin-left': getOffset(nodes.events[m].date)});
 	}
 }
 
-Switchboard.prototype.errorReceiveTimeline = function()
+Switchboard.prototype.errorReceiveMilestones = function()
 {
-	status_msg("Unable to load timeline", LEVEL_ERROR);
+	this._prompt = this._prompt = status_msg("Unable to load milestones", LEVEL_ERROR);
 	logDebug("Switchboard: Failed to load timeline data");
 }
 
-Switchboard.prototype.GetTimeline = function()
+Switchboard.prototype.GetMilestones = function()
 {
 	logDebug("Switchboard: Retrieving SR timeline");
-	var d = loadJSONDoc("./switchboard/timeline", {});
+	var d = loadJSONDoc("./switchboard/milestones", {});
 
-	d.addCallback( bind(this.receiveTimeline, this));
-	d.addErrback( bind(this.errorReceiveTimeline, this));
+	d.addCallback( bind(this.receiveMilestones, this));
+	d.addErrback( bind(this.errorReceiveMilestones, this));
 }
+/* ***** 	End Timeline code 	*****	*/
 
+/* *****	Blog Post Code		*****	*/
 Switchboard.prototype.receiveBlogPosts = function(nodes)
 {
 	// Remove any existing messages before adding new ones
@@ -208,15 +262,16 @@ Switchboard.prototype.receiveBlogPosts = function(nodes)
 
 Switchboard.prototype.errorReceiveBlogPosts = function()
 {
-	status_msg("Unable to load competitors' blog posts", LEVEL_ERROR);
+	this._prompt = this._prompt = status_msg("Unable to load competitors' blog posts", LEVEL_ERROR);
 	logDebug("Switchboard: Failed to retrieve competitors blog posts");
 }
 
 Switchboard.prototype.GetBlogPosts = function()
 {
 	logDebug("Switchboard: Retrieving competitors' blog posts ");
-	var d = loadJSONDoc("./switchboard/getmessages", {});
+	var d = loadJSONDoc("./switchboard/getblogposts", {});
 
 	d.addCallback( bind(this.receiveBlogPosts, this));
 	d.addErrback( bind(this.errorReceiveBlogPosts, this));
 }
+/* ***** 	End Blog Post Code	***** */
