@@ -30,7 +30,7 @@ function Switchboard()
 Switchboard.prototype.submitFeed = function()
 {
 	logDebug("Switchboard: Setting blog feed");
-	var d = loadJSONDoc("../switchboard/setblogfeed", 
+	var d = loadJSONDoc("./switchboard/setblogfeed", 
 		{'feedurl':document.user_feed_form.user_feed_input.value});
 
 	d.addCallback( function(nodes){status_msg("Blog feed updated", LEVEL_OK); 
@@ -43,7 +43,7 @@ Switchboard.prototype.submitFeed = function()
 Switchboard.prototype.getFeed = function()
 {
 	logDebug("Switchboard: Retrieving blog feed");
-	var d = loadJSONDoc("../switchboard/getblogfeed", {});
+	var d = loadJSONDoc("./switchboard/getblogfeed", {});
 
 	d.addCallback( function(nodes){document.user_feed_form.user_feed_input.value = nodes.feedurl;});
 	d.addErrback( function(){status_msg("Unable to retrieve blog feed", LEVEL_ERROR); 
@@ -109,7 +109,7 @@ Switchboard.prototype.errorReceiveMessages = function()
 Switchboard.prototype.GetMessages = function()
 {
 	logDebug("Switchboard: Retrieving SR message feed");
-	var d = loadJSONDoc("../switchboard/getmessages", {});
+	var d = loadJSONDoc("./switchboard/getmessages", {});
 
 	d.addCallback( bind(this.receiveMessages, this));
 	d.addErrback( bind(this.errorReceiveMessages, this));
@@ -183,7 +183,7 @@ Switchboard.prototype.errorReceiveTimeline = function()
 Switchboard.prototype.GetTimeline = function()
 {
 	logDebug("Switchboard: Retrieving SR timeline");
-	var d = loadJSONDoc("../switchboard/timeline", {});
+	var d = loadJSONDoc("./switchboard/timeline", {});
 
 	d.addCallback( bind(this.receiveTimeline, this));
 	d.addErrback( bind(this.errorReceiveTimeline, this));
@@ -215,7 +215,7 @@ Switchboard.prototype.errorReceiveBlogPosts = function()
 Switchboard.prototype.GetBlogPosts = function()
 {
 	logDebug("Switchboard: Retrieving competitors' blog posts ");
-	var d = loadJSONDoc("../switchboard/getmessages", {});
+	var d = loadJSONDoc("./switchboard/getmessages", {});
 
 	d.addCallback( bind(this.receiveBlogPosts, this));
 	d.addErrback( bind(this.errorReceiveBlogPosts, this));
