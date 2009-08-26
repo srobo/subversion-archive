@@ -3,7 +3,7 @@ from turbogears.feed import FeedController
 import cherrypy, model
 from sqlobject import sqlbuilder
 import logging
-import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.memorytree, bzrlib.tree, bzrlib.errors
+import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.memorytree, bzrlib.tree, bzrlib.errors, bzrlib.progress, bzrlib.merge, bzrlib.generate_ids
 import pysvn    # TODO BZRPORT: remove once all pysvn code removed
 import time, datetime, StringIO
 import re
@@ -23,6 +23,208 @@ import string
 log = logging.getLogger("roboide.controllers")
 
 ZIPNAME = "robot.zip"
+
+class ProjectWrite():
+    """
+    A class for making modifications to the project, ie those ending in a commit.
+    """
+    def __init__(self, team, project, revid=None):
+        """
+        Open a TranformPreview object for a revision of the project.
+        """
+        self.b = open_branch(team, project)
+
+        if revid == None:
+            # If no revid was specified, use latest
+            revid = self.b.last_revision()
+
+        self.rev_tree = self.b.repository.revision_tree(revid)
+
+        self.TransPrev = bzrlib.transform.TransformPreview(self.rev_tree)
+        self.PrevTree = self.TransPrev.get_preview_tree()
+
+        self.revid = revid
+        self.team = team
+        self.project = project
+        self.conflicts = []
+
+    def _update_tree(self):
+        """
+        Update PreviewTree when new entries have been added.
+        """
+        self.PrevTree = self.TransPrev.get_preview_tree()
+
+    def _new_dir(self, path):
+        """
+        Private method to create a directory and parents.
+        Any methods making use of this must ensure PrevTree is updated afterwards
+            so that it contains the new paths.
+        inputs:
+            path - path to the directory to be created, relative to tree root
+        """
+        path = path.strip("/") # remove leading and trailing /
+
+        #dirs = os.path.dirname(path).split('/')
+        dirs = path.split("/")
+
+        parent_trans_id = self.TransPrev.root # start at root of tree
+
+        for i in range(0, len(dirs)):
+            # path = cheese,
+                # then path = cheese/peas,
+                    # then path = cheese/peas/bananas
+            dir_path = os.path.sep.join(dirs[:i+1])
+            dir_name = dirs[i]
+
+            #info of the form ('file'/'directory'/'missing', size, exec, sha) (sha not working)
+            info = self.PrevTree.path_content_summary(dir_path)
+
+            if info[0] == 'file':
+                #A file with the name of the requested directory already exists
+                raise Exception # TODO: proper error
+            elif info[0] == 'missing':
+                dir_id = bzrlib.generate_ids.gen_file_id(dir_name)
+                trans_id = self.TransPrev.new_directory(dir_name, parent_trans_id, dir_id)
+            elif info[0] == 'directory':
+                trans_id = self.TransPrev.trans_id_tree_path(dir_path)
+            else:
+                raise Exception # this should never happen!
+
+            parent_trans_id = trans_id
+
+        # return transaction id of topmost dir
+        return parent_trans_id
+
+    def merge(self):
+        """
+        Attempt to merge with latest revision of branch.
+        """
+        revid_latest = self.b.last_revision()
+
+        merger = bzrlib.merge.Merger.from_revision_ids(
+                        bzrlib.progress.DummyProgress(),
+                        self.PrevTree,
+                        revid_latest,
+                        base = self.revid, # this is important!
+                        other_branch = self.b,
+                        tree_branch = self.b)
+
+        merger.merge_type = bzrlib.merge.Merge3Merger
+        tree_merger = merger.make_merger()
+        tt2 = tree_merger.make_preview_transform()
+
+        # update the object
+        self.TransPrev = tt2
+
+        self.revid = revid_latest
+        self.conflicts = tree_merger.cooked_conflicts
+        return
+
+    def commit(self, message=""):
+        """
+        Commit changed tree.
+        """
+        if not self.revid == self.b.last_revision():
+            return None # cannot commit, tree not up to date
+        if not len(self.conflicts) == 0:
+            return None # cannot commit, conflicts remain
+
+        self.b = open_branch(self.team, self.project) # TODO: why do we have to do this? locate cause of write-only transaction error
+        self.b.lock_write()
+
+        try:
+            if hasattr(self.PrevTree, "commit"):
+                # As of bzr 1.18 PreviewTrees have built-in commit method.
+                #self.PrevTree.set_parent_ids([ self.revid ]) # needed here?
+                revid_new = self.PrevTree.commit(message)
+            else:
+                self.PrevTree.set_parent_ids([ self.revid ])
+                revprops = {"branch-nick":self.b.nick} # is this necessary?
+                builder = self.b.get_commit_builder([self.revid], revprops = revprops)
+
+                changes = list(builder.record_iter_changes(
+                                self.PrevTree, self.revid, self.TransPrev.iter_changes()))
+                builder.finish_inventory()
+                revid_new = builder.commit(message)
+                revno_new = self.b.revision_id_to_revno(self.revid)
+                self.b.set_last_revision_info(revno_new, revid_new)
+        finally:
+            # always unlock branch
+            # NOTE: an exception during unlock() here can mask other exceptions during try.
+            #   see ie http://bugs.launchpad.net/bzr/+bug/230902/comments/2
+            # TODO: check for original exception
+            self.b.unlock()
+#            pass
+
+        self.revid = revid_new
+        return revid_new # should we delete TransPrev as it is no longer up to date?
+
+    def new_directory(self, path):
+        """
+        Creates a file or directory, and any parent directories required.
+        Will automatically update PrevTree.
+        """
+        trans_id = self._new_dir(path)
+
+        # update preview tree
+        self._update_tree()
+
+        return self.PrevTree.path2id(path)
+
+
+    def update_file_contents(self, path, contents, create=True):
+        """
+        Replace the contents of a file.
+        inputs:
+            path - path of file to be written
+            create - when True if file doesn't exist it will be created, as well as parent directories.
+        """
+        parent_path = os.path.dirname(path)
+        file_name = os.path.basename(path)
+
+        file_id = self.PrevTree.path2id(path)
+
+        if file_id == None:
+            # file doesn't exist yet
+
+            if create is not True:
+                # don't create a new file
+                raise Exception # TODO real exception
+
+            parent_id = self.PrevTree.path2id(parent_path)
+
+            if parent_id == None:
+                parent_trans_id = self._new_dir(parent_path)
+            elif parent_id == "TREE_ROOT":
+                parent_trans_id = self.TransPrev.root
+            else:
+                parent_trans_id = self.TransPrev.trans_id_file_id(parent_id)
+
+            file_id = bzrlib.generate_ids.gen_file_id(file_name)
+
+            print "new generated file id: %s" % file_id # TODO temp, remove
+            print "parent trans id: %s" % parent_trans_id
+
+            self.TransPrev.new_file(file_name, parent_trans_id, contents, file_id)
+
+            self._update_tree() # update PrevTree to reflect new file
+
+        else:
+            trans_id = self.TransPrev.trans_id_file_id(file_id)
+
+            # delete existing contents
+            self.TransPrev.delete_contents(trans_id)
+
+            # add new contents
+            self.TransPrev.create_file(contents, trans_id)
+
+        return
+
+    def destroy(self):
+        """
+        Clean up.
+        """
+        pass
 
 def open_branch(team, project):
     """
@@ -55,6 +257,7 @@ def open_memory_tree(team, project, revid=None):
         revid = b.last_revision()
 
     return bzrlib.memorytree.MemoryTree(b, revid)
+
 
 class WorkingTree:
     """
@@ -496,31 +699,26 @@ class Root(controllers.RootController):
                 rev - revision of file when it was checked out by client.
         """
 
-        b = open_branch(int(team),project)
+#        current_file_revid = self.get_file_revision(basis_tree,fileid)
+#        current_file_revno = b.revision_id_to_revno(current_file_revid)
 
-        # Get the latest tree for the branch
-        basis_tree = b.basis_tree()
+#        if str(current_file_revno) == str(rev):
+#        # File has not been modified since the client opened it
+#            return self.commit_file_simple(team, project, filepath, rev, message, code, fileid)
+#        else:
+#            return self.update_merge(team, project, filepath, rev, message, code)
 
-        try: # convert unicode to normal string required by put_file_bytes_non_atomic
-            code = code.encode()
-        except: # couldn't convert from unicode
-            return dict(code=code, success="False", file=filepath, reloadfiles="false")
+        modproj = ModifyProject(team, project)
 
-        # get the fileid:
-        fileid = basis_tree.path2id(filepath)
+        modproj.update_file_contents(filepath, code)
 
-        # if fileid returned None then file doesn't exist yet
-        if fileid == None:
-            return self.commit_file_simple(team, project, filepath, rev, message, code, fileid)
+        newrevid = modproj.commit(message)
+        newrevno = modproj.b.revision_id_to_revno(newrevid)
 
-        current_file_revid = self.get_file_revision(basis_tree,fileid)
-        current_file_revno = b.revision_id_to_revno(current_file_revid)
-
-        if str(current_file_revno) == str(rev):
-        # File has not been modified since the client opened it
-            return self.commit_file_simple(team, project, filepath, rev, message, code, fileid)
-        else:
-            return self.update_merge(team, project, filepath, rev, message, code)
+        success = "True"
+        reloadfiles = True
+        return dict(new_revision=str(newrevno), code=code,
+                    success=success, file=filepath, reloadfiles=reloadfiles)
 
     def update_merge(self, team, project, filepath, rev, message, code):
         """Attempt to merge some file data with latest revision.
@@ -766,24 +964,50 @@ class Root(controllers.RootController):
 
         return dict(tree = tree)
 
+#    #create a new directory
+#    @expose("json")
+#    @srusers.require(srusers.in_team())
+#    def newdir(self, team, project, path, msg):
+#        memtree = open_memory_tree(int(team), project)
+
+#        try:
+#            created = self.create_dir(memtree, path, msg)
+#        except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
+#            return dict( success=0, newdir = path,\
+#                        feedback="Error creating directory: " + path)
+
+#        if created: # directory was created
+#            return dict( success=1, newdir = path,\
+#                    feedback="Directory successfully created")
+#        else: # directory wasn't created because it already existed
+#            return dict( success=0, newdir = path,\
+#                    feedback="Directory " + path + " already exists")
+
     #create a new directory
     @expose("json")
     @srusers.require(srusers.in_team())
     def newdir(self, team, project, path, msg):
-        memtree = open_memory_tree(int(team), project)
+        modproj = ModifyProject(team, project)
 
         try:
-            created = self.create_dir(memtree, path, msg)
+            modproj.new_directory(path)
         except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
             return dict( success=0, newdir = path,\
                         feedback="Error creating directory: " + path)
 
-        if created: # directory was created
-            return dict( success=1, newdir = path,\
-                    feedback="Directory successfully created")
-        else: # directory wasn't created because it already existed
-            return dict( success=0, newdir = path,\
-                    feedback="Directory " + path + " already exists")
+#TODO: try:
+        revid = modproj.commit(msg)
+        print "New Revision:"
+        print revid
+
+        return dict( success=1, newdir = path,\
+                feedback="Directory successfully created")
+
+
+#        else: # directory wasn't created because it already existed
+#            return dict( success=0, newdir = path,\
+#                    feedback="Directory " + path + " already exists")
+
 
     @expose("json")
     @srusers.require(srusers.in_team())
