@@ -225,7 +225,7 @@ var EditArea_autocomplete= {
 		}
 		console.log(this.state);
 		if (this.state == this.COMPLETING) {
-			var d = MochiKit.Async.loadJSONDoc("/autocomplete", {str: this.strbuf, nocache: new Date().getTime()});
+			var d = MochiKit.Async.loadJSONDoc("./autocomplete", {str: this.strbuf, nocache: new Date().getTime()});
 			var self = this;
 			d.addCallback(self._mochiCallback);
 			d.addErrback(self._mochiCallback);
