@@ -28,15 +28,19 @@ class ProjectWrite():
     """
     A class for making modifications to the project, ie those ending in a commit.
     """
-    def __init__(self, team, project, revid=None):
+    def __init__(self, team, project, revid=None, revno=None):
         """
         Open a TranformPreview object for a revision of the project.
         """
         self.b = open_branch(team, project)
 
         if revid == None:
-            # If no revid was specified, use latest
-            revid = self.b.last_revision()
+            if revno == None:
+                # If no revid and no revno was specified, use latest
+                revid = self.b.last_revision()
+            else:
+                # revno was specified, use that
+                revid = self.b.get_rev_id(int(revno))
 
         self.rev_tree = self.b.repository.revision_tree(revid)
 
@@ -113,19 +117,32 @@ class ProjectWrite():
         tree_merger = merger.make_merger()
         tt2 = tree_merger.make_preview_transform()
 
-        # update the object
+        # update the objects
         self.TransPrev = tt2
+        self._update_tree()
 
         self.revid = revid_latest
         self.conflicts = tree_merger.cooked_conflicts
         return
+
+    def get_file_text(self, path):
+        """
+        Returns text from a file in the tree
+        """
+        file_id = self.PrevTree.path2id(path)
+
+        if file_id == None:
+            # file doesn't exist
+            raise Exception # TODO
+
+        return self.PrevTree.get_file_text(file_id)
 
     def commit(self, message=""):
         """
         Commit changed tree.
         """
         if not self.revid == self.b.last_revision():
-            return None # cannot commit, tree not up to date
+            bzrlib.errors.OutOfDateTree # cannot commit, tree not up to date
         if not len(self.conflicts) == 0:
             return None # cannot commit, conflicts remain
 
@@ -202,9 +219,6 @@ class ProjectWrite():
 
             file_id = bzrlib.generate_ids.gen_file_id(file_name)
 
-            print "new generated file id: %s" % file_id # TODO temp, remove
-            print "parent trans id: %s" % parent_trans_id
-
             self.TransPrev.new_file(file_name, parent_trans_id, contents, file_id)
 
             self._update_tree() # update PrevTree to reflect new file
@@ -220,11 +234,26 @@ class ProjectWrite():
 
         return
 
+    def copy(self, from_path, to_path):
+        """
+        Make a copy of a file. TODO: whole directories.
+        """
+
+        file_contents = self.get_file_text(from_path)
+
+        if self.PrevTree.path2id(to_path) is not None:
+            # target file already exists
+            raise Exception # TODO
+
+        self.update_file_contents(to_path, file_contents)
+
+        return
+
     def destroy(self):
         """
         Clean up.
         """
-        pass
+        self.TransPrev.finalize()
 
 def open_branch(team, project):
     """
@@ -232,8 +261,8 @@ def open_branch(team, project):
 
     TODO: Check the logged in user has permission to do this!
     """
-    repoloc = srusers.get_svnrepo( team )
-    branchloc = repoloc + "/" + project
+    repoLoc = srusers.get_svnrepo( team )
+    branchloc = repoLoc + "/" + project
     return bzrlib.branch.Branch.open(branchloc)
 
 def open_repo(team):
@@ -262,6 +291,7 @@ def open_memory_tree(team, project, revid=None):
 class WorkingTree:
     """
     A wrapper around the WorkingTree class that checks out a working copy into a temp directory.
+    NOTE: DEPRECATED. Use ProjWrite instead.
     """
     def __init__(self, team, project):
 
@@ -725,15 +755,30 @@ class Root(controllers.RootController):
 #        else:
 #            return self.update_merge(team, project, filepath, rev, message, code)
 
-        projWrite = ProjectWrite(team, project)
+        project,filepath= self.get_project_path(filepath)
+
+        projWrite = ProjectWrite(team, project, revno=rev)
 
         projWrite.update_file_contents(filepath, code)
 
-        newrevid = projWrite.commit(message)
+        reloadfiles = "True"
+
+        try:
+            newrevid = projWrite.commit(message)
+            success = "True"
+        except bzrlib.errors.OutOfDateTree:
+            # a commit has occurred since code was opened.
+            # A merge will need to take place
+            # TODO: silently merge if it doesn't affect our file, OR allow committing specific file
+            projWrite.merge()
+            newcode = projWrite.get_file_text(filepath)
+            return dict(new_revision=rev, code=newcode,
+                    success="Merge", file=filepath, reloadfiles=reloadfiles)
+
         newrevno = projWrite.b.revision_id_to_revno(newrevid)
 
-        success = "True"
-        reloadfiles = True
+
+
         return dict(new_revision=str(newrevno), code=code,
                     success=success, file=filepath, reloadfiles=reloadfiles)
 
@@ -1059,7 +1104,7 @@ class Root(controllers.RootController):
             """No ../../ nastyness"""
             return nil
 
-        url = r.REPOLOC + "/" + name
+        url = srusers.get_svnrepo( team ) + "/" + name
 
         r.bzrdir.create_branch_convenience(base=url,force_new_tree=False)
 
@@ -1225,37 +1270,29 @@ class Root(controllers.RootController):
         return self.cp(team, src, dest, msg, rev)
 
     @srusers.require(srusers.in_team())
-    def cp(self, team, src="", dest="", msg="SVN Copy", rev="0"):
-        pass    #TODO BZRPORT: Implement!
+    def cp(self, team, src="", dest="", msg="Copy", rev="0"):
 
-        src_rev = int(rev)
+        project,src = self.get_project_path(src)
 
-        client = Client(int(team))
-        source = client.REPO +src
-        destination = client.REPO + dest
+        if rev == "0":
+            rev = None
 
-        def cb():
-            return True, str(msg)
+        projWrite = ProjectWrite(team, project, revno=rev)
 
-        client.callback_get_log_message = cb
-
-        if src_rev == 0:
-            source_rev = pysvn.Revision( pysvn.opt_revision_kind.head)
-        else:
-            source_rev = pysvn.Revision( pysvn.opt_revision_kind.number, src_rev)
-
-        if not client.is_url(os.path.dirname(source)):
+        if src == "":
             return dict(new_revision="0", status="1", msg="No Source file/folder specified");
-        if not client.is_url(os.path.dirname(destination)):
+        if dest == "":
             return dict(new_revision="0", status="1", msg="No Destination file/folder specified");
 
         try:
-            client.copy(source, destination, source_rev);
+            projWrite.copy(src, dest)
+            new_rev_id = projWrite.commit(msg)
+            new_revno = projWrite.b.revision_id_to_revno(new_rev_id)
 
         except pysvn.ClientError, e:
             return dict(new_revision = "0", status="1", message="Copy Failed: "+str(e))
 
-        return dict(new_revision = "0", status="0", message="copy successful")
+        return dict(new_revision = str(new_revno), status="0", message="copy successful")
 
     @expose("json")
     @srusers.require(srusers.in_team())
