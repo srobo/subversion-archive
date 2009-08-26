@@ -17,7 +17,7 @@ import subprocess
 import sr
 import autosave as srautosave
 import user as srusers
-import fw
+import fw, switchboard
 import string
 
 log = logging.getLogger("roboide.controllers")
@@ -328,6 +328,7 @@ class Root(controllers.RootController):
     fw = fw.FwServe()
     autosave = srautosave.Autosave()
     #feed = Feed()
+    switchboard = switchboard.Switchboard()
 
     if config.get("simulator.enabled"):    # if simulation is enabled import the simulator controller
         import sim
@@ -708,12 +709,12 @@ class Root(controllers.RootController):
 #        else:
 #            return self.update_merge(team, project, filepath, rev, message, code)
 
-        modproj = ModifyProject(team, project)
+        projWrite = ProjectWrite(team, project)
 
-        modproj.update_file_contents(filepath, code)
+        projWrite.update_file_contents(filepath, code)
 
-        newrevid = modproj.commit(message)
-        newrevno = modproj.b.revision_id_to_revno(newrevid)
+        newrevid = projWrite.commit(message)
+        newrevno = projWrite.b.revision_id_to_revno(newrevid)
 
         success = "True"
         reloadfiles = True
@@ -987,16 +988,16 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def newdir(self, team, project, path, msg):
-        modproj = ModifyProject(team, project)
+        projWrite = ProjectWrite(team, project)
 
         try:
-            modproj.new_directory(path)
+            projWrite.new_directory(path)
         except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
             return dict( success=0, newdir = path,\
                         feedback="Error creating directory: " + path)
 
 #TODO: try:
-        revid = modproj.commit(msg)
+        revid = projWrite.commit(msg)
         print "New Revision:"
         print revid
 

@@ -11,14 +11,23 @@
 	text-align: left;
 	z-index: 100;
 }
-#selected-dir {
-	display: block;
+#save-path, #browser-title {
 	color: #ffffff;
-	font-size: 1.6em;
+	display: block;
 	font-weight: bold;
-	margin: 1%;
 	padding: 1%;
+}
+#browser-title {
+	font-size: 1.6em;
+	margin: 0 1%;
 	width: 96%;
+}
+#save-path {
+	font-size: 1.35em;
+	margin: 3px 1% 3px 2%;
+}
+#save-path select {
+	font-size: 0.9em;
 }
 #left-pane, #right-pane {
 	display: block;
