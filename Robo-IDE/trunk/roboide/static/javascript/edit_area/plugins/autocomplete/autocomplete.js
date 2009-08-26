@@ -1,7 +1,7 @@
 /**
  * Plugin designed for test prupose. It add a button (that manage an alert) and a select (that allow to insert tags) in the toolbar.
  * This plugin also disable the "f" key in the editarea, and load a CSS and a JS file
- */  
+ */
 
 
 if (! ("console" in window) || !("firebug" in console)) {
@@ -17,13 +17,13 @@ var EditArea_autocomplete= {
 	/**
 	 * Get called once this file is loaded (editArea still not initialized)
 	 *
-	 * @return nothing	 
-	 */	 	 	
-	init: function(){	
+	 * @return nothing
+	 */
+	init: function(){
 		//	alert("test init: "+ this._someInternalFunction(2, 3));
 		editArea.load_css(this.baseURL+"css/autocomplete.css");
 		editArea.load_script(this.baseURL+"../../../MochiKit.js");
-		
+
 		this.strbuf;
 		this.NOTCOMPLETING = 0;
 		this.COMPLETING = 1;
@@ -34,11 +34,11 @@ var EditArea_autocomplete= {
 	 * A control can be a button, select list or any other HTML item to present in the EditArea user interface.
 	 * Language variables such as {$lang_somekey} will also be replaced with contents from
 	 * the language packs.
-	 * 
-	 * @param {string} ctrl_name: the name of the control to add	  
+	 *
+	 * @param {string} ctrl_name: the name of the control to add
 	 * @return HTML code for a specific control or false.
 	 * @type string	or boolean
-	 */	
+	 */
 	,get_control_html: function(ctrl_name){
 		switch(ctrl_name){
 			case "test_but":
@@ -60,36 +60,36 @@ var EditArea_autocomplete= {
 	}
 	/**
 	 * Get called once EditArea is fully loaded and initialised
-	 *	 
+	 *
 	 * @return nothing
-	 */	 	 	
-	,onload: function(){ 
+	 */
+	,onload: function(){
 		//alert("test load");
 		console.info("Autocomplete plugin loaded");
 	}
-	
+
 	/**
 	 * Is called each time the user touch a keyboard key.
-	 *	 
+	 *
 	 * @param (event) e: the keydown event
 	 * @return true - pass to next handler in chain, false - stop chain execution
-	 * @type boolean	 
+	 * @type boolean
 	 */
 	,onkeydown: function(e) {
 		var code = e.keyCode;
-		var str= String.fromCharCode(code);
+		var str = String.fromCharCode(code);
 		console.debug("Keycode: %i   Character: %s", code, str);
-		
+
 		return this._keydown(e);
 	}
-	
+
 	/**
 	 * Executes a specific command, this function handles plugin commands.
 	 *
 	 * @param {string} cmd: the name of the command being executed
-	 * @param {unknown} param: the parameter of the command	 
+	 * @param {unknown} param: the parameter of the command
 	 * @return true - pass to next handler in chain, false - stop chain execution
-	 * @type boolean	
+	 * @type boolean
 	 */
 	,execCommand: function(cmd, param){
 		// Handle commands
@@ -98,7 +98,7 @@ var EditArea_autocomplete= {
 				var val= document.getElementById("test_select").value;
 				if(val!=-1)
 					parent.editAreaLoader.insertTags(editArea.id, "<"+val+">", "</"+val+">");
-				document.getElementById("test_select").options[0].selected=true; 
+				document.getElementById("test_select").options[0].selected=true;
 				return false;
 			case "test_cmd":
 				alert("user clicked on test_cmd");
@@ -107,7 +107,7 @@ var EditArea_autocomplete= {
 		// Pass to next handler in chain
 		return true;
 	}
-	
+
 	/**
 	 * This is just an internal plugin method, prefix all internal methods with a _ character.
 	 * The prefix is needed so they doesn't collide with future EditArea callback functions.
@@ -120,7 +120,7 @@ var EditArea_autocomplete= {
 	,_someInternalFunction : function(a, b) {
 		return a+b;
 	}
-	
+
 	,_isNormal: function(e) {
 		var code = e.keyCode;
 		// Only 'normal' if 0-9 with no shift
@@ -166,7 +166,7 @@ var EditArea_autocomplete= {
 	 *
 	 * There is also a set of 'start' characters used to determine if autocompletion
 	 * should begin, thse being space, tab and (
-	 * 
+	 *
 	 * The autocomplete plugin uses a static variable to keep track of the current
 	 * state, either autocompleting or not.
 	 *
@@ -194,7 +194,7 @@ var EditArea_autocomplete= {
 		var code = e.keyCode;
 		var str = String.fromCharCode(code);
 		var cursor = editArea.textarea.selectionStart;
-		
+
 		console.log("Normal: %i  Ignore: %i  Control: %i  Break: %i", this._isNormal(e), this._isIgnore(e), this._isControl(e), this._isBreak(e));
 
 		if (this.state == this.NOTCOMPLETING) {
