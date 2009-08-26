@@ -486,17 +486,19 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def filesrc(self, team, project, file=None, revision=-1):
+    def filesrc(self, team, file=None, revision=-1):
         """
         Returns the contents of the file.
         """
 
+        file_path = file	#save for later
+        project,file = self.get_project_path(file_path)
         curtime = time.time()
         b = open_branch( int(team), project )
 
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness trac#208
 
-        autosaved_code = self.autosave.getfilesrc(team, file, 1)
+        autosaved_code = self.autosave.getfilesrc(team, file_path, 1)
 
 #        rev = self.get_revision(revision) #TODO BZRPORT
 
@@ -522,13 +524,13 @@ class Root(controllers.RootController):
             code = "Error loading file: No filename was supplied by the IDE.  Contact an SR admin!"
             revision = 0
 
-        return dict(curtime=curtime, code=code, autosaved_code=autosaved_code, revision=str(file_revno), path=file,
+        return dict(curtime=curtime, code=code, autosaved_code=autosaved_code, revision=str(file_revno), path=file_path,
                 name=os.path.basename(file))
 
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def gethistory(self, team, project, file, user = None, offset = 0):
+    def gethistory(self, team, file, user = None, offset = 0):
         """
         This function retrieves the bzr history for the given file(s)
         to restrict logs to particular user, supply a user parameter
@@ -536,6 +538,8 @@ class Root(controllers.RootController):
         results available, overflow > 0.
         supply an offset to view older results: 0<offset < overflow; offset = 0 is the most recent logs
         """
+        file_path = file	#save for later
+        project,file = self.get_project_path(file_path)
         b = open_branch(int(team), project)
         revisions = [b.repository.get_revision(r) for r in b.revision_history()]
 
@@ -576,7 +580,7 @@ class Root(controllers.RootController):
 
         revisions = revisions[start:end]
 
-        return dict(  path=file, overflow=overflow, offset=offset, authors=authors,
+        return dict(  path=file_path, overflow=overflow, offset=offset, authors=authors,
                       history=[{"author" : r.committer,
                                 "date" : time.strftime("%H:%M:%S %d/%m/%Y",
                                                        time.localtime(r.timestamp)),
