@@ -116,6 +116,7 @@ Browser.prototype._receiveTree = function(nodes) {
 
 Browser.prototype._errorReceiveTree = function(a) {
 	$("browser-status").innerHTML = "ERROR :: Unable to retrieve file list for "+a;
+	signal("left-pane", 'onclick');
 }
 
 Browser.prototype._getFileTree = function(tm) {
