@@ -501,7 +501,7 @@ class Root(controllers.RootController):
                 file_revno = b.revision_id_to_revno(file_revid)
             except:
                 code = "Error loading file '%s' at revision %s." % (file, revision)
-                revision = 0
+                file_revno = 0
             # always unlock:
             finally:
                 b.unlock()
