@@ -897,9 +897,9 @@ class Root(controllers.RootController):
         finally:
             rev_tree.unlock()
 
-        autosave_data = self.autosave.getfilesrc(team, project)
+        autosave_data = self.autosave.getfilesrc(team, project+rootpath)
 
-        def branch_recurse(path, entry, files, given_parent_id):
+        def branch_recurse(project, path, entry, files, given_parent_id):
             """
             Travels recursively through a generator object provided by revision_tree.inventory.iter_items.
             Iter_items returns child items immediately after their parents, so by checking the parent_id field of the item with the actual id of the directory item that called it, we can check if we are still within that directory and therefore need to add the item as a child.
@@ -922,14 +922,14 @@ class Root(controllers.RootController):
                 if entry.kind == "directory":
                     try:
                         next_path, next_entry = files.next()
-                        children_list, next_path, next_entry = branch_recurse(next_path, next_entry, files, entry.file_id)
+                        children_list, next_path, next_entry = branch_recurse(project, next_path, next_entry, files, entry.file_id)
                     except StopIteration: # No more files to iterate through after this one
                         next_entry = None # break after adding this entry
                         children_list = [] # no more items, so there can't be any children
 
                     entry_list.append({
                                         "name": entry.name,
-                                        "path": path,
+                                        "path": project+path,
                                         "kind": "FOLDER",
                                         "autosave": 0,  # No autosave data for directories
                                         "rev": "-1", #TODO BZRPORT: what's this show/for? yes, i know revision, i mean, current, or when it was created?
@@ -949,7 +949,7 @@ class Root(controllers.RootController):
                         autosave_info = 0
                     entry_list.append({
                                         "name": entry.name,
-                                        "path": path,
+                                        "path": project+path,
                                         "kind": "FILE",
                                         "autosave": autosave_info,
                                         "rev": "-1", #TODO BZRPORT: what's this show/for? yes, i know revision, i mean, current, or when it was created?
@@ -973,7 +973,7 @@ class Root(controllers.RootController):
         except StopIteration:   # StopIteration caught on first pass: project tree must be empty
             return dict(tree = [])
 
-        tree, last_path, last_entry = branch_recurse(first_path, first_entry, files, tree_root)
+        tree, last_path, last_entry = branch_recurse('/'+project+'/', first_path, first_entry, files, tree_root)
 
         return dict(tree = tree)
 
