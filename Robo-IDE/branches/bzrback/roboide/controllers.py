@@ -1266,6 +1266,18 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
+    def copyproj(self, team, src, dest):
+        # Create a temporary directory
+        tmpdir = tempfile.mkdtemp()
+        #open the branch and sprout a new copy, in the temp dir
+        b = open_branch(team, src)
+        self.createproj(dest, team)
+        nb = open_branch(team, dest)
+        b.push(nb)
+        return dict(status: 0)
+
+    @expose("json")
+    @srusers.require(srusers.in_team())
     def copy(self, team, src="", dest="", msg="SVN Copy", rev="0"):
         return self.cp(team, src, dest, msg, rev)
 

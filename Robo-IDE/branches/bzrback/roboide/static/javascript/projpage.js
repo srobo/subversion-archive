@@ -153,11 +153,10 @@ ProjPage.prototype.CreateCopyProject = function(newProjName) {
 	cMsg = 'Copying project '+this.project+' to '+newProjName;
 	log(cMsg);
 
-	var d = loadJSONDoc("./copy", { 'team' : team,
+	var d = loadJSONDoc("./copyproj", { 'team' : team,
 				'src' : '/'+this.project,
 				'dest' : '/'+newProjName,
-				'msg' : cMsg,
-				'rev' : 0  });
+			});
 	d.addCallback( bind( partial(this._CopyProjectSuccess, newProjName), this));
 	d.addErrback( bind( function() {
 		status_button( "Copy Project: Error contacting server", LEVEL_ERROR, "retry",
