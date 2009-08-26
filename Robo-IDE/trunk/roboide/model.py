@@ -93,8 +93,8 @@ class FirmwareState(SQLObject):
                                     "OLD_RELEASE",
                                     "SUPERCEDED" ] )
 class UserBlogFeeds(SQLObject):
-	#the team id
-	team_id = IntCol()
+	#the user id
+	user = StringCol()
 	#the url of the rss/atom feed
 	url = StringCol()
 	#validated by student robotics admin

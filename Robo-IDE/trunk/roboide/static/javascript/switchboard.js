@@ -19,7 +19,7 @@ function Switchboard()
 	this._inited = false;
 
 	//connect up the submit event for the 'submit-your-blogs-rss' form
-	this._signals.push(connect( document.user_feed_form, "onsubmit", bind(this.submitFeed, this)));
+	this._signals.push(connect( document.user_feed_form, "onsubmit", bind(this.SubmitFeed, this)));
 
 }
 
@@ -40,7 +40,7 @@ Switchboard.prototype.init = function()
 		/* Initialise indiviual page elements */
 		this.GetMessages();	
 		this.GetMilestones();
-		this.getFeed();
+		this.GetFeed();
 		this.GetBlogPosts();
 
 		/* remember that we are initialised */
@@ -95,36 +95,72 @@ Switchboard.prototype._close = function()
 /* ***** 	End Tab events 		***** */
 
 /* *****    RSS feed url submit code 	***** */
-Switchboard.prototype.submitFeed = function()
+Switchboard.prototype._receiveSubmitFeed = function(nodes) 
+{
+	if(nodes.error > 0 )
+	{
+		this._errorSubmitFeed();
+	}
+	else
+	{
+		this._prompt = status_msg("Blog feed updated", LEVEL_OK); 
+		document.user_feed_form.user_feed_input.value = nodes.feedurl;
+	}
+}
+Switchboard.prototype._errorSubmitFeed = function()
+{
+	this._prompt = status_msg("Unable to update blog feed", LEVEL_ERROR); 
+	document.user_feed_form.user_feed_input.value = "";
+}
+Switchboard.prototype.SubmitFeed = function()
 {
 	logDebug("Switchboard: Setting blog feed");
 	var d = loadJSONDoc("./switchboard/setblogfeed", 
 		{'feedurl':document.user_feed_form.user_feed_input.value});
 
-	d.addCallback( function(nodes){this._prompt = status_msg("Blog feed updated", LEVEL_OK); 
-					document.user_feed_form.user_feed_input.value = nodes.feedurl;});
-	d.addErrback( function(){this._prompt = this._prompt = status_msg("Unable to update blog feed", LEVEL_ERROR); 
-					document.user_feed_form.user_feed_input.value = "";});
+	d.addCallback( bind( this._receiveSubmitFeed, this) ); 
+	d.addErrback( bind( this._errorSubmitFeed, this) ); 
 	return false;
 }
 /* *****   End RSS feed url submit code ***** */
 
 /* ***** 	Student blog feed code 	***** */	
-Switchboard.prototype.getFeed = function()
+
+Switchboard.prototype._receiveGetFeed = function(nodes)
+{
+	//test for error - bail
+	if(nodes.error > 0)
+	{
+		this._errorGetFeed();
+		return;
+	}
+	else
+	{
+		//update url on page
+		document.user_feed_form.user_feed_input.value = nodes.feedurl;
+	}
+}
+Switchboard.prototype._errorGetFeed = function()
+{
+		this._prompt = status_msg("Unable to load feed url", LEVEL_ERROR);
+		document.user_feed_form.user_feed_input.value = "";
+		logDebug("Switchboard: Failed to retrieve feed url");
+		return;
+}
+Switchboard.prototype.GetFeed = function()
 {
 	logDebug("Switchboard: Retrieving blog feed");
 	var d = loadJSONDoc("./switchboard/getblogfeed", {});
 
-	d.addCallback( function(nodes){document.user_feed_form.user_feed_input.value = nodes.feedurl;});
-	d.addErrback( function(){this._prompt = this._prompt = status_msg("Unable to retrieve blog feed", LEVEL_ERROR); 
-					document.user_feed_form.user_feed_input.value = "";});
-	return false;
+	d.addCallback( bind(this._receiveGetFeed, this) );
+	d.addErrback( bind(this._errorGetFeed, this) ); 
 }
 /* *****    End	Student blog feed code 	***** */	
 
 /* *****	Message Feed code	***** */
 Switchboard.prototype.receiveMessages = function(nodes)
 {
+
 	// Remove any existing messages before adding new ones
 	replaceChildNodes($("message-list"));	
 	for(m in nodes.msgs)
@@ -142,7 +178,7 @@ Switchboard.prototype.receiveMessages = function(nodes)
 
 Switchboard.prototype.errorReceiveMessages = function()
 {
-	this._prompt = this._prompt = this._prompt = status_msg("Unable to load messages", LEVEL_ERROR);
+	this._prompt = status_msg("Unable to load messages", LEVEL_ERROR);
 	logDebug("Switchboard: Failed to retrieve messages");
 }
 

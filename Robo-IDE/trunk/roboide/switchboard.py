@@ -1,5 +1,7 @@
 from turbogears import config, expose
 import feedparser
+import model
+import user as srusers
 
 sr_message_feed = "http://sr2010messages.blogspot.com/feeds/posts/default?alt=rss"
 sr_timeline_events = [{"date":"September 19, 2009", "title":"Kickstart", "desc":"Kickstart: Competition launch"}, 
@@ -57,27 +59,78 @@ sbp = StudentBlogPosts()
 
 class Switchboard(object):
 	
+	user = srusers.User()
 	def __init__(self):
 		self.feedurl = "default.rss"
 
 	@expose("json")
+	@srusers.require(srusers.in_team())
 	def getmessages(self):
 		return sfd.GetMessages()
 
 	@expose("json")
+	@srusers.require(srusers.in_team())
 	def milestones(self):
 		#TOOD: get this dynamically, perhaps from an xml file? 
 		return dict(start=sr_timeline_start, end=sr_timeline_end, events=sr_timeline_events)
 
 	@expose("json")
+	@srusers.require(srusers.in_team())
 	def setblogfeed(self, feedurl):
-		self.feedurl = feedurl
-		return dict(feedurl=self.feedurl)
-		
+	"""Returns the new rss feed url associated with a user. If
+	the user has not previously registered a url, it will assign a
+	new row in the table, else it will update their existing entry.	
+	"""	
+		#get the current user
+		cur_user = srusers.get_curuser()
+
+		# grab the sql record, edit the url, commit it 
+		try:
+			r = model.UserBlogFeeds.selectBy(user=cur_user)
+			try:
+				row = r.getOne()
+				if feedurl != row.url:
+					row.valid = False	# will need to be re-validated
+					row.url = feedurl
+					row.set()
+				else:
+					pass	#nothing to update
+			except:
+				# user doen't have an entry yet, so create one
+				if r.count() == 0:
+					new_row = model.UserBlogFeeds(user=cur_user, url=feedurl, valid=False)
+					new_row.set()
+					return dict(feedurl=feedurl, error=0)
+		except:
+			return dict(feedurl="", error=1)
+		else:
+			return dict(feedurl=row.url, error=0)	
+
 	@expose("json")
+	@srusers.require(srusers.in_team())
 	def getblogfeed(self):
-		return dict(feedurl=self.feedurl)
+	"""Returns the current rss feed url associated with a user. If 
+	the user has not previously registered a url, it will return a
+	blank string.
+	"""	
+		#get the current user
+		cur_user = srusers.get_curuser()
+
+		# grab the sql record for the user, if it exists and extract the url
+		try:
+			r = model.UserBlogFeeds.selectBy(user=cur_user)
+			try:
+				result = r.getOne().url
+			except:
+				#did not get a single result, error!
+				return dict(feedurl="", error=1)
+		except:
+			# the record doesn't exist, return blank 
+			return dict(feedurl="", error=1)
+
+		return dict(feedurl=result, error=0)
 	
 	@expose("json")
+	@srusers.require(srusers.in_team())
 	def getblogposts(self):
 		return sbp.GetBlogPosts()
