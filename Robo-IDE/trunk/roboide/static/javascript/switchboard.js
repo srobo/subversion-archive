@@ -106,6 +106,15 @@ Switchboard.prototype._receiveSubmitFeed = function(nodes)
 		this._prompt = status_msg("Blog feed updated", LEVEL_OK); 
 		document.user_feed_form.user_feed_input.value = nodes.feedurl;
 	}
+
+	if(nodes.valid > 0)
+	{
+		setStyle("user-feed-url", {'background-color': '#98FF4F'});
+	}
+	else
+	{
+		setStyle("user-feed-url", {'background-color': '#FF5E5E'});
+	}
 }
 Switchboard.prototype._errorSubmitFeed = function()
 {
@@ -138,6 +147,14 @@ Switchboard.prototype._receiveGetFeed = function(nodes)
 	{
 		//update url on page
 		document.user_feed_form.user_feed_input.value = nodes.feedurl;
+	}
+	if(nodes.valid > 0)
+	{
+		setStyle("user-feed-url", {'background-color': '#98FF4F'});
+	}
+	else
+	{
+		setStyle("user-feed-url", {'background-color': '#FF5E5E'});
 	}
 }
 Switchboard.prototype._errorGetFeed = function()

@@ -109,11 +109,11 @@ class Switchboard(object):
 				if r.count() == 0:
 					new_row = model.UserBlogFeeds(user=cur_user, url=feedurl, valid=False)
 					new_row.set()
-					return dict(feedurl=feedurl, error=0)
+					return dict(feedurl=new_row.url, valid=int(new_row.valid), error=0)
 		except:
-			return dict(feedurl="", error=1)
+			return dict(feedurl="", valid=0, error=1)
 		else:
-			return dict(feedurl=row.url, error=0)	
+			return dict(feedurl=row.url, valid=int(row.valid), error=0)	
 
 	@expose("json")
 	@srusers.require(srusers.in_team())
@@ -129,15 +129,15 @@ class Switchboard(object):
 		try:
 			r = model.UserBlogFeeds.selectBy(user=cur_user)
 			try:
-				result = r.getOne().url
+				row = r.getOne()
 			except:
 				#did not get a single result, error!
-				return dict(feedurl="", error=1)
+				return dict(feedurl="", valid=0, error=1)
 		except:
 			# the record doesn't exist, return blank 
-			return dict(feedurl="", error=1)
+			return dict(feedurl="", valid=0, error=1)
 
-		return dict(feedurl=result, error=0)
+		return dict(feedurl=row.url, valid=int(row.valid), error=0)
 	
 	@expose("json")
 	@srusers.require(srusers.in_team())
