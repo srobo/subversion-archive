@@ -35,19 +35,28 @@ sfd =  SRMessageFeed()
 
 class StudentBlogPosts():
 	def __init__(self):
-		self.feeds = ["http://xgoat.com/wp/feed/", "http://hackaday.com/feed/", "http://groups.google.com/group/srobo/feed/rss_v2_0_msgs.xml"]
 		self.msgs = []
-		
-		# Grab the latest blog post from each feed, display a truncated version of it
-		for f in self.feeds:
-			fd = feedparser.parse(f)
+		self.ParseValidatedFeeds()
+
+	def ParseValidatedFeeds(self):
+		#blank existing list of messages
+		self.msgs = []
+		#get all feeds which have been validated
+		try:
+			allfeeds = model.UserBlogFeeds.selectBy(valid=True)
+		except:
+			#either no feeds or an sql error
+			return
+
+		for feed in allfeeds:
+			fd = feedparser.parse(feed.url)
 			try:
+				#store just the most recent post
 				e = fd.entries[0]
 				self.msgs.append({"title":e.title, "link":e.link, "author":"TODO:",
 					"date":e.date, "body":e.description[0:MAX_MESSAGE_LENGTH].strip()})
 			except IndexError:
 				pass
-		
 
 	def GetBlogPosts(self):
 		print self.msgs
@@ -77,10 +86,10 @@ class Switchboard(object):
 	@expose("json")
 	@srusers.require(srusers.in_team())
 	def setblogfeed(self, feedurl):
-	"""Returns the new rss feed url associated with a user. If
-	the user has not previously registered a url, it will assign a
-	new row in the table, else it will update their existing entry.	
-	"""	
+		"""Returns the new rss feed url associated with a user. If
+		the user has not previously registered a url, it will assign a
+		new row in the table, else it will update their existing entry.	
+		"""	
 		#get the current user
 		cur_user = srusers.get_curuser()
 
@@ -109,10 +118,10 @@ class Switchboard(object):
 	@expose("json")
 	@srusers.require(srusers.in_team())
 	def getblogfeed(self):
-	"""Returns the current rss feed url associated with a user. If 
-	the user has not previously registered a url, it will return a
-	blank string.
-	"""	
+		"""Returns the current rss feed url associated with a user. If 
+		the user has not previously registered a url, it will return a
+		blank string.
+		"""	
 		#get the current user
 		cur_user = srusers.get_curuser()
 
