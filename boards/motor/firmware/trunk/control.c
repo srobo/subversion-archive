@@ -22,6 +22,8 @@ typedef struct
 	controller_t controller;
 
 	int32_t target;
+	/* This is read by the master */
+	int32_t last_pos;
 
 	/* Speed incrementer */
 	struct {
@@ -71,6 +73,8 @@ static const i2c_setting_t control_i2c_tbl[] = {
 
 	/* The target */
 	I2C_DESC_SETTING( ST_I32, channel_t, target ),
+	/* The last position read */
+	I2C_DESC_SETTING( ST_I32, channel_t, last_pos ),
 
 	/** Speed **/
 	I2C_DESC_SETTING( ST_BOOL, channel_t, speed.enabled ),
@@ -93,6 +97,7 @@ void control_init( void )
 		uint8_t e;
 
 		c->target = 0;
+		c->last_pos = 0;
 		c->enabled = FALSE;
 		c->speed.enabled = FALSE;
 		c->speed.inc = 10;
@@ -135,6 +140,7 @@ void control_step( void )
 
 		/* Read the sensor */
 		r = c->sensor.read( &c->sensor );
+		c->last_pos = r;
 
 		/* Put sensor value through control loop */
 		o = c->controller.next( &c->controller, 
