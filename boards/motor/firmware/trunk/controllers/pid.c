@@ -41,6 +41,10 @@ static int16_t pid_next( controller_t* con,
 	/* P */
 	c = e * pid->kp;
 
+	/* D */
+	c += (e - pid->last_e) * pid->kd;
+	pid->last_e = e;
+
 	/* I: Avoid integrator windup:
 	   Only include the I term when the output isn't saturated */
 	if( c < MOTOR_MAX && c > MOTOR_MIN ) {
@@ -48,11 +52,6 @@ static int16_t pid_next( controller_t* con,
 		c += (pid->i * pid->ki) / 128;
 	} else
 		pid->i = 0;
-
-	/* TODO: Move above I */
-	/* D */
-	c += (e - pid->last_e) * pid->kd;
-	pid->last_e = e;
 
 	return c;
 }
