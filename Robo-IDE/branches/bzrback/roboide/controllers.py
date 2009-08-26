@@ -343,6 +343,18 @@ class Root(controllers.RootController):
         loc = os.path.join(os.path.dirname(__file__), "static/index.html")
         return serveFile(loc)
 
+    def get_project_path(self, path):
+        """
+        Get a project name and filepath from a path
+        inputs:
+            path - str to a file
+        returns:
+            tuple containing the project and path
+        """
+        print path
+        root,project,file_path = path.split(os.path.sep,2)
+        return project,file_path
+
     def get_rev_object(self, team, rev_id=""):
         """
         Get a revision object for a given bzr revision id.
@@ -1180,8 +1192,8 @@ class Root(controllers.RootController):
         #   directories rendered empty as a result of the move are automatically 'pruned'
         #   returns status = 0 on success
 
-        r,src_proj,src_path = src.split('/',2)
-        r,dest_proj,dest_path = dest.split('/',2)
+        src_proj,src_path = self.get_project_path(src)
+        dest_proj,dest_path = self.get_project_path(dest)
         if src_proj != dest_proj:
             return dict(new_revision="0", status="1", message="Source and destination projects must match")
 
@@ -1245,7 +1257,7 @@ class Root(controllers.RootController):
     @srusers.require(srusers.in_team())
     def checkcode(self, team, path, code=0, date=None):
 
-        root,project,file_path = path.split('/',2)
+        project,file_path = self.get_project_path(path)
         path,file_name = os.path.split(path)
 
         # Check out the code
