@@ -963,7 +963,11 @@ function ProjOps() {
 			return;
 		}
 
-		var death_list = projpage.flist.selection.join(',');
+		death_list = new Array();
+		for( var i in projpage.flist.selection ) {
+			death_list.push(projpage.flist.selection[i].substr(projpage.project.length+2))
+		};
+		death_list = death_list.join(',');
 
 		logDebug("will delete: "+death_list);
 

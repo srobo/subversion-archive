@@ -685,7 +685,7 @@ class Root(controllers.RootController):
             files = files.split(",")
             wt = WorkingTree(int(team), project)
 
-            message = "Files deleted successfully: \n" + "\n".join(files)
+            message = "Files deleted successfully: "+project+" >\n" + "\n".join(files)
 
             for f in files:
                 self.autosave.delete(team, '/'+project+'/'+f)
