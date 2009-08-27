@@ -9,6 +9,9 @@ PY_CFLAGS += -I/usr/include/python2.4
 robovis.so: robovis.o
 	$(CXX) -shared $< $(LDBFLAGS) -o $@ 
 
+visfunc.o: visfunc.cpp
+	$(CXX) -ggdb $< $(OPENCV_CFLAGS) $(CFLAGS) -c -o $@ -fPIC -lm
+
 robovis.o: robovis.cpp
 	$(CXX) -ggdb $(CBFLAGS) $(CFLAGS) -o $@ -fPIC -c $< $(PY_CFLAGS)
 
@@ -18,8 +21,8 @@ catcam: catcam.cpp
 dispcam: dispcam.cpp
 	$(CXX) -ggdb  -o dispcam $(CBFLAGS) dispcam.cpp $(LDBFLAGS)
 
-hueblobs: hueblobs.c
-	$(CXX) -ggdb -o $@ $(OPENCV_CFLAGS) $< $(OPENCV_LDFLAGS)
+hueblobs: hueblobs.c visfunc.o
+	$(CXX) -ggdb -o $@ $(OPENCV_CFLAGS) $< $(OPENCV_LDFLAGS) $(CFLAGS) visfunc.o
 
 getblobs: getblobs.c
 	$(CC) -ggdb -o $@ $(OPENCV_CFLAGS) $< $(OPENCV_LDFLAGS)
