@@ -35,17 +35,20 @@ IplImage *frame = NULL, *hsv, *hue, *sat, *val,
 			*satthresh, *huethresh, *huemasked;
 
 unsigned int huebins[4][2] = {{1, 20},	//red
-							{21, 38},	//yellow
-							{39, 78},	//green
-							{100, 149}};	//blue
+				{21, 38},	//yellow
+				{39, 78},	//green
+				{100, 149}};	//blue
 
 int USEFILE = 0;
 int DEBUGOUTPUT = 0;
 int DEBUGDISPLAY = 0;
 
 //grab the command line options and set them where appropriate
-void get_command_line_opts(int argc, char **argv){
-	for(int i = 1; i < argc; i++) { 	// Skip argv[0] - this is the program name
+void
+get_command_line_opts(int argc, char **argv)
+{
+	for(int i = 1; i < argc; i++) {
+		// Skip argv[0] - this is the program name
 		if (strcmp(argv[i], "-debug") == 0) {
 			DEBUGOUTPUT = 1;
 		} else if (strcmp(argv[i], "-display") == 0) {
@@ -56,10 +59,10 @@ void get_command_line_opts(int argc, char **argv){
 }
 
 /* Wait for a newline on stdin */
-char *wait_trigger(void)
+char
+*wait_trigger(void)
 {
 	char *req_tag;
-	int r = 0;
 
 	req_tag = (char*)malloc(129);
 
@@ -70,7 +73,9 @@ char *wait_trigger(void)
 	return req_tag;
 }
 
-void srlog(char level, const char *m){
+void
+srlog(char level, const char *m)
+{
 	if(DEBUGOUTPUT) {
 		struct tm * tm;
 		struct timeval tv;
@@ -78,7 +83,8 @@ void srlog(char level, const char *m){
 
 		gettimeofday(&tv, &tz);
 		tm = localtime(&tv.tv_sec);
-		printf("%02d:%02d:%02d.%d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int) tv.tv_usec);
+		printf("%02d:%02d:%02d.%d", tm->tm_hour, tm->tm_min, tm->tm_sec,
+							(int) tv.tv_usec);
 
 		switch(level){
 			case DEBUG:
@@ -92,14 +98,18 @@ void srlog(char level, const char *m){
 	}
 }
 
-void srshow(char *window, IplImage *frame){
+void
+srshow(char *window, IplImage *frame)
+{
 	if(DEBUGOUTPUT) {
 		cvShowImage(window, frame);
 		cvWaitKey(0);
 	}
 }
 
-CvCapture *get_camera(){
+CvCapture
+*get_camera()
+{
 	srlog(DEBUG, "Opening camera");
 	CvCapture *capture = cvCaptureFromCAM(0);
 	if (capture == NULL){
@@ -114,13 +124,15 @@ CvCapture *get_camera(){
 	return capture;
 }
 
-IplImage *get_frame(CvCapture *capture){
+IplImage
+*get_frame(CvCapture *capture)
+{
 	IplImage *frame = cvQueryFrame(capture);
 	/*MY EYES THE BURNING AND THE PAIN AND THE PAAAIIINNN
 	 * Highgui currently buffers 4 frames before handing them to us; this
 	 * means that any picture we take is increadibly delayed. If you use the
-	 * highgui binaries from srobo.org/~jmorse/highgui.tgz this is patched to
-	 * be only one frame. To overcome this last frame, retrieve two.
+	 * highgui binaries from srobo.org/~jmorse/highgui.tgz this is patched
+	 * to be only one frame. To overcome this last frame, retrieve two.
 	 */
 	frame = cvQueryFrame(capture);
 	if(frame == NULL){
@@ -131,7 +143,9 @@ IplImage *get_frame(CvCapture *capture){
 	return frame;
 }
 
-IplImage *allo_frame(CvSize framesize, unsigned char depth, unsigned char channels){
+IplImage
+*allo_frame(CvSize framesize, unsigned char depth, unsigned char channels)
+{
 	IplImage *frame = cvCreateImage(framesize, depth, channels);
 	if(frame == NULL){
 		srlog(ERROR, "Failed to allocate scratchpad.");
@@ -140,10 +154,13 @@ IplImage *allo_frame(CvSize framesize, unsigned char depth, unsigned char channe
 	}
 	return frame;
 }
-int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minarea, IplImage *huemask){
+
+int
+add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minarea,
+							IplImage *huemask)
+{
 	static IplImage *blobmask = NULL;
 	CvScalar avghue, white;
-	float area;
 	CvRect outline;
 	int count;
 
@@ -155,7 +172,8 @@ int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minar
 	outline = cvBoundingRect(cont, 0);
 	cvSetZero(blobmask);
 	cvRectangle(blobmask, cvPoint(outline.x, outline.y),
-				cvPoint(outline.x+outline.width, outline.y+outline.height),
+				cvPoint(outline.x+outline.width,
+					outline.y+outline.height),
 				white, CV_FILLED, 8, 0);
 
 	cvAnd(huemask, blobmask, blobmask, NULL);
@@ -169,10 +187,10 @@ int add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minar
 	avghue = cvScalarAll(colour*20+50);
 
 	printf("%d,%d,%d,%d,%d,%d\n", outline.x,
-								outline.y,
-								outline.width,
-								outline.height,
-								count, colour);
+					outline.y,
+					outline.width,
+					outline.height,
+					count, colour);
 
 	if(DEBUGDISPLAY) {
 		cvAddS(out, avghue, out, blobmask);
@@ -268,7 +286,7 @@ int main(int argc, char **argv){
 
 	srlog(DEBUG, "Beginning looping");
 	while (1){
-		srlog(DEBUG, "Beginning new loop - press enter to grab a frame:");
+		srlog(DEBUG, "Press enter to grab a frame:");
 
 		if(!USEFILE && !DEBUGDISPLAY) {
 			req_tag = wait_trigger();
@@ -303,21 +321,20 @@ int main(int argc, char **argv){
 			cvShowImage("hue", hue);
 		}
 
+		cvInRangeS(sat, cvScalarAll(80),
+				cvScalarAll(256),
+					satthresh);
 
-			cvInRangeS(sat, cvScalarAll(80),
-							cvScalarAll(256),
-							satthresh);
+		cvAnd(satthresh, hue, hue, NULL);
 
-			cvAnd(satthresh, hue, hue, NULL);
-
-		/* To stop black lines on the floor and other robots being visible,
-		 * clober anything with a variance under 60. This is a measure of
-		 * where the colour lies on a greyscale, so lower is black, higher
-		 * is whiter. At 60, we risk also removing parts of objects that are
-		 * far away, most notably the corners of the arena. However, some
-		 * reduction in their size is better than being distracted by the
-		 * lines and / or other robots
-		 */
+	/* To stop black lines on the floor and other robots being visible,
+	 * clober anything with a variance under 60. This is a measure of
+	 * where the colour lies on a greyscale, so lower is black, higher
+	 * is whiter. At 60, we risk also removing parts of objects that are
+	 * far away, most notably the corners of the arena. However, some
+	 * reduction in their size is better than being distracted by the
+	 * lines and / or other robots
+	 */
 
 		/* re-use satthresh */
 		cvInRangeS(val, cvScalarAll(60), cvScalarAll(256), satthresh);
@@ -326,25 +343,27 @@ int main(int argc, char **argv){
 
 		for(i = 0; i<4; i++){
 			if(DEBUGOUTPUT) {
-				printf("Looking for %d %d\n", huebins[i][0], huebins[i][1]);
+				printf("Looking for %d %d\n", huebins[i][0],
+								huebins[i][1]);
 			}
 
-
 			cvInRangeS(hue, cvScalarAll(huebins[i][0]),
-							cvScalarAll(huebins[i][1]),
+					cvScalarAll(huebins[i][1]),
 							huemasked);
 
-		if (i == 0) {
+			if (i == 0) {
 		/* An unpleasent side-effect of red being... red, i that it
 		 * wraps around the hue address space. There is also purplish
 		 * red in the 160+ range, which should be included too
 		 */
 
-		cvInRangeS(hue, cvScalarAll(150), cvScalarAll(185),
-			red_second_step);
+				cvInRangeS(hue, cvScalarAll(150),
+						cvScalarAll(185),
+						red_second_step);
 
-		cvOr(red_second_step, huemasked, huemasked, NULL);
-	}
+				cvOr(red_second_step, huemasked, huemasked,
+									NULL);
+			}
 
 			if(DEBUGDISPLAY) {
 				if (i == 0) cvShowImage("r", huemasked);
@@ -353,20 +372,25 @@ int main(int argc, char **argv){
 				if (i == 3) cvShowImage("b", huemasked);
 			}
 
-		cvCopy(huemasked, huemask_backup, NULL);
-		//cvFindContours writes over the original
+			cvCopy(huemasked, huemask_backup, NULL);
+			//cvFindContours writes over the original
 
-			num_contours = cvFindContours(huemasked, contour_storage, &cont,
-						sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE,
+			num_contours = cvFindContours(huemasked,
+						contour_storage,
+						&cont,
+						sizeof(CvContour),
+						CV_RETR_EXTERNAL,
+						CV_CHAIN_APPROX_NONE,
 						cvPoint(0,0));
 
 			srlog(DEBUG, "Looping through contours");
-			for(; cont; cont = cont->h_next){
+			for( ; cont; cont = cont->h_next) {
 				area = fabs(cvContourArea(cont, CV_WHOLE_SEQ));
 				if(area < MINMASS)
 					continue;
 
-				add_blob(cont, framesize, dsthsv, i, MINMASS, huemask_backup);
+				add_blob(cont, framesize, dsthsv, i,
+					MINMASS, huemask_backup);
 			}
 		}
 
