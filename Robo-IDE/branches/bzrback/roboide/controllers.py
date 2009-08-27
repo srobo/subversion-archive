@@ -1274,7 +1274,7 @@ class Root(controllers.RootController):
         self.createproj(dest, team)
         nb = open_branch(team, dest)
         b.push(nb)
-        return dict(status: 0)
+        return dict(status=0)
 
     @expose("json")
     @srusers.require(srusers.in_team())
