@@ -10,6 +10,8 @@
 #include <cv.h>
 #include <highgui.h>
 
+#include "visfunc.h"
+
 #define DEBUG 0
 #define ERROR 1
 
@@ -413,6 +415,11 @@ main(int argc, char **argv)
 		srlog(DEBUG, "Saving frame to out.jpg");
 
 		cvSaveImage("out.jpg", frame);
+		cvReleaseImage(&frame);
+
+		if (DEBUGDISPLAY)
+			cvWaitKey(100);
+
 	}	//end while loop
 	return 0;
 }
