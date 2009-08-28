@@ -3,6 +3,7 @@ from turbogears.feed import FeedController
 import cherrypy, model
 from sqlobject import sqlbuilder
 import logging
+import bzrlib.errors, bzrlib.tree
 import pysvn    # TODO BZRPORT: remove once all pysvn code removed
 import time, datetime, StringIO
 import re
