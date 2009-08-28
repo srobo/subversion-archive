@@ -184,7 +184,7 @@ class Root(controllers.RootController):
             #in it and then put the resulting zip back into zipData
             sysZipData = open(config.get("robot.packagezip")).read()
             sysZipBuffer = StringIO.StringIO(sysZipData)
-            
+
             sysZip = zipfile.ZipFile(sysZipBuffer, "a")
             info = zipfile.ZipInfo(ZIPNAME)
             info.external_attr = 0666 << 16L
@@ -193,7 +193,7 @@ class Root(controllers.RootController):
 
             sysZipBuffer.seek(0)
             zipData = StringIO.StringIO(sysZipBuffer.read())
-        
+
         #Set up headers for correctly serving a zipfile
         cherrypy.response.headers['Content-Type'] = \
                 "application/x-download"
@@ -270,11 +270,11 @@ class Root(controllers.RootController):
 
         #Get a list of authors
         authors = list(set([r.committer for r in revisions]))
-        
+
         #If a user is passed, only show revisions committed by that user
         if user != None:
             revisions = [r for r in revisions if r.committer == user]
-    
+
         #Only show revisions where the delta touches file
         fileid = b.basis_tree().path2id(file)
         if fileid == None:
@@ -602,7 +602,7 @@ class Root(controllers.RootController):
             return True
         else:
             return False # directory already existed
-            
+
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -1078,7 +1078,7 @@ class Root(controllers.RootController):
                     "data" : "",
                     "present" : 0,
                     "disabled" : True}
- 
+
         try:
             team = int(team)
         except ValueError:
@@ -1104,7 +1104,7 @@ class Root(controllers.RootController):
             return {"ping" : 0,
                     "data" : "",
                     "present" : 0}
-        
+
         try:
             team = model.TeamNames.get(id=team)
         except:
@@ -1113,7 +1113,7 @@ class Root(controllers.RootController):
             return {"ping" : 0,
                     "data" : "",
                     "present" : 0}
- 
+
 
         try:
             present = model.RoboPresent.selectBy(team=team)[0].present
@@ -1132,7 +1132,7 @@ class Root(controllers.RootController):
         last_received_ping = int(last_received_ping)
         logs = model.RoboLogs.select(sqlbuilder.AND(model.RoboLogs.q.team == team,
                                          model.RoboLogs.q.id > last_received_ping))
-        
+
         data = "\n".join([l.value for l in logs])
 
         data = data.replace('&', '&amp;')
