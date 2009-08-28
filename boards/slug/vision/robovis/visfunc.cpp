@@ -289,10 +289,15 @@ vis_do_sobel_edge_detection(IplImage *src)
 				}
 			}
 
-			accuml_x >>= 8;
-			accuml_y >>= 8;
-//			accuml_x /= (sobel_size*sobel_size);
-//			accuml_y /= (sobel_size*sobel_size);
+			/* This still needs to be fixed, however, for a five
+			 * spaced sobel operator dividing by 1000 is roughly
+			 * a correct drop in accuracy to fit it back in the
+			 * range of 0-255. Fixme! */
+			accuml_x >>= 10;
+			accuml_y >>= 10;
+#if sobel_size != 5
+#error Re-calculate division approximation for sobel operator
+#endif
 			accuml_x = abs(accuml_x);
 			accuml_y = abs(accuml_y);
 
@@ -303,5 +308,44 @@ vis_do_sobel_edge_detection(IplImage *src)
 	return dst;
 #undef get
 #undef put
+}
+
+IplImage *
+vis_normalize_plane(IplImage *src)
+{
+	CvSize sz;
+	IplImage *dst;
+	unsigned char *in, *out;
+	int i, i_scale;
+	float scale;
+	unsigned char max;
+
+	sz.width = src->width;
+	sz.height = src->height;
+
+	dst = cvCreateImage(sz, image_depth, 1);
+	if (!dst) {
+		fprintf(stderr, "vis_do_sobel_edge_detection: "
+					"can't create image\n");
+		exit(1);
+	}
+
+	max = 0;
+	in = (unsigned char *)src->imageData;
+	out = (unsigned char *)dst->imageData;
+
+	for (i = 0; i < src->imageSize; i++)
+		max = MAX(max, *(in+i));
+
+	/* Perform some fixed point scaling - we don't want to make everything
+	 * floating, but we _do_ want to scale everything up. So, fixed point
+	 * arithmatic */
+
+	scale = 255.0 / max;
+	i_scale = (int) scale * 100;
+	for (i = 0; i < src->imageSize; i++)
+		*(out + i) = ((*(in + i)) * i_scale) >> 8;
+
+	return dst;
 }
 
