@@ -14,6 +14,12 @@
 
 #include "visfunc.h"
 
+/* Ensure that "MAX" is what we expect it to be */
+#if defined(MAX)
+#undef MAX
+#endif
+#define        MAX(a,b)        (((a)>(b))?(a):(b))
+
 #define template_size 5
 #define image_depth 8
 
@@ -62,7 +68,7 @@ vis_do_smooth(IplImage *src)
 	vis_start();
 
 	if (src->nChannels != 1) {
-		fprintf(stderr, "vis_do_differentiate: bad channels %d\n",
+		fprintf(stderr, "vis_do_smooth: bad channels %d\n",
 					src->nChannels);
 		exit(1);
 	}
@@ -72,7 +78,7 @@ vis_do_smooth(IplImage *src)
 
 	dst = cvCreateImage(sz, image_depth, 1);
 	if (!dst) {
-		fprintf(stderr, "vis_do_differentiate: can't create image\n");
+		fprintf(stderr, "vis_do_smooth: can't create image\n");
 		exit(1);
 	}
 
@@ -116,6 +122,61 @@ vis_do_smooth(IplImage *src)
 			/* We have a sample. */
 
 			put(i,j) = (unsigned char) accumul;
+		}
+	}
+
+	return dst;
+#undef get
+#undef put
+}
+
+IplImage *
+vis_do_roberts_edge_detection(IplImage *src)
+{
+#define get(x, y) *(in + ((y) * in_stride) + (x))
+#define put(x, y) *(out + ((y) * out_stride) + (x))
+	CvSize sz;
+	IplImage *dst;                  
+	unsigned char *in;
+	unsigned char *out;
+	int i, j, x, y, in_stride, out_stride;
+	int diff1, diff2;
+
+	vis_start();
+
+	if (src->nChannels != 1) {
+		fprintf(stderr, "vis_do_roberts_edge_detection: bad chans %d\n",
+						src->nChannels);
+                exit(1);
+        }
+
+	sz.width = src->width - 2;
+	sz.height = src->height - 2;
+
+	dst = cvCreateImage(sz, image_depth, 1);
+	if (!dst) {     
+		fprintf(stderr, "vis_do_roberts_edget_detection: "
+				"can't create image\n");
+		exit(1);                
+	}
+
+	in = (unsigned char*) src->imageData;
+	out = (unsigned char*) dst->imageData;
+	in_stride = src->widthStep;
+	out_stride = dst->widthStep;
+
+	for (j = 0; j < dst->height; j++) {
+		for (i = 0; i < dst->width; i++) {
+			x = i;
+			y = j;
+
+			diff1 = get(x, y) - get(x+1, y+1);
+			diff2 = get(x+1, y) - get(x, y+1);
+
+			diff1 = abs(diff1);
+			diff2 = abs(diff2);
+
+			put(x,y) = MAX(diff1, diff2);
 		}
 	}
 
