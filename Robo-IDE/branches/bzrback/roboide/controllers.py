@@ -802,10 +802,16 @@ class Root(controllers.RootController):
     @expose("json")
     @srusers.require(srusers.in_team())
     def revert(self, team, file, torev, message):
-        pass    #TODO BZRPORT: Implement!
 
-        torev=int(torev)
-        client = Client(int(team))
+        project, file = self.get_project_path(file)
+        wt = WorkingTree(team, project)
+        rev=self.get_rev_id(team, project, torev)
+        rev_tree = wt.revision_tree(rev)
+        wt.revert(file, rev_tree)
+        wt.commit(message)
+
+        return dict(new_revision=newrev, code = "",\
+                    success="Success !!!")
 
         #1. SVN checkout of file's directory
         #TODO: Check for path naugtiness trac#208
