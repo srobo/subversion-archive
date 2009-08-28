@@ -304,6 +304,7 @@ class Root(controllers.RootController):
             overflow = maxval/10
 
         revisions = revisions[start:end]
+        revisions.reverse()
 
         return dict(  path=file_path, overflow=overflow, offset=offset, authors=authors,
                       history=[{"author" : r.committer,
