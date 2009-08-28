@@ -1,6 +1,7 @@
 import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.memorytree, bzrlib.tree, bzrlib.errors, bzrlib.progress, bzrlib.merge, bzrlib.generate_ids
 import os
 import user as srusers
+import tempfile
 
 class ProjectWrite():
     """
