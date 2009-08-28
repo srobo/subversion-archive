@@ -120,12 +120,14 @@ class ProjectWrite():
         """
         Commit changed tree.
         """
-        if not self.revid == self.b.last_revision():
+        last_revno, last_revid = self.b.last_revision_info()
+
+        if not self.revid == last_revid:
             bzrlib.errors.OutOfDateTree # cannot commit, tree not up to date
         if not len(self.conflicts) == 0:
             return None # cannot commit, conflicts remain
 
-        self.b = open_branch(self.team, self.project) # TODO: why do we have to do this? locate cause of write-only transaction error
+        self.b = bzrlib.branch.Branch.open(self.b.base)
         self.b.lock_write()
 
         try:
@@ -142,7 +144,7 @@ class ProjectWrite():
                                 self.PrevTree, self.revid, self.TransPrev.iter_changes()))
                 builder.finish_inventory()
                 revid_new = builder.commit(message)
-                revno_new = self.b.revision_id_to_revno(self.revid)
+                revno_new = last_revno + 1
                 self.b.set_last_revision_info(revno_new, revid_new)
         finally:
             # always unlock branch
@@ -173,7 +175,8 @@ class ProjectWrite():
         Replace the contents of a file.
         inputs:
             path - path of file to be written
-            create - when True if file doesn't exist it will be created, as well as parent directories.
+            contents - string to insert into file
+            create - when True (default) if file doesn't exist it will be created, as well as parent directories.
         """
         parent_path = os.path.dirname(path)
         file_name = os.path.basename(path)

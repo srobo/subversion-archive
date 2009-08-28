@@ -205,7 +205,7 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def filesrc(self, team, file=None, revision=-1):
+    def filesrc(self, team, file=None, revision=None):
         """
         Returns the contents of the file.
         """
@@ -219,14 +219,20 @@ class Root(controllers.RootController):
 
         autosaved_code = self.autosave.getfilesrc(team, file_path, 1)
 
-#        rev = self.get_revision(revision) #TODO BZRPORT
+        print revision
+        print b.last_revision_info()
+        print b.get_revision_id_to_revno_map()
+
+        if revision == None or revision == "HEAD":
+            revid = b.last_revision()
+        else:
+            revid = b.get_rev_id(int(revision))
 
         if file != None and file != "":  #TODO BZRPORT: URL checking
             #Load file from bzr
             # TODO BZRPORT: mime checking. Bzr doesn't have a mime property so the file will need to be checked with python
             try:
-#                revno, rev_id = b.last_revision_info()  #TODO BZRPORT: getting latest revision info
-                branch_tree = b.basis_tree()    #TODO BZRPORT: This is taking most recent tree. Allow other revisions!
+                branch_tree = b.repository.revision_tree(revid)
                 file_id = branch_tree.path2id(file)
                 b.lock_read()
                 code = branch_tree.get_file_text(file_id)
@@ -455,6 +461,7 @@ class Root(controllers.RootController):
         try:
             newrevid = projWrite.commit(message)
             success = "True"
+            newrevno = projWrite.b.revision_id_to_revno(newrevid)
         except bzrlib.errors.OutOfDateTree:
             # a commit has occurred since code was opened.
             # A merge will need to take place
@@ -463,9 +470,8 @@ class Root(controllers.RootController):
             newcode = projWrite.get_file_text(filepath)
             return dict(new_revision=rev, code=newcode,
                     success="Merge", file=filepath, reloadfiles=reloadfiles)
-
-        newrevno = projWrite.b.revision_id_to_revno(newrevid)
-
+        finally:
+            projWrite.destroy()
 
 
         return dict(new_revision=str(newrevno), code=code,
