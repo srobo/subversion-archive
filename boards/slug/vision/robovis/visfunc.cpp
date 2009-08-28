@@ -26,7 +26,7 @@
 
 #define template_size 5
 #define sobel_size 5
-#define image_depth 8
+#define image_depth IPL_DEPTH_8U
 
 unsigned char bias[template_size][template_size];
 int sobel_x[sobel_size][sobel_size];
@@ -325,8 +325,8 @@ vis_normalize_plane(IplImage *src)
 
 	dst = cvCreateImage(sz, image_depth, 1);
 	if (!dst) {
-		fprintf(stderr, "vis_do_sobel_edge_detection: "
-					"can't create image\n");
+		fprintf(stderr, "vis_normalize_plane: "
+				"can't create image\n");
 		exit(1);
 	}
 
@@ -345,6 +345,33 @@ vis_normalize_plane(IplImage *src)
 	i_scale = (int) scale * 100;
 	for (i = 0; i < src->imageSize; i++)
 		*(out + i) = ((*(in + i)) * i_scale) >> 8;
+
+	return dst;
+}
+
+IplImage *
+vis_threshold(IplImage *src, unsigned char low, unsigned char high)
+{
+	CvSize sz;
+	IplImage *dst;
+	unsigned char *in, *out;
+	int i;
+
+	sz.width = src->width;
+	sz.height = src->height;
+
+	dst = cvCreateImage(sz, image_depth, 1);
+	if (!dst) {
+		fprintf(stderr, "vis_threshold: "
+			"can't create image\n");
+		exit(1);
+	}
+
+	in = (unsigned char *)src->imageData;
+	out = (unsigned char *)dst->imageData;
+
+	for (i = 0; i < src->imageSize; i++)
+		*(out+i) = ((*(in+i) >= low) && (*(in+i) <= high)) ? 255 : 0;
 
 	return dst;
 }
