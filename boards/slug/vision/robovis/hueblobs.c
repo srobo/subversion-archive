@@ -180,9 +180,9 @@ add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minarea,
 	count = cvCountNonZero( blobmask );
 	if(count < minarea)
 		return 0;
-	if(DEBUGOUTPUT) { //print the count if debug output requested
+
+	if(DEBUGOUTPUT) //print the count if debug output requested
 		printf("%d\n", count);
-	}
 
 	avghue = cvScalarAll(colour*20+50);
 
@@ -197,10 +197,11 @@ add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minarea,
 	}
 
 	return 1;
-
 }
 
-void Hoo(int event, int x, int y, int flags, void *param){
+void
+Hoo(int event, int x, int y, int flags, void *param)
+{
 	unsigned char *data;
 	CvSize size;
 	int step, c;
@@ -209,7 +210,9 @@ void Hoo(int event, int x, int y, int flags, void *param){
 	printf("Val %d,%d - %d\n", x, y, c);
 }
 
-void Goo(int event, int x, int y, int flags, void* param){
+void
+Goo(int event, int x, int y, int flags, void* param)
+{
 	unsigned char *data;
 	CvSize size;
 	int step, c;
@@ -218,7 +221,9 @@ void Goo(int event, int x, int y, int flags, void* param){
 	printf("Sat %d,%d - %d\n", x, y, c);
 }
 
-void Foo(int event, int x, int y, int flags, void* param){
+void
+Foo(int event, int x, int y, int flags, void* param)
+{
 	unsigned char *data;
 	CvSize size;
 	int step, c;
@@ -227,7 +232,9 @@ void Foo(int event, int x, int y, int flags, void* param){
 	printf("Hue %d,%d - %d\n", x, y, c);
 }
 
-int main(int argc, char **argv){
+int
+main(int argc, char **argv)
+{
 	get_command_line_opts(argc, argv);
 
 	IplImage *dsthsv, *dstrgb, *huemask_backup, *red_second_step;
