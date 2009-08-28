@@ -77,7 +77,6 @@ Log.prototype._errorReceiveHistory = function() {
 
 Log.prototype._retrieveHistory = function(opt) {
 	var d = loadJSONDoc("./gethistory", { team : team,
-						  project : this.project,
 						  file : this.file,
 						  user : this.user,
 						  offset : this.offset});
