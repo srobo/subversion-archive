@@ -376,3 +376,37 @@ vis_threshold(IplImage *src, unsigned char low, unsigned char high)
 	return dst;
 }
 
+IplImage *
+vis_clip(IplImage *src, IplImage *clip, unsigned char low, unsigned char high)
+{
+	CvSize sz;
+	IplImage *dst;
+	unsigned char *in, *other, *out;
+	int i;
+
+	if (src->width != clip->width || src->height != clip->height) {
+		fprintf(stderr, "vis_clip, mismatching images\n");
+		exit(1);
+	}
+
+	sz.width = src->width;
+	sz.height = src->height;
+
+	dst = cvCreateImage(sz, image_depth, 1);
+	if (!dst) {
+		fprintf(stderr, "vis_threshold: "
+			"can't create image\n");
+		exit(1);
+	}
+
+	in = (unsigned char *)src->imageData;
+	other = (unsigned char *)clip->imageData;
+	out = (unsigned char *)dst->imageData;
+
+	for (i = 0; i < src->imageSize; i++) 
+		*(out+i) = ((*(other+i) >= low) && (*(other+i) <= high))
+				? *(in+i) : 0;
+
+	return dst;
+}
+
