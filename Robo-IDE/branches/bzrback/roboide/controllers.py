@@ -219,10 +219,6 @@ class Root(controllers.RootController):
 
         autosaved_code = self.autosave.getfilesrc(team, file_path, 1)
 
-        print revision
-        print b.last_revision_info()
-        print b.get_revision_id_to_revno_map()
-
         if revision == None or revision == "HEAD":
             revid = b.last_revision()
         else:
@@ -467,6 +463,7 @@ class Root(controllers.RootController):
             # a commit has occurred since code was opened.
             # A merge will need to take place
             # TODO: silently merge if it doesn't affect our file, OR allow committing specific file
+            print "Merging"
             projWrite.merge()
             newcode = projWrite.get_file_text(filepath)
             return dict(new_revision=rev, code=newcode,

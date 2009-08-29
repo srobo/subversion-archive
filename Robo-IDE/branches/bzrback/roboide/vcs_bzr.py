@@ -1,4 +1,4 @@
-import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.memorytree, bzrlib.tree, bzrlib.errors, bzrlib.progress, bzrlib.merge, bzrlib.generate_ids
+import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.memorytree, bzrlib.tree, bzrlib.errors, bzrlib.progress, bzrlib.merge, bzrlib.generate_ids, bzrlib.revision
 import os
 import user as srusers
 import tempfile
@@ -14,7 +14,7 @@ class ProjectWrite():
         self.b = open_branch(team, project)
 
         if revid == None:
-            if revno == None:
+            if revno == None or revno == 0 or revno == "0":
                 # If no revid and no revno was specified, use latest
                 revid = self.b.last_revision()
             else:
@@ -136,9 +136,12 @@ class ProjectWrite():
                 #self.PrevTree.set_parent_ids([ self.revid ]) # needed here?
                 revid_new = self.PrevTree.commit(message)
             else:
-                self.PrevTree.set_parent_ids([ self.revid ])
+                if last_revid == bzrlib.revision.NULL_REVISION:
+                    parent_ids = [] # no existing commits on this branch
+                else:
+                    parent_ids = [self.revid]
                 revprops = {"branch-nick":self.b.nick} # is this necessary?
-                builder = self.b.get_commit_builder([self.revid], revprops = revprops)
+                builder = self.b.get_commit_builder(parent_ids, revprops = revprops)
 
                 changes = list(builder.record_iter_changes(
                                 self.PrevTree, self.revid, self.TransPrev.iter_changes()))
@@ -148,11 +151,13 @@ class ProjectWrite():
                 self.b.set_last_revision_info(revno_new, revid_new)
         finally:
             # always unlock branch
-            # NOTE: an exception during unlock() here can mask other exceptions during try.
-            #   see ie http://bugs.launchpad.net/bzr/+bug/230902/comments/2
-            # TODO: check for original exception
-            self.b.unlock()
-#            pass
+            # NOTE: an exception during unlock() here can mask other exceptions during try,
+            # so try:unlock to absorb this and allow original exception through.
+            # TODO: more elegant solution
+            try:
+                self.b.unlock()
+            except:
+                pass
 
         self.revid = revid_new
         return revid_new # should we delete TransPrev as it is no longer up to date?
