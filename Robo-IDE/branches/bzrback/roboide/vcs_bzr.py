@@ -123,7 +123,7 @@ class ProjectWrite():
         last_revno, last_revid = self.b.last_revision_info()
 
         if not self.revid == last_revid:
-            bzrlib.errors.OutOfDateTree # cannot commit, tree not up to date
+            raise bzrlib.errors.OutOfDateTree(self.PrevTree) # cannot commit, tree not up to date
         if not len(self.conflicts) == 0:
             return None # cannot commit, conflicts remain
 
