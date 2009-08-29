@@ -134,8 +134,8 @@ vis_do_smooth(IplImage *src)
 		exit(1);
 	}
 
-	sz.width = src->width - (template_size-1);
-	sz.height = src->height - (template_size-1);
+	sz.width = src->width;
+	sz.height = src->height;
 
 	dst = cvCreateImage(sz, image_depth, 1);
 	if (!dst) {
@@ -148,6 +148,8 @@ vis_do_smooth(IplImage *src)
 	in_stride = src->widthStep;
 	out_stride = dst->widthStep;
 	template_border = (template_size-1)/2;
+
+	out += (template_border * out_stride) + template_border;
 
 	/* For cache efficiency, run loop going widthways first */
 	for (j = 0; j < dst->height; j++) {
@@ -184,6 +186,30 @@ vis_do_smooth(IplImage *src)
 		}
 	}
 
+	/* Clobber border */
+	/* If we just dump 0 in the borders we trigger edge detection later,
+	 * so instead fill the border with the adjacent pixel. Not efficient,
+	 * but the intention is that the version on the slug will do everything
+	 * in one pass, which means this can be ditched */
+
+	in = (unsigned char*) dst->imageData;
+	out = (unsigned char*) dst->imageData;
+	for (i = 0; i < dst->width; i++) {
+		for (j = 0; j < template_border; j++)
+			put(i,j) = get(i,template_border);
+		for (j = 0; j < template_border; j++)
+			put(i,dst->height - template_border + j - 1) = 
+				get(i,dst->height-template_border-1);
+	}
+
+	for (j = 0; j < dst->height; j++) {
+		for (i = 0; i < template_border; i++)
+			put(i,j) = get(template_border,j);
+		for (i = 0; i < template_border; i++)
+			put(dst->width - template_border + i - 1,j) = 
+				get(dst->width-template_border-1,i);
+	}
+
 	return dst;
 #undef get
 #undef put
@@ -209,8 +235,8 @@ vis_do_roberts_edge_detection(IplImage *src)
                 exit(1);
         }
 
-	sz.width = src->width - 2;
-	sz.height = src->height - 2;
+	sz.width = src->width;
+	sz.height = src->height;
 
 	dst = cvCreateImage(sz, image_depth, 1);
 	if (!dst) {     
@@ -224,6 +250,8 @@ vis_do_roberts_edge_detection(IplImage *src)
 	in_stride = src->widthStep;
 	out_stride = dst->widthStep;
 
+	out += out_stride + 1;
+
 	for (j = 0; j < dst->height; j++) {
 		for (i = 0; i < dst->width; i++) {
 
@@ -235,6 +263,16 @@ vis_do_roberts_edge_detection(IplImage *src)
 
 			put(i,j) = MAX(diff1, diff2);
 		}
+	}
+
+	for (i = 0; i < dst->width; i++) {
+		put(i,0) = 0;
+		put(i,dst->height - 1) = 0;
+	}
+
+	for (j = 0; j < dst->height; j++) {
+		put(0,j) = 0;
+		put(dst->width - 1,j) = 0;
 	}
 
 	return dst;
@@ -263,8 +301,8 @@ vis_do_sobel_edge_detection(IplImage *src)
 	}
 
 	border_size = (sobel_size-1)/2;
-	sz.width = src->width - (sobel_size-1);
-	sz.height = src->height - (sobel_size-1);
+	sz.width = src->width;
+	sz.height = src->height;
 
 	dst = cvCreateImage(sz, image_depth, 1);
 	if (!dst) {     
@@ -277,6 +315,8 @@ vis_do_sobel_edge_detection(IplImage *src)
 	out = (unsigned char*) dst->imageData;
 	in_stride = src->widthStep;
 	out_stride = dst->widthStep;
+
+	out += (border_size * out_stride) + border_size;
 
 	for (j = 0; j < dst->height; j++) {
 		for (i = 0; i < dst->width; i++) {
@@ -303,6 +343,21 @@ vis_do_sobel_edge_detection(IplImage *src)
 
 			put(i, j) = MAX(accuml_x, accuml_y);
 		}
+	}
+
+	out = (unsigned char*) dst->imageData;
+	for (i = 0; i < dst->width; i++) {
+		for (j = 0; j < border_size; j++)
+			put(i,j) = 0;
+		for (j = 0; j < border_size; j++)
+			put(i,dst->height - border_size + j - 1) = 0;
+	}
+
+	for (j = 0; j < dst->height; j++) {
+		for (i = 0; i < border_size; i++)
+			put(i,j) = 0;
+		for (i = 0; i < border_size; i++)
+			put(dst->width - border_size + i - 1,j) = 0;
 	}
 
 	return dst;
