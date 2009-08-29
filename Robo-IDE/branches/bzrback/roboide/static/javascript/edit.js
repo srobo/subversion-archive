@@ -220,6 +220,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 	else
 		this.rev = rev;
 
+	// The revision number the specific file being edited was last modified
+	this.file_rev = 0;
 	// The team
 	this.team = team;
 	// The project
@@ -308,7 +310,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 		this._original = nodes.code;
 		this._autosaved = nodes.autosaved_code;
 		this._isNew = false;
-		this.rev = nodes.revision
+		this.rev = nodes.revision;
+		this.file_rev = nodes.file_rev;
 
 		this._update_contents();
 	}
@@ -383,6 +386,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 				this._autosaved = "";
 				this._isNew = false;
 				this.rev = nodes.new_revision;
+				this.file_rev = nodes.new_revision;
 				$("check-syntax").disabled = false;
  				this._update_contents();
 				break;
@@ -563,10 +567,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 		// Display file path
 		var t = this.path;
-		if( this.rev == 'HEAD' )
-			t = t + " - HEAD";
-		else if( this.rev != 0 )
-			t = t + " - r" + this.rev;
+		if( this.file_rev != 0 )
+			t = t + " - r" + this.file_rev;
 		replaceChildNodes( $("tab-filename"), t );
 	}
 

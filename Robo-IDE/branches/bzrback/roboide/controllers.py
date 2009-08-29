@@ -220,9 +220,10 @@ class Root(controllers.RootController):
         autosaved_code = self.autosave.getfilesrc(team, file_path, 1)
 
         if revision == None or revision == "HEAD":
-            revid = b.last_revision()
+            revno, revid = b.last_revision_info()
         else:
-            revid = b.get_rev_id(int(revision))
+            revno = int(revision)
+            revid = b.get_rev_id(revno)
 
         if file != None and file != "":  #TODO BZRPORT: URL checking
             #Load file from bzr
@@ -245,7 +246,7 @@ class Root(controllers.RootController):
             code = "Error loading file: No filename was supplied by the IDE.  Contact an SR admin!"
             revision = 0
 
-        return dict(curtime=curtime, code=code, autosaved_code=autosaved_code, revision=str(file_revno), path=file_path,
+        return dict(curtime=curtime, code=code, autosaved_code=autosaved_code, file_rev=str(file_revno), revision=revno, path=file_path,
                 name=os.path.basename(file))
 
 
