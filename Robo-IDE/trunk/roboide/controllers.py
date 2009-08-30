@@ -784,8 +784,8 @@ class Root(controllers.RootController):
         td = wt.tmpdir
 
         if code != 0: #overwrite the version from the repo
-            print td+file_path
-            tmpfile = open(td+file_path, 'w')
+            print td+os.path.sep+file_path
+            tmpfile = open(td+os.path.sep+file_path, 'w')
             tmpfile.write(str(code))
             tmpfile.close()
 
