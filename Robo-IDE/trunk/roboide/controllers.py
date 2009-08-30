@@ -400,15 +400,6 @@ class Root(controllers.RootController):
                 rev - revision of file when it was checked out by client.
         """
 
-#        current_file_revid = self.get_file_revision(basis_tree,fileid)
-#        current_file_revno = b.revision_id_to_revno(current_file_revid)
-
-#        if str(current_file_revno) == str(rev):
-#        # File has not been modified since the client opened it
-#            return self.commit_file_simple(team, project, filepath, rev, message, code, fileid)
-#        else:
-#            return self.update_merge(team, project, filepath, rev, message, code)
-
         project,filepath= self.get_project_path(filepath)
 
         projWrite = ProjectWrite(team, project, revno=rev)
@@ -443,98 +434,7 @@ class Root(controllers.RootController):
         return dict(new_revision=str(newrevno), code=code,
                     success=success, file=filepath, reloadfiles=reloadfiles)
 
-    def update_merge(self, team, project, filepath, rev, message, code):
-        """Attempt to merge some file data with latest revision.
-        1. Checkout the branch into a temporary directory
-        2. Dump in the new file data
-        3. Update file in working copy
-        Then either:
-        4. Return merge-flagged text if manual merge required
-        or
-        4. Commit file
-        then always:
-        5. Delete the temp directory
-        """
-        print "savefile: going down checkout2tmpdir route."
-
-        #1. Get working tree of branch in temp dir
-        wt = WorkingTree(int(team), project)
-        reload = "false"
-
-        #TODO: Check for path naugtiness trac#208
-        path = os.path.dirname(filepath)
-        basename = os.path.basename(filepath)
-        fullpath = wt.tmpdir + "/" + filepath
-
-        #2. Dump in the new file data
-        target = open(fullpath, "wt")
-        target.write(code)
-        target.close()
-
-        # try to update
-        try:
-            conflicts = wt.update()
-        except:
-            wt.destroy()
-            return dict(code=code, success="false", file=filepath, reloadfiles=reload)
-
-#        print "conflicts: " + str(conflicts)
-        if conflicts == 0:
-            try:
-                newrevid = wt.commit(message)
-                success = "True"
-            except:
-                wt.destroy()
-                return dict(code=code, success="false", file=filepath, reloadfiles=reload)
-        else:
-            #Throw the new contents of the file back to the client for
-            #tidying, then they can resubmit
-            success = "Merge"
-            #Grab the merged text.
-            mergedfile = open(join(wt.tmpdir, basename), "rt")
-            code = mergedfile.read()
-            mergedfile.close()
-
-        # find revision number from id
-        newrevno = wt.branch.revision_id_to_revno(newrevid)
-
-        #4. Destroy working tree checkout, remove the autosaves
-        wt.destroy()
-        self.autosave.delete(team, filepath)
-
-        return dict(new_revision=str(newrevno), code=code,
-                    success=success, file=filepath, reloadfiles=reload)
-
-
-    def commit_file_simple(self,team, project, filepath, rev, message, code, fileid):
-        """
-        Modify contents of a file, or create a new one, in non-merge situations only.
-        """
-        print "savefile: going down MemoryTree route."
-
-        reload = "false"
-        memtree = open_memory_tree(int(team), project)
-
-        memtree.lock_write()
-        try:
-            # check to see if file exists
-            if fileid == None:
-                directory = os.path.dirname(filepath)
-                self.create_dir(memtree, directory) # create dir if it doesn't exist
-                memtree.add([filepath], kinds=['file'])
-                fileid = memtree.path2id(filepath)
-                reload = "true"
-            memtree.put_file_bytes_non_atomic(fileid,code)
-            newrevid = memtree.commit(message)
-        finally:
-            memtree.unlock()
-
-        newrevno = memtree.branch.revision_id_to_revno(newrevid)
-
-        return dict(new_revision=str(newrevno), code=code,
-                    success="True", file=filepath, reloadfiles=reload)
-
-
+ 
     def create_dir(self, memtree, path, msg=""): # TODO BZRPORT: error checking
         """Creates an svn directory if one doesn't exist yet
         inputs:
