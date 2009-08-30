@@ -742,11 +742,12 @@ class Root(controllers.RootController):
     #create a new directory
     @expose("json")
     @srusers.require(srusers.in_team())
-    def newdir(self, team, project, path, msg):
+    def newdir(self, team, path, msg):
+        project, dirpath = self.get_project_path(path)
         projWrite = ProjectWrite(team, project)
 
         try:
-            projWrite.new_directory(path)
+            projWrite.new_directory(dirpath)
         except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
             return dict( success=0, newdir = path,\
                         feedback="Error creating directory: " + path)
