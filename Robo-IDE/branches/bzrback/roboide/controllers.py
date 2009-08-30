@@ -460,9 +460,8 @@ class Root(controllers.RootController):
         reloadfiles = "True"
 
         try:
-            newrevid = projWrite.commit(message)
+            newrevno,newrevid = projWrite.commit(message)
             success = "True"
-            newrevno = projWrite.b.revision_id_to_revno(newrevid)
         except bzrlib.errors.OutOfDateTree:
             # a commit has occurred since code was opened.
             # A merge will need to take place
@@ -755,7 +754,7 @@ class Root(controllers.RootController):
                         feedback="Error creating directory: " + path)
 
 #TODO: try:
-        revid = projWrite.commit(msg)
+        revno,revid = projWrite.commit(msg)
         print "New Revision:"
         print revid
 
@@ -1004,8 +1003,7 @@ class Root(controllers.RootController):
 
         try:
             projWrite.copy(src, dest)
-            new_rev_id = projWrite.commit(msg)
-            new_revno = projWrite.b.revision_id_to_revno(new_rev_id)
+            new_revno,new_rev_id = projWrite.commit(msg)
 
         except pysvn.ClientError, e:
             return dict(new_revision = "0", status="1", message="Copy Failed: "+str(e))

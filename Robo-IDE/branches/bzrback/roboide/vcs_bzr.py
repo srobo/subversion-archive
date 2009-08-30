@@ -119,6 +119,7 @@ class ProjectWrite():
     def commit(self, message=""):
         """
         Commit changed tree.
+        Returns a tuple of revno, revid
         """
         last_revno, last_revid = self.b.last_revision_info()
 
@@ -160,7 +161,8 @@ class ProjectWrite():
                 pass
 
         self.revid = revid_new
-        return revid_new # should we delete TransPrev as it is no longer up to date?
+        # should we delete TransPrev as it is no longer up to date?
+        return revno_new,revid_new
 
     def new_directory(self, path):
         """
