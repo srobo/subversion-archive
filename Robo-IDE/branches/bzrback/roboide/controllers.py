@@ -720,25 +720,6 @@ class Root(controllers.RootController):
 
         return dict(tree = tree)
 
-#    #create a new directory
-#    @expose("json")
-#    @srusers.require(srusers.in_team())
-#    def newdir(self, team, project, path, msg):
-#        memtree = open_memory_tree(int(team), project)
-
-#        try:
-#            created = self.create_dir(memtree, path, msg)
-#        except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
-#            return dict( success=0, newdir = path,\
-#                        feedback="Error creating directory: " + path)
-
-#        if created: # directory was created
-#            return dict( success=1, newdir = path,\
-#                    feedback="Directory successfully created")
-#        else: # directory wasn't created because it already existed
-#            return dict( success=0, newdir = path,\
-#                    feedback="Directory " + path + " already exists")
-
     #create a new directory
     @expose("json")
     @srusers.require(srusers.in_team())
