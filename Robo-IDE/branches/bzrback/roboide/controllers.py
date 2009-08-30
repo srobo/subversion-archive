@@ -314,13 +314,6 @@ class Root(controllers.RootController):
                                 "rev" : b.revision_id_to_revno(r.revision_id)}
                               for r in revisions])
 
-#    def checkoutintotmpdir(self, branch, revision, base): # TODO BZRDIR: replace with WorkingTree object
-#
-#        tmpdir = tempfile.mkdtemp()
-#        client.checkout(client.REPO + base, tmpdir, recurse=False, revision=revision)
-#        branch.create_checkout(tmpdir, lightweight=True)
-#        return tmpdir
-
     @expose("json")
     @srusers.require(srusers.in_team())
     def polldata(self, team, files = "",logrev=None):
