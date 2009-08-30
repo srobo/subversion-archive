@@ -932,7 +932,7 @@ class Root(controllers.RootController):
                       history=[{"author":x.get_apparent_author(), \
                       "date":time.strftime("%Y/%m/%d/%H/%M/%S", \
                       time.localtime(x.timestamp)), \
-                      "message":x.message, "rev":42} \
+                      "message":x.message, "rev":b.revision_id_to_revno(x.revision_id)} \
                       for x in result])
 
     @expose("json")
