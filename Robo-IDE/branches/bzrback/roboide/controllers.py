@@ -260,6 +260,9 @@ class Root(controllers.RootController):
         results available, overflow > 0.
         supply an offset to view older results: 0<offset < overflow; offset = 0 is the most recent logs
         """
+        if file[:9] == 'New File ':
+            return dict(path=file, history=[])
+
         file_path = file	#save for later
         project,file = self.get_project_path(file_path)
         b = open_branch(int(team), project)
