@@ -92,6 +92,7 @@
 #user-feed-url {
 	color: #0000FF;
 	width: 100%;
+	border: 0px
 }
 #student-blogs-list, #student-blogs-list li {
 	list-style-type: none;
