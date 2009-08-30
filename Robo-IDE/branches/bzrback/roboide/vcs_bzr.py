@@ -78,7 +78,7 @@ class ProjectWrite():
         # return transaction id of topmost dir
         return parent_trans_id
 
-    def merge_file(self, filepath):
+    def merge(self, filepath):
         """
         Attempt to merge a file with the latest revision.
         """
@@ -98,9 +98,14 @@ class ProjectWrite():
         tree_merger = merger.make_merger()
         tt2 = tree_merger.make_preview_transform()
 
-        final_tree = tt2.get_preview_tree()
+        self.TransPrev = tt2
+        self._update_tree()
 
-        return final_tree.get_file_text(fileid), revno_latest, revid_latest
+        self.revid = revid_latest
+
+        self.conflicts = tree_merger.cooked_conflicts
+
+        return self.PrevTree.get_file_text(fileid), revno_latest, revid_latest
 
     def get_file_text(self, path):
         """

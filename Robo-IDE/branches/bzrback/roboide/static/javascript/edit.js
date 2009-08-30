@@ -390,6 +390,17 @@ function EditTab(iea, team, project, path, rev, mode) {
 				$("check-syntax").disabled = false;
  				this._update_contents();
 				break;
+			case "AutoMerge":
+				status_msg("File "+this.path+" Automatically merged with latest revision (Now at r"+nodes.new_revision+")", LEVEL_OK);
+				this.contents = nodes.code;
+				this._original = this.contents;
+				this._autosaved = "";
+				this._isNew = false;
+				this.rev = nodes.new_revision;
+				this.file_rev = nodes.new_revision;
+				$("check-syntax").disabled = false;
+ 				this._update_contents();
+				break;
 			case "Merge":
 				status_msg("File "+this.path+" Merge required, please check and try again (Now at r"+nodes.new_revision+")", LEVEL_ERROR);
 				this.contents = nodes.code;

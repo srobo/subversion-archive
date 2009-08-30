@@ -416,7 +416,7 @@ class Root(controllers.RootController):
 
         projWrite.update_file_contents(filepath, code)
 
-        reloadfiles = "True"
+        reloadfiles = "True" # TODO: determine whether or not file list needs refreshing
 
         try:
             newrevno,newrevid = projWrite.commit(message)
@@ -425,8 +425,17 @@ class Root(controllers.RootController):
             # a commit has occurred since code was opened.
             # A merge will need to take place
             # TODO: silently merge if it doesn't affect our file, OR allow committing specific file
-            newcode, newrevno, newrevid = projWrite.merge_file(filepath)
-            return dict(new_revision=newrevno, code=newcode,
+            code, newrevno, newrevid = projWrite.merge(filepath)
+            if len(projWrite.conflicts) == 0:
+                # TODO: when committing a merged transform preview affecting more than one file,
+                    #       the text changes do not commit despite the merge succeeding and returning correct text.
+                    #       solution for now is to open a new transform preview and pump the new code into it.
+                pw2 = ProjectWrite(team, project)
+                pw2.update_file_contents(filepath, code)
+                newrevno, newrevid = pw2.commit(message)
+                success = "AutoMerge"
+            else:
+                return dict(new_revision=newrevno, code=code,
                     success="Merge", file=filepath, reloadfiles=reloadfiles)
         finally:
             projWrite.destroy()
