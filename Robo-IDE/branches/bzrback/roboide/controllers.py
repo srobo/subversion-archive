@@ -767,7 +767,7 @@ class Root(controllers.RootController):
         return dict(new_revision=newrev, code = "", success="Success !!!", status = 0)
 
 #from undelete
-        return dict(fail = fail, success = ','.join(success),  status)
+        return dict(fail = fail, success = ','.join(success), status = status)
 
     @expose("json")
     @srusers.require(srusers.in_team())
