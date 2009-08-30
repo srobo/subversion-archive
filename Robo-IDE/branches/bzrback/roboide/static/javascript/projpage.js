@@ -1027,9 +1027,13 @@ function ProjOps() {
 			return;
 		}
 
-		var d = loadJSONDoc("./undelete", {team : team,
-				   files : projpage.flist.selection.join(','),
-				   rev : projpage.flist.rev  });
+		var files = projpage.flist.selection.join(',');
+		var d = loadJSONDoc("./revert", {
+					team : team,
+					files : files,
+					torev : projpage.flist.rev,
+					message : 'Undelete '+files+'to r'+projpage.flist.rev
+				});
 		d.addCallback( bind(this._undel_callback, this));
 		d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.undel, this, true));});
 	}

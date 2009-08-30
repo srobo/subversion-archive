@@ -396,40 +396,6 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def undelete(self, team, files, rev='0'):
-        """
-        UnDelete files from the repository - basically grabs a list of them,
-        then uses copy to re-instate them, one by one
-        TODO: do all files in one go trac#335
-        inputs: files - comma seperated list of paths
-                rev - the revision to undelete from
-        returns (json): Message - a message to show the user
-        """
-        pass    #TODO BZRPORT: Implement!
-
-        if files != "":
-            files = files.split(",")
-            client = Client(int(team))
-            fail = {}
-            success = []
-            status = 0
-
-            for f in files:
-                result = self.cp(team, f, f, 'Undelete file '+f, rev)
-                print result
-                if int(result['status']) > 0:
-                    fail[f] = result['message']
-                    status = status + 1
-                else:
-                    success.append(f)
-
-            return dict(fail = fail, success = ','.join(success), status = status)
-
-        else:
-            return dict(Message = 'Undeleted failed - no files specified', status = 1)
-
-    @expose("json")
-    @srusers.require(srusers.in_team())
     def savefile(self, team, project, filepath, rev, message, code):
         """
         Create/update contents of a file and attempt to commit.
@@ -788,20 +754,27 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def revert(self, team, file, torev, message):
+    def revert(self, team, files, torev, message):
 
-        project, file = self.get_project_path(file)
+        file_list = files.split(',')
+        if len(file_list) == 0:
+            return dict(Message = 'Revert failed - no files specified', status = 1)
+
+        project, file = self.get_project_path(file_list[0])
         rev_spec = bzrlib.revisionspec.RevisionSpec.from_string(torev)
+        file_list = [self.get_project_path(f)[1] for f in file_list]
 
         wt = WorkingTree(team, project)
         rev_tree = rev_spec.as_tree(wt.branch)
 
-        wt.revert([file], rev_tree)
+        wt.revert(file_list, rev_tree)
         wt.commit(message)
         newrev, id = wt.branch.last_revision_info();
 
-        return dict(new_revision=newrev, code = "",\
-                    success="Success !!!")
+        return dict(new_revision=newrev, code = "", success="Success !!!", status = 0)
+
+#from undelete
+        return dict(fail = fail, success = ','.join(success),  status)
 
     @expose("json")
     @srusers.require(srusers.in_team())

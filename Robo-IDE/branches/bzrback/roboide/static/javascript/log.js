@@ -199,7 +199,7 @@ Log.prototype._errorReceiveRevision = function(commitMsg) {
 Log.prototype._do_revert = function(commitMsg) {
 	var d = loadJSONDoc("./revert", {
 					team : team,
-					file : this.file,
+					files : this.file,
 					torev : this.selectedRevision,
 					message : commitMsg});
 
