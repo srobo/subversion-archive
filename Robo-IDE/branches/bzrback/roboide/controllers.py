@@ -3,7 +3,7 @@ from turbogears.feed import FeedController
 import cherrypy, model
 from sqlobject import sqlbuilder
 import logging
-import bzrlib.errors, bzrlib.tree
+import bzrlib.errors, bzrlib.tree, bzrlib.revisionspec
 import pysvn    # TODO BZRPORT: remove once all pysvn code removed
 import time, datetime, StringIO
 import re
@@ -810,11 +810,14 @@ class Root(controllers.RootController):
     def revert(self, team, file, torev, message):
 
         project, file = self.get_project_path(file)
+        rev_spec = bzrlib.revisionspec.RevisionSpec.from_string(torev)
+
         wt = WorkingTree(team, project)
-        rev=self.get_rev_id(team, project, torev)
-        rev_tree = wt.revision_tree(rev)
-        wt.revert(file, rev_tree)
+        rev_tree = rev_spec.as_tree(wt.branch)
+
+        wt.revert([file], rev_tree)
         wt.commit(message)
+        newrev, id = wt.branch.last_revision_info();
 
         return dict(new_revision=newrev, code = "",\
                     success="Success !!!")
