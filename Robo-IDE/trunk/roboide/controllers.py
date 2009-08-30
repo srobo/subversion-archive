@@ -3,8 +3,9 @@ from turbogears.feed import FeedController
 import cherrypy, model
 from sqlobject import sqlbuilder
 import logging
-import pysvn
-import time, datetime
+import bzrlib.errors, bzrlib.tree, bzrlib.revisionspec
+import pysvn    # TODO BZRPORT: remove once all pysvn code removed
+import time, datetime, StringIO
 import re
 import tempfile, shutil
 import os, sys, os.path
@@ -18,63 +19,11 @@ import autosave as srautosave
 import user as srusers
 import fw, switchboard
 import string
+from vcs_bzr import ProjectWrite, open_branch, open_repo, open_memory_tree, WorkingTree
 
 log = logging.getLogger("roboide.controllers")
 
 ZIPNAME = "robot.zip"
-
-class Client:
-    """
-    A wrapper around a pysvn client. This creates a client and wraps calls to
-    its functions.
-    """
-    client = None
-    def __init__(self, team):
-        """
-        Create a pysvn client and use it
-        """
-        def get_login(realm, username, may_save):
-            u = str(srusers.get_curuser())
-            return True, u, "", False
-
-        c = pysvn.Client()
-        c.callback_get_login = get_login
-        c.set_store_passwords(False)
-        c.set_auth_cache(False)
-
-        #Using self.__dict__[] to avoid calling setattr in recursive death
-        self.__dict__["client"] = c
-        if not team in srusers.getteams():
-            raise RuntimeError("User can not access team %d" % team)
-
-        self.__dict__["REPO"] = srusers.get_svnrepo( team )
-
-    def is_url(self, url, rev=pysvn.Revision(pysvn.opt_revision_kind.head)):
-        """Override the default is_url which just tells you if the url looks
-        sane. This tries to get info on the file...
-        """
-        try:
-            self.client.info2(url, rev)
-            return True
-        except pysvn.ClientError:
-            return False
-
-    def __setattr__(self, name, val):
-        """
-        This special method is called when setting a value that isn't found
-        elsewhere. It sets the same named value of the pysvn client
-        """
-        #BE CAREFUL - assigning class-scope variables anywhere in this class
-        #causes instant setattr recursion death
-        setattr(self.client, name, val)
-
-    def __getattr__(self, name):
-        """
-        This special method is called when something isn't found in the class
-        normally. It returns the named attribute of the pysvn client this class
-        is wrapping.
-        """
-        return getattr(self.client, name)
 
 class Feed(FeedController):
     def get_feed_data(self):
@@ -113,22 +62,72 @@ class Root(controllers.RootController):
         loc = os.path.join(os.path.dirname(__file__), "static/index.html")
         return serveFile(loc)
 
-    def get_revision(self, revision):
+    def get_project_path(self, path):
         """
-        Get a revision object.
+        Get a project name and filepath from a path
         inputs:
-            revision - revision number (convertable with int()). If can not be
-            converted, returns HEAD revision
+            path - str to a file
         returns:
-            revision object for revision number"""
+            tuple containing the project and path
+        """
+        print path
+        root,project,file_path = path.split(os.path.sep,2)
+        return project,file_path
+
+    def get_rev_object(self, team, rev_id=""):
+        """
+        Get a revision object for a given bzr revision id.
+        If no revision id is provided, get latest revision.
+        inputs:
+            rev_id - str in bzr rev_id format, ie returned by get_rev_id()
+        returns:
+            revision object for given revision id."""
+
+        b = open_branch( int(team) )
+
+        if rev_id == "":
+            rev_id = b.last_revision()
 
         try:
-            if revision == 0 or revision == "0":
-                revision = "HEAD"
-            rev = pysvn.Revision(pysvn.opt_revision_kind.number, int(revision))
-        except (pysvn.ClientError, ValueError, TypeError):
-            rev = pysvn.Revision(pysvn.opt_revision_kind.head)
+            rev = b.repository.get_revision(rev_id)
+        except: #TODO BZRPORT: implement exception properly, revision number failure etc
+            print "Get revision failed, returned latest revision object"
+            rev = b.repository.get_revision( b.last_revision() )
+
         return rev
+
+    def get_rev_id(self, team, project, revno=-1):
+        """
+        Get revision ID string from revision number.
+        inputs:
+            revno - revision number convertable with int().
+                    if revno is -1 or not supplied, get latest revision id.
+        returns:
+            revision id string
+        """
+
+        b = open_branch( int(team), project )
+
+        try:
+            if revno == -1 or revno == "-1" or revno == "HEAD": #TODO BZRPORT: stop anything calling "HEAD" string
+                rev_id = b.last_revision()
+            else:
+                rev_id = b.get_rev_id( int(revno) )
+
+        except (TypeError):     # TODO BZRPORT: add bzr exception
+            print "Getting ID for revno: %s failed, returning latest revision id."  % revno
+            rev_id = b.last_revision()
+
+        return rev_id
+
+    def get_file_revision(self, tree, fileid):
+        """
+        Get the id of the revision when the file was last modified.
+        inputs: tree - a bzrlib tree of some kind
+                fileid - file id of file in tree
+        outputs: revid - revision id
+        """
+        return bzrlib.tree.Tree._file_revision(tree, fileid) # static method for some reason
 
     @expose()
     @srusers.require(srusers.in_team())
@@ -137,74 +136,63 @@ class Root(controllers.RootController):
         This function grabs a set of files and makes a zip available. Should be
         linked to directly.
         inputs:
-            files - a comma seperated list of files to do the method on
+            team & project - code to retrieve
+            simulator - true if code is being delivered to a simulator.
         returns:
             A zip file as a downloadable file with appropriate HTTP headers
             sent.
         """
-        client = Client(int(team))
-        rev = self.get_revision("HEAD")
+        mt = open_memory_tree(int(team), project)
 
-        # Directory to work in
-        root = tempfile.mkdtemp()
+        #Avoid using /tmp by writing into a memory based file
+        zipData = StringIO.StringIO()
+        zip = zipfile.ZipFile(zipData, "w", zipfile.ZIP_DEFLATED)
+        #Need to lock_read before reading any file contents
+        mt.lock_read()
+        try:
+            #Get a list of files in the tree
+            files = [f for f in mt.iter_entries_by_dir() if f[1].kind == "file"]
+            for filename, file in files:
+                #Set external_attr on a ZipInfo to make sure the files are
+                #created with the right permissions
+                info = zipfile.ZipInfo(filename.encode("ascii"))
+                info.external_attr = 0666 << 16L
+                #Read the file contents and add to zip
+                zip.writestr(info, mt.get_file(file.file_id).read())
 
-        # Checkout the code
-        client.export(client.REPO + "/%s" % project,
-                      root + "/code",
-                      revision=rev,
-                      recurse=True)
+            #Need a __init__ in the root of all code exports
+            if not "__init__.py" in [f[0].encode("ascii") for f in files]:
+                info = zipfile.ZipInfo("__init__.py")
+                info.external_attr = 0666 << 16L
+                zip.writestr(info, "")
 
-        # Check if __init__.py exists in user code, if it doesn't insert blank file before checkout
-        if not os.path.exists(root+"/code/__init__.py"):
-            f = open(root+"/code/__init__.py", 'w')
-            f.close()
-
-
-        # (internal) robot.zip to contain the code
-        zfile = tempfile.mktemp()
-        zip = zipfile.ZipFile(zfile, "w")
-
-        def add_dir_to_zip(head, zip):
-            #Walk through the tree of files checked out and add them
-            #to the zipfile
-            for node, dirs, files in os.walk(head):
-                for name in files:
-                    #Skip .svn directories
-                    if ".svn" in node:
-                        continue
-                    #If the file is in the root directory
-                    src = os.path.join(node, name)
-                    if node == head:
-                        #Add it named just its name
-                        zip.write(src, name, compress_type = zipfile.ZIP_DEFLATED)
-                    else:
-                        #Add it with a suitable path
-                        archname = node[len(head):]+'/'+name
-                        zip.write(src, archname, compress_type = zipfile.ZIP_DEFLATED)
-
-        add_dir_to_zip(root + "/code", zip)
+        except:
+            return "Error exporting project"
+        finally:
+            #Always unlock or get GC related errors
+            mt.unlock()
         zip.close()
-
-        # Remove the temporary dir
-        shutil.rmtree(root)
+        #Seek back to start of file so read() works later on
+        zipData.seek(0)
 
         if not simulator:
-            """The robot expects a zipfile containing libraries, with another zipfile inside."""
-            #Create a second zip file placing the user zip in the system zip
-            syszfile = tempfile.mktemp()
-            syszip = zipfile.ZipFile(syszfile, "w")
-            add_dir_to_zip(config.get("svn.packagedir"), syszip)
+            """
+            The zipfile delivered to the robot is the contents of the
+            repository as a zip inside another zip that contains firmware.
+            """
+            #Get a copy of the firmware zip, drop the code zip (in zipData)
+            #in it and then put the resulting zip back into zipData
+            sysZipData = open(config.get("robot.packagezip")).read()
+            sysZipBuffer = StringIO.StringIO(sysZipData)
 
-            syszip.write(zfile, ZIPNAME)
-            syszip.close()
+            sysZip = zipfile.ZipFile(sysZipBuffer, "a")
+            info = zipfile.ZipInfo(ZIPNAME)
+            info.external_attr = 0666 << 16L
+            sysZip.writestr(info, zipData.read())
+            sysZip.close()
 
-            #Read the data in from the temporary zipfile
-            zipdata = open(syszfile, "rb").read()
-            os.unlink(syszfile)
-        else:
-            zipdata = open(zfile, "rb").read()
-
-        os.unlink(zfile)
+            sysZipBuffer.seek(0)
+            zipData = StringIO.StringIO(sysZipBuffer.read())
 
         #Set up headers for correctly serving a zipfile
         cherrypy.response.headers['Content-Type'] = \
@@ -213,108 +201,118 @@ class Root(controllers.RootController):
                 'attachment; filename="' + ZIPNAME + '"'
 
         #Return the data
-        return zipdata
+        return zipData.read()
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def filesrc(self, team, file=None, revision="HEAD"):
+    def filesrc(self, team, file=None, revision=None):
         """
         Returns the contents of the file.
-        Turns out the action parameter can be edit. Not sure how this is
-        useful - won't it always be edit?
         """
+
+        file_path = file	#save for later
+        project,file = self.get_project_path(file_path)
         curtime = time.time()
-        client = Client(int(team))
+        b = open_branch( int(team), project )
 
         #TODO: Need to security check here! No ../../ or /etc/passwd nautiness trac#208
 
+        autosaved_code = self.autosave.getfilesrc(team, file_path, 1)
 
-        autosaved_code = self.autosave.getfilesrc(team, file, 1)
+        if revision == None or revision == "HEAD":
+            revno, revid = b.last_revision_info()
+        else:
+            revno = int(revision)
+            revid = b.get_rev_id(revno)
 
-        rev = self.get_revision(revision)
-
-        if file != None and file != "" and client.is_url(client.REPO + file, rev):
-            #Load file from SVN
-            mime = ""
+        if file != None and file != "":  #TODO BZRPORT: URL checking
+            #Load file from bzr
+            # TODO BZRPORT: mime checking. Bzr doesn't have a mime property so the file will need to be checked with python
             try:
-                mime = client.propget("svn:mime-type", client.REPO+file, revision=rev).values()[0]
-            except pysvn.ClientError:
-                code = "Error getting mime type"
-                revision = 0
-            except IndexError:
-                pass
+                branch_tree = b.repository.revision_tree(revid)
+                file_id = branch_tree.path2id(file)
+                b.lock_read()
+                code = branch_tree.get_file_text(file_id)
+                file_revid = self.get_file_revision(branch_tree, file_id) # get revision the file was last modified
+                file_revno = b.revision_id_to_revno(file_revid)
+            except:
+                code = "Error loading file '%s' at revision %s." % (file, revision)
+                file_revno = 0
+            # always unlock:
+            finally:
+                b.unlock()
 
-            if mime == "application/octet-stream":
-                code = "Binary File:  You can't edit these in the IDE."
-                revision = 0
-            else:
-                try:
-                    ver = client.log(client.REPO + file, limit=0, revision_start=rev, peg_revision=rev)[0]["revision"]
-                    revision = ver.number
-
-                    code = client.cat(client.REPO + file, revision=pysvn.Revision(pysvn.opt_revision_kind.number, ver.number))
-                except pysvn.ClientError:
-                    code = "Error loading file '%s' at revision %s." % (file, revision)
-                    revision = 0
         else:
             code = "Error loading file: No filename was supplied by the IDE.  Contact an SR admin!"
             revision = 0
 
-        return dict(curtime=curtime, code=code, autosaved_code=autosaved_code, revision=revision, path=file,
+        return dict(curtime=curtime, code=code, autosaved_code=autosaved_code, file_rev=str(file_revno), revision=revno, path=file_path,
                 name=os.path.basename(file))
+
 
     @expose("json")
     @srusers.require(srusers.in_team())
     def gethistory(self, team, file, user = None, offset = 0):
-        #This function retrieves the svn log output for the given file(s)
-        #to restrict logs to particular user, supply a user parameter
-        #a maximum of 10 results are sent to the browser, if there are more than 10
-        #results available, overflow > 0.
-        #supply an offset to view older results: 0<offset < overflow; offset = 0 is the most recent logs
-        offset = int(offset)
-        c = Client(int(team))
-        try:
-            log = c.log(c.REPO+file)
-        except:
-            logging.debug("Log failed for %s" % c.REPO+file)
-            return dict(path=file,history=[])
-        authors = []
-        #get a list of users based on log authors
-        for y in log:
-            if y['author'] not in authors:
-                authors.append(y['author'])
+        """
+        This function retrieves the bzr history for the given file(s)
+        to restrict logs to particular user, supply a user parameter
+        a maximum of 10 results are sent to the browser, if there are more than 10
+        results available, overflow > 0.
+        supply an offset to view older results: 0<offset < overflow; offset = 0 is the most recent logs
+        """
+        if file[:9] == 'New File ':
+            return dict(path=file, history=[])
 
-        #narrow results by user (if supplied)
-        result = []
+        file_path = file	#save for later
+        project,file = self.get_project_path(file_path)
+        b = open_branch(int(team), project)
+        revisions = [b.repository.get_revision(r) for r in b.revision_history()]
+
+        #Get a list of authors
+        authors = list(set([r.committer for r in revisions]))
+
+        #If a user is passed, only show revisions committed by that user
         if user != None:
-            for x in log:
-                if(x['author'] == user) or (user == None):
-                    result.append(x)
-        else:
-            result = log[:]
+            revisions = [r for r in revisions if r.committer == user]
 
-        #if many results, split into pages of 10 and return appropriate
+        #Only show revisions where the delta touches file
+        fileid = b.basis_tree().path2id(file)
+        if fileid == None:
+            #File not found
+            return dict()
+
+        def revisionTouchesFile(revision):
+            """
+            Return true if the revision changed a the file referred to in fileid.
+            """
+            delta = b.get_revision_delta(b.revision_id_to_revno(revision.revision_id))
+            return delta.touches_file_id(fileid)
+        revisions = filter(revisionTouchesFile, revisions)
+
+        #Calculate offsets for paging
+        try:
+            offset = int(offset)
+        except ValueError:
+            #Someone passed a string
+            return dict()
         start = offset*10
         end = start + 10
-        maxval = len(result)
+        maxval = len(revisions)
         if maxval%10 > 0:
             overflow = maxval/10 +1
         else:
             overflow = maxval/10
 
-        result = result[start:end]
+        revisions = revisions[start:end]
+        revisions.reverse()
 
-        return dict(  path=file, overflow=overflow, offset=offset, authors=authors,\
-                      history=[{"author":x["author"], \
-                      "date":time.strftime("%H:%M:%S %d/%m/%Y", \
-                      time.localtime(x["date"])), \
-                      "message":x["message"], "rev":x["revision"].number} \
-                      for x in result])
-
-    def checkoutintotmpdir(self, client, revision, base):
-        tmpdir = tempfile.mkdtemp()
-        client.checkout(client.REPO + base, tmpdir, recurse=False, revision=revision)
-        return tmpdir
+        return dict(  path=file_path, overflow=overflow, offset=offset, authors=authors,
+                      history=[{"author" : r.committer,
+                                "date" : time.strftime("%H:%M:%S %d/%m/%Y",
+                                                       time.localtime(r.timestamp)),
+                                "message" : r.message,
+                                "rev" : b.revision_id_to_revno(r.revision_id)}
+                              for r in revisions])
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -326,6 +324,8 @@ class Root(controllers.RootController):
             the key). Each value is a dictionary with information. The only key
             is revision, with a value of an integer of the current revision
             number in the repo"""
+        pass    #TODO BZRPORT: Implement!
+
         #Default data
         r = {}
         l = {}
@@ -362,333 +362,378 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def delete(self, team, files, kind = 'SVN'):
+    def delete(self, team, project, files, kind = 'SVN'):
         """
         Delete files from the repository, and prune empty directories.
         inputs: files - comma seperated list of paths
                 kind - one of 'SVN' or 'AUTOSAVES'
         returns (json): Message - a message to show the user
         """
+
         if files != "":
             files = files.split(",")
-            client = Client(int(team))
+            wt = WorkingTree(int(team), project)
 
-            #This is called to get a log message for the deletion
-            def cb():
-                return True, "Files deleted: "+', '.join(files)
-            client.callback_get_log_message = cb
-
-            urls = [client.REPO + str(x) for x in files]
-
-            message = "Files deleted successfully: \n" + "\n".join(files)
+            message = "Files deleted successfully: "+project+" >\n" + "\n".join(files)
 
             for f in files:
-                self.autosave.delete(team, f)
+                self.autosave.delete(team, '/'+project+'/'+f)
 
             if kind == 'AUTOSAVES':
                 return dict(Message = "AutoSaves deleted successfully: \n" + "\n".join(files))
 
-            paths = list(set([os.path.dirname(file) for file in files]))
-
-            try:
-                client.remove(urls)
-                #Prune empty directories. Get data from filelist and then build a list of empty directories.
-                for dir in paths:
-                    if len(client.ls(client.REPO + dir)) == 0:
-                        #The directory is empty, OK to delete it
-
-                        #jmorse - don't prune project dirs, this offends gui
-                        if dir.encode("iso-8859-1").find('/', 1) == -1:
-                            continue
-
-                        log.debug("Deleting empty directory: " + client.REPO + dir)
-                        client.remove(client.REPO + dir)
-                        message += "\nRemove empty directory " + dir
-
-            except pysvn.ClientError:
-                message = "Error deleting files."
+            wt.remove(files)
+            wt.commit('Remove files: '+', '.join(files))
 
             return dict(Message = message)
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def undelete(self, team, files, rev='0'):
+    def savefile(self, team, project, filepath, rev, message, code):
         """
-        UnDelete files from the repository - basically grabs a list of them,
-        then uses copy to re-instate them, one by one
-        TODO: do all files in one go trac#335
-        inputs: files - comma seperated list of paths
-                rev - the revision to undelete from
-        returns (json): Message - a message to show the user
+        Create/update contents of a file and attempt to commit.
+        If file has been updated since submitted text was checked out,
+            call update_merge to attempt to merge the changes.
+        If file has not been updated since client checked it out,
+            call commit_file_simple to commit the new version.
+
+        inputs: path - path of file relative to project root.
+                rev - revision of file when it was checked out by client.
         """
-        if files != "":
-            files = files.split(",")
-            client = Client(int(team))
-            fail = {}
-            success = []
-            status = 0
 
-            for f in files:
-                result = self.cp(team, f, f, 'Undelete file '+f, rev)
-                print result
-                if int(result['status']) > 0:
-                    fail[f] = result['message']
-                    status = status + 1
-                else:
-                    success.append(f)
+#        current_file_revid = self.get_file_revision(basis_tree,fileid)
+#        current_file_revno = b.revision_id_to_revno(current_file_revid)
 
-            return dict(fail = fail, success = ','.join(success), status = status)
+#        if str(current_file_revno) == str(rev):
+#        # File has not been modified since the client opened it
+#            return self.commit_file_simple(team, project, filepath, rev, message, code, fileid)
+#        else:
+#            return self.update_merge(team, project, filepath, rev, message, code)
 
-        else:
-            return dict(Message = 'Undeleted failed - no files specified', status = 1)
+        project,filepath= self.get_project_path(filepath)
 
-    @expose("json")
-    @srusers.require(srusers.in_team())
-    def fulllog(self, team):
-        """Get a full log of file changes
-            inputs: None
-            returns (JSON): log - a list of dictionaries of:
-                date, message, author, changed_paths, revision
-                    changed_paths is a list of dicts:
-                        action, path
-        """
-        client = Client(int(team))
-        log = client.log(client.REPO, discover_changed_paths=True)
+        projWrite = ProjectWrite(team, project, revno=rev)
 
-        return dict(log=[{"author":x["author"], \
-                      "date":time.strftime("%H:%M:%S %d/%m/%Y", \
-                      time.localtime(x["date"])), \
-                      "message":x["message"], "rev":x["revision"].number,
-                      "changed_paths":[(c.action, c.path) for c in \
-                          x.changed_paths]} for x in log])
+        projWrite.update_file_contents(filepath, code)
 
-    @expose("json")
-    @srusers.require(srusers.in_team())
-    def savefile(self, team, file, rev, message, code):
-        """Write a commit of one file.
-        1. SVN checkout the file's directory
-        2. Dump in the new file data
-        3. Commit that directory with the new data and the message
-        4. Wipe the directory
-        """
-        client = Client(int(team))
-        reload = "false"
-        #1. SVN checkout of file's directory
-        #TODO: Check for path naugtiness trac#208
-        path = os.path.dirname(file)
-        basename = os.path.basename(file)
-        rev = self.get_revision(rev) #Always check in over the head to get
-        #old revisions to merge over new ones
-
-        if not client.is_url(client.REPO + path): #new dir needed...
-            reload = "true"
-            try:
-                self.create_svn_dir(client, path)
-            except pysvn.ClientError:
-                return dict(new_revision="0", code = "",\
-                            success="Error creating new directory",
-                            reloadfiles="false")
+        reloadfiles = "True" # TODO: determine whether or not file list needs refreshing
 
         try:
-            tmpdir = self.checkoutintotmpdir(client, rev, path)
-        except pysvn.ClientError:
-            try:
-                shutil.rmtree(tmpdir)
-            except:
-                pass
+            newrevno,newrevid = projWrite.commit(message)
+            success = "True"
+        except bzrlib.errors.OutOfDateTree:
+            # a commit has occurred since code was opened.
+            # A merge will need to take place
+            # TODO: silently merge if it doesn't affect our file, OR allow committing specific file
+            code, newrevno, newrevid = projWrite.merge(filepath)
+            if len(projWrite.conflicts) == 0:
+                # TODO: when committing a merged transform preview affecting more than one file,
+                    #       the text changes do not commit despite the merge succeeding and returning correct text.
+                    #       solution for now is to open a new transform preview and pump the new code into it.
+                pw2 = ProjectWrite(team, project)
+                pw2.update_file_contents(filepath, code)
+                newrevno, newrevid = pw2.commit(message)
+                success = "AutoMerge"
+            else:
+                return dict(new_revision=newrevno, code=code,
+                    success="Merge", file=filepath, reloadfiles=reloadfiles)
+        finally:
+            projWrite.destroy()
 
-            return dict(new_revision="0", code="", success="Invalid filename",
-                        reloadfiles="false")
+
+        return dict(new_revision=str(newrevno), code=code,
+                    success=success, file=filepath, reloadfiles=reloadfiles)
+
+    def update_merge(self, team, project, filepath, rev, message, code):
+        """Attempt to merge some file data with latest revision.
+        1. Checkout the branch into a temporary directory
+        2. Dump in the new file data
+        3. Update file in working copy
+        Then either:
+        4. Return merge-flagged text if manual merge required
+        or
+        4. Commit file
+        then always:
+        5. Delete the temp directory
+        """
+        print "savefile: going down checkout2tmpdir route."
+
+        #1. Get working tree of branch in temp dir
+        wt = WorkingTree(int(team), project)
+        reload = "false"
+
+        #TODO: Check for path naugtiness trac#208
+        path = os.path.dirname(filepath)
+        basename = os.path.basename(filepath)
+        fullpath = wt.tmpdir + "/" + filepath
 
         #2. Dump in the new file data
-        target = open(join(tmpdir, basename), "wt")
+        target = open(fullpath, "wt")
         target.write(code)
         target.close()
 
-        #2 1/2: use client.add if we're adding a new file, ready for checkin
+        # try to update
         try:
-            client.add([join(tmpdir, basename)],
-                       recurse=False)
-            reload = "true"
-        except pysvn.ClientError:
-            pass
+            conflicts = wt.update()
+        except:
+            wt.destroy()
+            return dict(code=code, success="false", file=filepath, reloadfiles=reload)
 
-        #3. Commit the new directory
-        try:
-            newrev = client.checkin([tmpdir], message)
-            if newrev == None:
-                raise pysvn.ClientError
-            newrev = newrev.number
-            success = "True"
-        except pysvn.ClientError:
-            #Can't commit - merge issues
-            #Need to bring local copy up to speed
-            #Hopefully this means a merge!
+#        print "conflicts: " + str(conflicts)
+        if conflicts == 0:
+            try:
+                newrevid = wt.commit(message)
+                success = "True"
+            except:
+                wt.destroy()
+                return dict(code=code, success="false", file=filepath, reloadfiles=reload)
+        else:
             #Throw the new contents of the file back to the client for
             #tidying, then they can resubmit
-            newrev = client.update(tmpdir)[0] #This comes back as a list.
-            if newrev == None:
-                #No update to be made.
-                success = "True"
-                newrev = 0
-            else:
-                success = "Merge"
-                #Grab the merged text.
-                mergedfile = open(join(tmpdir, basename), "rt")
-                code = mergedfile.read()
-                mergedfile.close()
-                newrev = newrev.number
+            success = "Merge"
+            #Grab the merged text.
+            mergedfile = open(join(wt.tmpdir, basename), "rt")
+            code = mergedfile.read()
+            mergedfile.close()
 
-        #4. Wipe the directory, remove the autosaves
-        shutil.rmtree(tmpdir)
-        self.autosave.delete(team, file)
+        # find revision number from id
+        newrevno = wt.branch.revision_id_to_revno(newrevid)
 
-        return dict(new_revision=str(newrev), code=code,
-                    success=success, file=file, reloadfiles=reload)
+        #4. Destroy working tree checkout, remove the autosaves
+        wt.destroy()
+        self.autosave.delete(team, filepath)
 
-    def create_svn_dir(self, client, path, msg=""):
+        return dict(new_revision=str(newrevno), code=code,
+                    success=success, file=filepath, reloadfiles=reload)
+
+
+    def commit_file_simple(self,team, project, filepath, rev, message, code, fileid):
+        """
+        Modify contents of a file, or create a new one, in non-merge situations only.
+        """
+        print "savefile: going down MemoryTree route."
+
+        reload = "false"
+        memtree = open_memory_tree(int(team), project)
+
+        memtree.lock_write()
+        try:
+            # check to see if file exists
+            if fileid == None:
+                directory = os.path.dirname(filepath)
+                self.create_dir(memtree, directory) # create dir if it doesn't exist
+                memtree.add([filepath], kinds=['file'])
+                fileid = memtree.path2id(filepath)
+                reload = "true"
+            memtree.put_file_bytes_non_atomic(fileid,code)
+            newrevid = memtree.commit(message)
+        finally:
+            memtree.unlock()
+
+        newrevno = memtree.branch.revision_id_to_revno(newrevid)
+
+        return dict(new_revision=str(newrevno), code=code,
+                    success="True", file=filepath, reloadfiles=reload)
+
+
+    def create_dir(self, memtree, path, msg=""): # TODO BZRPORT: error checking
         """Creates an svn directory if one doesn't exist yet
         inputs:
-            client - a pysvn client
-            path - path to the directory to be created
-        returns: None, may through a pysvn.ClientError
+            memtree - a memorytree object
+            path - path to the directory to be created, relative to tree root
+        returns: True if directory created, false if it already existed
         """
 
-        if not client.is_url(client.REPO + path):
+        # check if path already exists - if it doesn't path2id will return None
+        # if branch has no revisions yet revision_history will return an empty list
+        if memtree.path2id(path) is None or len(memtree.branch.revision_history()) == 0:
             upperpath = os.path.dirname(path)
             #Recurse to ensure folder parents exist
-            self.create_svn_dir(client, upperpath)
+            if not upperpath == "/":
+                self.create_dir(memtree, upperpath)
 
-            client.mkdir(client.REPO + path, "New Directory: " + path + " Notes: " + msg)
+            memtree.lock_write() # lock tree for modification
+            try:
+                # first perform special dance in the case that branch has no commits yet
+                if len(memtree.branch.revision_history()) == 0:
+                    memtree.add("") # special dance
+
+                # make directory (added automatically)
+                memtree.mkdir(path)
+
+                # commit
+                memtree.commit("New directory " + path + " created. Notes: " + msg)
+
+            finally: # always unlock tree
+                memtree.unlock()
+            return True
+        else:
+            return False # directory already existed
+
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def filelist(self, team, rootpath="/", rev=0, date=0):
+    def filelist(self, team, project, rootpath="/", rev=-1, date=0):
         """
         Returns a directory tree of the current repository.
-        inputs: None
+        inputs: project - the bzr branch
+                rootpath - to return file from a particular directory within the branch (recursive)
         returns: A tree as a list of files/directory objects:
             { tree : [{path : filepath
                        kind : FOLDER or FILE
                        children : [list as above]
                        name : name of file}, ...]}
         """
-        client = Client(int(team))
-        target_rev = self.get_revision(rev)
-        self.user.set_setting('project.last', rootpath)
 
-        if len(rootpath) == 0 or rootpath[0] != "/":
-            rootpath = "/" + rootpath
+        b = open_branch( int(team), project )
 
-        #This returns a flat list of files
-        #This is sorted, so a directory is defined before the files in it
+        target_rev_id = self.get_rev_id(team, project ,rev)
+        self.user.set_setting('project.last', project)
+
         try:
-            files = client.list(client.REPO + rootpath, revision=target_rev, recurse=True)
-        except pysvn.ClientError, e:
-            print str(e)
-            return { "error" : "Error accessing repository" }
+            rev_tree = b.repository.revision_tree(target_rev_id)
+        except:
+            return { "error" : "Error getting revision tree" }
 
-        #Start off with a directory to represent the root of the path
-        tree = dict( name = os.path.basename(rootpath),
-                     path = rootpath,
-                     children={} )
+        # Get id of root folder from which to list files. if it is not found it will return None
+        rootid = rev_tree.path2id(rootpath)
 
-        autosave_data = self.autosave.getfilesrc(team, rootpath)
+        try:
+            rev_tree.lock_read()
+            # Get generator object containing file information from base rootid. If rootid=None, will return from root.
+            files = rev_tree.inventory.iter_entries(rootid)
+        except: # TODO BZRPORT: Proper error handling
+            return { "error" : "Error getting file list" }
+        # Always unlock tree:
+        finally:
+            rev_tree.unlock()
 
-        #Go through each file, creating appropriate directories and files
-        #In a tree structure based around dictionaries
-        for details in [x[0] for x in files]:
-            filename = details["repos_path"]
+        autosave_data = self.autosave.getfilesrc(team, project+rootpath)
 
-            # For some reason, pysvn returns "//" on the front of the paths
-            if filename[0:2] == "//":
-                filename = filename[1:]
-
-            basename = os.path.basename(filename)  #/etc/bla - returns bla
-
-            short_fname = filename[len(rootpath):]
-            top = tree
-
-            for path in [x for x in short_fname.split("/") if len(x) > 0]:
-                #Go through each section of the path, trying to go down into
-                #directories. If they don't exist, create them
-
-                if not top["children"].has_key( path ):
-                    if details["kind"] == pysvn.node_kind.file:
-                        kind = "FILE"
-                        if filename in autosave_data:
-                            autosave_info = autosave_data[filename]
-                        else:
-                            autosave_info = 0
-                    else:
-                        kind = "FOLDER"
-                        autosave_info = 0
-
-                    top["children"][path] = dict( name = basename,
-                                                  path = filename,
-                                                  kind = kind,
-                                                  rev = details["created_rev"].number,
-                                                  autosave = autosave_info,
-                                                  children = {} )
-                top = top["children"][path]
-
-        def dicttolist(tree):
-            """Recursively change a dict containing values into a list of those
-            values, and the same again for the dict contained in the children
-            value.
-            inputs: A dictionary of dictionaries. Each sub-dictionary to have a
-            children dictionary (or at least a children : None)
-            returns: That data changed into lists
+        def branch_recurse(project, path, entry, files, given_parent_id):
             """
-            try:
-                #No need to sort here - it's done by the client
-                #try and pull out child nodes into a list
-                tree["children"] = tree["children"].values()
-            except AttributeError:
-                return tree
+            Travels recursively through a generator object provided by revision_tree.inventory.iter_items.
+            Iter_items returns child items immediately after their parents, so by checking the parent_id field of the item with the actual id of the directory item that called it, we can check if we are still within that directory and therefore need to add the item as a child.
+            This function will return a list of all children of a particular branch, along with the next items for analysis.
+            Whenever it encounters a directory it will call itself to find the children.
+            inputs: path - path of item to be analysed first
+                    entry - InventoryEntry-derived object of item to be analysed first
+                    files - generator object created by iter_items
+                    given_parent_id - id (string) of calling directory
+            returns: entry_list - list of children. if given_parent_id does not match entry.parent_id, this will be an empty list.
+                     path - path of item that has not yet been added to the tree
+                     entry - the entry object that has not yet been added to the tree.
+                             if given_parent_id did not match entry.parent_id, then path and entry returned will be the same as path and entry called.
+            """
 
-            #For each child node, try to apply this function to them
-            for i in range(0, len(tree["children"])):
-                try:
-                    tree["children"][i] = dicttolist(tree["children"][i])
-                except AttributeError:
-                    pass
-            return tree
+            entry_list = []
 
-        tree = dicttolist(tree)["children"]
-        return dict(tree=tree)
+            while entry.parent_id == given_parent_id: # is a child of parent
+
+                if entry.kind == "directory":
+                    try:
+                        next_path, next_entry = files.next()
+                        children_list, next_path, next_entry = branch_recurse(project, next_path, next_entry, files, entry.file_id)
+                    except StopIteration: # No more files to iterate through after this one
+                        next_entry = None # break after adding this entry
+                        children_list = [] # no more items, so there can't be any children
+
+                    entry_list.append({
+                                        "name": entry.name,
+                                        "path": project+path,
+                                        "kind": "FOLDER",
+                                        "autosave": 0,  # No autosave data for directories
+                                        "rev": "-1", #TODO BZRPORT: what's this show/for? yes, i know revision, i mean, current, or when it was created?
+                                        "children": children_list})
+
+                    if next_entry is None:
+                        break # there are no more iterations so break
+                    else:
+                        path = next_path
+                        entry = next_entry  # now we'll use the returned entry
+
+
+                else:
+                    if path in autosave_data:
+                        autosave_info = autosave_data[path]
+                    else:
+                        autosave_info = 0
+                    entry_list.append({
+                                        "name": entry.name,
+                                        "path": project+path,
+                                        "kind": "FILE",
+                                        "autosave": autosave_info,
+                                        "rev": "-1", #TODO BZRPORT: what's this show/for? yes, i know revision, i mean, current, or when it was created?
+                                        "children": []})
+
+                    try:
+                        path, entry = files.next()  # grab next entry
+                    except StopIteration: # No more files to iterate through
+                        break
+
+            return entry_list, path, entry
+
+        # Determine tree_root string to pass to recursing function as a parent id
+        if rootid == None:
+            tree_root = "TREE_ROOT"
+        else:
+            tree_root = rootid
+
+        try:
+            first_path, first_entry = files.next()  # grab next entry
+        except StopIteration:   # StopIteration caught on first pass: project tree must be empty
+            return dict(tree = [])
+
+        tree, last_path, last_entry = branch_recurse('/'+project+'/', first_path, first_entry, files, tree_root)
+
+        return dict(tree = tree)
 
     #create a new directory
-
     @expose("json")
     @srusers.require(srusers.in_team())
     def newdir(self, team, path, msg):
-        client = Client(int(team))
+        project, dirpath = self.get_project_path(path)
+        projWrite = ProjectWrite(team, project)
 
-        if not client.is_url(client.REPO + path):
-            try:
-                self.create_svn_dir(client, path, msg)
-            except pysvn.ClientError:
-                return dict( success=0, newdir = path,\
-                            feedback="Error creating new directory")
+        try:
+            projWrite.new_directory(dirpath)
+        except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
+            return dict( success=0, newdir = path,\
+                        feedback="Error creating directory: " + path)
+
+#TODO: try:
+        revno,revid = projWrite.commit(msg)
+        print "New Revision:"
+        print revid
 
         return dict( success=1, newdir = path,\
-                    feedback="Directory successfully created")
+                feedback="Directory successfully created")
+
+
+#        else: # directory wasn't created because it already existed
+#            return dict( success=0, newdir = path,\
+#                    feedback="Directory " + path + " already exists")
+
 
     @expose("json")
     @srusers.require(srusers.in_team())
     def projlist(self, team):
         """Returns a list of projects"""
-        client = Client(int(team))
+
+        try:
+            r = open_repo( int(team) )
+        except:
+            #No repository present
+            return dict(projects = [])
+
         self.user.set_setting('team.last', team)
 
-        dirs = client.list( client.REPO, recurse = False)
         projects = []
 
-        for details in [x[0] for x in dirs]:
-            name = os.path.basename( details["repos_path"] )
-            if name != "" and details["kind"] == pysvn.node_kind.dir:
-                projects.append(name)
+        branches = r.find_branches()
+
+        for branch in branches:
+            projects.append(branch.nick)
 
         return dict( projects = projects )
 
@@ -696,97 +741,42 @@ class Root(controllers.RootController):
     @srusers.require(srusers.in_team())
     def createproj(self, name, team):
         """Creates new project directory"""
-        client = Client(int(team))
 
-        print "create proj " + name + " in group " + team
+        r = open_repo(int(team))
 
         if name.find(".") != -1:
             """No ../../ nastyness"""
             return nil
 
-        url = srusers.get_svnrepo(team) + "/" + name
-        print url
-        client.mkdir(url, "Added project \"" + name + "\"")
+        url = srusers.get_svnrepo( team ) + "/" + name
+
+        r.bzrdir.create_branch_convenience(base=url,force_new_tree=False)
+
         return dict( )
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def revert(self, team, file, torev, message):
-        torev=int(torev)
-        client = Client(int(team))
+    def revert(self, team, files, torev, message):
 
-        #1. SVN checkout of file's directory
-        #TODO: Check for path naugtiness trac#208
-        path = os.path.dirname(file)
-        basename = os.path.basename(file)
-        rev = self.get_revision("HEAD") #Always check in over the head to get
-        #old revisions to merge over new ones
+        file_list = files.split(',')
+        if len(file_list) == 0:
+            return dict(Message = 'Revert failed - no files specified', status = 1)
 
-        if not client.is_url(client.REPO + path): #requested revision of dir that doesn't exist
-            return dict(new_revision="0", code = "",\
-                            success="Error reverting file - file doesn't exist")
+        project, file = self.get_project_path(file_list[0])
+        rev_spec = bzrlib.revisionspec.RevisionSpec.from_string(torev)
+        file_list = [self.get_project_path(f)[1] for f in file_list]
 
-        try:
-            tmpdir = self.checkoutintotmpdir(client, rev, path)
-        except pysvn.ClientError:
-            try:
-                #wipe temp directory
-                shutil.rmtree(tmpdir)
-            except:
-                pass
+        wt = WorkingTree(team, project)
+        rev_tree = rev_spec.as_tree(wt.branch)
 
-            return dict(new_revision="0", code = "",\
-                        success="Error reverting file - could check out tmp dir")
-        #2. Do a merge
-        #revision we want to go back to
-        revertto = pysvn.Revision( pysvn.opt_revision_kind.number, torev)
-        #current revision (Head)
-        revertfrom = pysvn.Revision( pysvn.opt_revision_kind.head )
-        try:
-            client.merge(client.REPO+path, \
-                revertfrom,\
-                client.REPO+path,\
-                revertto, \
-                tmpdir)
-        except pysvn.ClientError:
-                #wipe temp directory
-                shutil.rmtree(tmpdir)
-                print "ClientError, returning";
-                return dict();
-        print "didn't throw merge exception"
+        wt.revert(file_list, rev_tree)
+        wt.commit(message)
+        newrev, id = wt.branch.last_revision_info();
 
-        #3. Commit the new directory
-        try:
-            newrev = client.checkin([tmpdir], message)
-            if newrev == None:
-                raise pysvn.ClientError
-            newrev = newrev.number
-            success = "True"
-        except pysvn.ClientError:
-            #Can't commit - merge issues
-            #Need to bring local copy up to speed
-            #Hopefully this means a merge!
-            #Throw the new contents of the file back to the client for
-            #tidying, then they can resubmit
-            newrev = client.update(tmpdir)[0] #This comes back as a list.
-            if newrev == None:
-                #No update to be made.
-                success = "True"
-                newrev = 0
-            elif os.path.isdir(join(tmpdir, basename)) == True:
-                success = "Merge"
-                #Grab the merged text.
-                mergedfile = open(join(tmpdir, basename), "rt")
-                code = mergedfile.read()
-                mergedfile.close()
-                newrev = newrev.number
-                return dict(new_revision=newrev, code = "",\
-                            success="Merge Issues")
-        #4. Wipe the directory
-        shutil.rmtree(tmpdir)
+        return dict(new_revision=newrev, code = "", success="Success !!!", status = 0)
 
-        return dict(new_revision=newrev, code = "",\
-                    success="Success !!!")
+#from undelete
+        return dict(fail = fail, success = ','.join(success), status = status)
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -795,15 +785,16 @@ class Root(controllers.RootController):
 
         month = int(mnth)+1
         year = int(yr)
-        c = Client(int(team))
+        b = open_branch(team, file)
+
         try:
-            log = c.log(c.REPO+file)
+            log = b.repository.get_revisions(b.revision_history())
         except:
-            logging.debug("Log failed for %s" % c.REPO+file)
+            logging.debug("Log failed for %s" % file)
             print "failed to retrieve log"
             return dict(path=file, history=[])
 
-        if log[0]['revision'].number == 0: #if there's nothing there
+        if len(log) == 0: #if there's nothing there
             return dict(path=file, history=[])
 
         #get a list of users based on log authors
@@ -818,16 +809,17 @@ class Root(controllers.RootController):
 
         for y in log:
             now = datetime.datetime(2000, 1, 1);    #create a dummy datetime
-            now = now.fromtimestamp(y["date"]);
+            now = now.fromtimestamp(y.timestamp);
             if (start <= now < end):
                 result.append(y)
 
+        result.reverse()
 
         return dict(  path=file,\
-                      history=[{"author":x["author"], \
+                      history=[{"author":x.get_apparent_author(), \
                       "date":time.strftime("%Y/%m/%d/%H/%M/%S", \
-                      time.localtime(x["date"])), \
-                      "message":x["message"], "rev":x["revision"].number} \
+                      time.localtime(x.timestamp)), \
+                      "message":x.message, "rev":b.revision_id_to_revno(x.revision_id)} \
                       for x in result])
 
     @expose("json")
@@ -836,43 +828,41 @@ class Root(controllers.RootController):
         #   the source and destination arguments may be directories or files
         #   directories rendered empty as a result of the move are automatically 'pruned'
         #   returns status = 0 on success
-        client = Client(int(team))
-        source = client.REPO +src
-        destination = client.REPO + dest
 
-        #log message callback - needed by client.move
-        def cb():
-            return True, str(msg)
+        src_proj,src_path = self.get_project_path(src)
+        dest_proj,dest_path = self.get_project_path(dest)
+        if src_proj != dest_proj:
+            return dict(new_revision="0", status="1", message="Source and destination projects must match")
 
-        client.callback_get_log_message = cb
+        wt = WorkingTree(int(team), src_proj)
 
-        #message what gets returned to the browser
-        message=""
-
-        if not client.is_url(os.path.dirname(source)):
+        if not wt.has_filename(src_path):
             return dict(new_revision="0", status="1", message="Source file/folder doesn't exist: "+src)
 
-        if not client.is_url(os.path.dirname(destination)):
-            return dict(new_revision="0", status="1", message="Destination file/folder doesn't exist: "+dest)
+        if not wt.has_filename(os.path.dirname(dest_path)):
+            return dict(new_revision="0", status="1", message="Destination folder doesn't exist: "+os.path.dirname(dest))
 
-        try:
-            client.move(source, destination, force=True)
-            #Prune empty directories.
-            print "not failed yet\n"
-            if len(client.ls(os.path.dirname(source))) == 0:
-                #The directory is empty, OK to delete it
-                log.debug("Deleting empty directory: " + source)
-                client.remove(os.path.dirname(source))
-                message += "\nRemove empty directory " + src
-            message +="\n successfully moved file"
+        if wt.has_filename(dest_path):
+            return dict(new_revision="0", status="1", message="Destination already exists: "+dest)
 
-        except pysvn.ClientError, e:
-            message = "Error moving files. :: "+str(e)
-            return dict(new_revision="0", status="0", message=message)
+        wt.rename_one(src_path, dest_path)
+        wt.commit('Move '+src_path+' to '+dest_path)
 
         self.autosave.move(team, src, dest)
 
-        return dict(new_revision="0", status="0", message=message)
+        return dict(new_revision="0", status="0", message='Sucessfully moved file '+src+' to '+dest)
+
+    @expose("json")
+    @srusers.require(srusers.in_team())
+    def copyproj(self, team, src, dest):
+        # Create a temporary directory
+        tmpdir = tempfile.mkdtemp()
+        #open the branch and sprout a new copy, in the temp dir
+        b = open_branch(team, src)
+        self.createproj(dest, team)
+        nb = open_branch(team, dest)
+        b.push(nb)
+        return dict(status=0)
 
     @expose("json")
     @srusers.require(srusers.in_team())
@@ -880,78 +870,63 @@ class Root(controllers.RootController):
         return self.cp(team, src, dest, msg, rev)
 
     @srusers.require(srusers.in_team())
-    def cp(self, team, src="", dest="", msg="SVN Copy", rev="0"):
+    def cp(self, team, src="", dest="", msg="Copy", rev="0"):
 
-        src_rev = int(rev)
+        project,src = self.get_project_path(src)
+        dest_project,dest = self.get_project_path(dest)
+        if dest_project != project:
+            return dict(new_revision = "0", status="1", message="Copy Failed: Source and destination projects must match")
 
-        client = Client(int(team))
-        source = client.REPO +src
-        destination = client.REPO + dest
+        if rev == "0":
+            rev = None
 
-        def cb():
-            return True, str(msg)
+        projWrite = ProjectWrite(team, project, revno=rev)
 
-        client.callback_get_log_message = cb
-
-        if src_rev == 0:
-            source_rev = pysvn.Revision( pysvn.opt_revision_kind.head)
-        else:
-            source_rev = pysvn.Revision( pysvn.opt_revision_kind.number, src_rev)
-
-        if not client.is_url(os.path.dirname(source)):
+        if src == "":
             return dict(new_revision="0", status="1", msg="No Source file/folder specified");
-        if not client.is_url(os.path.dirname(destination)):
+        if dest == "":
             return dict(new_revision="0", status="1", msg="No Destination file/folder specified");
 
         try:
-            client.copy(source, destination, source_rev);
+            projWrite.copy(src, dest)
+            new_revno,new_rev_id = projWrite.commit(msg)
 
         except pysvn.ClientError, e:
             return dict(new_revision = "0", status="1", message="Copy Failed: "+str(e))
 
-        return dict(new_revision = "0", status="0", message="copy successful")
+        return dict(new_revision = str(new_revno), status="0", message="copy successful")
 
     @expose("json")
     @srusers.require(srusers.in_team())
     def checkcode(self, team, path, code=0, date=None):
 
-        client = Client(int(team))
-        rev = self.get_revision("HEAD")
-        file_name = os.path.basename(path)
-        path = os.path.dirname(path)
-
-        # Directory to work in
-        td = tempfile.mkdtemp()
+        project,file_path = self.get_project_path(path)
+        path,file_name = os.path.split(path)
 
         # Check out the code
-        print "Checking out %s" % (client.REPO + path)
-        client.export(client.REPO + path,
-                      td + "/code",
-                      revision=rev,
-                      recurse=True)
+        wt = WorkingTree(int(team), project)
+        # Directory we're working in
+        td = wt.tmpdir
 
-        if code != 0: #overwrite the version from the svn
-            print td+"/code/"+file_name
-            tmpfile = open(td+"/code/"+file_name, 'w')
+        if code != 0: #overwrite the version from the repo
+            print td+file_path
+            tmpfile = open(td+file_path, 'w')
             tmpfile.write(str(code))
             tmpfile.close()
 
-        print 'temp_dir: '+td+"\nfile_name: "+file_name
+        print 'temp_dir: '+td+"\nfile_path: "+file_path
 
         # Check out the dummified SR library too
-        shutil.copy( config.get("checker.file"), td + "/code" )
+        shutil.copy( config.get("checker.file"), td )
 
         # Run pychecker
-        p = subprocess.Popen( ["pychecker", "-e", "Error", file_name ],
-                              cwd = "%s/code" % td,
+        p = subprocess.Popen( ["pychecker", "-e", "Error", file_path ],
+                              cwd = td,
                               stdout = subprocess.PIPE,
                               stderr = subprocess.PIPE )
         output = p.communicate()
 
         rval = p.wait()
-
-        # Remove the temporary directory
-        shutil.rmtree(td)
 
         if rval == 0:
             return dict( errors = 0 )
@@ -968,7 +943,7 @@ class Root(controllers.RootController):
                     chk_warnings.append(line)
 
             for line in proc_part:
-                if not line in ['', '\n', 'Processing '+os.path.splitext(file_name)[0]+'...']:
+                if not line in ['', '\n', 'Processing '+os.path.splitext(file_path)[0]+'...']:
                     chk_errors.append(line)
 
             return dict( messages = chk_warnings, err = chk_errors, path = path, file = file_name, errors = 1 )
@@ -992,7 +967,7 @@ class Root(controllers.RootController):
                     "data" : "",
                     "present" : 0,
                     "disabled" : True}
- 
+
         try:
             team = int(team)
         except ValueError:
@@ -1018,7 +993,7 @@ class Root(controllers.RootController):
             return {"ping" : 0,
                     "data" : "",
                     "present" : 0}
-        
+
         try:
             team = model.TeamNames.get(id=team)
         except:
@@ -1027,7 +1002,7 @@ class Root(controllers.RootController):
             return {"ping" : 0,
                     "data" : "",
                     "present" : 0}
- 
+
 
         try:
             present = model.RoboPresent.selectBy(team=team)[0].present
@@ -1046,7 +1021,7 @@ class Root(controllers.RootController):
         last_received_ping = int(last_received_ping)
         logs = model.RoboLogs.select(sqlbuilder.AND(model.RoboLogs.q.team == team,
                                          model.RoboLogs.q.id > last_received_ping))
-        
+
         data = "\n".join([l.value for l in logs])
 
         data = data.replace('&', '&amp;')

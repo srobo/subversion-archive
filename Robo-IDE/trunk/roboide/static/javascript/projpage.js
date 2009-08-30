@@ -1,3 +1,4 @@
+// vim: noexpandtab
 // The project page
 function ProjPage() {
 	// Whether _init has run
@@ -152,11 +153,10 @@ ProjPage.prototype.CreateCopyProject = function(newProjName) {
 	cMsg = 'Copying project '+this.project+' to '+newProjName;
 	log(cMsg);
 
-	var d = loadJSONDoc("./copy", { 'team' : team,
+	var d = loadJSONDoc("./copyproj", { 'team' : team,
 				'src' : '/'+this.project,
 				'dest' : '/'+newProjName,
-				'msg' : cMsg,
-				'rev' : 0  });
+			});
 	d.addCallback( bind( partial(this._CopyProjectSuccess, newProjName), this));
 	d.addErrback( bind( function() {
 		status_button( "Copy Project: Error contacting server", LEVEL_ERROR, "retry",
@@ -363,7 +363,7 @@ ProjFileList.prototype.refresh = function(auto) {
 
 	this._timeout = null;
 	var d = loadJSONDoc("./filelist", { 'team' : this._team,
-					'rootpath' : this._project,
+					'project' : this._project,
 					'rev' : this.rev,
 					'date' : this._birth } );
 
@@ -801,7 +801,7 @@ function ProjOps() {
 			if(test > -1) {
 				tabbar.tabs[test].flash();
 			} else { //not present, open it
-				var cow = new Log(projpage.flist.selection[i]);
+				var cow = new Log(projpage.flist.selection[i], projpage.project);
 			}
 		}
 	}
@@ -810,11 +810,11 @@ function ProjOps() {
 		logDebug("Add new folder: ajax request successful");
 		switch(nodes.success) {
 			case 1:
-				status_msg("New Directory successfully added", LEVEL_OK);
+				status_msg(nodes.feedback, LEVEL_OK);
 				projpage.flist.refresh();
 				break;
 			case 0:
-				status_msg("Failed to create new Directory", LEVEL_ERROR);
+				status_msg(nodes.feedback, LEVEL_ERROR);
 				break;
 		}
 	}
@@ -962,11 +962,16 @@ function ProjOps() {
 			return;
 		}
 
-		var death_list = projpage.flist.selection.join(',');
+		death_list = new Array();
+		for( var i in projpage.flist.selection ) {
+			death_list.push(projpage.flist.selection[i].substr(projpage.project.length+2))
+		};
+		death_list = death_list.join(',');
 
 		logDebug("will delete: "+death_list);
 
 		var d = loadJSONDoc("./delete", { "team" : team,
+						  "project" : projpage.project,
 						  "files" : death_list,
 						  "kind" : 'ALL' });
 		d.addCallback( function(nodes) {
@@ -994,6 +999,7 @@ function ProjOps() {
 		log("Will delete autosaves: "+death_list);
 
 		var d = loadJSONDoc("./delete", { "team" : team,
+				    "project" : projpage.project,
 				    "files" : death_list,
 				    "kind" : 'AUTOSAVES' });
 
@@ -1021,9 +1027,13 @@ function ProjOps() {
 			return;
 		}
 
-		var d = loadJSONDoc("./undelete", {team : team,
-				   files : projpage.flist.selection.join(','),
-				   rev : projpage.flist.rev  });
+		var files = projpage.flist.selection.join(',');
+		var d = loadJSONDoc("./revert", {
+					team : team,
+					files : files,
+					torev : projpage.flist.rev,
+					message : 'Undelete '+files+'to r'+projpage.flist.rev
+				});
 		d.addCallback( bind(this._undel_callback, this));
 		d.addErrback(function() { status_button("Error contacting server", LEVEL_ERROR, "retry", bind(this.undel, this, true));});
 	}

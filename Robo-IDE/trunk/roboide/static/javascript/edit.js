@@ -1,3 +1,4 @@
+// vim: noexpandtab
 // The class for the EditPage
 function EditPage() {
 
@@ -219,6 +220,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 	else
 		this.rev = rev;
 
+	// The revision number the specific file being edited was last modified
+	this.file_rev = 0;
 	// The team
 	this.team = team;
 	// The project
@@ -307,7 +310,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 		this._original = nodes.code;
 		this._autosaved = nodes.autosaved_code;
 		this._isNew = false;
-		this.rev = nodes.revision
+		this.rev = nodes.revision;
+		this.file_rev = nodes.file_rev;
 
 		this._update_contents();
 	}
@@ -382,11 +386,23 @@ function EditTab(iea, team, project, path, rev, mode) {
 				this._autosaved = "";
 				this._isNew = false;
 				this.rev = nodes.new_revision;
+				this.file_rev = nodes.new_revision;
+				$("check-syntax").disabled = false;
+ 				this._update_contents();
+				break;
+			case "AutoMerge":
+				status_msg("File "+this.path+" Automatically merged with latest revision (Now at r"+nodes.new_revision+")", LEVEL_OK);
+				this.contents = nodes.code;
+				this._original = this.contents;
+				this._autosaved = "";
+				this._isNew = false;
+				this.rev = nodes.new_revision;
+				this.file_rev = nodes.new_revision;
 				$("check-syntax").disabled = false;
  				this._update_contents();
 				break;
 			case "Merge":
-				status_msg("File "+this.path+" Merge failed (Now at r"+nodes.new_revision+")", LEVEL_ERROR);
+				status_msg("File "+this.path+" Merge required, please check and try again (Now at r"+nodes.new_revision+")", LEVEL_ERROR);
 				this.contents = nodes.code;
 				this._isNew = false;
 				this.rev = nodes.new_revision;
@@ -411,7 +427,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 	this._svn_save = function() {
 		var d = postJSONDoc("./savefile", {
 					queryString : { team : team,
-						file : this.path,
+                        project : projpage.project, //TODO: Currently assumes same project as selected on projects page. NEEDS CHANGING!
+						filepath : this.path,
 						rev : this.rev,
 						message : this._commitMsg },
 					sendContent : {code : this.contents}
@@ -561,10 +578,8 @@ function EditTab(iea, team, project, path, rev, mode) {
 
 		// Display file path
 		var t = this.path;
-		if( this.rev == 'HEAD' )
-			t = t + " - HEAD";
-		else if( this.rev != 0 )
-			t = t + " - r" + this.rev;
+		if( this.file_rev != 0 )
+			t = t + " - r" + this.file_rev;
 		replaceChildNodes( $("tab-filename"), t );
 	}
 

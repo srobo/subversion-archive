@@ -124,7 +124,7 @@ Browser.prototype._getFileTree = function(tm) {
 		return;
 
 	var d = loadJSONDoc("./filelist", { team : tm,
-					    rootpath : '/'+$("browser-project-select").value
+					    project : $("browser-project-select").value
 					  });
 
 	d.addCallback( bind(this._receiveTree, this));

@@ -1,8 +1,10 @@
-function Log(file) {
+// vim: noexpandtab
+function Log(file, project) {
 	//class properties
 	this.tab = null;		//holds reference to tab in tabbar
 	this.selectedRevision = -1;	//Selected revision, -1 indicates no revision set
 	this.team = team;		//team number TODO: get this from elsewhere
+	this.project = project;    //holds the current project name
 	this.user = null;		//holds author name
 	this.userList = new Array();	//List of  users attributed to file(s)
 	this.history = new Array();	//array of log entries returned by server
@@ -75,9 +77,9 @@ Log.prototype._errorReceiveHistory = function() {
 
 Log.prototype._retrieveHistory = function(opt) {
 	var d = loadJSONDoc("./gethistory", { team : team,
-					      file : this.file,
-					      user : this.user,
-					      offset : this.offset});
+						  file : this.file,
+						  user : this.user,
+						  offset : this.offset});
 
 	d.addCallback( bind(this._receiveHistory, this, opt));
 	d.addErrback( bind(this._errorReceiveHistory, this));
@@ -197,7 +199,7 @@ Log.prototype._errorReceiveRevision = function(commitMsg) {
 Log.prototype._do_revert = function(commitMsg) {
 	var d = loadJSONDoc("./revert", {
 					team : team,
-					file : this.file,
+					files : this.file,
 					torev : this.selectedRevision,
 					message : commitMsg});
 
