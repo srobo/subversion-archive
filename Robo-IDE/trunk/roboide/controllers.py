@@ -73,28 +73,6 @@ class Root(controllers.RootController):
         root,project,file_path = path.split(os.path.sep,2)
         return project,file_path
 
-    def get_rev_object(self, team, rev_id=""):
-        """
-        Get a revision object for a given bzr revision id.
-        If no revision id is provided, get latest revision.
-        inputs:
-            rev_id - str in bzr rev_id format, ie returned by get_rev_id()
-        returns:
-            revision object for given revision id."""
-
-        b = open_branch( int(team) )
-
-        if rev_id == "":
-            rev_id = b.last_revision()
-
-        try:
-            rev = b.repository.get_revision(rev_id)
-        except: #TODO BZRPORT: implement exception properly, revision number failure etc
-            print "Get revision failed, returned latest revision object"
-            rev = b.repository.get_revision( b.last_revision() )
-
-        return rev
-
     def get_rev_id(self, team, project, revno=-1):
         """
         Get revision ID string from revision number.
