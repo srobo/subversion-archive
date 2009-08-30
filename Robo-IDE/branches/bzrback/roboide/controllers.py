@@ -988,6 +988,9 @@ class Root(controllers.RootController):
     def cp(self, team, src="", dest="", msg="Copy", rev="0"):
 
         project,src = self.get_project_path(src)
+        dest_project,dest = self.get_project_path(dest)
+        if dest_project != project:
+            return dict(new_revision = "0", status="1", message="Copy Failed: Source and destination projects must match")
 
         if rev == "0":
             rev = None
