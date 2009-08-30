@@ -391,7 +391,7 @@ function EditTab(iea, team, project, path, rev, mode) {
  				this._update_contents();
 				break;
 			case "Merge":
-				status_msg("File "+this.path+" Merge failed (Now at r"+nodes.new_revision+")", LEVEL_ERROR);
+				status_msg("File "+this.path+" Merge required, please check and try again (Now at r"+nodes.new_revision+")", LEVEL_ERROR);
 				this.contents = nodes.code;
 				this._isNew = false;
 				this.rev = nodes.new_revision;

@@ -78,11 +78,13 @@ class ProjectWrite():
         # return transaction id of topmost dir
         return parent_trans_id
 
-    def merge(self):
+    def merge_file(self, filepath):
         """
-        Attempt to merge with latest revision of branch.
+        Attempt to merge a file with the latest revision.
         """
-        revid_latest = self.b.last_revision()
+        revno_latest, revid_latest = self.b.last_revision_info()
+
+        fileid = self.PrevTree.path2id(filepath)
 
         merger = bzrlib.merge.Merger.from_revision_ids(
                         bzrlib.progress.DummyProgress(),
@@ -96,13 +98,9 @@ class ProjectWrite():
         tree_merger = merger.make_merger()
         tt2 = tree_merger.make_preview_transform()
 
-        # update the objects
-        self.TransPrev = tt2
-        self._update_tree()
+        final_tree = tt2.get_preview_tree()
 
-        self.revid = revid_latest
-        self.conflicts = tree_merger.cooked_conflicts
-        return
+        return final_tree.get_file_text(fileid), revno_latest, revid_latest
 
     def get_file_text(self, path):
         """

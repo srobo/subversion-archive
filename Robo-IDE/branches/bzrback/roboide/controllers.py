@@ -466,10 +466,8 @@ class Root(controllers.RootController):
             # a commit has occurred since code was opened.
             # A merge will need to take place
             # TODO: silently merge if it doesn't affect our file, OR allow committing specific file
-            print "Merging"
-            projWrite.merge()
-            newcode = projWrite.get_file_text(filepath)
-            return dict(new_revision=rev, code=newcode,
+            newcode, newrevno, newrevid = projWrite.merge_file(filepath)
+            return dict(new_revision=newrevno, code=newcode,
                     success="Merge", file=filepath, reloadfiles=reloadfiles)
         finally:
             projWrite.destroy()
