@@ -4,8 +4,8 @@
 #include <cv.h>
 
 IplImage *vis_do_smooth(IplImage *src);
-IplImage *vis_do_roberts_edge_detection(IplImage *src);
-IplImage *vis_do_sobel_edge_detection(IplImage *src);
+IplImage *vis_do_roberts_edge_detection(IplImage *src, IplImage **direction);
+IplImage *vis_do_sobel_edge_detection(IplImage *src, IplImage **direction);
 IplImage *vis_normalize_plane(IplImage *src);
 IplImage *vis_threshold(IplImage *src, unsigned char low, unsigned char high);
 IplImage *vis_clip(IplImage *src, IplImage *clip, unsigned char low,

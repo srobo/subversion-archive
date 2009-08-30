@@ -24,6 +24,14 @@
 #define MIN(a,b)        (((a)<(b))?(a):(b))
 #define        MAX(a,b)        (((a)>(b))?(a):(b))
 
+#ifndef __GNUC__
+#define INLINE
+#define breakpoint() exit(1)
+#else
+#define INLINE inline
+#define breakpoint() __asm__("int $3")
+#endif
+
 #define template_size 5
 #define sobel_size 5
 #define image_depth IPL_DEPTH_8U
@@ -215,15 +223,50 @@ vis_do_smooth(IplImage *src)
 #undef put
 }
 
+INLINE int
+vis_find_angle(signed char x, signed char y)
+{
+	float fx, fy;
+
+	fx = (float) abs(x);
+	fy = (float) abs(y);
+
+	/* 0 degrees means edge direction is pointing upwards, 90 is right etc*/
+
+	if (x == 0 && y > 0)
+		return 180;
+	else if (x == 0 && y < 0)
+		return 0;
+	else if (x > 0 && y == 0)
+		return 90;
+	else if (x < 0 && y == 0)
+		return 270;
+	else if (x == 0 && y == 0)
+		return 0;
+
+	if (x >= 0 && y >= 0)
+		return atan(fx/fy) * 360 / (2*M_PI);
+	else if (x < 0 && y > 0)
+		return 360 - (atan(fx/fy) * 360 / (2*M_PI));
+	else if (x > 0 && y < 0)
+		return 180 - (atan(fx/fy) * 360 / (2*M_PI));
+	else
+		return 180 + (atan(fx/fy) * 360 / (2*M_PI));
+
+	return 0;
+}
+
 IplImage *
-vis_do_roberts_edge_detection(IplImage *src)
+vis_do_roberts_edge_detection(IplImage *src, IplImage **direction)
 {
 #define get(x, y) *(in + ((y) * in_stride) + (x))
 #define put(x, y) *(out + ((y) * out_stride) + (x))
+#define putdir(x, y) *(dir + ((y) * out_stride) + (x))
 	CvSize sz;
 	IplImage *dst;                  
 	unsigned char *in;
 	unsigned char *out;
+	unsigned char *dir;
 	int i, j, in_stride, out_stride;
 	int diff1, diff2;
 
@@ -239,7 +282,10 @@ vis_do_roberts_edge_detection(IplImage *src)
 	sz.height = src->height;
 
 	dst = cvCreateImage(sz, image_depth, 1);
-	if (!dst) {     
+	if (direction)
+		*direction = cvCreateImage(sz, image_depth, 1);
+
+	if (!dst || (direction && !*direction)) {     
 		fprintf(stderr, "vis_do_roberts_edget_detection: "
 				"can't create image\n");
 		exit(1);                
@@ -247,16 +293,21 @@ vis_do_roberts_edge_detection(IplImage *src)
 
 	in = (unsigned char*) src->imageData;
 	out = (unsigned char*) dst->imageData;
+	dir = (unsigned char*) (*direction)->imageData;
 	in_stride = src->widthStep;
 	out_stride = dst->widthStep;
 
 	out += out_stride + 1;
+	dir += out_stride + 1;
 
 	for (j = 0; j < dst->height; j++) {
 		for (i = 0; i < dst->width; i++) {
 
 			diff1 = get(i, j) - get(i+1, j+1);
 			diff2 = get(i+1, j) - get(i, j+1);
+
+			if (direction)
+				putdir(i,j) = vis_find_angle(diff1, diff2);
 
 			diff1 = abs(diff1);
 			diff2 = abs(diff2);
@@ -268,11 +319,19 @@ vis_do_roberts_edge_detection(IplImage *src)
 	for (i = 0; i < dst->width; i++) {
 		put(i,0) = 0;
 		put(i,dst->height - 1) = 0;
+		if (direction) {
+			putdir(i,0) = 0;
+			putdir(i,dst->height - 1) = 0;
+		}
 	}
 
 	for (j = 0; j < dst->height; j++) {
 		put(0,j) = 0;
 		put(dst->width - 1,j) = 0;
+		if (direction) {
+			putdir(0,j) = 0;
+			putdir(dst->width - 1,j) = 0;
+		}
 	}
 
 	return dst;
@@ -281,14 +340,16 @@ vis_do_roberts_edge_detection(IplImage *src)
 }
 
 IplImage *
-vis_do_sobel_edge_detection(IplImage *src)
+vis_do_sobel_edge_detection(IplImage *src, IplImage **direction)
 {
 #define get(x, y) *(in + ((y) * in_stride) + (x))
 #define put(x, y) *(out + ((y) * out_stride) + (x))
+#define putdir(x, y) *(dir + ((y) * out_stride) + (x))
 	CvSize sz;
 	IplImage *dst;  
 	unsigned char *in;
 	unsigned char *out;
+	unsigned char *dir;
 	int i, j, k, l, in_stride, out_stride, border_size;
 	int accuml_x, accuml_y;
  
@@ -305,7 +366,10 @@ vis_do_sobel_edge_detection(IplImage *src)
 	sz.height = src->height;
 
 	dst = cvCreateImage(sz, image_depth, 1);
-	if (!dst) {     
+	if (direction)
+		*direction = cvCreateImage(sz, image_depth, 1);
+
+	if (!dst || (direction && !*direction)) {     
 		fprintf(stderr, "vis_do_sobel_edge_detection: "
 				"can't create image\n");
 		exit(1);                
@@ -313,10 +377,12 @@ vis_do_sobel_edge_detection(IplImage *src)
 
 	in = (unsigned char*) src->imageData;
 	out = (unsigned char*) dst->imageData;
+	dir = (unsigned char*) (*direction)->imageData;
 	in_stride = src->widthStep;
 	out_stride = dst->widthStep;
 
 	out += (border_size * out_stride) + border_size;
+	dir += (border_size * out_stride) + border_size;
 
 	for (j = 0; j < dst->height; j++) {
 		for (i = 0; i < dst->width; i++) {
@@ -338,6 +404,10 @@ vis_do_sobel_edge_detection(IplImage *src)
 #if sobel_size != 5
 #error Re-calculate division approximation for sobel operator
 #endif
+
+			if (direction)
+				putdir(i,j) = vis_find_angle(accuml_x, accuml_y);
+
 			accuml_x = abs(accuml_x);
 			accuml_y = abs(accuml_y);
 
@@ -347,17 +417,29 @@ vis_do_sobel_edge_detection(IplImage *src)
 
 	out = (unsigned char*) dst->imageData;
 	for (i = 0; i < dst->width; i++) {
-		for (j = 0; j < border_size; j++)
+		for (j = 0; j < border_size; j++) {
 			put(i,j) = 0;
-		for (j = 0; j < border_size; j++)
+			if (direction)
+				putdir(i,j) = 0;
+		}
+		for (j = 0; j < border_size; j++) {
 			put(i,dst->height - border_size + j - 1) = 0;
+			if (direction)
+				putdir(i,j) = 0;
+		}	
 	}
 
 	for (j = 0; j < dst->height; j++) {
-		for (i = 0; i < border_size; i++)
+		for (i = 0; i < border_size; i++) {
 			put(i,j) = 0;
-		for (i = 0; i < border_size; i++)
+			if (direction)
+				putdir(i,j) = 0;
+		}
+		for (i = 0; i < border_size; i++) {
 			put(dst->width - border_size + i - 1,j) = 0;
+			if (direction)
+				putdir(i,j) = 0;
+		}
 	}
 
 	return dst;
