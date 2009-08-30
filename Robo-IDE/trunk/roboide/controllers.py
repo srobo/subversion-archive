@@ -70,7 +70,6 @@ class Root(controllers.RootController):
         returns:
             tuple containing the project and path
         """
-        print path
         root,project,file_path = path.split(os.path.sep,2)
         return project,file_path
 
@@ -703,8 +702,6 @@ class Root(controllers.RootController):
 
 #TODO: try:
         revno,revid = projWrite.commit(msg)
-        print "New Revision:"
-        print revid
 
         return dict( success=1, newdir = path,\
                 feedback="Directory successfully created")
