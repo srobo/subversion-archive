@@ -927,6 +927,7 @@ class Root(controllers.RootController):
             if (start <= now < end):
                 result.append(y)
 
+        result.reverse()
 
         return dict(  path=file,\
                       history=[{"author":x.get_apparent_author(), \
