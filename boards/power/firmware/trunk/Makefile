@@ -9,9 +9,11 @@ CFLAGS += -I ./types
 # flash430
 LDFLAGS := -L ./flash430 -lflash430
 
-H_FILES = hwinit.h led.h switch.h power.h i2c.h i2c_reg.h smbus_pec.h timed.h battery.h timer-a.h usart.h adc.h isense.h xbee.h
+H_FILES = led.h switch.h power.h i2c.h i2c_reg.h smbus_pec.h \
+	timed.h battery.h timer-a.h usart.h adc.h isense.h xbee.h
 
-C_FILES = main.c hwinit.c led.c switch.c power.c i2c.c i2c_reg.c smbus_pec.c timed.c battery.c timer-a.c usart.c adc.c isense.c xbee.c
+C_FILES = main.c led.c switch.c power.c i2c.c i2c_reg.c \
+	smbus_pec.c timed.c battery.c timer-a.c usart.c adc.c isense.c xbee.c
 
 world: power-bottom power-top
 
