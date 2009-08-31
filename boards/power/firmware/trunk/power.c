@@ -2,6 +2,7 @@
 #include "device.h"
 #include "led.h"
 #include "timed.h"
+#include "flash430/fw_ver.h"
 void delay(int16_t time);
 
 void pwr_init(void)
@@ -9,7 +10,11 @@ void pwr_init(void)
 	P2DIR |= 0x07;		/* power rail enable control pins as out */
 	/* Don't touch the slug rail -- will result in oscillations */
 	P2OUT &= ~0x06;
-	slug_boot(0);
+
+	if( firmware_rebooted != FIRMWARE_REBOOT_MAGIC )
+		slug_boot(0);
+	/* Clear the rebooted status */
+	firmware_rebooted = 0;
 }
 
 void slug_boot(uint8_t reboot){
