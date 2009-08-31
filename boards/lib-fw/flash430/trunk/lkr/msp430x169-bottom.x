@@ -135,6 +135,12 @@ SECTIONS
     KEEP(*(.fini))
     _etext = .;
   }  > text
+  .fw :
+  {
+  /* We want this to be in a fixed location, so put it at the 
+  start of RAM */
+    *(.fw_data)
+  } > data
   .data   :
   {
      PROVIDE (__data_start = .) ;

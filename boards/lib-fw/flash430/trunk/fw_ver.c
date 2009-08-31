@@ -5,3 +5,4 @@
    into the right place. */
 const uint16_t firmware_version __attribute__ ((section (".fwver"))) = FW_VER;
 
+uint8_t firmware_rebooted __attribute__ ((section (".fw_data")));

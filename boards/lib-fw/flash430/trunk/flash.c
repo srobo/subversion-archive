@@ -150,6 +150,9 @@ void flash_switchover( void )
 	for( i=0; i<32; i += (CHUNK_SIZE/2) )
 		flash_write_chunk( ivt_buf + (i*2), IVT + i );
 
+	/* Tell our future self that we've just upgraded */
+	firmware_rebooted = FIRMWARE_REBOOT_MAGIC;
+
 	/* Finished loading new firmware! */
 	/* Jump to the reset vector! */
 	(*(void (*)()) (fw_word(ivt_buf,31))) ();
