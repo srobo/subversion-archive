@@ -4,8 +4,6 @@
 #include "timed.h"
 #include "led.h"
 
-
-
 interrupt (USART1TX_VECTOR) uart_tx_isr(void)
 {
 	U1TXBUF = 0xAA;		/* transmit to calibrate on oscope */
@@ -80,11 +78,7 @@ void rx_byte( uint8_t b )
 	}
 
 	pos++;
-
 }
-
-
-
 
 /* static inline void putc(char c) { */
 /* 	while(!(IFG2 & UTXIFG1));	// wait for tx buf empty */
