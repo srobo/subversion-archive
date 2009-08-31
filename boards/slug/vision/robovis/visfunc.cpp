@@ -453,6 +453,125 @@ vis_do_sobel_edge_detection(IplImage *src, IplImage **direction)
 }
 
 IplImage *
+vis_nonmaximal_supression(IplImage *src, IplImage *direction)
+{
+#define get(x, y) *(in + ((y) * in_stride) + (x))
+#define getdir(x, y) *(dir + ((y) * in_stride) + (x))
+#define put(x, y) *(out + ((y) * out_stride) + (x))
+	CvSize sz;
+	IplImage *dst;
+	unsigned char *in, *dir, *out;
+	int i, j, in_stride, out_stride;
+	unsigned char val;
+
+	if (src->width != direction->width || src->height != direction->height){
+		fprintf(stderr, "vis_nonmaximal_supression - image mismatch\n");
+		exit(1);
+	}
+
+	sz.width = src->width;
+	sz.height = src->height;
+
+	dst = cvCreateImage(sz, image_depth, 1);
+	if (!dst) {
+		fprintf(stderr, "vis_nonmaximal_supression: "
+				"can't create image\n");
+		exit(1);
+	}
+
+	in = (unsigned char *)src->imageData;
+	dir = (unsigned char *)direction->imageData;
+	out = (unsigned char *)dst->imageData;
+
+	in_stride = src->widthStep;
+	out_stride = dst->widthStep;
+
+	in += (in_stride) + 1;
+	dir += (in_stride) + 1;
+	out += (out_stride) + 1;
+
+	for (i = 0; i < src->width-1; i++) {
+		for (j = 0; j < src->height-1; j++) {
+			val = getdir(i,j);
+
+			/* Drop to four bits of accuracy, this gives us a
+			 * general idea of where we were pointing. */
+			switch (val >> 5) {
+			case 3: /* Right */
+			case 4:
+			case 11: /* Left */
+			case 12:
+				if (get(i,j) > get(i,j-1) &&
+							get(i,j) > get(i,j+1))
+					put(i,j) = get(i,j);
+				else if (get(i,j) == get(i,j-1) &&
+							get(i,j) > get(i,j+1))
+					put(i,j) = get(i,j);
+				else
+					put(i,j) = 0;
+				break;
+
+			case 5: /* Bottom right */
+			case 6:
+			case 13: /*Top right */
+			case 14:
+				if (get(i,j) > get(i+1,j-1) && 
+							get(i,j) > get(i-1,j+1))
+					put(i,j) = get(i,j);
+				else if (get(i,j) == get(i+1,j-1) &&
+							get(i,j) > get(i-1,j+1))
+					put(i,j) = get(i,j);
+				else
+					put(i,j) = 0;
+				break;
+
+			case 0: /* Top */
+			case 15: 
+			case 7: /* Bottom */
+			case 8:
+				if (get(i,j) > get(i-1,j) && 
+							get(i,j) > get(i+1,j))
+					put(i,j) = get(i,j);
+				else if (get(i,j) == get(i-1,j) &&
+							get(i,j) > get(i+1,j))
+					put(i,j) = get(i,j);
+				else
+					put(i,j) = 0;
+				break;
+
+			case 1: /* Top right */
+			case 2:
+			case 9: /* Bottom Left */
+			case 10:
+				if (get(i,j) > get(i-1,j-1) && 
+							get(i,j) > get(i+1,j+1))
+					put(i,j) = get(i,j);
+				else if (get(i,j) == get(i-1,j-1) &&
+							get(i,j) > get(i+1,j+1))
+					put(i,j) = get(i,j);
+				else
+					put(i,j) = 0;
+				break;
+			}
+		}
+	}
+
+	/* Clober border */
+
+	for (i = 0; i < dst->width; i++) {
+		put(i,0) = 0;
+		put(i,dst->height-1) = 0;
+	}
+
+	for (j = 0; j < dst->height; j++) {
+		put(0,j) = 0;
+		put(dst->width-1,j) = 0;
+	}
+
+	return dst;
+}
+
+IplImage *
 vis_normalize_plane(IplImage *src)
 {
 	CvSize sz;
