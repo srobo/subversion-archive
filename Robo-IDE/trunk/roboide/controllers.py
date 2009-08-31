@@ -366,7 +366,7 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
-    def savefile(self, team, project, filepath, rev, message, code):
+    def savefile(self, team, filepath, rev, message, code):
         """
         Create/update contents of a file and attempt to commit.
         If file has been updated since submitted text was checked out,
@@ -378,7 +378,7 @@ class Root(controllers.RootController):
                 rev - revision of file when it was checked out by client.
         """
 
-        project,filepath= self.get_project_path(filepath)
+        project,filepath = self.get_project_path(filepath)
 
         projWrite = ProjectWrite(team, project, revno=rev)
 
