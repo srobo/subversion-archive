@@ -496,7 +496,7 @@ vis_nonmaximal_supression(IplImage *src, IplImage *direction)
 
 			/* Drop to four bits of accuracy, this gives us a
 			 * general idea of where we were pointing. */
-			switch (val >> 5) {
+			switch (val >> 4) {
 			case 3: /* Right */
 			case 4:
 			case 11: /* Left */
