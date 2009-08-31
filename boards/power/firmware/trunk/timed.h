@@ -8,8 +8,6 @@
 
 extern uint8_t override;
 
-
-
 enum {
 	STANDBY = 0,
 	USER = 1,

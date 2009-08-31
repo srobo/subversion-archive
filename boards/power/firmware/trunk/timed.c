@@ -4,7 +4,6 @@
 #include "timed.h"
 #include "power.h"
 
-
 static uint16_t safe_count;
 //static uint8_t pinged;	/* button override */
 static uint8_t cutoff_state;
@@ -15,7 +14,6 @@ void timed_init(void)
 
 	cutoff_state = STANDBY;
 }
-
 
 void user_enable(void){
 	cutoff_state = USER;
