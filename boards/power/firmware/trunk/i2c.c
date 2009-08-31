@@ -184,39 +184,39 @@ interrupt (USART0TX_VECTOR) i2c_service( void )
 
 void i2c_init( void )
 {
-  /* Switch to I2C Mode */
+	/* Switch to I2C Mode */
 	// U0CTL |= SYNC + I2C;
-  U0CTL = SYNC | I2C;
+	U0CTL = SYNC | I2C;
 
-  /* Clear I2CEN for configuration */
-  U0CTL &= ~I2CEN;
+	/* Clear I2CEN for configuration */
+	U0CTL &= ~I2CEN;
 
-  /* Slave mode, 7-bit addressing, non-loopback */
-  U0CTL &= ~(XA | LISTEN | MST);
+	/* Slave mode, 7-bit addressing, non-loopback */
+	U0CTL &= ~(XA | LISTEN | MST);
 
-  I2CTCTL = 0;
-  /* byte mode */
-  I2CTCTL &= ~I2CWORD;
+	I2CTCTL = 0;
+	/* byte mode */
+	I2CTCTL &= ~I2CWORD;
   
-  /* SMCLK clock source */
-  I2CTCTL &= ~I2CSSEL0;
-  I2CTCTL |= I2CSSEL1;
-  /* Number of bytes transmitted not hardware controlled */
-  I2CTCTL |= I2CRM;
+	/* SMCLK clock source */
+	I2CTCTL &= ~I2CSSEL0;
+	I2CTCTL |= I2CSSEL1;
+	/* Number of bytes transmitted not hardware controlled */
+	I2CTCTL |= I2CRM;
 
-  /* No clock prescaling */
-  I2CPSC = 0;			
+	/* No clock prescaling */
+	I2CPSC = 0;			
 
-  /* Don't care about I2CSCLRH or I2CSCLL, since we're
-     in slave mode. */
+	/* Don't care about I2CSCLRH or I2CSCLL, since we're
+	   in slave mode. */
 
-  /* Set own address */
-  I2COA = I2C_ADDRESS;
+	/* Set own address */
+	I2COA = I2C_ADDRESS;
 
-  /*** Interrupts ***/
-  I2CIE = STTIE | TXRDYIE | RXRDYIE | ARDYIE | OAIE;
+	/*** Interrupts ***/
+	I2CIE = STTIE | TXRDYIE | RXRDYIE | ARDYIE | OAIE;
 
-  /* set I2CEN to enable peripheral */
-  U0CTL |= I2CEN;
+	/* set I2CEN to enable peripheral */
+	U0CTL |= I2CEN;
 }
 
