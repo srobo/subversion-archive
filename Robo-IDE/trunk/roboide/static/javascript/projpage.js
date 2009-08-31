@@ -825,6 +825,10 @@ function ProjOps() {
 	}
 
 	this.new_folder = function(new_name, new_msg) {
+		if(!projpage.projects_exist()) {
+			status_msg("You must create a project before creating a folder", LEVEL_ERROR);
+			return;
+		}
 		logDebug("Add new folder: "+new_name+" ...contacting server");
 		if(new_name == null || new_name == undefined) {
 			var browser = new Browser(bind(this.new_folder, this), {'type' : 'isDir'});
