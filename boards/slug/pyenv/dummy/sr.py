@@ -99,6 +99,8 @@ def And(*args):
 
 # PWM
 
+pwm = [0,1,2,3,4,5,6,7]
+
 # set servo SERVO_NUMBER to position 0.0 <= POS <= 100.0
 def setpos(n, pos):
 	pass
