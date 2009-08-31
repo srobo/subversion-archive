@@ -67,14 +67,13 @@ Browser.prototype._init = function() {
 	}
 
 	//clear previous events
-	disconnectAll($("save-new-file"));
-	disconnectAll($("cancel-new-file"));
-	disconnectAll($("new-file-name"));
-	//set up event handlers
 	disconnectAll("save-new-file");
 	disconnectAll("cancel-new-file");
+	disconnectAll("new-commit-msg");
 	disconnectAll("new-file-name");
+	disconnectAll("left-pane");
 	disconnect(this._esc_press);
+	//set up event handlers
 	this._esc_press = connect(document, 'onkeydown', bind(this._window_keydown, this));
 	connect("new-file-name", 'onkeypress', bind(this._new_file_keypress, this));
 	connect("save-new-file", 'onclick', bind(this.clickSaveFile, this, false));
@@ -313,9 +312,12 @@ Browser.prototype.display = function() {
 }
 Browser.prototype.hide = function() {
 	logDebug("Hiding File Browser");
-	disconnectAll($("save-new-file"));
-	disconnectAll($("cancel-new-file"));
-	disconnectAll($("browser-status"));
+	disconnectAll("save-new-file");
+	disconnectAll("cancel-new-file");
+	disconnectAll("new-commit-msg");
+	disconnectAll("new-file-name");
+	disconnectAll("left-pane");
+	disconnectAll("browser-status");
 	disconnect(this._esc_press);
 	hideElement($("file-browser"));
 	hideElement($("grey-out"));
