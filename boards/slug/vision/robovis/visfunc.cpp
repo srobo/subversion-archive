@@ -671,3 +671,136 @@ vis_clip(IplImage *src, IplImage *clip, unsigned char low, unsigned char high)
 	return dst;
 }
 
+void
+vis_follow_edge(IplImage *src, IplImage *direction, int x, int y)
+{
+#define get(x, y) *(in + ((y) * in_stride) + (x))
+#define getdir(x, y) *(dir + ((y) * in_stride) + (x))
+#define put(x, y) *(out + ((y) * out_stride) + (x))
+	CvSize sz;
+	IplImage *dst;
+	unsigned char *in, *dir, *out;
+	int dx, dy, in_stride, out_stride;
+	int maxx, minx, maxy, miny, pixel_count;
+	unsigned char val, have_moved;
+
+	if (src->width != direction->width || src->height != direction->height){
+		fprintf(stderr, "vis_find_edge - image mismatch\n");
+		exit(1);
+	}
+
+	sz.width = src->width;
+	sz.height = src->height;
+
+	dst = cvCreateImage(sz, image_depth, 1);
+	if (!dst) {
+		fprintf(stderr, "vis_find_edge: " "can't create image\n");
+		exit(1);
+	}
+
+	in = (unsigned char *)src->imageData;
+	dir = (unsigned char *)direction->imageData;
+	out = (unsigned char *)dst->imageData;
+
+	in_stride = src->widthStep;
+	out_stride = dst->widthStep;
+
+	minx = miny = 0x7FFFFFFF;
+	maxx = maxy = -1;
+	dx = x;
+	dy = y;
+	pixel_count = 0;/* How many pixels have we covered since starting */
+
+	/* So - we have the co-ordinates of what's apparently the corner of an
+	 * edge. For each pixel, take the direction, and see if there's an edge
+	 * pixel in that direction. If many, take the highest edge-change.
+	 * Store max/min x/y values, if we come back to somewhere in the
+	 * viscinity of the starting point, presume we have completed. */
+	while (1) {
+		val = getdir(dx, dy);
+
+		/* As with non-maximal supression, drop accuracy, get a general
+		 * idea of where we were pointing */
+		switch(val >> 5) {
+
+#define advance(a,b) 	do {\
+				if (get(dx+(a),dy+(b))) {\
+					dx += (a);\
+					dy += (b);\
+					goto breakout;\
+				}\
+			} while (0);
+
+		case 0: /* Top */
+		case 7:
+			advance(-1,-1);
+			advance(0,-1);
+			advance(1,-1);
+			goto bees;
+		case 1: /* Rightwards */
+		case 2:
+			advance(1,-1);
+			advance(1,0);
+			advance(1,1);
+			goto bees;
+
+		case 3: /* Downwards */
+		case 4:
+			advance(1,1);
+			advance(0,1);
+			advance(-1,1);
+			goto bees;
+
+		case 5: /* Leftwards */
+		case 6: 
+			advance(-1,1);
+			advance(-1,0);
+			advance(-1,-1);
+			goto bees;
+		default:
+			fprintf(stderr, "vis_follow_edge reality error; please "
+					"re-install the universe and try again"
+					"\n");
+			exit(1);
+#undef advance
+		}
+
+		bees:
+		printf("It'd appear that the edge point %d %d you gave me "
+			"doesn't form a loop\n", x, y);
+		return;
+
+		breakout:
+		/* Reached if we have actually progressed */
+		pixel_count++;
+		maxx = MAX(maxx, dx);
+		minx = MIN(minx, dx);
+		maxy = MAX(maxy, dy);
+		miny = MIN(miny, dy);
+
+		/* We now need to guess if we've reached the starting point
+		 * again. It _is_ possible to skip it, if we're on a diagonal
+		 * and the direction makes us move past it, like this:
+		 *       XX
+		 *        XP
+		 *         XX
+		 * where P is the start point. So, use fuzzy checking logic.
+		 * Also, only trigger once we've gone more than 10 pixels */
+#define fuzz 2
+		if (abs(dx - x) <= fuzz && abs(dy - y) <= fuzz &&
+					pixel_count > 10) {
+			printf("Congratulations, we appear to have a loop, "
+				"with bounds %d,%d to %d %d\n", minx, miny,
+				maxx, maxy);
+			return;
+		}
+#undef fuzz
+
+		/* If not, move along */
+	};
+
+	/* Should never get out of this while(1)... */
+	fprintf(stderr, "Loop fail in vis_find_edge\n");
+	exit(1);
+	return;
+}

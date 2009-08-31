@@ -11,7 +11,6 @@ IplImage *vis_threshold(IplImage *src, unsigned char low, unsigned char high);
 IplImage *vis_clip(IplImage *src, IplImage *clip, unsigned char low,
 						unsigned char high);
 IplImage *vis_nonmaximal_supression(IplImage *src, IplImage *direction);
-
-
+void vis_follow_edge(IplImage *src, IplImage *direction, int x, int y);
 
 #endif /* _BOARDS_SLUG_VISION_ROBOVIS_VISFUNC_H_ */
