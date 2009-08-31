@@ -58,18 +58,6 @@ class Motors(list):
 
 motor = Motors()
 
-# -100.0 < a,b < 100.0
-def setpower(a, b=0):
-	pass
-
-# read the current motor power
-def readpower(a):
-	pass
-
-# We shall be implementing this in future releases:
-#def setspeed(a, b=0):
-#	pass
-
 # JointIO
 
 # Read the digital value of pin 3:
