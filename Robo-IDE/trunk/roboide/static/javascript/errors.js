@@ -189,7 +189,9 @@ function ErrorsPage() {
 
 	this.check = function(file, opts) {
 		if(opts != null && opts.code != null) {
-			var d = loadJSONDoc("./checkcode", { 'team' : team, 'path' : file, 'date': new Date().getTime(), 'code' : opts.code });
+			var d = postJSONDoc("./checkcode", {
+				queryString : { 'team' : team, 'path' : file, 'date': new Date().getTime() },
+				sendContent : {'code' : opts.code }});
 			opts.code = '';	//no need for it later on, so save the memory
 		} else
 			var d = loadJSONDoc("./checkcode", { 'team' : team, 'path' : file, 'date': new Date().getTime() });
