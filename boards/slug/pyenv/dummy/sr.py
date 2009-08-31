@@ -27,9 +27,6 @@ class Motor():
 	def getpos(self):
 		pass
 
-	def eval(self):
-		pass
-
 	class ads5030():
 		def set_pins( clk = 0, dio = 1 ):
 			pass
