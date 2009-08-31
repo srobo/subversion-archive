@@ -2,7 +2,6 @@
 #define __USART_H
 #include <stdint.h>
 
-
 enum {
 	/* We don't care about the value of this byte */
 	XB_DONT_CARE = 1 << 0,
@@ -55,11 +54,8 @@ static const xb_alive_t safe[] =
 	{ 0, XB_END }
 };
 
-
-
-
 void usart_init(void);
 
 void rx_byte(uint8_t rxbuf);
 
-#endif
+#endif	/* __USART_H */
