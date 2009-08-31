@@ -13,6 +13,51 @@ def coroutine(func):
 
 # Motor
 
+class Motor():
+	sensor = None
+	controller = None
+	target = None
+
+	def enable(self):
+		pass
+
+	def disable(self):
+		pass
+
+	def getpos(self):
+		pass
+
+	def eval(self):
+		pass
+
+	class ads5030():
+		def set_pins( clk = 0, dio = 1 ):
+			pass
+
+		def set_shr( a ):
+			pass
+
+	class PID():
+		def set_coeff( kp = -4, ki = -5, kd = -10 ):
+			pass
+
+
+class Motors(list):
+	# Sensor types
+	NULL = "null sensor"
+	ADS5030 = "ads5030 sensor"
+
+	# Controller types:
+	UNITY = "unity controller"
+	PID = "pid controller"
+
+	def __init__(self):
+		list.__init__(self)
+		self.append( Motor() )
+		self.append( Motor() )
+
+motor = Motors()
+
 # -100.0 < a,b < 100.0
 def setpower(a, b=0):
 	pass
