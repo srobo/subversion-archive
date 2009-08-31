@@ -105,7 +105,6 @@ Browser.prototype._window_keydown = function(ev) {
 Browser.prototype._receiveTree = function(nodes) {
 	this.fileTree = nodes.tree;
 	//default to the first directory
-	this.newDirectory = this.fileTree[0].path;
 	replaceChildNodes($("left-pane-list"), null);
 	replaceChildNodes($("right-pane-list"), null);
 	this._processTree($("left-pane-list"), this.fileTree, "");
