@@ -223,37 +223,42 @@ vis_do_smooth(IplImage *src)
 #undef put
 }
 
-INLINE int
+INLINE unsigned char
 vis_find_angle(signed char x, signed char y)
 {
-	float fx, fy;
+	float fx, fy, ret;
 
 	fx = (float) abs(x);
 	fy = (float) abs(y);
 
-	/* 0 degrees means edge direction is pointing upwards, 90 is right etc*/
+	/* 0 degrees means edge direction is pointing upwards, 90 is right etc
+	 * However becuase we have to deal in bytes here, everything is shrunk
+	 * to a scale of 0-255. 90 degrees is now 64, 180 is 128, 270 is 192
+	 * and so forth. */
 
 	if (x == 0 && y > 0)
-		return 180;
+		return 128;
 	else if (x == 0 && y < 0)
 		return 0;
 	else if (x > 0 && y == 0)
-		return 90;
+		return 64;
 	else if (x < 0 && y == 0)
-		return 270;
+		return 192;
 	else if (x == 0 && y == 0)
 		return 0;
 
 	if (x >= 0 && y >= 0)
-		return atan(fx/fy) * 360 / (2*M_PI);
+		ret = atan(fx/fy) * 360 / (2*M_PI);
 	else if (x < 0 && y > 0)
-		return 360 - (atan(fx/fy) * 360 / (2*M_PI));
+		ret = 360 - (atan(fx/fy) * 360 / (2*M_PI));
 	else if (x > 0 && y < 0)
-		return 180 - (atan(fx/fy) * 360 / (2*M_PI));
+		ret = 180 - (atan(fx/fy) * 360 / (2*M_PI));
 	else
-		return 180 + (atan(fx/fy) * 360 / (2*M_PI));
+		ret = 180 + (atan(fx/fy) * 360 / (2*M_PI));
 
-	return 0;
+	ret /= (360.0/256.0);
+
+	return (unsigned char) ret;
 }
 
 IplImage *
