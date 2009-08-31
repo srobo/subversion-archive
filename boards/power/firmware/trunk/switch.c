@@ -7,20 +7,20 @@ uint8_t button_pressed =0;
 
 void switch_init(void)
 {
-  P1DIR &= 0x0f;
+	P1DIR &= 0x0f;
 
-  /* init the button and its interrupts */
-  P2DIR &= ~0x08;		/* pin 2.3 as input */
-  P2IFG &= ~0x08;		/* check int flag clear */
-  P2IES &= ~0x08;		/* int on rising edge */
-  P2SEL &= ~0x08;		/* pin set as i/o */
-  P2IE |= 0x08;			/* enable interrupt for that pin */
-  button_pressed = 0;
+	/* init the button and its interrupts */
+	P2DIR &= ~0x08;		/* pin 2.3 as input */
+	P2IFG &= ~0x08;		/* check int flag clear */
+	P2IES &= ~0x08;		/* int on rising edge */
+	P2SEL &= ~0x08;		/* pin set as i/o */
+	P2IE |= 0x08;			/* enable interrupt for that pin */
+	button_pressed = 0;
 }
 
 uint8_t switch_get(void)
 {
-  return (P1IN & 0xf0)>>4;
+	return (P1IN & 0xf0)>>4;
 }
 
 interrupt (PORT2_VECTOR) port2_isr(void){
