@@ -17,11 +17,11 @@ void slug_boot(uint8_t reboot){
 	if (reboot)
 		P2OUT &= ~0x01;	/* reeboot so power off first */
    
-	delay(250);			/* let power settle to help mode B */
+	delay(250);		/* let power settle to help mode B */
 	P2OUT |= 0x01;		/* power slug rail */
 	delay(250);
 
-	P5OUT &= ~0x80;	   /* slugboot low then untristate */
+	P5OUT &= ~0x80;		/* slugboot low then untristate */
 	P5DIR |= 0x80;		/* slugboot set as output */	
 	delay(50);
 
