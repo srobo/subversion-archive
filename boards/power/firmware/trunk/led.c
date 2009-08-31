@@ -3,8 +3,8 @@
 
 void led_init(void)
 {
-  P1DIR |= 0x0f;
-  P1OUT &= ~0x0f;
+	P1DIR |= 0x0f;
+	P1OUT &= ~0x0f;
 }
 void led_set(uint8_t val)
 {
@@ -13,5 +13,5 @@ void led_set(uint8_t val)
 
 uint8_t led_get(void)
 {
-  return (P1IN & 0x0f);
+	return (P1IN & 0x0f);
 }
