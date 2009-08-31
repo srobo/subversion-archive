@@ -15,14 +15,14 @@ interrupt (ADC12_VECTOR) adc_service( void )
 	   the conversion sequence - which is the only one that we enabled */
 	if ( adc12v_l == 0x08)
 	{
-		toga;
+		toga();
 		current = ADC12MEM0;
 		voltage = ADC12MEM1;
 		ADC12IFG &= ~0x02; /* clear flag */
 	}
 	else
 	{
-		togc;
+		togc();
 		/* possible error handler from other misc iv's */
 		ADC12IFG = 0; /* clear everything else */
 	}

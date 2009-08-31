@@ -19,10 +19,11 @@ uint8_t led_get(void);
 /* #define goff P5OUT |= 0x01 */
 /* #define gon P5OUT &= ~0x1 */
 
-#define toga
-#define togb
-#define togc
-#define togd
+/* Debug macros: */
+#define toga() do { } while(0)
+#define togb() do { } while(0)
+#define togc() do { } while(0)
+#define togd() do { } while(0)
 
 /* Led's are: */
 /*          pin */
