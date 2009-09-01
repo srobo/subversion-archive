@@ -237,9 +237,9 @@ vis_find_angle(signed char x, signed char y)
 	 * and so forth. */
 
 	if (x == 0 && y > 0)
-		return 128;
-	else if (x == 0 && y < 0)
 		return 0;
+	else if (x == 0 && y < 0)
+		return 128;
 	else if (x > 0 && y == 0)
 		return 64;
 	else if (x < 0 && y == 0)
