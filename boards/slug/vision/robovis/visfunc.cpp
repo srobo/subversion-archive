@@ -410,7 +410,7 @@ vis_do_sobel_edge_detection(IplImage *src, IplImage **direction)
 #error Re-calculate division approximation for sobel operator
 #endif
 
-			if (direction)
+			if (direction) 
 				putdir(i,j) = vis_find_angle(accuml_x, accuml_y);
 
 			accuml_x = abs(accuml_x);
@@ -462,7 +462,7 @@ vis_nonmaximal_supression(IplImage *src, IplImage *direction)
 	IplImage *dst;
 	unsigned char *in, *dir, *out;
 	int i, j, in_stride, out_stride;
-	unsigned char val;
+	unsigned char val, val_low;
 
 	if (src->width != direction->width || src->height != direction->height){
 		fprintf(stderr, "vis_nonmaximal_supression - image mismatch\n");
@@ -492,69 +492,105 @@ vis_nonmaximal_supression(IplImage *src, IplImage *direction)
 
 	for (i = 0; i < src->width-1; i++) {
 		for (j = 0; j < src->height-1; j++) {
-			val = getdir(i,j);
 
-			/* Drop to four bits of accuracy, this gives us a
+/* Supression - arguments are x/y locations of the center and then two outer
+ * points, the second outer point being the next pixel clockwise from the first.
+ * "Ang" is the lower 5 bits of the angle byte, and describes how far the
+ * edge-normal is between the two points. 0 would be the anti-clockwise-most
+ * point, 1F almost at the next point. So, calculate the combination of those
+ * appropriately weighted points, it's effectively scaled by 32x due to the
+ * multiplication, so shift right 5 (shifts are free on ARM!) and compare to
+ * the original */
+
+#define supress(a,b,a1,b1,a2,b2,ang) (\
+		((get((a1),(b1)) * (32-(ang)) + (get((a2),(b2)) * ang)) >> 5)\
+				< get((a),(b)))
+
+			val = getdir(i,j);
+			val_low = val & 0x1F;
+
+			/* Drop to three bits of accuracy, this gives us a
 			 * general idea of where we were pointing. */
-			switch (val >> 4) {
-			case 3: /* Right */
-			case 4:
-			case 11: /* Left */
-			case 12:
-				if (get(i,j) > get(i,j-1) &&
-							get(i,j) > get(i,j+1))
+
+			/* Like this:
+			 *         -----------------------
+			 *	  | \         |         / |
+			 *	  |   \       |       /   |
+			 *	  |     \  7  | 0   /     |
+			 *	  |       \   |   /       |
+			 *	  |     6   \ | /   1     |
+			 *	  |-----------.---------- |
+			 *	  |     5   / | \   2     |
+			 *	  |       /   |   \       |
+			 *	  |     /   4 | 3   \     |
+			 *	  |   /       |       \   |
+			 *	  | /         |         \ |
+			 *	   -----------------------
+			 * Then the lower 5 bits can be used to interpolate the 
+			 * surrounding square or pixels
+			 */
+
+
+			/* Note to self - this is the direction of the edge.
+			 * We want the normal, dammit! */
+			switch (val >> 5) {
+			case 2: /* Right -> bottom-right and left -> top-left */
+			case 6:
+				if (supress(i,j, i,j-1, i+1,j-1, val_low) &&
+				    supress(i,j, i,j+1, i-1,j+1, val_low))
 					put(i,j) = get(i,j);
 				else if (get(i,j) == get(i,j-1) &&
-							get(i,j) > get(i,j+1))
+					 supress(i,j, i,j+1, i-1,j+1, val_low))
 					put(i,j) = get(i,j);
 				else
 					put(i,j) = 0;
 				break;
 
-			case 5: /* Bottom right */
-			case 6:
-			case 13: /*Top right */
-			case 14:
-				if (get(i,j) > get(i+1,j-1) && 
-							get(i,j) > get(i-1,j+1))
+			case 3: /* bottom-right -> bottom, top-left -> top */
+			case 7:
+				if (supress(i,j, i+1,j-1, i+1,j, val_low) &&
+				    supress(i,j, i-1,j+1, i-1,j, val_low))
 					put(i,j) = get(i,j);
-				else if (get(i,j) == get(i+1,j-1) &&
-							get(i,j) > get(i-1,j+1))
+/*bees*/			else if (get(i,j) == get(i+1,j-1) &&
+					 supress(i,j, i-1,j+1, i-1,j, val_low))
 					put(i,j) = get(i,j);
 				else
 					put(i,j) = 0;
 				break;
 
-			case 0: /* Top */
-			case 15: 
-			case 7: /* Bottom */
-			case 8:
-				if (get(i,j) > get(i-1,j) && 
-							get(i,j) > get(i+1,j))
+			case 0: /* Edge is in top -> top-right and in	*/
+			case 4: /* Bottom -> bottom-left pixels		*/
+				if (supress(i,j, i+1,j, i+1,j+1, val_low) &&
+				    supress(i,j, i-1,j, i-1,j-1, val_low))
 					put(i,j) = get(i,j);
 				else if (get(i,j) == get(i-1,j) &&
-							get(i,j) > get(i+1,j))
+					 supress(i,j, i+1,j, i+1,j+1, val_low))
 					put(i,j) = get(i,j);
 				else
 					put(i,j) = 0;
 				break;
 
-			case 1: /* Top right */
-			case 2:
-			case 9: /* Bottom Left */
-			case 10:
-				if (get(i,j) > get(i-1,j-1) && 
-							get(i,j) > get(i+1,j+1))
+			case 1: /* Edge in top-right -> right and in	*/
+			case 5: /* bottom-right -> right		*/
+				if (supress(i,j, i+1,j+1, i,j+1, val_low) &&
+				    supress(i,j, i-1,j-1, i,j-1, val_low))
 					put(i,j) = get(i,j);
 				else if (get(i,j) == get(i-1,j-1) &&
-							get(i,j) > get(i+1,j+1))
+					 supress(i,j, i+1,j+1, i,j+1, val_low))
 					put(i,j) = get(i,j);
 				else
 					put(i,j) = 0;
 				break;
+			default:
+				fprintf(stderr, "vis_nonmaximal_supression: "
+						"reality error, please "
+						"re-install the universe and "
+						"try again\n");
+				exit(1);
 			}
 		}
 	}
+#undef supress
 
 	/* Clober border */
 
