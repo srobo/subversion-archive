@@ -1,0 +1,17 @@
+this is the calendar used in the background of the mini game at the KickStart.
+
+to run the calendar you'll need put the contents of this folder somewhere that they can be parsed by php.
+
+ensure that PHP can (at least temporarily) write to the Date.inc.php file
+
+Then navigate to the parsed address of Edit_Date.php file and use it to set the dates that it needs (these are written to Date.inc.php).
+
+You can then run the calendar by navigating to Six-in-1.php which will progress through the dates between the KickStart and the competition. The script uses the dates set in the Date.inc.php as a basis for calculation of speed.
+
+The page will refresh periodically to advance the date. This will continue at a rate such that the date of the competition will be reached at the time you set in the Date file, regardless of external influence.
+
+The page refreshing can be paused to hold the current screen using the Pause link (which exposes a continue link as well as links to manually go back and forwards). This will *not* affect the finish time of the progression.
+
+If you should wish to change the end time/date (or any of the others set in the Date file) this can be done at any time and the progression will adapt to these changes from the next reload onwards.
+
+
