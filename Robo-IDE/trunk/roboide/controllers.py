@@ -392,7 +392,6 @@ class Root(controllers.RootController):
         except bzrlib.errors.OutOfDateTree:
             # a commit has occurred since code was opened.
             # A merge will need to take place
-            # TODO: silently merge if it doesn't affect our file, OR allow committing specific file
             code, newrevno, newrevid = projWrite.merge(filepath)
             if len(projWrite.conflicts) == 0:
                 # TODO: when committing a merged transform preview affecting more than one file,
@@ -402,6 +401,7 @@ class Root(controllers.RootController):
                 pw2.update_file_contents(filepath, code)
                 newrevno, newrevid = pw2.commit(message)
                 success = "AutoMerge"
+                pw2.destroy()
             else:
                 return dict(new_revision=newrevno, code=code,
                     success="Merge", file=filepath, reloadfiles=reloadfiles)
