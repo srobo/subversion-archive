@@ -412,42 +412,6 @@ class Root(controllers.RootController):
         return dict(new_revision=str(newrevno), code=code,
                     success=success, file=filepath, reloadfiles=reloadfiles)
 
- 
-    def create_dir(self, memtree, path, msg=""): # TODO BZRPORT: error checking
-        """Creates an svn directory if one doesn't exist yet
-        inputs:
-            memtree - a memorytree object
-            path - path to the directory to be created, relative to tree root
-        returns: True if directory created, false if it already existed
-        """
-
-        # check if path already exists - if it doesn't path2id will return None
-        # if branch has no revisions yet revision_history will return an empty list
-        if memtree.path2id(path) is None or len(memtree.branch.revision_history()) == 0:
-            upperpath = os.path.dirname(path)
-            #Recurse to ensure folder parents exist
-            if not upperpath == "/":
-                self.create_dir(memtree, upperpath)
-
-            memtree.lock_write() # lock tree for modification
-            try:
-                # first perform special dance in the case that branch has no commits yet
-                if len(memtree.branch.revision_history()) == 0:
-                    memtree.add("") # special dance
-
-                # make directory (added automatically)
-                memtree.mkdir(path)
-
-                # commit
-                memtree.commit("New directory " + path + " created. Notes: " + msg)
-
-            finally: # always unlock tree
-                memtree.unlock()
-            return True
-        else:
-            return False # directory already existed
-
-
     @expose("json")
     @srusers.require(srusers.in_team())
     def filelist(self, team, project, rootpath="/", rev=-1, date=0):
