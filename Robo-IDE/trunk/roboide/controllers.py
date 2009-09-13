@@ -19,7 +19,7 @@ import autosave as srautosave
 import user as srusers
 import fw, switchboard
 import string
-from vcs_bzr import ProjectWrite, open_branch, open_repo, open_memory_tree, WorkingTree
+from vcs_bzr import ProjectWrite, open_branch, open_repo, WorkingTree
 
 log = logging.getLogger("roboide.controllers")
 

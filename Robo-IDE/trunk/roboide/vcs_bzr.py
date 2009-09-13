@@ -1,4 +1,4 @@
-import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.memorytree, bzrlib.tree, bzrlib.errors, bzrlib.progress, bzrlib.merge, bzrlib.generate_ids, bzrlib.revision
+import bzrlib.branch, bzrlib.repository, bzrlib.workingtree, bzrlib.tree, bzrlib.errors, bzrlib.progress, bzrlib.merge, bzrlib.generate_ids, bzrlib.revision
 import os
 import user as srusers
 import tempfile
@@ -274,20 +274,6 @@ def open_repo(team):
     """
     repoLoc = srusers.get_svnrepo( team )
     return bzrlib.repository.Repository.open(repoLoc)
-
-def open_memory_tree(team, project, revid=None):
-    """
-    Open an in-memory tree for the project.
-    """
-    # First open the branch
-    b = open_branch(team, project)
-
-    if revid == None:
-        # If no revid was specified, use latest
-        revid = b.last_revision()
-
-    return bzrlib.memorytree.MemoryTree(b, revid)
-
 
 class WorkingTree:
     """
