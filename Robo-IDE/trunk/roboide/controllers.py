@@ -362,6 +362,7 @@ class Root(controllers.RootController):
 
             wt.remove(files)
             wt.commit('Remove files: '+', '.join(files))
+            wt.destroy()
 
             return dict(Message = message)
 
@@ -612,6 +613,7 @@ class Root(controllers.RootController):
         wt.revert(file_list, rev_tree)
         wt.commit(message)
         newrev, id = wt.branch.last_revision_info();
+        wt.destroy()
 
         return dict(new_revision=newrev, code = "", success="Success !!!", status = 0)
 
@@ -687,6 +689,7 @@ class Root(controllers.RootController):
 
         wt.rename_one(src_path, dest_path)
         wt.commit('Move '+src_path+' to '+dest_path)
+        wt.destroy()
 
         self.autosave.move(team, src, dest)
 
@@ -767,6 +770,7 @@ class Root(controllers.RootController):
         output = p.communicate()
 
         rval = p.wait()
+        wt.destroy()
 
         if rval == 0:
             return dict( errors = 0 )
