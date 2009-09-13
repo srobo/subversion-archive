@@ -119,23 +119,24 @@ class Root(controllers.RootController):
             A zip file as a downloadable file with appropriate HTTP headers
             sent.
         """
-        mt = open_memory_tree(int(team), project)
+        b = open_branch(int(team), project)
+        rev_tree = b.basis_tree()   # get latest revision tree for branch
 
         #Avoid using /tmp by writing into a memory based file
         zipData = StringIO.StringIO()
         zip = zipfile.ZipFile(zipData, "w", zipfile.ZIP_DEFLATED)
         #Need to lock_read before reading any file contents
-        mt.lock_read()
+        rev_tree.lock_read()
         try:
             #Get a list of files in the tree
-            files = [f for f in mt.iter_entries_by_dir() if f[1].kind == "file"]
+            files = [f for f in rev_tree.iter_entries_by_dir() if f[1].kind == "file"]
             for filename, file in files:
                 #Set external_attr on a ZipInfo to make sure the files are
                 #created with the right permissions
                 info = zipfile.ZipInfo(filename.encode("ascii"))
                 info.external_attr = 0666 << 16L
                 #Read the file contents and add to zip
-                zip.writestr(info, mt.get_file(file.file_id).read())
+                zip.writestr(info, rev_tree.get_file(file.file_id).read())
 
             #Need a __init__ in the root of all code exports
             if not "__init__.py" in [f[0].encode("ascii") for f in files]:
@@ -147,7 +148,7 @@ class Root(controllers.RootController):
             return "Error exporting project"
         finally:
             #Always unlock or get GC related errors
-            mt.unlock()
+            rev_tree.unlock()
         zip.close()
         #Seek back to start of file so read() works later on
         zipData.seek(0)
