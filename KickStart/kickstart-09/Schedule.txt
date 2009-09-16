@@ -1,6 +1,6 @@
 The SR2010 KickStart (2009-09-19) Schedule is:
 
-09:30	Arrivals
+09:30	Arrive
 10:00	Introductory Talk (Aron)
 10:10	Explanation of this year's game
 			Arena parts explanation
@@ -21,7 +21,7 @@ The SR2010 KickStart (2009-09-19) Schedule is:
 16:10	Thanks Talk
 			Reminders of essential ideas
 			Final thoughts
-16:15	Go home
+16:15	Depart
 
 Teams may not leave until after the final talk!
 All timings are approximate.
