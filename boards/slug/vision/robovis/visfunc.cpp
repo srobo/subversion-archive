@@ -477,7 +477,6 @@ vis_do_sobel_edge_detection(IplImage *src, IplImage **direction)
 #else
 #error Re-calculate division approximation for sobel operator
 #endif
-if (accuml_x >= 256 || accuml_y >= 256) breakpoint();
 
 			if (direction) 
 				putdir(i,j) = vis_find_angle(accuml_x, accuml_y);
