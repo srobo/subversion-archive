@@ -29,7 +29,11 @@
 #define breakpoint() exit(1)
 #else
 #define INLINE inline
+#if !defined(__arm__)
 #define breakpoint() __asm__("int $3")
+#else
+#define breakpoint()
+#endif
 #endif
 
 #define template_size 5
