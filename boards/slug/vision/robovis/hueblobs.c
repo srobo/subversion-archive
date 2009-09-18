@@ -244,10 +244,11 @@ main(int argc, char **argv)
 	CvSize framesize;
 	IplConvKernel *k;
 
+	struct blob_position *blobs;
 	CvMemStorage *contour_storage;
 	CvSeq *cont;
 	char *req_tag = NULL;
-	int num_contours, i;
+	int num_contours, i, w, h;
 	double area;
 	CvCapture *capture = NULL;
 
@@ -326,82 +327,22 @@ main(int argc, char **argv)
 			cvShowImage("sat", sat);
 		}
 
-
 		if(DEBUGDISPLAY) {
 			cvShowImage("hue", hue);
 		}
 
-		cvInRangeS(sat, cvScalarAll(80),
-				cvScalarAll(256),
-					satthresh);
+		blobs = vis_find_blobs_through_scanlines(hue, sat);
+		for (i = 0; ; i++) {
+			if (blobs[i].x1 == 0 && blobs[i].x2 == 0)
+				break;
 
-		cvAnd(satthresh, hue, hue, NULL);
-
-	/* To stop black lines on the floor and other robots being visible,
-	 * clober anything with a variance under 60. This is a measure of
-	 * where the colour lies on a greyscale, so lower is black, higher
-	 * is whiter. At 60, we risk also removing parts of objects that are
-	 * far away, most notably the corners of the arena. However, some
-	 * reduction in their size is better than being distracted by the
-	 * lines and / or other robots
-	 */
-
-		/* re-use satthresh */
-		cvInRangeS(val, cvScalarAll(60), cvScalarAll(256), satthresh);
-
-		cvAnd(satthresh, hue, hue, NULL);
-
-		for(i = 0; i<4; i++){
-			if(DEBUGOUTPUT) {
-				printf("Looking for %d %d\n", huebins[i][0],
-								huebins[i][1]);
-			}
-
-			cvInRangeS(hue, cvScalarAll(huebins[i][0]),
-					cvScalarAll(huebins[i][1]),
-							huemasked);
-
-			if (i == 0) {
-		/* An unpleasent side-effect of red being... red, i that it
-		 * wraps around the hue address space. There is also purplish
-		 * red in the 160+ range, which should be included too
-		 */
-
-				cvInRangeS(hue, cvScalarAll(150),
-						cvScalarAll(185),
-						red_second_step);
-
-				cvOr(red_second_step, huemasked, huemasked,
-									NULL);
-			}
-
-			if(DEBUGDISPLAY) {
-				if (i == 0) cvShowImage("r", huemasked);
-				if (i == 1) cvShowImage("y", huemasked);
-				if (i == 2) cvShowImage("g", huemasked);
-				if (i == 3) cvShowImage("b", huemasked);
-			}
-
-			cvCopy(huemasked, huemask_backup, NULL);
-			//cvFindContours writes over the original
-
-			num_contours = cvFindContours(huemasked,
-						contour_storage,
-						&cont,
-						sizeof(CvContour),
-						CV_RETR_EXTERNAL,
-						CV_CHAIN_APPROX_NONE,
-						cvPoint(0,0));
-
-			srlog(DEBUG, "Looping through contours");
-			for( ; cont; cont = cont->h_next) {
-				area = fabs(cvContourArea(cont, CV_WHOLE_SEQ));
-				if(area < MINMASS)
-					continue;
-
-				add_blob(cont, framesize, dsthsv, i,
-					MINMASS, huemask_backup);
-			}
+			cvRectangle(frame, cvPoint(blobs[i].x1, blobs[i].y1),
+					cvPoint(blobs[i].x2, blobs[i].y2),
+					cvScalar(255, 0, 0), 1);
+			w = blobs[i].x2 - blobs[i].x1;
+			h = blobs[i].y2 - blobs[i].y1;
+			printf("%d,%d,%d,%d,%d,%d\n", blobs[i].x1, blobs[i].y1,
+					w, h, w*h, blobs[i].colour);
 		}
 
 		if (req_tag) {
