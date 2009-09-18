@@ -1227,11 +1227,10 @@ vis_search_for_blobs(IplImage *img, IplImage *dir, int spacing)
 }
 
 struct blob_position *
-vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat, IplImage *sat_edge)
+vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat)
 {
 #define getsat(a, b) *(s + ((b) * sat->widthStep) + (a))
 #define gethue(a, b) *(h + ((b) * hue->widthStep) + (a))
-#define getedge(a, b) *(e + ((b) * sat_edge->widthStep) + (a))
 #define put(a, b) *(out->imageData + ((b) * out->widthStep) + (a))
 
 #define line_cache_sz 5
@@ -1246,16 +1245,14 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat, IplImage *sat_edg
 
 	CvSize sz;
 	IplImage *out;
-	unsigned char *h, *s, *e;
+	unsigned char *h, *s;
 	void *tmp;
 	int x, y, i, j, cache;
 
 	h = (unsigned char *)hue->imageData;
 	s = (unsigned char *)sat->imageData;
-	e = (unsigned char *)sat_edge->imageData;
 
-	if (hue->width != sat->width || hue->width != sat_edge->width ||
-	    hue->height != sat->height || hue->height != sat_edge->height) {
+	if (hue->width != sat->width || hue->height != sat->height) {
 		fprintf(stderr, "vis_find_blobs_through_scanlines, size "
 				"mismatch\n");
 		exit(1);
