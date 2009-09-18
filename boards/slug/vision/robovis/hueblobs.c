@@ -15,7 +15,8 @@
 #define DEBUG 0
 #define ERROR 1
 
-#define FILENAME "out.jpg"
+#define IN_FILENAME "in.jpg"
+#define OUT_FILENAME "out.jpg"
 
 /* NB: if you use USEFILE, disable the call to cvSaveFile near the end of	 */
 /* this program. Otherwise, it repeatedly opens and saves out.jpg, causing a  */
@@ -267,7 +268,7 @@ main(int argc, char **argv)
 
 	//Get a frame to find the image size
 	if(USEFILE) {
-		frame = cvLoadImage(FILENAME, CV_LOAD_IMAGE_COLOR);
+		frame = cvLoadImage(IN_FILENAME, CV_LOAD_IMAGE_COLOR);
 	} else {
 		capture = get_camera();
 		frame = get_frame(capture);
@@ -306,7 +307,7 @@ main(int argc, char **argv)
 
 		srlog(DEBUG, "Grabbing frame");
 		if(USEFILE) {
-			frame = cvLoadImage(FILENAME, CV_LOAD_IMAGE_COLOR);
+			frame = cvLoadImage(IN_FILENAME, CV_LOAD_IMAGE_COLOR);
 		} else {
 			frame = get_frame(capture);
 		}
@@ -414,7 +415,7 @@ main(int argc, char **argv)
 		cvReleaseMemStorage(&contour_storage);
 		srlog(DEBUG, "Saving frame to out.jpg");
 
-		cvSaveImage("out.jpg", frame);
+		cvSaveImage(OUT_FILENAME, frame);
 		cvReleaseImage(&frame);
 
 		if (DEBUGDISPLAY)
