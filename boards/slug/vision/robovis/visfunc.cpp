@@ -91,7 +91,7 @@ pascal(int width, int pos)
 }
 
 static void
-add_blob(int minx, int miny, int maxx, int maxy)
+add_blob(int minx, int miny, int maxx, int maxy, int colour)
 {
 	int w, h;
 
@@ -109,6 +109,7 @@ add_blob(int minx, int miny, int maxx, int maxy)
 	blobs[num_blobs].x2 = maxx;
 	blobs[num_blobs].y1 = miny;
 	blobs[num_blobs].y2 = maxy;
+	blobs[num_blobs].colour = colour;
 	num_blobs++;
 
 	return;
@@ -997,7 +998,7 @@ if (pixel_count > 3000)
 #define fuzz 2
 		if (abs(dx - x) <= fuzz && abs(dy - y) <= fuzz &&
 					pixel_count > 10) {
-			add_blob(minx, miny, maxx, maxy);
+			add_blob(minx, miny, maxx, maxy, 0);
 
 			return;
 		}
@@ -1161,7 +1162,7 @@ vis_follow_edge_backwards(IplImage *src, IplImage *direction, int x, int y,
 			pixel_check = vis_find_nearest_blob_distance(dx, dy);
 			if (pixel_check == -1) {
 				breakpoint();
-				add_blob(minx, miny, maxx, maxy);
+				add_blob(minx, miny, maxx, maxy, 0);
 				return;
 			}
 		}
@@ -1380,7 +1381,8 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat)
 				if (ospans[j].maxx - ospans[j].minx > 20 &&
 				    ospans[j].maxy - ospans[j].miny > 20) {
 					add_blob(ospans[j].minx, ospans[j].miny,
-						 ospans[j].maxx, ospans[j].maxy);
+						 ospans[j].maxx, ospans[j].maxy,
+						 ospans[j].colour);
 				}
 			}
 		}
