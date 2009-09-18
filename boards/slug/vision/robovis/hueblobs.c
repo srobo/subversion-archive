@@ -34,13 +34,7 @@ const unsigned int SATEDGE = 6;
 const unsigned int DILATE = 2;
 const unsigned int CUTOFF = 2;
 
-IplImage *frame = NULL, *hsv, *hue, *sat, *val,
-			*satthresh, *huethresh, *huemasked;
-
-unsigned int huebins[4][2] = {{1, 20},	//red
-				{21, 38},	//yellow
-				{39, 78},	//green
-				{100, 149}};	//blue
+IplImage *frame = NULL, *hsv, *hue, *sat, *val;
 
 int USEFILE = 0;
 int DEBUGOUTPUT = 0;
