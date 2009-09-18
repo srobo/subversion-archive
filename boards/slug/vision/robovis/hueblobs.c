@@ -261,10 +261,6 @@ main(int argc, char **argv)
 		cvSetMouseCallback("sat", Goo, sat);
 		cvNamedWindow("hue", CV_WINDOW_AUTOSIZE);
 		cvSetMouseCallback("hue", Foo, hue);
-		cvNamedWindow("r", CV_WINDOW_AUTOSIZE);
-		cvNamedWindow("g", CV_WINDOW_AUTOSIZE);
-		cvNamedWindow("b", CV_WINDOW_AUTOSIZE);
-		cvNamedWindow("y", CV_WINDOW_AUTOSIZE);
 	}
 
 	//Get a frame to find the image size
@@ -313,10 +309,6 @@ main(int argc, char **argv)
 			frame = get_frame(capture);
 		}
 
-		if(DEBUGDISPLAY) {
-			cvShowImage("testcam", frame);
-		}
-
 		srlog(DEBUG, "Converting to HSV");
 		cvCvtColor(frame, hsv, CV_BGR2HSV);
 
@@ -343,6 +335,10 @@ main(int argc, char **argv)
 			h = blobs[i].y2 - blobs[i].y1;
 			printf("%d,%d,%d,%d,%d,%d\n", blobs[i].x1, blobs[i].y1,
 					w, h, w*h, blobs[i].colour);
+		}
+
+		if(DEBUGDISPLAY) {
+			cvShowImage("testcam", frame);
 		}
 
 		if (req_tag) {
