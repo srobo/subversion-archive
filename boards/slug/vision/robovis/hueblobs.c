@@ -18,21 +18,11 @@
 #define IN_FILENAME "in.jpg"
 #define OUT_FILENAME "out.jpg"
 
-/* NB: if you use USEFILE, disable the call to cvSaveFile near the end of	 */
-/* this program. Otherwise, it repeatedly opens and saves out.jpg, causing a  */
-/* mass of jpeg compression roundings.*/
-
-#define ADAPTIVESATTHRESH
-
 const unsigned int MINMASS = 200;
 const unsigned int MAXMASS = 2000;
 
 const unsigned int CAMWIDTH = 320;
 const unsigned int CAMHEIGHT = 240;
-
-const unsigned int SATEDGE = 6;
-const unsigned int DILATE = 2;
-const unsigned int CUTOFF = 2;
 
 IplImage *frame = NULL, *hsv, *hue, *sat, *val;
 
