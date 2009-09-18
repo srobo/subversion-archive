@@ -180,7 +180,7 @@ main(int argc, char **argv)
 {
 	get_command_line_opts(argc, argv);
 
-	IplImage *dsthsv, *dstrgb, *huemask_backup, *red_second_step;
+	IplImage *dsthsv, *dstrgb;
 	CvSize framesize;
 	IplConvKernel *k;
 
@@ -215,16 +215,11 @@ main(int argc, char **argv)
 
 	srlog(DEBUG, "Allocating scratchpads");
 	hsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
-	huemasked = allo_frame(framesize, IPL_DEPTH_8U, 1);
-	huethresh = allo_frame(framesize, IPL_DEPTH_8U, 1);
 	hue = allo_frame(framesize, IPL_DEPTH_8U, 1);
 	sat = allo_frame(framesize, IPL_DEPTH_8U, 1);
 	val = allo_frame(framesize, IPL_DEPTH_8U, 1);
-	satthresh = allo_frame(framesize, IPL_DEPTH_8U, 1);
 	dsthsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
 	dstrgb = allo_frame(framesize, IPL_DEPTH_8U, 3);
-	huemask_backup = allo_frame(framesize, IPL_DEPTH_8U, 1);
-	red_second_step = allo_frame(framesize, IPL_DEPTH_8U, 1);
 
 	k = cvCreateStructuringElementEx( 5, 5, 0, 0, CV_SHAPE_RECT, NULL);
 
