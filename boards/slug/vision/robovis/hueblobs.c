@@ -245,11 +245,8 @@ main(int argc, char **argv)
 	IplConvKernel *k;
 
 	struct blob_position *blobs;
-	CvMemStorage *contour_storage;
-	CvSeq *cont;
 	char *req_tag = NULL;
-	int num_contours, i, w, h;
-	double area;
+	int i, w, h;
 	CvCapture *capture = NULL;
 
 	if(DEBUGDISPLAY) {
@@ -299,9 +296,6 @@ main(int argc, char **argv)
 			req_tag = wait_trigger();
 		}
 
-		srlog(DEBUG, "Allocating contour stroage");
-		contour_storage = cvCreateMemStorage(0); //TODO: Look this up
-
 		srlog(DEBUG, "Grabbing frame");
 		if(USEFILE) {
 			frame = cvLoadImage(IN_FILENAME, CV_LOAD_IMAGE_COLOR);
@@ -349,9 +343,7 @@ main(int argc, char **argv)
 		fputs("BLOBS\n", stdout);
 		fflush(stdout);
 
-		cvReleaseMemStorage(&contour_storage);
 		srlog(DEBUG, "Saving frame to out.jpg");
-
 		cvSaveImage(OUT_FILENAME, frame);
 		if (USEFILE) {
 			cvReleaseImage(&frame);
