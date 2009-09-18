@@ -357,7 +357,9 @@ main(int argc, char **argv)
 		srlog(DEBUG, "Saving frame to out.jpg");
 
 		cvSaveImage(OUT_FILENAME, frame);
-		cvReleaseImage(&frame);
+		if (USEFILE) {
+			cvReleaseImage(&frame);
+		}
 
 		if (DEBUGDISPLAY)
 			cvWaitKey(100);
