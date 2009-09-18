@@ -158,50 +158,6 @@ IplImage
 	return frame;
 }
 
-int
-add_blob(CvSeq *cont, CvSize framesize, IplImage *out, int colour, int minarea,
-							IplImage *huemask)
-{
-	static IplImage *blobmask = NULL;
-	CvScalar avghue, white;
-	CvRect outline;
-	int count;
-
-	if(blobmask == NULL)
-		blobmask = allo_frame(framesize, IPL_DEPTH_8U, 1);
-
-	white = cvScalar(255, 255, 255, 255);
-
-	outline = cvBoundingRect(cont, 0);
-	cvSetZero(blobmask);
-	cvRectangle(blobmask, cvPoint(outline.x, outline.y),
-				cvPoint(outline.x+outline.width,
-					outline.y+outline.height),
-				white, CV_FILLED, 8, 0);
-
-	cvAnd(huemask, blobmask, blobmask, NULL);
-	count = cvCountNonZero( blobmask );
-	if(count < minarea)
-		return 0;
-
-	if(DEBUGOUTPUT) //print the count if debug output requested
-		printf("%d\n", count);
-
-	avghue = cvScalarAll(colour*20+50);
-
-	printf("%d,%d,%d,%d,%d,%d\n", outline.x,
-					outline.y,
-					outline.width,
-					outline.height,
-					count, colour);
-
-	if(DEBUGDISPLAY) {
-		cvAddS(out, avghue, out, blobmask);
-	}
-
-	return 1;
-}
-
 void
 Hoo(int event, int x, int y, int flags, void *param)
 {
