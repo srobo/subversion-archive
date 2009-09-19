@@ -208,18 +208,21 @@ main(int argc, char **argv)
 		frame = get_frame(capture);
 	}
 
-	framesize = cvGetSize(frame);
-	if(DEBUGOUTPUT) { //print the framesize if debug output requested
-		printf("Framesize %dx%d.\n", framesize.width, framesize.height);
-	}
+	if (frame) {
+		framesize = cvGetSize(frame);
+		if(DEBUGOUTPUT) { //print the framesize if debug output on
+			printf("Framesize %dx%d.\n", framesize.width,
+							framesize.height);
+		}
 
-	srlog(DEBUG, "Allocating scratchpads");
-	hsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
-	hue = allo_frame(framesize, IPL_DEPTH_8U, 1);
-	sat = allo_frame(framesize, IPL_DEPTH_8U, 1);
-	val = allo_frame(framesize, IPL_DEPTH_8U, 1);
-	dsthsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
-	dstrgb = allo_frame(framesize, IPL_DEPTH_8U, 3);
+		srlog(DEBUG, "Allocating scratchpads");
+		hsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
+		hue = allo_frame(framesize, IPL_DEPTH_8U, 1);
+		sat = allo_frame(framesize, IPL_DEPTH_8U, 1);
+		val = allo_frame(framesize, IPL_DEPTH_8U, 1);
+		dsthsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
+		dstrgb = allo_frame(framesize, IPL_DEPTH_8U, 3);
+	}
 
 	k = cvCreateStructuringElementEx( 5, 5, 0, 0, CV_SHAPE_RECT, NULL);
 
@@ -236,6 +239,13 @@ main(int argc, char **argv)
 			frame = cvLoadImage(IN_FILENAME, CV_LOAD_IMAGE_COLOR);
 		} else {
 			frame = get_frame(capture);
+		}
+
+		if (!frame) {
+			srlog(DEBUG, "No frame, skipping analysis");
+			goto noframe;
+			/* Well justified as it reduces the complexity of
+			 * the following code */
 		}
 
 		srlog(DEBUG, "Converting to HSV");
@@ -270,6 +280,8 @@ main(int argc, char **argv)
 			cvShowImage("testcam", frame);
 		}
 
+		noframe:
+
 		if (req_tag) {
 			fputs(req_tag, stdout);
 			free(req_tag);
@@ -278,9 +290,12 @@ main(int argc, char **argv)
 		fputs("BLOBS\n", stdout);
 		fflush(stdout);
 
-		srlog(DEBUG, "Saving frame to out.jpg");
-		cvSaveImage(OUT_FILENAME, frame);
-		if (USEFILE) {
+		if (frame) {
+			srlog(DEBUG, "Saving frame to out.jpg");
+			cvSaveImage(OUT_FILENAME, frame);
+		}
+
+		if (USEFILE && frame) {
 			cvReleaseImage(&frame);
 		}
 
