@@ -70,18 +70,18 @@ srlog(char level, const char *m)
 
 		gettimeofday(&tv, &tz);
 		tm = localtime(&tv.tv_sec);
-		printf("%02d:%02d:%02d.%d", tm->tm_hour, tm->tm_min, tm->tm_sec,
-							(int) tv.tv_usec);
+		fprintf(stderr, "%02d:%02d:%02d.%d", tm->tm_hour, tm->tm_min,
+						tm->tm_sec, (int) tv.tv_usec);
 
 		switch(level){
 			case DEBUG:
-				printf(" - DEBUG - %s\n", m);
+				fprintf(stderr, " - DEBUG - %s\n", m);
 				break;
 			case ERROR:
-				printf(" - ERROR - %s\n", m);
+				fprintf(stderr, " - ERROR - %s\n", m);
 		}
 	} else if(level == ERROR) {
-		printf("%s\n", m);
+		fprintf(stderr, "%s\n", m);
 	}
 }
 
