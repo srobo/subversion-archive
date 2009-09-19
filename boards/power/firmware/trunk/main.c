@@ -64,7 +64,7 @@ void init_cpu(void)
 	BCSCTL1 = XT2OFF | XTS | 0xC7 | RSEL2 | RSEL1 | RSEL0;
 	BCSCTL2 = 0;
 
-//#define XTAL
+#define XTAL
 #ifdef XTAL
 	/*  */
 	BCSCTL1 =  RSEL2 | RSEL1 | RSEL0; /* enable xt2 */
