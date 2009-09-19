@@ -49,7 +49,14 @@
 #define line_hysteresis_high 5
 #define line_hysteresis_low 5
 
-#define BLOB_MIN_MASS 400
+#define BLOB_MIN_WIDTH 5
+#define BLOB_MIN_HEIGHT 5
+#define BLOB_MIN_MASS 10
+
+#define span_min_sat 60
+#define span_min_val 60
+#define span_min_len 5
+#define span_match_fuzz 30
 
 static unsigned char bias[template_size][template_size];
 
@@ -102,7 +109,7 @@ add_blob(int minx, int miny, int maxx, int maxy, int colour)
 
 	w = maxx - minx;
 	h = maxy - miny;
-	if (w * h < BLOB_MIN_MASS)
+	if (w * h < BLOB_MIN_MASS || w < BLOB_MIN_WIDTH || h < BLOB_MIN_HEIGHT)
 		return;
 
 	blobs[num_blobs].x1 = minx;
@@ -1228,10 +1235,11 @@ vis_search_for_blobs(IplImage *img, IplImage *dir, int spacing)
 }
 
 struct blob_position *
-vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat)
+vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat, IplImage *val)
 {
-#define getsat(a, b) *(s + ((b) * sat->widthStep) + (a))
 #define gethue(a, b) *(h + ((b) * hue->widthStep) + (a))
+#define getsat(a, b) *(s + ((b) * sat->widthStep) + (a))
+#define getval(a, b) *(v + ((b) * val->widthStep) + (a))
 #define put(a, b) *(out->imageData + ((b) * out->widthStep) + (a))
 
 #define line_cache_sz 5
@@ -1246,12 +1254,13 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat)
 
 	CvSize sz;
 	IplImage *out;
-	unsigned char *h, *s;
+	unsigned char *h, *s, *v;
 	void *tmp;
 	int x, y, i, j, cache;
 
 	h = (unsigned char *)hue->imageData;
 	s = (unsigned char *)sat->imageData;
+	v = (unsigned char *)val->imageData;
 
 	if (hue->width != sat->width || hue->height != sat->height) {
 		fprintf(stderr, "vis_find_blobs_through_scanlines, size "
@@ -1295,7 +1304,8 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat)
 		for (x = line_cache_sz - 1; x < hue->width; x++) {
 			cache += gethue(x, y);
 
-			if (getsat(x, y) >= 60) {
+			if (getsat(x, y) >= span_min_sat &&
+			    getval(x, y) >= span_min_val) {
 				if (cache <= red_max && cache >= red_min)
 					put(x, y) = RED;
 				else if (cache <= blue_max && cache >= blue_min)
@@ -1322,8 +1332,8 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat)
 				    spans[span].colour == NOTHING)
 					goto trumpets;
 #warning beans
-				/* Reject anything not 10 in length */
-				if (x - spans[span].x1 <= 10)
+				/* Reject anything not long enough */
+				if (x - spans[span].x1 <= span_min_len)
 					goto trumpets;
 
 				spans[span].x2 = x;
@@ -1356,7 +1366,6 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat)
  * be exactly above each other, so we have to decide how close they need to
  * be to be acceptably next to each other. Let's try 10. */
 
-#define span_match_fuzz 30
 		for (i = 0; i < span; i++) {
 			for (j = 0; j < ospan; j++) {
 				if (abs(spans[i].x1 - ospans[j].x1) < span_match_fuzz && abs(spans[i].x2 - ospans[j].x2) < span_match_fuzz && ospans[j].colour == spans[i].colour)  {
@@ -1377,13 +1386,9 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat)
 		for (j = 0; j < ospan; j++) {
 			if (ospans[j].colour != NOTHING) {
 				/* Not used, block is dead */
-				/* Check if it's of any significance */
-				if (ospans[j].maxx - ospans[j].minx > 20 &&
-				    ospans[j].maxy - ospans[j].miny > 20) {
-					add_blob(ospans[j].minx, ospans[j].miny,
-						 ospans[j].maxx, ospans[j].maxy,
-						 ospans[j].colour);
-				}
+				add_blob(ospans[j].minx, ospans[j].miny,
+					 ospans[j].maxx, ospans[j].maxy,
+					 ospans[j].colour);
 			}
 		}
 
@@ -1391,8 +1396,9 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat)
 
 	cvReleaseImage(&out);
 	return blobs;
-#undef getsat
 #undef gethue
+#undef getsat
+#undef getval
 #undef getedge
 #undef put
 }
