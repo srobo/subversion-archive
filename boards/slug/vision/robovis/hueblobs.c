@@ -252,7 +252,7 @@ main(int argc, char **argv)
 			cvShowImage("hue", hue);
 		}
 
-		blobs = vis_find_blobs_through_scanlines(hue, sat);
+		blobs = vis_find_blobs_through_scanlines(hue, sat, val);
 		for (i = 0; ; i++) {
 			if (blobs[i].x1 == 0 && blobs[i].x2 == 0)
 				break;
