@@ -1,3 +1,4 @@
 (component-library "./symbols")
 (component-library "./symbols/MAX1627")
-(component-library "/home/chris/srobo/boards/lib/geda/sym")
+(component-library "symbols/AllegroA8498/")
+
