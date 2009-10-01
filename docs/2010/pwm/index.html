@@ -1,0 +1,71 @@
+<html>
+<head>
+<title>PWM Board</title>
+</head>
+<body>
+<h1>PWM Board</h1>
+Servos are mechanical armatures which can be commanded to move to a given angular position. They are useful when positional accuracy is required, for example when attempting to pick up a token from the arena floor. The PWM board allows you to control multiple servos on your robot. To see what can be achieved with servos see this <a href="http://oomlout.com/blog/2009/03/fancy_yourself_a_robotic_arm_d.html" title="Servo Robot Arm">Servo Robot Arm</a> project. 
+
+In addition to driving servos, the PWM board has an alphanumeric display which can display arbitrary lines of text - very useful when debugging your robot! 
+
+
+
+<h2>Board Outline</h2>
+The PWM board outline is shown below in <a href="#board-outline">Figure 1</a>:
+<center>
+<a name="board-outline"></>
+<img src="images/outline.png" />
+<br />Figure 1 - 1:1 Scale Board Outline of PWM Board
+</center>
+
+<h2> Technical Specification</h2>
+<ul>
+<li>Provides 6 independent servo channels</li>
+<li>Servos must be rated 5 Volts </li>
+<li>LCD Alphanumeric module with 2 lines of 24 characters</li>
+</ul>
+
+<h2>Connecting Servos</h2>
+
+Servos are connected to the PWM Board using the bank of vertical pin headers on the top side of the board as shown in <a href="#servo-header">Figure 2</a>. Each row of three pins corresponds to a single servo output. Be careful to ensure that the polarity is correct before connecting. Almost all servos come with this 3-wire connector and you should not need to do any extra work to connect them to the PWM Board.
+
+<center>
+<a name="servo-header"></a> <img src="images/servo-header.jpg" />
+<br />Figure 2 - Connecting a Servo to the PWM Board
+</center>
+
+
+<h3>Duplicate Outputs</h3>
+Although there are eight rows of pin headers on the PWM Board, the last two headers are duplicates of servos 4 and 5 - this is illustrated in the <a href="#board-outline">board outline</a>. Unless you need two servos to behave identically, you should not need to use these duplicate outputs.
+
+<h2>The LCD Module</h2>
+During testing you may want to write text to the LCD from within your python robot code. This could help to determine how far into your program you are. Other possibilities include:
+
+<ul>
+<li>Write a message to LCD when camera detects a blob</li>
+<li>Writing error messages to the LCD</li>
+<li>Show alert when sensors detect wall/ball</li>
+<li>View JointIO input/output status </li>
+</ul>
+
+The display supports pages of text called 'screens'. You can have up to four different 'screens' at the same time however, only one will be visible on the display. Pressing the push switch on the board allows you to cycle through each screen in turn. This is useful since you could dedicate a screen of text to each module (vision, motor, jointio, pwm).  
+
+<h3>Connecting the LCD Module to the PWM Board</h3>
+
+The LCD module connects to the screen using the blue ribbon cable supplied in your kits. The cable can only be connected in one orientation, so be sure to line up the connectors correctly. <a href="#lcd-connection">Figure 3</a> shows how to connect your LCD module to your PWM board.
+<br /><br />
+<b style="color:red">WARNING:</b> Do not connect/disconnect the LCD from the PWM board whilst your robot is switched on!
+
+
+<h2>Troubleshooting</h2>
+<h3>Servos Do Not Move</h3>
+Have you ensured the polarity of the servo connector matches with Figure \ref{fig:outline}? Is the 5V rail connected to the Power Board? Is your servo connected to the correct pin header?
+<h3>PWM Screen Is Blank</h3>
+Have you connected the LCD module to the PWM Board using the ribbon cable as in <a href="#lcd-connection">Figure 3</a>? Is the 5V rail on the PWM Board connected to the Power Board? Are you looking at the correct 'screen'? - cycle through the screens by pressing the button.
+
+<h1>Programming Interface</h1>
+
+<h3>Writing to the screen</h3>
+
+
+</body>
