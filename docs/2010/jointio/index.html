@@ -121,4 +121,57 @@ setoutput(1, 1)
 io.pin[3] = 0
 setoutput(3,0)
 </pre>
+
+<h3>Events</h3>
+The real word is full of events which you must react to. The same is true for your robot's world. Your robot will need to react to the events when they happen, such as finding a token, hitting a wall or catching on fire. There are two ways your robot can find out that an event has occurred. 
+<ol>
+<li><b>Polling:</b> The robot continually checks for each possible event one by one in an infinite loop until something happens.</li>
+<li><b>Yielding</b> The robot waits or 'yields' on a particular event. When that event occurs your robot will be interrupted but in the meantime it can get on with other tasks, like finding tokens.
+</li>
+</ol>
+
+A common problem is needing to wait for a bump switch to be triggered, in which case you might need to change the direction of your robot. This waiting can be achieved using the yield statement:
+<pre>
+# our bump sensor is connected to input 0
+yield io.pin[0]
+</pre>
+The above code will cause your robot to wait until the digital value of the JointIO input pin 0 to change from its current value. Until it does, any code that follows the yield statement will not be executed. Suppose that you are only interested in when an input is at a particular value, the following code shows you how you can specify the conditions within the yield statement:
+<pre>
+# Wait for input 3 to change digital value
+yield io.pin[3]
+
+# Wait for input 3 to become digital '1' (threshold 512)
+yield io.pin[3] == 1
+
+# Wait for input 3 reading to exceed 1V
+yield io.apin[1] > 1
+
+# Wait for input 2 reading to go below 2.5V
+yield io.apin[2] < 2.5
+
+# note analogue pins do not have the '==' operator
+</pre>
+
+More complex events might occur when multiple inputs change or are in specific states. It is possible to wait on multiple input events within the same yield statement
+<pre>
+# wait for input pin 3 to be logic 1 AND input pin 2 to be logic 0
+yield (io.pin[3] == 1) & (io.pin[2] == 0)
+
+# wait for input pin 3 to be greater than 2V AND below 3V
+yield (io.apin[3] > 2) & (io.apin[3] < 3)
+
+# wait for input pin 5 to be logic 1 OR input pin 4 to be logic 0
+yield (io.pin[5] == 1) , (io.pin[4] == 0)
+
+# wait for input pin 3 to be greater than 2V OR input 4 to be below 3V
+yield (io.apin[3] > 2) , (io.apin[4] < 3)
+</pre>
+
+<h3>Dealing with an event</h3>
+How do you deal with an event when it happens? Well, the first step is to find out exactly what it is that has happened. This information is stored in the 'event' variable. Immediately after a yield, you can test the event variable to find out the state of the input pins when the event occurred. This information is particularly useful when you yield on multiple events as you need to identify which one has occurred. 
+
+The following code yields on two different input pins (0 & 1) and then updates two output pins such that they echo the input values. The routine is utterly pointless and could be replaced with a piece of wire, but it illustrates how to deal with an event.
+<pre>
+TODO
+</pre>
 </body>
