@@ -7,11 +7,14 @@ pre {
 	margin: 1em 1.75em;
 	padding: 0.25em;
 }
+img {
+	margin:0.5em;
+}
 </style>
 </head>
 <body>
 <center><h1>JointIO Board</h1></center>
-
+Robots need sensors. Without them, they drive into walls, miss tokens, catch fire, take over the world... you get the idea. To enable your robot to get information about the immediate world around it, you are provided with the JointIO board in your kit. JointIO stands for Joint Input and Output. You can connect different types of electrical sensors to it (Inputs) and drive additional circuitry or devices (Outputs).
 
 <h2>Board Outline</h2>
 <center>
@@ -20,21 +23,102 @@ pre {
 <br />Figure 1 - Outline of JointIO Board (click for full 1:1 scale image)
 </center>
 
-<h2> Technical Specification</h2>
+<h2>Types of Sensor</h2>
+Electrical sensors fall in to two categories, analogue and digital. Analogue sensors include:
 <ul>
+<li>Potentiometers (variable resistors)</li>
+<li>Light detectors (photo-diodes, photo-resistors</li>
+<li>Sound detectors (microphones)</li>
+<li>Temperature sensors (thermistors, thermocouples)</li>
+</ul>
+Analogue sensors produce a signal which can vary in magnitude over a range of possible values. Compare this to digital sensors which can only have one of two values 1 or 0 (on/off, true/false, ..). Digital sensors include:
+<ul>
+<li>Mechanical Tilt sensors </li>
+<li>Reed sensors </li>
+<li>Bump switches</li>
+<li>Signals from other digital electronics</li>
 </ul>
 
-<h2>Connecting Input Devices</h2>
+<h2> Technical Specification</h2>
+<ul>
+<li>There are 8 available inputs on the JointIO board</li>
+<li>Each input can be connected to a digital OR analogue sensor</li>
+<li>There are 4 available digital outputs</li>
+<li>There are 4 ground connections</li>
+<li>There are 4 power connections (3.3Volts)</li>
+</ul>
 
+<h2>Making Connections</h2>
+All connections to the JointIO board are made using the green and orange cage clamps located on all sides of the board. You will need to refer to the <a href="#board-outline">Board Outline</a> <b>before making any connections!</b> Using a small screwdriver you can push back the orange lever on the cage clamp and insert the wire directly into the hole on the front. Release the orange lever and ensure that the wire is held tightly.
+
+<h2>Inputs</h2>
+Eight analogue inputs are provided by the JointIO Board. These are labelled 0 to 7 and can be treated as <strong>digital</strong> inputs in your code if desired. Power and ground connections are provided to enable switches and external circuits to be interfaced. <a href="#analogue-in">Figure 2</a> demonstrates how a rotary potentiometer can be connected to the JointIO board to measure angular rotation. <br />
+<br />
+<strong>Note:</strong> The analogue readings of the input pin assume that the input voltage range is between GND and 3.3V. If a voltage greater than 3.3V is connected, the JointIO board will still read it as 3.3V. If you have inputs which are unused i.e. not connected to anything, then their value, if read, will fluctuate randomly between 0 and 3.3Volts. To repeat that, <strong>Unconnected inputs will have random analogue values</strong>. 
+<br />
+<br />
+The logic value of these input pins are echoed onto the input LEDs on the board. This gives a visual indication of which inputs are high/low.
+
+<center>
+<a name="analogue-in"></>
+<a href="images/analogue-in.png"><img src="images/analogue-in.png" border=0 /></a>
+<br />Figure 2 - Example analogue sensor circuit
+</center>
+<br />
+<a href="#digital-in">Figure 3</a> shows how a simple bump switch may be connected to the JointIO board. Note that the resistor (typical values ~1k) is necessary so that when the switch is not pressed, the JointIO input is not disconnected, instead it is 'pulled' to ground. Remember, disconnected inputs have random values!
+<center>
+<a name="digital-in"></>
+<a href="images/digital-in.png"><img src="images/digital-in.png" border=0 /></a>
+<br />Figure 3 - Example digital sensor circuit
+</center>
+
+<h2>Outputs</h2>
+Four digital outputs are provided by the JointIO Board. These are labelled 0 to 3 and may be used to trigger relays, LEDs, external logic circuits or anything else requiring a digital signal. The digital output pins will be at 3.3V (Logic 1) and GND (Logic 0). The logic value of each output pin is displayed by the output LEDs on the board. This gives a visual indication of which outputs are high/low.
 
 <h2>Troubleshooting</h2>
 
 <h1>Programming Interface</h1>
 A programming interface is a set of rules explaining how you can control a specific module from within your robot's python code.
 
-<h3>Controlling Servos</h3>
-
+<h3>Reading Inputs</h3>
+To get the analogue value of a specific input use either of the following commands:
 <pre>
-</pre>
+# INPUT_NUMBER = 0,1,..7
+readapin(INPUT_NUMBER)
 
+# alternately use:
+io.apin[INPUT_NUMBER]
+</pre>
+This will return a real number between 0 and 3.3.
+
+<br />
+<br />
+To get the digital value of a specific input use either of the following commands:
+<pre>
+# INPUT_NUMBER = 0,1,..7
+readpin(INPUT_NUMBER)
+
+# alternately use:
+io.pin[INPUT_NUMBER]
+</pre>
+Note that 'apin' becomes 'pin' for digital reads.
+
+<h3>Setting Outputs</h3>
+To set one of the four output pins use the following commands:
+<pre>
+# OUTPUT_NUMBER = 0,1,2,3
+io.pin[1] = 1
+
+# Or:
+setoutput(OUTPUT_NUMBER,1)
+
+#examples:
+#set output 1 high
+io.pin[1] = 1
+setoutput(1, 1)
+
+#set output 3 low
+io.pin[3] = 0
+setoutput(3,0)
+</pre>
 </body>
