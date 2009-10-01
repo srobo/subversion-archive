@@ -1,6 +1,13 @@
 <html>
 <head>
 <title>PWM Board</title>
+<style>
+pre {
+	border:1px solid #D7D7D7;
+	margin: 1em 1.75em;
+	padding: 0.25em;
+}
+</style>
 </head>
 <body>
 <center><h1>PWM Board</h1></center>
@@ -68,8 +75,54 @@ Have you ensured the polarity of the servo connector matches with <a href="#boar
 Have you connected the LCD module to the PWM Board using the ribbon cable as in <a href="#lcd-connection">Figure 3</a>? Is the 5V rail on the PWM Board connected to the Power Board? Are you looking at the correct 'screen'? - cycle through the screens by pressing the button.
 
 <h1>Programming Interface</h1>
+A programming interface is a set of rules explaining how you can control a specific module from within your robot's python code.
 
-<h3>Writing to the screen</h3>
+<h3>Controlling Servos</h3>
+A servo's armature (a white plastic 'X' sticking out of the top) can move between two fixed angular positions - these will vary from servo to servo. In order that the programming interface is the same for all possible servos, in your code you set the position as a percentage of the two extremes.
+
+<pre>
+# set servo SERVO_NUMBER to position POS where: 0.0 <= POS <= 100.0
+setpos(SERVO_NUMBER, POS)
+        
+# Also accessible through:
+pwm[SERVO_NUMBER] = POS
+</pre>
+
+Both lines of code above achieve the same effect of setting the specified servo (dictated by 'SERVO_NUMBER') to the specified position (dictated by POS). Remember the position is a percentage and must be in the range 0&le;POS&le;100. The SERVO_NUMBER corresponds to the servo output numbers shown in the <a href="#board-outline">board outline</a> and must therefore be in the range 0&le;SERVO_NUMBER&le;5
+<br />
+<br />
+Having set a servo to a particular position, you may need to read its current position later in you code. To do this you can use either of the following two methods:
+<pre>
+# read servo position - returns servo position
+readpos(SERVO_NUMBER)
+
+# also returns the servo position 
+pwm[SERVO_NUMBER]
+
+</pre> 
+<h3>Calibrating servos</h3>
+When using servos on your robot you might need to calibrate them so that they move to an exact position, corresponding to opening a gate or dropping a token. To achieve this you will need to try multiple values until you find one that works. Perhaps you could automate this task by writing a program to periodically increase the servo position and <a href="#lcd-api">write the current value to the screen</a>
 
 
+<a name="lcd-api"></a><h3>Writing to the screen</h3>
+You can write to the screen at any point in your code which is useful for printing the values of program variables, digital/analogue inputs etc. in real time. Each screen on the LCD consists of two lines of text. Any text that overruns the size of the screen will not be displayed. There are two methods of writing to the screen, both achieve exactly the same thing:
+<pre>
+# Set screen 0 to read "badgers and jam"
+lcd[SCREEN_NUMBER] = "badgers and jam"
+        
+# the following also achieves the same result  
+setlcd(SCREEN_NUMBER, "badgers and jam")
+</pre>
+
+When writing to the LCD module you must specify both the text to be written and the screen it should be written to. Valid screens are 0,1,2,3. You can force text to appear on the bottom line by using the end of line character '\n' in your string of text:
+<pre>
+# you can force text to appear on the bottom line
+lcd[0] = "Top\nBottom"
+
+# the screen will then look like:
+# ------------------
+# |Top             |
+# |Bottom          |
+# ------------------
+</pre>
 </body>
