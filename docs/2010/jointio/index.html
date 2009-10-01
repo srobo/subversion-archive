@@ -19,7 +19,7 @@ Robots need sensors. Without them, they drive into walls, miss tokens, catch fir
 <h2>Board Outline</h2>
 <center>
 <a name="board-outline"></>
-<a href="images/outline.png"><img src="images/outline.png" width="30%" border=0 /></a>
+<a href="images/outline.png"><img src="images/outline.png" style="width:300px" border=0 /></a>
 <br />Figure 1 - Outline of JointIO Board (click for full 1:1 scale image)
 </center>
 
@@ -76,6 +76,11 @@ The logic value of these input pins are echoed onto the input LEDs on the board.
 Four digital outputs are provided by the JointIO Board. These are labelled 0 to 3 and may be used to trigger relays, LEDs, external logic circuits or anything else requiring a digital signal. The digital output pins will be at 3.3V (Logic 1) and GND (Logic 0). The logic value of each output pin is displayed by the output LEDs on the board. This gives a visual indication of which outputs are high/low.
 
 <h2>Troubleshooting</h2>
+<h3>The input pin value appears to be random</h3>
+Most likely you are reading a pin which is not physically connected to anything and therefore it is floating. This could be because you are reading the wrong pin or because the connection to the cage clamp is loose.
+
+<h3>The input pin value is always 3.3</h3>
+The maximum input voltage to the JointIO is 3.3V, if a voltage greater than this is connected, the value read by the JointIO board will always read 3.3V.
 
 <h1>Programming Interface</h1>
 A programming interface is a set of rules explaining how you can control a specific module from within your robot's python code.
@@ -172,6 +177,36 @@ How do you deal with an event when it happens? Well, the first step is to find o
 
 The following code yields on two different input pins (0 & 1) and then updates two output pins such that they echo the input values. The routine is utterly pointless and could be replaced with a piece of wire, but it illustrates how to deal with an event.
 <pre>
-TODO
+#wait until either input 0 or input 1 changes value
+yield io.pin[0], io.pin[1]
+
+# event.io.pins is a list of the pins which caused the event and the yield to return
+if 0 in event.io.pins:
+	# event.io.vals is a list of the pin values when the event happened
+	# e.g. event.io.vals[0] gives the value of pin 0 which triggered the event
+	# event.io.vals only contains pin values for the pins in yield statement
+
+	# the pin 0 event occurred, so we need to update output 0
+	io.pin[0] = event.io.vals[0]
+
+elif 1 in event.io.pins:
+	# the pin 1 event occurred, we need to update output 1
+	io.pin[1] = event.io.vals[1]
+
 </pre>
+
+When yielding on different types of events such as JointIO inputs and vision, you can use the event variable to find out which type of event occurred:
+
+<pre>
+# see vision documentation for more info
+yield vision(), io.pin[0]
+if event == io:
+	# Input pin 0 triggered the event
+	pass
+if event == vision:
+	# a vision event happened before input pin 0 changed
+	pass
+</pre>
+
+
 </body>
