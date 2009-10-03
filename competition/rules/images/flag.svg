@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -13,16 +13,22 @@
    height="372.85858"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
-   sodipodi:docbase="/home/rob/dev-git/rules/images"
+   inkscape:version="0.46"
+   sodipodi:docbase=""
    sodipodi:docname="flag.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0"
-   inkscape:export-filename="/home/rob/dev-git/rules/images/flag.png"
    inkscape:export-xdpi="231"
    inkscape:export-ydpi="231">
   <defs
      id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 186.42929 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="419.20316 : 186.42929 : 1"
+       inkscape:persp3d-origin="209.60158 : 124.28619 : 1"
+       id="perspective45" />
     <marker
        inkscape:stockid="Arrow1Lend"
        orient="auto"
@@ -66,9 +72,10 @@
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:window-width="1280"
-     inkscape:window-height="723"
-     inkscape:window-x="0"
-     inkscape:window-y="27" />
+     inkscape:window-height="726"
+     inkscape:window-x="1690"
+     inkscape:window-y="73"
+     showgrid="false" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -104,27 +111,20 @@
        d="M 63.63961,756.54993 L 481.84276,756.54993"
        id="path2166" />
     <rect
-       style="opacity:1;fill:#b00000;fill-opacity:1;fill-rule:nonzero;stroke:#001a00;stroke-width:1.60000002;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect2168"
-       width="43.436558"
-       height="42.426407"
-       x="315.16763"
-       y="443.2402" />
-    <rect
        style="opacity:1;fill:#7c84ff;fill-opacity:1;fill-rule:nonzero;stroke:#001a00;stroke-width:1.57248926;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect2170"
        width="99.491646"
        height="87.910782"
        x="259.12622"
-       y="487.6731" />
+       y="443.6731" />
     <image
-       y="505.3291"
+       y="461.3291"
        x="280.80212"
        id="image3399"
        height="53.780827"
        width="54.193466"
-       sodipodi:absref="/home/rob/ecssr/proj-svn/media/house-style/SR Colour.png"
-       xlink:href="/home/rob/ecssr/proj-svn/media/house-style/SR Colour.png" />
+       sodipodi:absref="../../../media/house-style/sr.svg"
+       xlink:href="../../../media/house-style/sr.svg" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -137,12 +137,8 @@
          y="780.50507">Floor</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
-       d="M 212.14286,530.93361 L 247.85714,532.36218"
+       d="M 212.14286,486.93361 L 247.85714,488.36218"
        id="path3406" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow1Lend);stroke-opacity:1"
-       d="M 269.28571,428.07647 L 309.28571,460.21932"
-       id="path3408" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
        d="M 307.14286,633.07647 L 351.42857,631.6479"
@@ -161,22 +157,12 @@
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
        x="147.85715"
-       y="533.07648"
+       y="489.07648"
        id="text3618"><tspan
          sodipodi:role="line"
          id="tspan3620"
          x="147.85715"
-         y="533.07648">Team Flag</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="203.57143"
-       y="420.93359"
-       id="text3622"><tspan
-         sodipodi:role="line"
-         id="tspan3624"
-         x="203.57143"
-         y="420.93359">Match Flag</tspan></text>
+         y="489.07648">Team Flag</tspan></text>
     <g
        id="g3636"
        transform="translate(54,0)">
@@ -197,46 +183,32 @@
     </g>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Lstart);marker-end:url(#Arrow1Lend);stroke-opacity:1"
-       d="M 352.85714,585.21932 L 261.42857,585.21932"
+       d="M 352.85714,541.21932 L 261.42857,541.21932"
        id="path3630" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
        x="271.14285"
-       y="602.79077"
+       y="558.79077"
        id="text3632"><tspan
          sodipodi:role="line"
          id="tspan3634"
          x="271.14285"
-         y="602.79077">Max 200mm</tspan></text>
+         y="558.79077">Max 200mm</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Lstart);marker-end:url(#Arrow1Lend);stroke-opacity:1"
-       d="M 377.14286,572.36218 L 377.14286,493.79075"
+       d="M 377.14286,528.36218 L 377.14286,449.79075"
        id="path3641" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Lstart);marker-end:url(#Arrow1Lend);stroke-opacity:1"
-       d="M 375.71429,480.21932 L 375.71429,445.21932"
-       id="path3643" />
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="388.57144"
-       y="463.79074"
-       id="text3645"><tspan
-         sodipodi:role="line"
-         id="tspan3647"
-         x="388.57144"
-         y="463.79074">100mm</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
        x="387.85715"
-       y="537.36218"
+       y="493.36218"
        id="text3649"><tspan
          sodipodi:role="line"
          id="tspan3651"
          x="387.85715"
-         y="537.36218">200mm</tspan></text>
+         y="493.36218">200mm</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
