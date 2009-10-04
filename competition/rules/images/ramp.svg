@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="634.78003"
-   height="440.82001"
+   width="634.95728"
+   height="440.87009"
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.46+devel"
@@ -96,8 +96,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="343.04002"
-     inkscape:cy="248.23294"
+     inkscape:cx="356.42119"
+     inkscape:cy="230.98523"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
      showgrid="true"
@@ -139,7 +139,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-195.07143,-161.99212)"
+     transform="translate(-190.57143,-170.52866)"
      style="display:inline"
      sodipodi:insensitive="true">
     <path
@@ -210,7 +210,8 @@
      id="layer5"
      inkscape:label="dots"
      style="display:inline"
-     sodipodi:insensitive="true">
+     sodipodi:insensitive="true"
+     transform="translate(4.5,-8.5365429)">
     <path
        style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:6, 6;stroke-dashoffset:0"
        d="m 209.60665,434.75909 121.8015,-128.58475 49.0975,-28.34646"
@@ -229,7 +230,8 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="trapdoor"
-     style="display:none">
+     style="display:none"
+     transform="translate(4.5,-8.5365429)">
     <path
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        d="m 362.81859,267.24857 -0.40591,-21.31046 98.195,-56.69291 0,70.86614 -79.78344,46.06299 0,-42.51968 -12.27438,7.08661 -5.73127,-3.49269 z"
@@ -249,7 +251,8 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="closed-trapdoor"
-     style="display:inline">
+     style="display:inline"
+     transform="translate(4.5,-8.5365429)">
     <path
        style="fill:#25dd00;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        d="m 380.50565,277.82788 98.19501,-56.69291 0,-14.17323 -98.19501,56.69291 0,14.17323 z"
@@ -268,7 +271,8 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="dimensions"
-     style="display:inline">
+     style="display:inline"
+     transform="translate(4.5,-8.5365429)">
     <path
        style="stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend);display:inline"
        d="M -5.866463e-7,327.43417 98.195006,384.12709"
@@ -317,7 +321,7 @@
          x="7.2443137"
          y="23.731855">Safety barrier: 50mm tall</tspan></text>
     <path
-       style="stroke-width:2;stroke:#000000;stroke-opacity:1;marker-end:url(#Arrow1Mend);stroke-miterlimit:4;stroke-dasharray:none"
+       style="stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
        d="m 263.89908,26.253078 61.37188,49.606299"
        id="path2457" />
   </g>
