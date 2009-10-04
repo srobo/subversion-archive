@@ -1,0 +1,181 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../css/main.css" />
+<title>Motor controller</title>
+</head>
+<body>
+<h1>Motor Controller</h1>
+<p>
+  You probably want to make your robot move around the arena.  The
+  most common way of doing this is using electric motors.  The
+  motor controller in your kit allows you to control the power
+  delivered to two 12V motors.
+</p>
+<h3><i>Power</i>, not Speed</h3>
+<p>
+  From your robot software, you can tell the motor controller to
+  deliver a certain amount of power to the motors.  (For those who are
+  interested, the motor controller
+  uses <a href="http://en.wikipedia.org/wiki/Pulse-width_modulation">pulse-width
+  modulation</a> to vary the amount of power delivered to the motors.)
+  There is not a linear relationship between power and the speed of
+  the motor.  The motor will be subject to a varying load
+  (e.g. your robot may be going up a <a href="ramp/ramp.htm">ramp</a>,
+  or it might be pushing some blocks).  There is also variation
+  between different instances of the same motor, and most DC motors
+  run slightly better in one direction.
+</p>
+
+<p>
+  As delivered power doesn't relate directly to a specific motor
+  speed, it's not really possible to just use timing to get your robot
+  into the position you want.
+</p>
+
+<h3>Feedback</h3>
+<p>
+  Since a timing-based approach to motor control doesn't provide
+  repeatable or reliable results, you need to find a different
+  solution.  The answer to this problem is "feedback".  You will need
+  to write your robot software so that it <i>feeds</i> information
+  from relevant sensors <i>back</i> to your software that determines
+  how to adjust the motor outputs next.
+</p>
+<p>
+  Imagine you had been blind-folded and had to walk across a large
+  room to a chair.  Every three steps you are allowed to take your
+  blind-fold off and look around, then put the blind-fold back on
+  before you take any more steps.  When you are blind-folded, you have
+  less of an idea about where you are in the room and you hope that
+  your legs carry you in the right direction.  Every time you lift up
+  your blind-fold, you are reading your sensors, and when the
+  blind-fold comes back down again you adjust the signals you send to
+  your legs.  This is a <i>feedback loop</i>.  By periodically
+  examining what needs to be done to reach a given target, and
+  adjusting outputs as necessary, you will eventually reach your
+  target (the chair).
+</p>
+<p>
+  Depending on how you use motors in your robot, there are several
+  different sensors that you <i>could</i> use (and this is a
+  non-exhaustive list):
+  <ul>
+    <li>The webcam</li>
+    <li>The AS5030 magnetic-rotary sensor board</li>
+    <li>Bump-sensors</li>
+  </ul>
+
+  The motor controller can interface with two AS5030 boards to allow
+  you to read the rotary position of wheels.  The motor controller
+  also contains a PID controller (see below) that allows you to
+  move a motor to an absolute position.
+</p>
+
+<h1>Specification</h1>
+<h2>Motor drivers:</h2>
+<ul>
+  <li>Maximum motor supply voltage: 14V</li>
+  <li>Minimum motor supply voltage: 10V</li>
+  <li>Maximum output current per channel: 4A</li>
+</ul>
+
+<h2>Feedback lines:</h2>
+<p>These are digital I/O pins, and are used to communicate with the
+  AS5030 sensor board.</p>
+<ul>
+  <li>Input voltage range: -14v to +14v</li>
+</ul>
+
+<h1>Programming Interface</h1>
+<p>
+  Each motor output can be configured and used independently of the
+  other one.  The SR library provides you with an array of motor
+  channels.  You control everything to do with the first motor channel
+  using:
+<pre>
+  motor[0]
+</pre>
+  Similarly, you control everything to with the second motor channel
+  using:
+<pre>
+  motor[1]
+</pre>
+
+The following documentation talks about using motor[0].  All of these
+things are also applicable to motor[1].
+</p>
+
+<h2>Controlling motor power</h2>
+<p>To control the power delivered to motors directly, rather than use
+  any sensors or control loop on the motor controller, configure the
+  motor controller like this:
+</p>
+<pre>
+  motor[0].sensor = motor.NULL
+  motor[0].controller = motor.UNITY
+  motor[0].target = 0
+</pre>
+<p>After configuring the channel as above, enable it like so:</p>
+<pre>
+  motor[0].enable()
+</pre>
+
+<p>
+  Your motor channel is now configured.  You can set the output to a
+  certain power using motor[0].target.  This takes a number between
+  -100 and 100:
+  <ul>
+    <li>100: Full forward.</li>
+    <li>0: Off</li>
+    <li>-100: Full reverse.</li>
+  </ul>
+  So, to set your motor to go backwards at half power us the following:
+</p>
+<pre>
+  motor[0].target = 50
+</pre>
+
+<h2>Using the AS5030 sensor with PID control</h2>
+<pre>
+motor[0].sensor = motor.ADS5030
+# Select which feedback pins are connected to which pin:
+motor[0].ads5030.set_pins( clk = 0, dio = 1 )
+# How many LSB's to discard from sensor (default:0)
+motor[0].ads5030.set_shr( 2 )
+
+# Use PID control on this channel:
+motor[0].controller = motor.PID
+
+## Configuring the PID controller:
+motor[0].PID.set_coeff( kp = -4, ki = -5, kd = -10 )
+# Which can also be called like this:
+motor[0].PID.sef_coeff(-4,-5,-10)
+
+motor[0].enable()
+
+# When using PID controller, can be any 32-bit signed int, e.g: -->
+motor[0].target = 3049 
+motor[0].target = -23
+
+# Wait for motor to reach target
+yield motor[0]
+</pre>
+
+<h3>How to tune the PID loop</h3>
+
+
+<!-- # Disable a channel: -->
+<!-- motor[0].disable() -->
+
+
+<!-- # motor[0].target and motor[1].target can also be used to find the current target. -->
+
+<!-- # Wait for the motor to reach its target -->
+<!-- # (obviously only valid when a sensor + controller is in use): -->
+<!-- yield motor[0] -->
+
+</p>
+
+
+</body>
+</html>
