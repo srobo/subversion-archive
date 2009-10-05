@@ -9,7 +9,7 @@
 
 function Browser(cback, options) {
 	// Public functions:
-	//  - clickSaveFile(bool):	event handler for when save is clicked, if bool is true, ignore lack of commit msg
+	//  - clickSaveFile(bool noMsg, bool nofiles): event handler for when save is clicked, if noMsg is true: ignore lack of commit msg, if noFiles is true: ignore the fileList not being loaded
 	//  - clickCancelSave(): cancel and close browser
 	//  - dirSelected(): event handler for when a directory is selected in the left hand pane
 	//  - display(): show all browser css
@@ -76,7 +76,7 @@ Browser.prototype._init = function() {
 	//set up event handlers
 	this._esc_press = connect(document, 'onkeydown', bind(this._window_keydown, this));
 	connect("new-file-name", 'onkeypress', bind(this._new_file_keypress, this));
-	connect("save-new-file", 'onclick', bind(this.clickSaveFile, this, false));
+	connect("save-new-file", 'onclick', bind(this.clickSaveFile, this, false, false));
 	connect("cancel-new-file", 'onclick', bind(this.clickCancelSave, this));
 	connect("new-commit-msg","onfocus", bind(this._msg_focus, this));
 	connect("new-file-name","onfocus", bind(this._fname_focus, this));
@@ -142,7 +142,8 @@ Browser.prototype._badFname = function(name) {
 }
 
 //when user clicks save
-Browser.prototype.clickSaveFile = function(override) {
+Browser.prototype.clickSaveFile = function(noMsg, noFiles) {
+	disconnectAll("browser-status");
 	this.commitMsg = $("new-commit-msg").value;
 	this.newFname = $("new-file-name").value;
 
@@ -165,6 +166,14 @@ Browser.prototype.clickSaveFile = function(override) {
 		return;
 	}
 
+	//warn if the file list is requested, but hasn't loaded
+	if((this.type == 'isFile' || this.type == 'isDir') && this.fileList == null && !noFiles) {
+		$("browser-status").innerHTML = "File list not yet loaded - unable to test for filename clashes - click to ignore";
+		connect("browser-status", 'onclick', bind(this.clickSaveFile, this, noMsg, true));
+		$("new-file-name").focus();
+		return;
+	}
+
 	//file, dir or project name already exists
 	logDebug('Finding '+this.newFname+' in '+this._List+' : '+(findValue(this._List, this.newFname) > -1) );
 	if( ( ( this.type == 'isFile' || this.type == 'isDir' ) && findValue(this._List, this.newFname) > -1 ) ||
@@ -181,13 +190,13 @@ Browser.prototype.clickSaveFile = function(override) {
 		return;
 	}
 
-	var commitErrFlag = ( !override &&
+	var commitErrFlag = ( !noMsg &&
 		this.type != 'isProj' &&
 		this._badCommitMsg(this.commitMsg) );
 
 	if(commitErrFlag) {
 		$("browser-status").innerHTML = "No commit message added - click to ignore";
-		connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
+		connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true, noFiles));
 		$("new-commit-msg").focus();
 		return;
 	}
