@@ -1,0 +1,13 @@
+#!/bin/bash
+
+C=`pwd`
+
+rm -f sysfiles.zip
+
+dist_dir=`mktemp -d`
+cp -r ../trunk $dist_dir/sys
+( cd $dist_dir/sys ; 
+    find -type d -name '.svn'  -print0 -o -name '*~' -print0 | xargs -0 rm -rf ; 
+    zip -q -r $C/sysfiles.zip * )
+
+rm -rf $dist_dir
