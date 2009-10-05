@@ -151,7 +151,7 @@ def getteams():
         else:
             return RuntimeError("Could not find user")
 
-    return [int(group[4:]) for group in groups if "team" in group]
+    return [int(group[4:]) for group in groups if group[:4] == "team"]
 
 def get_svnrepo( team ):
     """Return the subversion repository URL for the current user and given team.
