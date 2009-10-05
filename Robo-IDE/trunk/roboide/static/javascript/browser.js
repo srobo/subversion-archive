@@ -121,6 +121,8 @@ Browser.prototype._getFileTree = function(tm) {
 	if($("browser-project-select").options[$("browser-project-select").selectedIndex].id == 'projlist-tmpitem')
 		return;
 
+	this._receiveTree({tree:[]});
+
 	var d = loadJSONDoc("./filelist", { team : tm,
 					    project : $("browser-project-select").value
 					  });
