@@ -146,11 +146,6 @@ Browser.prototype.clickSaveFile = function(override) {
 	this.commitMsg = $("new-commit-msg").value;
 	this.newFname = $("new-file-name").value;
 
-//	var fnameExists = ();
-	var commitErrFlag = ( !override &&
-		this.type != 'isProj' &&
-		this._badCommitMsg(this.commitMsg) );
-
 	switch(this.type) {
 		case 'isFile':
 			var type = 'file';
@@ -185,6 +180,10 @@ Browser.prototype.clickSaveFile = function(override) {
 		$("new-file-name").focus();
 		return;
 	}
+
+	var commitErrFlag = ( !override &&
+		this.type != 'isProj' &&
+		this._badCommitMsg(this.commitMsg) );
 
 	if(commitErrFlag) {
 		$("browser-status").innerHTML = "No commit message added - click to ignore";
