@@ -207,8 +207,11 @@ function populate_shortcuts_box() {
 	var short1_li = LI(null, short1_a);
 	connect( short1_li, "onclick", bind(editpage.new_file, editpage) );
 
+/*
 	var short2_a = A( {"title": "Change user settings" }, "User settings" );
 	var short2_li = LI(null, short2_a);
+*/
+	var short2_li = null;
 
 	var short3_a = A( {"title": "Messages, docs and helpful information"},  "View Switchboard" );
 	var short3_li = LI(null, short3_a);
