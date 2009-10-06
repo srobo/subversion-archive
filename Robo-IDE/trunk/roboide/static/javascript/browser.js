@@ -196,7 +196,7 @@ Browser.prototype.clickSaveFile = function(noMsg) {
 
 	if(commitErrFlag) {
 		$("browser-status").innerHTML = "No commit message added - click to ignore";
-		connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true, noFiles));
+		connect($("browser-status"), 'onclick', bind(this.clickSaveFile, this, true));
 		$("new-commit-msg").focus();
 		return;
 	}
