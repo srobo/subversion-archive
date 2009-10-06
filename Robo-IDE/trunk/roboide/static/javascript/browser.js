@@ -169,7 +169,7 @@ Browser.prototype.clickSaveFile = function(noMsg) {
 	}
 
 	//fail if the file list is requested, but hasn't loaded
-	if((this.type == 'isFile' || this.type == 'isDir') && this.fileList == null) {
+	if((this.type == 'isFile' || this.type == 'isDir') && this.fileTree == null) {
 		$("browser-status").innerHTML = "Unable to save - file list not yet loaded";
 		return;
 	}
