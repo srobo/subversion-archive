@@ -20,16 +20,9 @@ body {
 	height: 77px;
 }
 
-#topright, #topleft {
+#topleft {
 	display: block;
 	height: 1.5em;
-}
-
-#topright {
-	float: right;
-}
-
-#topleft {
 	float: left;
 }
 #top ul {
@@ -189,13 +182,16 @@ body {
 .status-warn { background-color: #ffff31; }
 .status-error { background-color: #ff5e5e; }
 
+#static-box, #rotating-box {
+	height: 52px;
+	position: absolute;
+	right: 20px;
+	top: 15px;
+	width: 52px;
+}
+
 #rotating-box {
 	display: none;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 10px;
-	height: 10px;
 	background-color: white;
 }
 
