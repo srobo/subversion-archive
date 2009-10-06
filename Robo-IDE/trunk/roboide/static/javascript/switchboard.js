@@ -100,6 +100,7 @@ Switchboard.prototype._receiveSubmitFeed = function(nodes)
 	if(nodes.error > 0 )
 	{
 		this._errorSubmitFeed();
+		
 	}
 	else
 	{
@@ -113,7 +114,7 @@ Switchboard.prototype._receiveSubmitFeed = function(nodes)
 	}
 	else
 	{
-		setStyle("user-feed-url", {'background-color': '#FF5E5E'});
+		setStyle("user-feed-url", {'background-color': '#FFFFFF'});
 	}
 }
 Switchboard.prototype._errorSubmitFeed = function()
@@ -154,7 +155,7 @@ Switchboard.prototype._receiveGetFeed = function(nodes)
 	}
 	else
 	{
-		setStyle("user-feed-url", {'background-color': '#FF5E5E'});
+		setStyle("user-feed-url", {'background-color': '#FFFFFF'});
 	}
 }
 Switchboard.prototype._errorGetFeed = function()

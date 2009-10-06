@@ -5,8 +5,7 @@ import user as srusers
 
 sr_message_feed = "http://sr2010messages.blogspot.com/feeds/posts/default?alt=rss"
 sr_timeline_events = [{"date":"September 19, 2009", "title":"Kickstart", "desc":"Kickstart: Competition launch"},
-			{"date":"November 11, 2009", "title":"Build Chasis", "desc":"You should have the chasis of the robot built"},
-			{"date":"November 20, 2009", "title":"Build Ramp", "desc":"You should have built a practice ramp by now"},
+			{"date":"December 25, 2009", "title":"Christmas", "desc":"Merry Christmas"},
 			{"date":"February 20, 2010", "title":"Tech Day", "desc":"A chance to get help with the programming/electronics (provisional date)"},
 			{"date":"April 17, 2010", "title":"Competition", "desc":"The culmination of all your hard work (provisional date)"}]
 sr_timeline_start = "September 19, 2009"
@@ -89,6 +88,8 @@ class Switchboard(object):
 		"""
 		#get the current user
 		cur_user = srusers.get_curuser()
+		if cur_user == None:
+			return dict(feedurl="", valid=0, error=1)
 
 		# grab the sql record, edit the url, commit it
 		try:
@@ -107,9 +108,14 @@ class Switchboard(object):
 					new_row = model.UserBlogFeeds(user=cur_user, url=feedurl, valid=False)
 					new_row.set()
 					return dict(feedurl=new_row.url, valid=int(new_row.valid), error=0)
+				else:
+					#multiple results, sql table is corrupt
+					return dict(feedurl="", valid=0, error=1)
 		except:
+			#error performing sql query
 			return dict(feedurl="", valid=0, error=1)
 		else:
+			#success
 			return dict(feedurl=row.url, valid=int(row.valid), error=0)
 
 	@expose("json")
@@ -120,7 +126,9 @@ class Switchboard(object):
 		blank string.
 		"""
 		#get the current user
-		cur_user = srusers.get_curuser()
+		cur_user = str(srusers.get_curuser())
+		if cur_user == None:
+			return dict(feedurl="", valid=0, error=1)
 
 		# grab the sql record for the user, if it exists and extract the url
 		try:
@@ -128,12 +136,12 @@ class Switchboard(object):
 			try:
 				row = r.getOne()
 			except:
-				#did not get a single result, error!
-				return dict(feedurl="", valid=0, error=1)
+				# the record doesn't exist, return blank
+				return dict(feedurl="", valid=0, error=0)
 		except:
 			# the record doesn't exist, return blank
-			return dict(feedurl="", valid=0, error=1)
-
+			return dict(feedurl="", valid=0, error=0)
+		# success, return url
 		return dict(feedurl=row.url, valid=int(row.valid), error=0)
 
 	@expose("json")
