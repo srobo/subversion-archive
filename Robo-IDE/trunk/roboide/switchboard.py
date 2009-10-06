@@ -7,10 +7,10 @@ sr_message_feed = "http://sr2010messages.blogspot.com/feeds/posts/default?alt=rs
 sr_timeline_events = [{"date":"September 19, 2009", "title":"Kickstart", "desc":"Kickstart: Competition launch"},
 			{"date":"November 11, 2009", "title":"Build Chasis", "desc":"You should have the chasis of the robot built"},
 			{"date":"November 20, 2009", "title":"Build Ramp", "desc":"You should have built a practice ramp by now"},
-			{"date":"February 20, 2010", "title":"Tech Day", "desc":"A chance to get help with the programming/electronics"},
-			{"date":"April 20, 2010", "title":"Competition", "desc":"The culmination of all your hard work"}]
+			{"date":"February 20, 2010", "title":"Tech Day", "desc":"A chance to get help with the programming/electronics (provisional date)"},
+			{"date":"April 17, 2010", "title":"Competition", "desc":"The culmination of all your hard work (provisional date)"}]
 sr_timeline_start = "September 19, 2009"
-sr_timeline_end = "April 20, 2010"
+sr_timeline_end = "April 17, 2010"
 
 #We want to sanitize <div>s from feeds
 feedparser._HTMLSanitizer.acceptable_elements.remove("a")
