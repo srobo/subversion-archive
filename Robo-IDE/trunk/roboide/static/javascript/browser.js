@@ -9,7 +9,7 @@
 
 function Browser(cback, options) {
 	// Public functions:
-	//  - clickSaveFile(bool noMsg, bool nofiles): event handler for when save is clicked, if noMsg is true: ignore lack of commit msg, if noFiles is true: ignore the fileList not being loaded
+	//  - clickSaveFile(bool noMsg): event handler for when save is clicked, if noMsg is true: ignore lack of commit msg
 	//  - clickCancelSave(): cancel and close browser
 	//  - dirSelected(): event handler for when a directory is selected in the left hand pane
 	//  - display(): show all browser css
@@ -104,6 +104,7 @@ Browser.prototype._window_keydown = function(ev) {
 
 Browser.prototype._receiveTree = function(nodes) {
 	this.fileTree = nodes.tree;
+	$('save-new-file').disabled = false;
 	//default to the first directory
 	replaceChildNodes($("left-pane-list"), null);
 	replaceChildNodes($("right-pane-list"), null);
@@ -121,7 +122,8 @@ Browser.prototype._getFileTree = function(tm) {
 	if($("browser-project-select").options[$("browser-project-select").selectedIndex].id == 'projlist-tmpitem')
 		return;
 
-	this._receiveTree({tree:[]});
+	this._receiveTree({tree:[{autosave:0,children:[],kind:'FOLDER',name:'Loading...',path:'@',rev:-1}]});
+	$('save-new-file').disabled = true;
 
 	var d = loadJSONDoc("./filelist", { team : tm,
 					    project : $("browser-project-select").value
@@ -142,7 +144,7 @@ Browser.prototype._badFname = function(name) {
 }
 
 //when user clicks save
-Browser.prototype.clickSaveFile = function(noMsg, noFiles) {
+Browser.prototype.clickSaveFile = function(noMsg) {
 	disconnectAll("browser-status");
 	this.commitMsg = $("new-commit-msg").value;
 	this.newFname = $("new-file-name").value;
@@ -166,11 +168,9 @@ Browser.prototype.clickSaveFile = function(noMsg, noFiles) {
 		return;
 	}
 
-	//warn if the file list is requested, but hasn't loaded
-	if((this.type == 'isFile' || this.type == 'isDir') && this.fileList == null && !noFiles) {
-		$("browser-status").innerHTML = "File list not yet loaded - unable to test for filename clashes - click to ignore";
-		connect("browser-status", 'onclick', bind(this.clickSaveFile, this, noMsg, true));
-		$("new-file-name").focus();
+	//fail if the file list is requested, but hasn't loaded
+	if((this.type == 'isFile' || this.type == 'isDir') && this.fileList == null) {
+		$("browser-status").innerHTML = "Unable to save - file list not yet loaded";
 		return;
 	}
 
@@ -233,7 +233,7 @@ Browser.prototype._processTree = function(parentDOM, tree, pathSoFar) {
 			//create entry in folder list
 			var newPathSoFar = pathSoFar+"/"+tree[i].name;
 
-			var newLeaf = LI(null, tree[i].name+"/");
+			var newLeaf = LI(null, tree[i].name+(tree[i].path == '@' ? '' : "/"));
 
 			connect(newLeaf, 'onclick', bind(this.dirSelected, this, newPathSoFar+"/", tree[i].children));
 
