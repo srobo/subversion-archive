@@ -48,7 +48,7 @@ class User(object):
         svals = model.SettingValues.select( model.SettingValues.q.uname == user )
         settings = {}
         for sval in svals.lazyIter():
-            sname = model.SettingsValues.get(sval.id).name
+            sname = model.Settings.get(sval.setting_id).name
             settings[sname] = sval.value
         return { "user" : user,
                  "teams" : teams,
