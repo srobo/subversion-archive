@@ -131,6 +131,9 @@ class ProjectWrite():
         if not len(self.conflicts) == 0:
             return None # cannot commit, conflicts remain
 
+        # get commiter username
+        ide_user = str(srusers.get_curuser())
+
         self.b = bzrlib.branch.Branch.open(self.b.base)
         self.b.lock_write()
 
@@ -138,14 +141,14 @@ class ProjectWrite():
             if hasattr(self.PrevTree, "commit"):
                 # As of bzr 1.18 PreviewTrees have built-in commit method.
                 #self.PrevTree.set_parent_ids([ self.revid ]) # needed here?
-                revid_new = self.PrevTree.commit(message)
+                revid_new = self.PrevTree.commit(message) # TODO: add author
             else:
                 if last_revid == bzrlib.revision.NULL_REVISION:
                     parent_ids = [] # no existing commits on this branch
                 else:
                     parent_ids = [self.revid]
                 revprops = {"branch-nick":self.b.nick} # is this necessary?
-                builder = self.b.get_commit_builder(parent_ids, revprops = revprops)
+                builder = self.b.get_commit_builder(parent_ids, revprops = revprops, committer=ide_user)
 
                 changes = list(builder.record_iter_changes(
                                 self.PrevTree, self.revid, self.TransPrev.iter_changes()))
