@@ -435,7 +435,7 @@ function User() {
 		var user = $("username").value;
 		var pass = $("password").value;
 
-		var d = loadJSONDoc( "./user/login", {"usr": user, "pwd": pass} );
+		var d = postJSONDoc( "./user/login", { sendContent: {"usr": user, "pwd": pass} } );
 
 		d.addCallback( bind( this._login_resp, this ) );
 		d.addErrback( bind( function() {
