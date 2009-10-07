@@ -361,7 +361,12 @@ class Root(controllers.RootController):
                 return dict(Message = "AutoSaves deleted successfully: \n" + "\n".join(files))
 
             wt.remove(files)
-            wt.commit('Remove files: '+', '.join(files))
+
+            # find out current user
+            ide_user = str(srusers.get_curuser())
+
+            revproperties = {"authors":ide_user}
+            wt.commit('Remove files: '+', '.join(files), revprops=revproperties)
             wt.destroy()
 
             return dict(Message = message)
@@ -611,7 +616,13 @@ class Root(controllers.RootController):
         rev_tree = rev_spec.as_tree(wt.branch)
 
         wt.revert(file_list, rev_tree)
-        wt.commit(message)
+
+        # find out current user
+        ide_user = str(srusers.get_curuser())
+
+        revproperties = {"authors":ide_user}
+
+        wt.commit(message, revprops=revproperties)
         newrev, id = wt.branch.last_revision_info();
         wt.destroy()
 
@@ -688,7 +699,13 @@ class Root(controllers.RootController):
             return dict(new_revision="0", status="1", message="Destination already exists: "+dest)
 
         wt.rename_one(src_path, dest_path)
-        wt.commit('Move '+src_path+' to '+dest_path)
+
+        # find out current user
+        ide_user = str(srusers.get_curuser())
+
+        revproperties = {"authors":ide_user}
+
+        wt.commit('Move '+src_path+' to '+dest_path, revprops=revproperties)
         wt.destroy()
 
         self.autosave.move(team, src, dest)
