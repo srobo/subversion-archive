@@ -155,7 +155,7 @@ ProjPage.prototype.CreateCopyProject = function(newProjName) {
 
 	var d = loadJSONDoc("./copyproj", { 'team' : team,
 				'src' : '/'+this.project,
-				'dest' : '/'+newProjName,
+				'dest' : '/'+newProjName
 			});
 	d.addCallback( bind( partial(this._CopyProjectSuccess, newProjName), this));
 	d.addErrback( bind( function() {
