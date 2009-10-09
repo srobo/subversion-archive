@@ -42,6 +42,9 @@ var team_selector;
 // The switchboard page
 var switchboardpage = null;
 
+// The about box
+var about = null;
+
 // The initial onchange event ident connected to the tabbar
 // Gets disconnected as soon as a team is selected
 var tabchange_ident = null;
@@ -85,6 +88,9 @@ function load_gui() {
 
 	// Edit page
 	editpage = new EditPage();
+
+	// About Box
+	about = new AboutBox();
 
 	//The switchboard page - this must happen before populate_shortcuts_box is called
 	switchboardpage = new Switchboard();
@@ -221,6 +227,11 @@ function populate_shortcuts_box() {
 	connect( short3_li, "onclick", bind(switchboardpage.init, switchboardpage) );
 	shortcuts.push(short3_li);
 
+	var about_a = A( {"title": "View information about the RoboIDE"},  "About" );
+	var about_li = LI(null, about_a);
+	connect( about_li, "onclick", bind(about.showBox, about) );
+	shortcuts.push(about_li);
+
 	var new_ul = UL(null);
 	for( var i=0; i<shortcuts.length; i++) {
 		appendChildNodes(new_ul, shortcuts[i]);
@@ -263,6 +274,42 @@ function dropDownBox (id) {
 	}
 
 	this._init(id);
+}
+
+// Show some info about the IDE, just the version number for now
+function AboutBox() {
+	this._init = function() {
+		this.box = $('about-box');
+		connect( this.box, "onclick", bind( this.hideBox, this ) );
+		this.got_info = false;
+	}
+	this.get_info = function() {
+		if(this.got_info)
+			return;
+		var d = loadJSONDoc("./info");
+		d.addCallback( bind( this._got_info, this ) );
+	}
+	this._got_info = function(nodes) {
+		var dl = createDOM('dl', {id:'about-list'});
+		for(var i in nodes.info) {
+			var dt = createDOM('dt', null, i+':');
+			var dd = createDOM('dd', null, nodes.info[i]);
+			appendChildNodes(dl, dt, dd);
+		}
+		swapDOM('about-list', dl);
+		this.got_info = true;
+	}
+	this.showBox = function() {
+		this.get_info();
+		removeElementClass( this.box, "hidden" );
+		showElement($("grey-out"));
+	}
+	this.hideBox = function() {
+		addElementClass( this.box, "hidden" );
+		hideElement($("grey-out"));
+	}
+
+	this._init();
 }
 
 // Replace the status bar's content with the given DOM object

@@ -42,12 +42,24 @@ class Feed(FeedController):
             entries = entries
         )
 
+def get_version():
+    p = subprocess.Popen( ["svnversion"],
+                          stdout = subprocess.PIPE,
+                          stderr = subprocess.PIPE )
+    output = p.communicate()
+    rval = p.wait()
+    ver = output[0]
+    if ver != 'exported':
+        return 'r'+ver.strip()
+    return 'Unknown'
+
 class Root(controllers.RootController):
     user = srusers.User()
     fw = fw.FwServe()
     autosave = srautosave.Autosave()
     #feed = Feed()
     switchboard = switchboard.Switchboard()
+    version = get_version()
 
     if config.get("simulator.enabled"):    # if simulation is enabled import the simulator controller
         import sim
@@ -61,6 +73,11 @@ class Root(controllers.RootController):
         """
         loc = os.path.join(os.path.dirname(__file__), "static/index.html")
         return serveFile(loc)
+
+    @expose("json")
+    def info(self):
+        info = dict(Version=self.version)
+        return dict(info=info)
 
     def get_project_path(self, path):
         """
