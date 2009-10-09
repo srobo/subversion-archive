@@ -48,9 +48,9 @@ def get_version():
                           stderr = subprocess.PIPE )
     output = p.communicate()
     rval = p.wait()
-    ver = output[0]
+    ver = output[0].strip()
     if ver != 'exported':
-        return 'r'+ver.strip()
+        return 'r'+ver
     return 'Unknown'
 
 class Root(controllers.RootController):
