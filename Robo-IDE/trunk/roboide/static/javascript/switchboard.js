@@ -14,7 +14,7 @@ function Switchboard()
 
 	//hold the dictionary of timeline events
 	this.events = null;
-	
+
 	//keep track of whether object is initialised
 	this._inited = false;
 
@@ -23,7 +23,7 @@ function Switchboard()
 
 }
 
-/* ***** 	Initialization code 	***** */
+/* *****	Initialization code	***** */
 Switchboard.prototype.init = function()
 {
 	if(this._inited == false)
@@ -38,7 +38,7 @@ Switchboard.prototype.init = function()
 		tabbar.add_tab( this.tab );
 
 		/* Initialise indiviual page elements */
-		this.GetMessages();	
+		this.GetMessages();
 		this.GetMilestones();
 		this.GetFeed();
 		this.GetBlogPosts();
@@ -50,9 +50,9 @@ Switchboard.prototype.init = function()
 	/* now switch to it */
 	tabbar.switch_to(this.tab);
 }
-/* ***** 	End Initialization Code 	***** */
+/* *****	End Initialization Code 	***** */
 
-/* ***** Tab events: onfocus, onblur and close 	***** */
+/* ***** Tab events: onfocus, onblur and close		***** */
 Switchboard.prototype._onfocus = function()
 {
 	setStyle($("switchboard-page"), {'display':'block'});
@@ -75,7 +75,7 @@ Switchboard.prototype._close = function()
 		this._prompt.close();
 		this._prompt = null;
 	}
-	/* Clear class variables */ 
+	/* Clear class variables */
 	this.milestone = null;
 	this.events = null;
 
@@ -88,23 +88,22 @@ Switchboard.prototype._close = function()
 	/* Close tab */
 	this.tab.close();
 	this._inited = false;
-	
+
 	/* hide switchboard page */
 	setStyle($("switchboard-page"), {'display':'none'});
 }
-/* ***** 	End Tab events 		***** */
+/* *****	End Tab events		***** */
 
-/* *****    RSS feed url submit code 	***** */
-Switchboard.prototype._receiveSubmitFeed = function(nodes) 
+/* *****    RSS feed url submit code	***** */
+Switchboard.prototype._receiveSubmitFeed = function(nodes)
 {
 	if(nodes.error > 0 )
 	{
 		this._errorSubmitFeed();
-		
 	}
 	else
 	{
-		this._prompt = status_msg("Blog feed updated", LEVEL_OK); 
+		this._prompt = status_msg("Blog feed updated", LEVEL_OK);
 		document.user_feed_form.user_feed_input.value = nodes.feedurl;
 	}
 
@@ -119,22 +118,22 @@ Switchboard.prototype._receiveSubmitFeed = function(nodes)
 }
 Switchboard.prototype._errorSubmitFeed = function()
 {
-	this._prompt = status_msg("Unable to update blog feed", LEVEL_ERROR); 
+	this._prompt = status_msg("Unable to update blog feed", LEVEL_ERROR);
 	document.user_feed_form.user_feed_input.value = "";
 }
 Switchboard.prototype.SubmitFeed = function()
 {
 	logDebug("Switchboard: Setting blog feed");
-	var d = loadJSONDoc("./switchboard/setblogfeed", 
+	var d = loadJSONDoc("./switchboard/setblogfeed",
 		{'feedurl':document.user_feed_form.user_feed_input.value});
 
-	d.addCallback( bind( this._receiveSubmitFeed, this) ); 
-	d.addErrback( bind( this._errorSubmitFeed, this) ); 
+	d.addCallback( bind( this._receiveSubmitFeed, this) );
+	d.addErrback( bind( this._errorSubmitFeed, this) );
 	return false;
 }
 /* *****   End RSS feed url submit code ***** */
 
-/* ***** 	Student blog feed code 	***** */	
+/* *****	Student blog feed code	***** */
 
 Switchboard.prototype._receiveGetFeed = function(nodes)
 {
@@ -171,23 +170,23 @@ Switchboard.prototype.GetFeed = function()
 	var d = loadJSONDoc("./switchboard/getblogfeed", {});
 
 	d.addCallback( bind(this._receiveGetFeed, this) );
-	d.addErrback( bind(this._errorGetFeed, this) ); 
+	d.addErrback( bind(this._errorGetFeed, this) );
 }
-/* *****    End	Student blog feed code 	***** */	
+/* *****    End Student blog feed code	***** */
 
 /* *****	Message Feed code	***** */
 Switchboard.prototype.receiveMessages = function(nodes)
 {
 
 	// Remove any existing messages before adding new ones
-	replaceChildNodes($("message-list"));	
+	replaceChildNodes($("message-list"));
 	for(m in nodes.msgs)
 	{
 		item = nodes.msgs[m];
-		var a = A({'href':item.link, 'target':'_blank'}, item.title); 	//Write message title link
-		var s = SPAN({}, "");			
+		var a = A({'href':item.link, 'target':'_blank'}, item.title);	//Write message title link
+		var s = SPAN({}, "");
 		s.innerHTML = ": "+item.body+" [by "+item.author+"]";		//message body
-		var l = LI({},"");				
+		var l = LI({},"");
 		appendChildNodes(l, a);						//Add the title to the list element
 		appendChildNodes(l, s);						//Add the message to the list element
 		appendChildNodes($("message-list"),l);				//Add the whole list to the message window
@@ -210,7 +209,7 @@ Switchboard.prototype.GetMessages = function()
 }
 /* *****	End Message Feed code	***** */
 
-/* ***** 	Milestones Code		***** */
+/* *****	Milestones Code		***** */
 Switchboard.prototype.changeMilestone = function(id)
 {	/* de-highlight previous milestone and highlight new one */
 	if(this.milestone != null)
@@ -228,7 +227,7 @@ Switchboard.prototype.receiveMilestones = function(nodes)
  *	Description: Each milestone event is converted into a <div>
  *	with an offset from the parent proportional to its date.
  */
-	logDebug("Generating Timeline..");		
+	logDebug("Generating Timeline..");
 
 	/* Store the events in object */
 	this.events = nodes.events;
@@ -239,24 +238,24 @@ Switchboard.prototype.receiveMilestones = function(nodes)
 	var end_date = new Date(nodes.end);
 	logDebug("Timeline end: "+ end_date);
 	var duration = end_date - start_date;
-	logDebug("Timeline Duration: "+duration);	
+	logDebug("Timeline Duration: "+duration);
 
 	/* get the maximum progress bar width in pixels */
 	var bar_width = rstrip(getStyle($("timeline-bar-out"), 'width'), "px");
 
 	/* Convert a date into a pixel offset */
-	function getOffset(event_date) 
+	function getOffset(event_date)
 		{
 			d = new Date(event_date);
 			o = Math.floor(((d - start_date)/duration)*bar_width)+"px";
 			return o;
 		}
-	
+
 	/* set the progress bar width */
 	var today = new Date();
 	if(today < start_date)
 	{
-		//not yet at timeline - default to arbitrary date 
+		//not yet at timeline - default to arbitrary date
 		today = new Date("November 12, 2009");
 	}
 	else if(today > end_date)
@@ -265,12 +264,12 @@ Switchboard.prototype.receiveMilestones = function(nodes)
 		today = end_date;
 	}
 	setStyle($("timeline-bar-in"), {'width': Math.floor(((today-start_date)/duration)*bar_width)+"px"});
-	
+
 
 	/* Add the events */
 	for(m in nodes.events)
 	{	/* create and position a new <div> for each timeline event */
-		var e = DIV({"class":"timeline-bar-event", 
+		var e = DIV({"class":"timeline-bar-event",
 				"id":"timeline-ev-"+m,
 				"title":nodes.events[m].title}, "");
 		this._signals.push( connect( e, "onclick", bind( this.changeMilestone, this, m) ) );
@@ -294,23 +293,23 @@ Switchboard.prototype.GetMilestones = function()
 	d.addCallback( bind(this.receiveMilestones, this));
 	d.addErrback( bind(this.errorReceiveMilestones, this));
 }
-/* ***** 	End Timeline code 	*****	*/
+/* *****	End Timeline code	***** */
 
-/* *****	Blog Post Code		*****	*/
+/* *****	Blog Post Code		***** */
 Switchboard.prototype.receiveBlogPosts = function(nodes)
 {
 	// Remove any existing messages before adding new ones
-	replaceChildNodes($("student-blogs-list"));	
+	replaceChildNodes($("student-blogs-list"));
 	for(m in nodes.msgs)
 	{
 		item = nodes.msgs[m];
-		var a = A({'href':item.link, 'target':'_blank'}, item.title); 	//Write message title link
-		var s = SPAN({}, "");			
+		var a = A({'href':item.link, 'target':'_blank'}, item.title);	//Write message title link
+		var s = SPAN({}, "");
 		s.innerHTML = ": "+item.body+" [by "+item.author+"]";		//message body
-		var l = LI({},"");				
+		var l = LI({},"");
 		appendChildNodes(l, a);						//Add the title to the list element
 		appendChildNodes(l, s);						//Add the message to the list element
-		appendChildNodes($("student-blogs-list"),l);				//Add the whole list to the message window
+		appendChildNodes($("student-blogs-list"),l);			//Add the whole list to the message window
 	}
 }
 
@@ -328,4 +327,4 @@ Switchboard.prototype.GetBlogPosts = function()
 	d.addCallback( bind(this.receiveBlogPosts, this));
 	d.addErrback( bind(this.errorReceiveBlogPosts, this));
 }
-/* ***** 	End Blog Post Code	***** */
+/* *****	End Blog Post Code	***** */
