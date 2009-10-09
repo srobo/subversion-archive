@@ -177,12 +177,11 @@ Switchboard.prototype.GetFeed = function()
 /* *****	Message Feed code	***** */
 Switchboard.prototype.receiveMessages = function(nodes)
 {
-
 	// Remove any existing messages before adding new ones
 	replaceChildNodes($("message-list"));
-	for(m in nodes.msgs)
+	for(var m in nodes.msgs)
 	{
-		item = nodes.msgs[m];
+		var item = nodes.msgs[m];
 		var a = A({'href':item.link, 'target':'_blank'}, item.title);	//Write message title link
 		var s = SPAN({}, "");
 		s.innerHTML = ": "+item.body+" [by "+item.author+"]";		//message body
@@ -246,8 +245,8 @@ Switchboard.prototype.receiveMilestones = function(nodes)
 	/* Convert a date into a pixel offset */
 	function getOffset(event_date)
 		{
-			d = new Date(event_date);
-			o = Math.floor(((d - start_date)/duration)*bar_width)+"px";
+			var d = new Date(event_date);
+			var o = Math.floor(((d - start_date)/duration)*bar_width)+"px";
 			return o;
 		}
 
@@ -300,9 +299,9 @@ Switchboard.prototype.receiveBlogPosts = function(nodes)
 {
 	// Remove any existing messages before adding new ones
 	replaceChildNodes($("student-blogs-list"));
-	for(m in nodes.msgs)
+	for(var m in nodes.msgs)
 	{
-		item = nodes.msgs[m];
+		var item = nodes.msgs[m];
 		var a = A({'href':item.link, 'target':'_blank'}, item.title);	//Write message title link
 		var s = SPAN({}, "");
 		s.innerHTML = ": "+item.body+" [by "+item.author+"]";		//message body
