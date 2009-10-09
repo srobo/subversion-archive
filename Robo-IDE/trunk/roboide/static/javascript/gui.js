@@ -39,7 +39,7 @@ var user;
 // The team selector
 var team_selector;
 
-// The switchboard page 
+// The switchboard page
 var switchboardpage = null;
 
 // The initial onchange event ident connected to the tabbar
@@ -87,7 +87,7 @@ function load_gui() {
 	editpage = new EditPage();
 
 	//The switchboard page - this must happen before populate_shortcuts_box is called
-	switchboardpage = new Switchboard();	
+	switchboardpage = new Switchboard();
 
 	populate_shortcuts_box();
 
@@ -236,7 +236,7 @@ function dropDownBox (id) {
 		connect( this.id, "onmouseenter", bind( this._clearTimeout, this) );	// when mouse is inside the dropbox disable timeout
 		connect( this.id, "onmouseleave", bind( this.hideBox, this ) );		// when mouse leaves dropbox hide it
 		connect( this.id, "onclick", bind( this.hideBox, this ) );
-		this._timer = null;	// timeout for box	
+		this._timer = null;	// timeout for box
 	}
 	this.showBox = function() {	// show the box and set a timeout to make it go away
 		removeElementClass( this.id, "hidden" );
