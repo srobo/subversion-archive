@@ -19,13 +19,23 @@ MAX_MESSAGES = 5
 # The maixum length of a message to display (in chars)
 MAX_MESSAGE_LENGTH = 100
 
+def sanitize_body(text):
+	text = text.strip()	#remove whitespace
+	end = text.find('<div class="blogger-post-footer">')	#find the footer so we can chop it off
+	if end < 0:
+		end = MAX_MESSAGE_LENGTH
+	else:
+		end = min(MAX_MESSAGE_LENGTH,end)
+	text = text[0:end]	#ensure its not too long and chop off the footer
+	return text
+
 class SRMessageFeed():
 	def __init__(self):
 		self.fd = feedparser.parse(sr_message_feed)
 
 	def GetMessages(self):
 		msglist = [{"title":e.title, "link":e.link, "author":e.author_detail.name,
-					"date":e.date, "body":e.description[0:MAX_MESSAGE_LENGTH].strip()}
+					"date":e.date, "body":sanitize_body(e.description)}
 				for e in self.fd.entries]
 		return dict(msgs=msglist[0:MAX_MESSAGES])
 
@@ -50,7 +60,7 @@ class StudentBlogPosts():
 				#store just the most recent post
 				e = fd.entries[0]
 				self.msgs.append({"title":e.title, "link":e.link, "author":"TODO:",
-					"date":e.date, "body":e.description[0:MAX_MESSAGE_LENGTH].strip()})
+					"date":e.date, "body":sanitize_body(e.description)})
 			except IndexError:
 				pass
 
