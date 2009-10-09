@@ -18,6 +18,7 @@ body {
 	width: 100%;
 	font-size: 1.35em;
 	height: 77px;
+	position: relative;
 }
 
 #topleft {
