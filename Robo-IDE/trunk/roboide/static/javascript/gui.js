@@ -203,21 +203,28 @@ function status_msg( message, level ) {
 
 // Create drop down list TODO: make this a generic function?
 function populate_shortcuts_box() {
+	var shortcuts = new Array();
+
 	var short1_a = A( {"title": "Create a new file"}, "Create new file" );
 	var short1_li = LI(null, short1_a);
 	connect( short1_li, "onclick", bind(editpage.new_file, editpage) );
+	shortcuts.push(short1_li);
 
 /*
 	var short2_a = A( {"title": "Change user settings" }, "User settings" );
 	var short2_li = LI(null, short2_a);
+	shortcuts.push(short2_li);
 */
-	var short2_li = null;
 
 	var short3_a = A( {"title": "Messages, docs and helpful information"},  "View Switchboard" );
 	var short3_li = LI(null, short3_a);
 	connect( short3_li, "onclick", bind(switchboardpage.init, switchboardpage) );
+	shortcuts.push(short3_li);
 
-	var new_ul = UL(null, short1_li, short2_li, short3_li);
+	var new_ul = UL(null);
+	for( var i=0; i<shortcuts.length; i++) {
+		appendChildNodes(new_ul, shortcuts[i]);
+	}
 
 	appendChildNodes($("dropShortcuts"), new_ul);
 }
