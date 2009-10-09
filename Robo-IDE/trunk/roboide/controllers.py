@@ -43,7 +43,7 @@ class Feed(FeedController):
         )
 
 def get_version():
-    p = subprocess.Popen( ["svnversion"],
+    p = subprocess.Popen( ["svnversion", os.path.abspath(os.path.dirname(__file__)+'/..')],
                           stdout = subprocess.PIPE,
                           stderr = subprocess.PIPE )
     output = p.communicate()
