@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>Power Board</title>
+<style>
+pre {
+	border:1px solid #D7D7D7;
+	margin: 1em 1.75em;
+	padding: 0.25em;
+}
+img {
+	margin:0.5em;
+}
+</style>
+</head>
+<body>
+<center><h1>Power Board</h1></center>
+All electronic devices need power. Different devices require different amounts of power, for example a motor requires much more power than an LED. It is the job of the power board to supply the right amount of power to all of the different boards or 'modules' in your kit. The primary source of power for you robot is its 12V battery. This is capable of running your robot for a few hours, depending on the size and complexity of your robot. When this runs out your robot's secondy source of power is the mains electricity, supplied via a battery charger. When you are not testing your robot, you should be charging it's batteries! 
+<br />
+<br />
+<strong style="color:red; font-size:2em;">WARNING: </strong> When you are <b>not</b> using your robot, <b>you should be charging its battery!</b>
+<br />
+<strong style="color:red; font-size:2em;">WARNING: </strong> <b>Switch off you robot</b> before making <b>any</b> modifications to it!
+
+
+<h2>Board Outline</h2>
+The board outline of the Power Board is illustrated in <a href="#board-outline">Figure 1</a>:
+<center>
+<a name="board-outline">
+<a href="images/outline.png"><img src="images/outline.png" style="width:500px" border=0 /></a>
+<br />Figure 1 - Outline of Power Board 
+</center>
+
+<h2>Modules</h2>
+Your robotics kit is made up of 4 modules:
+<ul>
+<li> Power Board</li>
+<li> JointIO Board</li>
+<li> PWM Board</li>
+<li> Motor Board </li>
+</ul>
+
+The power board is at the centre of the kit as all other modules plug into it. The power board communicates with each of the boards using the black/gray RJ11 Cables in your kit. The jointio, pwm and motor boards all have a single RJ11 socket, whilst the power board has four. An RJ11 Cable should connect each board to any one of the four RJ11 sockets on the power board.
+
+<h2> Technical Specification</h2>
+<ul>
+<li>Fused connection to 12V battery and charger</li>
+<li>Zigbee radio module</li>
+<li>4 User controllable LEDs</li>
+<li>4 User readable Switches</li>
+<li>Competition button</li>
+<li>5V Servo rail connection</li>
+<li>2x 12V Motor rail connection</li>
+<li>Status LEDs</li>	
+</ul>
+
+<h2>Making Connections</h2>
+
+<h2>Inputs</h2>
+The power board has a (red) bank of four switches. You can use a small screwdriver to change the position of the switches. The state of the switches can be read in your robot's code and used to alter its behaviour in any way conceivable. A typical use of the switches is to put your robot into different modes, for example you may have a 'demo' mode (used for testing) and a 'competition' mode (used at the competition) and use the switches to select between the two.
+
+<h2>Outputs</h2>
+The power board has four user controllable LEDs which may be used to indicate your robot has reached particular parts of the code or just for visual effect! 
+
+<h2>Troubleshooting</h2>
+<h3>Help</h3>
+
+<h2>Programming Interface</h2>
+A programming interface is a set of rules explaining how you can control a specific module from within your robot's python code. 
+<h3>Reading Inputs</h3>
+To read one of the four switches on the power board, use the following in your code
+<pre>
+# to read switch SWITCH_NO on the power board:
+power.switch[SWITCH_NO] 
+
+# where SWITCH_NO = 0,1,2,3
+</pre>
+
+<h3>Setting Outputs</h3>
+To set or clear an LED on the power board, use the following code:
+<pre>
+# to turn on led LED_NO on the power board:
+power.led[LED_NO] = 1
+
+# where LED_NO = 0,1,2,3
+
+# similarly, to turn it of:
+power.led[LED_NO] = 0
+</pre>
+</body>
