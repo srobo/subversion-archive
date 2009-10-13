@@ -10,6 +10,10 @@ pre {
 img {
 	margin:0.5em;
 }
+
+h2 {
+	background-color:#eeeeee;
+}
 </style>
 </head>
 <body>
@@ -79,6 +83,12 @@ Two switches are supplied in your kit. One is the charge-run switch and the othe
 
 The Slug connects to the power board using the multi-coloured ribbon cable via the pin header shown in <a href="#board-outline">Figure 1</a>.
 
+<h3>Additional Motors/Electronics</h3>
+You may have noticed that there are two 12V Motor rails on the power board. Only one is connected to the motor board, leaving one spare for you to use to power additional motors. Remember that both 12V connections are not available when in charge mode. Alternately, you may want to use this connection to power your own custom electronics. Spare camcon connectors are provided for this purpose. 
+<br />
+<br />
+<strong style="color:red; font-size:2em;">WARNING: </strong> all additional electronics (including motors and custom circuits) <b>must</b> be powered from the <b>12V motor rail</b>
+<br />
 
 <h2>Competition Button</h2>
 The competition button is used to tell your robot to begin executing your code. After turning on your robot and waiting for the slug to boot, GP LED0 on the power board will begin to flash. This means that your robot is ready and waiting for the 'GO' signal to be transmitted to its radio module. Pressing the competition button will skip waiting for the 'GO' signal and force your robot to begin executing code. To summarise:
@@ -94,7 +104,18 @@ The power board has a (red) bank of four switches. You can use a small screwdriv
 The power board has four user controllable LEDs which may be used to indicate your robot has reached particular parts of the code or just for visual effect! 
 
 <h2>Troubleshooting</h2>
-<h3>Help</h3>
+<h3>No lights illuminate</h3>
+Is the fuse fitted and not blown? Is the battery or charger connected? Is the battery charged?
+
+<h3>The Slug never boots/beeps</h3>
+Are both memory sticks plugged in to the USB Hub? Is the USB Hub powered? Is the battery flat? Is the slug connected to the power board correctly? 
+
+<h3>Our code never runs</h3>
+Have you pressed the competition button to override waiting for the radio signal? Have you checked the syntax of your code using the IDE?
+
+<h3>The lights on the motor board flash, but the wheels don't turn</h3>
+Are you in Run mode? Have you wired up the connector correctly?
+
 
 <h2>Programming Interface</h2>
 A programming interface is a set of rules explaining how you can control a specific module from within your robot's python code. 
