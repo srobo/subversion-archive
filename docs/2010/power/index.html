@@ -54,6 +54,7 @@ The power board is at the centre of the kit as all other modules plug into it. T
 </ul>
 
 <h2>Making Connections</h2>
+<h3>Power</h3>
 Whilst each module is connected to the power board via the RJ11 cables, some boards, such as the Motor board, require additional power connections. These are made using the green camcon connectors included in you kit. You will need to make up the connector shown in <a href="#camcon-connector">Figure 3</a> for each of the following connectors.
 <ul>
 <li>Power board (12V) -> Motor board (12V)</li>
@@ -65,15 +66,27 @@ Whilst each module is connected to the power board via the RJ11 cables, some boa
 <a href="images/camcon.png"><img src="images/camcon.png" border=0 /></a>
 <br />Figure 2 - Camcon power connections 
 </center>
-<br />
+<h3>USB</h3>
 To connect power to the USB Hub, use the special connector supplied in your kit. Ensure that you connect it to the USB Hub 5V rail on the power board. <strong>Do not connect the USB Hub to the 12V motor rails</strong> 
-<br />
+<h3>Switches</h3>
 Two switches are supplied in your kit. One is the charge-run switch and the other is the power switch:
 <ul>
-<li><strong>Charge-run Switch: </strong> </li>
-<li><strong>Power Switch: </strong> </li>
+<li><strong>Charge-run Switch: </strong> This switches between charging your robot and running your robot. When in charge mode, no power will be supplied to the motors; this is to prevent your robot accidentally driving while plugged into the mains! When in run mode, your battery will not charge, even if it is plugged into the charger. You can tell which mode your robot is in by looking at the charge LED - see <a href="#board-outline">Figure 1</a></li>
+<li><strong>Power Switch: </strong> This is the main On/Off switch for your robot</li>
 </ul>
 
+<h3>Slug</h3>
+
+The Slug connects to the power board using the multi-coloured ribbon cable via the pin header shown in <a href="#board-outline">Figure 1</a>.
+
+
+<h2>Competition Button</h2>
+The competition button is used to tell your robot to begin executing your code. After turning on your robot and waiting for the slug to boot, GP LED0 on the power board will begin to flash. This means that your robot is ready and waiting for the 'GO' signal to be transmitted to its radio module. Pressing the competition button will skip waiting for the 'GO' signal and force your robot to begin executing code. To summarise:
+
+<ul>
+<li><strong>When practicing,</strong> press the competition button to start your robot.
+<li><strong>When competing,</strong> do <b>not</b> press the competition button before placing your robot in the arena. 
+</ul>
 <h2>Inputs</h2>
 The power board has a (red) bank of four switches. You can use a small screwdriver to change the position of the switches. The state of the switches can be read in your robot's code and used to alter its behaviour in any way conceivable. A typical use of the switches is to put your robot into different modes, for example you may have a 'demo' mode (used for testing) and a 'competition' mode (used at the competition) and use the switches to select between the two.
 
