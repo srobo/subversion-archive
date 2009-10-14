@@ -132,50 +132,104 @@ things are also applicable to motor[1].
   So, to set your motor to go backwards at half power us the following:
 </p>
 <pre>
-  motor[0].target = 50
+  motor[0].target = -50
 </pre>
+<p>
+  You can change the power delivered to a motor at any time.
+</p>
 
 <h2>Using the AS5030 sensor with PID control</h2>
+<p>
+  The motor controller incorporates a <a href="http://en.wikipedia.org/wiki/PID_control">PID controller</a> that allows you to control the absolute angle of a wheel, or axle that a motor is connected to.  The motor controller can sense the rotary position of a rotary shaft using the <a href="./as5030.htm">AS5030 sensor board</a>.
+</p>
+<p>To get the motor controller to use the AS5030 controller, you need to configure it as follows:</p>
 <pre>
-motor[0].sensor = motor.ADS5030
-# Select which feedback pins are connected to which pin:
-motor[0].ads5030.set_pins( clk = 0, dio = 1 )
-# How many LSB's to discard from sensor (default:0)
-motor[0].ads5030.set_shr( 2 )
+motor[0].sensor = motor.AS5030
+</pre>
+<p>You have an option of which pins are connected to which.  
+The following code tells the motor controller that the clock pin of the AS5030 is connected to feedback pin 0, and the dio pin is connected to feedback pin 1.  The diagram of the motor controller above shows the numbering of the feedback pins.
+</p>
+<pre>
+motor[0].as5030.set_pins( clk = 0, dio = 1 )
+</pre>
+<p>
+The AS5030 is an 8-bit sensor.  It is likely that you do not want this many bits, as the least-significant bits are probably too noisy for you to use.  You can choose how many bits to lose by calling set_shr.  If you are not sure how many to lose, a good number to try first is 2.
+</p>
+<pre>
+motor[0].as5030.set_shr( 2 )
+</pre>
 
-# Use PID control on this channel:
+<h3>Configuring the PID controller</h3>
+<p>
+Tell the motor controller to use the PID controller like so:
+</p>
+<pre>
 motor[0].controller = motor.PID
-
-## Configuring the PID controller:
+</pre>
+<p>
+You now need to configure the P, I, and D <i>coefficients</i> used within the PID controller.  See "Tuning the PID loop" below to discover what values you should set these to.  Set the coefficients like so:
+</p>
+<pre>
 motor[0].PID.set_coeff( kp = -4, ki = -5, kd = -10 )
-# Which can also be called like this:
-motor[0].PID.sef_coeff(-4,-5,-10)
+</pre>
 
-motor[0].enable()
+<p>
+  To get the motor to move to a specific location when using the PID controller, set the target position:
+</p>
+<pre>
+motor[0].target = -3049 
+</pre>
+<p>
+The motor will then move until it reaches position -3049 (which is likely to be several rotations away).
+</p>
 
-# When using PID controller, can be any 32-bit signed int, e.g: -->
-motor[0].target = 3049 
-motor[0].target = -23
-
-# Wait for motor to reach target
+<h3>Waiting for the motor to finish moving</h3>
+<p>You can suspend your code until the motor reaches the position you asked it to using the following code:
+<pre>
+motor[0].target = 500
 yield motor[0]
 </pre>
 
-<h3>How to tune the PID loop</h3>
 
+<h3>Tuning the PID loop</h3>
+<p>
+Using the PID loop requires slightly more set-up than the open-loop power control option.  After connecting up the motor controller and AS5030, you will need to tune the PID controller.  To tune the motor controller, you should write a program that commands the motor to switch back-and-forth between two positions, for example:
+<pre>
+from sr import *
 
-<!-- # Disable a channel: -->
-<!-- motor[0].disable() -->
+def main():
+    motor[0].sensor = motor.AS5030
+    motor[0].as5030.set_pins( clk = 0, dio = 1 )
+    motor[0].as5030.set_shr( 2 )
 
+    motor[0].controller = motor.PID
+    motor[0].PID.set_coeff( kp = -5, ki = 0, kd = 0 )
 
-<!-- # motor[0].target and motor[1].target can also be used to find the current target. -->
-
-<!-- # Wait for the motor to reach its target -->
-<!-- # (obviously only valid when a sensor + controller is in use): -->
-<!-- yield motor[0] -->
-
+    while True:
+        motor[0].target = 100
+        yield 1.5
+        motor[0].target = 0
+        yield 1.5
+</pre>
+<p>
+  Now, you will need to play with the values that the PID coefficients are set to.  The following approach is recommended:
+<ol>
+  <li>Set all coefficients (kp, ki and kd) to 0.</li>
+  <li>Increase kp until the wheel overshoots the target position and oscillates slightly after reaching the target.</li>
+  <li>Increase kd until the oscillation is suppressed.</li>
+  <li>Increase ki until the wheel always reaches the required position.</li>
+</ol>
+If there is sufficient demand, Student Robotics may produce an tutorial video on tuning the PID controller.
 </p>
 
+<h2>Reconfiguring motor controller channels</h2>
+<p>
+  To reconfigure a motor controller channel, you should disable it
+  first:
+</p>
+<pre>
+  motor[0].disable()
+</pre>
 
 </body>
 </html>
