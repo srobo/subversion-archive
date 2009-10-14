@@ -1,0 +1,79 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../css/main.css" />
+<title>Introduction to robot programming</title>
+</head>
+<body>
+<h1>Introduction to robot programming</h1>
+
+<p>
+This is a very quick guide to getting you going on programming your robot.  You should write your robot code in <a href="http://www.studentrobotics.org/ide">RoboIDE</a>, and save the robot.zip you are presented with when you click "Export Project" onto the user key (the one without tape on it).
+</p>
+
+<p>
+You need to have at least one file in your robot's code: <b>robot.py</b>.  This should contain the following line at the top:
+</p>
+<pre>
+from sr import *
+</pre>
+<p>
+You must have a main function in this file:
+</p>
+<pre>
+from sr import *
+
+def main():
+    pass
+</pre>
+
+<h2>Yield</h2>
+<p>
+You should use yield in your code whenever it you want to wait for an event to happen.  For example, to wait for the first analogue input on the jointio board to go above 1.1 volts, use the following line:
+</p>
+<pre>
+yield io.apin[0] > 1.1
+</pre>
+<p>The event variable provides information about the event that occurred.</p>
+
+<p>You can combine the terms that you yield using logical operators:</p>
+<pre>
+yield (io.pin[0] == 1) & (io.pin[2] = 0)
+# is the same as:
+yield And(io.pin[0] == 1, io.pin[2] = 0)
+
+yield (io.pin[0] == 1) | (io.pin[2] = 0)
+# is the same as:
+yield Or(io.pin[0] == 1, io.pin[2] = 0)
+# is the same as:
+yield io.pin[0] == 1, io.pin[2] = 0
+</pre>
+
+<h3>Pausing</h3>
+<p>
+You can pause for a given amount of time by yielding a number, for example:
+<pre>
+yield 3.4
+</pre>
+Will pause for 3.4 seconds.
+</p>
+
+
+<h2>Coroutines</h2>
+<p>
+You can have multiple functions, or <b>coroutines</b>, running concurrently.  Coroutines that are not waiting for an event will be executed.  You can mark functions to be coroutines using the coroutine decorator:
+</p>
+<pre>
+def main():
+    while True:
+        print "Hello"
+        yield 1
+
+@coroutine
+def badger():
+    while True:
+        yield io.pin[0]
+        print "Pin 0 changed!"
+</pre>
+</body>
+</html>
+
