@@ -1,9 +1,9 @@
-<html><head><title>Student Rotobtics Vision system</title></head>
+<html><head><title>Student Robotics Vision system</title></head>
 <body>
 <center><h1>Student Robotics Vision system</h1></center>
 The electronics kit your team recieved at kickstart contains a webcam - when mounted on your robot and plugged into your USB hub and slug, you can use the webcam to make your robot aware of it's surroundings in the arena, and to find & collect coloured blocks. While we've created the vision system to help your robot find it's way around the arena, it isn't limited to this if you can think up a better use for it.
 <p/>
-<img src="arena1.jpg" alt="Arena with red and blue tokens, with vision outline" align="right"></img>
+<img src="arena1.jpg" alt="Arena with red and blue tokens, with vision outline" align=right></img>
 To illustrate this, the picture to the right shows the inside of the (1/4 size) demonstration arena present at kickstart - you'll notice that most of the image is white, with red and blue blocks arranged on the floor, and to the far right a portion of black tape, outlining where the ramp would be.
 <p/>
 The other primary feature of the image is the blue-rectangles outlining the blocks on the floor - the Student Robotics software package includes a program to process the output of the webcam and identify where blocks are located in the image. This allows you to trivially identify where coloured blocks exist in front of the webcam.
@@ -46,5 +46,6 @@ The x, y, width and height properties are all on a scale of 0 to 100. So, a blob
 The vision system relies on having adequate lighting and a white environment, as described above. This means that, if you wish to test the vision system before the competition, you will need to construct such an environment.
 <p/>
 Due to the low processing capabilities of the slug, the vision system takes a long period of time to complete - approximately 0.2 seconds at the last benchmark. Bear this in mind when programming your robot. You might consider halting motors before yielding to the vision system, to ensure that your robot is in the same position when you examine the list of blobs. Otherwise your robot will be in a different position when you recieve the vision results, making any course alterations inaccurate.
+<p/>
 </body>
 </html>
