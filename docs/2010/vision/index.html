@@ -22,8 +22,24 @@ This also means that <b>the vision system will only work with a white background
 For full information on the programming interface, see the main programming reference - this section is intended to be a demonstration.
 <p/>
 A typical vision program will look something like this:
-<p style="font-family:courier">
+<p style="font-family:courier"></p>
+<pre>
+yield vision()
 
-</p>
+if event == vision:
+	for blob in event.vision.blobs:
+		if blob.colour == RED:
+			print "Found red blob at " + str(blob.x) + ", " + str(blob.y)
+</pre>
+<br/>
+Here, we first yield to the vision system, which fetches a frame from the webcam and processes it. Once it returns, the result is stored in the 'event' object. This takes the form of a list of 'blob's - each blob corresponds to a coloured area seen by the webcam. Each blob has several properties that you can access:<br/>
+<ul>
+<li>'x', 'y' - location of the top left corner of the blob in the webcam image</li>
+<li>'width', 'height' - size of blobs dimensions</li>
+<li>'mass' - number of pixels that make up this blob</li>
+<li>'colour' - colour of this blob</li>
+</ul>
+The x, y, width and height properties are all on a scale of 0 to 100. So, a blob in the center of the image would have x and y locations of 50, 50. 
+
 </body>
 </html>
