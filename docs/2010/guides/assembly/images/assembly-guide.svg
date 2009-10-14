@@ -1,0 +1,3349 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46+devel"
+   sodipodi:docname="assembly-guide.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2526"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2407"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2345"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2305"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1721"
+       is_visible="true" />
+    <linearGradient
+       id="linearGradient1640">
+      <stop
+         style="stop-color:#fb0000;stop-opacity:0.97368419"
+         offset="0"
+         id="stop1642" />
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="1"
+         id="stop1644" />
+    </linearGradient>
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1638"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1630"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1568"
+       is_visible="true" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective3352" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3370">
+      <path
+         d="M 402,402 L 13631,402 L 13631,9515 L 402,9515 L 402,402 z"
+         clip-rule="evenodd"
+         id="path3372" />
+    </clipPath>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z"
+         id="path13838" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Send"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Send">
+      <path
+         transform="matrix(-0.3,0,0,-0.3,0.69,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.97309,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         id="path13868" />
+    </marker>
+    <inkscape:perspective
+       id="perspective2677"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective896"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective43529" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective9" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath19">
+      <path
+         d="M 150,100 L 2329,100 L 2329,3300 L 150,3300 L 150,100 z"
+         id="path21" />
+    </clipPath>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Sstart"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Sstart">
+      <path
+         transform="scale(0.3) translate(-2.3,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round"
+         id="path8047" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="Arrow2Send-9"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Send">
+      <path
+         transform="scale(0.3) rotate(180) translate(-2.3,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         id="path8050" />
+    </marker>
+    <inkscape:perspective
+       id="perspective79"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       style="overflow:visible;"
+       id="Arrow1Mend"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend">
+      <path
+         transform="scale(0.4) rotate(180) translate(10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path45659" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="Arrow1Send"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Send">
+      <path
+         transform="scale(0.2) rotate(180) translate(6,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path45665" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Sstart"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Sstart">
+      <path
+         transform="scale(0.2) translate(6,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path45662" />
+    </marker>
+    <clipPath
+       id="clipPath4031"
+       clipPathUnits="userSpaceOnUse">
+      <path
+         id="path4033"
+         clip-rule="evenodd"
+         d="M 142,142 L 9775,142 L 9775,13891 L 142,13891 L 142,142 z" />
+    </clipPath>
+    <inkscape:perspective
+       id="perspective4013"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lstart"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart">
+      <path
+         transform="scale(0.8) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path8260" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Mstart"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Mstart">
+      <path
+         transform="scale(0.6) translate(0,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round"
+         id="path8284" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="Arrow2Mend"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Mend">
+      <path
+         transform="scale(0.6) rotate(180) translate(0,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         id="path8287" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective12876" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath12894">
+      <path
+         d="M 402,402 L 13631,402 L 13631,9515 L 402,9515 L 402,402 z"
+         clip-rule="evenodd"
+         id="path12896" />
+    </clipPath>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective3263" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3281">
+      <path
+         d="M 402,402 L 13631,402 L 13631,9515 L 402,9515 L 402,402 z"
+         clip-rule="evenodd"
+         id="path3283" />
+    </clipPath>
+    <inkscape:perspective
+       id="perspective2520"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       style="overflow:visible;"
+       id="Arrow1Lend-5"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path17909" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lstart-6"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart">
+      <path
+         transform="scale(0.8) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path17906" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Mstart"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mstart">
+      <path
+         transform="scale(0.4) translate(10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path17912" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="Arrow2Mend-3"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Mend">
+      <path
+         transform="scale(0.6) rotate(180) translate(0,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         id="path17933" />
+    </marker>
+    <inkscape:perspective
+       id="perspective3503"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4385"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4407"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4429"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4451"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective6205"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective6491"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective6695"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective1327"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective1446"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective1468"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective1503"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective1525"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective1550"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective1582"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective1604"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective1666"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1638-4"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective1666-9"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1638-1"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective1666-0"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1638-48"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective2151"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2173"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2209"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2251"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2277"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2315"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2305-3"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective2355"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2345-9"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective2355-6"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2345-5"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective2355-7"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2345-6"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective2355-0"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2345-4"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective2417"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2407-3"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective2417-3"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2407-5"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective2417-2"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2407-6"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective2464"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2407-6-3"
+       is_visible="true" />
+    <inkscape:perspective
+       id="perspective2493"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2544"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2566"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2526-7"
+       is_visible="true" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.32"
+     inkscape:cx="396.73507"
+     inkscape:cy="545.01066"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="725"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     showguides="true"
+     inkscape:guide-bbox="true" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#803300;fill-opacity:1;stroke:none;font-family:Arial"
+       x="15.701849"
+       y="529.20105"
+       id="text3604"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.98182131,-0.0076405,0.00792561,1.0184536,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="15.701849"
+         y="529.20105"
+         id="tspan3606">Motor</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:3.08586431;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3209"
+       width="347.42896"
+       height="210.85263"
+       x="99.72879"
+       y="467.47076"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ffffff;stroke:#00fefb;stroke-width:3.41278052;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4184"
+       width="37.939049"
+       height="36.433346"
+       x="410.98569"
+       y="559.61047"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#0000ff;stroke-width:3.81636524;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path4188"
+       sodipodi:cx="40.3125"
+       sodipodi:cy="841.17468"
+       sodipodi:rx="5.9375"
+       sodipodi:ry="5.9375"
+       d="m 46.25,841.17468 a 5.9375,5.9375 0 1 1 -11.875,0 5.9375,5.9375 0 1 1 11.875,0 z"
+       transform="matrix(0.6935994,0,0,0.7282367,85.31897,-90.556829)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#0000ff;stroke-width:3.81636524;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path5163"
+       sodipodi:cx="40.3125"
+       sodipodi:cy="841.17468"
+       sodipodi:rx="5.9375"
+       sodipodi:ry="5.9375"
+       d="m 46.25,841.17468 a 5.9375,5.9375 0 1 1 -11.875,0 5.9375,5.9375 0 1 1 11.875,0 z"
+       transform="matrix(0.8497766,0,0,0.8068597,79.56427,-14.988979)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ffffff;stroke:#ff7f00;stroke-width:3.60842776;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect5169"
+       width="39.417103"
+       height="73.157951"
+       x="166.60651"
+       y="628.86298"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(0.7275402,0,0,0.7239758,391.8894,-86.873849)"
+       d="m 46.25,841.17468 a 5.9375,5.9375 0 1 1 -11.875,0 5.9375,5.9375 0 1 1 11.875,0 z"
+       sodipodi:ry="5.9375"
+       sodipodi:rx="5.9375"
+       sodipodi:cy="841.17468"
+       sodipodi:cx="40.3125"
+       id="path5225"
+       style="fill:none;stroke:#0000ff;stroke-width:3.81636524;stroke-miterlimit:4;stroke-opacity:0.55785128;stroke-dasharray:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff7f00;fill-opacity:1;stroke:none;font-family:Arial"
+       x="-673.49561"
+       y="197.22041"
+       id="text6107"
+       sodipodi:linespacing="125%"
+       transform="matrix(0,-1.0184844,0.98185109,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan6109"
+         x="-673.49561"
+         y="197.22041">RJ11</tspan></text>
+    <rect
+       y="630.24438"
+       x="216.09886"
+       height="73.157951"
+       width="39.417103"
+       id="rect5173"
+       style="fill:#ffffff;stroke:#ff7f00;stroke-width:3.60842776;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       transform="matrix(0,-1.0184844,0.98185109,0,0,0)"
+       sodipodi:linespacing="125%"
+       id="text6111"
+       y="247.26686"
+       x="-674.85193"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff7f00;fill-opacity:1;stroke:none;font-family:Arial"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="247.26686"
+         x="-674.85193"
+         id="tspan6113"
+         sodipodi:role="line">RJ11</tspan></text>
+    <g
+       id="g8892"
+       transform="translate(-298.05513,54.814984)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         y="575.88989"
+         x="562.72534"
+         height="73.157951"
+         width="39.417103"
+         id="rect5175"
+         style="fill:#ffffff;stroke:#ff7f00;stroke-width:3.60842776;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text
+         transform="matrix(0,-1.0184844,0.9818511,0,0,0)"
+         sodipodi:linespacing="125%"
+         id="text6115"
+         y="600.11993"
+         x="-621.48389"
+         style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff7f00;fill-opacity:1;stroke:none;font-family:Arial"
+         xml:space="preserve"><tspan
+           y="600.11993"
+           x="-621.48389"
+           id="tspan6117"
+           sodipodi:role="line">RJ11</tspan></text>
+    </g>
+    <g
+       id="g8880"
+       transform="translate(-299.43656,53.43355)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="fill:#ffffff;stroke:#ff7f00;stroke-width:3.60842776;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="rect5177"
+         width="39.417103"
+         height="73.157951"
+         x="612.21765"
+         y="575.88989" />
+      <text
+         xml:space="preserve"
+         style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff7f00;fill-opacity:1;stroke:none;font-family:Arial"
+         x="-621.48389"
+         y="650.70709"
+         id="text6119"
+         sodipodi:linespacing="125%"
+         transform="matrix(0,-1.0184844,0.9818511,0,0,0)"><tspan
+           sodipodi:role="line"
+           id="tspan6121"
+           x="-621.48389"
+           y="650.70709">RJ11</tspan></text>
+    </g>
+    <rect
+       style="fill:#ffaaaa;fill-opacity:1;stroke:#ff0000;stroke-width:3.60842776;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4180"
+       width="48.494961"
+       height="30.078878"
+       x="419.51126"
+       y="465.57104"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="435.85709"
+       y="478.5127"
+       id="text6131"
+       sodipodi:linespacing="125%"
+       transform="scale(0.98185109,1.0184844)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan6133"
+         x="435.85709"
+         y="478.5127">DC</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="479.9444"
+       y="459.74011"
+       id="text13931"
+       sodipodi:linespacing="125%"
+       transform="scale(0.98185108,1.0184844)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan13933"
+         x="479.9444"
+         y="459.74011">Charger</tspan></text>
+    <rect
+       style="fill:none;stroke:#7f0000;stroke-width:4.23160505;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3454"
+       width="8.3256769"
+       height="61.450596"
+       x="142.16455"
+       y="605.58502"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#800000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="125.82324"
+       y="599.19208"
+       id="text6365"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan6367"
+         x="125.82324"
+         y="599.19208">Pin header</tspan></text>
+    <rect
+       style="fill:#fffff0;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.81761456;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3465"
+       width="54.974182"
+       height="40.400291"
+       x="101.12747"
+       y="452.04437"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.7408638;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3467"
+       width="53.209023"
+       height="40.421173"
+       x="160.14993"
+       y="452.00598"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#fffff0;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.81761456;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3469"
+       width="54.974182"
+       height="40.400291"
+       x="214.18832"
+       y="452.04437"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#fffff0;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.80091333;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3471"
+       width="88.758064"
+       height="39.736423"
+       x="266.71103"
+       y="452.03607"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#fffff0;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.86296129;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3473"
+       width="56.770752"
+       height="39.86174"
+       x="356.7529"
+       y="452.06705"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#f5fffa;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.63781691;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3477"
+       width="53.772545"
+       height="38.277699"
+       x="-586.99524"
+       y="84.081451"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#f5fffa;fill-opacity:1;fill-rule:evenodd;stroke:#2efe36;stroke-width:4.58696938;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3479"
+       width="53.823395"
+       height="37.407589"
+       x="-645.14392"
+       y="84.674652"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:0.25;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3481"
+       width="8.504447"
+       height="3.9163978"
+       x="435.38071"
+       y="499.56921"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:0.25;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3483"
+       width="8.504447"
+       height="3.9163978"
+       x="435.38071"
+       y="505.85406"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:0.25;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3485"
+       width="8.504447"
+       height="3.9163978"
+       x="435.38071"
+       y="511.72357"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:0.25;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3487"
+       width="8.504447"
+       height="3.9163978"
+       x="435.38071"
+       y="517.59302"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:0.25;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3489"
+       width="8.504447"
+       height="3.9163978"
+       x="435.38071"
+       y="523.46246"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:0.25;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:0.25;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3491"
+       width="8.504447"
+       height="3.9163978"
+       x="435.38071"
+       y="529.33203"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3493"
+       width="8.504447"
+       height="3.9163978"
+       x="435.38071"
+       y="535.20148"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3495"
+       width="8.504447"
+       height="3.9163978"
+       x="435.38071"
+       y="541.07098"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3497"
+       width="8.504447"
+       height="3.9163978"
+       x="435.38071"
+       y="546.94043"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ef2929;fill-opacity:1;fill-rule:evenodd;stroke:#a40000;stroke-width:1.26123214;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3499"
+       width="8.504447"
+       height="3.9163978"
+       x="435.38071"
+       y="552.98206"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#729fcf;fill-opacity:0.92148761;fill-rule:evenodd;stroke:#204a87;stroke-width:4.46411371;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:0.87190079;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3475"
+       width="90.073784"
+       height="94.377594"
+       x="356.9003"
+       y="599.79102"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="371.41391"
+       y="613.05164"
+       id="text2734"
+       sodipodi:linespacing="125%"
+       transform="scale(0.98185109,1.0184844)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="371.41391"
+         y="613.05164"
+         id="tspan2738">Radio </tspan><tspan
+         sodipodi:role="line"
+         x="371.41391"
+         y="638.51111"
+         id="tspan2742">Module</tspan></text>
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#0000ff;stroke-width:3.81636524;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path5161"
+       sodipodi:cx="40.3125"
+       sodipodi:cy="841.17468"
+       sodipodi:rx="5.9375"
+       sodipodi:ry="5.9375"
+       d="m 46.25,841.17468 a 5.9375,5.9375 0 1 1 -11.875,0 5.9375,5.9375 0 1 1 11.875,0 z"
+       transform="matrix(0.7863022,0,0,0.7821623,390.2671,6.187698)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g3544"
+       transform="matrix(1.0215249,0,0,1.1373013,168.59074,-220.25492)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         y="646.93707"
+         x="213.83005"
+         height="17.781286"
+         width="19.051378"
+         id="rect2758"
+         style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:#333333;stroke-width:2.34137845;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <path
+         transform="matrix(1.5517241,0,0,1.5517241,-133.54206,-395.5056)"
+         d="m 233.93361,677.52594 c 0,2.17202 -1.76078,3.9328 -3.9328,3.9328 -2.17203,0 -3.9328,-1.76078 -3.9328,-3.9328 0,-2.17202 1.76077,-3.9328 3.9328,-3.9328 2.17202,0 3.9328,1.76078 3.9328,3.9328 z"
+         sodipodi:ry="3.932797"
+         sodipodi:rx="3.932797"
+         sodipodi:cy="677.52594"
+         sodipodi:cx="230.00081"
+         id="path3542"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         sodipodi:type="arc" />
+    </g>
+    <rect
+       style="fill:#ff8080;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:2.40389323;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3548"
+       width="87.878532"
+       height="25.735123"
+       x="295.21951"
+       y="499.63824"
+       ry="9.4813604"
+       rx="0"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ff0000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="243.83469"
+       y="519.6134"
+       id="text3550"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3552"
+         x="243.83469"
+         y="519.6134"
+         style="font-size:20px;font-weight:normal;fill:#ff0000;-inkscape-font-specification:Sans">Fuse</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="400.8013"
+       y="552.69092"
+       id="text3554"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3556"
+         x="406.53177"
+         y="552.69092"
+         style="font-size:18px;text-align:end;text-anchor:end;fill:#333333">Competition </tspan><tspan
+         sodipodi:role="line"
+         x="400.8013"
+         y="575.19092"
+         id="tspan3558"
+         style="font-size:18px;text-align:end;text-anchor:end;fill:#333333">Button</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#803300;fill-opacity:1;stroke:none;font-family:Arial"
+       x="46.861092"
+       y="153.03444"
+       id="text3562"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.98169117,0.01771769,-0.01837862,1.0183186,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="46.861092"
+         y="153.03444"
+         id="tspan3566">Additional </tspan><tspan
+         sodipodi:role="line"
+         x="46.861092"
+         y="178.49391"
+         id="tspan2237">Motor Rail</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3568"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="matrix(0,-1,1,0,-222.91391,684.15547)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion3570"><rect
+           id="rect3572"
+           width="135.7645"
+           height="69.296463"
+           x="189.50462"
+           y="384.85339"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara3576">GND</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="-492.65088"
+       y="203.13544"
+       id="text3580"
+       sodipodi:linespacing="125%"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3582"
+         x="-492.65088"
+         y="203.13544">12V</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3608"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(-103.57951,176.04661)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion3610"><rect
+           id="rect3612"
+           width="135.7645"
+           height="69.296463"
+           x="189.50462"
+           y="384.85339"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara3614">GND</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="85.194366"
+       y="558.26642"
+       id="text3616"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3618"
+         x="85.194366"
+         y="558.26642">12V</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#803300;fill-opacity:1;stroke:none;font-family:Arial"
+       x="7.4809365"
+       y="638.63983"
+       id="text4877"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.98180739,0.00925617,-0.00960159,1.0184392,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="7.4809365"
+         y="638.63983"
+         id="tspan4879">USB </tspan><tspan
+         id="tspan4893"
+         sodipodi:role="line"
+         x="7.4809365"
+         y="664.0993">Hub</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4881"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(-107.92416,232.46629)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion4883"><rect
+           id="rect4885"
+           width="135.7645"
+           height="69.296463"
+           x="189.50462"
+           y="384.85339"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara4887">GND</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="84.278275"
+       y="616.25757"
+       id="text4889"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan4891"
+         x="84.278275"
+         y="616.25757">5V</tspan></text>
+    <text
+       transform="matrix(0.98162994,0.02083978,-0.02161746,1.0182549,0,0)"
+       sodipodi:linespacing="125%"
+       id="text4921"
+       y="425.11694"
+       x="66.967339"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#803300;fill-opacity:1;stroke:none;font-family:Arial"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         id="tspan4923"
+         y="425.11694"
+         x="66.967339"
+         sodipodi:role="line">Servo</tspan></text>
+    <flowRoot
+       transform="matrix(0,-1,1,0,-278.21827,681.36329)"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       id="flowRoot4925"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion4927"><rect
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans"
+           y="384.85339"
+           x="189.50462"
+           height="69.296463"
+           width="135.7645"
+           id="rect4929" /></flowRegion><flowPara
+         id="flowPara4931">GND</flowPara></flowRoot>    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       sodipodi:linespacing="125%"
+       id="text4933"
+       y="153.54533"
+       x="-484.14441"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="153.54533"
+         x="-484.14441"
+         id="tspan4935"
+         sodipodi:role="line">5V</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#803300;fill-opacity:1;stroke:none;font-family:Arial"
+       x="353.89966"
+       y="-178.20911"
+       id="text4962"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.98170938,0.01668582,-0.01730835,1.0183372,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="353.89966"
+         y="-178.20911"
+         id="tspan4964">CHRG/RN</tspan><tspan
+         sodipodi:role="line"
+         x="353.89966"
+         y="-152.74963"
+         id="tspan4984">Switch</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757278px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#803300;fill-opacity:1;stroke:none;font-family:Arial"
+       x="420.55139"
+       y="398.95364"
+       id="text4990"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.98158427,0.02288842,-0.02374253,1.0182076,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="420.55139"
+         y="398.95364"
+         id="tspan4992">Battery</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4994"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="matrix(0,-1,1,0,-27.66723,682.98226)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion4996"><rect
+           id="rect4998"
+           width="135.7645"
+           height="69.296463"
+           x="189.50462"
+           y="384.85339"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara5000">GND</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       x="-491.47766"
+       y="398.38211"
+       id="text5002"
+       sodipodi:linespacing="125%"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan5004"
+         x="-491.47766"
+         y="398.38211">+ve</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.36757277999999971px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#8b4513;fill-opacity:1;stroke:none;font-family:Arial"
+       x="187.0479"
+       y="-184.01538"
+       id="text5010"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.98093604,0.04237868,-0.04395984,1.0175353,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="189.87231"
+         y="-184.01538"
+         id="tspan5012">Logic </tspan><tspan
+         sodipodi:role="line"
+         x="187.0479"
+         y="-158.55591"
+         id="tspan5026"
+         style="text-align:center;text-anchor:middle;fill:#8b4513;fill-opacity:1">Switch</tspan></text>
+    <g
+       id="layer2"
+       inkscape:label="bk"
+       style="opacity:0.26905829;display:none"
+       transform="translate(-643.51216,829.76046)">
+      <image
+         y="426.12933"
+         x="-530.64038"
+         id="image43531"
+         height="166.53543"
+         width="340.15747"
+         sodipodi:absref="/home/rob/Desktop/face.png"
+         xlink:href="/home/rob/Desktop/face.png"
+         transform="scale(-1,1)" />
+    </g>
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,1,1,0,0,0)"
+       y="-201.60289"
+       x="730.60468"
+       height="164.00612"
+       width="338.59424"
+       id="rect15136"
+       style="fill:none;stroke:#000000;stroke-width:1.77165377;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,1.0472425,1.0472425,0,-1115.6505,730.28158)"
+       d="m 19.268659,886.67822 a 5.5242715,5.5242715 0 1 1 -11.0485429,0 5.5242715,5.5242715 0 1 1 11.0485429,0 z"
+       sodipodi:ry="5.5242715"
+       sodipodi:rx="5.5242715"
+       sodipodi:cy="886.67822"
+       sodipodi:cx="13.744388"
+       id="path15146"
+       style="fill:none;stroke:#0000ff;stroke-width:3.38346386;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,1,1,0,0,0)"
+       y="-201.45665"
+       x="856.31122"
+       height="39.655903"
+       width="54.584961"
+       id="rect15148"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#00ff00;stroke-width:3.54330707;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,1,1,0,0,0)"
+       y="-200.90965"
+       x="773.914"
+       height="39.482948"
+       width="54.792583"
+       id="rect15170"
+       style="fill:none;stroke:#ff00ff;stroke-width:3.5433073;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,1,1,0,0,0)"
+       y="-201.12633"
+       x="951.401"
+       height="39.482952"
+       width="54.507988"
+       id="rect15172"
+       style="fill:none;stroke:#ff00ff;stroke-width:3.5433073;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,-0.8571939,0.8771955,0,-591.8857,1689.1502)"
+       id="g23864">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ff8000;stroke-width:4.08621311;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect15200"
+         width="42.88216"
+         height="79.894783"
+         x="-1009.6938"
+         y="555.90051"
+         transform="scale(-1,1)" />
+      <text
+         xml:space="preserve"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff7f00;fill-opacity:1;stroke:none;font-family:Arial"
+         x="-614.17743"
+         y="994.71332"
+         id="text15204"
+         sodipodi:linespacing="125%"
+         transform="matrix(0,-1,1,0,0,0)"><tspan
+           sodipodi:role="line"
+           id="tspan15206"
+           x="-614.17743"
+           y="994.71332">RJ11</tspan></text>
+    </g>
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,-1,1,0,-629.3938,1260.9427)"
+       id="g47052">
+      <rect
+         style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect23875"
+         width="1.9727551"
+         height="7.9360037"
+         x="363.81122"
+         y="580.63861" />
+      <rect
+         style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect23889"
+         width="1.9727551"
+         height="7.9360037"
+         x="368.09637"
+         y="580.63861" />
+      <rect
+         style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect23891"
+         width="1.9727551"
+         height="7.9360037"
+         x="372.38156"
+         y="580.63861" />
+      <rect
+         style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect23893"
+         width="1.9727551"
+         height="7.9360037"
+         x="376.66672"
+         y="580.63861" />
+      <rect
+         style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect23895"
+         width="1.9727551"
+         height="7.9360037"
+         x="388.07782"
+         y="580.64606" />
+    </g>
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       y="-52.786606"
+       x="-1039.7352"
+       height="7.9360037"
+       width="1.9727551"
+       id="rect23897"
+       style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       transform="matrix(0,-1,1,0,0,0)" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       y="-52.768661"
+       x="-1033.4314"
+       height="7.9360037"
+       width="1.9727551"
+       id="rect23899"
+       style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       transform="matrix(0,-1,1,0,0,0)" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       y="-52.786362"
+       x="-1027.0094"
+       height="7.9360037"
+       width="1.9727551"
+       id="rect23901"
+       style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       transform="matrix(0,-1,1,0,0,0)" />
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,-1,1,0,-629.3938,1260.9427)"
+       id="g47006">
+      <rect
+         style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect23903"
+         width="1.9727551"
+         height="7.9360037"
+         x="482.40225"
+         y="574.99359" />
+      <rect
+         style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect23905"
+         width="1.9727551"
+         height="7.9360037"
+         x="488.77527"
+         y="575.00269" />
+      <rect
+         style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:1.77165365;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect23907"
+         width="1.9727551"
+         height="7.9360037"
+         x="495.11716"
+         y="575.00269" />
+    </g>
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,-1,1.0286668,0,-646.4778,1260.9427)"
+       id="g23974">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:1.74679303;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect23917"
+         width="41.456692"
+         height="43.774014"
+         x="-353.94498"
+         y="551.90576"
+         transform="scale(-1,1)" />
+      <path
+         style="fill:#800000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.98596758px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 313.13476,595.57507 3.02735,-3.02734 2.92968,2.92968"
+         id="path23957" />
+      <path
+         style="fill:#800000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.98596758px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 322.16797,595.57507 3.02735,-3.02734 2.92968,2.92968"
+         id="path23959" />
+      <path
+         style="fill:#800000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.98596758px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 331.15234,595.57507 3.02735,-3.02734 2.92968,2.92968"
+         id="path23961" />
+      <path
+         style="fill:#800000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.98596758px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 340.18555,595.57507 3.02735,-3.02734 2.92968,2.92968"
+         id="path23963" />
+    </g>
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,-1,1.0286668,0,-646.4778,1260.9427)"
+       id="g23969">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:1.74679303;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect15166"
+         width="25.228348"
+         height="43.772789"
+         x="-271.76181"
+         y="551.71851"
+         transform="scale(-1,1)" />
+      <path
+         style="fill:#800000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.98596758px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 247.27099,595.39582 3.02735,-3.02734 2.92968,2.92968"
+         id="path23965" />
+      <path
+         style="fill:#800000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.98596758px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 256.21341,595.46488 3.02735,-3.02734 2.92968,2.92968"
+         id="path23967" />
+    </g>
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:12.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m -202.97672,875.56955 c -48.46421,-0.56249 -102.54896,0.30359 -154.18058,-0.2589 l 4.84921,-195.35688 98.30495,-125.15778 335.714018,-1.12476"
+       id="path6510"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,-1,1.0286668,0,-646.4674,1061.2996)"
+       id="g23981">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:1.74679303;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect23983"
+         width="25.228348"
+         height="43.772789"
+         x="-271.76181"
+         y="551.71851"
+         transform="scale(-1,1)" />
+      <path
+         style="fill:#800000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.98596758px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 247.27099,595.39582 3.02735,-3.02734 2.92968,2.92968"
+         id="path23985" />
+      <path
+         style="fill:#800000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.98596758px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 256.21341,595.46488 3.02735,-3.02734 2.92968,2.92968"
+         id="path23987" />
+    </g>
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,1.0472425,1.0472425,0,-979.1339,732.19354)"
+       d="m 19.268659,886.67822 a 5.5242715,5.5242715 0 1 1 -11.0485429,0 5.5242715,5.5242715 0 1 1 11.0485429,0 z"
+       sodipodi:ry="5.5242715"
+       sodipodi:rx="5.5242715"
+       sodipodi:cy="886.67822"
+       sodipodi:cx="13.744388"
+       id="path43535"
+       style="fill:none;stroke:#0000ff;stroke-width:3.38346386;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,1.0472425,1.0472425,0,-979.1339,1042.008)"
+       d="m 19.268659,886.67822 a 5.5242715,5.5242715 0 1 1 -11.0485429,0 5.5242715,5.5242715 0 1 1 11.0485429,0 z"
+       sodipodi:ry="5.5242715"
+       sodipodi:rx="5.5242715"
+       sodipodi:cy="886.67822"
+       sodipodi:cx="13.744388"
+       id="path43537"
+       style="fill:none;stroke:#0000ff;stroke-width:3.38346386;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       transform="matrix(0,1.0472425,1.0472425,0,-1115.5597,1042.1057)"
+       d="m 19.268659,886.67822 a 5.5242715,5.5242715 0 1 1 -11.0485429,0 5.5242715,5.5242715 0 1 1 11.0485429,0 z"
+       sodipodi:ry="5.5242715"
+       sodipodi:rx="5.5242715"
+       sodipodi:cy="886.67822"
+       sodipodi:cx="13.744388"
+       id="path43539"
+       style="fill:none;stroke:#0000ff;stroke-width:3.38346386;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc" />
+    <text
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       id="text46976"
+       y="-24.359484"
+       x="-947.71649"
+       style="font-size:20px;font-style:normal;font-weight:normal;fill:#800000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         style="font-size:10px;fill:#800000;fill-opacity:1"
+         y="-24.359484"
+         x="-947.71649"
+         id="tspan46978"
+         sodipodi:role="line">1</tspan></text>
+    <text
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       id="text46980"
+       y="-24.428576"
+       x="-938.53241"
+       style="font-size:20px;font-style:normal;font-weight:normal;fill:#800000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         style="font-size:10px;fill:#800000;fill-opacity:1"
+         y="-24.428576"
+         x="-938.53241"
+         id="tspan46982"
+         sodipodi:role="line">2</tspan></text>
+    <text
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       id="text46984"
+       y="-24.497545"
+       x="-929.96979"
+       style="font-size:20px;font-style:normal;font-weight:normal;fill:#800000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         style="font-size:10px;fill:#800000;fill-opacity:1"
+         y="-24.497545"
+         x="-929.96979"
+         id="tspan46986"
+         sodipodi:role="line">3</tspan></text>
+    <text
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       id="text46988"
+       y="-24.428453"
+       x="-921.2691"
+       style="font-size:20px;font-style:normal;font-weight:normal;fill:#800000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         style="font-size:10px;fill:#800000;fill-opacity:1"
+         y="-24.428453"
+         x="-921.2691"
+         id="tspan46990"
+         sodipodi:role="line">4</tspan></text>
+    <text
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       id="text2538"
+       y="-174.62523"
+       x="-882.21832"
+       style="font-size:25.91900253px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         y="-174.62523"
+         x="-882.21832"
+         id="tspan2540"
+         sodipodi:role="line">+</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:12.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m -200.89931,893.02081 -164.64976,0.75125 1.52287,-216.29524 111.85536,-98.95328 333.397847,-3.09431"
+       id="path6510-1"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       id="text2542"
+       y="-172.21007"
+       x="-904.33295"
+       style="font-size:39.51219559px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         y="-172.21007"
+         x="-904.33295"
+         id="tspan2544"
+         sodipodi:role="line">-</tspan></text>
+    <flowRoot
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       id="flowRoot8140"
+       xml:space="preserve"
+       transform="translate(-184.84239,730.7298)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion8142"><rect
+           y="534.75"
+           x="347"
+           height="58.75"
+           width="29"
+           id="rect8144" /></flowRegion><flowPara
+         id="flowPara8146">RJ</flowPara></flowRoot>    <g
+       id="layer1-7"
+       inkscape:label="Board"
+       transform="matrix(0,1,-1,0,1040.5089,490.17286)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.60800004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         id="rect8087"
+         width="176.79486"
+         height="141.35556"
+         x="293.47559"
+         y="439.34052" />
+    </g>
+    <rect
+       y="-532.85913"
+       x="848.3299"
+       height="5.8761096"
+       width="3.0081987"
+       id="rect8096"
+       style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="-532.85913"
+       x="852.60144"
+       height="5.8761096"
+       width="3.0081987"
+       id="rect8100"
+       style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="-532.85913"
+       x="857.72723"
+       height="5.8761096"
+       width="3.0081987"
+       id="rect8102"
+       style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="-510.84341"
+       x="834.41998"
+       height="69.875938"
+       width="36.023396"
+       id="rect8104"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ff6600;stroke-width:3.37449622;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(0,1.0440673,-1.0134319,0,1048.0419,470.09595)"
+       d="m 446.79993,570.10419 a 4.1291261,4.2715096 0 1 1 -8.25825,0 4.1291261,4.2715096 0 1 1 8.25825,0 z"
+       sodipodi:ry="4.2715096"
+       sodipodi:rx="4.1291261"
+       sodipodi:cy="570.10419"
+       sodipodi:cx="442.67081"
+       id="path8106"
+       style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.55272257;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(0,1.0440673,-1.0134319,0,1147.2064,470.01752)"
+       d="m 446.79993,570.10419 a 4.1291261,4.2715096 0 1 1 -8.25825,0 4.1291261,4.2715096 0 1 1 8.25825,0 z"
+       sodipodi:ry="4.2715096"
+       sodipodi:rx="4.1291261"
+       sodipodi:cy="570.10419"
+       sodipodi:cx="442.67081"
+       id="path8108"
+       style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.55272257;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(0,1.0440673,-1.0134319,0,1147.1586,328.48419)"
+       d="m 446.79993,570.10419 a 4.1291261,4.2715096 0 1 1 -8.25825,0 4.1291261,4.2715096 0 1 1 8.25825,0 z"
+       sodipodi:ry="4.2715096"
+       sodipodi:rx="4.1291261"
+       sodipodi:cy="570.10419"
+       sodipodi:cx="442.67081"
+       id="path8110"
+       style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.55272257;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(0,1.0440673,-1.0134319,0,1048.03,328.42521)"
+       d="m 446.79993,570.10419 a 4.1291261,4.2715096 0 1 1 -8.25825,0 4.1291261,4.2715096 0 1 1 8.25825,0 z"
+       sodipodi:ry="4.2715096"
+       sodipodi:rx="4.1291261"
+       sodipodi:cy="570.10419"
+       sodipodi:cx="442.67081"
+       id="path8112"
+       style="fill:#ffffff;fill-opacity:1;stroke:#0000ff;stroke-width:1.55254209;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="-616.18628"
+       x="803.57855"
+       height="38.83218"
+       width="54.032467"
+       id="rect8114"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#00ff00;stroke-width:3.34023523;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       ry="0"
+       y="-546.51917"
+       x="924.81793"
+       height="18.3701"
+       width="17.44836"
+       id="rect8120"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#00ffff;stroke-width:3.04410934;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(0,0.9341137,-0.9235588,0,1003.0426,518.63238)"
+       d="m 449.75,504.03125 a 5.46875,5.53125 0 1 1 -10.9375,0 5.46875,5.53125 0 1 1 10.9375,0 z"
+       sodipodi:ry="5.53125"
+       sodipodi:rx="5.46875"
+       sodipodi:cy="504.03125"
+       sodipodi:cx="444.28125"
+       id="path8122"
+       style="fill:#ffffff;fill-opacity:1;stroke:#00ffff;stroke-width:2.6543386;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="-572.25562"
+       x="801.17609"
+       height="106.65766"
+       width="28.74345"
+       id="rect8126"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#806600;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="-560.00879"
+       x="801.17285"
+       height="81.292862"
+       width="28.749964"
+       id="rect8128"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#806600;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="-546.32117"
+       x="801.2052"
+       height="54.154968"
+       width="28.721901"
+       id="rect8130"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#806600;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="-532.86621"
+       x="801.14941"
+       height="26.863712"
+       width="28.869986"
+       id="rect8132"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#806600;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="-519.46362"
+       x="801.22882"
+       height="0.01305041"
+       width="28.638044"
+       id="rect8138"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#806600;stroke-width:1.89999998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <flowRoot
+       transform="matrix(0.5296113,0,0,0.6502364,353.40777,668.79844)"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#ff6600;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       id="flowRoot8149"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion8151"><rect
+           style="fill:#ff6600;fill-opacity:1"
+           y="262.5"
+           x="188"
+           height="117"
+           width="202"
+           id="rect8153" /></flowRegion><flowPara
+         id="flowPara8155">RJ11</flowPara></flowRoot>    <flowRoot
+       transform="matrix(0.4905457,0,0,0.6063706,520.88134,611.71874)"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       id="flowRoot8177"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion8179"><rect
+           y="310.5"
+           x="114"
+           height="64"
+           width="195"
+           id="rect8181" /></flowRegion><flowPara
+         id="flowPara8183">GND</flowPara></flowRoot>    <flowRoot
+       transform="matrix(0.4632998,0,0,0.5765937,408.55439,721.63782)"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       id="flowRoot8189"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion8191"><rect
+           y="184.5"
+           x="363"
+           height="112"
+           width="198"
+           id="rect8193" /></flowRegion><flowPara
+         id="flowPara8195">+5V</flowPara></flowRoot>    <text
+       transform="matrix(0,1.0245166,-0.97607008,0,0,0)"
+       id="text8197"
+       y="-562.90533"
+       x="792.47845"
+       style="font-size:11.24292183px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="-562.90533"
+         x="792.47845"
+         id="tspan8199"
+         sodipodi:role="line">1</tspan></text>
+    <text
+       transform="matrix(0,1.0010543,-0.99894681,0,0,0)"
+       id="text8201"
+       y="-537.32178"
+       x="811.52612"
+       style="font-size:10.79031181px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="-537.32178"
+         x="811.52612"
+         id="tspan8203"
+         sodipodi:role="line">2</tspan></text>
+    <text
+       transform="matrix(0,0.99240502,-1.0076531,0,0,0)"
+       id="text8205"
+       y="-518.85217"
+       x="818.59662"
+       style="font-size:10.49681377px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="-518.85217"
+         x="818.59662"
+         id="tspan8207"
+         sodipodi:role="line">3</tspan></text>
+    <text
+       transform="matrix(0,0.96398263,-1.0373631,0,0,0)"
+       id="text8209"
+       y="-490.56766"
+       x="843.0788"
+       style="font-size:9.76341724px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="-490.56766"
+         x="843.0788"
+         id="tspan8211"
+         sodipodi:role="line">4</tspan></text>
+    <text
+       transform="matrix(0,0.99233609,-1.0077231,0,0,0)"
+       id="text8213"
+       y="-491.96179"
+       x="818.62897"
+       style="font-size:10.68228245px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="-491.96179"
+         x="818.62897"
+         id="tspan8215"
+         sodipodi:role="line">5</tspan></text>
+    <text
+       transform="matrix(0,0.92609486,-1.079803,0,0,0)"
+       id="text8217"
+       y="-446.38577"
+       x="877.57025"
+       style="font-size:10.16285133px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="-446.38577"
+         x="877.57025"
+         id="tspan8219"
+         sodipodi:role="line">4</tspan></text>
+    <text
+       transform="matrix(0,0.99233609,-1.0077231,0,0,0)"
+       id="text8221"
+       y="-464.75562"
+       x="818.62897"
+       style="font-size:10.68228245px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="-464.75562"
+         x="818.62897"
+         id="tspan8223"
+         sodipodi:role="line">5</tspan></text>
+    <text
+       transform="matrix(0,0.96855855,-1.0324621,0,0,0)"
+       id="text8245"
+       y="-544.6615"
+       x="838.89484"
+       style="font-size:10.24458504px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="-544.6615"
+         x="838.89484"
+         id="tspan8247"
+         sodipodi:role="line">0</tspan></text>
+    <flowRoot
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       id="flowRoot3349"
+       xml:space="preserve"
+       transform="translate(19.443324,1150.7298)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion3351"><rect
+           y="653.5"
+           x="649"
+           height="43"
+           width="39"
+           id="rect3353" /></flowRegion><flowPara
+         id="flowPara3355" /></flowRoot>    <g
+       id="layer4"
+       inkscape:label="Title"
+       transform="translate(19.443324,1150.7298)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       id="text3168"
+       x="903.05267"
+       y="796.83319"
+       style="font-size:15px"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <tspan
+         id="tspan3170"
+         y="796.83319"
+         x="903.05267"
+         style="font-size:20px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:LiberationSans;-inkscape-font-specification:LiberationSans" />
+    </text>
+    <g
+       id="g3269"
+       transform="matrix(0.09374844,0,0,-0.09374844,519.33903,799.98459)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         id="g3271" />
+    </g>
+    <g
+       id="g3273"
+       transform="matrix(0.09374844,0,0,-0.09374844,519.33903,799.98459)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         id="g3275" />
+    </g>
+    <path
+       d=""
+       style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:#808080;stroke-width:0.93748438;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
+       id="path3537"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       d=""
+       style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:#808080;stroke-width:0.93748438;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none"
+       id="path3557"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g12882"
+       transform="matrix(0.09374844,0,0,0.09374844,518.76709,740.1079)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         id="g12884" />
+    </g>
+    <g
+       id="g12886"
+       transform="matrix(0.09374844,0,0,0.09374844,518.76709,740.1079)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         id="g12888" />
+    </g>
+    <g
+       id="g12898"
+       transform="matrix(0.09374844,0,0,0.09374844,518.76709,740.1079)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g6622"
+       transform="matrix(0,1,-1,0,1427.046,362.73422)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         transform="translate(-556.82087,441.47063)"
+         id="g6417">
+        <rect
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.70000005;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect19719"
+           width="200.17758"
+           height="177.30014"
+           x="678.08826"
+           y="-1271.5129"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           transform="matrix(0,1,-1,0,0,0)" />
+        <g
+           id="g2530"
+           transform="matrix(0,0.75332412,0.75332412,0,812.1486,394.80734)"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             id="g2532"
+             transform="matrix(-0.837794,0,0,-0.837794,420.24762,1153.1725)">
+            <path
+               d="m 19.268654,886.67822 c 0,3.0494 -2.474863,5.52428 -5.524275,5.52428 -3.049394,0 -5.524257,-2.47488 -5.524257,-5.52428 0,-3.04939 2.474863,-5.52427 5.524257,-5.52427 3.049412,0 5.524275,2.47488 5.524275,5.52427 z"
+               style="fill:none;stroke:#0000ff;stroke-width:3.3834641;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+               id="path2534" />
+          </g>
+        </g>
+        <g
+           id="g2536"
+           transform="matrix(0,0.85975513,0.85975513,0,816.6082,677.3222)"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             id="g2538"
+             transform="matrix(-0.837794,0,0,-0.837794,226.64132,1253.9725)">
+            <path
+               d="m 19.268658,886.67822 c 0,3.04939 -2.474881,5.52427 -5.524275,5.52427 -3.049393,0 -5.524274,-2.47488 -5.524274,-5.52427 0,-3.04939 2.474881,-5.52428 5.524274,-5.52428 3.049394,0 5.524275,2.47489 5.524275,5.52428 z"
+               style="fill:none;stroke:#0000ff;stroke-width:3.3834641;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+               id="path2540" />
+          </g>
+        </g>
+        <g
+           id="g2736"
+           transform="matrix(0,0.85698775,0.85698775,0,682.9214,571.82698)"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             id="g2738"
+             transform="matrix(-0.837794,0,0,-0.837794,350.31691,1254.2843)">
+            <path
+               d="m 19.268651,886.67822 c 0,3.04939 -2.474863,5.52428 -5.524257,5.52428 -3.049412,0 -5.524275,-2.47489 -5.524275,-5.52428 0,-3.04939 2.474863,-5.52427 5.524275,-5.52427 3.049394,0 5.524257,2.47488 5.524257,5.52427 z"
+               style="fill:none;stroke:#0000ff;stroke-width:3.3834641;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+               id="path2740" />
+          </g>
+        </g>
+        <g
+           id="g2742"
+           transform="matrix(0,0.8361035,0.8361035,0,857.03706,361.17157)"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             id="g2744"
+             transform="matrix(-0.837794,0,0,-0.837794,420.24762,1220.2969)">
+            <path
+               d="m 19.268654,886.67823 c 0,3.04939 -2.474863,5.52427 -5.524275,5.52427 -3.049394,0 -5.524257,-2.47488 -5.524257,-5.52427 0,-3.0494 2.474863,-5.52428 5.524257,-5.52428 3.049412,0 5.524275,2.47488 5.524275,5.52428 z"
+               style="fill:none;stroke:#0000ff;stroke-width:3.3834641;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+               id="path2746" />
+          </g>
+        </g>
+        <path
+           d="m 1148.2771,719.77198 41.7788,0 0,-53.27388 -41.7788,0 0,53.27388 z"
+           style="fill:#ffffff;stroke:#800000;stroke-width:3.81999993;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           id="path2556"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <g
+           id="g2720"
+           transform="matrix(2.1015599,0,0,-2.561703,410.1292,2097.2193)"
+           style="fill:#ffffff;stroke:#800000;stroke-width:1.72998095;stroke-miterlimit:4;stroke-dasharray:none"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             id="g2722"
+             transform="matrix(-0.8,0,0,-0.8,0,841.88977)"
+             style="fill:#ffffff;stroke:#800000;stroke-width:2.1624763;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">
+            <path
+               d="m -520.05402,392.13657 33.39022,0 0,42.07133 -33.39022,0 0,-42.07133 z"
+               style="fill:#ffffff;stroke:#800000;stroke-width:2.1624763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+               id="path2724" />
+          </g>
+        </g>
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m 1286.3833,636.90886 c 0,1.52516 0,1.52516 0,0 z"
+           id="path17899"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <g
+           id="g3212"
+           transform="matrix(0,0.84871525,0.89353275,0,788.0002,517.90124)"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <text
+             transform="matrix(1,0,0,-1,268.39314,497.08481)"
+             id="text3214">
+            <tspan
+               style="font-size:24px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:BitstreamVeraSans;-inkscape-font-specification:BitstreamVeraSans"
+               x="0"
+               y="0"
+               id="tspan3216">0</tspan>
+          </text>
+        </g>
+        <g
+           id="g3218"
+           transform="matrix(0,0.81861887,0.92639187,0,775.7403,542.68659)"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <text
+             transform="scale(1,-1)"
+             id="text3220"
+             style="font-size:19.20000076px"
+             x="328.50287"
+             y="-492.50931">
+            <tspan
+               style="font-size:24px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:BitstreamVeraSans;-inkscape-font-specification:BitstreamVeraSans"
+               x="328.50287"
+               y="-492.50931"
+               id="tspan3222">7</tspan>
+          </text>
+        </g>
+        <g
+           id="g17759"
+           transform="matrix(1.6131779,0,0,-1.5793384,531.2551,1674.4248)"
+           style="fill:#ffffff;stroke:#800000;stroke-width:1.72998095;stroke-miterlimit:4;stroke-dasharray:none"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             id="g17761"
+             transform="matrix(-0.8,0,0,-0.8,0,841.88977)"
+             style="fill:#ffffff;stroke:#800000;stroke-width:2.1624763;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">
+            <path
+               d="m -520.05402,392.13657 33.39022,0 0,42.07133 -33.39022,0 0,-42.07133 z"
+               style="fill:#ffffff;stroke:#800000;stroke-width:2.1624763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+               id="path17763" />
+          </g>
+        </g>
+        <g
+           id="g17765"
+           transform="matrix(0,1.6131779,1.5793384,0,306.0608,161.74337)"
+           style="fill:#ffffff;stroke:#800000;stroke-width:1.72998095;stroke-miterlimit:4;stroke-dasharray:none"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             id="g17767"
+             transform="matrix(-0.8,0,0,-0.8,0,841.88977)"
+             style="fill:#ffffff;stroke:#800000;stroke-width:2.1624763;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">
+            <path
+               d="m -520.05402,392.13657 33.39022,0 0,42.07133 -33.39022,0 0,-42.07133 z"
+               style="fill:#ffffff;stroke:#800000;stroke-width:2.1624763;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+               id="path17769" />
+          </g>
+        </g>
+        <g
+           id="g17779"
+           transform="matrix(0,0.64807287,0.715299,0,734.3899,646.82317)"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <text
+             transform="matrix(1,0,0,-1,268.39314,497.08481)"
+             id="text17781">
+            <tspan
+               style="font-size:24px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:BitstreamVeraSans;-inkscape-font-specification:BitstreamVeraSans"
+               x="0"
+               y="0"
+               id="tspan17783">0</tspan>
+          </text>
+        </g>
+        <g
+           id="g17785"
+           transform="matrix(0,0.64807287,0.715299,0,735.1988,619.72703)"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <text
+             transform="matrix(1,0,0,-1,268.39314,497.08481)"
+             id="text17787">
+            <tspan
+               style="font-size:24px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:BitstreamVeraSans;-inkscape-font-specification:BitstreamVeraSans"
+               x="0"
+               y="0"
+               id="tspan17789">3</tspan>
+            <tspan
+               style="font-size:24px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:BitstreamVeraSans;-inkscape-font-specification:BitstreamVeraSans"
+               x="0"
+               y="0"
+               id="tspan17791" />
+          </text>
+        </g>
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17801"
+           width="3.5966351"
+           height="5.6098633"
+           x="1178.8134"
+           y="756.87915"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17803"
+           width="3.5966351"
+           height="5.6098633"
+           x="1184.1562"
+           y="756.87915"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17805"
+           width="3.5966351"
+           height="5.6098633"
+           x="1189.499"
+           y="756.87915"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17807"
+           width="3.5966351"
+           height="5.6098633"
+           x="1194.8419"
+           y="756.87915"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17829"
+           width="3.5966351"
+           height="5.6098633"
+           x="1157.6128"
+           y="756.98022"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17831"
+           width="3.5966351"
+           height="5.6098633"
+           x="1162.9556"
+           y="756.98022"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17833"
+           width="3.5966351"
+           height="5.6098633"
+           x="1168.2985"
+           y="756.98022"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17835"
+           width="3.5966351"
+           height="5.6098633"
+           x="1173.6414"
+           y="756.98022"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17837"
+           width="3.5966351"
+           height="5.6098633"
+           x="1197.532"
+           y="784.88513"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17839"
+           width="3.5966351"
+           height="5.6098633"
+           x="1197.532"
+           y="798.6355"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17841"
+           width="3.5966351"
+           height="5.6098633"
+           x="1197.532"
+           y="812.38574"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect17843"
+           width="3.5966351"
+           height="5.6098633"
+           x="1197.532"
+           y="826.94482"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <g
+           id="g22926"
+           transform="matrix(0,1.25,1.25,0,1034.7314,598.01722)"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             style="fill:#ffffff"
+             transform="matrix(0,1.2059966,-1.1438852,0,601.91006,-205.47507)"
+             id="g2562">
+            <g
+               style="fill:#ffffff"
+               transform="matrix(0,0.8,-0.8,0,0,841.88977)"
+               id="g2564">
+              <path
+                 id="path2566"
+                 style="fill:#ffffff;stroke:#ff8000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+                 d="m -550.24506,-312.23291 40.18111,0 0,74.19685 -40.18111,0 0,-74.19685 z" />
+            </g>
+          </g>
+          <g
+             transform="matrix(0,1.2059966,-1.1438852,0,601.91006,-205.47507)"
+             id="g2578">
+            <text
+               id="text2580"
+               transform="matrix(1,0,0,-1,200.34641,412.82009)">
+              <tspan
+                 id="tspan2582"
+                 sodipodi:role="line"
+                 y="0"
+                 x="0 11.197312 19.197313 27.994875"
+                 style="font-size:16px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#ff7f00;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:LiberationSans;-inkscape-font-specification:LiberationSans">RJ11</tspan>
+            </text>
+          </g>
+        </g>
+        <rect
+           style="fill:#ff0000;fill-opacity:0.5;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0.5;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect24179"
+           width="3.5966351"
+           height="5.6098633"
+           x="1200.5488"
+           y="756.78345"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           style="fill:#ff0000;fill-opacity:0.5;fill-rule:evenodd;stroke:#800000;stroke-width:0.73875493;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0.5;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect24219"
+           width="3.5966351"
+           height="5.6098633"
+           x="1158.6846"
+           y="767.84094"
+           inkscape:export-filename="/home/chris/srobo/docs/jointio/images/outline.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+      </g>
+    </g>
+    <path
+       style="fill:none;stroke:#696969;stroke-width:25.42217445;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-start:none;marker-end:none"
+       d="m -31.243269,840.68416 92.087486,1.93163 125.600593,-64.62351 0,-73.9694"
+       id="path4599"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#696969;stroke-width:25.94000053;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-start:none;marker-end:none"
+       d="m 439.9863,851.84631 -77.14286,0.53552 -32.82974,-87.14286 1.84699,-62.70743"
+       id="path4599-9"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#696969;stroke-width:25.94000053;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-start:none;marker-end:none"
+       d="m 229.84677,869.95787 0.18327,-66.04793 0.99786,-100.48363"
+       id="path4599-9-9"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:12.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 616.68207,844.73992 c 48.46421,-0.56249 155.4061,-9.69641 158.4663,-70.2589 l -3.42064,-473.92831 -632.59066,-0.87206 1.42883,148.87523"
+       id="path6510-7"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:12.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 616.68225,820.60611 c 48.4642,-0.56249 133.97753,-6.83927 137.03773,-67.40176 l -1.99213,-439.6426 -629.7335,0.55651 -1.42831,134.58952"
+       id="path6510-7-8"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:12.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 141.99415,153.40398 58.47753,-0.34232 -2.04866,295.64612"
+       id="path6510-7-4"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:12.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 141.99429,172.84159 37.75658,-0.48746 -1.32775,276.50555"
+       id="path6510-7-8-0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ffffff;fill-opacity:0.98684208;fill-rule:evenodd;stroke:#000000;stroke-width:8.55809116;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect1485"
+       width="168.22762"
+       height="95.850624"
+       x="569.45764"
+       y="101.33966"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+       x="610"
+       y="152.36218"
+       id="text1487"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan1489"
+         x="610"
+         y="152.36218">BATTERY</tspan></text>
+    <rect
+       style="fill:#ff0000;fill-opacity:0.98684208;fill-rule:evenodd;stroke:none"
+       id="rect1491"
+       width="37.142857"
+       height="17.142857"
+       x="558.45508"
+       y="126.18998"
+       ry="3.7880721"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;fill-opacity:0.98684208;fill-rule:evenodd;stroke:none"
+       id="rect1491-4"
+       width="37.142857"
+       height="17.142857"
+       x="559.74091"
+       y="158.39204"
+       ry="3.7880721"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:12.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 564.20155,135.05147 -167.9392,2.07513 -1.17443,312.96254"
+       id="path6510-7-4-5"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:12.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 571.47581,164.91621 c 12.35952,2.86089 -194.98692,-0.33914 -195.00065,2.52175 l -1.3871,282.80308"
+       id="path6510-7-8-0-2"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:14.15402888999999931;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-start:none;marker-end:none"
+       d="m 469.41265,481.59293 128.40277,-2.00321 152.82576,-234.56028 225.11075,0.2978"
+       id="path4599-9-9-4"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g1618"
+       transform="translate(-28.284271,-234.11173)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         ry="3.7880721"
+         y="450.93362"
+         x="1002.8571"
+         height="60"
+         width="74.285713"
+         id="rect1564"
+         style="fill:#696969;fill-opacity:0.98684208;fill-rule:evenodd;stroke:#000000;stroke-width:12.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <path
+         inkscape:original-d="M 1061.4286,469.50504 1150,468.07647"
+         inkscape:path-effect="#path-effect1568"
+         id="path1566"
+         d="M 1061.4286,469.50504 1150,468.07647"
+         style="stroke-width:1px" />
+      <path
+         sodipodi:nodetypes="ccc"
+         id="path4599-9-9-4-4"
+         d="m 1077.7855,467.82285 14.788,0.0788 22.4982,0.42844"
+         style="fill:#696969;stroke:#000000;stroke-width:8.04247761;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-start:none;marker-end:none" />
+      <path
+         sodipodi:nodetypes="ccc"
+         id="path4599-9-9-4-4-5"
+         d="m 1078.214,492.39428 14.788,0.0788 22.4982,0.42844"
+         style="fill:#696969;stroke:#000000;stroke-width:8.04247761;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-start:none;marker-end:none" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+       x="897.01544"
+       y="191.71222"
+       id="text1624"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan1626"
+         x="897.01544"
+         y="191.71222">Battery Charger</tspan></text>
+    <g
+       id="g2512"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         transform="matrix(0,0.7795198,-0.7795198,0,830.80307,-463.80391)"
+         id="g6477">
+        <rect
+           y="1180.1239"
+           x="637.18488"
+           height="404.47675"
+           width="344.20175"
+           id="rect8087-2"
+           style="fill:#000000;fill-opacity:0.81140352;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+           ry="37.142857" />
+        <rect
+           y="1182.2897"
+           x="825.77924"
+           height="318.71649"
+           width="152.72723"
+           id="rect8087-2-8"
+           style="fill:#f2f2f2;fill-opacity:0.98684208;fill-rule:evenodd;stroke:none;stroke-width:2.6173811;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+           ry="33.643703" />
+        <rect
+           y="1183.0039"
+           x="825.06488"
+           height="318.71649"
+           width="124.15581"
+           id="rect8087-2-8-6"
+           style="fill:#f2f2f2;fill-opacity:0.98684208;fill-rule:evenodd;stroke:none;stroke-width:2.6173811;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+           ry="2.215132" />
+        <rect
+           y="1400.7181"
+           x="825.06494"
+           height="101.57363"
+           width="152.72723"
+           id="rect8087-2-8-6-0"
+           style="fill:#f2f2f2;fill-opacity:0.98684208;fill-rule:evenodd;stroke:none;stroke-width:2.6173811;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+           ry="0.70595348" />
+      </g>
+      <g
+         transform="matrix(0.58722838,0,0,0.66505142,-70.384231,79.853223)"
+         id="g1705">
+        <path
+           style="fill:#808080;fill-opacity:1;stroke:#ff0000;stroke-width:21.90831947;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -239.35847,149.12998 -0.0953,323.56048"
+           id="path1636"
+           inkscape:path-effect="#path-effect1638"
+           inkscape:original-d="m -239.35847,149.12998 -0.0953,323.56048" />
+        <path
+           style="fill:#808080;fill-opacity:1;stroke:#ff8c00;stroke-width:21.90831947;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -218.1453,149.12998 -0.0953,323.56048"
+           id="path1636-4"
+           inkscape:path-effect="#path-effect1638-4"
+           inkscape:original-d="m -218.1453,149.12998 -0.0953,323.56048" />
+        <path
+           style="fill:#808080;fill-opacity:1;stroke:#00ff00;stroke-width:21.90831947;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -197.94225,149.12998 -0.0953,323.56048"
+           id="path1636-1"
+           inkscape:path-effect="#path-effect1638-1"
+           inkscape:original-d="m -197.94225,149.12998 -0.0953,323.56048" />
+        <path
+           style="fill:#808080;fill-opacity:1;stroke:#48d1cc;stroke-width:21.90831947;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m -177.71889,149.12998 -0.0953,323.56048"
+           id="path1636-42"
+           inkscape:path-effect="#path-effect1638-48"
+           inkscape:original-d="m -177.71889,149.12998 -0.0953,323.56048" />
+      </g>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+       x="-187.14285"
+       y="435.21933"
+       id="text1711"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan1713"
+         x="-187.14285"
+         y="435.21933">Connection to </tspan><tspan
+         sodipodi:role="line"
+         x="-187.14285"
+         y="460.21933"
+         id="tspan1715">Pin header on </tspan><tspan
+         sodipodi:role="line"
+         x="-187.14285"
+         y="485.21933"
+         id="tspan1717">Power Board</tspan></text>
+    <path
+       style="stroke-width:2.50000000000000000;stroke:#000000;fill:none;stroke-miterlimit:4;stroke-dasharray:2.50000000000000000, 2.50000000000000000;stroke-dashoffset:0;marker-end:url(#Arrow2Mend-3)"
+       d="m -191.42857,400.93362 0,291.42856 237.142855,0 91.428575,-24.28571"
+       id="path1719"
+       inkscape:path-effect="#path-effect1721"
+       inkscape:original-d="m -191.42857,400.93362 0,291.42856 237.142855,0 91.428575,-24.28571"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:12.84073734;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m -12.665322,625.54966 c 18.7579189,-2.94511 23.152731,-11.54279 41.910649,-15.87301 l 53.656676,-0.37897"
+       id="path6510-9"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:12.84073734;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M -426.97235,626.46848 82.915347,625.13203"
+       id="path6510-9-5"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g2197-7"
+       transform="matrix(0.7731161,-0.63426453,0.63426453,0.7731161,-460.17523,75.302304)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         ry="28.073786"
+         y="393.79077"
+         x="-662.85712"
+         height="60"
+         width="158.57143"
+         id="rect2193-8"
+         style="fill:#dcdcdc;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         ry="0"
+         y="403.79074"
+         x="-542.85718"
+         height="40"
+         width="57.142857"
+         id="rect2195-4"
+         style="fill:#f5f5f5;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <g
+       id="g2231"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         transform="matrix(0.67953583,0.73364232,-0.73364232,0.67953583,84.015707,605.7015)"
+         id="g2197">
+        <rect
+           style="fill:#dcdcdc;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect2193"
+           width="158.57143"
+           height="60"
+           x="-662.85712"
+           y="393.79077"
+           ry="28.073786" />
+        <rect
+           style="fill:#f5f5f5;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect2195"
+           width="57.142857"
+           height="40"
+           x="-542.85718"
+           y="403.79074"
+           ry="0" />
+      </g>
+      <rect
+         transform="matrix(0.76804315,-0.64039809,0.71837208,0.69565908,0,0)"
+         y="-90.429726"
+         x="-793.98712"
+         height="27.347429"
+         width="46.385212"
+         id="rect2229"
+         style="fill:#1ef52b;fill-opacity:1;fill-rule:evenodd;stroke:#f7ff1d;stroke-width:7.71513176;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <path
+       sodipodi:type="arc"
+       style="fill:#808080;stroke:#000000;stroke-width:2.50000000000000000;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;fill-opacity:1"
+       id="path2191"
+       sodipodi:cx="-521.42859"
+       sodipodi:cy="624.50507"
+       sodipodi:rx="94.285713"
+       sodipodi:ry="116.42857"
+       d="m -427.14288,624.50507 a 94.285713,116.42857 0 1 1 -188.57142,0 94.285713,116.42857 0 1 1 188.57142,0 z"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g2265"
+       transform="translate(-48.4375,-1.5625)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         transform="matrix(0.96406205,0.26567717,-0.26567717,0.96406205,0,0)"
+         y="-179.9726"
+         x="159.53185"
+         height="29.596994"
+         width="85.846992"
+         id="rect2241-7"
+         style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:5.86400557;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         y="-103.21809"
+         x="183.48222"
+         height="48.660545"
+         width="114.28555"
+         id="rect2241"
+         style="fill:#c0c0c0;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:8.67545319;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <g
+       id="g2299"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         transform="matrix(0.96774081,-0.25194785,0.25194785,0.96774081,0,0)"
+         y="-30.696669"
+         x="311.58051"
+         height="29.596994"
+         width="85.846992"
+         id="rect2241-7-4"
+         style="fill:#fffaf0;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:5.86400557;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <rect
+         y="-102.4696"
+         x="283.48224"
+         height="48.660545"
+         width="114.28555"
+         id="rect2241-5"
+         style="fill:#c0c0c0;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:8.67545319;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:6.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 156.25,-52.325321 0,42.1875"
+       id="path2343"
+       inkscape:path-effect="#path-effect2345"
+       inkscape:original-d="m 156.25,-52.325321 0,42.1875"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:6.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 189.0625,-53.106571 0,42.1875"
+       id="path2343-5"
+       inkscape:path-effect="#path-effect2345-9"
+       inkscape:original-d="m 189.0625,-53.106571 0,42.1875"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:6.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 300.78125,-53.887821 0,42.1875"
+       id="path2343-0"
+       inkscape:path-effect="#path-effect2345-5"
+       inkscape:original-d="m 300.78125,-53.887821 0,42.1875"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:6.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 328.125,-53.887821 0,42.1875"
+       id="path2343-2"
+       inkscape:path-effect="#path-effect2345-6"
+       inkscape:original-d="m 328.125,-53.887821 0,42.1875"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:6.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 374.21875,-55.106571 0,42.1875"
+       id="path2343-8"
+       inkscape:path-effect="#path-effect2345-4"
+       inkscape:original-d="m 374.21875,-55.106571 0,42.1875"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000080;stroke-width:4.5999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 228.30643,449.25344 226.74393,94.565942 155.98192,-13.547165"
+       id="path2405"
+       inkscape:path-effect="#path-effect2407"
+       inkscape:original-d="M 228.30643,449.25344 226.74393,94.565942 155.98192,-13.547165"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000080;stroke-width:4.5999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 252.57257,449.30083 251.5625,84.39343 187.1534,-13.775988"
+       id="path2405-2"
+       inkscape:path-effect="#path-effect2407-3"
+       inkscape:original-d="M 252.57257,449.30083 251.5625,84.39343 187.1534,-13.775988"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000080;stroke-width:4.5999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 287.5,448.64549 289.0625,90.643431 299.33374,-14.155114"
+       id="path2405-1"
+       inkscape:path-effect="#path-effect2407-5"
+       inkscape:original-d="M 287.5,448.64549 289.0625,90.643431 299.33374,-14.155114"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000080;stroke-width:4.5999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 309.375,448.47219 1.5625,-364.078759 16.90036,-99.826699"
+       id="path2405-7"
+       inkscape:path-effect="#path-effect2407-6"
+       inkscape:original-d="m 309.375,448.47219 1.5625,-364.078759 16.90036,-99.826699"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000080;stroke-width:4.5999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 334.375,448.45593 1.5625,-354.6875 39.54987,-109.217961"
+       id="path2405-7-5"
+       inkscape:path-effect="#path-effect2407-6-3"
+       inkscape:original-d="m 334.375,448.45593 1.5625,-354.6875 39.54987,-109.217961"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g2507"
+       transform="translate(-220.97087,506.02329)"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         id="path2481"
+         d="m -636.3961,201.62433 156.88931,0 -79.54951,-121.533974 -77.3398,121.533974 z"
+         style="fill:#808080;stroke:#696969;stroke-width:5.5999999;stroke-miterlimit:4;stroke-dasharray:none" />
+      <path
+         d="m -472.87764,86.719482 c 0,40.272818 -39.57281,72.920388 -88.38835,72.920388 -48.81554,0 -88.38835,-32.64757 -88.38835,-72.920388 0,-40.272817 39.57281,-72.920387 88.38835,-72.920387 48.81554,0 88.38835,32.64757 88.38835,72.920387 z"
+         sodipodi:ry="72.920387"
+         sodipodi:rx="88.388351"
+         sodipodi:cy="86.719482"
+         sodipodi:cx="-561.26599"
+         id="path2483"
+         style="fill:#808080;fill-opacity:1;fill-rule:evenodd;stroke:#696969;stroke-width:4.5999999;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <path
+         d="m -472.87764,86.719482 c 0,40.272818 -39.57281,72.920388 -88.38835,72.920388 -48.81554,0 -88.38835,-32.64757 -88.38835,-72.920388 0,-40.272817 39.57281,-72.920387 88.38835,-72.920387 48.81554,0 88.38835,32.64757 88.38835,72.920387 z"
+         sodipodi:ry="72.920387"
+         sodipodi:rx="88.388351"
+         sodipodi:cy="86.719482"
+         sodipodi:cx="-561.26599"
+         id="path2483-0"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.5999999;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         sodipodi:type="arc"
+         transform="matrix(0.39085101,0,0,0.39085101,-341.89463,53.408544)" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:11.239;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m -720.34558,672.31174 51.18008,-40.68983 54.84702,-1.33355"
+       id="path2524"
+       inkscape:path-effect="#path-effect2526"
+       inkscape:original-d="m -720.34558,672.31174 51.18008,-40.68983 54.84702,-1.33355"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+       x="-833.06018"
+       y="745.21265"
+       id="text2528"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan2530"
+         x="-833.06018"
+         y="745.21265">Webcam</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+       x="-547.78253"
+       y="769.46899"
+       id="text2532"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan2534"
+         x="-547.78253"
+         y="769.46899">USB Hub</tspan></text>
+    <path
+       transform="matrix(0.73400889,0,0,0.73400889,-139.86289,169.34031)"
+       sodipodi:type="arc"
+       style="fill:#808080;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path2191-0"
+       sodipodi:cx="-521.42859"
+       sodipodi:cy="624.50507"
+       sodipodi:rx="94.285713"
+       sodipodi:ry="116.42857"
+       d="m -427.14288,624.50507 a 94.285713,116.42857 0 1 1 -188.57142,0 94.285713,116.42857 0 1 1 188.57142,0 z"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:11.23900032;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m -443.63855,557.74887 c 20.25458,-0.93651 39.99043,-10.2888 53.54135,-25.37182 13.55093,-15.08302 20.74387,-35.70415 19.51373,-55.94301 -0.83585,-13.75185 -5.39414,-27.11958 -12.05621,-39.17897 -6.66206,-12.05939 -15.38968,-22.87519 -24.8767,-32.8656 -18.97405,-19.98084 -41.11647,-36.88872 -58.90475,-57.93214 -39.48018,-46.70479 -54.19048,-110.48788 -52.0029,-171.60446 2.18759,-61.11658 19.78033,-120.545019 38.58463,-178.7379757 6.85939,-21.2274773 14.22841,-42.8195313 27.95764,-60.4026213 6.86462,-8.791544 15.26308,-16.459925 24.98135,-21.934359 9.71827,-5.474434 20.74726,-8.695554 31.89904,-8.923418 11.15179,-0.227864 22.3541,2.567559 32.0722,8.042292 9.71811,5.474733 17.8823,13.57515 23.77382,23.046382 5.89152,9.471233 9.51474,20.236263 11.47513,31.216751 1.96039,10.980488 2.28921,22.178276 2.5559,33.32920062 l 0.79415,33.20511638"
+       id="path2524-5"
+       inkscape:path-effect="#path-effect2526-7"
+       inkscape:original-d="m -443.63855,557.74887 c 0,0 75.50651,-48.19085 73.05508,-81.31483 -3.03088,-40.95353 -78.04774,-79.17156 -95.83766,-129.97671 C -505.0437,236.15746 -562.06155,79.164771 -479.8394,-3.8851057 -443.54129,-40.54862 -326.25786,-46.906475 -325.12432,0.48912162 l 0.79415,33.20511638"
+       sodipodi:nodetypes="csaasc"
+       inkscape:export-filename="/home/chris/srobo/docs/2010/guides/assembly/images/assembly-guide.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>
