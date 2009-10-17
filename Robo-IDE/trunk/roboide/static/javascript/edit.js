@@ -383,6 +383,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 			case "True":
 				status_msg("File "+this.path+" Saved successfully (Now at r"+nodes.new_revision+")", LEVEL_OK);
 				this._original = this.contents;
+				this.tab.set_label(this.path);
 				this._autosaved = "";
 				this._isNew = false;
 				this.rev = nodes.new_revision;
@@ -393,6 +394,7 @@ function EditTab(iea, team, project, path, rev, mode) {
 			case "AutoMerge":
 				status_msg("File "+this.path+" Automatically merged with latest revision (Now at r"+nodes.new_revision+")", LEVEL_OK);
 				this.contents = nodes.code;
+				this.tab.set_label(this.path);
 				this._original = this.contents;
 				this._autosaved = "";
 				this._isNew = false;
@@ -460,6 +462,20 @@ function EditTab(iea, team, project, path, rev, mode) {
 			else
 				var delay = this._autosave_delay;
 			this._timeout = callLater(delay, bind(this._autosave, this));
+		}
+	}
+
+	//called when the code in the editarea changes. TODO: get the autosave to use this interface too
+	this._on_keyup = function() {
+		this._show_modified();
+	}
+
+	this._show_modified = function() {
+		//Handle modified notifications
+		if( this.is_modified() ) {
+			this.tab.set_label("*" + this.path);
+		} else {
+			this.tab.set_label(this.path);
 		}
 	}
 
@@ -548,6 +564,10 @@ function EditTab(iea, team, project, path, rev, mode) {
 		this._signals.push( connect( window,
 					    "ea_keydown",
 					    bind( this._on_keydown, this ) ) );
+		// keyup handler
+		this._signals.push( connect( window,
+					    "ea_keyup",
+					    bind( this._on_keyup, this ) ) );
 		// keyboard shortcuts
 		this._signals.push( connect( document,
 					    "onkeydown",
@@ -681,6 +701,7 @@ function ide_editarea(id) {
 			replace_tab_by_spaces : 4,
 			plugins: "SRkeydown",
 			show_line_colors: true,
+			keyup_callback: "ea_keyup",
 			EA_load_callback: "ea_loaded"
  		});
 
@@ -800,6 +821,12 @@ function ea_loaded() {
 
 	// Rebroadcast the signal
 	signal(window, "ea_init_done");
+}
+
+// Called when the editarea changes
+function ea_keyup(e) {
+	// Rebroadcast the signal
+	signal(this, "ea_keyup", e);
 }
 
 // Called when the editarea is due for an autosave
