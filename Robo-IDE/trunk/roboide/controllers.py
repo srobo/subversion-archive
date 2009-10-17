@@ -76,7 +76,10 @@ class Root(controllers.RootController):
 
     @expose("json")
     def info(self):
-        info = dict(Version=self.version)
+        info = dict(
+                Version=self.version,
+                User=str(srusers.get_curuser())
+            )
         return dict(info=info)
 
     def get_project_path(self, path):
