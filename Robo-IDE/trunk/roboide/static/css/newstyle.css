@@ -304,9 +304,9 @@ a.button:hover {
 	left: 32%;
 	padding: 4px;
 	position: absolute;
-	width: 36%;
 	top: 20%;
 	text-align: center;
+	width: 36%;
 	z-index: 100;
 }
 #about-title {
@@ -316,7 +316,7 @@ a.button:hover {
 #about-list {
 	margin: 15px auto;
 	text-align: left;
-	width: 190px;
+	width: 350px;
 }
 #about-list dt {
 	line-height: 1.4em;
@@ -324,7 +324,7 @@ a.button:hover {
 }
 #about-list dd {
 	line-height: 1.4em;
-	margin-left: 70px;
+	margin-left: 75px;
 	margin-top: -1.45em;
 }
 
