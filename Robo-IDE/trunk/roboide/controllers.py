@@ -473,7 +473,8 @@ class Root(controllers.RootController):
         finally:
             rev_tree.unlock()
 
-        autosave_data = self.autosave.getfilesrc(team, project+rootpath)
+        #grab the autosave listings
+        autosave_data = self.autosave.getfilesrc(team, '/'+project+rootpath)
 
         def branch_recurse(project, path, entry, files, given_parent_id):
             """
@@ -519,8 +520,8 @@ class Root(controllers.RootController):
 
 
                 else:
-                    if path in autosave_data:
-                        autosave_info = autosave_data[path]
+                    if project+path in autosave_data:
+                        autosave_info = autosave_data[project+path]
                     else:
                         autosave_info = 0
                     entry_list.append({
