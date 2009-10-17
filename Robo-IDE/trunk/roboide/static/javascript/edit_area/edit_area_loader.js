@@ -61,6 +61,8 @@ function EditAreaLoader(){
 		,load_callback: ""		// click on load button (function name)
 		,save_callback: ""		// click on save button (function name)
 		,change_callback: ""	// textarea onchange trigger (function name)
+		,keydown_callback: ""	// textarea onkeydown trigger (function name)
+		,keyup_callback: ""	// textarea onkeyup trigger (function name)
 		,submit_callback: ""	// form submited (function name)
 		,EA_init_callback: ""	// EditArea initiliazed (function name)
 		,EA_delete_callback: ""	// EditArea deleted (function name)

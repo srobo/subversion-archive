@@ -173,12 +173,14 @@
 			_$("editor").onkeypress	= keyDown;
 		else
 			_$("editor").onkeydown	= keyDown;
+		_$("editor").onkeyup	= keyUp;
 
 		for(var i=0; i<t.inlinePopup.length; i++){
 			if(t.isOpera)
 				_$(t.inlinePopup[i]["popup_id"]).onkeypress	= keyDown;
 			else
 				_$(t.inlinePopup[i]["popup_id"]).onkeydown	= keyDown;
+			_$(t.inlinePopup[i]["popup_id"]).onkeyup	= keyUp;
 		}
 		
 		if(s["allow_resize"]=="both" || s["allow_resize"]=="x" || s["allow_resize"]=="y")
@@ -418,6 +420,14 @@
 				if(this.settings["change_callback"].length>0)
 					eval("parent."+this.settings["change_callback"]+"('"+ this.id +"');");
 				break;		
+			case "onkeydown":
+				if(this.settings["keydown_callback"].length>0)
+					eval("parent."+this.settings["keydown_callback"]+"(param);");
+				break;
+			case "onkeyup":
+				if(this.settings["keyup_callback"].length>0)
+					eval("parent."+this.settings["keyup_callback"]+"(param);");
+				break;
 			case "EA_load":
 				if(this.settings["EA_load_callback"].length>0)
 					eval("parent."+this.settings["EA_load_callback"]+"('"+ this.id +"');");
