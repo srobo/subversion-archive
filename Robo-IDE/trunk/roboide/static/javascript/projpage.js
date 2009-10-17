@@ -966,7 +966,7 @@ function ProjOps() {
 			return;
 		}
 
-		death_list = new Array();
+		var death_list = new Array();
 		for( var i in projpage.flist.selection ) {
 			death_list.push(projpage.flist.selection[i].substr(projpage.project.length+2))
 		};
@@ -998,7 +998,11 @@ function ProjOps() {
 			return;
 		}
 
-		var death_list = projpage.flist.selection.join(',');
+		var death_list = new Array();
+		for( var i in projpage.flist.selection ) {
+			death_list.push(projpage.flist.selection[i].substr(projpage.project.length+2))
+		};
+		death_list = death_list.join(',');
 
 		log("Will delete autosaves: "+death_list);
 
