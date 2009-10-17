@@ -174,39 +174,6 @@ function beforeunload(e) {
 		e.confirmUnload("You should close tabs before closing this window");
 }
 
-// **** Status Bar ****
-
-function status_clearclass() {
-	var classes = ["status-info", "status-ok", "status-warn", "status-error"];
-	var s = $(status_id);
-
-	map( partial( removeElementClass, s ), classes );
-}
-
-// Hide the status bar
-function status_hide() {
-	setStyle( "status-span", {"display":"none"} );
-
-	var s = getElement(status_id);
-	status_clearclass();
-}
-
-// Show the status bar with the given message, and prepend "warning" or "error"
-function status_msg( message, level ) {
-	switch(level) {
-	case LEVEL_WARN:
-		message = [ createDOM( "STRONG", null, "Warning: " ),
-			    message ];
-		break;
-	case LEVEL_ERROR:
-		message = [ createDOM( "STRONG", null, "Error: " ),
-			    message ];
-		break;
-	}
-
-	return status_rich_show( message, level );
-}
-
 // Create drop down list TODO: make this a generic function?
 function populate_shortcuts_box() {
 	var shortcuts = new Array();
@@ -310,6 +277,39 @@ function AboutBox() {
 	}
 
 	this._init();
+}
+
+// **** Status Bar ****
+
+function status_clearclass() {
+	var classes = ["status-info", "status-ok", "status-warn", "status-error"];
+	var s = $(status_id);
+
+	map( partial( removeElementClass, s ), classes );
+}
+
+// Hide the status bar
+function status_hide() {
+	setStyle( "status-span", {"display":"none"} );
+
+	var s = getElement(status_id);
+	status_clearclass();
+}
+
+// Show the status bar with the given message, and prepend "warning" or "error"
+function status_msg( message, level ) {
+	switch(level) {
+	case LEVEL_WARN:
+		message = [ createDOM( "STRONG", null, "Warning: " ),
+			    message ];
+		break;
+	case LEVEL_ERROR:
+		message = [ createDOM( "STRONG", null, "Error: " ),
+			    message ];
+		break;
+	}
+
+	return status_rich_show( message, level );
 }
 
 // Replace the status bar's content with the given DOM object
