@@ -89,9 +89,6 @@ A programming interface is a set of rules explaining how you can control a speci
 To get the analogue value of a specific input use either of the following commands:
 <pre>
 # INPUT_NUMBER = 0,1,..7
-readapin(INPUT_NUMBER)
-
-# alternately use:
 io.apin[INPUT_NUMBER]
 </pre>
 This will return a real number between 0 and 3.3.
@@ -101,9 +98,6 @@ This will return a real number between 0 and 3.3.
 To get the digital value of a specific input use either of the following commands:
 <pre>
 # INPUT_NUMBER = 0,1,..7
-readpin(INPUT_NUMBER)
-
-# alternately use:
 io.pin[INPUT_NUMBER]
 </pre>
 Note that 'apin' becomes 'pin' for digital reads.
