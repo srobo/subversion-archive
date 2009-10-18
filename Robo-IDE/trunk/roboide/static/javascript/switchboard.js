@@ -110,6 +110,7 @@ Switchboard.prototype._receiveSubmitFeed = function(nodes)
 	if(nodes.valid > 0)
 	{
 		setStyle("user-feed-url", {'background-color': '#98FF4F'});
+		this.GetBlogPosts();
 	}
 	else
 	{
@@ -124,6 +125,7 @@ Switchboard.prototype._errorSubmitFeed = function()
 Switchboard.prototype.SubmitFeed = function()
 {
 	logDebug("Switchboard: Setting blog feed");
+	setStyle("user-feed-url", {'background-color': '#FFFFFF'});
 	var d = loadJSONDoc("./switchboard/setblogfeed",
 		{'feedurl':document.user_feed_form.user_feed_input.value});
 
