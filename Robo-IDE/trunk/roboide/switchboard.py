@@ -46,7 +46,7 @@ class StudentBlogPosts():
 
 	def ParseValidatedFeeds(self):
 		#blank existing list of messages
-		self.msgs = []
+		self.msgs = {}
 		#get all feeds which have been validated
 		try:
 			allfeeds = model.UserBlogFeeds.selectBy(valid=True)
@@ -55,18 +55,32 @@ class StudentBlogPosts():
 			return
 
 		for feed in allfeeds:
-			fd = feedparser.parse(feed.url)
-			try:
-				#store just the most recent post
-				e = fd.entries[0]
-				self.msgs.append({"title":e.title, "link":e.link, "author":"TODO:",
-					"date":e.date, "body":sanitize_body(e.description)})
-			except IndexError:
-				pass
+			print feed
+			self.ParseFeed(feed)
+
+	def ParseFeed(self, feed):
+		fd = feedparser.parse(feed.url)
+		try:
+			#store just the most recent post
+			e = fd.entries[0]
+			self.msgs[feed.user] = {"title":e.title, "link":e.link, "author":feed.user,
+				"date":e.date, "body":sanitize_body(e.description)}
+		except IndexError:
+			pass
+
+	def ValidateUserFeed(self, user):
+		feeds = model.UserBlogFeeds.selectBy(user=user)
+		feed = feeds.getOne()
+		fd = feedparser.parse(feed.url)
+		if not fd.bozo:
+			feed.valid = True
+			feed.set()
+			self.ParseFeed(feed)
+		return
 
 	def GetBlogPosts(self):
 		print self.msgs
-		return dict(msgs=self.msgs)
+		return dict(msgs=self.msgs.values())
 
 # Single instance of the message feeds shared by all users
 sfd = SRMessageFeed()
@@ -115,9 +129,8 @@ class Switchboard(object):
 			except:
 				# user doen't have an entry yet, so create one
 				if r.count() == 0:
-					new_row = model.UserBlogFeeds(user=cur_user, url=feedurl, valid=False)
-					new_row.set()
-					return dict(feedurl=new_row.url, valid=int(new_row.valid), error=0)
+					row = model.UserBlogFeeds(user=cur_user, url=feedurl, valid=False)
+					row.set()
 				else:
 					#multiple results, sql table is corrupt
 					return dict(feedurl="", valid=0, error=1)
@@ -126,6 +139,7 @@ class Switchboard(object):
 			return dict(feedurl="", valid=0, error=1)
 		else:
 			#success
+			sbp.ValidateUserFeed(cur_user)
 			return dict(feedurl=row.url, valid=int(row.valid), error=0)
 
 	@expose("json")
