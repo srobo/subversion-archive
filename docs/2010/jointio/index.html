@@ -18,11 +18,11 @@ Robots need sensors. Without them, they drive into walls, miss tokens, catch fir
 Electrical sensors fall in to two categories, analogue and digital. Analogue sensors include:
 <ul>
 <li>Potentiometers (variable resistors)</li>
-<li>Light detectors (photo-diodes, photo-resistors</li>
+<li>Light detectors (photo-diodes, photo-resistors)</li>
 <li>Sound detectors (microphones)</li>
 <li>Temperature sensors (thermistors, thermocouples)</li>
 </ul>
-Analogue sensors produce a signal which can vary in magnitude over a range of possible values. Compare this to digital sensors which can only have one of two values 1 or 0 (on/off, true/false, ..). Digital sensors include:
+Analogue sensors produce a signal which can vary in magnitude over a range of possible values. Compare this to digital sensors which can only have one of two values 1 or 0 (on/off, true/false, ...). Digital sensors include:
 <ul>
 <li>Mechanical Tilt sensors </li>
 <li>Reed sensors </li>
@@ -36,7 +36,7 @@ Analogue sensors produce a signal which can vary in magnitude over a range of po
 <li>Each input can be connected to a digital OR analogue sensor</li>
 <li>There are 4 available digital outputs</li>
 <li>There are 4 ground connections</li>
-<li>There are 4 power connections (3.3Volts)</li>
+<li>There are 4 power connections (3.3 Volts)</li>
 </ul>
 
 <h2>Making Connections</h2>
@@ -77,7 +77,7 @@ The maximum input voltage to the JointIO is 3.3V, if a voltage greater than this
 A programming interface is a set of rules explaining how you can control a specific module from within your robot's python code.
 
 <h3>Reading Inputs</h3>
-To get the analogue value of a specific input use either of the following commands:
+To get the analogue value of a specific input use the following command:
 <pre>
 # INPUT_NUMBER = 0,1,..7
 io.apin[INPUT_NUMBER]
@@ -86,7 +86,7 @@ This will return a real number between 0 and 3.3.
 
 <br />
 <br />
-To get the digital value of a specific input use either of the following commands:
+To get the digital value of a specific input use the following command:
 <pre>
 # INPUT_NUMBER = 0,1,..7
 io.pin[INPUT_NUMBER]
@@ -116,7 +116,7 @@ setoutput(3,0)
 The real word is full of events which you must react to. The same is true for your robot's world. Your robot will need to react to the events when they happen, such as finding a token, hitting a wall or catching on fire. There are two ways your robot can find out that an event has occurred. 
 <ol>
 <li><b>Polling:</b> The robot continually checks for each possible event one by one in an infinite loop until something happens.</li>
-<li><b>Yielding</b> The robot waits or 'yields' on a particular event. When that event occurs your robot will be interrupted but in the meantime it can get on with other tasks, like finding tokens.
+<li><b>Yielding:</b> The robot waits or 'yields' on a particular event. When that event occurs your robot will be interrupted but in the meantime it can get on with other tasks, like finding tokens.
 </li>
 </ol>
 
