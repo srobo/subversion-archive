@@ -1,9 +1,9 @@
-* { 
-  text-align: justify;
+* {
+	text-align: justify;
 }
 
-h1:first-child { 
-  text-align: center;
+h1:first-child, center {
+	text-align: center;
 }
 
 pre {
@@ -11,6 +11,7 @@ pre {
 	margin: 1em 1.75em;
 	padding: 0.25em;
 }
+
 img {
 	margin:0.5em;
 }
