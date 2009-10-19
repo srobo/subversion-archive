@@ -78,9 +78,18 @@ class StudentBlogPosts():
 			self.ParseFeed(feed)
 		return
 
+	#sort the posts putting the most recent at the top
+	def sortpsots(self, a, b):
+		if a['date'] > b['date']:
+			return -1
+		elif a['date'] < b['date']:
+			return 1
+		return 0
+
 	def GetBlogPosts(self):
 		print self.msgs
-		return dict(msgs=self.msgs.values())
+		msgs = sorted(self.msgs.values(), self.sortpsots)
+		return dict(msgs=msgs)
 
 # Single instance of the message feeds shared by all users
 sfd = SRMessageFeed()
