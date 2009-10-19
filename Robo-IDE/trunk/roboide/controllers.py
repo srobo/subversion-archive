@@ -360,6 +360,23 @@ class Root(controllers.RootController):
 
     @expose("json")
     @srusers.require(srusers.in_team())
+    def pollchanges(self, team, project, rev, date=0):
+        """
+        Used to determine if certain facets need updating.
+        Currently this is only for the filelist, to remove the need to send the entire filelist just to see if its changed
+        """
+        b = open_branch(int(team), project)
+        head_rev_id = self.get_rev_id(team, project, 'HEAD')
+        target_rev_id = self.get_rev_id(team, project, rev)
+
+        filelist = True
+        if head_rev_id == target_rev_id:
+            filelist = False
+
+        return dict(filelist=filelist)
+
+    @expose("json")
+    @srusers.require(srusers.in_team())
     def delete(self, team, project, files, kind = 'SVN'):
         """
         Delete files from the repository, and prune empty directories.
