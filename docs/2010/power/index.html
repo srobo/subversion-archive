@@ -58,12 +58,12 @@ Whilst each module is connected to the power board via the RJ11 cables, some boa
 <br />Figure 2 - Camcon power connections 
 </center>
 <h3>USB</h3>
-To connect power to the USB Hub, use the special connector supplied in your kit. Ensure that you connect it to the USB Hub 5V rail on the power board. <strong>Do not connect the USB Hub to the 12V motor rails</strong> 
+To connect power to the USB Hub, use the special connector supplied in your kit. Ensure that you connect it to the USB Hub 5V rail on the power board. <strong>Do not connect the USB Hub to the 12V motor rails.</strong>
 <h3>Switches</h3>
 Two switches are supplied in your kit. One is the charge-run switch and the other is the power switch:
 <ul>
-<li><strong>Charge-run Switch: </strong> This switches between charging your robot and running your robot. When in charge mode, no power will be supplied to the motors; this is to prevent your robot accidentally driving while plugged into the mains! When in run mode, your battery will not charge, even if it is plugged into the charger. You can tell which mode your robot is in by looking at the charge LED - see <a href="#board-outline">Figure 1</a></li>
-<li><strong>Power Switch: </strong> This is the main On/Off switch for your robot</li>
+<li><strong>Charge-run Switch: </strong> This switches between charging your robot and running your robot. When in charge mode, no power will be supplied to the motors; this is to prevent your robot accidentally driving while plugged into the mains! When in run mode, your battery will not charge, even if it is plugged into the charger. You can tell which mode your robot is in by looking at the charge LED - see <a href="#board-outline">Figure 1</a>.</li>
+<li><strong>Power Switch: </strong> This is the main On/Off switch for your robot.</li>
 </ul>
 
 <h3>Slug</h3>
@@ -74,7 +74,7 @@ The Slug connects to the power board using the multi-coloured ribbon cable via t
 You may have noticed that there are two 12V Motor rails on the power board. Only one is connected to the motor board, leaving one spare for you to use to power additional motors. Remember that both 12V connections are not available when in charge mode. Alternately, you may want to use this connection to power your own custom electronics. Spare camcon connectors are provided for this purpose. 
 <br />
 <br />
-<strong style="color:red; font-size:2em;">WARNING: </strong> all additional electronics (including motors and custom circuits) <b>must</b> be powered from the <b>12V motor rail</b>
+<strong style="color:red; font-size:2em;">WARNING: </strong> all additional electronics (including motors and custom circuits) <b>must</b> be powered from the <b>12V motor rail</b>.
 <br />
 
 <h2>Competition Button</h2>
@@ -107,7 +107,7 @@ Are you in Run mode? Have you wired up the connector correctly?
 <h2>Programming Interface</h2>
 A programming interface is a set of rules explaining how you can control a specific module from within your robot's python code. 
 <h3>Reading Inputs</h3>
-To read one of the four switches on the power board, use the following in your code
+To read one of the four switches on the power board, use the following in your code:
 <pre>
 # to read switch SWITCH_NO on the power board:
 power.switch[SWITCH_NO] 
