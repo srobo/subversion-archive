@@ -64,6 +64,10 @@ class StudentBlogPosts():
 			self.ParseFeed(feed)
 
 	def ParseFeed(self, feed):
+		"""
+		Parse an actual blog feed passed as a SQLObject for that row
+		Add the most recent post on the blog to the message stored against the user whose feed it was
+		"""
 		fd = feedparser.parse(feed.url)
 		try:
 			#store just the most recent post
@@ -74,6 +78,11 @@ class StudentBlogPosts():
 			pass
 
 	def ValidateUserFeed(self, user):
+		"""
+		Try to grab the user's feed
+		If it's valid XML then we call it valid.
+		TODO: investigate better validation solutions
+		"""
 		feeds = model.UserBlogFeeds.selectBy(user=user)
 		feed = feeds.getOne()
 		fd = feedparser.parse(feed.url)
@@ -83,8 +92,8 @@ class StudentBlogPosts():
 			self.ParseFeed(feed)
 		return
 
-	#sort the posts putting the most recent at the top
 	def sortpsots(self, a, b):
+		"""sort the posts putting the most recent at the top"""
 		if a['date'] > b['date']:
 			return -1
 		elif a['date'] < b['date']:
