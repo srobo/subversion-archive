@@ -2,6 +2,7 @@ from turbogears import config, expose
 import feedparser
 import model
 import user as srusers
+import time
 
 sr_message_feed = "http://sr2010messages.blogspot.com/feeds/posts/default?alt=rss"
 sr_timeline_events = [{"date":"September 19, 2009", "title":"Kickstart", "desc":"Kickstart: Competition launch"},
@@ -18,6 +19,8 @@ feedparser._HTMLSanitizer.acceptable_elements.remove("a")
 MAX_MESSAGES = 5
 # The maixum length of a message to display (in chars)
 MAX_MESSAGE_LENGTH = 100
+# The maixum length of time between feed updates (in seconds)
+MAX_AGE = 60 * 30 #half an hour
 
 def sanitize_body(text):
 	text = text.strip()	#remove whitespace
@@ -47,6 +50,8 @@ class StudentBlogPosts():
 	def ParseValidatedFeeds(self):
 		#blank existing list of messages
 		self.msgs = {}
+		#note what time the feeds were updated
+		self.time = time.time()
 		#get all feeds which have been validated
 		try:
 			allfeeds = model.UserBlogFeeds.selectBy(valid=True)
@@ -87,6 +92,9 @@ class StudentBlogPosts():
 		return 0
 
 	def GetBlogPosts(self):
+		"""return a dict of reasonably up-to-date blog posts"""
+		if time.time() > (self.time + MAX_AGE):
+			self.ParseValidatedFeeds()
 		print self.msgs
 		msgs = sorted(self.msgs.values(), self.sortpsots)
 		return dict(msgs=msgs)
