@@ -1,3 +1,5 @@
+CFLAGS += -Wall -Wextra -Werror
+
 CBFLAGS = `pkg-config --cflags blobslib`
 LDBFLAGS = `pkg-config --libs blobslib`
 OPENCV_CFLAGS += `pkg-config --cflags opencv` -Wall
@@ -10,7 +12,7 @@ hueblobs: hueblobs.c visfunc.o
 	$(CXX) -ggdb -o $@ $(OPENCV_CFLAGS) $< $(OPENCV_LDFLAGS) $(CFLAGS) visfunc.o
 
 visfunc.o: visfunc.cpp
-	$(CXX) -ggdb $< $(OPENCV_CFLAGS) $(CFLAGS) -c -o $@ -fPIC -lm
+	$(CXX) -ggdb $< $(OPENCV_CFLAGS) $(CFLAGS) -c -o $@ -fPIC
 
 .PHONY: clean
 
