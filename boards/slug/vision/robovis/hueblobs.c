@@ -12,6 +12,8 @@
 
 #include "visfunc.h"
 
+#define UNUSED(x) ((x) = (x))
+
 #define DEBUG 0
 #define ERROR 1
 
@@ -148,6 +150,11 @@ Hoo(int event, int x, int y, int flags, void *param)
 	unsigned char *data;
 	CvSize size;
 	int step, c;
+
+	UNUSED(event);
+	UNUSED(flags);
+	UNUSED(param);
+
 	cvGetRawData(val, &data, &step, &size);
 	c = data[y*step+x];
 	printf("Val %d,%d - %d\n", x, y, c);
@@ -159,6 +166,11 @@ Goo(int event, int x, int y, int flags, void* param)
 	unsigned char *data;
 	CvSize size;
 	int step, c;
+
+	UNUSED(event);
+	UNUSED(flags);
+	UNUSED(param);
+
 	cvGetRawData(sat, &data, &step, &size);
 	c = data[y*step+x];
 	printf("Sat %d,%d - %d\n", x, y, c);
@@ -170,6 +182,11 @@ Foo(int event, int x, int y, int flags, void* param)
 	unsigned char *data;
 	CvSize size;
 	int step, c;
+
+	UNUSED(event);
+	UNUSED(flags);
+	UNUSED(param);
+
 	cvGetRawData(hue, &data, &step, &size);
 	c = data[y*step+x];
 	printf("Hue %d,%d - %d\n", x, y, c);
