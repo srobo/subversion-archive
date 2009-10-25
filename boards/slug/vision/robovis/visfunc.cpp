@@ -1285,7 +1285,8 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat, IplImage *val)
 	memset(ospans, 0, sizeof(spans_a));
 	span = 0;
 
-	for (y = 0; y < hue->height; y++) {
+	/* Spin through all scanlines, + 1 */
+	for (y = 0; y < hue->height + 1; y++) {
 		memset(ospans, 0, sizeof(spans_a));
 		/* swap */
 		tmp = ospans;
@@ -1298,14 +1299,16 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat, IplImage *val)
 		cache = 0;
 		span = 0;
 
+		if (y == hue->height)
+			goto final_span_check;
+
 		for (x = 0; x < line_cache_sz - 1; x++)
 			cache += gethue(x, y);
 
 		for (x = line_cache_sz - 1; x < hue->width; x++) {
 			cache += gethue(x, y);
 
-			if (getsat(x, y) >= span_min_sat &&
-			    getval(x, y) >= span_min_val) {
+			if (getsat(x, y) >= span_min_sat) {
 				if (cache <= red_max && cache >= red_min)
 					put(x, y) = RED;
 				else if (cache <= blue_max && cache >= blue_min)
@@ -1323,7 +1326,8 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat, IplImage *val)
 
 			cache -= gethue(x-line_cache_sz+1, y);
 
-#warning fixme overflow
+/* FIXME - comparison against previous value in scanline, not buffer safe */
+/* Ideally eliminate by not storing previous value in buffer */
 			if (put(x-1, y) != put(x, y)) { /* Start/end span */
 				/* First, end the current span. Insert here
 				 * some logic to make sure the first span slot
@@ -1331,7 +1335,7 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat, IplImage *val)
 				if (spans[span].y1 != y ||
 				    spans[span].colour == NOTHING)
 					goto trumpets;
-#warning beans
+
 				/* Reject anything not long enough */
 				if (x - spans[span].x1 <= span_min_len)
 					goto trumpets;
@@ -1357,14 +1361,14 @@ vis_find_blobs_through_scanlines(IplImage *hue, IplImage *sat, IplImage *val)
 		if (spans[span].colour != NOTHING)
 			span++;
 
-#warning won't work on blocks joining at either side
-
 		/* After processing one scan line, see whether there are
 		 * similar spans of colour on the higher scanline */
 
 /* If we have one span above another, the endpoints of the span obviously won't
  * be exactly above each other, so we have to decide how close they need to
  * be to be acceptably next to each other. Let's try 10. */
+
+		final_span_check:
 
 		for (i = 0; i < span; i++) {
 			for (j = 0; j < ospan; j++) {
