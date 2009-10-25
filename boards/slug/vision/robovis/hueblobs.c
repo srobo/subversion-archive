@@ -15,14 +15,14 @@
 #define DEBUG 0
 #define ERROR 1
 
-#define IN_FILENAME "in.jpg"
+#define IN_FILENAME "in.png"
 #define OUT_FILENAME "out.jpg"
 
 const unsigned int MINMASS = 200;
 const unsigned int MAXMASS = 2000;
 
-const unsigned int CAMWIDTH = 320;
-const unsigned int CAMHEIGHT = 240;
+#define CAMWIDTH 320
+#define CAMHEIGHT 240
 
 IplImage *frame = NULL, *hsv, *hue, *sat, *val;
 
@@ -180,9 +180,12 @@ main(int argc, char **argv)
 {
 	get_command_line_opts(argc, argv);
 
+#ifdef spam
+	char buffer[256];
+	int rawr = 0;
+#endif
 	IplImage *dsthsv, *dstrgb;
 	CvSize framesize;
-	IplConvKernel *k;
 
 	struct blob_position *blobs;
 	char *req_tag = NULL;
@@ -210,21 +213,21 @@ main(int argc, char **argv)
 
 	if (frame) {
 		framesize = cvGetSize(frame);
-		if(DEBUGOUTPUT) { //print the framesize if debug output on
+		if(DEBUGOUTPUT) { //print the framesize if debug on
 			printf("Framesize %dx%d.\n", framesize.width,
-							framesize.height);
+						framesize.height);
 		}
 
-		srlog(DEBUG, "Allocating scratchpads");
-		hsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
-		hue = allo_frame(framesize, IPL_DEPTH_8U, 1);
-		sat = allo_frame(framesize, IPL_DEPTH_8U, 1);
-		val = allo_frame(framesize, IPL_DEPTH_8U, 1);
-		dsthsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
-		dstrgb = allo_frame(framesize, IPL_DEPTH_8U, 3);
+
 	}
 
-	k = cvCreateStructuringElementEx( 5, 5, 0, 0, CV_SHAPE_RECT, NULL);
+	srlog(DEBUG, "Allocating scratchpads");
+	hsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
+	hue = allo_frame(framesize, IPL_DEPTH_8U, 1);
+	sat = allo_frame(framesize, IPL_DEPTH_8U, 1);
+	val = allo_frame(framesize, IPL_DEPTH_8U, 1);
+	dsthsv = allo_frame(framesize, IPL_DEPTH_8U, 3);
+	dstrgb = allo_frame(framesize, IPL_DEPTH_8U, 3);
 
 	srlog(DEBUG, "Beginning looping");
 	while (1){
@@ -242,10 +245,10 @@ main(int argc, char **argv)
 		}
 
 		if (!frame) {
-			srlog(DEBUG, "No frame, skipping analysis");
+			srlog(DEBUG, "Couldn't grab frame");
 			goto noframe;
-			/* Well justified as it reduces the complexity of
-			 * the following code */
+			/* Well justified to reduce the complexity of the
+			 * intervening code */
 		}
 
 		srlog(DEBUG, "Converting to HSV");
@@ -262,7 +265,12 @@ main(int argc, char **argv)
 			cvShowImage("hue", hue);
 		}
 
+		if (DEBUGDISPLAY) {
+			cvShowImage("val", val);
+		}
+
 		blobs = vis_find_blobs_through_scanlines(hue, sat, val);
+
 		for (i = 0; ; i++) {
 			if (blobs[i].x1 == 0 && blobs[i].x2 == 0)
 				break;
@@ -290,10 +298,14 @@ main(int argc, char **argv)
 		fputs("BLOBS\n", stdout);
 		fflush(stdout);
 
-		if (frame) {
-			srlog(DEBUG, "Saving frame to out.jpg");
+		srlog(DEBUG, "Saving frame to out.jpg");
+#ifdef spam
+		sprintf(buffer, "out%4d.jpg", rawr);
+		rawr++;
+		cvSaveImage(buffer, frame);
+#endif
+		if (frame)
 			cvSaveImage(OUT_FILENAME, frame);
-		}
 
 		if (USEFILE && frame) {
 			cvReleaseImage(&frame);
@@ -305,3 +317,4 @@ main(int argc, char **argv)
 	}	//end while loop
 	return 0;
 }
+
