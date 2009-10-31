@@ -583,7 +583,7 @@ class Root(controllers.RootController):
 
         try:
             projWrite.new_directory(dirpath)
-        except pysvn.ClientError: # TODO BZRPORT: replace with bzr error
+        except: # TODO BZRPORT: replace with bzr error
             return dict( success=0, newdir = path,\
                         feedback="Error creating directory: " + path)
 
@@ -789,7 +789,7 @@ class Root(controllers.RootController):
             projWrite.copy(src, dest)
             new_revno,new_rev_id = projWrite.commit(msg)
 
-        except pysvn.ClientError, e:
+        except Exception, e:
             return dict(new_revision = "0", status="1", message="Copy Failed: "+str(e))
 
         return dict(new_revision = str(new_revno), status="0", message="copy successful")
