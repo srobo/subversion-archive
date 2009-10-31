@@ -26,8 +26,10 @@ void pwm_init( void )
 	/* Clear the timer */
 	TACTL |= TACLR;
 
-	/* Set all channels to on for the moment */
-	P1OUT &= ~(0x0C);
+	/* During dead time, this value is exposed */
+	/* Have it so the channels are off */
+	P1OUT |= 0x0C;
+	P1DIR |= 0x0C;
 
 	/* Select ACLK (watch crystal) as clock source */
 	TACTL &= ~TASSEL_3;

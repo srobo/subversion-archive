@@ -15,6 +15,8 @@ void h_bridge_set( uint8_t channel, h_bridge_state_t state )
 {
 	uint8_t v = 0;
 	uint8_t p;
+	uint8_t pwm;
+	uint16_t i;
 
 	switch( state )
 	{
@@ -30,11 +32,26 @@ void h_bridge_set( uint8_t channel, h_bridge_state_t state )
 	}
 
 	/* Calculate the shift necessary */
-	if( channel == 0 )
+	if( channel == 0 ) {
 		p = 3;
-	else
+		pwm = 0x08;
+	} else {
 		p = 5;
+		pwm = 0x04;
+	}
 
-	P3OUT &= ~( 3 << p );
-	P3OUT |= v << p;
+	/* Disable the PWM */
+	P1SEL &= ~pwm;
+	/* Dead time */
+	for( i=0; i<50000; i++ )
+		nop();
+
+	P3OUT = (P3OUT & ~(3<<p)) | (v<<p);
+
+	/* Dead time */
+	for( i=0; i<50000; i++ )
+		nop();
+
+	/* Re-enable the PWM */
+	P1SEL |= pwm;
 }
