@@ -201,11 +201,16 @@ function ErrorsPage() {
 	}
 
 	this._done_check = function(file, opts, info) {
+		var cb = ( opts != null && opts.callback != null && typeof opts.callback == 'function' )
 		if( info.errors == 1 ) {
 			this.load(info, opts);
+			if(cb) {
+				opts.callback('codefail', info.errors);
+			}
 		} else {
-			if( opts != null &&  opts.passCallBack != null && typeof opts.passCallBack == 'function' )
-				opts.passCallBack();
+			if(cb) {
+				opts.callback('pass');
+			}
 			//if not (quiet if pass or a mulifile call from the projpage and no errors yet and this is not the last one to check)
 			if( !( opts != null && (opts.quietpass || opts.projpage_multifile && projtab.has_focus() && async_count > 1) ) )
 				this._prompt = status_msg( "No errors found", LEVEL_OK );
@@ -216,6 +221,10 @@ function ErrorsPage() {
 	this._fail_check = function(file, opts) {
 		this._prompt = status_button( "Failed to check code", LEVEL_ERROR,
 					"retry", bind( this.check, this, file, opts ) );
+
+		//run the callback, after our status message so they can overwrite it if they desire
+		if( opts != null &&  opts.callback != null && typeof opts.callback == 'function' )
+			opts.callback('checkfail');
 	}
 
 	this._close = function() {

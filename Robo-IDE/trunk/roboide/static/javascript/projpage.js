@@ -227,7 +227,22 @@ ProjPage.prototype.clickExportProject = function() {
 		return false;
 	}
 
-	errorspage.check("/"+this.project+"/robot.py", {'switch_to':true, 'alert':true, 'quietpass':true, 'passCallBack':bind(this._exportProject, this)});
+	errorspage.check("/"+this.project+"/robot.py", {'switch_to':true, 'alert':true, 'quietpass':true, 'callback':bind(this._exportProjectCheckResult, this)});
+}
+
+ProjPage.prototype._exportProjectCheckResult = function(result, num_errors) {
+	if(result == 'pass') {
+		this._exportProject();
+	} else if(result == 'codefail') {	//bad code
+		var message = num_errors+" errors found";
+	} else if(result == 'checkfail') {	//the check failed
+		var message = "Failed to check code";
+	}
+	log('_exportProjectCheckResult:'+message);
+	status_options( message, LEVEL_WARN,
+				[{text:"retry", callback:bind( this.clickExportProject, this )},
+				 {text:"export anyway", callback:bind( this._exportProject, this )}]
+			);
 }
 
 ProjPage.prototype._exportProject = function() {
