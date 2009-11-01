@@ -357,6 +357,26 @@ function status_click() {
 	status_hide();
 }
 
+// Display a status message with some options
+// Args:
+//    message: The message to display
+//      level: The log level of the message (LOG_OK etc)
+//   opt_list: An array of buttons, each of which must be an object with the following properties
+//             text: The button text
+//         callback: The function to call when the button is clicked.
+function status_options( message, level, opt_list ) {
+	var m = [ message, " -- " ]
+	for( var i=0; i < opt_list.length; i++) {
+		var b = A({ "href" : "#" }, opt_list[i].text );
+		connect( b, "onclick", partial(function(cb) { status_click(); cb(); }, opt_list[i].callback) );
+		m.push(b);
+		if(i+1 < opt_list.length)
+			m.push(' | ');
+	}
+
+	return status_msg( m, level );
+}
+
 // Display a status message with a button
 // Args:
 //    message: The message to display
