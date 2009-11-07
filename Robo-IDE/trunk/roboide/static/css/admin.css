@@ -8,27 +8,27 @@
 	font-size: 1.1em;
 }
 
-#teams-table {
+#admin-teams-table {
 	border-collapse: collapse;
 	margin: 0 10px;
 }
-#teams-table tr {
+#admin-teams-table tr {
 	height: 30px;
 }
-#teams-table tr.even {
+#admin-teams-table tr.even {
 	background-color: #eee;
 }
-#teams-table th {
+#admin-teams-table th {
 	text-align: left;
 	padding-right: 7px;
 }
-#teams-table td {
+#admin-teams-table td {
 	padding-left: 5px;
 }
-#teams-table td.name {
+#admin-teams-table td.name {
 	width: 185px;
 }
-#teams-table td.name input {
+#admin-teams-table td.name input {
 	margin-left: -3px;
 	width: 180px;
 }

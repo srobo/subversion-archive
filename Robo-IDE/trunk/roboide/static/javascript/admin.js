@@ -69,8 +69,8 @@ Admin.prototype.ShowTeams = function() {
 	var td_name = TH({'class':'name'}, 'Team Name');
 	var td_button = TH(null);
 	var oddeven = i++ % 2 == 0 ? 'even' : 'odd';
-	replaceChildNodes('teams-table');
-	appendChildNodes('teams-table', TR({'class':oddeven}, td_id, td_name, td_button));
+	replaceChildNodes('admin-teams-table');
+	appendChildNodes('admin-teams-table', TR({'class':oddeven}, td_id, td_name, td_button));
 
 	for( var id in user.team_names ) {
 		td_id = TD(null, id);
@@ -79,14 +79,14 @@ Admin.prototype.ShowTeams = function() {
 		this._signals.push(connect(button, 'onclick', bind(this._editTeam, this, {id:id,name:user.team_names[id]})));
 		td_button = TD(null, button);
 		oddeven = i++ % 2 == 0 ? 'even' : 'odd';
-		appendChildNodes('teams-table',
-			TR({'class':oddeven,id:'teams-table-'+id}, td_id, td_name, td_button)
+		appendChildNodes('admin-teams-table',
+			TR({'class':oddeven,id:'admin-teams-table-'+id}, td_id, td_name, td_button)
 		);
 	}
 }
 
 Admin.prototype._editTeam = function(ref) {
-	var row = $('teams-table-'+ref.id);
+	var row = $('admin-teams-table-'+ref.id);
 	var cell = getFirstElementByTagAndClassName('td', 'name', row);
 	var button = getFirstElementByTagAndClassName('button', null, row);
 	if(button.innerHTML == 'Edit') {
@@ -107,7 +107,7 @@ Admin.prototype._editTeam = function(ref) {
 	}
 }
 Admin.prototype._receiveEditTeam = function(ref, nodes) {
-	var row = $('teams-table-'+ref.id);
+	var row = $('admin-teams-table-'+ref.id);
 	if(nodes.success) {
 		this._prompt = status_msg("Team name updated", LEVEL_OK);
 		var cell = getFirstElementByTagAndClassName('td', 'name', row);
@@ -125,7 +125,7 @@ Admin.prototype._receiveEditTeam = function(ref, nodes) {
 }
 Admin.prototype._errorEditTeam = function(ref, nodes) {
 	this._prompt = status_msg("Failed to update team name", LEVEL_ERROR);
-	var row = $('teams-table-'+ref.id);
+	var row = $('admin-teams-table-'+ref.id);
 	var cell = getFirstElementByTagAndClassName('td', 'name', row);
 	var button = getFirstElementByTagAndClassName('button', null, row);
 	cell.firstChild.disabled = false;
