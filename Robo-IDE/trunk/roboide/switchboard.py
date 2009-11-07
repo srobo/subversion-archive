@@ -148,6 +148,7 @@ class Switchboard(object):
 				row = r.getOne()
 				if feedurl != row.url:
 					row.valid = False	# will need to be re-validated
+					row.checked = False
 					row.url = feedurl
 					row.set()
 				else:
@@ -155,18 +156,17 @@ class Switchboard(object):
 			except:
 				# user doen't have an entry yet, so create one
 				if r.count() == 0:
-					row = model.UserBlogFeeds(user=cur_user, url=feedurl, valid=False)
+					row = model.UserBlogFeeds(user=cur_user, url=feedurl, valid=False, checked=False)
 					row.set()
 				else:
 					#multiple results, sql table is corrupt
-					return dict(feedurl="", valid=0, error=1)
+					return dict(feedurl="", valid=0, checked=0, error=1)
 		except:
 			#error performing sql query
-			return dict(feedurl="", valid=0, error=1)
+			return dict(feedurl="", valid=0, checked=0, error=1)
 		else:
 			#success
-			sbp.ValidateUserFeed(cur_user)
-			return dict(feedurl=row.url, valid=int(row.valid), error=0)
+			return dict(feedurl=row.url, valid=int(row.valid), checked=int(row.checked), error=0)
 
 	@expose("json")
 	@srusers.require(srusers.in_team())

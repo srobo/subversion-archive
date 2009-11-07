@@ -99,3 +99,5 @@ class UserBlogFeeds(SQLObject):
 	url = StringCol()
 	#validated by student robotics admin
 	valid = BoolCol()
+	#checked by student robotics admin
+	checked = BoolCol()
