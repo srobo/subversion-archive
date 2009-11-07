@@ -42,6 +42,9 @@ var team_selector;
 // The switchboard page
 var switchboardpage = null;
 
+// The Admin page
+var adminpage = null;
+
 // The about box
 var about = null;
 
@@ -94,6 +97,9 @@ function load_gui() {
 
 	//The switchboard page - this must happen before populate_shortcuts_box is called
 	switchboardpage = new Switchboard();
+
+	//The Admin page - this must happen before populate_shortcuts_box is called
+	adminpage = new Admin();
 
 	populate_shortcuts_box();
 
@@ -193,6 +199,13 @@ function populate_shortcuts_box() {
 	var short3_li = LI(null, short3_a);
 	connect( short3_li, "onclick", bind(switchboardpage.init, switchboardpage) );
 	shortcuts.push(short3_li);
+
+	if(user.can_admin()) {
+		var admin_a = A( {"title": "IDE Admin"},  "Administration" );
+		var admin_li = LI(null, admin_a);
+		connect( admin_li, "onclick", bind(adminpage.init, adminpage) );
+		shortcuts.push(admin_li);
+	}
 
 	var about_a = A( {"title": "View information about the RoboIDE"},  "About" );
 	var about_li = LI(null, about_a);
@@ -549,6 +562,11 @@ function User() {
 
 	this._logout_resp = function(resp) {
 		window.location.reload();
+	}
+
+	// do they have admin priviledges - this will be drawn from the user info eventually
+	this.can_admin = function() {
+		return true;	//return info.can_admin;
 	}
 
 	// Do the login if they press enter in the password box

@@ -17,7 +17,7 @@ import subprocess
 import sr
 import autosave as srautosave
 import user as srusers
-import fw, switchboard
+import fw, switchboard, admin
 import string
 from vcs_bzr import ProjectWrite, open_branch, open_repo, WorkingTree
 
@@ -59,6 +59,7 @@ class Root(controllers.RootController):
     autosave = srautosave.Autosave()
     #feed = Feed()
     switchboard = switchboard.Switchboard()
+    admin = admin.Admin()
     version = get_version()
 
     if config.get("simulator.enabled"):    # if simulation is enabled import the simulator controller
