@@ -77,21 +77,6 @@ class StudentBlogPosts():
 		except IndexError:
 			pass
 
-	def ValidateUserFeed(self, user):
-		"""
-		Try to grab the user's feed
-		If it's valid XML then we call it valid.
-		TODO: investigate better validation solutions
-		"""
-		feeds = model.UserBlogFeeds.selectBy(user=user)
-		feed = feeds.getOne()
-		fd = feedparser.parse(feed.url)
-		if not fd.bozo:
-			feed.valid = True
-			feed.set()
-			self.ParseFeed(feed)
-		return
-
 	def sortpsots(self, a, b):
 		"""sort the posts putting the most recent at the top"""
 		if a['date'] > b['date']:
