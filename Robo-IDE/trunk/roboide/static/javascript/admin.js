@@ -23,6 +23,7 @@ Admin.prototype.init = function() {
 
 		/* Initialise indiviual page elements */
 		this.ShowTeams();
+		this.GetBlogFeeds();
 
 		/* remember that we are initialised */
 		this._inited = true;
@@ -133,3 +134,92 @@ Admin.prototype._errorEditTeam = function(ref, nodes) {
 }
 /* *****	End Team editing Code 	***** */
 
+/* *****	Student blog feed listing code	***** */
+Admin.prototype._receiveGetBlogFeeds = function(nodes) {
+	var i = 0;
+	var td_user = TH({'class':'user'}, 'User ID');
+	var td_url = TH({'class':'url'}, 'URL');
+	var td_status = TH({'class':'status'}, 'Status');
+	var oddeven = i++ % 2 == 0 ? 'even' : 'odd';
+	replaceChildNodes('admin-feeds-table');
+	appendChildNodes('admin-feeds-table', TR({'class':oddeven}, td_user, td_url, td_status));
+
+	var make_selectbox = function(properties, options, def) {
+		var s = SELECT(properties);
+		for( value in options ) {
+			var opt = OPTION({value:value}, options[value]);
+			if(value == def)
+				opt.selected = true;
+			appendChildNodes(s, opt);
+		}
+		return s;
+	};
+
+	var options = {unchecked:'Unchecked',valid:'Valid',invalid:'Invalid'};
+	//iterate over all feeds and append them to the table
+	for( var i=0; i<nodes.feeds.length; i++ ) {
+		var feed = nodes.feeds[i];
+		td_user = TD({'class':'user'}, feed.user);
+		td_url = TD({'class':'url'}, A({href:feed.url},feed.url));
+
+		var status = (feed.checked ? (feed.valid ? 'valid' : 'invalid') : 'unchecked');
+		var selectbox = make_selectbox({id:'admin-feeds-'+feed.id}, options, status);
+		var ref = {id:feed.id, url:feed.url, status:status, selectbox:selectbox};
+		this._signals.push(connect(selectbox, 'onchange', bind(this.setBlogStatus, this, ref)));
+		td_status = TD({'class':'status'}, selectbox);
+
+		oddeven = i++ % 2 == 0 ? 'even' : 'odd';
+		appendChildNodes('admin-feeds-table', TR({'class':oddeven}, td_user, td_url, td_status));
+		this.showBlogStatus(ref);
+	}
+}
+Admin.prototype._errorGetBlogFeeds = function() {
+		this._prompt = status_msg("Unable to load blog feeds", LEVEL_ERROR);
+		log("Admin: Failed to retrieve feed blog urls");
+		return;
+}
+Admin.prototype.GetBlogFeeds = function() {
+	log("Admin: Retrieving blog feeds");
+	var d = loadJSONDoc("./admin/listblogfeeds", {});
+
+	d.addCallback( bind(this._receiveGetBlogFeeds, this) );
+	d.addErrback( bind(this._errorGetBlogFeeds, this) );
+}
+/* *****    End Student blog feed listing code	***** */
+
+/* *****	RSS feed validation code	***** */
+Admin.prototype._receiveBlogStatus = function(ref, nodes) {
+	if(nodes.success > 0 ) {
+		this._prompt = status_msg("Blog feed updated", LEVEL_OK);
+	} else {
+		this._errorBlogStatus(ref, nodes);
+	}
+}
+Admin.prototype._errorBlogStatus = function(ref, nodes) {
+	this._prompt = status_msg("Unable to update blog feed", LEVEL_ERROR);
+	$('admin-feeds-'+ref.id).value = ref.status;
+	this.showBlogStatus(ref);
+}
+Admin.prototype.setBlogStatus = function(ref) {
+	log("Admin: Setting blog feed status");
+	var status = $('admin-feeds-'+ref.id).value;
+	var d = loadJSONDoc("./admin/setfeedstatus", {
+			id:ref.id,
+			url:ref.url,
+			status:status
+		});
+	d.addCallback( bind( this._receiveBlogStatus, this, ref) );
+	d.addErrback( bind( this._errorBlogStatus, this, ref) );
+
+	ref.status = status;
+	this.showBlogStatus(ref);
+}
+Admin.prototype.showBlogStatus = function(ref) {
+	log("Admin: Showing blog feed status");
+	var tr = getFirstParentByTagAndClassName('admin-feeds-'+ref.id, 'tr', null);
+	removeElementClass(tr, 'unchecked-feed-url');
+	removeElementClass(tr, 'valid-feed-url');
+	removeElementClass(tr, 'invalid-feed-url');
+	addElementClass(tr, ref.status+'-feed-url');
+}
+/* *****	End RSS feed validation code	***** */
