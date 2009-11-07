@@ -42,7 +42,7 @@ class group:
             print self.__doc__
             return
 
-        print " ".join(sr.groups.list())
+        print "\n".join(sr.groups.list())
 
     def help(self, args):
         if len(args) < 1:
