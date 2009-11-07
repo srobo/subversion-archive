@@ -4,11 +4,9 @@ import sr
 
 fromaddr = "rspanton@studentrobotics.org"
 #toaddr = "rspanton@gmail.com"
-smtpserver = "ugsmtp.ecs.soton.ac.uk"
-username = "rds204"
-subject = "Welcome to Student Robotics " 
-
-#smtp_pass = getpass.getpass("SMTP Server password:")
+smtpserver = "smtp.ecs.soton.ac.uk"
+username = "rds"
+subject = "Welcome to Student Robotics" 
 
 def def_psource():
     return getpass.getpass("SMTP Server password:")
@@ -57,31 +55,25 @@ Your registered email address is %s.
 If you want to change this, or you have any problems with your account
 please get in touch - by emailing accounts@studentrobotics.org.
 
-You'll almost certainly want to change your password.  You can do this
-at http://studentrobotics.org/passwd/
+The next thing for you to do is to go and log into the website
+(http://www.studentrobotics.org/) to:
 
-Please introduce yourself on the forums by posting a message to the
-'Introduce Yourself' forum.  You can find the forums on the website
-(http://www.studentrobotics.org).  We hope that you will use these
-forums for discussing the competition with other teams.  There will be
-a prize for the team that best participates in the online community.
+ 1) Change your password
+    Click "My account", then "Edit" to find the password changing form.
+ 2) Introduce yourself on the forums
+    Send a message to the "Introduce yourself" forum.  We hope that you 
+    will use these forums for discussing the competition with other teams.
+ 3) Use RoboIDE -- find a link to this at the top of the page after
+    logging in.  You can also get to this by going straight to:
+    http://ide.studentrobotics.org/
 
-Please note that the contents of these forums are monitored by Student
-Robotics mentors and school teachers and that all posts are associated
-with your username.
-
-You will soon have a fantastic new simulator so that you can
-start practising your coding before you get the electronics kit.  The
-electronics kit is on schedule to be available at the end of November.
+The competition rules have just become available.  Find them on this
+page: http://www.studentrobotics.org/content/2010-documentation
 
 Thanks,
 
-Rob Spanton
+The Student Robotics Team
 
----
-
-Student Robotics President
-rspanton@studentrobotics.org
 """ % ( user.cname, user.username, p, user.email )
 
     email( fromaddr, user.email, subject, msg, smtp_pass )
