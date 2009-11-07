@@ -8,23 +8,24 @@
 	font-size: 1.1em;
 }
 
-#admin-teams-table {
+#admin-page table {
 	border-collapse: collapse;
 	margin: 0 10px;
 }
-#admin-teams-table tr {
+#admin-page table tr {
 	height: 30px;
 }
-#admin-teams-table tr.even {
+#admin-page table tr.even {
 	background-color: #eee;
 }
-#admin-teams-table th {
+#admin-page table th {
 	text-align: left;
 	padding-right: 7px;
 }
-#admin-teams-table td {
+#admin-page table td {
 	padding-left: 5px;
 }
+
 #admin-teams-table td.name {
 	width: 185px;
 }
