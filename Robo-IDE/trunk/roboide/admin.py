@@ -8,6 +8,7 @@ class Admin(object):
 
 	@expose("json")
 	@srusers.require(srusers.in_team())
+	@srusers.require(srusers.is_ide_admin)
 	def teamname(self, id, name):
 		try:
 			team = model.TeamNames.get(id)
