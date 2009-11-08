@@ -450,6 +450,10 @@ function User() {
 			logDebug( k + " = " + this._settings[k] );
 		}
 
+		if(info.can_admin) {
+			this.can_admin = function() {return true;};
+		}
+
 		// Connect up the logout button
 		disconnectAll( "logout-button" );
 		connect( "logout-button", "onclick", bind( this._logout_click, this ) );
@@ -564,9 +568,9 @@ function User() {
 		window.location.reload();
 	}
 
-	// do they have admin priviledges - this will be drawn from the user info eventually
+	// do they have admin priviledges - this gets overwirtten by the info collecter if they do
 	this.can_admin = function() {
-		return true;	//return info.can_admin;
+		return false;
 	}
 
 	// Do the login if they press enter in the password box

@@ -50,9 +50,17 @@ class User(object):
         for sval in svals.lazyIter():
             sname = model.Settings.get(sval.setting_id).name
             settings[sname] = sval.value
+
+        #see if they have admin rights in the IDE
+        if dev_env() and not config.get( "user.use_ldap" ):
+            can_admin = config.get( "user.can_admin" )
+        else:
+            can_admin = False
+
         return { "user" : user,
                  "teams" : teams,
-                 "settings": settings}
+                 "settings": settings,
+                 "can_admin": can_admin }
 
     @expose("json")
     def login(self, usr="",pwd=""):
