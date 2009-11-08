@@ -3,9 +3,6 @@ import model
 import user as srusers
 
 class Admin(object):
-
-	user = srusers.User()
-
 	@expose("json")
 	@srusers.require(srusers.in_team())
 	@srusers.require(srusers.is_ide_admin)
