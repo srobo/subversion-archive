@@ -28,18 +28,15 @@ def in_team():
     return lambda: len(getteams()) > 0
 
 def is_ide_admin():
-    """Returns a function that returns True if the current user is an IDE Admin"""
-    def fn():
-        #see if they have admin rights in the IDE
-        if dev_env() and not config.get( "user.use_ldap" ):
-            return config.get( "user.can_admin" )
+    """Returns True if the current user is an IDE Admin, False otherwise"""
+    if dev_env() and not config.get( "user.use_ldap" ):
+        return config.get( "user.can_admin" )
+    else:
+        username = get_curuser()
+        if username == None or username not in sr.users.list():
+            return False
         else:
-            username = get_curuser()
-            if username == None or username not in sr.users.list():
-                return False
-            else:
-                return "ide-admin" in sr.user(username).groups()
-    return fn
+            return "ide-admin" in sr.user(username).groups()
 
 class User(object):
     @expose("json")
@@ -68,7 +65,7 @@ class User(object):
         return { "user" : user,
                  "teams" : teams,
                  "settings": settings,
-                 "can_admin": is_ide_admin()() }
+                 "can_admin": is_ide_admin() }
 
     @expose("json")
     def login(self, usr="",pwd=""):

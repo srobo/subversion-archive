@@ -28,6 +28,7 @@ class Admin(object):
 
 	@expose("json")
 	@srusers.require(srusers.in_team())
+	@srusers.require(srusers.is_ide_admin)
 	def setfeedstatus(self, id, url, status):
 		"""
 		Change the status of a particular feed
