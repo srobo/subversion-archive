@@ -140,13 +140,11 @@ Admin.prototype._errorEditTeam = function(ref, nodes) {
 
 /* *****	Student blog feed listing code	***** */
 Admin.prototype._receiveGetBlogFeeds = function(nodes) {
-	var i = 0;
 	var td_user = TH({'class':'user'}, 'User ID');
 	var td_url = TH({'class':'url'}, 'URL');
 	var td_status = TH({'class':'status'}, 'Status');
-	var oddeven = i++ % 2 == 0 ? 'even' : 'odd';
 	replaceChildNodes('admin-feeds-table');
-	appendChildNodes('admin-feeds-table', TR({'class':oddeven}, td_user, td_url, td_status));
+	appendChildNodes('admin-feeds-table', TR({'class':'even'}, td_user, td_url, td_status));
 
 	var make_selectbox = function(properties, options, def) {
 		var s = SELECT(properties);
@@ -172,7 +170,7 @@ Admin.prototype._receiveGetBlogFeeds = function(nodes) {
 		this._signals.push(connect(selectbox, 'onchange', bind(this.setBlogStatus, this, ref)));
 		td_status = TD({'class':'status'}, selectbox);
 
-		oddeven = i++ % 2 == 0 ? 'even' : 'odd';
+		var oddeven = i % 2 == 0 ? 'odd' : 'even';
 		appendChildNodes('admin-feeds-table', TR({'class':oddeven}, td_user, td_url, td_status));
 		this.showBlogStatus(ref);
 	}
