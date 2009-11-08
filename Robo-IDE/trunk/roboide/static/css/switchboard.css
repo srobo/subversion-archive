@@ -5,11 +5,17 @@
 	display: none;
 }
 .switchboard-window {
-	border: 2px dashed #BBBBBB;
+	border-width: 1px;
+	border-color: #BBBBBB;
+	border-style: none none solid none;
 	padding: 5px;
 	overflow: hidden;
 	margin-bottom: 5px;
 }
+.switchboard-window > strong {
+	font-size: 2em;
+}
+
 #message-list, #message-list li {
 	list-style-type: none;
 	margin:0px;
