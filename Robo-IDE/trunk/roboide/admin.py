@@ -4,8 +4,7 @@ import user as srusers
 
 class Admin(object):
 	@expose("json")
-	@srusers.require(srusers.in_team())
-	@srusers.require(srusers.is_ide_admin)
+	@srusers.require(srusers.in_team(), srusers.is_ide_admin)
 	def teamname(self, id, name):
 		try:
 			team = model.TeamNames.get(id)
@@ -25,8 +24,7 @@ class Admin(object):
 		return dict(feeds=list(feeds))
 
 	@expose("json")
-	@srusers.require(srusers.in_team())
-	@srusers.require(srusers.is_ide_admin)
+	@srusers.require(srusers.in_team(), srusers.is_ide_admin)
 	def setfeedstatus(self, id, url, status):
 		"""
 		Change the status of a particular feed
