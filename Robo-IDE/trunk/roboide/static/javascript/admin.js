@@ -11,6 +11,10 @@ function Admin() {
 
 /* *****	Initialization code	***** */
 Admin.prototype.init = function() {
+	if(!user.can_admin()) {
+		status_msg('You have not been granted IDE Admin privileges', LEVEL_WARN);
+		return;
+	}
 	if(!this._inited) {
 		logDebug("Admin: Initializing");
 
