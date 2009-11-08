@@ -6,6 +6,9 @@ class Admin(object):
 	@expose("json")
 	@srusers.require(srusers.in_team(), srusers.is_ide_admin)
 	def teamname(self, id, name):
+		"""
+		Change the name of the team with id=id to the passed name
+		"""
 		try:
 			team = model.TeamNames.get(id)
 			team.name = name
