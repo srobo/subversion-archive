@@ -27,6 +27,10 @@ def in_team():
     """Returns a function that returns True if the current user is in a team"""
     return lambda: len(getteams()) > 0
 
+def is_ide_admin():
+    """Returns a function that returns True if the current user is an IDE Admin"""
+    return lambda: "ide-admin" in sr.user(get_curuser()).groups()
+
 class User(object):
     @expose("json")
     def info(self):
@@ -55,7 +59,7 @@ class User(object):
         if dev_env() and not config.get( "user.use_ldap" ):
             can_admin = config.get( "user.can_admin" )
         else:
-            can_admin = False
+            can_admin = is_ide_admin()()
 
         return { "user" : user,
                  "teams" : teams,
