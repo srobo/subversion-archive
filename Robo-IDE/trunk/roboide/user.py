@@ -29,7 +29,17 @@ def in_team():
 
 def is_ide_admin():
     """Returns a function that returns True if the current user is an IDE Admin"""
-    return lambda: "ide-admin" in sr.user(get_curuser()).groups()
+    def fn():
+        #see if they have admin rights in the IDE
+        if dev_env() and not config.get( "user.use_ldap" ):
+            return config.get( "user.can_admin" )
+        else:
+            username = get_curuser()
+            if username == None or username not in sr.users.list():
+                return False
+            else:
+                return "ide-admin" in sr.user(username).groups()
+    return fn
 
 class User(object):
     @expose("json")
@@ -55,16 +65,10 @@ class User(object):
             sname = model.Settings.get(sval.setting_id).name
             settings[sname] = sval.value
 
-        #see if they have admin rights in the IDE
-        if dev_env() and not config.get( "user.use_ldap" ):
-            can_admin = config.get( "user.can_admin" )
-        else:
-            can_admin = is_ide_admin()()
-
         return { "user" : user,
                  "teams" : teams,
                  "settings": settings,
-                 "can_admin": can_admin }
+                 "can_admin": is_ide_admin()() }
 
     @expose("json")
     def login(self, usr="",pwd=""):
@@ -169,5 +173,3 @@ def get_svnrepo( team ):
     """Return the subversion repository URL for the current user and given team.
     Given team must be an integer."""
     return config.get( "svn.repos" ).replace( "TEAM", str(team) )
-
-
