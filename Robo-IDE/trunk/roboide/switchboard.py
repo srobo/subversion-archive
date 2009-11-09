@@ -34,13 +34,25 @@ def sanitize_body(text):
 
 class SRMessageFeed():
 	def __init__(self):
-		self.fd = feedparser.parse(sr_message_feed)
+		self.ParseFeed()
+
+	def ParseFeed(self):
+		#blank existing list of messages
+		self.msgs = []
+		#note what time the feeds were updated
+		self.time = time.time()
+		#actually parse the feed
+		fd = feedparser.parse(sr_message_feed)
+		self.msgs = [{"title":e.title, "link":e.link, "author":e.author_detail.name,
+					"date":e.date, "body":sanitize_body(e.description)}
+				for e in fd.entries]
 
 	def GetMessages(self):
-		msglist = [{"title":e.title, "link":e.link, "author":e.author_detail.name,
-					"date":e.date, "body":sanitize_body(e.description)}
-				for e in self.fd.entries]
-		return dict(msgs=msglist[0:MAX_MESSAGES])
+		"""return a dict of reasonably up-to-date messages"""
+		if time.time() > (self.time + MAX_AGE):
+			self.ParseFeed()
+		#print "SR Feed:\n",self.msgs
+		return dict(msgs=self.msgs[0:MAX_MESSAGES])
 
 class StudentBlogPosts():
 	def __init__(self):
