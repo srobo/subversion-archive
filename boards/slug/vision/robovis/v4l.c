@@ -34,6 +34,7 @@ open_webcam(unsigned int desired_width, unsigned int desired_height)
 	struct v4l2_capability cap;
 	struct v4l2_requestbuffers reqbuf;
 	struct v4l2_buffer buffer;
+	struct v4l2_control control;
 
 	type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
@@ -86,6 +87,13 @@ open_webcam(unsigned int desired_width, unsigned int desired_height)
 	if (!(cap.capabilities & V4L2_CAP_STREAMING)) {
 		fprintf(stderr, "Oh noes, no streaming capability\n");
 		return 1;
+	}
+
+	memset(&control, 0, sizeof(control));
+	control.id = V4L2_CID_AUTO_WHITE_BALANCE;
+	control.value = 1;
+	if (ioctl(fd, VIDIOC_S_CTRL, &control) < 0) {
+		perror("Couldn't set whitebalancing on");
 	}
 
 	memset(&reqbuf, 0, sizeof(reqbuf));
