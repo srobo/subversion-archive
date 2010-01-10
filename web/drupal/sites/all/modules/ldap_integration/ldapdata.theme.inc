@@ -1,5 +1,5 @@
 <?php
-// $Id: ldapdata.theme.inc,v 1.1.2.5 2008/07/22 13:06:51 miglius Exp $
+// $Id: ldapdata.theme.inc,v 1.3 2009/03/18 12:12:02 miglius Exp $
 
 /**
  * @file
@@ -16,17 +16,23 @@ function theme_ldapdata_admin_edit($form) {
   $output = '';
   $rows = array();
   foreach (element_children($form) as $element) {
-    if ($element == "ldap_editable_attributes" ) {
-      foreach (element_children($form['ldap_editable_attributes']['ldap_attr_table']) as $key) {
-        $row = array();
-        $row[] = drupal_render($form['ldap_editable_attributes']['ldap_attr_table'][$key]);
-        $row[] = drupal_render($form['ldap_editable_attributes']['ro_status'][$key]);
-        $row[] = drupal_render($form['ldap_editable_attributes']['rw_status'][$key]);
-        $rows[] = $row;
+    if ($element == 'attributes') {
+      if (isset($form['attributes']['table'])) {
+        foreach (element_children($form['attributes']['table']) as $key) {
+          $row = array();
+          $row[] = drupal_render($form['attributes']['table'][$key]);
+          $row[] = drupal_render($form['attributes']['ldapdata_roattrs'][$key]);
+          $row[] = drupal_render($form['attributes']['ldapdata_rwattrs'][$key]);
+          $rows[] = $row;
+        }
       }
-      $form['ldap_editable_attributes']['#children'] .= drupal_render($form['ldap_editable_attributes']['ldap_message']);
-      $form['ldap_editable_attributes']['#children'] .= theme('table', $form['ldap_editable_attributes']['header']['#value'], $rows);
-      $output .= drupal_render($form['ldap_editable_attributes']);
+      else {
+        $rows[] = array(array('data' => t('No attributes configured.'), 'colspan' => 3));
+      }
+      $form['attributes']['#children'] = drupal_render($form['attributes']['ldapdata_attrs']);
+      $form['attributes']['#children'] .= theme('table', $form['attributes']['header']['#value'], $rows);
+      $form['attributes']['#children'] .= drupal_render($form['attributes']['ldapdata_filter_php']);
+      $output .= drupal_render($form['attributes']);
     }
     else {
       $output .= drupal_render($form[$element]);

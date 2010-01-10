@@ -1,7 +1,39 @@
 CHANGELOG for Forum Access for Drupal 6
 
+
 forum_access 6.x-1.x-dev:
 
+
+forum_access 6.x-1.2 (2009-12-04):
+  Bugs fixed:
+    - #649854: Moderator role gets deleted from {permission} during the submission of admin/user/permissions.
+
+
+forum_access 6.x-1.1 (2009-12-02):
+  Enhancements:
+    - Provide db_rewrite_sql() support to hide the forum moderator role.
+    - Reset the permissions of the forum moderator role (in case they were changed by the admin).
+    - Hide the 'Forums' menu item for users that can't see any forum.
+    - Keep the admin from changing the permissions of the internal-use-only forum moderator role and make it even more difficult to assign the role to a user.
+    - Keep the admin from assigning the internal-use-only forum moderator role to a user.
+    - #552636: Implement 'Drupal 5 legacy mode,' where posting comments and replies is always allowed, for backward compatibility.
+  Bugs fixed:
+    - Deny direct access to forum administration without 'View' access.
+    - Avoid duplicate warning when submitting the Permissions page.
+    - #639196: Fix error on secondary user profile pages.
+    - #597616, #560238: Allow editing own unreplied-to comments even without permission, as core does.
+    - Distinguish between grants as moderator or as normal user.
+    - Fix some trailing spaces (no functional change).
+    - #493044: Fix missing initialization of the {forum_access} table during installation.
+    - #578554: Fix a possible foreach() error message.
+    - Avoid Coder warning and improve installation information.
+
+forum_access 6.x-1.0 (2009-08-03):
+  Enhancements:
+    - Improve information on how to avoid conflicts with Content Access.
+    - Improve wording of trouble-shooting text (string-only change).
+  Bugs fixed:
+    - Cast to VARCHAR rather than to CHAR for pgsql.
 
 forum_access 6.x-1.x-RC1 (2009-06-03):
   Bugs fixed:

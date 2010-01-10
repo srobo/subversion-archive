@@ -1,4 +1,4 @@
-# $Id: sv.po,v 1.3 2009/05/09 20:01:23 seals Exp $
+# $Id: sv.po,v 1.4 2009/08/27 23:45:00 salvis Exp $
 #
 # Swedish translation of Drupal (forum_access)
 # Generated from files:
@@ -33,16 +33,16 @@ msgid "Note that users need"
 msgstr "Observera att användare behöver"
 
 #: forum_access.admin.inc:66
-msgid "the !access_content and !access_comments permissions <strong>AND <em>View</em></strong> to be able to see content at all,"
-msgstr "rättigheterna !access_content och !access_comments <strong>OCH <em>Visa</em></strong> för att över huvud taget kunna se innehåll,"
+msgid "the !access_content and !access_comments permissions <strong>AND <em>View</em></strong> to be able to see this forum and its content at all,"
+msgstr "rättigheterna !access_content och !access_comments <strong>OCH <em>Visa</em></strong> för att över huvud taget kunna se forum och dess innehåll,"
 
 #: forum_access.admin.inc:67
 msgid "the !create_forum_topics (and similar) permissions <strong>AND <em>Post</em></strong> to be able to create forum content, and"
 msgstr "rättigheterna !create_forum_topics (och liknande) <strong>OCH <em>Skicka</em></strong> för att kunna skapa innehåll i forum, och"
 
 #: forum_access.admin.inc:68
-msgid "the !post_comments and (probably) !post_comments_without_approval permission <strong>AND <em>Post</em></strong> to be able to post comments/replies;"
-msgstr "rättigheten !post_comments och (förmodligen) !post_comments_without_approval <strong>OCH <em>Skicka</em></strong> för att kunna skicka kommentarer/svar;"
+msgid "the !post_comments and (probably) !post_comments_without_approval permission <!TAG>AND <em>Post</em></!TAG> to be able to post comments/replies;"
+msgstr "rättigheten !post_comments och (förmodligen) !post_comments_without_approval <!TAG>OCH <em>Skicka</em></!TAG> för att kunna skicka kommentarer/svar;"
 
 #: forum_access.admin.inc:69
 msgid "the !edit_own_forum_topics or !edit_any_forum_topics (and similar) permissions (<strong>OR <em>Edit</em></strong>) can be added if desired, <strong>plus</strong>"

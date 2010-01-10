@@ -1,5 +1,5 @@
 <?php
-// $Id: ldapdata.admin.inc,v 1.1.2.7 2008/08/11 11:10:07 miglius Exp $
+// $Id: ldapdata.admin.inc,v 1.9 2009/07/28 14:03:05 miglius Exp $
 
 /**
  * @file
@@ -9,6 +9,61 @@
 //////////////////////////////////////////////////////////////////////////////
 // ldapdata settings
 
+ /**
+ * Implements the settings page.
+ *
+ * @return
+ *   The form structure.
+ */
+function ldapdata_admin_settings() {
+  $form['sync'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Synchronizing options'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['sync']['ldapdata_sync'] = array(
+    '#type' => 'radios',
+    '#title' => t('Synchronize LDAP data with Drupal profiles'),
+    '#options' => array(t('When user logs in. (Use when LDAP rarely changes.)'), t('On each page load.'), t('Every time user object loaded in Drupal. (May cause high LDAP traffic.)')),
+    '#default_value' => LDAPDATA_SYNC,
+    '#description' => t('User edition will always synchronize the data despite the selection above.'),
+  );
+
+  $form['submit'] = array(
+   '#type'  => 'submit',
+    '#value' => t('Save configuration'),
+  );
+  $form['reset'] = array(
+    '#type'  => 'submit',
+    '#value' => t('Reset to defaults'),
+  );
+
+  $form['list']['#value'] = ldapdata_admin_list();
+
+  return $form;
+}
+
+/**
+ * Submit hook for the settings form.
+ */
+function ldapdata_admin_settings_submit($form, &$form_state) {
+  $op = $form_state['clicked_button']['#value'];
+  $values = $form_state['values'];
+  switch ($op) {
+    case t('Save configuration'):
+      variable_set('ldapdata_sync', $values['ldapdata_sync']);
+
+      drupal_set_message(t('The configuration options have been saved.'));
+      break;
+    case t('Reset to defaults'):
+      variable_del('ldapdata_sync');
+
+      drupal_set_message(t('The configuration options have been reset to their default values.'));
+      break;
+  }
+}
+
 /**
  * Implements the LDAP servers list.
  *
@@ -17,17 +72,20 @@
  */
 function ldapdata_admin_list() {
   $rows = array();
-  $result = db_query("SELECT sid, name FROM {ldapauth} WHERE status = '1' ORDER BY name");
+  $result = db_query("SELECT sid, name, status FROM {ldapauth} ORDER BY weight");
   while ($row = db_fetch_object($result)) {
     $rows[] = array(
-      $row->name,
-      l(t('edit'), 'admin/settings/ldapdata/edit/'. $row->sid),
-      l(t('reset'), 'admin/settings/ldapdata/reset/'. $row->sid),
+      'data' => array(
+        $row->name,
+        l(t('edit'), 'admin/settings/ldap/ldapdata/edit/'. $row->sid),
+        l(t('reset'), 'admin/settings/ldap/ldapdata/reset/'. $row->sid),
+      ),
+      'class' => $row->status ? 'menu-enabled' : 'menu-disabled',
     );
   }
 
   $header = array(
-    t('LDAP Config'),
+    t('Server'),
     array('data' => t('Operations'), 'colspan' => 2),
   );
 
@@ -48,6 +106,8 @@ function ldapdata_admin_list() {
  *   The form structure.
  */
 function ldapdata_admin_edit(&$form_state, $op, $sid) {
+  drupal_add_js(drupal_get_path('module', 'ldapdata') .'/ldapdata.admin.js');
+
   if ($op == "reset" && $sid) {
     $form['sid'] = array(
       '#type' => 'value',
@@ -56,122 +116,143 @@ function ldapdata_admin_edit(&$form_state, $op, $sid) {
     return confirm_form(
       $form,
       t('Are you sure you want to reset the fields mapping to defaults ?'),
-      'admin/settings/ldapdata',
+      'admin/settings/ldap/ldapdata',
       t('<em>This action cannot be undone.</p>'),
       t('Reset'),
       t('Cancel')
     );
   }
   elseif ($op == "edit" && $sid) {
-    $row = db_fetch_array(db_query("SELECT ldapdata_mappings, ldapdata_roattrs, ldapdata_rwattrs, ldapdata_binddn, ldapdata_bindpw, ldapdata_bindpw_clear FROM {ldapauth} WHERE sid = %d", $sid));
+    $edit = db_fetch_array(db_query("SELECT * FROM {ldapauth} WHERE sid = %d", $sid));
 
-    $mappings = unserialize($row['ldapdata_mappings']);
-    $roattrs = unserialize($row['ldapdata_roattrs']);
-    $rwattrs = unserialize($row['ldapdata_rwattrs']);
-    $binddn = $row['ldapdata_binddn'];
-    $bindpw = $row['ldapdata_bindpw'];
-    $bindpw_clear = $row['ldapdata_bindpw_clear'];
+    $ldapdata_mappings = $edit['ldapdata_mappings'] ? unserialize($edit['ldapdata_mappings']) : array();
+    $ldapdata_roattrs = $edit['ldapdata_roattrs'] ? unserialize($edit['ldapdata_roattrs']) : array();
+    $ldapdata_rwattrs = $edit['ldapdata_rwattrs'] ? unserialize($edit['ldapdata_rwattrs']) : array();
+    $ldapdata_attrs = $edit['ldapdata_attrs'] ? unserialize($edit['ldapdata_attrs']) : array();
+
+    $form['description'] = array(
+      '#value' => t('Configure profile synchronization settings for %server.', array('%server' => $edit['name'])),
+    );
 
     // Attribute mapping.
-    $form['ldap_attribute_mapping'] = array(
+    $form['mapping'] = array(
       '#type' => 'fieldset',
       '#title' => t('Drupal-LDAP fields mapping'),
-      '#description' => t('<p><strong style="color: red;">PLEASE NOTE</strong>: advanced configuration for this module can be set by editing the module\'s config file, located at <em style="font-style: normal; padding: 1px 3px; border: 1px solid #8888CC; background-color: #DDDDFF">modules/ldap_integration/ldap_integration/ldapdata.conf.php</em> in your Drupal install.</p>'),
-      '#collapsible' => TRUE
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
     );
-    $form['ldap_attribute_mapping']['ldap_attr_mapping'] = array(
+    $form['mapping']['ldapdata_mapping'] = array(
       '#type' => 'radios',
-      '#title' => t('Should Drupal account fields be mapped to LDAP Attributes?'),
-      '#default_value' => $mappings['access'] ? $mappings['access'] : LDAPDATA_MAP_ATTRIBUTES,
+      '#title' => t('Drupal user profile field mapping'),
+      '#default_value' => isset($ldapdata_mappings['access']) ? $ldapdata_mappings['access'] : LDAPDATA_MAP_ATTRIBUTES,
       '#options' => array(
-        LDAPDATA_MAP_ATTRIBUTES => t('Changes in account fields will be mapped to LDAP attributes and back.'),
-        LDAPDATA_MAP_ATTRIBUTES_READ_ONLY => t('Same, but read-only mode.'),
-        LDAPDATA_MAP_NOTHING => t('No attribute mapping will be done at all (<strong><em>Clears any existing mappings</em></strong>).'),
+        LDAPDATA_MAP_NOTHING => t('No mapping. (Clears any mappings defined below.)'),
+        LDAPDATA_MAP_ATTRIBUTES_READ_ONLY => t('Read only: Drupal user profile fields have LDAP attributes.'),
+        LDAPDATA_MAP_ATTRIBUTES => t('Read/write: Drupal user profile fields have LDAP attributes. LDAP attributes updated upon Drupal profile change.'),
       ),
     );
     $profile_fields = _ldapdata_retrieve_profile_fields();
     $standard_fields = _ldapdata_retrieve_standard_user_fields();
     $drupal_fields = $profile_fields + $standard_fields;
-    $form['ldap_attribute_mapping']['ldap_drupal_reverse_mapping_pre'] = array(
-      '#value' => t('<div class="form-item"><label>If you selected the first or the second option above, please specify here: </label><table><thead><tr><th> Drupal field</th><th>LDAP attribute</th></tr></thead><tbody>'),
+    $form['mapping']['mapping_pre'] = array(
+      '#value' => t('<div class="form-item"><label>Specify mappings below if you selected the second or third option. </label><table><thead><tr><th> Drupal field</th><th>LDAP attribute</th></tr></thead><tbody>'),
     );
     $ldap_drupal_reverse_mappings = _ldapdata_reverse_mappings($sid);
     foreach ($drupal_fields as $key => $field) {
       $field_tmp = "ldap_amap-". $key;
       $_prefix = "<tr><td><label for=\"edit[$field_tmp]\">$field</label></td><td>";
-      $form['ldap_attribute_mapping'][$field_tmp] = array(
+      $form['mapping'][$field_tmp] = array(
         '#type' => 'textfield',
-        //'#default_value' => $ldap_drupal_reverse_mappings[$key],
-        '#default_value' => $mappings[$field_tmp],
+        '#default_value' => isset($ldapdata_mappings[$field_tmp]) ? $ldapdata_mappings[$field_tmp] : NULL,
         '#size' => '20',
         '#prefix' => $_prefix,
         '#suffix' => '</td>',
       );
     }
-    $form['ldap_attribute_mapping']['ldap_drupal_reverse_mappings_post'] = array(
+    $form['mapping']['mapping_post'] = array(
       '#value' => '</tbody></table></div>',
     );
 
     // Attribute access control.
-    $form["ldap_editable_attributes"] = array(
+    $form["attributes"] = array(
       '#type' => 'fieldset',
       '#title' => t('Attribute visibility & access control'),
       '#collapsible' => TRUE,
-      '#description' => t('<p>Users may be able to view their LDAP attributes\' values, as well as edit them. You can configure this feature here.</p>'),
+      '#collapsed' => FALSE,
+      '#description' => t('Allows users to view or edit their LDAP attributes.'),
       '#tree' => TRUE,
     );
-    foreach (ldapdata_attributes() as $key => $field) {
-      $fields[$key] = $field[2];
+    $attributes = '';
+    foreach ($ldapdata_attrs as $attr => $data)
+      $attributes .= $attr .'|'. implode('|', $data) ."\n";
+    $form['attributes']['ldapdata_attrs'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Attributes'),
+      '#default_value' => $attributes,
+      '#cols' => 25,
+      '#rows' => 5,
+      '#description' => t('A list of the LDAP attributes and corresponding form data. If configured, they will be listed in a table below for a more control. The element type may be \'text\' or \'url\', the form element should be \'textfield\'. Please look at the following examples:<br /><code>cn|text|textfield|Common Name|64|64</code><br /><code>homePage|url|textfield|Other web pages|64|64</code>'),
+    );
+    $fields = $rooptions = $rwoptions = $roattrs = $rwattrs = array();
+    foreach ($ldapdata_attrs as $attr => $data) {
+      $fields[$attr] = $data[2];
     }
-    $ro_status = $rw_status = array();
     foreach ($fields as $attr => $attr_name) {
-      $ro_options[$attr]  = '';
-      $rw_options[$attr]  = '';
+      $rooptions[$attr]  = '';
+      $rwoptions[$attr]  = '';
 
-      if (!empty($roattrs) && (in_array($attr, $roattrs)))
-        $ro_status[] = $attr;
-      if (!empty($rwattrs) && (in_array($attr, $rwattrs)))
-        $rw_status[] = $attr;
+      if (in_array($attr, $ldapdata_roattrs))
+        $roattrs[] = $attr;
+      if (in_array($attr, $ldapdata_rwattrs))
+        $rwattrs[] = $attr;
 
-      $form['ldap_editable_attributes']['ldap_attr_table'][$attr] = array(
+      $form['attributes']['table'][$attr] = array(
         '#value' => $attr_name,
       );
     }
-    $form['ldap_editable_attributes']['ro_status'] = array(
+    $form['attributes']['ldapdata_roattrs'] = array(
       '#type' => 'checkboxes',
-      '#options' => $ro_options,
-      '#default_value' => $ro_status,
+      '#options' => $rooptions,
+      '#default_value' => $roattrs,
     );
-    $form['ldap_editable_attributes']['rw_status'] = array(
+    $form['attributes']['ldapdata_rwattrs'] = array(
       '#type' => 'checkboxes',
-      '#options' => $rw_options,
-      '#default_value' => $rw_status,
+      '#options' => $rwoptions,
+      '#default_value' => $rwattrs,
     );
-    $form['ldap_editable_attributes']['header'] = array(
+    $form['attributes']['header'] = array(
       '#type' => 'value',
       '#value' => array(
-        array('data' => t('Attribute Name')),
-        array('data' => t('Readable by User?')),
-        array('data' => t('Editable by User?')),
+        array('data' => t('Attribute name')),
+        array('data' => t('Readable by user?')),
+        array('data' => t('Editable by user?')),
       )
+    );
+    $form['attributes']['ldapdata_filter_php'] = array(
+      '#type' => 'textarea',
+      '#title' => t('PHP to filter attributes'),
+      '#default_value' => $edit['ldapdata_filter_php'],
+      '#cols' => 25,
+      '#rows' => 5,
+      '#description' => t('Enter PHP to filter LDAP attributes. Careful, bad PHP code here will break your site. If left empty, no filtering will be done. If filter is set, then attributes will be only readable. The LDAP atributes array <code>$attributes</code> is available in the code context. The code should return a filtered <code>$attributes</code> array as in example bellow:<br /><code>$attributes[\'mail\'][0] = preg_replace(\'/([^@]+@).*/\', \'$1mail.com\', $attributes[\'mail\'][0]);</code><br /><code>return $attributes;</code>'),
     );
 
     // Advanced configuration.
     $form['advanced'] = array(
       '#type' => 'fieldset',
       '#title' => t('Advanced configuration'),
-      '#description' => t('<p>When reading/editing attributes, this module logs on to the LDAP directory using the user\'s DN//pass pair. However, many LDAP setups do not allow their users to edit attributes.</p><p>If this is your case, but still you want users to edit their LDAP attributes via Drupal, you should set up an special user on your directory, with special access to edit your users\' attributes. Then this module will use it to log on and edit data.</p>'),
+      '#description' => t('<p>When reading/editing attributes, this module logs on to the LDAP directory using the user\'s DN/pass pair. However, many LDAP setups do not allow their users to edit attributes.</p><p>If this is your case, but still you want users to edit their LDAP attributes via Drupal, you should set up an special user on your directory, with special access to edit your users\' attributes. Then this module will use it to log on and edit data.</p>'),
       '#collapsible' => TRUE,
-      '#collapsed' => TRUE
+      '#collapsed' => FALSE,
     );
-    $form['advanced']['ldapdata_binddn'] = array(
-      '#type' => 'textfield',
-      '#title' => t('DN for reading/editing attributes'),
-      '#default_value' => $binddn,
-      '#size' => 50,
-      '#maxlength' => 255,
-    );
-    if ($bindpw_clear || !$bindpw) {
+    if (!$edit['ldapdata_bindpw']) {
+      $form['advanced']['ldapdata_binddn'] = array(
+        '#type' => 'textfield',
+        '#title' => t('DN for reading/editing attributes'),
+        '#default_value' => $edit['ldapdata_binddn'],
+        '#size' => 50,
+        '#maxlength' => 255,
+      );
       $form['advanced']['ldapdata_bindpw'] = array(
         '#type' => 'password',
         '#title' => t('Password for reading/editing attributes'),
@@ -180,13 +261,23 @@ function ldapdata_admin_edit(&$form_state, $op, $sid) {
       );
     }
     else {
+      $form['advanced']['ldapdata_binddn'] =  array(
+        '#type' => 'item',
+        '#title' => t('DN for non-anonymous search'),
+        '#value' => $edit['ldapdata_binddn'],
+      );
       // Given an option to clear the password.
       $form['advanced']['ldapdata_bindpw_clear'] = array(
         '#type' => 'checkbox',
         '#default_value' => FALSE,
-        '#title' => t('Clear current password'),
+        '#title' => t('Clear current password and change DN'),
       );
     }
+    $form['advanced']['test'] = array(
+      '#type'  => 'submit',
+      '#value' => t('Test'),
+      '#suffix' => '<div id="test-spinner" style="display: none;">'. theme_image(drupal_get_path('module', 'ldapdata') .'/images/spinner.gif') .'</div><div id="test-message" class="messages" style="display: none;"></div>',
+    );
 
     $form['sid'] = array(
       '#type' => 'hidden',
@@ -201,7 +292,51 @@ function ldapdata_admin_edit(&$form_state, $op, $sid) {
     return $form;
   }
   else {
-    drupal_goto('admin/settings/ldapdata');
+    drupal_goto('admin/settings/ldap/ldapdata');
+  }
+}
+
+/**
+ * Validate hook for the settings form.
+ */
+function ldapdata_admin_edit_validate($form, &$form_state) {
+  $op = $form_state['clicked_button']['#value'];
+  $values = $form_state['values'];
+  switch ($op) {
+    case t('Update'):
+      $form_state['ldapdata_attrs'] = array();
+      $ldapdata_attrs = TRUE;
+      foreach ((trim($values['attributes']['ldapdata_attrs']) ? explode("\n", trim($values['attributes']['ldapdata_attrs'])) : array()) as $line) {
+        if (count($data = explode('|', trim($line))) == 6)
+          $form_state['ldapdata_attrs'] += array(trim(array_shift($data)) => $data);
+        else
+          $ldapdata_attrs = FALSE;
+      }
+      if (!$ldapdata_attrs)
+        form_set_error('attributes][ldapdata_attrs', t('Bad attribute syntax.'));
+
+      $form_state['ldapdata_mappings'] = array();
+      $form_state['ldapdata_mappings']['access'] = $values['ldapdata_mapping'];
+      if ($form_state['ldapdata_mappings']['access'] >= 4) {
+        foreach (element_children($values) as $attr) {
+          if (preg_match("/ldap_amap/", $attr) && $values[$attr])
+            $form_state['ldapdata_mappings'][$attr] = $values[$attr];
+        }
+      }
+      $form_state['ldapdata_mappings'] = !empty($form_state['ldapdata_mappings']) ? serialize($form_state['ldapdata_mappings']) : '';
+
+
+      $form_state['ldapdata_roattrs'] = isset($values['attributes']['ldapdata_roattrs']) ? array_values(array_intersect($values['attributes']['ldapdata_roattrs'], array_keys($form_state['ldapdata_attrs']))) : array();
+      $form_state['ldapdata_roattrs'] = !empty($form_state['ldapdata_roattrs']) ? serialize($form_state['ldapdata_roattrs']) : '';
+
+      $form_state['ldapdata_rwattrs'] = isset($values['attributes']['ldapdata_rwattrs']) ? array_values(array_intersect($values['attributes']['ldapdata_rwattrs'], array_keys($form_state['ldapdata_attrs']))) : array();
+      $form_state['ldapdata_rwattrs'] = !empty($form_state['ldapdata_rwattrs']) ? serialize($form_state['ldapdata_rwattrs']) : '';
+
+      $form_state['ldapdata_attrs'] = !empty($form_state['ldapdata_attrs']) ? serialize($form_state['ldapdata_attrs']) : '';
+
+      $form_state['ldapdata_filter_php'] = trim($values['attributes']['ldapdata_filter_php']);
+      $form_state['ldapdata_rwattrs'] = empty($form_state['ldapdata_filter_php']) ? $form_state['ldapdata_rwattrs'] : '';
+      break;
   }
 }
 
@@ -209,58 +344,78 @@ function ldapdata_admin_edit(&$form_state, $op, $sid) {
  * Submit hook for the settings form.
  */
 function ldapdata_admin_edit_submit($form, &$form_state) {
+  $op = $form_state['clicked_button']['#value'];
   $values = $form_state['values'];
-
-  if ($values['op'] == t('Reset') && $values['confirm'] == 1) {
-
-    // Settings reset.
-    db_query("UPDATE {ldapauth} SET ldapdata_mappings = '', ldapdata_roattrs = '', ldapdata_rwattrs = '', ldapdata_binddn = '', ldapdata_bindpw = '', ldapdata_bindpw_clear = '' WHERE sid = %d", $values['sid']);
-    drupal_set_message(t('The configuration options have been reset to their default values.'));
-  }
-  else {
-
-    // Attribute mapping.
-    $attr_mapping_access = $values['ldap_attr_mapping'];
-    $attr_mappings['access'] = $attr_mapping_access;
-
-    if ($attr_mapping_access >= 4) {
-      foreach (element_children($values) as $attr) {
-        if (preg_match("/ldap_amap/", $attr) && $values[$attr]) {
-          $attr_mappings[$attr] = $values[$attr];
+  switch ($op) {
+    case t('Update'):
+      if (isset($values['ldapdata_bindpw_clear'])) {
+        db_query("UPDATE {ldapauth} SET ldapdata_mappings = '%s', ldapdata_roattrs = '%s', ldapdata_rwattrs = '%s', ldapdata_attrs = '%s', ldapdata_filter_php = '%s' WHERE sid = %d", $form_state['ldapdata_mappings'], $form_state['ldapdata_roattrs'], $form_state['ldapdata_rwattrs'], $form_state['ldapdata_attrs'], $form_state['ldapdata_filter_php'], $values['sid']);
+        if ($values['ldapdata_bindpw_clear']) {
+          db_query("UPDATE {ldapauth} SET ldapdata_bindpw = '' WHERE sid = %d", $values['sid']);
         }
       }
-    }
-    $serialized_data = serialize($attr_mappings);
-
-    // Attribute access control.
-    $ro_tmp = is_array($values['ldap_editable_attributes']['ro_status']) ? array_filter($values['ldap_editable_attributes']['ro_status']) : array();
-
-    if (!empty($ro_tmp)) {
-      foreach ($ro_tmp as $ro_attr) {
-        $ro_attrs[] = $ro_attr;
+      else {
+        db_query("UPDATE {ldapauth} SET ldapdata_mappings = '%s', ldapdata_roattrs = '%s', ldapdata_rwattrs = '%s', ldapdata_binddn = '%s', ldapdata_bindpw = '%s', ldapdata_attrs = '%s', ldapdata_filter_php = '%s' WHERE sid = %d", $form_state['ldapdata_mappings'], $form_state['ldapdata_roattrs'], $form_state['ldapdata_rwattrs'], $values['ldapdata_binddn'], $values['ldapdata_bindpw'], $form_state['ldapdata_attrs'], $form_state['ldapdata_filter_php'], $values['sid']);
       }
-      $serialized_ro_attrs = serialize($ro_attrs);
-    }
+      drupal_set_message(t('The configuration options have been saved.'));
+      $form_state['redirect'] = 'admin/settings/ldap/ldapdata';
+      break;
+    case t('Reset'):
+      if ($values['confirm'] == 1) {
 
-    $rw_tmp = is_array($values['ldap_editable_attributes']['rw_status']) ? array_filter($values['ldap_editable_attributes']['rw_status']) : array();
-
-    if (!empty($rw_tmp)) {
-      foreach ($rw_tmp as $rw_attr) {
-        $rw_attrs[] = $rw_attr;
+        // Settings reset.
+        db_query("UPDATE {ldapauth} SET ldapdata_mappings = '', ldapdata_roattrs = '', ldapdata_rwattrs = '', ldapdata_binddn = '', ldapdata_bindpw = '', ldapdata_attrs = '', ldapdata_filter_php = '' WHERE sid = %d", $values['sid']);
+        drupal_set_message(t('The configuration options have been reset to their default values.'));
       }
-      $serialized_rw_attrs = serialize($rw_attrs);
-    }
+      $form_state['redirect'] = 'admin/settings/ldap/ldapdata';
+      break;
+    case t('Test'):
+      global $_ldapdata_ldap;
+      if (isset($values['sid']) && _ldapdata_init($values['sid'])) {
+        // Try to authenticate.
+        $bind_info = _ldapdata_edition($values['sid']);
+        if (!$_ldapdata_ldap->connect($bind_info['dn'], $bind_info['pass'])) {
+          drupal_set_message(t('Authentication with the LDAP server for the dn %dn and saved password failed.', array('%dn' => $bind_info['dn'])), 'error');
+        }
+        else {
+          drupal_set_message(t('Authentication with the LDAP server for the dn %dn and saved password succeeded.', array('%dn' => $bind_info['dn'])));
+        }
+      }
+      else {
+        drupal_set_message(t('Cannot load server settings. Please save configuration first.'), 'error');
+      }
+      break;
+  }
+}
 
-    if ( !$values['ldapdata_bindpw_clear'] && $values['ldapdata_bindpw']) {
-      db_query("UPDATE {ldapauth} SET ldapdata_mappings = '%s', ldapdata_roattrs = '%s', ldapdata_rwattrs = '%s', ldapdata_binddn = '%s', ldapdata_bindpw = '%s', ldapdata_bindpw_clear = '%d' WHERE sid = %d", $serialized_data, $serialized_ro_attrs, $serialized_rw_attrs, $values['ldapdata_binddn'], $values['ldapdata_bindpw'], $values['ldapdata_bindpw_clear'], $values['sid']);
-    }
-    else {
-      // Set the clear password switch.
-      db_query("UPDATE {ldapauth} SET ldapdata_mappings = '%s', ldapdata_roattrs = '%s', ldapdata_rwattrs = '%s', ldapdata_binddn = '%s', ldapdata_bindpw_clear = '%d' WHERE sid = %d", $serialized_data, $serialized_ro_attrs, $serialized_rw_attrs, $values['ldapdata_binddn'], $values['ldapdata_bindpw_clear'], $values['sid']);
-    }
-    drupal_set_message(t('The configuration options have been saved.'));
+/**
+ * Implements the AJAX server test.
+ *
+ * @param $sid
+ *   LDAP server ID.
+ *
+ * @return
+ *   The JSON data.
+ */
+function _ldapdata_ajax_test($sid) {
+  global $_ldapdata_ldap;
+
+  if (!is_numeric($sid)) {
+    return;
   }
 
-  $form_state['redirect'] = 'admin/settings/ldapdata';
+  _ldapdata_init($sid);
+
+  if ($_POST['bindpw_clear'] == 'undefined') {
+    $binddn = $_POST['binddn'];
+    $bindpw = $_POST['bindpw'];
+  }
+  else {
+    $binddn = $_ldapdata_ldap->getOption('binddn');
+    $bindpw = $_ldapdata_ldap->getOption('bindpw');
+  }
+
+  drupal_json($_ldapdata_ldap->connect($binddn, $bindpw) ? array('status' => 1, 'message' => t('Authentication with the LDAP server succeeded.')) : array('status' => 0, 'message' => t('Authentication with the LDAP server failed.')));
+  exit;
 }
 

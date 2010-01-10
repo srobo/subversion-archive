@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.module,v 1.45 2009/05/22 21:56:01 salvis Exp $
+// $Id: forum_access.module,v 1.53 2009/11/29 18:21:49 salvis Exp $
 
 /**
  * @file forum_access.module
@@ -78,6 +78,9 @@ function forum_access_init() {
       break;
       
     case 'comment':
+      if (variable_get('forum_access_D5_legacy_mode', FALSE)) {
+        return;  // disable comment access control
+      }
       if ((arg(1) == 'edit' || arg(1) == 'delete') && !user_access('administer comments')) {
         if (is_numeric($cid = arg(2))) {  // comment/edit/%, comment/delete/%
           $access[] = (arg(1) == 'edit' ? 'update' : 'delete'); 
@@ -119,9 +122,9 @@ function forum_access_init() {
     $node = node_load($nid);
     if ($tid = _forum_access_get_tid($node)) {
       foreach ($access as $a) {
-        if (forum_access_access($tid, $a)) {
+        if ($level = forum_access_access($tid, $a)) {
           module_load_include('node.inc', 'forum_access');
-          $user->_forum_access_moderator = TRUE;
+          $user->_forum_access_moderator = $level;
           if (arg(0) == 'comment' || arg(0) == 'node' && arg(2) == 'edit') {
             _forum_access_enable_moderator();
           }
@@ -137,11 +140,12 @@ function forum_access_init() {
  * Alter the node/comment create/edit forms and various admin forms.
  */
 function forum_access_form_alter(&$form, &$form_state, $form_id) {
+  //dpm($form, "form_id($form_id)");
   if (isset($form['type']) && $form['type']['#value'] .'_node_form' == $form_id) {
     module_load_include('node.inc', 'forum_access');
     _forum_access_node_form($form, $form_state);
   }
-  else if ($form_id == 'comment_form') {
+  else if ($form_id == 'comment_form' && !variable_get('forum_access_D5_legacy_mode', FALSE)) {
     module_load_include('node.inc', 'forum_access');
     _forum_access_comment_form($form, $form_state);
   }
@@ -157,6 +161,10 @@ function forum_access_form_alter(&$form, &$form_state, $form_id) {
     module_load_include('admin.inc', 'forum_access');
     _forum_access_forum_form($form, $form_state, FALSE);
   }
+  else if ($form_id == 'forum_admin_settings') {
+    module_load_include('admin.inc', 'forum_access');
+    _forum_access_forum_admin_settings_form($form, $form_state);
+  }
   else if ($form_id == 'user_admin_role') {
     module_load_include('admin.inc', 'forum_access');
     _forum_access_user_admin_role_form($form, $form_state);
@@ -164,6 +172,18 @@ function forum_access_form_alter(&$form, &$form_state, $form_id) {
   else if ($form_id == 'content_access_admin_settings' && empty($_POST)) {
     module_load_include('admin.inc', 'forum_access');
     _forum_access_content_access_admin_form();
+  }
+  else if ($form_id == 'user_admin_perm') {
+    module_load_include('admin.inc', 'forum_access');
+    _forum_access_user_admin_perm_form($form, $form_state);
+  }
+  else if ($form_id == 'user_admin_account') {
+    module_load_include('admin.inc', 'forum_access');
+    _forum_access_user_admin_account_form($form, $form_state);
+  }
+  else if ($form_id == 'user_profile_form') {
+    module_load_include('admin.inc', 'forum_access');
+    _forum_access_user_profile_form($form, $form_state);
   }
 }
 
@@ -176,17 +196,26 @@ function forum_access_form_alter(&$form, &$form_state, $form_id) {
  */
 function forum_access_db_rewrite_sql($query, $primary_table, $primary_field, $args) {
   global $user;
+  //dpm($query, "hook_db_rewrite_sql($primary_table.$primary_field)");
   if ($primary_field == 'tid' && $user->uid != 1 && !(strstr($_GET['q'], 'admin/content/forum') !== FALSE && user_access('administer forums'))) {
     $roles = _forum_access_get_roles($user);
     $sql['join'] = "LEFT JOIN {forum_access} fa ON $primary_table.tid = fa.tid
                     LEFT JOIN {acl} acl_fa ON acl_fa.name = ". ($GLOBALS['db_type'] == 'pgsql' ? 'CAST(' : '')
-                                                          ."$primary_table.tid". ($GLOBALS['db_type'] == 'pgsql' ? ' AS CHAR)' : '')
+                                                          ."$primary_table.tid". ($GLOBALS['db_type'] == 'pgsql' ? ' AS VARCHAR)' : '')
                                                                             ." AND acl_fa.module = 'forum_access'
                     LEFT JOIN {acl_user} aclu_fa ON aclu_fa.acl_id = acl_fa.acl_id AND aclu_fa.uid = $user->uid";
     $sql['where'] = "(fa.grant_view >= 1 AND fa.rid IN ($roles)) OR fa.tid IS NULL OR aclu_fa.uid = $user->uid";
     $sql['distinct'] = 1;
-    return $sql;
   }
+  elseif ($primary_field == 'rid' && strpos($query, 'FROM {role}') !== FALSE && strpos($_GET['q'], 'admin/content/forum') === FALSE) {
+    $moderator_rid = forum_access_query_moderator_rid();
+    $sql['where'] = "$primary_table.rid <> $moderator_rid";
+  }
+  else {
+    return;
+  }
+  //dpm($sql, "rewritten:");
+  return $sql;
 }
 
 /**
@@ -274,7 +303,7 @@ function forum_access_preprocess_forum_list(&$variables) {
  * 'create' permission.
  */
 function forum_access_preprocess_forums(&$variables) {
-  if (!forum_access_access($variables['tid'], 'create')) {
+  if (!forum_access_access($variables['tid'], 'create') && !empty($variables['links'])) {
     foreach ($variables['links'] as $key => $link) {
       if (substr($link['href'], 0, 9) == 'node/add/') {
         unset($variables['links'][$key]);
@@ -282,6 +311,9 @@ function forum_access_preprocess_forums(&$variables) {
     }
   }
 }
+
+if (!variable_get('forum_access_D5_legacy_mode', FALSE))
+{  // LEGACY-MODE disables these methods
 
 /**
  * Implementation of hook_link_alter().
@@ -323,6 +355,8 @@ function forum_access_preprocess_comment(&$variables) {
   }
 }
 
+}  // End of !LEGACY-MODE
+
 /**
  * This is also required by ACL module.
  */
@@ -339,6 +373,7 @@ function forum_access_enabled($set = NULL) {
  */
 function forum_access_enable() {
   node_access_needs_rebuild();
+  variable_del('forum_access_rids');  // clear cache
 }
 
 /**
@@ -355,6 +390,13 @@ function forum_access_disable() {
  * $tid -- the tid of the forum
  * $type -- view, update, delete or create
  * $account -- the account to test for. If NULL use current user.
+ * 
+ * Return:
+ *   FALSE - access not granted
+ *   1     - access granted
+ *   2     - access granted for forum moderator
+ *   3     - user has 'administer nodes' (this occurs also when in
+ *           forum moderator mode!)
  */
 function forum_access_access($tid, $type, $account = NULL) {
   static $cache = array();
@@ -365,7 +407,7 @@ function forum_access_access($tid, $type, $account = NULL) {
 
   if ($account->uid == 1 ||
       user_access('administer nodes') && array_search($type, array('view', 'update', 'delete')) !== FALSE) {
-    return TRUE;
+    return 3;
   }
 
   if (!isset($cache[$account->uid][$tid][$type])) {
@@ -373,14 +415,14 @@ function forum_access_access($tid, $type, $account = NULL) {
     $result = db_result(db_query("SELECT tid FROM {forum_access} WHERE rid IN (%s) AND grant_%s = 1 AND tid = %d", $roles, $type, $tid));
 
     if ($result) {
-      $cache[$account->uid][$tid][$type] = TRUE;
+      $cache[$account->uid][$tid][$type] = 1;
     }
     else {
       // check our moderators too
       $acl_id = db_result(db_query("SELECT acl_id from {acl} WHERE module = 'forum_access' AND name = '%d'", $tid));
       $result = db_result(db_query("SELECT uid FROM {acl_user} WHERE acl_id = %d AND uid = %d", $acl_id, $account->uid));
       if ($result) {
-        $cache[$account->uid][$tid][$type] = TRUE;
+        $cache[$account->uid][$tid][$type] = 2;
       }
       else {
         $cache[$account->uid][$tid][$type] = FALSE;
@@ -388,6 +430,99 @@ function forum_access_access($tid, $type, $account = NULL) {
     }
   }
   return $cache[$account->uid][$tid][$type];
+}
+
+/**
+ * Implementation of hook_user().
+ */
+function forum_access_user($op, &$edit, &$account, $category = NULL) {
+  switch ($op) {
+    case 'validate':
+      $rid = forum_access_query_moderator_rid();
+      if (!empty($rid)) {
+        if (isset($edit['roles'][$rid]) && $edit['roles'][$rid]) {
+          $roles = user_roles();
+          $variables = array(
+            '@Forum_Access' => 'Forum Access',
+            '%Role' => $roles[$rid],
+          );
+          drupal_set_message(t('The %Role role is reserved for internal use by the @Forum_Access module! It was not assigned.', $variables), 'warning');
+          unset($edit['roles'][$rid]);
+        }
+      }
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_menu_alter().
+ *
+ * Remove the 'Forum' menu item if no forums are visible.
+ */
+function forum_access_menu_alter(&$items) {
+  if (!empty($items['forum'])) {
+    //dpm($items['forum'], 'hook_menu_alter($items[\'forum\'])');
+    if (!empty($items['forum']['access callback']) || $items['forum']['access arguments'][0] != 'access content') {
+      drupal_set_message(t('Unexpected access specification for the %forum menu path; @Forum_Access cannot control its access.', array('%forum' => 'forum', '@Forum_Access' => 'Forum Access')), 'error');
+      return;
+    }
+    $items['forum']['access callback'] = '_forum_access_access_any_forum';
+    unset($items['forum']['access arguments']);
+  }
+}
+
+/**
+ * Access callback for the 'forum' menu item.
+ */
+function _forum_access_access_any_forum() {
+  global $user;
+  static $return;
+
+  if (!isset($return)) {
+    if ($user->uid == 1) {
+      return $return = TRUE;
+    }
+    if (!user_access('access content')) {
+      return $return = FALSE;
+    }
+    $rids = variable_get('forum_access_rids', NULL);
+    if (!isset($rids)) {
+      $result = db_query("SELECT fa.rid FROM {forum_access} fa WHERE fa.grant_view > 0 GROUP BY fa.rid");
+      while ($role = db_fetch_object($result)) {
+        $rids[] = $role->rid;
+      }
+      variable_set('forum_access_rids', $rids);
+    }
+    foreach ($rids as $rid) {
+      if (isset($user->roles[$rid])) {
+        return $return = TRUE;
+      }
+    }
+    $return = FALSE;
+  }
+  return $return;
+}
+
+/**
+ * Implementation of hook_taxonomy().
+ * 
+ * Delete {forum_access} records when forums are deleted.
+ */
+function forum_access_taxonomy($op, $type, $array = NULL) {
+  //dpm($array, "hook_taxonomy($op, $type)");
+  if ($type = 'term' && $op == 'delete' && $array['vid'] == variable_get('forum_nav_vocabulary', '')) {
+    db_query("DELETE FROM {forum_access} WHERE tid = %d", $array['tid']);
+    variable_del('forum_access_rids');  // clear cache
+  }
+}
+
+/**
+ * Return the rid of the Forum Moderator role or NULL if the role does not
+ * exist.
+ */
+function forum_access_query_moderator_rid()
+{
+  return variable_get('forum_access_moderator_rid', NULL);
 }
 
 /**

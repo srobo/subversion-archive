@@ -6,9 +6,9 @@ package = Access control
 core = 6.x
 
 
-; Information added by drupal.org packaging script on 2009-06-03
-version = "6.x-1.0-rc1"
+; Information added by drupal.org packaging script on 2009-12-03
+version = "6.x-1.2"
 core = "6.x"
 project = "forum_access"
-datestamp = "1244041852"
+datestamp = "1259884233"
 

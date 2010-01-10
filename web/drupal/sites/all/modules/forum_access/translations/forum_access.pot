@@ -1,4 +1,4 @@
-# $Id: forum_access.pot,v 1.4 2009/05/09 18:32:41 seals Exp $
+# $Id: forum_access.pot,v 1.5 2009/08/27 23:45:00 salvis Exp $
 #
 # LANGUAGE translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
@@ -31,7 +31,7 @@ msgid "Note that users need"
 msgstr ""
 
 #: forum_access.admin.inc:66
-msgid "the !access_content and !access_comments permissions <strong>AND <em>View</em></strong> to be able to see content at all,"
+msgid "the !access_content and !access_comments permissions <strong>AND <em>View</em></strong> to be able to see this forum and its content at all,"
 msgstr ""
 
 #: forum_access.admin.inc:67
@@ -39,7 +39,7 @@ msgid "the !create_forum_topics (and similar) permissions <strong>AND <em>Post</
 msgstr ""
 
 #: forum_access.admin.inc:68
-msgid "the !post_comments and (probably) !post_comments_without_approval permission <strong>AND <em>Post</em></strong> to be able to post comments/replies;"
+msgid "the !post_comments and (probably) !post_comments_without_approval permission <!TAG>AND <em>Post</em></!TAG> to be able to post comments/replies;"
 msgstr ""
 
 #: forum_access.admin.inc:69

@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   float: left;
-  overflow: hide;
+  overflow: hidden;
 }
 
 .forum-access-div#container {
@@ -21,4 +21,9 @@
 div.forum-access-flowed > div.form-item {
   display: inline;
   margin-right: 1em;
+}
+
+.forum-access-temporary-moderator div.form-item {
+  opacity: 0.5;
+  filter:alpha(opacity=50);
 }

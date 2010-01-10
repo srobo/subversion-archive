@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.node.inc,v 1.5 2009/04/30 22:31:21 salvis Exp $
+// $Id: forum_access.node.inc,v 1.9 2009/11/29 18:21:49 salvis Exp $
 
 /**
  * @file forum_access.node.inc
@@ -75,6 +75,7 @@ function _forum_access_node_form(&$form, &$form_state) {
     // We gave this user the 'administer nodes' permission, which he doesn't
     // normally have. Remove controls that should be reserved to true node
     // administrators.
+    _forum_access_disable_moderator();  // not needed anymore
     $allowed_elements = variable_get('forum_access_allowed_node_edit_elements', array('nid', 'vid', 'uid', 'created', 'type', 'changed', 'title', 'shadow', 'body_field', 'revision_information', 'form_build_id', 'form_token', 'form_id', 'comment_settings', 'taxonomy'));
     $allowed_options = variable_get('forum_access_allowed_node_edit_options', array('status', 'sticky', 'subscriptions_notify'));
     foreach (element_children($form) as $key) {
@@ -101,6 +102,10 @@ function _forum_access_node_form(&$form, &$form_state) {
             $form[$key]['#access'] = FALSE;
           }
       }
+    }
+    if ($user->_forum_access_moderator == 1) {
+      $form['options']['#access'] = FALSE;
+      $form['comment_settings']['#access'] = FALSE;
     }
   }
 }
@@ -132,10 +137,16 @@ function _forum_access_comment_form(&$form, &$form_state) {
       }
       else {
         if (isset($form['admin']) && !empty($user->_forum_access_moderator)) {
-          foreach (element_children($form['admin']) as $key) {
-            if ($key != 'status') {
-              $form['admin'][$key]['#access'] = FALSE;
-            }
+          switch ($user->_forum_access_moderator) {
+            case 2:
+              foreach (element_children($form['admin']) as $key) {
+                if ($key != 'status') {
+                  $form['admin'][$key]['#access'] = FALSE;
+                }
+              }
+              break;
+            case 1:
+              $form['admin']['#access'] = FALSE;
           }
         }
       }
@@ -169,7 +180,7 @@ function _forum_access_disable_moderator() {
  */
 function _forum_access_get_moderator_rid($verbose = FALSE)
 {
-  $rid = variable_get('forum_access_moderator_rid', NULL);
+  $rid = forum_access_query_moderator_rid();
   if ($rid !== NULL) {
     if (db_result(db_query("SELECT COUNT(rid) FROM {role} WHERE rid = %d", $rid)) == 1) {
       return $rid;
@@ -184,7 +195,7 @@ function _forum_access_get_moderator_rid($verbose = FALSE)
  */
 function _forum_access_get_all_roles() { 
   $roles = user_roles();
-  $moderator_rid = variable_get('forum_access_moderator_rid', NULL);
+  $moderator_rid = forum_access_query_moderator_rid();
   if (isset($roles[$moderator_rid])) {
     $roles[$moderator_rid] .= ' '. t('(!Forum_Access temporary role, does not need any grants.)', array('!Forum_Access' => 'Forum Access'));
   }
@@ -203,10 +214,15 @@ function _forum_access_preprocess_comment(&$variables) {
 
   $tid = $variables['node']->tid;
   $links = module_invoke_all('link', 'comment', $variables['comment'], 0);
+
+  if (!empty($user->_forum_access_moderator) && arg(0) == 'node' && arg(2) == NULL) {
+    _forum_access_disable_moderator();
+  }
+
   if (isset($links['comment_reply']) && (!preg_match('#<li class="[^"]*comment_reply[^"]*".*</li>#U', $variables['links']) || !forum_access_access($tid, 'create'))) {
     unset($links['comment_reply']);
   }
-  if (isset($links['comment_edit']) && !forum_access_access($tid, 'update')) {
+  if (isset($links['comment_edit']) && !forum_access_access($tid, 'update') && !comment_access('edit', $variables['comment'])) {
     unset($links['comment_edit']);
   }
   if (isset($links['comment_delete']) && !forum_access_access($tid, 'delete')) {
@@ -224,9 +240,4 @@ function _forum_access_preprocess_comment(&$variables) {
     );
   }
   $variables['links'] = theme('links', $links);
-  
-  if (!empty($user->_forum_access_moderator) && arg(0) == 'node' && arg(2) == NULL) {
-    // Remove the permissions again to avoid confusing devel_node_access.module.
-    _forum_access_disable_moderator();
-  }
 }

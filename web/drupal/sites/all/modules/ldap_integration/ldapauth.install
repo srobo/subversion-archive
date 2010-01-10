@@ -1,5 +1,5 @@
 <?php
-// $Id: ldapauth.install,v 1.11.2.9 2008/08/11 11:10:07 miglius Exp $
+// $Id: ldapauth.install,v 1.20 2009/10/27 14:29:16 miglius Exp $
 
 /**
  * @file
@@ -27,6 +27,7 @@ function ldapauth_uninstall() {
   variable_del('ldapauth_login_process');
   variable_del('ldapauth_login_conflict');
   variable_del('ldapauth_forget_passwords');
+  variable_del('ldapauth_sync_passwords');
   variable_del('ldapauth_disable_pass_change');
   variable_del('ldapauth_alter_email_field');
 }
@@ -42,26 +43,24 @@ function ldapauth_schema() {
     'fields' => array(
       'sid' => array(
         'type' => 'serial',
-        'not null' => TRUE,
         'size' => 'tiny',
+        'not null' => TRUE,
       ),
       'name' => array(
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
-        'default' => '',
       ),
       'status' => array(
         'type' => 'int',
+        'size' => 'tiny',
         'not null' => TRUE,
         'default' => 0,
-        'size' => 'tiny',
       ),
       'server' => array(
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
-        'default' => '',
       ),
       'port' => array(
         'type' => 'int',
@@ -70,56 +69,51 @@ function ldapauth_schema() {
       ),
       'tls' => array(
         'type' => 'int',
+        'size' => 'tiny',
         'not null' => TRUE,
         'default' => 0,
-        'size' => 'tiny',
       ),
       'encrypted' => array(
         'type' => 'int',
+        'size' => 'tiny',
         'not null' => TRUE,
         'default' => 0,
-        'size' => 'tiny',
       ),
       'basedn' => array(
         'type' => 'text',
-        'not null' => TRUE,
-        'size' => 'tiny',
       ),
       'user_attr' => array(
         'type' => 'varchar',
         'length' => 255,
-        'not null' => TRUE,
-        'default' => '',
       ),
       'mail_attr' => array(
         'type' => 'varchar',
         'length' => 255,
-        'not null' => TRUE,
-        'default' => '',
       ),
       'binddn' => array(
         'type' => 'varchar',
         'length' => 255,
-        'not null' => TRUE,
-        'default' => '',
       ),
       'bindpw' => array(
         'type' => 'varchar',
         'length' => 255,
-        'not null' => TRUE,
-        'default' => '',
       ),
-      'bindpw_clear' => array(
-        'type' => 'varchar',
-        'length' => 255,
+      'login_php' =>  array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'filter_php' =>  array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'weight' =>  array(
+        'type' => 'int',
         'not null' => TRUE,
-        'default' => '',
+        'default' => 0,
       ),
     ),
-    'indexes' => array(
-      'sid' => array('sid'),
-    ),
-    'primary key' => array('name')
+    'primary key' => array('sid'),
+    'unique keys' => array('name' => array('name')),
   );
   return $schema;
 }
@@ -142,6 +136,41 @@ function ldapauth_update_6000() {
       }
     }
   }
+  return $ret;
+}
+
+function ldapauth_update_6001() {
+  $ret = array();
+  db_add_field($ret, 'ldapauth', 'login_php', array(
+    'type' => 'text',
+    'not null' => FALSE,
+  ));
+  db_add_field($ret, 'ldapauth', 'filter_php', array(
+    'type' => 'text',
+    'not null' => FALSE,
+  ));
+  db_add_field($ret, 'ldapauth', 'weight', array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+  ));
+  return $ret;
+}
+
+function ldapauth_update_6002() {
+  $ret = array();
+  db_change_field($ret, 'ldapauth', 'basedn', 'basedn', array(
+    'type' => 'text',
+  ));
+  return $ret;
+}
+
+function ldapauth_update_6003() {
+  $ret = array();
+  db_drop_primary_key($ret, 'ldapauth');
+  db_change_field($ret, 'ldapauth', 'sid', 'sid', array('type' => 'serial', 'size' => 'tiny', 'not null' => TRUE), array('primary key' => array('sid')));
+  db_drop_index($ret, 'ldapauth', 'sid');
+  db_add_unique_key($ret, 'ldapauth', 'name', array('name'));
   return $ret;
 }
 

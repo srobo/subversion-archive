@@ -1,4 +1,4 @@
-$Id: README.txt,v 1.6.2.1 2008/08/08 12:42:44 miglius Exp $
+$Id: README.txt,v 1.7 2009/02/19 16:56:16 miglius Exp $
 
 Basic Info
 ==========

@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.admin.inc,v 1.20 2009/05/30 19:44:44 salvis Exp $
+// $Id: forum_access.admin.inc,v 1.33 2009/12/03 23:40:19 salvis Exp $
 
 /**
  * @file forum_access.admin.inc
@@ -14,9 +14,12 @@
  */
 function _forum_access_forum_form(&$form, &$form_state, $is_container) {
   $tid = (isset($form['tid']['#value']) ? $form['tid']['#value'] : NULL);
+  if (isset($tid) && !forum_access_access($tid, 'view')) {
+    return drupal_access_denied();  // Deny access if the user doesn't have View access.
+  }
 
   $roles = array();
-  $result = db_query("SELECT r.rid, r.name FROM {role} r ORDER BY r.name");
+  $result = db_query(db_rewrite_sql("SELECT r.rid, r.name FROM {role} r ORDER BY r.name", 'r', 'rid'));
   while ($obj = db_fetch_object($result)) {
     $roles[$obj->rid] = check_plain($obj->name);
   }
@@ -63,9 +66,9 @@ function _forum_access_forum_form(&$form, &$form_state, $is_container) {
     $form['forum_access']['permissions'][] = array(
       '#type' => 'markup',
       '#value' => '<div>'. t('Note that users need') .'<ul style="margin-top: 0"><li>'.
-                           t('the !access_content and !access_comments permissions <strong>AND <em>View</em></strong> to be able to see content at all,', $variables) .'</li><li>'.
+                           t('the !access_content and !access_comments permissions <strong>AND <em>View</em></strong> to be able to see this forum and its content at all,', $variables) .'</li><li>'.
                            t('the !create_forum_topics (and similar) permissions <strong>AND <em>Post</em></strong> to be able to create forum content, and', $variables) .'</li><li>'.
-                           t('the !post_comments and (probably) !post_comments_without_approval permission <strong>AND <em>Post</em></strong> to be able to post comments/replies;', $variables) .'</li><li>'.
+                           t('the !post_comments and (probably) !post_comments_without_approval permission <!TAG>AND <em>Post</em></!TAG> to be able to post comments/replies;', $variables + array('!TAG' => (variable_get('forum_access_D5_legacy_mode', FALSE) ? 'del title="'. t('Drupal 5 legacy mode') .'"' : 'strong'))) .'</li><li>'.
                            t('the !edit_own_forum_topics or !edit_any_forum_topics (and similar) permissions (<strong>OR <em>Edit</em></strong>) can be added if desired, <strong>plus</strong>', $variables) .'</li><li>'.
                            t('the !delete_own_forum_topics or !delete_any_forum_topics (and similar) permissions (<strong>OR <em>Delete</em></strong>) if desired;', $variables) .'</li><li>'.
                            t('the !administer_comments (global!) permission <strong>OR <em>Edit</em>/<em>Delete</em></strong> to be able to edit/delete comments;', $variables) .'</li><li>'.
@@ -281,6 +284,9 @@ function _forum_access_forum_form(&$form, &$form_state, $is_container) {
             '#value' => '<div>'. t("The priority of @Content_Access ($ca_priority) is higher than the priority of !Forum_Access ($fa_priority), which means the latter is <strong>completely disabled</strong> for the %content_type type! Unless you really know what you're doing, we recommend that you go to the !link page, change the priority (under %Advanced) to 0, and clear all checkboxes.", $variables) .'</div>',
           );
         }
+        $form['forum_access']['interference']['by_content_access'][] = array(
+          '#value' => '<div>'. t("Alternatively, you can give !Forum_Access priority over @Content_Access by either raising the priority of !Forum_Access in every forum above the priority of @Content_Access, or by lowering the priority of @Content_Access for the content types in question below the priority of !Forum_Access.", $variables) .'</div>',
+        );
       }
       else {
         $form['forum_access']['interference'][] = array(
@@ -336,7 +342,7 @@ function _forum_access_forum_form(&$form, &$form_state, $is_container) {
                               t("Additional insight can be gained from !dna_summary and by enabling the second !DNA block.", $variables) .'</li><li>'.
                               t("Click !Rebuild_permissions on !Post_settings_link and check DNA for changes.", $variables) .'</li><li>'.
                               t("Check the issues queues of !Forum_Access_ and !ACL_ for existing reports and possible solutions.", $variables) .'</li><li>'.
-                              t("If all of this hasn't helped, then pick ONE node that is misbehaving, create a new issue in the issues queue, describe the problem... <ul><li> what did you do? </li><li> what did you expect? </li><li> what happened instead? </li></ul> ... and <strong>include all the DNA records</strong> for that one node. <br /> Be sure to indicate paths (URLs) for every page and module that you mention.") .'</li></ol></div>',
+                              t("If all of this hasn't helped, then pick ONE node that is misbehaving, look at it using an account that can see the node (and that should NOT have access if that's your problem!), create a new issue in the issues queue, describe the problem... <ul><li> what did you do? </li><li> what did you expect? </li><li> what happened instead? </li></ul> ... and <strong>attach a screenshot of all the DNA records</strong> for that one node. <br /> Be sure to indicate paths (URLs) for every page and module that you mention.") .'</li></ol></div>',
     );
     $form['forum_access']['troubleshooting'][] = array(
       '#type' => 'item',
@@ -383,9 +389,9 @@ function _forum_access_forum_form(&$form, &$form_state, $is_container) {
         '#parents' => array('forum_access', 'update_choice'),
       ),
       '#attributes' => array('class' => 'forum-access-flowed'),
-    );  
+    );
   }
-  
+
   // Move some stuff down so our block goes in a nice place.
   $form['submit']['#weight'] = 10;
   $form['delete']['#weight'] = 10;
@@ -405,12 +411,12 @@ function _forum_access_forum_form_disable_checkboxes($element) {
     }
   }
   $tr = 't';
-  $moderator_rid = variable_get('forum_access_moderator_rid', NULL);
+  $moderator_rid = forum_access_query_moderator_rid();
 
   $element_children = element_children($element);
   foreach ($element_children as $rid) {
     if ($rid == $moderator_rid) {
-      $element[$rid]['#prefix'] = '<span title="'. t("This is the (temporary) @Forum_Moderator role; it has the '@administer_nodes' and '@administer_comments' permissions and is only used temporarily by @Forum_Access &mdash; do NOT give this role to any user!", array('@Forum_Moderator' => t('Forum Moderator'), '@administer_nodes' => $tr('administer nodes'), '@administer_comments' => $tr('administer comments'), '@Forum_Access' => 'Forum Access')) .'">';
+      $element[$rid]['#prefix'] = '<span title="'. t("This is the (temporary) @Forum_Moderator role; it has the '@administer_nodes' and '@administer_comments' permissions and is only used temporarily by @Forum_Access &mdash; do NOT give this role to any user!", array('@Forum_Moderator' => t('Forum Moderator'), '@administer_nodes' => $tr('administer nodes'), '@administer_comments' => $tr('administer comments'), '@Forum_Access' => 'Forum Access')) .'" class="forum-access-temporary-moderator">';
       $element[$rid]['#suffix'] = "</span>";
       $element[$rid]['#default_value'] = TRUE;
       $element[$rid]['#disabled'] = TRUE;
@@ -447,7 +453,7 @@ function _forum_access_forum_form_after_build_acl0($form, $form_state) {
       $f = acl_edit_form($acl_id, 'DUMMY');
       $form['user_list']['#value'] = $f['user_list']['#default_value'];
     }
-  } 
+  }
   return $form;
 }
 
@@ -496,7 +502,7 @@ function _forum_access_forum_form_after_build($form, &$form_state) {
 
 function _forum_access_form_validate($form, &$form_state) {
   global $user;
-  
+
   if ($user->uid == 1) {
     return;
   }
@@ -531,16 +537,18 @@ function _forum_access_form_submit($form, &$form_state) {
 
   // check for changes
   $is_changed = $is_new = strpos($_GET['q'], 'admin/content/forum/add/') === 0;
+  $form_initial_values = $form;  // avoid Coder warning
+  $form_initial_values = $form_initial_values['forum_access'];
   foreach (array('view', 'create', 'update', 'delete') as $grant_type) {
-    if (isset($form['forum_access'][$grant_type])) {
-      $defaults = $form['forum_access'][$grant_type]['#default_value'];
+    if (isset($form_initial_values[$grant_type])) {
+      $defaults = $form_initial_values[$grant_type]['#default_value'];
       $defaults = array_flip($defaults);
       foreach ($access[$grant_type] as $tid => $checked) {
-        $is_changed = $is_changed || (empty($form['forum_access'][$grant_type][$tid]['#disabled']) && !empty($checked) != isset($defaults[$tid]));
+        $is_changed = $is_changed || (empty($form_initial_values[$grant_type][$tid]['#disabled']) && !empty($checked) != isset($defaults[$tid]));
       }
     }
   }
-  if (!$is_changed && $access['acl']['user_list'] == $form['forum_access']['acl']['user_list']['#default_value'] && $access['interference']['advanced']['priority'] == $form['forum_access']['interference']['advanced']['priority']['#default_value']) {
+  if (!$is_changed && $access['acl']['user_list'] == $form_initial_values['acl']['user_list']['#default_value'] && $access['interference']['advanced']['priority'] == $form_initial_values['interference']['advanced']['priority']['#default_value']) {
     drupal_set_message(t('The content access permissions are unchanged.'));
     return;
   }
@@ -606,6 +614,8 @@ function _forum_access_form_submit($form, &$form_state) {
       batch_set($batch);
     }
   }
+
+  variable_del('forum_access_rids');  // clear cache
 }
 
 /**
@@ -653,6 +663,36 @@ function _forum_access_update_batch_finished($success, $results, $operations) {
   else {
     drupal_set_message(t('The content access permissions have not been properly updated.'), 'error');
   }
+}
+
+/**
+ * Add our settings to the forum administration settings page.
+ */
+function _forum_access_forum_admin_settings_form(&$form, &$form_state) {
+  $variables = array(
+    '!Forum_Access' => 'Forum Access',
+    '%View' => 'View',
+    '%Post' => 'Post',
+    '%post_comments' => 'post comments',
+  );
+  $form['forum_access'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Forum Access',
+    '#attributes' => array('id' => 'edit-forum-admin-settings-forum-access'),
+  );
+  $form['forum_access']['note'] = array(
+    '#type'          => 'item',
+    '#value'         => t('Note: All other !Forum_Access controls are on the administration pages of the individual forums.', $variables),
+  );
+  $form['forum_access']['forum_access_D5_legacy_mode'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Drupal 5 legacy mode', $variables),
+    '#default_value' => variable_get('forum_access_D5_legacy_mode', FALSE),
+    '#description'   => t('In Drupal 5, comment posting was not restricted by !Forum_Access; users with %View access (and the %post_comments permission) were always allowed to post forum comments. Starting with Drupal 6, posting comments is now restricted to users with %Post access. Turn this option on to revert to the old behavior. The default is OFF.', $variables),
+  );
+  $buttons = $form['buttons'];
+  unset($form['buttons']);
+  $form['buttons'] = $buttons;
 }
 
 /**
@@ -726,7 +766,7 @@ function _forum_access_user_admin_role_submit($form, &$form_state) {
     $rid = $form_state['values']['rid'];
     db_query("DELETE FROM {forum_access} WHERE rid = %d", $rid);
     db_query("DELETE FROM {node_access} WHERE gid = %d AND realm = 'forum_access'", $rid);
-    if ($rid === variable_get('forum_access_moderator_rid', NULL)) {
+    if ($rid === forum_access_query_moderator_rid()) {
       drupal_set_message(t('The role you have just deleted is required by !Forum_Access; it will be recreated automatically.', array('!Forum_Access' => 'Forum Access')), 'error');
     }
   }
@@ -739,11 +779,17 @@ function _forum_access_user_admin_role_submit($form, &$form_state) {
 function _forum_access_content_access_admin_form() {
   $tr = 't';
   $variables = array(
-    '!Forum_Access' => 'Forum Access', 
-    '!Forum_Access_link' => l('Forum Access', 'admin/content/forum')
+    '!Content_Access' => 'Content Access',
+    '!Forum_Access' => 'Forum Access',
+    '!Forum_Access_link' => l('Forum Access', 'admin/content/forum'),
+    '%anonymous_user' => $tr('anonymous user'),
+    '%authenticated_user' => $tr('authenticated user'),
+    '%Advanced' => $tr('Advanced'),
   );
   if (arg(3) == 'forum') {
-    drupal_set_message(t('Note: In Drupal, access can only be granted, not taken away. Whatever access you grant here will not be reflected in the !Forum_Access_link settings, but !Forum_Access can only allow <i>more</i> access, not less.', $variables), 'warning');
+    drupal_set_message(t('Note: In Drupal, access can only be granted, not taken away. Whatever access you grant here will not be reflected in the !Forum_Access_link settings, but !Forum_Access can only allow <i>more</i> access, not less.', $variables)
+      .'<br /><span class="error">'. t('Specifically, any rights granted to the %anonymous_user and/or the %authenticated_user will <b>override</b> the settings of !Forum_Access!', $variables) .'</span>'
+      .'<br />'. t('To avoid conflicts with !Forum_Access settings, you may want to lower the priority of !Content_Access (under %Advanced below) below the priority of !Forum_Access for the content types that you want to be controlled by !Forum_Access.', $variables), 'warning');
   }
   else {
     $vid = variable_get('forum_nav_vocabulary', '');
@@ -755,7 +801,67 @@ function _forum_access_content_access_admin_form() {
   }
 }
 
-/*
+/**
+ * Keep the user from changing the permissions of the Forum Moderator role.
+ *
+ * Disable the checkboxes in the Forum Moderators column on
+ * admin/user/permissions.
+ */
+function _forum_access_user_admin_perm_form(&$form, &$form_state) {
+  $moderator_rid = forum_access_query_moderator_rid();
+  if (isset($moderator_rid) && array_key_exists($moderator_rid, $form['role_names'])) {
+    drupal_set_message(t('The %role role is used internally by the @Forum_Access module and must not be changed!', array('%role' => $form['role_names'][$moderator_rid]['#value'], '@Forum_Access' => 'Forum Access')), 'warning', FALSE);
+    $form['checkboxes'][$moderator_rid]['#disabled'] = TRUE;
+  }
+  array_unshift($form['#submit'], '_forum_access_user_admin_perm_form_submit');
+}
+
+/**
+ * Submit handler for the admin/user/permissions form.
+ *
+ * Avoid losing the Forum Moderators record by removing the (empty!) FM values
+ * before the real handler gets them.
+ */
+function _forum_access_user_admin_perm_form_submit($form, &$form_state) {
+  $moderator_rid = forum_access_query_moderator_rid();
+  if (isset($moderator_rid)) {
+    unset($form_state['values'][$moderator_rid]);
+  }
+}
+
+/**
+ * Keep the user from bulk-assigning the Forum Moderator role.
+ *
+ * Remove the Forum Moderator role from the selection list on
+ * admin/user/user.
+ */
+function _forum_access_user_admin_account_form(&$form, &$form_state) {
+  $moderator_rid = forum_access_query_moderator_rid();
+  if (isset($moderator_rid)) {
+    unset($form['options']['operation']['#options'][t('Add a role to the selected users')]["add_role-$moderator_rid"]);
+  }
+}
+
+/**
+ * Keep the user from assigning the Forum Moderator role.
+ *
+ * Disable the Forum Moderator checkbox on user/UID/edit.
+ */
+function _forum_access_user_profile_form(&$form, &$form_state) {
+  //dpm($form, '_forum_access_user_profile_form()');
+  $moderator_rid = forum_access_query_moderator_rid();
+  if (isset($moderator_rid) && isset($form['account']['roles']['#options'][$moderator_rid])) {
+    $form['account']['roles'][$moderator_rid] = array(
+      '#type' => 'checkbox',
+      '#title' => $form['account']['roles']['#options'][$moderator_rid] .' ('. t('reserved for internal use by the @Forum_Access module', array('@Forum_Access' => 'Forum Access')) .')',
+      '#default_value' => in_array($moderator_rid, $form['account']['roles']['#default_value']),
+      '#disabled' => TRUE,
+    );
+    unset($form['account']['roles']['#options'][$moderator_rid]);
+  }
+}
+
+/**
  * Create the Forum Moderator role.
  */
 function _forum_access_create_moderator_rid($verbose = FALSE) {  
