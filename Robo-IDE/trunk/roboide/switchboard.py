@@ -184,12 +184,12 @@ class Switchboard(object):
 				row = r.getOne()
 			except:
 				# the record doesn't exist, return blank
-				return dict(feedurl="", valid=0, error=0)
+				return dict(feedurl="", valid=0, checked=0, error=0)
 		except:
 			# the record doesn't exist, return blank
-			return dict(feedurl="", valid=0, error=0)
+			return dict(feedurl="", valid=0, checked=0, error=0)
 		# success, return url
-		return dict(feedurl=row.url, valid=int(row.valid), error=0)
+		return dict(feedurl=row.url, valid=int(row.valid), checked=int(row.checked), error=0)
 
 	@expose("json")
 	@srusers.require(srusers.in_team())

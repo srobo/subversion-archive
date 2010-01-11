@@ -150,11 +150,15 @@ Switchboard.prototype._receiveGetFeed = function(nodes)
 		//update url on page
 		document.user_feed_form.user_feed_input.value = nodes.feedurl;
 	}
-	if(nodes.valid > 0)
+	if(nodes.checked > 0 && nodes.valid > 0)	//it's been checked and found valid
 	{
 		setStyle("user-feed-url", {'background-color': '#98FF4F'});
 	}
-	else
+	else if(nodes.checked > 0)	//if it's been found invalid: mark it red
+	{
+		setStyle("user-feed-url", {'background-color': '#FF6666'});
+	}
+	else	//if it's not been checked: leave it white
 	{
 		setStyle("user-feed-url", {'background-color': '#FFFFFF'});
 	}
