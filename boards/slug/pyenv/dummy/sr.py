@@ -1,7 +1,7 @@
 # mainly sourced from http://trac.srobo.org/wiki/RobotAPI
 
 # Constants
-motor = power_switch = timeout = GOLF = SQUIRREL = RED = BLUE = GREEN = YELLOW = VISION_HEIGHT = VISION_WIDTH = 13
+motor = power_switch = timeout = RED = BLUE = GREEN = VISION_HEIGHT = VISION_WIDTH = 13
 
 # Coroutinens
 
