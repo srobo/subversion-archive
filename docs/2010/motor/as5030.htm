@@ -13,7 +13,30 @@
 <p>The AS5030 IC is manufactured by Austria Microsystems, and the datasheet can be found on their <a href="http://www.austriamicrosystems.com/eng/content/download/11929/212604/file/AS5030_Datasheet_v1_04.pdf">website</a>.  You should consult this datasheet should you need information about the AS5030's performance.
 </p>
 
-<p>More documentation will appear here very soon.</p>
+<center>
+<a name="board-outline">
+<a href="images/as5030.png"><img src="images/as5030.png" style="width:400" border=0 /></a>
+<br />Figure 1 - Outline of AS5030 Rotary Sensor board
+</center>
 
+<h2>Connecting up the AS5030</h2>
+First, identify the connections illustrated in <a href="board-outline">Figure 1</a> with those on your AS5030 board. Then make the following connections, you will need to directly solder wire onto the pads on the AS5030. Remember to follow the wiring colour convention (Black = GND; Red = +Ve).
+<ol>
+<li> Connect the +12V connection on the AS5030 to the +12V connection to the motor board</li>
+<li> Connect the GND connection on the AS5030 to the GND connection on the motor board </li>
+<li> Connect the DIO connection on the AS5030 to one of the four feedback pins on the motor board. </li>
+<li> Connect the CLK connection on the AS5030 to one of the four feedback pins on the motor board.</li>
+</ol>
+
+<h2>Positioning the AS5030 and Magnet</h2>
+For information on orientating your AS5030 board and magnet, consult the datasheet (<a href="http://www.austriamicrosystems.com/eng/content/download/11929/212604/file/AS5030_Datasheet_v1_04.pdf">website</a>).
+
+<h2>AS5030 Board LEDS</h2>
+The AS5030 board has three LED outputs:
+<ol>
+<li><strong>Magnetic Field Strength:</strong> If this LED is lit, then the magnet is too far away from the AS5030 chip.</li>
+<li><strong>PWM:</strong> The intensity of this LED changes as the polarity of the magnet over the AS5030 chip is reversed.
+<li><strong>Power LED:</strong> This LED is on when power is connected to the board. If this light is not on, check that you have wired up the +12V and GND connections correctly.
+</ol>
 </html>
 
