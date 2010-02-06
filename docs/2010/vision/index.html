@@ -44,7 +44,7 @@ After the vision system returns, it's results are stored in the 'event' object. 
 <li>'mass' - number of pixels that make up this blob</li>
 <li>'colour' - colour of this blob</li>
 </ul>
-The x, y, width and height properties are all on a scale of 0 to 100. So, a blob in the centre of the image would have x and y locations of 50, 50. The mass is simply a count of how many pixels in the original image the blob took up, you can use this to compare the size of blobs. The colour is either RED, GREEN, or BLUE.
+The x, y, width and height properties are all on a scale of 0 to 100, with the origin being at the top left of the image. So, a blob in the centre of the image would have x and y locations of 50, 50. The mass is simply a count of how many pixels in the original image the blob took up, you can use this to compare the size of blobs. The colour is either RED, GREEN, or BLUE.
 <p/>
 Using this information you can extract the position of a blob in the image taken by the webcam, then estimate where that blob is in relation to your robot.
 <p/>
