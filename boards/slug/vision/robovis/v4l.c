@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,7 +6,13 @@
 
 #include <sys/fcntl.h>
 #include <sys/ioctl.h>
+#ifdef __NetBSD__
 #include <sys/videoio.h>
+#elif defined(__linux__)
+#include <linux/videodev2.h>
+#else
+#error What OS is this? Where am I? Are those my feet?
+#endif
 #include <sys/mman.h>
 
 #define DEBUG
