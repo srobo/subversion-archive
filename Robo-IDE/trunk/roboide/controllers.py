@@ -822,7 +822,7 @@ class Root(controllers.RootController):
         shutil.copy( config.get("checker.file"), td )
 
         # Run pychecker
-        p = subprocess.Popen( ["pychecker", "-e", "Error", file_path ],
+        p = subprocess.Popen( ["pylint", "-e", "-f", "parseable", "--reports=n", file_path ],
                               cwd = td,
                               stdout = subprocess.PIPE,
                               stderr = subprocess.PIPE )
