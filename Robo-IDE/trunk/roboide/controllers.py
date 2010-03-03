@@ -675,6 +675,9 @@ class Root(controllers.RootController):
     def calendar(self, mnth, yr, file, team):
         #returns data for calendar function
 
+        if file == '/':	#no project selected
+        	return dict( path=file, history=[] )
+
         month = int(mnth)+1
         year = int(yr)
         b = open_branch(team, file)
