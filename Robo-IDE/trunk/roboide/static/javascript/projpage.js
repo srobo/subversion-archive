@@ -233,7 +233,9 @@ ProjPage.prototype.clickExportProject = function() {
 ProjPage.prototype._exportProjectCheckResult = function(result, num_errors) {
 	if(result == 'pass') {
 		this._exportProject();
-	} else if(result == 'codefail') {	//bad code
+		return;
+	}
+	if(result == 'codefail') {	//bad code
 		var message = num_errors+" errors found";
 	} else if(result == 'checkfail') {	//the check failed
 		var message = "Failed to check code";
