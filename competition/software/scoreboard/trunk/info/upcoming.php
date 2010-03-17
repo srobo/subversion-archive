@@ -1,6 +1,9 @@
 <?
 include("pass.php");
 
+// Set to number of minutes to add on to upcoming events
+$offset = 0;
+
 $db = @mysql_connect( $mysql_details["host"],
 		      $mysql_details["user"],
 		      $mysql_details["password"] );
@@ -37,13 +40,13 @@ foreach( $matches as $match ) {
 
 $matches = array();
 
-$q = "SELECT * FROM matches WHERE time > " . time() . " ORDER BY time ASC LIMIT 6 ;";
+$q = "SELECT * FROM matches WHERE time > " . (time()+($offset*60)) . " ORDER BY time ASC LIMIT 6 ;";
 $res = mysql_query( $q, $db );
 if( !$res ) die( "Couldn't list matches" );
 
 while( $match = mysql_fetch_assoc($res) ) {
   $m = array( "number" => $match["number"],
-	      "time" => date( "H:i", $match["time"] ),
+	      "time" => date( "H:i", $match["time"]+($offset*60)),
 	      "teams" => array( $match["red"], $match["green"], $match["blue"], $match["yellow"] ),
 		  "matchType" => $match["matchType"] );
   array_push( $matches, $m );  
