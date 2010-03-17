@@ -4,6 +4,42 @@
 #include "timed.h"
 #include "led.h"
 
+static const xb_alive_t safe[] =
+{
+	{ 0x7E, XB_NO_CHKSUM },
+
+	/* Length: */
+	{ 0x00, XB_NO_CHKSUM },
+	{ 0x0D, XB_NO_CHKSUM },
+
+	/** Frame data **/
+	/* API code for 64-bit frame received */
+	{ 0x80, 0 },
+
+	/* Address */
+	{ 0x00, XB_DONT_CARE },
+	{ 0x00, XB_DONT_CARE },
+	{ 0x00, XB_DONT_CARE },
+	{ 0x00, XB_DONT_CARE },
+	{ 0x00, XB_DONT_CARE },
+	{ 0x00, XB_DONT_CARE },
+	{ 0x00, XB_DONT_CARE },
+	{ 0x00, XB_DONT_CARE },
+
+	/* RSSI */
+	{ 0x00, XB_DONT_CARE },
+	/* Options */
+	{ 0x00, XB_DONT_CARE },
+
+	/* Frame data */
+	{ 0x01, 0 },
+	{ 0x02, 0 },
+
+	/* Checksum not included here -- do that in code */
+
+	{ 0, XB_END }
+};
+
 interrupt (USART1TX_VECTOR) uart_tx_isr(void)
 {
 	U1TXBUF = 0xAA;		/* transmit to calibrate on oscope */
