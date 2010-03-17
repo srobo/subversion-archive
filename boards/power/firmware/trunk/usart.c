@@ -4,6 +4,8 @@
 #include "timed.h"
 #include "led.h"
 
+static void rx_byte(uint8_t rxbuf);
+
 static const xb_alive_t safe[] =
 {
 	{ 0x7E, XB_NO_CHKSUM },
@@ -75,7 +77,7 @@ void usart_init(void) {
 	IE2 |= UTXIE1|URXIE1;
 }
 
-void rx_byte( uint8_t b )
+static void rx_byte( uint8_t b )
 {
 	static uint8_t pos = 0;
 	static uint8_t checksum = 0;

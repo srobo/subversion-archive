@@ -20,6 +20,4 @@ typedef struct {
 
 void usart_init(void);
 
-void rx_byte(uint8_t rxbuf);
-
 #endif	/* __USART_H */
