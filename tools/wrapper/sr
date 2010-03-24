@@ -13,7 +13,17 @@ Where SCRIPT is the name of an executable file with the path
 
 This script *must* be checked out along with the rest of /tools.
 See http://trac.srobo.org/wiki/DevScripts for more details."""
-import sys, os, git_repos, subprocess, sr_commands
+import sys, os
+
+print """sr tools have moved to git.
+
+Please remove your existing installation, and then check out from git.
+The new repository can be found here:
+
+	https://www.studentrobotics.org/cgit/tools.git/"""
+sys.exit(1)
+
+import git_repos, subprocess, sr_commands
 
 TOOLS = os.path.join( sys.path[0], "../" )
 
