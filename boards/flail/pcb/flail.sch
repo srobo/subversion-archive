@@ -7,9 +7,7 @@ device=RESISTOR
 T 3500 5500 5 10 1 1 0 0 1
 refdes=RTSET
 T 3500 5000 5 10 1 1 0 0 1
-value=82k
-T 3300 5200 5 10 0 1 0 0 1
-footprint=0603
+value=sr-r-82k-1206
 T 3300 5200 5 10 0 1 0 0 1
 footprint=1206
 }
@@ -19,8 +17,8 @@ T 8000 4000 5 10 0 0 270 0 1
 device=RESISTOR
 T 7900 3900 5 10 1 1 0 0 1
 refdes=R2
-T 7400 3800 5 10 1 1 0 0 1
-value=2k
+T 7900 3600 5 10 1 1 0 0 1
+value=sr-r-2k
 }
 C 7200 6500 1 90 0 capacitor-1.sym
 {
@@ -30,8 +28,8 @@ T 6700 7000 5 10 1 1 180 0 1
 refdes=CBOOT
 T 6300 6700 5 10 0 0 90 0 1
 symversion=0.1
-T 6400 7100 5 10 1 1 0 0 1
-value=10nF
+T 6200 7100 5 10 1 1 0 0 1
+value=sr-c-10n
 }
 C 9500 7300 1 270 0 capacitor-1.sym
 {
@@ -42,20 +40,20 @@ refdes=CIN2
 T 10400 7100 5 10 0 0 270 0 1
 symversion=0.1
 T 9700 6600 5 10 1 1 0 0 1
-value=100nF
-T 9700 7100 5 10 1 1 0 0 1
+value=sr-c-100n
+T 9700 7100 5 10 0 1 0 0 1
 footprint=0603
 }
 C 8700 7300 1 270 0 capacitor-2.sym
 {
 T 9400 7100 5 10 0 0 270 0 1
 device=POLARIZED_CAPACITOR
-T 9100 6800 5 10 1 1 0 0 1
+T 8200 6800 5 10 1 1 0 0 1
 refdes=CIN1
 T 9600 7100 5 10 0 0 270 0 1
 symversion=0.1
-T 8300 6900 5 10 1 1 0 0 1
-value=82uF
+T 8200 6500 5 10 1 1 0 0 1
+value=sr-c-82u
 T 8700 7300 5 10 0 0 0 0 1
 footprint=RADIAL_CAN 200
 }
@@ -67,8 +65,8 @@ T 9300 4000 5 10 1 1 0 0 1
 refdes=COUT
 T 9800 4300 5 10 0 0 270 0 1
 symversion=0.1
-T 8500 4200 5 10 1 1 0 0 1
-value=330uF
+T 9000 3800 5 10 1 1 0 0 1
+value=sr-c-330u
 T 8900 4500 5 10 0 0 0 0 1
 footprint=RADIAL_CAN 200
 }
@@ -81,7 +79,7 @@ refdes=L1
 T 7800 6400 5 10 0 0 0 0 1
 symversion=0.1
 T 8000 5900 5 10 1 1 0 0 1
-value=33uH
+value=sr-l-33u
 T 7600 5700 5 10 0 0 0 0 1
 footprint=AXIAL_LAY 300
 }
@@ -94,7 +92,7 @@ refdes=D1
 T 5968 3641 5 10 0 1 90 0 1
 footprint=DIODE_LAY_500
 T 5500 3400 5 10 1 1 0 0 1
-value=1N5820
+value=sr-d-1N5820
 }
 C 7600 5500 1 270 0 resistor-variable-1.sym
 {
@@ -103,7 +101,7 @@ device=VARIABLE_RESISTOR
 T 8000 4700 5 10 1 1 0 0 1
 refdes=R1
 T 8000 4500 5 10 1 1 0 0 1
-value=0-20k
+value=sr-pot-20k
 }
 C 4800 2700 1 0 0 ground.sym
 N 7700 3000 7700 3400 4
@@ -136,7 +134,7 @@ N 7000 7600 7000 7400 4
 N 9500 7300 9500 7700 4
 T 9700 7700 9 10 1 0 0 0 1
 Vin : 12V
-T 11000 4700 9 10 1 0 0 0 1
+T 12600 3400 9 10 1 0 0 0 1
 Vout
 C 4600 4400 1 0 0 A8498.sym
 {
@@ -146,6 +144,8 @@ T 5000 6050 5 10 0 0 0 0 1
 device=A8498
 T 5000 6250 5 10 0 0 0 0 1
 footprint=A8498.fp
+T 5000 4300 5 10 1 1 0 0 1
+value=sr-ic-a8498
 }
 N 3400 4900 3400 3000 4
 N 6700 6100 7300 6100 4
@@ -157,15 +157,15 @@ T 10900 6000 5 10 0 0 270 0 1
 device=RESISTOR
 T 10700 5800 5 10 1 1 0 0 1
 refdes=RPWR1
-T 10300 5800 5 10 1 1 0 0 1
-value=2k
+T 10700 5600 5 10 1 1 0 0 1
+value=sr-r-2k
 T 10500 6300 5 10 0 1 0 0 1
 footprint=0603
 }
 C 10500 4700 1 270 0 led-2.sym
 {
-T 10700 3800 5 10 1 1 0 0 1
-refdes=D2
+T 10000 3900 5 10 1 1 0 0 1
+refdes=sr-led-green-plcc2
 T 11100 4600 5 10 0 0 270 0 1
 device=LED
 T 10500 4700 5 10 0 0 0 0 1
@@ -186,6 +186,8 @@ T 13800 6600 5 10 0 0 180 0 1
 device=CONNECTOR_2
 T 14000 6800 5 10 1 1 180 0 1
 refdes=CONN_In
+T 12700 7700 5 10 1 1 0 0 1
+value=sr-cn-camcon2w
 }
 C 14000 3500 1 180 0 connector2-1.sym
 {
@@ -195,6 +197,8 @@ T 14000 2700 5 10 1 1 180 0 1
 refdes=CONN_Out
 T 14000 3500 5 10 0 0 0 0 1
 footprint=CONNECTOR 1 2
+T 12700 3600 5 10 1 1 0 0 1
+value=sr-cn-camcon2w
 }
 C 11200 4500 1 270 0 resistor-1.sym
 {
@@ -203,7 +207,7 @@ device=RESISTOR
 T 11400 4200 5 10 1 1 0 0 1
 refdes=R_PWR2
 T 11500 3900 5 10 1 1 0 0 1
-value=1k
+value=sr-r-1k
 T 11200 4500 5 10 0 1 0 0 1
 footprint=0603
 }
