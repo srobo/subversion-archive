@@ -55,7 +55,7 @@ symversion=0.1
 T 8200 6500 5 10 1 1 0 0 1
 value=sr-c-82u
 T 8700 7300 5 10 0 0 0 0 1
-footprint=RADIAL_CAN 200
+footprint=RADIAL_CAN 100
 }
 C 8900 4500 1 270 0 capacitor-2.sym
 {
@@ -68,7 +68,7 @@ symversion=0.1
 T 9000 3800 5 10 1 1 0 0 1
 value=sr-c-330u
 T 8900 4500 5 10 0 0 0 0 1
-footprint=RADIAL_CAN 200
+footprint=RADIAL_CAN 100
 }
 C 7600 5700 1 0 0 inductor-1.sym
 {
@@ -157,9 +157,9 @@ device=RESISTOR
 T 10700 5800 5 10 1 1 0 0 1
 refdes=RPWR
 T 10700 5600 5 10 1 1 0 0 1
-value=sr-r-1k
+value=sr-r-1k-1206
 T 10500 6300 5 10 0 1 0 0 1
-footprint=0603
+footprint=1206
 }
 C 10500 4500 1 270 0 led-2.sym
 {
@@ -168,7 +168,7 @@ refdes=sr-led-green-plcc2
 T 11100 4400 5 10 0 0 270 0 1
 device=LED
 T 10500 4500 5 10 0 0 0 0 1
-footprint=0603
+footprint=plcc
 }
 N 10600 5400 10600 4500 4
 N 10600 3600 10600 3000 4
