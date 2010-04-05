@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.module,v 1.53 2009/11/29 18:21:49 salvis Exp $
+// $Id: forum_access.module,v 1.58 2010/01/31 23:29:01 salvis Exp $
 
 /**
  * @file forum_access.module
@@ -69,7 +69,7 @@ function forum_access_init() {
   switch (arg(0)) {
     case 'forum':
       if (is_numeric($tid = arg(1))) {
-        if (!forum_access_access($tid, 'view')) {
+        if (!forum_access_access($tid, 'view', NULL, FALSE)) {
           drupal_access_denied();
           module_invoke_all('exit');
           exit;
@@ -122,11 +122,12 @@ function forum_access_init() {
     $node = node_load($nid);
     if ($tid = _forum_access_get_tid($node)) {
       foreach ($access as $a) {
-        if ($level = forum_access_access($tid, $a)) {
-          module_load_include('node.inc', 'forum_access');
-          $user->_forum_access_moderator = $level;
+        if (forum_access_access($tid, $a) > 1) {
           if (arg(0) == 'comment' || arg(0) == 'node' && arg(2) == 'edit') {
+            $user->_forum_access_moderator = TRUE;
+            module_load_include('node.inc', 'forum_access');
             _forum_access_enable_moderator();
+            break;
           }
         }
       }
@@ -197,22 +198,34 @@ function forum_access_form_alter(&$form, &$form_state, $form_id) {
 function forum_access_db_rewrite_sql($query, $primary_table, $primary_field, $args) {
   global $user;
   //dpm($query, "hook_db_rewrite_sql($primary_table.$primary_field)");
-  if ($primary_field == 'tid' && $user->uid != 1 && !(strstr($_GET['q'], 'admin/content/forum') !== FALSE && user_access('administer forums'))) {
-    $roles = _forum_access_get_roles($user);
-    $sql['join'] = "LEFT JOIN {forum_access} fa ON $primary_table.tid = fa.tid
-                    LEFT JOIN {acl} acl_fa ON acl_fa.name = ". ($GLOBALS['db_type'] == 'pgsql' ? 'CAST(' : '')
-                                                          ."$primary_table.tid". ($GLOBALS['db_type'] == 'pgsql' ? ' AS VARCHAR)' : '')
-                                                                            ." AND acl_fa.module = 'forum_access'
-                    LEFT JOIN {acl_user} aclu_fa ON aclu_fa.acl_id = acl_fa.acl_id AND aclu_fa.uid = $user->uid";
-    $sql['where'] = "(fa.grant_view >= 1 AND fa.rid IN ($roles)) OR fa.tid IS NULL OR aclu_fa.uid = $user->uid";
-    $sql['distinct'] = 1;
-  }
-  elseif ($primary_field == 'rid' && strpos($query, 'FROM {role}') !== FALSE && strpos($_GET['q'], 'admin/content/forum') === FALSE) {
-    $moderator_rid = forum_access_query_moderator_rid();
-    $sql['where'] = "$primary_table.rid <> $moderator_rid";
-  }
-  else {
-    return;
+  $sql = NULL;
+  switch ($primary_field) {
+    case 'tid':
+      if ($user->uid == 1
+        || user_access('administer nodes') && arg(0) != 'forum' && $_GET['q'] != 'node/add/forum'
+        || user_access('administer forums') && $_GET['q'] == 'admin/content/forum') {
+        break;
+      }
+      $roles = _forum_access_get_roles($user);
+      $sql['join'] = "LEFT JOIN {forum_access} fa ON $primary_table.tid = fa.tid
+                      LEFT JOIN {acl} acl_fa ON acl_fa.name = ". ($GLOBALS['db_type'] == 'pgsql' ? 'CAST(' : '')
+                                                            ."$primary_table.tid". ($GLOBALS['db_type'] == 'pgsql' ? ' AS VARCHAR)' : '')
+                                                                              ." AND acl_fa.module = 'forum_access'
+                      LEFT JOIN {acl_user} aclu_fa ON aclu_fa.acl_id = acl_fa.acl_id AND aclu_fa.uid = $user->uid";
+      $sql['where'] = "(fa.grant_view >= 1 AND fa.rid IN ($roles)) OR fa.tid IS NULL OR aclu_fa.uid = $user->uid";
+      $sql['distinct'] = 1;
+      break;
+
+    case 'rid':
+      if (strpos($query, 'FROM {role}') === FALSE
+        || strpos($_GET['q'] .'/', 'admin/content/forum/') === 0) {
+        break;
+      }
+      $moderator_rid = forum_access_query_moderator_rid();
+      if (!empty($moderator_rid)) {
+        $sql['where'] = "$primary_table.rid <> $moderator_rid";
+      }
+      break;
   }
   //dpm($sql, "rewritten:");
   return $sql;
@@ -390,15 +403,14 @@ function forum_access_disable() {
  * $tid -- the tid of the forum
  * $type -- view, update, delete or create
  * $account -- the account to test for. If NULL use current user.
+ * $administer_nodes_sees_everything -- pass FALSE to ignore the 'administer nodes' permission
  * 
  * Return:
  *   FALSE - access not granted
  *   1     - access granted
  *   2     - access granted for forum moderator
- *   3     - user has 'administer nodes' (this occurs also when in
- *           forum moderator mode!)
  */
-function forum_access_access($tid, $type, $account = NULL) {
+function forum_access_access($tid, $type, $account = NULL, $administer_nodes_sees_everything = TRUE) {
   static $cache = array();
   if (!$account) {
     global $user;
@@ -406,8 +418,8 @@ function forum_access_access($tid, $type, $account = NULL) {
   }
 
   if ($account->uid == 1 ||
-      user_access('administer nodes') && array_search($type, array('view', 'update', 'delete')) !== FALSE) {
-    return 3;
+      $administer_nodes_sees_everything && user_access('administer nodes', $account) && array_search($type, array('view', 'update', 'delete')) !== FALSE) {
+    return 1;
   }
 
   if (!isset($cache[$account->uid][$tid][$type])) {
@@ -466,15 +478,18 @@ function forum_access_menu_alter(&$items) {
       drupal_set_message(t('Unexpected access specification for the %forum menu path; @Forum_Access cannot control its access.', array('%forum' => 'forum', '@Forum_Access' => 'Forum Access')), 'error');
       return;
     }
-    $items['forum']['access callback'] = '_forum_access_access_any_forum';
+    $items['forum']['access callback'] = '_forum_access_access_a_forum';
     unset($items['forum']['access arguments']);
   }
 }
 
 /**
  * Access callback for the 'forum' menu item.
+ *
+ * Returns TRUE if the user has at least one role that can access
+ * at least one forum.
  */
-function _forum_access_access_any_forum() {
+function _forum_access_access_a_forum() {
   global $user;
   static $return;
 
@@ -487,6 +502,7 @@ function _forum_access_access_any_forum() {
     }
     $rids = variable_get('forum_access_rids', NULL);
     if (!isset($rids)) {
+      $rids = array();
       $result = db_query("SELECT fa.rid FROM {forum_access} fa WHERE fa.grant_view > 0 GROUP BY fa.rid");
       while ($role = db_fetch_object($result)) {
         $rids[] = $role->rid;

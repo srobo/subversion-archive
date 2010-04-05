@@ -4,9 +4,9 @@ package = Access control
 core = 6.x
 
 
-; Information added by drupal.org packaging script on 2009-06-03
-version = "6.x-1.0"
+; Information added by drupal.org packaging script on 2010-01-25
+version = "6.x-1.2"
 core = "6.x"
 project = "acl"
-datestamp = "1244038804"
+datestamp = "1264384503"
 

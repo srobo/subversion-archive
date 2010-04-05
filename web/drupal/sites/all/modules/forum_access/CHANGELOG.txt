@@ -4,10 +4,20 @@ CHANGELOG for Forum Access for Drupal 6
 forum_access 6.x-1.x-dev:
 
 
+forum_access 6.x-1.3 (2010-02-17):
+  Bugs fixed:
+    - #699918: Give forum moderators access to the File attachments fieldset.
+    - Another 'administer nodes' fix.
+    - Clarify hook_db_rewrite_sql() code.
+    - #695690: Fix handling of 'administer nodes' permission.
+    - #689572: Fix user_access() call without $account parameter.
+    - #662306: Fix possible uninitialized variable.
+    - #652226: Fix possible interference with the Image Gallery Access module.
+
+
 forum_access 6.x-1.2 (2009-12-04):
   Bugs fixed:
     - #649854: Moderator role gets deleted from {permission} during the submission of admin/user/permissions.
-
 
 forum_access 6.x-1.1 (2009-12-02):
   Enhancements:

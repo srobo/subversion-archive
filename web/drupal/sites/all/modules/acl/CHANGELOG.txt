@@ -3,6 +3,18 @@ CHANGELOG for ACL for Drupal 6
 acl 6.x-1.x-dev:
 
 
+acl 6.x-1.2 (2010-01-25):
+  Bugs fixed:
+    - #694236: Suppress a harmless but irritating warning from acl_update_6001().
+
+
+acl 6.x-1.1 (2010-01-24):
+  Bugs fixed:
+    - #680324: Add missing index if upgraded from D5.
+  Enhancements:
+    - Clean up some minor coder issues (no functional changes).
+
+
 acl 6.x-1.0 (2009-06-03):
   Enhancements:
     - #243073: Update Swedish translation and add .pot file.

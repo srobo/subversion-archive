@@ -1,5 +1,5 @@
 <?php
-// $Id: forum_access.admin.inc,v 1.33 2009/12/03 23:40:19 salvis Exp $
+// $Id: forum_access.admin.inc,v 1.34 2010/01/29 01:30:27 salvis Exp $
 
 /**
  * @file forum_access.admin.inc
@@ -14,7 +14,7 @@
  */
 function _forum_access_forum_form(&$form, &$form_state, $is_container) {
   $tid = (isset($form['tid']['#value']) ? $form['tid']['#value'] : NULL);
-  if (isset($tid) && !forum_access_access($tid, 'view')) {
+  if (isset($tid) && !forum_access_access($tid, 'view', NULL, FALSE)) {
     return drupal_access_denied();  // Deny access if the user doesn't have View access.
   }
 
@@ -743,8 +743,11 @@ function _forum_access_forum_overview(&$form, &$form_state) {
   }
   foreach ($form as $key => $value) {
     if (preg_match('/^tid:(.*):0$/', $key, $matches)) {
-      if (!forum_access_access($matches[1], 'view')) {
-        unset($form[$key]['edit']['#value']);
+      if (!forum_access_access($matches[1], 'view', NULL, FALSE)) {
+        $form[$key]['edit']['#access'] = FALSE;
+        if (preg_match('|<a [^>]*>([^<]*)</a>|', $form[$key]['view']['#value'], $matches)) {
+          $form[$key]['view']['#value'] = $matches[1];
+        }
       }
     }
   }
