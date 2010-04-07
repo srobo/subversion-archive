@@ -122,11 +122,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.28"
-     inkscape:cx="230.6182"
-     inkscape:cy="571.05428"
+     inkscape:zoom="0.90509668"
+     inkscape:cx="297.53771"
+     inkscape:cy="299.19627"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer8"
+     inkscape:current-layer="g3944"
      showgrid="true"
      units="mm"
      inkscape:window-width="1280"
@@ -447,7 +447,7 @@
          id="rect3956"
          style="fill:#ff000a;fill-opacity:1;stroke:none" />
       <rect
-         style="fill:#ff000a;fill-opacity:1;stroke:none"
+         style="fill:#ff4e55;fill-opacity:1;stroke:none"
          id="rect3958"
          width="58.464546"
          height="93.897667"
@@ -644,21 +644,38 @@
            style="fill:#ffffff;fill-opacity:1;stroke:none" />
         <text
            id="text3950"
-           y="716.72607"
-           x="116.05561"
+           y="706.09613"
+           x="139.0871"
            style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
            xml:space="preserve"><tspan
-             y="716.72607"
-             x="116.05561"
+             y="706.09613"
+             x="139.0871"
              id="tspan3952"
              sodipodi:role="line">Emergency Exit</tspan></text>
         <rect
-           y="704.32452"
-           x="94.795769"
+           y="691.92291"
+           x="96.567413"
            height="17.716526"
-           width="17.716534"
+           width="35.433067"
            id="rect3954"
            style="fill:#ff000a;fill-opacity:1;stroke:none" />
+        <rect
+           style="fill:#ff4e55;fill-opacity:1;stroke:none"
+           id="rect5981"
+           width="35.433067"
+           height="17.716526"
+           x="96.567413"
+           y="716.72607" />
+        <text
+           xml:space="preserve"
+           style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+           x="139.0871"
+           y="729.12769"
+           id="text5983"><tspan
+             sodipodi:role="line"
+             id="tspan5985"
+             x="139.0871"
+             y="729.12769">Main Entrance</tspan></text>
       </g>
       <g
          id="g4144"
@@ -776,6 +793,52 @@
            height="17.716511"
            x="305.62253"
            y="708.66138" />
+      </g>
+      <g
+         id="g5965"
+         transform="translate(190.44044,70.866149)">
+        <rect
+           ry="8.9236736"
+           y="690.94482"
+           x="287.90601"
+           height="53.149605"
+           width="177.16533"
+           id="rect5967"
+           style="fill:#ffffff;fill-opacity:1;stroke:none" />
+        <text
+           xml:space="preserve"
+           style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+           x="351.68555"
+           y="710.43298"
+           id="text5969"><tspan
+             sodipodi:role="line"
+             id="tspan5971"
+             x="351.68555"
+             y="710.43298">Arena</tspan></text>
+        <rect
+           style="fill:#50ff52;fill-opacity:1;stroke:none;display:inline"
+           id="rect5973"
+           width="35.433075"
+           height="17.716522"
+           x="305.62253"
+           y="696.25977" />
+        <rect
+           y="721.06293"
+           x="305.62253"
+           height="17.716522"
+           width="35.433075"
+           id="rect5975"
+           style="fill:#bcffc1;fill-opacity:1;stroke:none;display:inline" />
+        <text
+           id="text5977"
+           y="735.23615"
+           x="351.68555"
+           style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+           xml:space="preserve"><tspan
+             y="735.23615"
+             x="351.68555"
+             id="tspan5979"
+             sodipodi:role="line">Spectator Area</tspan></text>
       </g>
     </g>
   </g>
