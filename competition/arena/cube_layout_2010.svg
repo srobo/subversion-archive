@@ -7,6 +7,7 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="708.66138"
@@ -17,6 +18,27 @@
    sodipodi:docname="cube_layout_2010.svg">
   <defs
      id="defs3042">
+    <pattern
+       inkscape:collect="always"
+       xlink:href="#pattern5890"
+       id="pattern5942"
+       patternTransform="matrix(2.3573474,2.5136144,-7.0720402,6.6323841,323.33907,673.22826)" />
+    <pattern
+       inkscape:stockid="Stripes 1:2"
+       id="Strips1_2"
+       patternTransform="matrix(4.0185406,4.3274001,-12.982201,12.055623,372.0472,184.24199)"
+       height="1"
+       width="3"
+       patternUnits="userSpaceOnUse"
+       inkscape:collect="always">
+      <rect
+         id="rect5140"
+         height="2"
+         width="1"
+         y="-0.5"
+         x="0"
+         style="fill:#ff0000;stroke:none" />
+    </pattern>
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
        inkscape:vp_x="0 : 526.18109 : 1"
@@ -59,6 +81,39 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <pattern
+       patternTransform="matrix(2.3573474,2.5136144,-7.0720402,6.6323841,323.33907,673.22829)"
+       id="pattern5890"
+       xlink:href="#pattern5872-5"
+       inkscape:collect="always" />
+    <inkscape:perspective
+       id="perspective5882"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <pattern
+       inkscape:collect="always"
+       xlink:href="#Strips1_2-6"
+       id="pattern5872-5"
+       patternTransform="matrix(4.0185406,4.3274001,-12.982201,12.055623,552.94045,896.6928)" />
+    <pattern
+       inkscape:stockid="Stripes 1:2"
+       id="Strips1_2-6"
+       patternTransform="matrix(4.0185406,4.3274001,-12.982201,12.055623,372.0472,184.24199)"
+       height="1"
+       width="3"
+       patternUnits="userSpaceOnUse"
+       inkscape:collect="always">
+      <rect
+         id="rect5140-9"
+         height="2"
+         width="1"
+         y="-0.5"
+         x="0"
+         style="fill:#ff0000;stroke:none" />
+    </pattern>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -68,10 +123,10 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.28"
-     inkscape:cx="329.10414"
-     inkscape:cy="677.22289"
+     inkscape:cx="230.6182"
+     inkscape:cy="571.05428"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer8"
      showgrid="true"
      units="mm"
      inkscape:window-width="1280"
@@ -419,18 +474,18 @@
          x="212.59843"
          y="308.25778" />
       <rect
-         style="fill:#ffef00;fill-opacity:1;stroke:none"
-         id="rect4361"
-         width="70.866142"
-         height="35.433071"
-         x="70.866142"
-         y="265.74799"
-         transform="translate(0,166.52555)" />
+         style="fill:url(#Strips1_2);fill-opacity:1;stroke:#ff0000;stroke-width:3.54330707;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="rect4405"
+         width="340.34204"
+         height="74.655518"
+         x="191.15399"
+         y="233.60225" />
     </g>
     <g
        inkscape:groupmode="layer"
        id="layer8"
-       inkscape:label="Blueshirts">
+       inkscape:label="Blueshirts"
+       style="display:inline">
       <rect
          style="fill:#fffc69;fill-opacity:1;stroke:none;display:inline"
          id="rect4175"
@@ -439,6 +494,13 @@
          x="65.551178"
          y="232.07668"
          ry="0" />
+      <rect
+         style="fill:#ffef00;fill-opacity:1;stroke:none;display:inline"
+         id="rect4361"
+         width="70.866142"
+         height="35.433071"
+         x="70.866142"
+         y="591.72235" />
     </g>
     <g
        inkscape:groupmode="layer"
@@ -524,163 +586,197 @@
      id="layer4"
      inkscape:label="Key"
      style="display:inline">
-    <rect
-       style="fill:#dcdcdc;fill-opacity:1;stroke:none"
-       id="rect3871"
-       width="566.92914"
-       height="159.44885"
-       x="70.866142"
-       y="673.22827"
-       ry="15.944908" />
     <g
-       id="g3888"
-       transform="translate(2.6451772,1.6340121e-5)">
+       id="g5909"
+       transform="translate(-17.716525,0)">
       <rect
-         ry="8.9236736"
-         y="690.94482"
-         x="85.9375"
-         height="53.149605"
-         width="177.16536"
-         id="rect3876"
-         style="fill:#ffffff;fill-opacity:1;stroke:none" />
-      <path
-         transform="matrix(0,-1,-1,0,150.14758,968.30088)"
-         sodipodi:end="3.1415927"
-         sodipodi:start="0"
-         d="m 263.28125,42.076717 a 12.5,12.5 0 1 1 -25,0 l 12.5,0 z"
-         sodipodi:ry="12.5"
-         sodipodi:rx="12.5"
-         sodipodi:cy="42.076717"
-         sodipodi:cx="250.78125"
-         id="path3869"
-         style="fill:#5ab4f2;fill-opacity:1;stroke:none"
-         sodipodi:type="arc" />
-      <text
-         id="text3882"
-         y="721.06293"
-         x="115.15747"
-         style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
-         xml:space="preserve"><tspan
-           y="721.06293"
-           x="115.15747"
-           id="tspan3884"
-           sodipodi:role="line">2 Gang 13A socket</tspan></text>
-    </g>
-    <g
-       transform="translate(2.6451772,75.203002)"
-       id="g3944">
-      <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:none"
-         id="rect3946"
-         width="177.16536"
-         height="53.14962"
-         x="85.9375"
-         y="686.60797"
-         ry="8.9236765" />
-      <text
-         xml:space="preserve"
-         style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
-         x="116.05561"
-         y="716.72607"
-         id="text3950"><tspan
-           sodipodi:role="line"
-           id="tspan3952"
-           x="116.05561"
-           y="716.72607">Emergency Exit</tspan></text>
-      <rect
-         style="fill:#ff000a;fill-opacity:1;stroke:none"
-         id="rect3954"
-         width="17.716534"
-         height="17.716526"
-         x="94.795769"
-         y="704.32452" />
-    </g>
-    <g
-       id="g4144">
-      <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:none"
-         id="rect3876-2"
-         width="172.72391"
-         height="53.149605"
-         x="287.90601"
-         y="690.94482"
-         ry="8.9236736" />
+         ry="15.944908"
+         y="673.22827"
+         x="70.866142"
+         height="159.44885"
+         width="602.36218"
+         id="rect3871"
+         style="fill:#dcdcdc;fill-opacity:1;stroke:none" />
       <g
-         id="g4110"
-         transform="matrix(0.52000018,0,0,0.50000012,16.653427,634.25192)"
-         style="display:inline">
+         transform="translate(2.6451772,1.6340121e-5)"
+         id="g3888">
         <rect
-           ry="0"
-           y="141.73224"
-           x="554.52759"
-           height="53.149609"
-           width="88.582703"
-           id="rect4112"
-           style="fill:#ffc97c;fill-opacity:1;stroke:#000000;stroke-width:1.96116054;stroke-opacity:1" />
-        <rect
-           y="141.73224"
-           x="584.64569"
-           height="24.803141"
-           width="58.464592"
-           id="rect4114"
-           style="fill:#ca7300;fill-opacity:1;stroke:none" />
+           style="fill:#ffffff;fill-opacity:1;stroke:none"
+           id="rect3876"
+           width="177.16536"
+           height="53.149605"
+           x="85.9375"
+           y="690.94482"
+           ry="8.9236736" />
+        <path
+           sodipodi:type="arc"
+           style="fill:#5ab4f2;fill-opacity:1;stroke:none"
+           id="path3869"
+           sodipodi:cx="250.78125"
+           sodipodi:cy="42.076717"
+           sodipodi:rx="12.5"
+           sodipodi:ry="12.5"
+           d="m 263.28125,42.076717 a 12.5,12.5 0 1 1 -25,0 l 12.5,0 z"
+           sodipodi:start="0"
+           sodipodi:end="3.1415927"
+           transform="matrix(0,-1,-1,0,150.14758,968.30088)" />
+        <text
+           xml:space="preserve"
+           style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+           x="115.15747"
+           y="721.06293"
+           id="text3882"><tspan
+             sodipodi:role="line"
+             id="tspan3884"
+             x="115.15747"
+             y="721.06293">2 Gang 13A socket</tspan></text>
       </g>
-      <text
-         id="text3882-3"
-         y="722.83459"
-         x="361.41733"
-         style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
-         xml:space="preserve"><tspan
-           y="722.83459"
+      <g
+         id="g3944"
+         transform="translate(2.6451772,75.203002)">
+        <rect
+           ry="8.9236765"
+           y="686.60797"
+           x="85.9375"
+           height="53.14962"
+           width="177.16536"
+           id="rect3946"
+           style="fill:#ffffff;fill-opacity:1;stroke:none" />
+        <text
+           id="text3950"
+           y="716.72607"
+           x="116.05561"
+           style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+           xml:space="preserve"><tspan
+             y="716.72607"
+             x="116.05561"
+             id="tspan3952"
+             sodipodi:role="line">Emergency Exit</tspan></text>
+        <rect
+           y="704.32452"
+           x="94.795769"
+           height="17.716526"
+           width="17.716534"
+           id="rect3954"
+           style="fill:#ff000a;fill-opacity:1;stroke:none" />
+      </g>
+      <g
+         id="g4144"
+         transform="translate(-4.4414494,7.2088767e-6)">
+        <rect
+           ry="8.9236736"
+           y="690.94482"
+           x="287.90601"
+           height="53.149605"
+           width="177.16536"
+           id="rect3876-2"
+           style="fill:#ffffff;fill-opacity:1;stroke:none" />
+        <g
+           style="display:inline"
+           transform="matrix(0.52000018,0,0,0.50000012,16.653427,634.25192)"
+           id="g4110">
+          <rect
+             style="fill:#ffc97c;fill-opacity:1;stroke:#000000;stroke-width:1.96116054;stroke-opacity:1"
+             id="rect4112"
+             width="88.582703"
+             height="53.149609"
+             x="554.52759"
+             y="141.73224"
+             ry="0" />
+          <rect
+             style="fill:#ca7300;fill-opacity:1;stroke:none"
+             id="rect4114"
+             width="58.464592"
+             height="24.803141"
+             x="584.64569"
+             y="141.73224" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
            x="361.41733"
-           id="tspan3884-4"
-           sodipodi:role="line">Team pit</tspan></text>
-    </g>
-    <g
-       id="g4363"
-       transform="translate(-4.4414389,70.866149)">
-      <rect
-         ry="8.9236736"
-         y="690.94482"
-         x="287.90601"
-         height="53.149605"
-         width="172.72391"
-         id="rect4365"
-         style="fill:#ffffff;fill-opacity:1;stroke:none" />
-      <text
-         xml:space="preserve"
-         style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
-         x="360.54379"
-         y="710.43298"
-         id="text4373"><tspan
-           sodipodi:role="line"
-           id="tspan4375"
+           y="722.83459"
+           id="text3882-3"><tspan
+             sodipodi:role="line"
+             id="tspan3884-4"
+             x="361.41733"
+             y="722.83459">Team pit</tspan></text>
+      </g>
+      <g
+         transform="translate(-4.4414389,70.866149)"
+         id="g4363">
+        <rect
+           style="fill:#ffffff;fill-opacity:1;stroke:none"
+           id="rect4365"
+           width="177.16533"
+           height="53.149605"
+           x="287.90601"
+           y="690.94482"
+           ry="8.9236736" />
+        <text
+           id="text4373"
+           y="710.43298"
            x="360.54379"
-           y="710.43298">Help Desk</tspan></text>
-      <rect
-         style="fill:#ffef00;fill-opacity:1;stroke:none;display:inline"
-         id="rect4361-0"
-         width="35.433075"
-         height="17.716522"
-         x="305.62253"
-         y="696.25977" />
-      <rect
-         y="721.06293"
-         x="305.62253"
-         height="17.716522"
-         width="35.433075"
-         id="rect4399"
-         style="fill:#fffc69;fill-opacity:1;stroke:none;display:inline" />
-      <text
-         id="text4401"
-         y="735.23615"
-         x="360.54379"
-         style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
-         xml:space="preserve"><tspan
+           style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+           xml:space="preserve"><tspan
+             y="710.43298"
+             x="360.54379"
+             id="tspan4375"
+             sodipodi:role="line">Help Desk</tspan></text>
+        <rect
+           y="696.25977"
+           x="305.62253"
+           height="17.716522"
+           width="35.433075"
+           id="rect4361-0"
+           style="fill:#ffef00;fill-opacity:1;stroke:none;display:inline" />
+        <rect
+           style="fill:#fffc69;fill-opacity:1;stroke:none;display:inline"
+           id="rect4399"
+           width="35.433075"
+           height="17.716522"
+           x="305.62253"
+           y="721.06293" />
+        <text
+           xml:space="preserve"
+           style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+           x="360.54379"
            y="735.23615"
-           x="360.54379"
-           id="tspan4403"
-           sodipodi:role="line">DJ Stand</tspan></text>
+           id="text4401"><tspan
+             sodipodi:role="line"
+             id="tspan4403"
+             x="360.54379"
+             y="735.23615">DJ Stand</tspan></text>
+      </g>
+      <g
+         transform="translate(190.44045,3.3641425e-5)"
+         id="g5856">
+        <rect
+           style="fill:#ffffff;fill-opacity:1;stroke:none"
+           id="rect5858"
+           width="177.16534"
+           height="53.149605"
+           x="287.90601"
+           y="690.94482"
+           ry="8.9236736" />
+        <text
+           id="text5866"
+           y="722.83453"
+           x="349.91388"
+           style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+           xml:space="preserve"><tspan
+             y="722.83453"
+             x="349.91388"
+             id="tspan5868"
+             sodipodi:role="line">Out of Bounds</tspan></text>
+        <rect
+           style="fill:url(#pattern5942);fill-opacity:1;stroke:#ff0000;stroke-width:0.70866144;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           id="rect5870"
+           width="35.433075"
+           height="17.716511"
+           x="305.62253"
+           y="708.66138" />
+      </g>
     </g>
   </g>
 </svg>
