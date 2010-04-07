@@ -15,7 +15,10 @@
    id="svg3040"
    version="1.1"
    inkscape:version="0.47 r22583"
-   sodipodi:docname="cube_layout_2010.svg">
+   sodipodi:docname="cube_layout_2010.svg"
+   inkscape:export-filename="/home/richard/srobo/svn/competition/arena/cube_layout_2010.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs3042">
     <pattern
@@ -123,10 +126,10 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="0.90509668"
-     inkscape:cx="297.53771"
-     inkscape:cy="299.19627"
+     inkscape:cx="322.27731"
+     inkscape:cy="310.38597"
      inkscape:document-units="mm"
-     inkscape:current-layer="g3944"
+     inkscape:current-layer="g4363"
      showgrid="true"
      units="mm"
      inkscape:window-width="1280"
@@ -433,7 +436,7 @@
        inkscape:label="Exits"
        style="display:inline">
       <rect
-         style="fill:#ff000a;fill-opacity:1;stroke:none"
+         style="fill:#ff4e55;fill-opacity:1;stroke:none"
          id="rect3934"
          width="58.464546"
          height="58.464565"
@@ -445,9 +448,9 @@
          height="93.897667"
          width="58.464546"
          id="rect3956"
-         style="fill:#ff000a;fill-opacity:1;stroke:none" />
+         style="fill:#ff4e55;fill-opacity:1;stroke:none" />
       <rect
-         style="fill:#ff4e55;fill-opacity:1;stroke:none"
+         style="fill:#ff000a;fill-opacity:1;stroke:none"
          id="rect3958"
          width="58.464546"
          height="93.897667"
@@ -495,7 +498,7 @@
          y="232.07668"
          ry="0" />
       <rect
-         style="fill:#ffef00;fill-opacity:1;stroke:none;display:inline"
+         style="fill:#ffa928;fill-opacity:1;stroke:none;display:inline"
          id="rect4361"
          width="70.866142"
          height="35.433071"
@@ -644,12 +647,12 @@
            style="fill:#ffffff;fill-opacity:1;stroke:none" />
         <text
            id="text3950"
-           y="706.09613"
-           x="139.0871"
+           y="730.89929"
+           x="140.85875"
            style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
            xml:space="preserve"><tspan
-             y="706.09613"
-             x="139.0871"
+             y="730.89929"
+             x="140.85875"
              id="tspan3952"
              sodipodi:role="line">Emergency Exit</tspan></text>
         <rect
@@ -669,13 +672,13 @@
         <text
            xml:space="preserve"
            style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
-           x="139.0871"
-           y="729.12769"
+           x="140.85875"
+           y="706.09613"
            id="text5983"><tspan
              sodipodi:role="line"
              id="tspan5985"
-             x="139.0871"
-             y="729.12769">Main Entrance</tspan></text>
+             x="140.85875"
+             y="706.09613">Main Entrance</tspan></text>
       </g>
       <g
          id="g4144"
@@ -746,7 +749,7 @@
            height="17.716522"
            width="35.433075"
            id="rect4361-0"
-           style="fill:#ffef00;fill-opacity:1;stroke:none;display:inline" />
+           style="fill:#ffa928;fill-opacity:1;stroke:none;display:inline" />
         <rect
            style="fill:#fffc69;fill-opacity:1;stroke:none;display:inline"
            id="rect4399"
