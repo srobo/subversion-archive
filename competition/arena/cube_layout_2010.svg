@@ -33,10 +33,10 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="0.90509668"
-     inkscape:cx="370.68198"
-     inkscape:cy="494.06814"
+     inkscape:cx="338.6412"
+     inkscape:cy="500.69727"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer5"
+     inkscape:current-layer="layer6"
      showgrid="true"
      units="mm"
      inkscape:window-width="1280"
@@ -116,9 +116,9 @@
        x="584.64569"
        y="65.551132" />
     <rect
-       y="584.64563"
+       y="549.21252"
        x="584.64569"
-       height="58.464565"
+       height="93.897667"
        width="58.464546"
        id="rect3956"
        style="fill:#ff000a;fill-opacity:1;stroke:none" />
@@ -126,9 +126,9 @@
        style="fill:#ff000a;fill-opacity:1;stroke:none"
        id="rect3958"
        width="58.464546"
-       height="58.464565"
+       height="93.897667"
        x="65.551178"
-       y="584.64563" />
+       y="549.21252" />
   </g>
   <g
      inkscape:groupmode="layer"
