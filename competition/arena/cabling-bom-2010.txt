@@ -3,3 +3,13 @@
 Ways    Length   Qty    Notes
 -----------------------------
  4      3m        19     http://xgoat.com/p/farnell/5078234 - £2, clearing stock so need to hurry
+
+##### Network #####
+
+Length  Qty  Got  Notes
+-----------------------
+22m      1    x   DJ Stand -> South 8/s (use 27m cable)
+18m      1    x   South 8/s -> East 8/s (use 27m cable)
+1.5m     4    x   South Middle, East Middle
+5m       8        South Outer, East Outer
+8m       1    x   East Top
