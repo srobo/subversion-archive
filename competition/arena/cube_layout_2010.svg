@@ -153,12 +153,12 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.64"
-     inkscape:cx="345.30372"
-     inkscape:cy="424.46491"
+     inkscape:zoom="0.45254834"
+     inkscape:cx="593.88016"
+     inkscape:cy="452.40207"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer11"
-     showgrid="false"
+     inkscape:current-layer="svg3040"
+     showgrid="true"
      units="mm"
      inkscape:window-width="1280"
      inkscape:window-height="756"
@@ -1746,7 +1746,8 @@
     <g
        inkscape:groupmode="layer"
        id="layer11"
-       inkscape:label="Network">
+       inkscape:label="Network"
+       style="display:inline">
       <rect
          style="fill:#00ffff;fill-opacity:1;stroke:none"
          id="rect3074"
@@ -1817,33 +1818,77 @@
          sodipodi:nodetypes="cccc" />
       <path
          style="fill:none;stroke:#00ffff;stroke-width:1.77165353;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-         d="m 363.18898,680.31494 0,-21.25984 26.57481,0 0,-28.34645"
+         d="m 363.18898,680.31494 0,-28.34645 26.57481,-10e-6 0,-21.25983"
          id="path3877"
          transform="translate(0,-35.433067)"
          sodipodi:nodetypes="cccc" />
       <path
          style="fill:none;stroke:#00ffff;stroke-width:1.77165353;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-         d="m 370.27559,680.31494 0,-14.17322 72.6378,0 0,-35.43307"
+         d="m 370.27559,680.31494 0,-21.25984 72.6378,0 0,-28.34645"
          id="path3883"
          transform="translate(0,-35.433067)"
          sodipodi:nodetypes="cccc" />
       <path
          style="fill:none;stroke:#00ffff;stroke-width:1.77165353;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-         d="m 377.3622,680.31494 0,-7.08661 118.70079,0 0,-42.51968"
+         d="m 377.3622,680.31494 0,-15.94488 118.70079,0 0,-33.66141"
          id="path3885"
          transform="translate(0,-35.433067)"
          sodipodi:nodetypes="cccc" />
       <path
          style="fill:none;stroke:#00ffff;stroke-width:1.77165353;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-         d="m 390.01358,685.51153 323.9628,0.11838 0,-295.86615"
+         d="m 384.44882,680.31494 0,-8.85826 329.52756,0 0,-281.69292"
          id="path3887"
          transform="translate(0,-35.433067)"
-         sodipodi:nodetypes="ccc" />
+         sodipodi:nodetypes="cccc" />
       <path
          style="fill:none;stroke:#00ffff;stroke-width:1.77165353;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
          d="m 336.61417,685.62991 -301.181099,0 0,-526.18111"
          id="path3889"
          transform="translate(0,-35.433067)" />
+      <g
+         id="g3898"
+         transform="translate(-3.5433278,-3.583031e-6)">
+        <rect
+           ry="5.3149691"
+           y="279.92126"
+           x="708.66144"
+           height="17.716536"
+           width="28.346478"
+           id="rect3896"
+           style="fill:#00ffff;stroke:none" />
+        <text
+           id="text3891"
+           y="292.67603"
+           x="713.74677"
+           style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+           xml:space="preserve"><tspan
+             y="292.67603"
+             x="713.74677"
+             id="tspan3893"
+             sodipodi:role="line">8/s</tspan></text>
+      </g>
+      <g
+         transform="translate(-313.5827,361.41731)"
+         id="g3903">
+        <rect
+           style="fill:#00ffff;stroke:none"
+           id="rect3905"
+           width="28.346478"
+           height="17.716536"
+           x="708.66144"
+           y="279.92126"
+           ry="5.3149691" />
+        <text
+           xml:space="preserve"
+           style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+           x="713.74677"
+           y="292.67603"
+           id="text3907"><tspan
+             sodipodi:role="line"
+             id="tspan3909"
+             x="713.74677"
+             y="292.67603">8/s</tspan></text>
+      </g>
     </g>
   </g>
   <g
