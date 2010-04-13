@@ -15,7 +15,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.47 r22583"
-   sodipodi:docname="maps_schedule.svg">
+   sodipodi:docname="maps_schedule.svg"
+   inkscape:export-filename="/home/richard/srobo/svn/competition/handouts/maps_schedule.png"
+   inkscape:export-xdpi="89.988571"
+   inkscape:export-ydpi="89.988571">
   <defs
      id="defs4">
     <linearGradient
@@ -294,17 +297,6 @@
        y1="177.96853"
        x2="371.58025"
        y2="177.96853" />
-    <mask
-       maskUnits="userSpaceOnUse"
-       id="mask6303">
-      <rect
-         style="fill:url(#linearGradient6307);fill-opacity:1;stroke:none"
-         id="rect6305"
-         width="372.62491"
-         height="359.34576"
-         x="62.91713"
-         y="-108.81772" />
-    </mask>
     <inkscape:perspective
        id="perspective6317"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -319,6 +311,27 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5493"
+       id="linearGradient6453"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.0390981,0,0,0.97803773,62.767039,58.55863)"
+       x1="61.006332"
+       y1="177.96853"
+       x2="371.58025"
+       y2="177.96853" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath6475">
+      <rect
+         y="87.617088"
+         x="126.15861"
+         height="298.58926"
+         width="322.71677"
+         id="rect6477"
+         style="fill:#000000;fill-opacity:1;stroke:none" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -327,12 +340,12 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="547.75638"
-     inkscape:cy="672.19878"
+     inkscape:zoom="1.4"
+     inkscape:cx="393.47482"
+     inkscape:cy="790.20552"
      inkscape:document-units="px"
      inkscape:current-layer="layer7"
-     showgrid="true"
+     showgrid="false"
      inkscape:window-width="1280"
      inkscape:window-height="951"
      inkscape:window-x="0"
@@ -1221,14 +1234,14 @@
     <image
        sodipodi:absref="/home/richard/srobo/svn/competition/handouts/./campus_map.jpg"
        xlink:href="./campus_map.jpg"
-       mask="url(#mask6303)"
-       transform="matrix(0.86606334,0,0,0.86606334,71.668387,169.23322)"
-       clip-path="none"
-       width="595.10205"
-       height="425.14285"
+       transform="translate(-4.9402975,-16.162441)"
+       mask="none"
+       clip-path="url(#clipPath6475)"
+       width="631.5636"
+       height="451.1911"
        id="image4685"
-       x="60.745934"
-       y="-171.85316"
+       x="8.1106739"
+       y="20.397493"
        style="display:inline" />
     <text
        sodipodi:linespacing="100%"
@@ -1246,7 +1259,7 @@
        id="layer4-7"
        inkscape:label="Key"
        style="display:inline"
-       transform="matrix(0.8952381,0,0,0.8952381,447.15409,-401.97982)">
+       transform="matrix(0.8952381,0,0,0.8952381,447.15409,-410.83809)">
       <g
          id="g5909-8"
          transform="matrix(0.34856062,0,0,1.8666012,27.76374,-700.76408)">
@@ -1295,7 +1308,7 @@
     <g
        style="display:inline"
        id="g4144-8"
-       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-211.72112)">
+       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-220.57939)">
       <rect
          rx="15.335281"
          ry="14.951897"
@@ -1346,7 +1359,7 @@
       </g>
     </g>
     <g
-       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-158.57151)"
+       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-167.42978)"
        id="g6412"
        style="display:inline">
       <rect
@@ -1397,7 +1410,7 @@
     <g
        style="display:inline"
        id="g6434"
-       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-105.42191)">
+       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-114.28017)">
       <rect
          rx="15.335281"
          ry="14.951897"
