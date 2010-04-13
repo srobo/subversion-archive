@@ -277,55 +277,6 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5493"
-       id="linearGradient5499"
-       x1="61.006332"
-       y1="177.96853"
-       x2="371.58025"
-       y2="177.96853"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5493"
-       id="linearGradient5525"
-       gradientUnits="userSpaceOnUse"
-       x1="61.006332"
-       y1="177.96853"
-       x2="371.58025"
-       y2="177.96853"
-       gradientTransform="translate(-7.1428572,2.8571429)" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5493"
-       id="linearGradient5533"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.15465,0,0,1.15465,-9.998082,-134.22383)"
-       x1="61.006332"
-       y1="177.96853"
-       x2="371.58025"
-       y2="177.96853" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5493"
-       id="linearGradient5536"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.0459978,0,0,1,-9.9490138,2.8571415)"
-       x1="61.006332"
-       y1="177.96853"
-       x2="371.58025"
-       y2="177.96853" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5493"
-       id="linearGradient5542"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.2077613,0,0,1.15465,-13.238211,-134.22383)"
-       x1="61.006332"
-       y1="177.96853"
-       x2="371.58025"
-       y2="177.96853" />
     <inkscape:perspective
        id="perspective5552"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -333,36 +284,6 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5493"
-       id="linearGradient6292"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.041398,0,0,0.99090294,61.912445,54.248728)"
-       x1="61.006332"
-       y1="177.96853"
-       x2="371.58025"
-       y2="177.96853" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5493"
-       id="linearGradient6298"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.2024502,0,0,1.144146,-11.264698,-132.76684)"
-       x1="61.006332"
-       y1="177.96853"
-       x2="371.58025"
-       y2="177.96853" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5493"
-       id="linearGradient6301"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.0390981,0,0,0.99090291,62.767039,54.248727)"
-       x1="61.006332"
-       y1="177.96853"
-       x2="371.58025"
-       y2="177.96853" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient5493"
@@ -406,12 +327,12 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="461.73531"
-     inkscape:cy="535.69394"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="547.75638"
+     inkscape:cy="672.19878"
      inkscape:document-units="px"
      inkscape:current-layer="layer7"
-     showgrid="false"
+     showgrid="true"
      inkscape:window-width="1280"
      inkscape:window-height="951"
      inkscape:window-x="0"
@@ -669,7 +590,7 @@
            id="layer4"
            inkscape:label="Key"
            style="display:inline"
-           transform="translate(345.47248,-186.90946)">
+           transform="translate(354.40864,-186.90946)">
           <g
              id="g5909"
              transform="matrix(0.24999992,0,0,2.1166665,35.433113,-867.81464)">
@@ -977,7 +898,7 @@
             <g
                style="display:inline"
                id="g4144"
-               transform="matrix(1.045098,0,0,1.0718956,446.53932,-285.21143)">
+               transform="matrix(1.045098,0,0,1.0718956,460.90728,-285.21143)">
               <rect
                  rx="15.33528"
                  ry="14.951897"
@@ -1048,7 +969,7 @@
             <g
                style="display:inline"
                id="g3944"
-               transform="matrix(1.0485933,0,0,1.0718955,656.69658,-536.93138)">
+               transform="matrix(1.0485933,0,0,1.0718955,671.06454,-536.93138)">
               <rect
                  rx="15.284168"
                  ry="14.951903"
@@ -1061,16 +982,17 @@
               <text
                  id="text3950"
                  y="730.89929"
-                 x="140.85875"
-                 style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
-                 xml:space="preserve"><tspan
+                 x="151.13536"
+                 style="font-size:12.87475326px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+                 xml:space="preserve"
+                 sodipodi:linespacing="125%"><tspan
                    y="730.89929"
-                   x="140.85875"
+                   x="151.13536"
                    id="tspan3952"
                    sodipodi:role="line">Emergency Exit</tspan></text>
               <rect
                  y="691.92291"
-                 x="96.567413"
+                 x="103.41847"
                  height="17.716526"
                  width="35.433067"
                  id="rect3954"
@@ -1080,17 +1002,18 @@
                  id="rect5981"
                  width="35.433067"
                  height="17.716526"
-                 x="96.567413"
+                 x="103.41847"
                  y="716.72607" />
               <text
                  xml:space="preserve"
-                 style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
-                 x="140.85875"
+                 style="font-size:12.87475326px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+                 x="151.13536"
                  y="706.09613"
-                 id="text5983"><tspan
+                 id="text5983"
+                 sodipodi:linespacing="125%"><tspan
                    sodipodi:role="line"
                    id="tspan5985"
-                   x="140.85875"
+                   x="151.13536"
                    y="706.09613">Main Entrance</tspan></text>
             </g>
           </g>
@@ -1123,7 +1046,7 @@
                y="343.69086" />
             <g
                style="display:inline"
-               transform="matrix(1.045098,0,0,1.0718955,446.53932,-370.66758)"
+               transform="matrix(1.045098,0,0,1.0718955,460.90728,-370.66758)"
                id="g4363">
               <rect
                  rx="15.33528"
@@ -1196,7 +1119,7 @@
                y="74.153496" />
             <g
                style="display:inline"
-               transform="matrix(1.045098,0,0,1.0718955,446.53932,-199.75514)"
+               transform="matrix(1.045098,0,0,1.0718955,460.90728,-199.75514)"
                id="g5856">
               <rect
                  rx="15.33528"
@@ -1228,7 +1151,7 @@
             <g
                style="display:inline"
                id="g5965"
-               transform="matrix(1.045098,0,0,1.0718956,446.53932,-456.12388)">
+               transform="matrix(1.045098,0,0,1.0718956,460.90728,-456.12388)">
               <rect
                  rx="15.33528"
                  ry="14.951896"
@@ -1323,7 +1246,7 @@
        id="layer4-7"
        inkscape:label="Key"
        style="display:inline"
-       transform="matrix(0.8952381,0,0,0.8952381,447.15409,-428.55461)">
+       transform="matrix(0.8952381,0,0,0.8952381,447.15409,-401.97982)">
       <g
          id="g5909-8"
          transform="matrix(0.34856062,0,0,1.8666012,27.76374,-700.76408)">
@@ -1372,7 +1295,7 @@
     <g
        style="display:inline"
        id="g4144-8"
-       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-238.29593)">
+       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-211.72112)">
       <rect
          rx="15.335281"
          ry="14.951897"
@@ -1400,7 +1323,7 @@
          id="g6404">
         <path
            transform="matrix(2.2136877,0,0,2.1583451,-879.13713,300.36106)"
-           d="m 543.89765,195.73956 a 9.6273899,9.6273899 0 1 1 -19.25478,0 9.6273899,9.6273899 0 1 1 19.25478,0 z"
+           d="m 543.89765,195.73956 c 0,5.31706 -4.31033,9.62739 -9.62739,9.62739 -5.31706,0 -9.62739,-4.31033 -9.62739,-9.62739 0,-5.31706 4.31033,-9.62739 9.62739,-9.62739 5.31706,0 9.62739,4.31033 9.62739,9.62739 z"
            sodipodi:ry="9.6273899"
            sodipodi:rx="9.6273899"
            sodipodi:cy="195.73956"
@@ -1423,7 +1346,7 @@
       </g>
     </g>
     <g
-       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-185.14632)"
+       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-158.57151)"
        id="g6412"
        style="display:inline">
       <rect
@@ -1474,7 +1397,7 @@
     <g
        style="display:inline"
        id="g6434"
-       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-131.99671)">
+       transform="matrix(0.58190478,0,0,0.59682554,356.61866,-105.42191)">
       <rect
          rx="15.335281"
          ry="14.951897"
