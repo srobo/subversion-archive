@@ -32,8 +32,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.70710678"
-     inkscape:cx="292.55781"
-     inkscape:cy="387.0908"
+     inkscape:cx="368.18398"
+     inkscape:cy="556.47106"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -521,7 +521,7 @@
            sodipodi:cy="547.79102"
            sodipodi:rx="196.47467"
            sodipodi:ry="196.47467"
-           d="M 544.47223,547.79102 A 196.47467,196.47467 0 1 1 151.52289,547.79102 A 196.47467,196.47467 0 1 1 544.47223,547.79102 z"
+           d="m 544.47223,547.79102 c 0,108.50996 -87.96471,196.47467 -196.47467,196.47467 -108.50997,0 -196.47467,-87.96471 -196.47467,-196.47467 0,-108.50997 87.9647,-196.47467 196.47467,-196.47467 108.50996,0 196.47467,87.9647 196.47467,196.47467 z"
            transform="translate(-168.93846,-22.060915)"
            inkscape:export-xdpi="90.238617"
            inkscape:export-ydpi="90.238617"
@@ -542,7 +542,7 @@
            sodipodi:cy="547.79102"
            sodipodi:rx="196.47467"
            sodipodi:ry="196.47467"
-           d="M 544.47223,547.79102 A 196.47467,196.47467 0 1 1 151.52289,547.79102 A 196.47467,196.47467 0 1 1 544.47223,547.79102 z"
+           d="m 544.47223,547.79102 c 0,108.50996 -87.96471,196.47467 -196.47467,196.47467 -108.50997,0 -196.47467,-87.96471 -196.47467,-196.47467 0,-108.50997 87.9647,-196.47467 196.47467,-196.47467 108.50996,0 196.47467,87.9647 196.47467,196.47467 z"
            transform="translate(-168.94729,-22.051257)"
            inkscape:export-filename="/home/rob/sr.png"
            inkscape:export-xdpi="90.238617"
@@ -557,30 +557,31 @@
        xml:space="preserve"
        style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Eurostile;-inkscape-font-specification:Eurostile"
        x="157.38318"
-       y="212.92542"
+       y="176.86298"
        id="text3855"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3857"
          x="157.38318"
-         y="212.92542">This certificate is awarded to</tspan></text>
+         y="176.86298">This certificate is awarded to</tspan></text>
     <image
        sodipodi:absref="/home/richard/srobo/svn/competition/certificates/../../media/sponsors/motorola/motofoundation.tif"
        xlink:href="../../media/sponsors/motorola/motofoundation.tif"
-       width="405.91339"
-       height="122.26306"
-       id="image4032"
+       y="737.78937"
        x="169.09055"
-       y="737.78937" />
+       id="image4032"
+       height="122.26306"
+       width="405.91339" />
     <path
        style="opacity:0.5;fill:none;stroke:#808080;stroke-width:1.77165353;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.77165353, 7.08661413;stroke-dashoffset:0;marker-start:none"
-       d="m 544.78333,286.8696 -345.47217,0"
-       id="path4094" />
+       d="m 613.01913,268.46401 -481.94378,0"
+       id="path4094"
+       sodipodi:nodetypes="cc" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot4096"
        style="font-size:72px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#0d1f61;fill-opacity:1;stroke:none;font-family:Eurostile;-inkscape-font-specification:Eurostile"
-       transform="matrix(1.2624804,0,0,1.2624804,-173.76101,-112.00325)"><flowRegion
+       transform="matrix(1.2624804,0,0,1.2624804,-173.76101,-174.93575)"><flowRegion
          id="flowRegion4098"><rect
            id="rect4100"
            width="956.9516"
@@ -592,14 +593,14 @@
          style="font-size:56px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#0d1f61;fill-opacity:1;font-family:Eurostile;-inkscape-font-specification:Eurostile Bold">ENGINEERING AWARD</flowPara></flowRoot>    <text
        xml:space="preserve"
        style="font-size:42px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Eurostile;-inkscape-font-specification:Eurostile"
-       x="58.627171"
-       y="588.60571"
+       x="60.041382"
+       y="545.47223"
        id="text4104"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4106"
-         x="58.627171"
-         y="588.60571"
+         x="60.041382"
+         y="545.47223"
          style="font-size:42px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Eurostile;-inkscape-font-specification:Eurostile">Student Robotics Competiton 2010</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient3477);stroke-width:14.17322826;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -621,17 +622,13 @@
        xml:space="preserve"
        style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Eurostile;-inkscape-font-specification:Eurostile"
        x="293.86853"
-       y="357.15198"
+       y="303.41187"
        id="text4324"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4326"
          x="293.86853"
-         y="357.15198">from team</tspan></text>
-    <path
-       style="opacity:0.5;fill:none;stroke:#808080;stroke-width:1.77165353;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.77165353, 7.08661413;stroke-dashoffset:0;marker-start:none"
-       d="m 544.78333,419.13765 -345.47217,0"
-       id="path4328" />
+         y="303.41187">from team</tspan></text>
     <g
        transform="matrix(1.0546008,0,0,-1.0546008,390.87436,1006.0583)"
        inkscape:label="ink_ext_XXXXXX"
@@ -759,11 +756,11 @@
     <image
        sodipodi:absref="/home/richard/srobo/svn/competition/certificates/../../media/sponsors/SCA/community_volunteering.png"
        xlink:href="../../media/sponsors/SCA/community_volunteering.png"
-       width="292.60468"
-       height="78.637497"
-       id="image4038"
+       y="925.72473"
        x="51.5"
-       y="925.72473" />
+       id="image4038"
+       height="78.637497"
+       width="292.60468" />
     <text
        xml:space="preserve"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
@@ -786,5 +783,10 @@
          x="411.32599"
          id="tspan4048"
          sodipodi:role="line">Andrew Busse - President</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       id="path2951"
+       d="m 613.01913,375.2016 -481.94378,0"
+       style="opacity:0.5;fill:none;stroke:#808080;stroke-width:1.77165353;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.77165353, 7.08661413;stroke-dashoffset:0;marker-start:none" />
   </g>
 </svg>
