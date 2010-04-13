@@ -17,9 +17,9 @@
    inkscape:version="0.47 r22583"
    sodipodi:docname="certificate.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/chris/srobo/competition/certificates/cert-eng.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
+   inkscape:export-filename="/home/richard/srobo/svn/competition/certificates/certificate.png"
+   inkscape:export-xdpi="299.96191"
+   inkscape:export-ydpi="299.96191"
    version="1.1">
   <sodipodi:namedview
      id="base"
@@ -29,7 +29,7 @@
      gridtolerance="10000"
      guidetolerance="10"
      objecttolerance="10"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="0.70710678"
      inkscape:cx="368.18398"
@@ -462,6 +462,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -567,11 +568,11 @@
     <image
        sodipodi:absref="/home/richard/srobo/svn/competition/certificates/../../media/sponsors/motorola/motofoundation.tif"
        xlink:href="../../media/sponsors/motorola/motofoundation.tif"
-       y="737.78937"
-       x="169.09055"
-       id="image4032"
+       width="405.91339"
        height="122.26306"
-       width="405.91339" />
+       id="image4032"
+       x="169.09055"
+       y="737.78937" />
     <path
        style="opacity:0.5;fill:none;stroke:#808080;stroke-width:1.77165353;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.77165353, 7.08661413;stroke-dashoffset:0;marker-start:none"
        d="m 613.01913,268.46401 -481.94378,0"
@@ -756,11 +757,11 @@
     <image
        sodipodi:absref="/home/richard/srobo/svn/competition/certificates/../../media/sponsors/SCA/community_volunteering.png"
        xlink:href="../../media/sponsors/SCA/community_volunteering.png"
-       y="925.72473"
-       x="51.5"
-       id="image4038"
+       width="292.60468"
        height="78.637497"
-       width="292.60468" />
+       id="image4038"
+       x="51.5"
+       y="925.72473" />
     <text
        xml:space="preserve"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
