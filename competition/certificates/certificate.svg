@@ -32,8 +32,8 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="0.70710678"
-     inkscape:cx="368.18398"
-     inkscape:cy="556.47106"
+     inkscape:cx="370.3053"
+     inkscape:cy="553.64263"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -462,7 +462,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -568,11 +568,11 @@
     <image
        sodipodi:absref="/home/richard/srobo/svn/competition/certificates/../../media/sponsors/motorola/motofoundation.tif"
        xlink:href="../../media/sponsors/motorola/motofoundation.tif"
-       width="405.91339"
-       height="122.26306"
-       id="image4032"
+       y="737.78937"
        x="169.09055"
-       y="737.78937" />
+       id="image4032"
+       height="122.26306"
+       width="405.91339" />
     <path
        style="opacity:0.5;fill:none;stroke:#808080;stroke-width:1.77165353;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.77165353, 7.08661413;stroke-dashoffset:0;marker-start:none"
        d="m 613.01913,268.46401 -481.94378,0"
@@ -594,15 +594,15 @@
          style="font-size:56px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#0d1f61;fill-opacity:1;font-family:Eurostile;-inkscape-font-specification:Eurostile Bold">ENGINEERING AWARD</flowPara></flowRoot>    <text
        xml:space="preserve"
        style="font-size:42px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Eurostile;-inkscape-font-specification:Eurostile"
-       x="60.041382"
+       x="56.103882"
        y="545.47223"
        id="text4104"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4106"
-         x="60.041382"
+         x="56.103882"
          y="545.47223"
-         style="font-size:42px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Eurostile;-inkscape-font-specification:Eurostile">Student Robotics Competiton 2010</tspan></text>
+         style="font-size:42px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Eurostile;-inkscape-font-specification:Eurostile">Student Robotics Competition 2010</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient3477);stroke-width:14.17322826;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 18,20.362183 L 18,356.36218"
@@ -757,11 +757,11 @@
     <image
        sodipodi:absref="/home/richard/srobo/svn/competition/certificates/../../media/sponsors/SCA/community_volunteering.png"
        xlink:href="../../media/sponsors/SCA/community_volunteering.png"
-       width="292.60468"
-       height="78.637497"
-       id="image4038"
+       y="925.72473"
        x="51.5"
-       y="925.72473" />
+       id="image4038"
+       height="78.637497"
+       width="292.60468" />
     <text
        xml:space="preserve"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
