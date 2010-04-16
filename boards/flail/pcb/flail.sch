@@ -218,3 +218,7 @@ N 8000 3700 8000 4200 4
 N 8000 4200 7700 4200 4
 N 7700 4200 7700 4900 4
 N 8000 5100 12300 5100 4
+T 12600 5400 9 10 1 0 0 0 3
+Note that although the CAMCON footprint
+will be used, actual CAMCON connectors
+might not be. (Breakout Pads will be instead)
