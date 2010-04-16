@@ -120,7 +120,6 @@ N 7300 7300 9700 7300 4
 N 6700 5300 8500 5300 4
 N 2800 5300 2800 3000 4
 N 4700 5700 2500 5700 4
-N 2500 5700 2500 3000 4
 N 2500 3000 12300 3000 4
 N 4700 6100 3900 6100 4
 N 3900 6100 3900 7600 4
@@ -222,3 +221,23 @@ T 12600 5400 9 10 1 0 0 0 3
 Note that although the CAMCON footprint
 will be used, actual CAMCON connectors
 might not be. (Breakout Pads will be instead)
+C 2100 7400 1 270 0 pad_in.sym
+{
+T 2931 6900 5 10 1 1 270 0 1
+refdes=P1
+T 2200 6500 5 8 0 0 270 0 1
+device=pad
+}
+C 2600 4100 1 90 0 resistor-1.sym
+{
+T 2200 4400 5 10 0 0 90 0 1
+device=RESISTOR
+T 2300 4300 5 10 1 1 90 0 1
+refdes=RENB
+T 2600 4100 5 10 1 1 0 0 1
+value=1k
+T 2600 4100 5 10 0 0 0 0 1
+footprint=0603
+}
+N 2500 5000 2500 6300 4
+N 2500 4100 2500 3000 4
