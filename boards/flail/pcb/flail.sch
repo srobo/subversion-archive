@@ -179,7 +179,7 @@ device=CONNECTOR_2
 T 14000 6800 5 10 1 1 180 0 1
 refdes=CONN_In
 T 12700 7700 5 10 1 1 0 0 1
-value=sr-cn-camcon2w
+value=sr-nothing
 }
 C 14000 3500 1 180 0 connector2-1.sym
 {
@@ -190,7 +190,7 @@ refdes=CONN_Out
 T 14000 3500 5 10 0 0 0 0 1
 footprint=CONNECTOR 1 2
 T 12700 3600 5 10 1 1 0 0 1
-value=sr-cn-camcon2w
+value=sr-nothing
 }
 N 12300 7400 11500 7400 4
 N 11500 7400 11500 7600 4
@@ -224,7 +224,7 @@ might not be. (Breakout Pads will be instead)
 C 2100 7400 1 270 0 pad_in.sym
 {
 T 2931 6900 5 10 1 1 270 0 1
-refdes=P1
+refdes=sr-nothing
 T 2200 6500 5 8 0 0 270 0 1
 device=pad
 }
